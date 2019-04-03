@@ -34,7 +34,7 @@ public class OpenUtil {
         "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I",  
         "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",  
         "W", "X", "Y", "Z" };  
-1
+
 
 	public static String generateShortUuid_8() {  
 	StringBuffer shortBuffer = new StringBuffer();  
