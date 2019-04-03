@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avst.trm.v1.common.datasourse.mysql.mapper.FunctionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.mysql.entity.Function">
+        <id column="id" property="id" />
+        <result column="functionnum" property="functionnum" />
+        <result column="functionname" property="functionname" />
+        <result column="funurl" property="funurl" />
+        <result column="functionexplain" property="functionexplain" />
+        <result column="isenable" property="isenable" />
+        <result column="funtype" property="funtype" />
+        <result column="fungroup" property="fungroup" />
+        <result column="addtime" property="addtime" />
+        <result column="lastupdatetime" property="lastupdatetime" />
+        <result column="ssid" property="ssid" />
+        <result column="integer2" property="integer2" />
+        <result column="integer1" property="integer1" />
+        <result column="string1" property="string1" />
+        <result column="string2" property="string2" />
+    </resultMap>
+
+</mapper>

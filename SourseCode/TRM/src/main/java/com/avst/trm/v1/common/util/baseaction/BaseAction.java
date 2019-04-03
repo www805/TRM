@@ -21,6 +21,7 @@ public class BaseAction {
 		// rresult.setActioncode(Code.SUCCESS.toString());//暂时给它全部成功，不可取的逻辑
 		rresult.setVersion(Version.V1);
 		rresult.setData("");
+		rresult.setEndtime(DateUtil.getDateAndMinute());
 		return rresult;
 	}
 

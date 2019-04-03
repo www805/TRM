@@ -1,22 +1,31 @@
 package com.avst.trm.v1.common.util.baseaction;
 
+import com.avst.trm.v1.common.util.DateUtil;
+
 /**
  * 返回的参数集合
  * @author wb
  *
  */
-public class RResult {
+public class RResult<T> {
 
 	
 	private String version ;
 	
 	private String actioncode;
 	
-	private Object data;
+	private T data;
 	
 	private String endtime;
 	
 	private String message;
+
+	public RResult(){
+		endtime= DateUtil.getDateAndMinute();
+		message="请求失败";
+		actioncode=Code.FAIL.toString();
+	}
+
 	
 	public String getVersion() {
 		return version;
@@ -34,11 +43,11 @@ public class RResult {
 		this.actioncode = actioncode;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 
@@ -57,5 +66,8 @@ public class RResult {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+
+
+
 	
 }
