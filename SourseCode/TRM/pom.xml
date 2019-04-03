@@ -61,11 +61,16 @@
             <version>3.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openanzo.dependencies</groupId>
+            <artifactId>org.apache.commons.httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.1.0</version>
+            <groupId>com.wb</groupId>
+            <artifactId>decode</artifactId>
+            <version>1.0</version>
         </dependency>
 
 
