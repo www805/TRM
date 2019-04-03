@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common;
+package com.avst.trm.v1.common.util;
 
 import java.text.DateFormat;
 import java.text.DateFormatSymbols;
