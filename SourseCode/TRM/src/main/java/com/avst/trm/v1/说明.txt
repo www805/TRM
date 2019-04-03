@@ -1,0 +1,6 @@
+
+4部分
+web web浏览器管理后台
+outsideinterface 供外部调用的接口，用于接受上报数据
+report 上报数据
+common 公共资源
