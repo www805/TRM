@@ -24,4 +24,11 @@ public class CeshiAction extends BaseAction{
         return rResult;
     }
 
+    @GetMapping(value = "/ceshi2")
+    public RResult getlist2(int size) {
+        RResult rResult=createNewResultOfFail();
+        ceshiService.getadminlist2(rResult,size);
+        return rResult;
+    }
+
 }
