@@ -20,6 +20,19 @@ public class RResult<T> {
 	
 	private String message;
 
+	/**
+	 * 下个页面的id，可能不变，与传过来的pageid一样
+	 */
+	private String nextpageid;
+
+	public String getNextpageid() {
+		return nextpageid;
+	}
+
+	public void setNextpageid(String nextpageid) {
+		this.nextpageid = nextpageid;
+	}
+
 	public RResult(){
 		endtime= DateUtil.getDateAndMinute();
 		message="请求失败";
