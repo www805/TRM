@@ -64,6 +64,13 @@
         </dependency>
 
 
+<!-- thymeleaf模板引擎引入-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+
+
 
 <!--功能性的添加jar包-->
         <dependency>

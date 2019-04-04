@@ -1,0 +1,7 @@
+
+
+v1第一版
+
+v1.action 一些特殊的专有的请求的接口
+
+vi.service 所有的service的真正的处理方法，会被baseaction和自己分类版本中的action调用

@@ -1,14 +1,15 @@
 package com.avst.trm.v1.web.action;
 
-import com.avst.trm.v1.common.datasourse.mysql.entity.Admininfo;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.service.CeshiService;
-import com.baomidou.mybatisplus.plugins.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping("/ceshi")
@@ -29,6 +30,25 @@ public class CeshiAction extends BaseAction{
         RResult rResult=createNewResultOfFail();
         ceshiService.getadminlist2(rResult,size);
         return rResult;
+    }
+
+    @GetMapping(value = "/ceshi3")
+    public ModelAndView getlist3(Model model) {
+        RResult rResult=createNewResultOfFail();
+        ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "用户管理");
+        return new ModelAndView("users/list", "userModel", model);
+
+    }
+
+    @GetMapping(value = "/users/{id}")
+    public ModelAndView getuserbyid(Model model,@PathVariable("id")String id) {
+
+        model.addAttribute("title", "第"+id+"个人");
+        return new ModelAndView("users/view", "userModel", model);
+
     }
 
 }
