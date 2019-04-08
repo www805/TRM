@@ -51,4 +51,13 @@ public class CeshiAction extends BaseAction{
 
     }
 
+    @GetMapping(value = "/gotomain")
+    public ModelAndView gotomain(Model model) {
+
+        model.addAttribute("title", "layui测试主页");
+
+        return new ModelAndView("main", "main", model);
+
+    }
+
 }

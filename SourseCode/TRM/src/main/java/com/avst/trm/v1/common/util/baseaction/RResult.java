@@ -22,8 +22,9 @@ public class RResult<T> {
 
 	/**
 	 * 下个页面的id，可能不变，与传过来的pageid一样
+     * 所有的处理都是service中进行，action中要判断pageid是否一致，从而进行跳页面操作
 	 */
-	private String nextpageid;
+	private String nextpageid;//
 
 	public String getNextpageid() {
 		return nextpageid;
