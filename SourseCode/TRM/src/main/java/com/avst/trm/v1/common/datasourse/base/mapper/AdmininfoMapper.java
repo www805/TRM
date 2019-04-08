@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * <p>
+ * <说明.txt>
  * InnoDB free: 39936 kB Mapper 接口
- * </p>
+ * </说明.txt>
  *
  * @author Mht
  * @since 2019-04-03
