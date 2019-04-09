@@ -1,8 +1,8 @@
 package com.avst.trm.v1.common.datasourse.base.entity.moreentity;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 
-public class AdminAndAdmintorole extends Admininfo {
+public class AdminAndAdmintorole extends Base_admininfo {
 
     private Integer admintoroleid;
 

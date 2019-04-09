@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.avst.trm.v1.common.datasourse.police.mapper.Police_templatetotypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_templatetotype">
+        <id column="id" property="id" />
+        <result column="templateid" property="templateid" />
+        <result column="templatebool" property="templatebool" />
+        <result column="templatetypeid" property="templatetypeid" />
+        <result column="createtime" property="createtime" />
+        <result column="ssid" property="ssid" />
+        <result column="string1" property="string1" />
+        <result column="string2" property="string2" />
+        <result column="integer1" property="integer1" />
+        <result column="integer2" property="integer2" />
+    </resultMap>
+
+</mapper>

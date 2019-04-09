@@ -1,9 +1,9 @@
 package com.avst.trm.v1.web.service;
 
 
-import com.avst.trm.v1.common.datasourse.base.entity.Admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdmintorole;
-import com.avst.trm.v1.common.datasourse.base.mapper.AdmininfoMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.param.GetAdminAndAdmintorolelistParam;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -19,26 +19,26 @@ import java.util.List;
 public class CeshiService extends BaseService {
 
     @Autowired
-    private AdmininfoMapper admininfoMapper;
+    private Base_admininfoMapper admininfoMapper;
 
     /**
      * 条件查询
      * @param result
      * @param username
      */
-    public void getadminlist(RResult<List<Admininfo>> result, String username){
+    public void getadminlist(RResult<List<Base_admininfo>> result, String username){
 
         if(null==result){
-            result=new RResult<List<Admininfo>>();
+            result=new RResult<List<Base_admininfo>>();
         }
-        List<Admininfo> list=new ArrayList<Admininfo>();
+        List<Base_admininfo> list=new ArrayList<Base_admininfo>();
         try {
 
 
             EntityWrapper ew=new EntityWrapper();
 //            ew.setEntity(new Admininfo());
             ew.eq("id",1);
-            list=(List<Admininfo>)admininfoMapper.selectList(ew);
+            list=(List<Base_admininfo>)admininfoMapper.selectList(ew);
             result.setData(list);
             this.changeResultToSuccess(result);
         }catch (Exception e){
@@ -53,12 +53,12 @@ public class CeshiService extends BaseService {
      * @param result
      * @param size
      */
-    public void getadminlist2(RResult<List<Admininfo>> result, int size){
+    public void getadminlist2(RResult<List<Base_admininfo>> result, int size){
 
         if(null==result){
-            result=new RResult<List<Admininfo>>();
+            result=new RResult<List<Base_admininfo>>();
         }
-        List<Admininfo> list=new ArrayList<Admininfo>();
+        List<Base_admininfo> list=new ArrayList<Base_admininfo>();
         try {
 //分页的条件，基本上都有
             EntityWrapper ew=new EntityWrapper();
@@ -67,7 +67,7 @@ public class CeshiService extends BaseService {
 
             int count=admininfoMapper.selectCount(ew);
 //current 第多少页，size 每页多少条
-            Page<Admininfo> page=new Page<Admininfo>(1,3);
+            Page<Base_admininfo> page=new Page<Base_admininfo>(1,3);
             page.setTotal(count);
 //            page.setRecords(list);
                     list=admininfoMapper.selectPage(page,ew );
