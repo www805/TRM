@@ -1,7 +1,10 @@
 package com.avst.trm.v1.common.util.sq;
 
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
+import com.wb.deencode.DeCodeUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -52,27 +55,36 @@ public class AnalysisSQ {
         return new String(baos.toByteArray());
     }
 
-    @Value("${Javakeyname}")
-    private static String inifilename;
+//    @Value("${Javakeyname}")
+    private static String inifilename="javatrm.ini";//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+
+    /**
+     *  初始化授权文件的路径
+     */
+    private static String keypath=OpenUtil.getXMSoursePath()+"\\"+inifilename;
+
+    /**
+     * 隐藏记录授权运行的文件
+     */
+    private static String inipath= OpenUtil.getJDKorJREPath()+ inifilename;
 
     /**
      * 生成客户端授权的隐秘文件
      * @return
      */
-    public static boolean createClientini(String keypath){
+    public static boolean createClientini(){
 
         try {
             if(StringUtils.isEmpty(inifilename)){
                 inifilename="javatrm.ini";
             }
-
             String rr=ReadWriteFile.readTxtFileToStr(keypath,"utf8");
             rr+=";0";//再加上一个服务器使用时间
-            String encode=encode_uid(rr);
+            String encode=encode_uid(rr.trim());
             System.out.println("--encode:"+encode);
 
-            String inipath= OpenUtil.getJDKorJREPath()+ inifilename;
-            ReadWriteFile.writeTxtFile(inipath,rr);
+
+            ReadWriteFile.writeTxtFile(encode,inipath,"utf8");
 
 //            OpenUtil.setFileHide(inipath);
 
@@ -87,21 +99,24 @@ public class AnalysisSQ {
 
     /**
      * 更新客户端授权的使用时间
+     * 1天天的加
      * @return
      */
     public static boolean updateClientini(){
 
         try {
-            String inipath= OpenUtil.getJDKorJREPath()+ inifilename;
 
             String rr=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
 
-            String encode=encode_uid(rr);
-            System.out.println("--encode:"+encode);
+            String decode=decode_uid(rr);
+            System.out.println("--decode:"+decode);
 
-            ReadWriteFile.writeTxtFile(inipath,rr);
-
-//            OpenUtil.setFileHide(inipath);
+            String[] arr=decode.split(";");
+            int useday=Integer.parseInt(arr[1]);
+            useday++;
+            String newcode=arr[0]+";"+useday;
+            System.out.println(newcode+":newcode--");
+            ReadWriteFile.writeTxtFile(encode_uid(newcode),inipath);
 
             return true;
         }catch (Exception e){
@@ -114,11 +129,11 @@ public class AnalysisSQ {
 
     /**
      * 检测使用时间是否已经超时，超时就会是负数
+     * inipath 文件授权加了一次密，在客户端存成隐藏的文件又简单加密了一次
      * @return
      */
     public static int checkUseTime(){
 
-        String inipath= OpenUtil.getJDKorJREPath()+ inifilename;
         File file=new File(inipath);
         if(!file.exists()){
             System.out.println("未找到使用的授权文件---");
@@ -127,9 +142,10 @@ public class AnalysisSQ {
         try {
 
             String rr=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
+            rr=decode_uid(rr);
             String sqcode=rr.split(";")[0];
             int usetime=Integer.parseInt(rr.split(";")[1]);
-            String[] sqcodearr=decode_uid(sqcode).split(";");
+            String[] sqcodearr= DeCodeUtil.decoderByDES(sqcode).split(";");
             String foreverBool=sqcodearr[1];
             String cpuCode=sqcodearr[3];
             String localcpuCode=NetTool.getLocalMac();
@@ -143,7 +159,8 @@ public class AnalysisSQ {
                 return 1001;
             }else{
                 int sqDay=Integer.parseInt(sqcodearr[4]);
-                return (usetime-sqDay);
+//                System.out.println(sqDay+":sqDay usetime:"+usetime );
+                return (sqDay-usetime);
             }
 
         }catch (Exception e){
@@ -153,22 +170,40 @@ public class AnalysisSQ {
         return -1;
     }
 
+    /**
+     * 根据隐藏的ini授权记录文件获取
+     * @return
+     */
+    public static String getClientKey(){
 
-
-
-
-
+        try {
+            File file=new File(inipath);
+            if(!file.exists()){
+                boolean bool=createClientini();
+                if(!bool){
+                    System.out.println("createClientini 初始化失败--");
+                    return null;
+                }
+            }
+            String code=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
+            String key=code.substring(0,10)+ DateUtil.getSeconds();
+            return encode_uid(key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
 
 
     public static void main(String[] args) {
 
-        String uuid="123evghtbsr53fty";
-        String en=encode_uid(uuid);
-        System.out.println(en);
-        String de=decode_uid(en);
-        System.out.println(de);
+//        System.out.println(CommonCache.getClientKey());
+
+//        updateClientini();
+
+        System.out.println(checkUseTime());
 
     }
 

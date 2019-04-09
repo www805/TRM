@@ -65,8 +65,8 @@ public class ReadWriteFile {
 				e.printStackTrace();
 			}
         }
-
-        return readStr;
+		String rr=readStr.toString();
+		return rr.endsWith("\r\n")?rr.substring(0,rr.lastIndexOf("\r\n")):rr;
     }
     
     /**
@@ -139,7 +139,8 @@ public class ReadWriteFile {
                 		str.append(read+ "\r\n");
 					}
                 }
-                return str.toString();
+                String rr=str.toString();
+                return rr.endsWith("\r\n")?rr.substring(0,rr.lastIndexOf("\r\n")):rr;
             } catch (IOException e) {
                 e.printStackTrace();
             }finally{

@@ -1067,7 +1067,7 @@ public static String numtoStr(int digit,Integer num){
 	}
 
 	/**
-	 *获取项目的上级路径
+	 *获取项目所在文件夹的路径
 	 * @return
 	 */
 	public static String getXMSoursePath(){
