@@ -14,29 +14,20 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Casetoarraignment extends Model<Casetoarraignment> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 案件提讯表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * 用户id
-     */
-    private Integer adminid;
+    private Integer caseid;
 
-    /**
-     * 角色id
-     */
-    private Integer roleid;
+    private Integer arraignmentid;
 
-    /**
-     * 创建时间
-     */
     private Date createtime;
 
     private String ssid;
@@ -56,19 +47,19 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getCaseid() {
+        return caseid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setCaseid(Integer caseid) {
+        this.caseid = caseid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getArraignmentid() {
+        return arraignmentid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setArraignmentid(Integer arraignmentid) {
+        this.arraignmentid = arraignmentid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +111,10 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Casetoarraignment{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", caseid=" + caseid +
+        ", arraignmentid=" + arraignmentid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

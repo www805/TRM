@@ -14,25 +14,25 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Problemtotype extends Model<Problemtotype> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 题目类型对应表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 题目id
      */
-    private Integer adminid;
+    private Integer problemid;
 
     /**
-     * 角色id
+     * 题目类型id
      */
-    private Integer roleid;
+    private Integer problemtypeid;
 
     /**
      * 创建时间
@@ -56,19 +56,19 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getProblemid() {
+        return problemid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setProblemid(Integer problemid) {
+        this.problemid = problemid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getProblemtypeid() {
+        return problemtypeid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setProblemtypeid(Integer problemtypeid) {
+        this.problemtypeid = problemtypeid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +120,10 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Problemtotype{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", problemid=" + problemid +
+        ", problemtypeid=" + problemtypeid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

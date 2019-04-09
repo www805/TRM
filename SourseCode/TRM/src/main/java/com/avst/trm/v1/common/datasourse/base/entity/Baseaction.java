@@ -14,25 +14,45 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Baseaction extends Model<Baseaction> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 动作表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 动作编号
      */
-    private Integer adminid;
+    private String actionid;
 
     /**
-     * 角色id
+     * 页面id
      */
-    private Integer roleid;
+    private String pageid;
+
+    /**
+     * 动作名称
+     */
+    private String actionname;
+
+    /**
+     * 动作地址
+     */
+    private String actionurl;
+
+    /**
+     * 是否有页面跳转:1有-1没有
+     */
+    private Integer topagebool;
+
+    /**
+     * 下一个页面
+     */
+    private String nextpageid;
 
     /**
      * 创建时间
@@ -56,19 +76,47 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getActionid() {
+        return actionid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setActionid(String actionid) {
+        this.actionid = actionid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getPageid() {
+        return pageid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setPageid(String pageid) {
+        this.pageid = pageid;
+    }
+    public String getActionname() {
+        return actionname;
+    }
+
+    public void setActionname(String actionname) {
+        this.actionname = actionname;
+    }
+    public String getActionurl() {
+        return actionurl;
+    }
+
+    public void setActionurl(String actionurl) {
+        this.actionurl = actionurl;
+    }
+    public Integer getTopagebool() {
+        return topagebool;
+    }
+
+    public void setTopagebool(Integer topagebool) {
+        this.topagebool = topagebool;
+    }
+    public String getNextpageid() {
+        return nextpageid;
+    }
+
+    public void setNextpageid(String nextpageid) {
+        this.nextpageid = nextpageid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +168,14 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Baseaction{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", actionid=" + actionid +
+        ", pageid=" + pageid +
+        ", actionname=" + actionname +
+        ", actionurl=" + actionurl +
+        ", topagebool=" + topagebool +
+        ", nextpageid=" + nextpageid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

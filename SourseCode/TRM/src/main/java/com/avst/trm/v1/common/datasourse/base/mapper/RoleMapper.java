@@ -4,12 +4,12 @@ import com.avst.trm.v1.common.datasourse.base.entity.Role;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
- * <说明.txt>
- * InnoDB free: 39936 kB Mapper 接口
- * </说明.txt>
+ * <p>
+ * InnoDB free: 90112 kB Mapper 接口
+ * </p>
  *
- * @author Mht
- * @since 2019-04-03
+ * @author Admin
+ * @since 2019-04-09
  */
 public interface RoleMapper extends BaseMapper<Role> {
 

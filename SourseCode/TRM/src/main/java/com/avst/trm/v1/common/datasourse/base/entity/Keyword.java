@@ -14,25 +14,35 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Keyword extends Model<Keyword> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 关键字表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 字体颜色
      */
-    private Integer adminid;
+    private String color;
 
     /**
-     * 角色id
+     * 背景颜色
      */
-    private Integer roleid;
+    private String backgroundcolor;
+
+    /**
+     * 替换字符：例如:*** 
+     */
+    private String replacetext;
+
+    /**
+     * 是否屏蔽：1屏蔽/-1不屏蔽；默认-1
+     */
+    private Integer shieldbool;
 
     /**
      * 创建时间
@@ -56,19 +66,33 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getColor() {
+        return color;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setColor(String color) {
+        this.color = color;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getBackgroundcolor() {
+        return backgroundcolor;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setBackgroundcolor(String backgroundcolor) {
+        this.backgroundcolor = backgroundcolor;
+    }
+    public String getReplacetext() {
+        return replacetext;
+    }
+
+    public void setReplacetext(String replacetext) {
+        this.replacetext = replacetext;
+    }
+    public Integer getShieldbool() {
+        return shieldbool;
+    }
+
+    public void setShieldbool(Integer shieldbool) {
+        this.shieldbool = shieldbool;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +144,12 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Keyword{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", color=" + color +
+        ", backgroundcolor=" + backgroundcolor +
+        ", replacetext=" + replacetext +
+        ", shieldbool=" + shieldbool +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

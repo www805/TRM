@@ -14,30 +14,45 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Answer extends Model<Answer> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 答案表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 笔录id
      */
-    private Integer adminid;
+    private Integer recordid;
 
     /**
-     * 角色id
+     * 题目id
      */
-    private Integer roleid;
+    private Integer problemid;
+
+    /**
+     * 答案
+     */
+    private String answer;
+
+    /**
+     * 排序
+     */
+    private Integer ordernum;
 
     /**
      * 创建时间
      */
     private Date createtime;
+
+    /**
+     * 更新时间
+     */
+    private Date updatetime;
 
     private String ssid;
 
@@ -56,19 +71,33 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getRecordid() {
+        return recordid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setRecordid(Integer recordid) {
+        this.recordid = recordid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getProblemid() {
+        return problemid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setProblemid(Integer problemid) {
+        this.problemid = problemid;
+    }
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -76,6 +105,13 @@ public class Admintorole extends Model<Admintorole> {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
     public String getSsid() {
         return ssid;
@@ -120,11 +156,14 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Answer{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", recordid=" + recordid +
+        ", problemid=" + problemid +
+        ", answer=" + answer +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
+        ", updatetime=" + updatetime +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

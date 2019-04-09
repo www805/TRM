@@ -14,25 +14,30 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Templatetotype extends Model<Templatetotype> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 模板类型对应表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 模板id
      */
-    private Integer adminid;
+    private Integer templateid;
 
     /**
-     * 角色id
+     * 是否为默认模板：1默认/-1非默认
      */
-    private Integer roleid;
+    private Integer templatebool;
+
+    /**
+     * 模板类型id
+     */
+    private Integer templatetypeid;
 
     /**
      * 创建时间
@@ -56,19 +61,26 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getTemplateid() {
+        return templateid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setTemplateid(Integer templateid) {
+        this.templateid = templateid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getTemplatebool() {
+        return templatebool;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setTemplatebool(Integer templatebool) {
+        this.templatebool = templatebool;
+    }
+    public Integer getTemplatetypeid() {
+        return templatetypeid;
+    }
+
+    public void setTemplatetypeid(Integer templatetypeid) {
+        this.templatetypeid = templatetypeid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +132,11 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Templatetotype{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", templateid=" + templateid +
+        ", templatebool=" + templatebool +
+        ", templatetypeid=" + templatetypeid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

@@ -14,25 +14,25 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Basepage extends Model<Basepage> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 页面表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 页面编号
      */
-    private Integer adminid;
+    private String pageid;
 
     /**
-     * 角色id
+     * 页面名称
      */
-    private Integer roleid;
+    private String pagename;
 
     /**
      * 创建时间
@@ -56,19 +56,19 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getPageid() {
+        return pageid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setPageid(String pageid) {
+        this.pageid = pageid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getPagename() {
+        return pagename;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setPagename(String pagename) {
+        this.pagename = pagename;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +120,10 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Basepage{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", pageid=" + pageid +
+        ", pagename=" + pagename +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.avst.trm.v1.common.datasourse.base.mapper.RoleMapper">
+<mapper namespace="com.avst.trm.v1.common.datasourse.base.mapper.WorkunitMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Role">
+    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Workunit">
         <id column="id" property="id" />
-        <result column="rolename" property="rolename" />
-        <result column="rolebool" property="rolebool" />
-        <result column="ordernum" property="ordernum" />
-        <result column="description" property="description" />
+        <result column="pid" property="pid" />
+        <result column="workname" property="workname" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />

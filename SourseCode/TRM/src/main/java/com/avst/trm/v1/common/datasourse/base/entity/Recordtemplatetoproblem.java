@@ -14,25 +14,30 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Recordtemplatetoproblem extends Model<Recordtemplatetoproblem> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 模板题目对应表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 笔录模板id
      */
-    private Integer adminid;
+    private Integer recordtemplateid;
 
     /**
-     * 角色id
+     * 题目id
      */
-    private Integer roleid;
+    private Integer problemid;
+
+    /**
+     * 排序
+     */
+    private Integer ordernum;
 
     /**
      * 创建时间
@@ -56,19 +61,26 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getRecordtemplateid() {
+        return recordtemplateid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setRecordtemplateid(Integer recordtemplateid) {
+        this.recordtemplateid = recordtemplateid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getProblemid() {
+        return problemid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setProblemid(Integer problemid) {
+        this.problemid = problemid;
+    }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +132,11 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Recordtemplatetoproblem{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", recordtemplateid=" + recordtemplateid +
+        ", problemid=" + problemid +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

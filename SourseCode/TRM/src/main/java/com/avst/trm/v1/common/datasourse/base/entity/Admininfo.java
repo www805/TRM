@@ -4,64 +4,65 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 
 /**
- * <说明.txt>
- * InnoDB free: 39936 kB
- * </说明.txt>
+ * <p>
+ * InnoDB free: 90112 kB
+ * </p>
  *
- * @author Mht
- * @since 2019-04-03
+ * @author Admin
+ * @since 2019-04-09
  */
 public class Admininfo extends Model<Admininfo> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 管理员编号
+     * 系统用户表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 管理员名
+     * 登陆账号
+     */
+    private String loginaccount;
+
+    /**
+     * 用户名称
      */
     private String username;
 
     /**
-     * 管理员登录名
-     */
-    private String loginname;
-
-    /**
-     * 管理员密码
+     * 用户密码
      */
     private String password;
 
     /**
-     * 状态/1为正常/-1为失效
+     * 用户状态：1正常; 2禁用;默认1
      */
-    private Integer state;
+    private Integer adminbool;
 
     /**
-     * 创建人id
+     * 工作单位id
      */
-    private Integer createid;
+    private Integer workunitid;
 
     /**
-     * 创建时间
+     * 注册时间
      */
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date addtime;
+    private Date registertime;
 
     /**
-     * 最后登录时间
+     * 更新时间
      */
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date lastupdatetime;
+    private Date updatetime;
+
+    /**
+     * 最后一次登陆时间
+     */
+    private Date lastlogintime;
 
     private String ssid;
 
@@ -80,19 +81,19 @@ public class Admininfo extends Model<Admininfo> {
     public void setId(Integer id) {
         this.id = id;
     }
+    public String getLoginaccount() {
+        return loginaccount;
+    }
+
+    public void setLoginaccount(String loginaccount) {
+        this.loginaccount = loginaccount;
+    }
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-    public String getLoginname() {
-        return loginname;
-    }
-
-    public void setLoginname(String loginname) {
-        this.loginname = loginname;
     }
     public String getPassword() {
         return password;
@@ -101,33 +102,40 @@ public class Admininfo extends Model<Admininfo> {
     public void setPassword(String password) {
         this.password = password;
     }
-    public Integer getState() {
-        return state;
+    public Integer getAdminbool() {
+        return adminbool;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setAdminbool(Integer adminbool) {
+        this.adminbool = adminbool;
     }
-    public Integer getCreateid() {
-        return createid;
-    }
-
-    public void setCreateid(Integer createid) {
-        this.createid = createid;
-    }
-    public Date getAddtime() {
-        return addtime;
+    public Integer getWorkunitid() {
+        return workunitid;
     }
 
-    public void setAddtime(Date addtime) {
-        this.addtime = addtime;
+    public void setWorkunitid(Integer workunitid) {
+        this.workunitid = workunitid;
     }
-    public Date getLastupdatetime() {
-        return lastupdatetime;
+    public Date getRegistertime() {
+        return registertime;
     }
 
-    public void setLastupdatetime(Date lastupdatetime) {
-        this.lastupdatetime = lastupdatetime;
+    public void setRegistertime(Date registertime) {
+        this.registertime = registertime;
+    }
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+    public Date getLastlogintime() {
+        return lastlogintime;
+    }
+
+    public void setLastlogintime(Date lastlogintime) {
+        this.lastlogintime = lastlogintime;
     }
     public String getSsid() {
         return ssid;
@@ -174,13 +182,14 @@ public class Admininfo extends Model<Admininfo> {
     public String toString() {
         return "Admininfo{" +
         "id=" + id +
+        ", loginaccount=" + loginaccount +
         ", username=" + username +
-        ", loginname=" + loginname +
         ", password=" + password +
-        ", state=" + state +
-        ", createid=" + createid +
-        ", addtime=" + addtime +
-        ", lastupdatetime=" + lastupdatetime +
+        ", adminbool=" + adminbool +
+        ", workunitid=" + workunitid +
+        ", registertime=" + registertime +
+        ", updatetime=" + updatetime +
+        ", lastlogintime=" + lastlogintime +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

@@ -14,25 +14,25 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Workunit extends Model<Workunit> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 工作单位表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 父单位id
      */
-    private Integer adminid;
+    private Integer pid;
 
     /**
-     * 角色id
+     * 工作单位名称
      */
-    private Integer roleid;
+    private String workname;
 
     /**
      * 创建时间
@@ -56,19 +56,19 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getPid() {
+        return pid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getWorkname() {
+        return workname;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setWorkname(String workname) {
+        this.workname = workname;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +120,10 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Workunit{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", pid=" + pid +
+        ", workname=" + workname +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

@@ -14,25 +14,55 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Case extends Model<Case> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 案件表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 案件名称
      */
-    private Integer adminid;
+    private String casename;
 
     /**
-     * 角色id
+     * 当前案由
      */
-    private Integer roleid;
+    private String cause;
+
+    /**
+     * 案件编号
+     */
+    private String casenum;
+
+    /**
+     * 案件发生时间
+     */
+    private Date occurrencetime;
+
+    /**
+     * 案发开始时间
+     */
+    private Date starttime;
+
+    /**
+     * 案发结束时间
+     */
+    private Date endtime;
+
+    /**
+     * 到案方式
+     */
+    private String caseway;
+
+    /**
+     * 排序
+     */
+    private Integer ordernum;
 
     /**
      * 创建时间
@@ -56,19 +86,61 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getCasename() {
+        return casename;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setCasename(String casename) {
+        this.casename = casename;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getCause() {
+        return cause;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setCause(String cause) {
+        this.cause = cause;
+    }
+    public String getCasenum() {
+        return casenum;
+    }
+
+    public void setCasenum(String casenum) {
+        this.casenum = casenum;
+    }
+    public Date getOccurrencetime() {
+        return occurrencetime;
+    }
+
+    public void setOccurrencetime(Date occurrencetime) {
+        this.occurrencetime = occurrencetime;
+    }
+    public Date getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(Date starttime) {
+        this.starttime = starttime;
+    }
+    public Date getEndtime() {
+        return endtime;
+    }
+
+    public void setEndtime(Date endtime) {
+        this.endtime = endtime;
+    }
+    public String getCaseway() {
+        return caseway;
+    }
+
+    public void setCaseway(String caseway) {
+        this.caseway = caseway;
+    }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +192,16 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Case{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", casename=" + casename +
+        ", cause=" + cause +
+        ", casenum=" + casenum +
+        ", occurrencetime=" + occurrencetime +
+        ", starttime=" + starttime +
+        ", endtime=" + endtime +
+        ", caseway=" + caseway +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

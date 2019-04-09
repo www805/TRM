@@ -14,25 +14,50 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Permissions extends Model<Permissions> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 权限表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 权限父id：一级为0；默认0
      */
-    private Integer adminid;
+    private Integer pid;
 
     /**
-     * 角色id
+     * 权限名称
      */
-    private Integer roleid;
+    private String name;
+
+    /**
+     * 权限标识
+     */
+    private String perms;
+
+    /**
+     * 地址
+     */
+    private String url;
+
+    /**
+     * 图标
+     */
+    private String icon;
+
+    /**
+     * 类型：1菜单 2按钮
+     */
+    private Integer type;
+
+    /**
+     * 权限描述
+     */
+    private String description;
 
     /**
      * 创建时间
@@ -56,19 +81,54 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getPid() {
+        return pid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getName() {
+        return name;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getPerms() {
+        return perms;
+    }
+
+    public void setPerms(String perms) {
+        this.perms = perms;
+    }
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +180,15 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Permissions{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", pid=" + pid +
+        ", name=" + name +
+        ", perms=" + perms +
+        ", url=" + url +
+        ", icon=" + icon +
+        ", type=" + type +
+        ", description=" + description +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

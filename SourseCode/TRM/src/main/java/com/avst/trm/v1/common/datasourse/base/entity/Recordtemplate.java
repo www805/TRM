@@ -14,30 +14,35 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Recordtemplate extends Model<Recordtemplate> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 笔录模板表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 笔录模板标题
      */
-    private Integer adminid;
+    private String title;
 
     /**
-     * 角色id
+     * 排序
      */
-    private Integer roleid;
+    private Integer ordernum;
 
     /**
      * 创建时间
      */
     private Date createtime;
+
+    /**
+     * 更新时间
+     */
+    private Date updatetime;
 
     private String ssid;
 
@@ -56,19 +61,19 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getTitle() {
+        return title;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setTitle(String title) {
+        this.title = title;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getOrdernum() {
+        return ordernum;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -76,6 +81,13 @@ public class Admintorole extends Model<Admintorole> {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
+    }
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
     }
     public String getSsid() {
         return ssid;
@@ -120,11 +132,12 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Recordtemplate{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", title=" + title +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
+        ", updatetime=" + updatetime +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

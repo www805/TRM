@@ -14,35 +14,61 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Role extends Model<Role> {
+public class Recordreal extends Model<Recordreal> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色表
+     * 笔录实时表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 角色名称
+     * 笔录id
      */
-    private String rolename;
+    private Integer recordid;
 
     /**
-     * 是否启用：1启用；-1不启用；默认1
+     * 翻译文字
      */
-    private Integer rolebool;
+    private String translatext;
 
     /**
-     * 排序：默认1
+     * 录音下载地址
+     */
+    private String downurl;
+
+    /**
+     * 录音真实地址
+     */
+    private String realurl;
+
+    /**
+     * 录音时长ms
+     */
+    private Long time;
+
+    /**
+     * 录音人id
+     */
+    private Integer userid;
+
+    /**
+     * 录音人类型：1询问人（系统用户admin）
+2被询问人user
+     */
+    private Integer recordtype;
+
+    /**
+     * 录音开始时间 ms
+     */
+    private Long starttime;
+
+    /**
+     * 排序
      */
     private Integer ordernum;
-
-    /**
-     * 角色说明
-     */
-    private String description;
 
     /**
      * 创建时间
@@ -66,19 +92,61 @@ public class Role extends Model<Role> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getRolename() {
-        return rolename;
+    public Integer getRecordid() {
+        return recordid;
     }
 
-    public void setRolename(String rolename) {
-        this.rolename = rolename;
+    public void setRecordid(Integer recordid) {
+        this.recordid = recordid;
     }
-    public Integer getRolebool() {
-        return rolebool;
+    public String getTranslatext() {
+        return translatext;
     }
 
-    public void setRolebool(Integer rolebool) {
-        this.rolebool = rolebool;
+    public void setTranslatext(String translatext) {
+        this.translatext = translatext;
+    }
+    public String getDownurl() {
+        return downurl;
+    }
+
+    public void setDownurl(String downurl) {
+        this.downurl = downurl;
+    }
+    public String getRealurl() {
+        return realurl;
+    }
+
+    public void setRealurl(String realurl) {
+        this.realurl = realurl;
+    }
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
+    }
+    public Integer getUserid() {
+        return userid;
+    }
+
+    public void setUserid(Integer userid) {
+        this.userid = userid;
+    }
+    public Integer getRecordtype() {
+        return recordtype;
+    }
+
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
+    }
+    public Long getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(Long starttime) {
+        this.starttime = starttime;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -86,13 +154,6 @@ public class Role extends Model<Role> {
 
     public void setOrdernum(Integer ordernum) {
         this.ordernum = ordernum;
-    }
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
     public Date getCreatetime() {
         return createtime;
@@ -144,12 +205,17 @@ public class Role extends Model<Role> {
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "Recordreal{" +
         "id=" + id +
-        ", rolename=" + rolename +
-        ", rolebool=" + rolebool +
+        ", recordid=" + recordid +
+        ", translatext=" + translatext +
+        ", downurl=" + downurl +
+        ", realurl=" + realurl +
+        ", time=" + time +
+        ", userid=" + userid +
+        ", recordtype=" + recordtype +
+        ", starttime=" + starttime +
         ", ordernum=" + ordernum +
-        ", description=" + description +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

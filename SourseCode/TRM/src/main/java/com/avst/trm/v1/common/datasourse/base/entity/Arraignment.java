@@ -14,25 +14,40 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Arraignment extends Model<Arraignment> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 提讯表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 询问人id
      */
     private Integer adminid;
 
     /**
-     * 角色id
+     * 记录人id
      */
-    private Integer roleid;
+    private Integer recordadminid;
+
+    /**
+     * 问话地点
+     */
+    private String recordplace;
+
+    /**
+     * 询问对象:例如：犯罪嫌疑人，被害人
+     */
+    private String askobj;
+
+    /**
+     * 询问次数:默认1
+     */
+    private Integer asknum;
 
     /**
      * 创建时间
@@ -63,12 +78,33 @@ public class Admintorole extends Model<Admintorole> {
     public void setAdminid(Integer adminid) {
         this.adminid = adminid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getRecordadminid() {
+        return recordadminid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setRecordadminid(Integer recordadminid) {
+        this.recordadminid = recordadminid;
+    }
+    public String getRecordplace() {
+        return recordplace;
+    }
+
+    public void setRecordplace(String recordplace) {
+        this.recordplace = recordplace;
+    }
+    public String getAskobj() {
+        return askobj;
+    }
+
+    public void setAskobj(String askobj) {
+        this.askobj = askobj;
+    }
+    public Integer getAsknum() {
+        return asknum;
+    }
+
+    public void setAsknum(Integer asknum) {
+        this.asknum = asknum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +156,13 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Arraignment{" +
         "id=" + id +
         ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", recordadminid=" + recordadminid +
+        ", recordplace=" + recordplace +
+        ", askobj=" + askobj +
+        ", asknum=" + asknum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

@@ -14,20 +14,20 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Roletopermissions extends Model<Roletopermissions> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 角色权限表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 权限id
      */
-    private Integer adminid;
+    private Integer permissionsid;
 
     /**
      * 角色id
@@ -56,12 +56,12 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getPermissionsid() {
+        return permissionsid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setPermissionsid(Integer permissionsid) {
+        this.permissionsid = permissionsid;
     }
     public Integer getRoleid() {
         return roleid;
@@ -120,9 +120,9 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Roletopermissions{" +
         "id=" + id +
-        ", adminid=" + adminid +
+        ", permissionsid=" + permissionsid +
         ", roleid=" + roleid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +

@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.mapper;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Admintorole;
+import com.avst.trm.v1.common.datasourse.base.entity.Recordtemplate;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author Admin
  * @since 2019-04-09
  */
-public interface AdmintoroleMapper extends BaseMapper<Admintorole> {
+public interface RecordtemplateMapper extends BaseMapper<Recordtemplate> {
 
 }

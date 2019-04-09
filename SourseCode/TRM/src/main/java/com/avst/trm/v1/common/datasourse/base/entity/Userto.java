@@ -14,25 +14,32 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-09
  */
-public class Admintorole extends Model<Admintorole> {
+public class Userto extends Model<Userto> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 用户角色表
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 被询问人id
      */
-    private Integer adminid;
+    private Integer userid;
 
     /**
-     * 角色id
+     * 其他关系人id
      */
-    private Integer roleid;
+    private Integer otheruserid;
+
+    /**
+     * 所属关系 例：父子，母女
+     */
+    private String relation;
+
+    /**
+     * 人员类型:1监护人；2翻译人员；3手语人员
+     */
+    private Integer usertype;
 
     /**
      * 创建时间
@@ -56,19 +63,33 @@ public class Admintorole extends Model<Admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public Integer getUserid() {
+        return userid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setUserid(Integer userid) {
+        this.userid = userid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public Integer getOtheruserid() {
+        return otheruserid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setOtheruserid(Integer otheruserid) {
+        this.otheruserid = otheruserid;
+    }
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+    public Integer getUsertype() {
+        return usertype;
+    }
+
+    public void setUsertype(Integer usertype) {
+        this.usertype = usertype;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +141,12 @@ public class Admintorole extends Model<Admintorole> {
 
     @Override
     public String toString() {
-        return "Admintorole{" +
+        return "Userto{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", roleid=" + roleid +
+        ", userid=" + userid +
+        ", otheruserid=" + otheruserid +
+        ", relation=" + relation +
+        ", usertype=" + usertype +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +
