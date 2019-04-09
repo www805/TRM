@@ -55,8 +55,8 @@ public class AnalysisSQ {
         return new String(baos.toByteArray());
     }
 
-//    @Value("${Javakeyname}")
-    private static String inifilename="javatrm.ini";//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+    @Value("${pro.Javakeyname}")
+    private static String inifilename;//我们发出去的授权文件和运行的工程文件放在同一个目录下的
 
     /**
      *  初始化授权文件的路径
