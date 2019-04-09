@@ -1066,13 +1066,83 @@ public static String numtoStr(int digit,Integer num){
 		return str;
 	}
 
+	/**
+	 *获取项目的上级路径
+	 * @return
+	 */
+	public static String getXMSoursePath(){
+
+		//当前项目下路径
+		File file = new File("");
+		String filePath = null;
+		try {
+			filePath = file.getCanonicalPath();
+
+			filePath=filePath.substring(0,filePath.lastIndexOf("\\"));//win的截取方式
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(filePath);
+
+		return filePath;
+	}
+
+	/**
+	 *获取jdk/jre的路径
+	 * @return
+	 */
+	public static String getJDKorJREPath(){
+
+		String str=System.getProperty("java.home");
+		if(null!=str&&(str.indexOf("jdk")>-1 || str.indexOf("jre")>-1 )){
+			System.out.println("----getJDKorJREPath str:"+str);
+			return str.endsWith("\\") ? (str+"bin\\"):(str+"\\bin\\");
+		}
+		return null;
+	}
+
+
+	/**
+	 * 隐藏文件
+	 * @param filepath
+	 * @return
+	 */
+	public static boolean setFileHide(String filepath){
+
+		if(StringUtils.isEmpty(filepath)){
+			System.out.println("setFileHide filepath is null");
+			return false;
+		}
+
+		File file = new File(filepath);
+		if(!file.exists()){
+			System.out.println("setFileHide file is null 文件不存在");
+			return false;
+		}
+
+		try {
+			Runtime runtime=Runtime.getRuntime();
+			runtime.exec("attrib " + "\"" + file.getAbsolutePath() + "\""+ " +H");
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+
+
 	
 	
 	public static void main(String[] args) {
-		
-		System.out.println(strMinusBasePath("srecord","/www/upload/shurufa/srecord/2018/12/27/1545895656775.wav"));
-		
-		
+
+		String str="D:\\lswj\\NameSpace.java";
+
+		System.out.println(setFileHide(str));
+
+		System.out.println(getJDKorJREPath());
 		
 	}
 }

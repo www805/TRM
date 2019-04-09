@@ -1,4 +1,10 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface;
 
-public class ForClientBaseService {
+import com.avst.trm.v1.common.util.baseaction.BaseService;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ForClientBaseService extends BaseService {
+
+    
 }
