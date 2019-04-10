@@ -22,7 +22,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
      * 服务器配置表
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+    private Integer id=1;
 
     /**
      * 系统名称

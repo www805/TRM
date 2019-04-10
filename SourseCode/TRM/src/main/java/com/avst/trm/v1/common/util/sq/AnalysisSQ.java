@@ -1,15 +1,19 @@
 package com.avst.trm.v1.common.util.sq;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
+import com.avst.trm.v1.common.util.SpringUtil;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.wb.deencode.DeCodeUtil;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Date;
 
 /**
  * 客户端服务器有的类
@@ -55,8 +59,8 @@ public class AnalysisSQ {
         return new String(baos.toByteArray());
     }
 
-    @Value("${pro.Javakeyname}")
-    private static String inifilename;//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+
+    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
 
     /**
      *  初始化授权文件的路径
@@ -70,9 +74,10 @@ public class AnalysisSQ {
 
     /**
      * 生成客户端授权的隐秘文件
+     * 修改数据库
      * @return
      */
-    public static boolean createClientini(){
+    public static boolean createClientini(Base_serverconfigMapper base_serverconfigMapper, Base_serverconfig serverconfig){
 
         try {
             if(StringUtils.isEmpty(inifilename)){
@@ -87,6 +92,29 @@ public class AnalysisSQ {
             ReadWriteFile.writeTxtFile(encode,inipath,"utf8");
 
 //            OpenUtil.setFileHide(inipath);
+            String code=rr.split(";")[0];
+            String[] sqcodearr= DeCodeUtil.decoderByDES(code).split(";");
+            String servertype=sqcodearr[0];
+            String clientName=sqcodearr[5];
+
+            if(StringUtils.isEmpty(servertype)){
+                servertype="0";
+            }
+            try {
+                serverconfig.setTypeid(CommonCache.getCurrentServerTypeid(servertype));
+                if(StringUtils.isNotEmpty(clientName)){
+                    serverconfig.setClientname(clientName);
+                }
+                serverconfig.setAuthorizebool(1);
+                serverconfig.setWorkstarttime(new Date());
+                serverconfig.setWorkdays(1);
+                int updatebool=base_serverconfigMapper.updateById(serverconfig);
+                System.out.println(updatebool+":updatebool");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
 
             return true;
         }catch (Exception e){
@@ -137,7 +165,7 @@ public class AnalysisSQ {
         File file=new File(inipath);
         if(!file.exists()){
             System.out.println("未找到使用的授权文件---");
-            return -1;
+            return -100001;
         }
         try {
 
@@ -165,9 +193,9 @@ public class AnalysisSQ {
 
         }catch (Exception e){
             e.printStackTrace();
+            return -100002;
         }
 
-        return -1;
     }
 
     /**
@@ -179,7 +207,8 @@ public class AnalysisSQ {
         try {
             File file=new File(inipath);
             if(!file.exists()){
-                boolean bool=createClientini();
+                Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
+                boolean bool=createClientini(base_serverconfigMapper, new Base_serverconfig() );
                 if(!bool){
                     System.out.println("createClientini 初始化失败--");
                     return null;

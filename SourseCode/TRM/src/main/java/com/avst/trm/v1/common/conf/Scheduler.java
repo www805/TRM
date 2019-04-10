@@ -16,7 +16,7 @@ public class Scheduler {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     //每隔2秒执行一次
-    @Scheduled(fixedRate = 2000)
+    @Scheduled(fixedRate = 200000)
     public void testTasks() {
         System.out.println("定时任务执行时间：" + dateFormat.format(new Date()));
     }

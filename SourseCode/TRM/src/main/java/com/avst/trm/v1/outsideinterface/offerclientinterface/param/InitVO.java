@@ -12,6 +12,8 @@ public class InitVO {
 
     private String code;//授权说明，0：代表正常 其他数值代表错误
 
+    private String msg;//返回的文件说明
+
     private String serviceType;//服务器谁那种类型（公安、纪委、检察院、法院、会议）
 
     private String baseUrl;//客户端请求服务器的前缀地址
@@ -61,5 +63,13 @@ public class InitVO {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }
