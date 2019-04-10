@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-10
  */
 public class Base_serverconfig extends Model<Base_serverconfig> {
 
@@ -53,6 +53,16 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
      * 服务器端口
      */
     private String serverport;
+
+    /**
+     * 是否授权1授权-1未授权
+     */
+    private Integer authorizebool;
+
+    /**
+     * 类型id
+     */
+    private Integer typeid;
 
     /**
      * 工作开始时间
@@ -123,6 +133,20 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setServerport(String serverport) {
         this.serverport = serverport;
     }
+    public Integer getAuthorizebool() {
+        return authorizebool;
+    }
+
+    public void setAuthorizebool(Integer authorizebool) {
+        this.authorizebool = authorizebool;
+    }
+    public Integer getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(Integer typeid) {
+        this.typeid = typeid;
+    }
     public Date getWorkstarttime() {
         return workstarttime;
     }
@@ -188,6 +212,8 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", clienturl=" + clienturl +
         ", serverip=" + serverip +
         ", serverport=" + serverport +
+        ", authorizebool=" + authorizebool +
+        ", typeid=" + typeid +
         ", workstarttime=" + workstarttime +
         ", workdays=" + workdays +
         ", ssid=" + ssid +

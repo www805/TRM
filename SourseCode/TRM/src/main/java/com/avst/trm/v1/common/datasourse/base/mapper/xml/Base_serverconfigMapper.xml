@@ -11,6 +11,8 @@
         <result column="clienturl" property="clienturl" />
         <result column="serverip" property="serverip" />
         <result column="serverport" property="serverport" />
+        <result column="authorizebool" property="authorizebool" />
+        <result column="typeid" property="typeid" />
         <result column="workstarttime" property="workstarttime" />
         <result column="workdays" property="workdays" />
         <result column="ssid" property="ssid" />
