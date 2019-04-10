@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-10
  */
 public class Base_type extends Model<Base_type> {
 
@@ -28,6 +28,11 @@ public class Base_type extends Model<Base_type> {
      * 类型名称：法院、检察院、公安、会议、web
      */
     private String type;
+
+    /**
+     * 类型名称
+     */
+    private String typename;
 
     /**
      * 排序
@@ -62,6 +67,13 @@ public class Base_type extends Model<Base_type> {
 
     public void setType(String type) {
         this.type = type;
+    }
+    public String getTypename() {
+        return typename;
+    }
+
+    public void setTypename(String typename) {
+        this.typename = typename;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -123,6 +135,7 @@ public class Base_type extends Model<Base_type> {
         return "Base_type{" +
         "id=" + id +
         ", type=" + type +
+        ", typename=" + typename +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +

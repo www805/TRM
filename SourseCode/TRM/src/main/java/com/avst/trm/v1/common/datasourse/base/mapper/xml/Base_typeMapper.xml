@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Base_type">
         <id column="id" property="id" />
         <result column="type" property="type" />
+        <result column="typename" property="typename" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
