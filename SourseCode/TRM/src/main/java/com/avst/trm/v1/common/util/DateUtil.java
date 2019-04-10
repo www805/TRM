@@ -22,6 +22,9 @@ public class DateUtil {
     
     private static final SimpleDateFormat mFormatIso8601Day = new SimpleDateFormat(
 			"yyyy-MM-dd");
+
+	private static final SimpleDateFormat mFormatIso8601Day2 = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss");
  
     /**
      * 
@@ -133,19 +136,19 @@ public class DateUtil {
                     + calendar.get(Calendar.MINUTE) + "��";
         else if (ago <= ONE_MONTH) {
             long day = ago / ONE_DAY;
-            return day + "��ǰ" + calendar.get(Calendar.HOUR_OF_DAY) + "��"
+            return day + "天" + calendar.get(Calendar.HOUR_OF_DAY) + "��"
                     + calendar.get(Calendar.MINUTE) + "��";
         } else if (ago <= ONE_YEAR) {
             long month = ago / ONE_MONTH;
             long day = ago % ONE_MONTH / ONE_DAY;
-            return month + "����" + day + "��ǰ"
-                    + calendar.get(Calendar.HOUR_OF_DAY) + "��"
-                    + calendar.get(Calendar.MINUTE) + "��";
+            return month + "月" + day + "天"
+                    + calendar.get(Calendar.HOUR_OF_DAY) + "小时"
+                    + calendar.get(Calendar.MINUTE) + "分钟";
         } else {
             long year = ago / ONE_YEAR;
             int month = calendar.get(Calendar.MONTH) + 1;// JANUARY which is 0 so month+1
-            return year + "��ǰ" + month + "��" + calendar.get(Calendar.DATE)
-                    + "��";
+            return year + "年" + month + "月" + calendar.get(Calendar.DATE)
+                    + "日";
         }
  
     }
@@ -186,6 +189,32 @@ public class DateUtil {
     	strMilliSecond = milliSecond < 100 ? "0" + strMilliSecond : "" + strMilliSecond;
     	return strDay + "天 " + strHour + ":" + strMinute + ":" + strSecond ;
     	}
+
+	/**
+	 * 多少天
+	 * @param ms
+	 * @return
+	 */
+	public static int longToTime_day(long ms) {
+		int ss = 1000;
+		int mi = ss * 60;
+		int hh = mi * 60;
+		int dd = hh * 24;
+
+		long day = ms / dd;
+		long hour = (ms - day * dd) / hh;
+		long minute = (ms - day * dd - hour * hh) / mi;
+		long second = (ms - day * dd - hour * hh - minute * mi) / ss;
+		long milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss;
+
+		String strDay = day < 10 ? "0" + day : "" + day;
+		String strHour = hour < 10 ? "0" + hour : "" + hour;
+		String strMinute = minute < 10 ? "0" + minute : "" + minute;
+		String strSecond = second < 10 ? "0" + second : "" + second;
+		String strMilliSecond = milliSecond < 10 ? "0" + milliSecond : "" + milliSecond;
+		strMilliSecond = milliSecond < 100 ? "0" + strMilliSecond : "" + strMilliSecond;
+		return Integer.parseInt(strDay)+1;
+	}
     
     /**
      * 将00天05:35:25转成毫秒long
@@ -503,14 +532,18 @@ public class DateUtil {
     }
     
     
-    public static String format(Date aDate, SimpleDateFormat aFormat) {
-		if (aDate == null || aFormat == null) {
+    public static String format(Date aDate) {
+		if (aDate == null ) {
 			return "";
 		}
-		return aFormat.format(aDate);
+		return mFormatIso8601Day2.format(aDate);
 	}
-    
-    public static long getSeconds() {
+
+	/**
+	 * 当前时间
+	 * @return
+	 */
+	public static long getSeconds() {
     	
     	long millionSeconds = new Date().getTime();
     	
@@ -560,7 +593,7 @@ public class DateUtil {
 		Date date = new Date();
 		date.setTime(aDate);
 
-		return DateUtil.format(date, mFormatIso8601Day);
+		return DateUtil.format(date);
 	}
     
     public static String getYear(Date date) {
@@ -805,8 +838,7 @@ public class DateUtil {
     	}
     public static void main(String[] args) {
 		
-    	long l=getSeconds();
-			System.out.println(l);
+			System.out.println(fromToday(new Date()));
 			
 	}
  

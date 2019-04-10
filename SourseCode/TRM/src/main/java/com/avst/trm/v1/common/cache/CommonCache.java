@@ -22,7 +22,7 @@ public class CommonCache {
      * 授权是否正常
      * 定时器里面要每天要进行检测
      */
-    private static boolean clientSQbool=true;
+    public static boolean clientSQbool=true;
 
      public static String getClientKey(){
          if(!clientSQbool){
@@ -77,17 +77,29 @@ public class CommonCache {
         return 0;
     }
 
+    /**
+     * 服务器系统配置缓存
+     */
+    private static ServerconfigAndType serverconfig=null;
+
+    public static ServerconfigAndType getServerconfig(){
+
+        if(null==serverconfig){
+            initServerConfigAndType();
+        }
+        return serverconfig;
+    }
+
     private static void initServerConfigAndType(){
         Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
 
         EntityWrapper ew=new EntityWrapper();
         ew.eq("id",1);
         ServerconfigAndType serverconfigAndType= base_serverconfigMapper.getServerconfigAndType(ew);
-
+        serverconfig=serverconfigAndType;
         String serverip=serverconfigAndType.getServerip();
         String serverport=serverconfigAndType.getServerport();
         if(StringUtils.isNotEmpty(serverip)&&StringUtils.isNotEmpty(serverport)){
-
             clientbaseurl = "http://"+serverip+":"+serverport+ PropertiesListenerConfig.getProperty("pro.baseurl");
         }
         String type=serverconfigAndType.getType();

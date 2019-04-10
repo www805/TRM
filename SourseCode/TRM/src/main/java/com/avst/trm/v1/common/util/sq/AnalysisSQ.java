@@ -83,6 +83,7 @@ public class AnalysisSQ {
             if(StringUtils.isEmpty(inifilename)){
                 inifilename="javatrm.ini";
             }
+
             String rr=ReadWriteFile.readTxtFileToStr(keypath,"utf8");
             rr+=";0";//再加上一个服务器使用时间
             String encode=encode_uid(rr.trim());
@@ -96,6 +97,7 @@ public class AnalysisSQ {
             String[] sqcodearr= DeCodeUtil.decoderByDES(code).split(";");
             String servertype=sqcodearr[0];
             String clientName=sqcodearr[5];
+            String startTime=sqcodearr[2];//授权开始时间
 
             if(StringUtils.isEmpty(servertype)){
                 servertype="0";
@@ -106,7 +108,7 @@ public class AnalysisSQ {
                     serverconfig.setClientname(clientName);
                 }
                 serverconfig.setAuthorizebool(1);
-                serverconfig.setWorkstarttime(new Date());
+                serverconfig.setWorkstarttime(new Date(startTime));
                 serverconfig.setWorkdays(1);
                 int updatebool=base_serverconfigMapper.updateById(serverconfig);
                 System.out.println(updatebool+":updatebool");
@@ -127,10 +129,10 @@ public class AnalysisSQ {
 
     /**
      * 更新客户端授权的使用时间
-     * 1天天的加
+     * 更新天数
      * @return
      */
-    public static boolean updateClientini(){
+    public static boolean updateClientini(int day){
 
         try {
 
@@ -141,7 +143,7 @@ public class AnalysisSQ {
 
             String[] arr=decode.split(";");
             int useday=Integer.parseInt(arr[1]);
-            useday++;
+            useday=day;
             String newcode=arr[0]+";"+useday;
             System.out.println(newcode+":newcode--");
             ReadWriteFile.writeTxtFile(encode_uid(newcode),inipath);
@@ -197,6 +199,46 @@ public class AnalysisSQ {
         }
 
     }
+
+
+
+    public static SQEntity getSQEntity(){
+
+        File file=new File(inipath);
+        if(!file.exists()){
+            System.out.println("未找到使用的授权文件---");
+            return null;
+        }
+        try {
+
+            String rr=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
+            rr=decode_uid(rr);
+            String sqcode=rr.split(";")[0];
+            int usetime=Integer.parseInt(rr.split(";")[1]);
+            String[] sqcodearr= DeCodeUtil.decoderByDES(sqcode).split(";");
+            String serverType=sqcodearr[0];
+            String foreverBool=sqcodearr[1];
+            String startTime=sqcodearr[2];
+            String cpuCode=sqcodearr[3];
+            String sqDay=sqcodearr[4];
+            String clientName=sqcodearr[5];
+            String unitCode=sqcodearr[6];
+            String sortNum=sqcodearr[7];
+            SQEntity sqEntity=new SQEntity();
+            sqEntity.setClientName(clientName);
+            sqEntity.setCpuCode(cpuCode);
+            sqEntity.setForeverBool(Boolean.valueOf(foreverBool));
+            sqEntity.setServerType(serverType);
+            sqEntity.setSortNum(Integer.parseInt(sortNum));
+            sqEntity.setSqDay(Integer.parseInt(sqDay));
+            sqEntity.setUnitCode(unitCode);
+            return sqEntity;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * 根据隐藏的ini授权记录文件获取
