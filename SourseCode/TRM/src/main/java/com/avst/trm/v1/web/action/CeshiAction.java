@@ -60,4 +60,14 @@ public class CeshiAction extends BaseAction{
 
     }
 
+
+    @GetMapping(value = "/gotologin")
+    public ModelAndView gotologin(Model model) {
+
+        model.addAttribute("title", "layui测试主页");
+
+        return new ModelAndView("login1", "login", model);
+
+    }
+
 }
