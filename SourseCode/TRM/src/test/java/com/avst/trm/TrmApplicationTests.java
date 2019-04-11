@@ -11,6 +11,10 @@ public class TrmApplicationTests {
 
     @Test
     public void contextLoads() {
+
+        System.out.println(12356);
+
+
     }
 
 }
