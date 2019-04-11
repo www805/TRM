@@ -14,12 +14,12 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-11
  */
-public class Base_datasynchroni extends Model<Base_datasynchroni> {
+public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserver> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 服务器数据同步表
+     * 服务器数据同步表(上层服务器使用)
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
@@ -156,7 +156,7 @@ public class Base_datasynchroni extends Model<Base_datasynchroni> {
 
     @Override
     public String toString() {
-        return "Base_datasynchroni{" +
+        return "Base_datasynchroni_upserver{" +
         "id=" + id +
         ", cnname=" + cnname +
         ", datasheetid=" + datasheetid +
