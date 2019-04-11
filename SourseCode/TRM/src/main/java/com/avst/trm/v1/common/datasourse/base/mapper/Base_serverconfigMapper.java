@@ -12,12 +12,9 @@ import org.apache.ibatis.annotations.Select;
  * </p>
  *
  * @author Admin
- * @since 2019-04-10
+ * @since 2019-04-11
  */
 public interface Base_serverconfigMapper extends BaseMapper<Base_serverconfig> {
-
-
     @Select("select s.*,t.type,t.typename from base_serverconfig s inner join base_type t on s.typeid=t.id ")
     public ServerconfigAndType getServerconfigAndType(EntityWrapper ew);
-
 }

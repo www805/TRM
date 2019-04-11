@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -14,55 +13,37 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-11
  */
-public class Base_authorize extends Model<Base_authorize> {
+public class Base_pua extends Model<Base_pua> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 授权表
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 授权服务类型
+     * 省市区代号
      */
-    private String servertype;
+    private String code;
 
     /**
-     * 是否是永久授权
+     * 省市区名称
      */
-    private Boolean foreverbool;
+    private String name;
 
     /**
-     * 授权开始时间
+     * 上一级省市区代号
      */
-    private Date starttime;
-
-    /**
-     * 绑定CPU编码
-     */
-    private String cpucode;
-
-    /**
-     * 授权总天数
-     */
-    private Integer sqday;
+    private String parentcode;
 
     /**
      * 单位名称
      */
-    private String clientname;
+    private String unitname;
 
     /**
-     * 单位代码
+     * 单位代号
      */
     private String unitcode;
-
-    /**
-     * 排序
-     */
-    private Integer sortnum;
 
     private String ssid;
 
@@ -81,47 +62,33 @@ public class Base_authorize extends Model<Base_authorize> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getServertype() {
-        return servertype;
+    public String getCode() {
+        return code;
     }
 
-    public void setServertype(String servertype) {
-        this.servertype = servertype;
+    public void setCode(String code) {
+        this.code = code;
     }
-    public Boolean getForeverbool() {
-        return foreverbool;
-    }
-
-    public void setForeverbool(Boolean foreverbool) {
-        this.foreverbool = foreverbool;
-    }
-    public Date getStarttime() {
-        return starttime;
+    public String getName() {
+        return name;
     }
 
-    public void setStarttime(Date starttime) {
-        this.starttime = starttime;
+    public void setName(String name) {
+        this.name = name;
     }
-    public String getCpucode() {
-        return cpucode;
-    }
-
-    public void setCpucode(String cpucode) {
-        this.cpucode = cpucode;
-    }
-    public Integer getSqday() {
-        return sqday;
+    public String getParentcode() {
+        return parentcode;
     }
 
-    public void setSqday(Integer sqday) {
-        this.sqday = sqday;
+    public void setParentcode(String parentcode) {
+        this.parentcode = parentcode;
     }
-    public String getClientname() {
-        return clientname;
+    public String getUnitname() {
+        return unitname;
     }
 
-    public void setClientname(String clientname) {
-        this.clientname = clientname;
+    public void setUnitname(String unitname) {
+        this.unitname = unitname;
     }
     public String getUnitcode() {
         return unitcode;
@@ -129,13 +96,6 @@ public class Base_authorize extends Model<Base_authorize> {
 
     public void setUnitcode(String unitcode) {
         this.unitcode = unitcode;
-    }
-    public Integer getSortnum() {
-        return sortnum;
-    }
-
-    public void setSortnum(Integer sortnum) {
-        this.sortnum = sortnum;
     }
     public String getSsid() {
         return ssid;
@@ -180,16 +140,13 @@ public class Base_authorize extends Model<Base_authorize> {
 
     @Override
     public String toString() {
-        return "Base_authorize{" +
+        return "Base_pua{" +
         "id=" + id +
-        ", servertype=" + servertype +
-        ", foreverbool=" + foreverbool +
-        ", starttime=" + starttime +
-        ", cpucode=" + cpucode +
-        ", sqday=" + sqday +
-        ", clientname=" + clientname +
+        ", code=" + code +
+        ", name=" + name +
+        ", parentcode=" + parentcode +
+        ", unitname=" + unitname +
         ", unitcode=" + unitcode +
-        ", sortnum=" + sortnum +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

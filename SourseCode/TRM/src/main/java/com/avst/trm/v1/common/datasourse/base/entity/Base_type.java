@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-10
+ * @since 2019-04-11
  */
 public class Base_type extends Model<Base_type> {
 
@@ -28,11 +28,6 @@ public class Base_type extends Model<Base_type> {
      * 类型名称：法院、检察院、公安、会议、web
      */
     private String type;
-
-    /**
-     * 类型名称
-     */
-    private String typename;
 
     /**
      * 排序
@@ -54,6 +49,11 @@ public class Base_type extends Model<Base_type> {
 
     private Integer integer2;
 
+    /**
+     * 类型的中文名称
+     */
+    private String typename;
+
     public Integer getId() {
         return id;
     }
@@ -67,13 +67,6 @@ public class Base_type extends Model<Base_type> {
 
     public void setType(String type) {
         this.type = type;
-    }
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -124,6 +117,13 @@ public class Base_type extends Model<Base_type> {
     public void setInteger2(Integer integer2) {
         this.integer2 = integer2;
     }
+    public String getTypename() {
+        return typename;
+    }
+
+    public void setTypename(String typename) {
+        this.typename = typename;
+    }
 
     @Override
     protected Serializable pkVal() {
@@ -135,7 +135,6 @@ public class Base_type extends Model<Base_type> {
         return "Base_type{" +
         "id=" + id +
         ", type=" + type +
-        ", typename=" + typename +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
@@ -143,6 +142,7 @@ public class Base_type extends Model<Base_type> {
         ", string2=" + string2 +
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
+        ", typename=" + typename +
         "}";
     }
 }
