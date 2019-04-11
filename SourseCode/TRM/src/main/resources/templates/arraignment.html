@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${roleModel.title}">Title</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+
+
+<div style="margin: 15px;">
+
+    <div class="layui-elem-quote">
+        <h3 th:text="${roleModel.title}"></h3>
+    </div>
+
+    <table class="layui-table">
+        <colgroup>
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>案件名称</th>
+            <th>当前案由</th>
+            <th>案件编号</th>
+            <th>记录人</th>
+            <th>到案方式</th>
+
+            <th>案件发生时间</th>
+            <th>案发开始时间</th>
+            <th>案发结束时间</th>
+            <th>询问次数</th>
+            <th>操作</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>黑帮特大走私案</td>
+            <td>违反海关法规</td>
+            <td>165454</td>
+            <td>贤心</td>
+            <td>当场抓获</td>
+            <td>2016-11-29</td>
+            <td>2018-11-29</td>
+            <td>2018-11-29</td>
+            <td>10</td>
+            <td>
+                <a href="http://www.layui.com" class="layui-btn layui-btn-normal">修改</a>
+                <a href="http://www.layui.com" class="layui-btn layui-btn-danger">删除</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div th:replace="footer :: footer">...</div>
+
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <style>
+        .piece{
+            background-color: #F2F2F2;width: 48%;float: left;margin-top: 10px;
+        }
+        .piece_left{
+            margin-right: 10px;
+        }
+        .piece_bottoma{
+            margin-top: 10px;
+        }
+        .piece p{
+            margin: 12px;
+        }
+        .p_num{
+            margin: 12px;color: #1e9fff;
+        }
+    </style>
+</head>
+
+<body >
+
+
+<div style="padding: 20px; background-color: #F2F2F2;">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header"><h3>笔录数据</h3></div>
+                <div class="layui-card-body " style="overflow:hidden;">
+                    <div class="piece piece_left" >
+                        <p>模板</p>
+                        <h1 class="p_num">36</h1>
+                    </div>
+
+                    <div  class="piece">
+                        <p>提讯</p>
+                        <h1 class="p_num">578</h1>
+                    </div>
+
+                    <div class="piece piece_left piece_bottom">
+                        <p>题目</p>
+                        <h1 class="p_num">1280</h1>
+                    </div>
+
+                    <div  class="piece piece_bottom">
+                        <p>答案</p>
+                        <h1 class="p_num">8888</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header"><h3>案件数据</h3></div>
+                <div class="layui-card-body" style="overflow:hidden;">
+                    <div class="piece piece_left">
+                        <p>类型</p>
+                        <h1 class="p_num">17</h1>
+                    </div>
+
+                    <div  class="piece">
+                        <p>审讯</p>
+                        <h1 class="p_num">22</h1>
+                    </div>
+
+                    <div class="piece piece_left piece_bottom">
+                        <p>关键字</p>
+                        <h1 class="p_num">368</h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-header"><h3>用户数据</h3></div>
+                <div class="layui-card-body" style="overflow:hidden;">
+                    <div class="piece piece_left">
+                        <p>用户</p>
+                        <h1 class="p_num">2</h1>
+                    </div>
+
+                    <div  class="piece">
+                        <p>角色</p>
+                        <h1 class="p_num">6</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script src="/layui/layui.js"></script>
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="/layui/in8andie9/html5.min.js"></script>
+<script src="/layui/in8andie9/respond.min.js"></script>
+<![endif]-->
+</body>
+</html>
