@@ -38,7 +38,7 @@ public class Scheduler {
     /**
      * 需要验证
      */
-    @Scheduled(cron = "0 05 ? * * *")
+    @Scheduled(cron = "0 05 1/1 * * *")
     public void testTasks2() {
 
         System.out.println("定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
