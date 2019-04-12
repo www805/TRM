@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -14,30 +13,25 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-11
  */
-public class Base_roletopermissions extends Model<Base_roletopermissions> {
+public class Base_datasheet extends Model<Base_datasheet> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色权限表
+     * 可供同步的表单
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 权限id
+     * 表单中文名称
      */
-    private Integer permissionsid;
+    private String cnnane;
 
     /**
-     * 角色id
+     * 表单名
      */
-    private Integer roleid;
-
-    /**
-     * 创建时间
-     */
-    private Date createtime;
+    private String dataname;
 
     private String ssid;
 
@@ -56,26 +50,19 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getPermissionsid() {
-        return permissionsid;
+    public String getCnnane() {
+        return cnnane;
     }
 
-    public void setPermissionsid(Integer permissionsid) {
-        this.permissionsid = permissionsid;
+    public void setCnnane(String cnnane) {
+        this.cnnane = cnnane;
     }
-    public Integer getRoleid() {
-        return roleid;
-    }
-
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
-    }
-    public Date getCreatetime() {
-        return createtime;
+    public String getDataname() {
+        return dataname;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setDataname(String dataname) {
+        this.dataname = dataname;
     }
     public String getSsid() {
         return ssid;
@@ -120,11 +107,10 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
 
     @Override
     public String toString() {
-        return "Base_roletopermissions{" +
+        return "Base_datasheet{" +
         "id=" + id +
-        ", permissionsid=" + permissionsid +
-        ", roleid=" + roleid +
-        ", createtime=" + createtime +
+        ", cnnane=" + cnnane +
+        ", dataname=" + dataname +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

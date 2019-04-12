@@ -126,12 +126,22 @@ public class CeshiAction extends BaseAction{
     @GetMapping(value = "/serverconfig")
     public ModelAndView serverconfig(Model model) {
 
-        RResult rResult=createNewResultOfFail();
+        RResult rResult = createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "系统配置");
         return new ModelAndView("serverconfig", "configModel", model);
+
+    }
+
+    @GetMapping(value = "/gotologin")
+    public ModelAndView gotologin(Model model) {
+
+        model.addAttribute("title", "layui测试主页");
+
+        return new ModelAndView("login1", "login", model);
+
 
     }
 

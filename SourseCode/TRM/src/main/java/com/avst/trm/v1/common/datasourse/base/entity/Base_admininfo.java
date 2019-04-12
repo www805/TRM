@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-11
  */
 public class Base_admininfo extends Model<Base_admininfo> {
 
@@ -48,6 +48,11 @@ public class Base_admininfo extends Model<Base_admininfo> {
      * 工作单位id
      */
     private Integer workunitid;
+
+    /**
+     * 单位中的排序,用于客户端的使用者（办案人员）
+     */
+    private Integer unitsort;
 
     /**
      * 注册时间
@@ -115,6 +120,13 @@ public class Base_admininfo extends Model<Base_admininfo> {
 
     public void setWorkunitid(Integer workunitid) {
         this.workunitid = workunitid;
+    }
+    public Integer getUnitsort() {
+        return unitsort;
+    }
+
+    public void setUnitsort(Integer unitsort) {
+        this.unitsort = unitsort;
     }
     public Date getRegistertime() {
         return registertime;
@@ -187,6 +199,7 @@ public class Base_admininfo extends Model<Base_admininfo> {
         ", password=" + password +
         ", adminbool=" + adminbool +
         ", workunitid=" + workunitid +
+        ", unitsort=" + unitsort +
         ", registertime=" + registertime +
         ", updatetime=" + updatetime +
         ", lastlogintime=" + lastlogintime +

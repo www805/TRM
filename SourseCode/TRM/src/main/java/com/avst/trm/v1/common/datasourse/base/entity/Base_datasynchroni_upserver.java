@@ -14,30 +14,45 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-11
  */
-public class Base_roletopermissions extends Model<Base_roletopermissions> {
+public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserver> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 角色权限表
+     * 服务器数据同步表(上层服务器使用)
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 权限id
+     * 表单名称
      */
-    private Integer permissionsid;
+    private String cnname;
 
     /**
-     * 角色id
+     * 可供同步的表单id
      */
-    private Integer roleid;
+    private Integer datasheetid;
 
     /**
-     * 创建时间
+     * 最后同步时间
      */
-    private Date createtime;
+    private Date lastuploadtime;
+
+    /**
+     * 最后同步id
+     */
+    private Integer dataid;
+
+    /**
+     * 同步次数
+     */
+    private Integer uploadcount;
+
+    /**
+     * 单位中的排序
+     */
+    private Integer unitsort;
 
     private String ssid;
 
@@ -56,26 +71,47 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getPermissionsid() {
-        return permissionsid;
+    public String getCnname() {
+        return cnname;
     }
 
-    public void setPermissionsid(Integer permissionsid) {
-        this.permissionsid = permissionsid;
+    public void setCnname(String cnname) {
+        this.cnname = cnname;
     }
-    public Integer getRoleid() {
-        return roleid;
-    }
-
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
-    }
-    public Date getCreatetime() {
-        return createtime;
+    public Integer getDatasheetid() {
+        return datasheetid;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setDatasheetid(Integer datasheetid) {
+        this.datasheetid = datasheetid;
+    }
+    public Date getLastuploadtime() {
+        return lastuploadtime;
+    }
+
+    public void setLastuploadtime(Date lastuploadtime) {
+        this.lastuploadtime = lastuploadtime;
+    }
+    public Integer getDataid() {
+        return dataid;
+    }
+
+    public void setDataid(Integer dataid) {
+        this.dataid = dataid;
+    }
+    public Integer getUploadcount() {
+        return uploadcount;
+    }
+
+    public void setUploadcount(Integer uploadcount) {
+        this.uploadcount = uploadcount;
+    }
+    public Integer getUnitsort() {
+        return unitsort;
+    }
+
+    public void setUnitsort(Integer unitsort) {
+        this.unitsort = unitsort;
     }
     public String getSsid() {
         return ssid;
@@ -120,11 +156,14 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
 
     @Override
     public String toString() {
-        return "Base_roletopermissions{" +
+        return "Base_datasynchroni_upserver{" +
         "id=" + id +
-        ", permissionsid=" + permissionsid +
-        ", roleid=" + roleid +
-        ", createtime=" + createtime +
+        ", cnname=" + cnname +
+        ", datasheetid=" + datasheetid +
+        ", lastuploadtime=" + lastuploadtime +
+        ", dataid=" + dataid +
+        ", uploadcount=" + uploadcount +
+        ", unitsort=" + unitsort +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

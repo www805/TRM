@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.mapper;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_roletopermissions;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_upserver;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author Admin
  * @since 2019-04-11
  */
-public interface Base_roletopermissionsMapper extends BaseMapper<Base_roletopermissions> {
+public interface Base_datasynchroni_upserverMapper extends BaseMapper<Base_datasynchroni_upserver> {
 
 }

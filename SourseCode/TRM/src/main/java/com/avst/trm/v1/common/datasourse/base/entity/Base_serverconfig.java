@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-10
+ * @since 2019-04-11
  */
 public class Base_serverconfig extends Model<Base_serverconfig> {
 
@@ -22,7 +22,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
      * 服务器配置表
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Integer id=1;
+    private Integer id;
 
     /**
      * 系统名称
@@ -55,16 +55,6 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private String serverport;
 
     /**
-     * 是否授权1授权-1未授权
-     */
-    private Integer authorizebool;
-
-    /**
-     * 类型id
-     */
-    private Integer typeid;
-
-    /**
      * 工作开始时间
      */
     private Date workstarttime;
@@ -83,6 +73,16 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private Integer integer1;
 
     private Integer integer2;
+
+    /**
+     * 1已授权，-1未授权
+     */
+    private Integer authorizebool;
+
+    /**
+     * 服务类型id
+     */
+    private Integer typeid;
 
     public Integer getId() {
         return id;
@@ -133,20 +133,6 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setServerport(String serverport) {
         this.serverport = serverport;
     }
-    public Integer getAuthorizebool() {
-        return authorizebool;
-    }
-
-    public void setAuthorizebool(Integer authorizebool) {
-        this.authorizebool = authorizebool;
-    }
-    public Integer getTypeid() {
-        return typeid;
-    }
-
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
-    }
     public Date getWorkstarttime() {
         return workstarttime;
     }
@@ -196,6 +182,20 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setInteger2(Integer integer2) {
         this.integer2 = integer2;
     }
+    public Integer getAuthorizebool() {
+        return authorizebool;
+    }
+
+    public void setAuthorizebool(Integer authorizebool) {
+        this.authorizebool = authorizebool;
+    }
+    public Integer getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(Integer typeid) {
+        this.typeid = typeid;
+    }
 
     @Override
     protected Serializable pkVal() {
@@ -212,8 +212,6 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", clienturl=" + clienturl +
         ", serverip=" + serverip +
         ", serverport=" + serverport +
-        ", authorizebool=" + authorizebool +
-        ", typeid=" + typeid +
         ", workstarttime=" + workstarttime +
         ", workdays=" + workdays +
         ", ssid=" + ssid +
@@ -221,6 +219,8 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", string2=" + string2 +
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
+        ", authorizebool=" + authorizebool +
+        ", typeid=" + typeid +
         "}";
     }
 }
