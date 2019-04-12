@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${keywordModel.title}">Title</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
+    <style>
+        .layui-form-switch {
+            margin-top: 7px;
+        }
+    </style>
+</head>
+<body>
+
+<div style="margin: 15px;">
+
+    <div class="layui-elem-quote">
+        <h3 th:text="${keywordModel.title}"></h3>
+    </div>
+
+    <form class="layui-form layui-main site-inline" action="" style="margin-top: 30px;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">关键字名称</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">替换字符</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入替换字符" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">字体颜色</label>
+            <div class="layui-input-block">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入字体颜色" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">是否屏蔽</label>
+            <div class="layui-input-block">
+                <input type="checkbox" name="switch" lay-skin="switch" lay-text="屏蔽|不屏蔽" checked>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" th:text="${keywordModel.title}">添加关键字</button>
+                <button class="layui-btn layui-btn-normal" onclick="history.go(-1);">返回</button>
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+<div th:replace="footer :: footer">...</div>
+
+<script>
+    //Demo
+    layui.use('form', function(){});
+</script>
+
+</body>
+</html>

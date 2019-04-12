@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <title th:text="${userModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
     <style>
-        .layui-elem-quote{
-            border-left: 5px solid #007aff;
-        }
-        .layui-laypage a:hover {
-            color: #1e9fff;
+        .layui-form-item .layui-input-inline {
+            width: 140px;
         }
     </style>
 </head>
@@ -74,7 +72,7 @@
             </div>
 
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
-            <input type="button" class="layui-btn layui-btn-normal" value="添加用户">
+            <a th:href="@{/web/ceshi/getAddUser}" class="layui-btn layui-btn-normal" >添加用户</a>
         </div>
     </form>
 
@@ -101,7 +99,7 @@
                 <input type="checkbox" name="switch" lay-skin="switch" lay-text="正常|已禁用" disabled>
             </td>
             <td>
-                <a href="http://www.layui.com" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a th:href="@{/web/ceshi/getUpdateUser}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
                 <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>
@@ -174,11 +172,11 @@
             ,jump: function(obj){
 
                 //加载层-风格4
-                // var index = layer.msg('加载中', {
-                //     icon: 16
-                //     ,shade: 0.01
-                //     ,time: 1000, //20s后自动关闭
-                // });
+                var index = layer.msg('加载中', {
+                    icon: 16
+                    ,shade: 0.01
+                    ,time: 1000, //20s后自动关闭
+                });
 
                 //模拟渲染
                 // document.getElementById('biuuu_city_list').innerHTML = function(){

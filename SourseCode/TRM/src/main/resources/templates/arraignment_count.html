@@ -2,66 +2,77 @@
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title th:text="${arraignmentModel.title}">Title</title>
+    <title th:text="${arraignment_countModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
 
-
-<div style="margin: 15px;">
+<div style="margin: 15px;" class="layui-form">
 
     <div class="layui-elem-quote">
-        <h3 th:text="${arraignmentModel.title}"></h3>
+        <h3 th:text="${arraignment_countModel.title}"></h3>
     </div>
 
     <form class="layui-form" action="">
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: auto;">案件名称</label>
+            <label class="layui-form-label" style="width: auto;">统计时段</label>
             <div class="layui-input-inline">
-                <input type="text" name="roleName" lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
+                <input type="text" name="starttime" id="starttime" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
             </div>
-            <label class="layui-form-label" style="width: auto;">案件编号</label>
+
+            <label class="layui-form-label" style="width: auto;">-</label>
             <div class="layui-input-inline">
-                <input type="text" name="roleName" lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="endtime" id="endtime" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
             </div>
+
+            <label class="layui-form-label" style="width: auto;">语音笔录时长阈值</label>
+            <div class="layui-input-inline">
+                <input type="text" name="roleName" required lay-verify="required" placeholder="请输入阈值" autocomplete="off" class="layui-input">
+            </div>
+            <label class="layui-form-label" style="width: auto;">分钟</label>
+
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
+
+            <input type="button" class="layui-btn layui-btn-normal" value="导出表格">
         </div>
     </form>
 
-    <table class="layui-table">
+
+
+    <table class="layui-table" >
         <thead>
         <tr>
             <th>序号</th>
-            <th>案件名称</th>
-            <th>当前案由</th>
-            <th>案件编号</th>
-            <th>记录人</th>
-            <th>到案方式</th>
-
-            <th>案件发生时间</th>
-            <th>案发开始时间</th>
-            <th>案发结束时间</th>
-            <th>询问次数</th>
-            <th>操作</th>
-
+            <th>单位名称</th>
+            <th>笔录总量</th>
+            <th>语音笔录总量</th>
+            <th>新增笔录数量</th>
+            <th>笔录时长(分钟)</th>
+            <th>语音转写时长(分钟)</th>
+            <th>笔录字数</th>
+            <th>转写字数</th>
+            <th>计录字数</th>
+            <th>使用人数</th>
+            <th>登录次数</th>
+            <th>登录时长(分钟)</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>1</td>
-            <td>黑帮特大走私案</td>
-            <td>违反海关法规</td>
-            <td>165454</td>
-            <td>贤心</td>
-            <td>当场抓获</td>
-            <td>2016-11-29</td>
-            <td>2018-11-29</td>
-            <td>2018-11-29</td>
-            <td>10</td>
-            <td>
-                <a href="http://www.layui.com" class="layui-btn layui-btn-normal layui-btn-sm">详情</a>
-            </td>
+            <td>吴斌</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
+            <td>666</td>
         </tr>
         </tbody>
     </table>
@@ -74,11 +85,23 @@
 
 <script>
     //Demo
-    layui.use('form', function(){});
+    layui.use(['form', 'layedit', 'laydate','laypage', 'layer'], function(){
 
-    layui.use(['laypage', 'layer'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
         var laypage = layui.laypage
             ,layer = layui.layer;
+
+        //日期
+        laydate.render({
+            elem: '#starttime'
+        });
+        laydate.render({
+            elem: '#endtime'
+        });
 
         //将一段数组分页展示
 

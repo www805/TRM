@@ -34,10 +34,10 @@
                     <dd><a th:href="@{/web/ceshi/getUserRole}" target="option">角色列表</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a  href="users/list.html"  target="option">提讯笔录</a></li>
-            <li class="layui-nav-item"><a href="footer.html" target="option">关键字</a></li>
-            <li class="layui-nav-item"><a href="header.html" target="option">笔录统计</a></li>
-            <li class="layui-nav-item"><a th:href="@{/web/ceshi/serverconfig}" target="option">系统配置</a></li>
+            <li class="layui-nav-item"><a th:href="@{/web/ceshi/getArraignment}"  target="option">提讯笔录</a></li>
+            <li class="layui-nav-item"><a th:href="@{/web/ceshi/getKeyword}" target="option">关键字</a></li>
+            <li class="layui-nav-item"><a th:href="@{/web/ceshi/getArraignment_count}" target="option">笔录统计</a></li>
+            <li class="layui-nav-item"><a th:href="@{/web/ceshi/getServerConfig}" target="option">系统配置</a></li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
@@ -58,7 +58,7 @@
         <!-- 内容主体区域 -->
         <div class="layui-show">
             <iframe src="/web/ceshi/home" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
-            <!--<iframe src="/web/ceshi/getUserList" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>-->
+            <!--<iframe src="/web/ceshi/getAddUser" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>-->
         </div>
     </div>
 

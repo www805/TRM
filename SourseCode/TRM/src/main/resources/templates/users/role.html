@@ -4,14 +4,7 @@
     <meta charset="UTF-8">
     <title th:text="${roleModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
-    <style>
-        .layui-elem-quote{
-            border-left: 5px solid #007aff;
-        }
-        .layui-laypage a:hover {
-            color: #1e9fff;
-        }
-    </style>
+    <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
 
@@ -29,7 +22,7 @@
                 <input type="text" name="roleName" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
             </div>
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
-            <input type="button" class="layui-btn layui-btn-normal" value="添加角色">
+            <a th:href="@{/web/ceshi/getAddRole}" class="layui-btn layui-btn-normal" >添加角色</a>
         </div>
     </form>
 
@@ -54,7 +47,7 @@
                  <input type="checkbox" name="switch" lay-skin="switch" lay-text="已启用|未启用" disabled>
             </td>
             <td>
-                <a href="http://www.layui.com" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a th:href="@{/web/ceshi/getUpdateRole}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
                 <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>

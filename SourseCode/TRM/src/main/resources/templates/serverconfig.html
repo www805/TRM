@@ -4,14 +4,9 @@
     <meta charset="UTF-8">
     <title th:text="${configModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
-    <style>
-        .layui-elem-quote{
-            border-left: 5px solid #007aff;
-        }
-    </style>
+    <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
-
 
 <div style="margin: 15px;">
 
@@ -44,22 +39,16 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">上级机构</label>
+            <label class="layui-form-label">服务器IP</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">节点单位名</label>
+            <label class="layui-form-label">服务器端口</label>
             <div class="layui-input-block">
-                <input type="text" name="title" required  lay-verify="required" placeholder="请输入节点单位名称" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">授权信息</label>
-            <div class="layui-input-block">
-                <textarea name="desc" placeholder="请输入授权信息" class="layui-textarea"></textarea>
+                <input type="text" name="title" required  lay-verify="required" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">

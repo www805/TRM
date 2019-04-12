@@ -1,0 +1,12 @@
+.layui-elem-quote{
+    border-left: 5px solid #007aff;
+}
+.layui-laypage a:hover {
+    color: #1e9fff;
+}
+.layui-form-select dl dd.layui-this {
+    background-color: #1e9fff;
+}
+.layui-form-switch {
+    margin-top: 0;
+}

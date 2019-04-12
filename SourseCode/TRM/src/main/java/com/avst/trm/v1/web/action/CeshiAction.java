@@ -81,9 +81,48 @@ public class CeshiAction extends BaseAction{
 
     }
 
+    /***
+     * 添加用户
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getAddUser")
+    public ModelAndView getAddUser(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+        ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "添加用户");
+        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
+
+    }
+
+    /**
+     * 修改用户
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getUpdateUser")
+    public ModelAndView getUpdateUser(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+        ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "修改用户");
+        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
+
+    }
+
     @Autowired
     private Base_roleMapper base_roleMapper;
 
+    /***
+     * 角色列表
+     * @param model
+     * @return
+     */
     @GetMapping(value = "/getUserRole")
     public ModelAndView getUserRole(Model model) {
 
@@ -101,12 +140,52 @@ public class CeshiAction extends BaseAction{
     }
 
     /**
+     * 添加角色
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getAddRole")
+    public ModelAndView getAddRole(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        List<Base_role> base_roles = base_roleMapper.selectList(null);
+
+        rResult.setData(base_roles);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "添加角色");
+        return new ModelAndView("users/addOrUpdateRole", "roleModel", model);
+    }
+
+    /***
+     * 修改角色
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getUpdateRole")
+    public ModelAndView getUpdateRole(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        List<Base_role> base_roles = base_roleMapper.selectList(null);
+
+        rResult.setData(base_roles);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "修改角色");
+        return new ModelAndView("users/addOrUpdateRole", "roleModel", model);
+    }
+
+    /**
      * 首页
      * @param model
      * @return
      */
     @GetMapping(value = "/home")
-    public ModelAndView home(Model model) {
+    public ModelAndView getHome(Model model) {
 
         RResult rResult=createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);
@@ -123,8 +202,8 @@ public class CeshiAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/serverconfig")
-    public ModelAndView serverconfig(Model model) {
+    @GetMapping(value = "/getServerConfig")
+    public ModelAndView getServerConfig(Model model) {
 
         RResult rResult = createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);
@@ -133,6 +212,87 @@ public class CeshiAction extends BaseAction{
         model.addAttribute("title", "系统配置");
         return new ModelAndView("serverconfig", "configModel", model);
 
+    }
+
+    /**
+     *提讯笔录
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getArraignment")
+    public ModelAndView getArraignment(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "提讯笔录");
+        return new ModelAndView("arraignment", "arraignmentModel", model);
+
+    }
+
+    /***
+     * 笔录统计
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getArraignment_count")
+    public ModelAndView getArraignment_count(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "笔录使用情况统计表");
+        return new ModelAndView("arraignment_count", "arraignment_countModel", model);
+    }
+
+    /**
+     * 关键字
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getKeyword")
+    public ModelAndView getKeyword(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "关键字");
+        return new ModelAndView("keyword", "keywordModel", model);
+    }
+
+    /**
+     * 添加关键字
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getAddKeyword")
+    public ModelAndView getAddKeyword(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "添加关键字");
+        return new ModelAndView("addOrUpdateKeyword", "keywordModel", model);
+    }
+
+    /***
+     * 修改关键字
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getUpdateKeyword")
+    public ModelAndView getUpdateKeyword(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "修改关键字");
+        return new ModelAndView("addOrUpdateKeyword", "keywordModel", model);
     }
 
     @GetMapping(value = "/gotologin")
