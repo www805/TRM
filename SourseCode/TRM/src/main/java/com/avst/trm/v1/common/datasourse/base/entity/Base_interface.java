@@ -14,35 +14,35 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-15
  */
-public class Base_page extends Model<Base_page> {
+public class Base_interface extends Model<Base_interface> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 页面表
+     * 接口表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 页面编号
+     * 接口名称
      */
-    private String pageid;
+    private String interfacename;
 
     /**
-     * 页面名称
+     * 接口地址
      */
-    private String pagename;
+    private String interfaceurl;
+
+    /**
+     * 接口说明
+     */
+    private String description;
 
     /**
      * 创建时间
      */
     private Date createtime;
-
-    /**
-     * 页面说明
-     */
-    private String description;
 
     /**
      * 类型id
@@ -66,26 +66,19 @@ public class Base_page extends Model<Base_page> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getPageid() {
-        return pageid;
+    public String getInterfacename() {
+        return interfacename;
     }
 
-    public void setPageid(String pageid) {
-        this.pageid = pageid;
+    public void setInterfacename(String interfacename) {
+        this.interfacename = interfacename;
     }
-    public String getPagename() {
-        return pagename;
-    }
-
-    public void setPagename(String pagename) {
-        this.pagename = pagename;
-    }
-    public Date getCreatetime() {
-        return createtime;
+    public String getInterfaceurl() {
+        return interfaceurl;
     }
 
-    public void setCreatetime(Date createtime) {
-        this.createtime = createtime;
+    public void setInterfaceurl(String interfaceurl) {
+        this.interfaceurl = interfaceurl;
     }
     public String getDescription() {
         return description;
@@ -93,6 +86,13 @@ public class Base_page extends Model<Base_page> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public Date getCreatetime() {
+        return createtime;
+    }
+
+    public void setCreatetime(Date createtime) {
+        this.createtime = createtime;
     }
     public Integer getTypeid() {
         return typeid;
@@ -144,12 +144,12 @@ public class Base_page extends Model<Base_page> {
 
     @Override
     public String toString() {
-        return "Base_page{" +
+        return "Base_interface{" +
         "id=" + id +
-        ", pageid=" + pageid +
-        ", pagename=" + pagename +
-        ", createtime=" + createtime +
+        ", interfacename=" + interfacename +
+        ", interfaceurl=" + interfaceurl +
         ", description=" + description +
+        ", createtime=" + createtime +
         ", typeid=" + typeid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
