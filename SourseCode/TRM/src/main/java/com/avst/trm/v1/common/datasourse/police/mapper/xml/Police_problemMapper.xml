@@ -17,4 +17,30 @@
         <result column="integer2" property="integer2" />
     </resultMap>
 
+    <select id="getProblemList" resultType="com.avst.trm.v1.common.datasourse.police.entity.Police_problem" parameterType="com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetProblemsParam">
+        select p.* from police_problem p
+        LEFT JOIN police_problemtotype pp  ON pp.problemid=p.id
+        <where>
+            <if test="null!=problemtypeid">
+                pp.problemtypeid=#{problemtypeid}
+            </if>
+            <if test="null!=keyword">
+                and p.problem like '%${keyword}%'
+            </if>
+        </where>
+    </select>
+
+    <select id="countgetProblemList" resultType="java.lang.Integer" parameterType="com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetProblemsParam">
+        select count(p.id) from police_problem p
+        LEFT JOIN police_problemtotype pp  ON pp.problemid=p.id
+        <where>
+            <if test="null!=problemtypeid">
+                pp.problemtypeid=#{problemtypeid}
+            </if>
+            <if test="null!=keyword">
+                and p.problem like '%${keyword}%'
+            </if>
+        </where>
+    </select>
+
 </mapper>

@@ -65,4 +65,12 @@ public class ReqParam<T> {
 	public void setParam(T param) {
 		this.param = param;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 }
