@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.cache;
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_action;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndType;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.SpringUtil;
@@ -116,6 +117,18 @@ public class CommonCache {
             return ;
         }
         currentServerType=serverType;
+    }
+
+
+    /**
+     * 获取缓存中对应的动作对象
+     * @param url
+     * @return
+     */
+    public static Base_action getBase_action(String url,String type){
+
+
+        return null;
     }
 
 }

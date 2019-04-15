@@ -1,7 +1,7 @@
-package com.avst.trm.v1.web.vo;
+package com.avst.trm.v1.web.vo.basevo;
 
-import com.avst.trm.v1.web.req.Getlist3Param;
-import com.avst.trm.v1.web.vo.param.Getlist3VOParam;
+import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.vo.basevo.param.Getlist3VOParam;
 
 import java.util.List;
 

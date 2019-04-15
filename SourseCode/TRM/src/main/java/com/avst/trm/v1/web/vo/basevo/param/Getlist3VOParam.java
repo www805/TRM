@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.vo.param;
+package com.avst.trm.v1.web.vo.basevo.param;
 
 public class Getlist3VOParam {
 

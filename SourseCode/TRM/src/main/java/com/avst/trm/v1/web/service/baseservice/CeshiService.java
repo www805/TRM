@@ -1,15 +1,14 @@
-package com.avst.trm.v1.web.service;
+package com.avst.trm.v1.web.service.baseservice;
 
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdmintorole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.param.GetAdminAndAdmintorolelistParam;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.web.req.Getlist3Param;
-import com.avst.trm.v1.web.vo.Getlist3VO;
-import com.avst.trm.v1.web.vo.param.Getlist3VOParam;
+import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.vo.basevo.Getlist3VO;
+import com.avst.trm.v1.web.vo.basevo.param.Getlist3VOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang.StringUtils;
@@ -37,8 +36,6 @@ public class CeshiService extends BaseService {
         }
         List<Base_admininfo> list=new ArrayList<Base_admininfo>();
         try {
-
-
             EntityWrapper ew=new EntityWrapper();
 //            ew.setEntity(new Admininfo());
             ew.eq("id",1);

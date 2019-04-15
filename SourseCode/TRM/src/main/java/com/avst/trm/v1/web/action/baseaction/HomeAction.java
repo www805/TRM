@@ -1,27 +1,30 @@
-package com.avst.trm.v1.web.action;
+package com.avst.trm.v1.web.action.baseaction;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_action;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.web.service.CeshiService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/home")
 public class HomeAction extends BaseAction{
 
+
+
+
     @GetMapping(value = "/gotomain")
     public ModelAndView gotomain(Model model) {
+
+        String type=CommonCache.getCurrentServerType();
+
+        //根据type跳service处理
+
+
 
         model.addAttribute("title", "智能提讯管理系统");
         return new ModelAndView("main", "main", model);

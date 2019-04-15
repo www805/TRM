@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.action;
+package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;

@@ -1,21 +1,16 @@
-package com.avst.trm.v1.web.action;
+package com.avst.trm.v1.web.action.baseaction;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.web.req.Getlist3Param;
-import com.avst.trm.v1.web.service.CeshiService;
+import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.service.baseservice.CeshiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/web/ceshi")
