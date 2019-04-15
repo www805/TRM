@@ -193,18 +193,6 @@ if (typeof String.prototype.endsWith != 'function') {
 //上下文路径
 
 var ctx;
-var version_web = 'V1.x.20180131';
-
-var waitrecordcount=0;
-var waitproofreadcount=0;
-function setwaitcount(waitrecordcountu,waitproofreadcountu){
-	waitrecordcount=waitrecordcountu;
-	waitproofreadcount=waitproofreadcountu;
-}
-
-function setversion_web() {
-	$("#version_web").html(version_web);
-};
 
 function setCtx(path) {
 	ctx = path;
@@ -286,21 +274,6 @@ function checkstartorendofstr(str, char, startorend) {
 	return false;
 }
 
-function gotourl(url) {
-
-	var hrefurl = getUrl_qd().gotoURL;
-
-	location.href = hrefurl + "?url=" + url;
-
-}
-
-function gotourl_manage(url) {
-
-	var hrefurl = getUrl_manage().gotoURL;
-
-	location.href = hrefurl + "?url=" + url;
-}
-
 /* ajax提交(开始) url:提交后台方法路径，data:提交参数,func:回调方法 */
 function ajaxSubmit(url, data, func) {
 	// parent.FuShow();
@@ -308,7 +281,7 @@ function ajaxSubmit(url, data, func) {
 		url : url,
 		type : "post",
 		async : true,
-		dataType : "json",
+		// dataType : "json",
 		data : data,
 		timeout : 60000,
 		success : function(reData) {
@@ -343,7 +316,7 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 			type : "POST",
 			url : url,
 			async : true,
-			dataType : "json",
+			// dataType : "json",
 			timeout : 60000,
 			data : data,
 			success : success_fun,
@@ -356,26 +329,15 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 			type : "POST",
 			url : url,
 			async : true,
-			dataType : "json",
+			// dataType : "json",
 			timeout : 60000,
 			data : data,
 			success : success_fun,
 			error : (error_fun != null ? error_fun : ajaxErrDialog)
 		});
 	}
-	// 临时方法
-	// window.setTimeout(function(){
-	// parent.FuHidden();
-	// }, 500);
 }
-// 重写ajax提交方法，只用于语料下发到数据库中，上传用到文件用到
-/*
- * function ajaxSubmit(tm,url, data, success_fun, error_fun, haveloading) { //
- * parent.FuShow(); if (haveloading) { $.ajax({ type : "POST", url : url, async :
- * true, dataType : "json", timeout : 60000, data : data, success : success_fun,
- * error : (error_fun != null ? error_fun : ajaxErrDialog), beforeSend :
- * showLoading, complete : closeLoading }); } }
- */
+
 
 /**
  * ajax 请求失败的提醒
@@ -383,7 +345,8 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 function ajaxErrDialog() {
 	parent.layer.msg("网络异常,请稍后重试---!", {
 		icon : 1
-	});
+	},1);
+
 }
 
 /**
@@ -1009,7 +972,7 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 	}
 
 	var pagetxt = addbutton("首页", getdatafun + '(' + reqparamdata + 1 + ','
-			+ pageSize + ')', "btn btn-white", null, null, null, null,
+			+ pageSize + ')', "layui-btn layui-btn-sm layui-btn-radius layui-btn-normal", null, null, null, null,
 			'type="button"');
 	buttonnum++;
 	if (startsize > 1) {// 还可以往前翻页
@@ -1018,18 +981,18 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton("«", 'gotobackpage(' + getdatafun + ',\''
 				+ reqparamdataprv + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', "btn btn-white", null, null, null,
+				+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null,
 				null, null);
 	}
 
 	for (var i = startsize; i <= stopsize; i++) {
 		if (currPage == i) {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', "btn btn-white active", null, null, null,
+					+ pageSize + ')', "layui-btn", null, null, null,
 					null, 'type="button"');
 		} else {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', "btn btn-white", null, null, null, null,
+					+ pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null, null,
 					'type="button"');
 		}
 		buttonnum++;
@@ -1040,11 +1003,11 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton('»', 'gotonextpage(' + getdatafun + ',\''
 				+ reqparamdatanext + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', "btn btn-white", null, null, null,
+				+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null,
 				null, null);
 	}
 	pagetxt += addbutton("末页", getdatafun + '(' + reqparamdata + pageCount
-			+ ',' + pageSize + ')', "btn btn-white", null, null, null, null,
+			+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-radius layui-btn-normal", null, null, null, null,
 			'type="button"');
 	buttonnum++;
 	if (pageCount <= 1) {
@@ -1210,4 +1173,25 @@ function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 	} else {
 		getdatafun(currPage, pageSize);
 	}
+}
+
+
+/**
+ * laytpl 更新数据
+ * pagelisttemplates 模板对应的script
+ * pagelistview 把数据写入的view 的id
+ */
+function detail() {
+
+	layui.use('laytpl', function () {
+		var laytpl = layui.laytpl;
+		var getTpl = document.getElementById("pagelisttemplates").innerHTML;
+		var tpl = laytpl(getTpl);
+
+		tpl.render(pagelist, function (html) {
+			var dataview=document.getElementById("pagelistview");
+			dataview.innerHTML = html;
+
+		});
+	});
 }

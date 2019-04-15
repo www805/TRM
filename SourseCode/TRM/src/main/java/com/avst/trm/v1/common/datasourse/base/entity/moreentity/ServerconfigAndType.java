@@ -5,7 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 public class ServerconfigAndType extends Base_serverconfig {
 
     /**
-     * 类型名称：法院、检察院、公安、会议、web
+     * 类型名称：法院、检察院、公安、会议、publicweb
      */
     private String type;
 

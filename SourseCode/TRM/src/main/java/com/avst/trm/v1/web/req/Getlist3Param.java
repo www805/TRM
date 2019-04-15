@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.param;
+package com.avst.trm.v1.web.req;
 
 import com.avst.trm.v1.common.util.baseaction.Page;
 

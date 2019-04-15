@@ -7,8 +7,12 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.param.GetAdminAndAdmintorolelistParam;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.web.req.Getlist3Param;
+import com.avst.trm.v1.web.vo.Getlist3VO;
+import com.avst.trm.v1.web.vo.param.Getlist3VOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -88,30 +92,44 @@ public class CeshiService extends BaseService {
      * 多表查询
      * @param result
      */
-    public void getadminlist3(RResult<List<AdminAndAdmintorole>> result){
+    public void getadminlist3(RResult<Getlist3VO> result, Getlist3Param param){
 
         if(null==result){
-            result=new RResult<List<AdminAndAdmintorole>>();
+            result=new RResult<Getlist3VO>();
         }
         List<AdminAndAdmintorole> list=new ArrayList<AdminAndAdmintorole>();
         try {
+            Getlist3VO getlist3VO=new Getlist3VO();
+            EntityWrapper ew=new EntityWrapper();
+            if(null!=param){
+                if(StringUtils.isNotEmpty(param.getName())){
 
-            GetAdminAndAdmintorolelistParam param = new GetAdminAndAdmintorolelistParam();
-            param.setAdminid(2);
-            param.setPageSize(3);
-            param.setCurrPage(1);
-            int count = admininfoMapper.getAdminAndAdmintorolecount(param);
+                    ew.like("username",param.getName());
+                }
+            }
+            int count = admininfoMapper.getAdminAndAdmintorolecount(ew);
             param.setRecordCount(count);
+            getlist3VO.setPageparam(param);
 //current 第多少页，size 每页多少条
             Page<AdminAndAdmintorole> page=new Page<AdminAndAdmintorole>(param.getCurrPage(),param.getPageSize());
 //            page.setRecords(list);
-            list=admininfoMapper.getAdminAndAdmintorolelist(page,param );
+            list=admininfoMapper.getAdminAndAdmintorolelist(page,ew );
 
             System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
+            if(null!=list&&list.size() > 0){
+                List<Getlist3VOParam> getlist3VOParamList=new ArrayList<Getlist3VOParam>();
+                for(AdminAndAdmintorole admin:list){
+                    Getlist3VOParam vo=new Getlist3VOParam();
+                    vo.setName(admin.getUsername());
+                    vo.setId(admin.getId());
+                    vo.setAge(admin.getRoleid());
+                    getlist3VOParamList.add(vo);
+                }
+                getlist3VO.setPagelist(getlist3VOParamList);
+            }
 
-
-            result.setData(list);
+            result.setData(getlist3VO);
             this.changeResultToSuccess(result);
         }catch (Exception e){
             e.printStackTrace();

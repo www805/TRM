@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>action is everything</title>
+</head>
+<body>
+<div  data-th-fragment="page">
+    <div id="pagelistview" class="container-fluid"></div>
+    <div id="paging"  class="container-fluid" style="text-align:center;">
+
+    <script th:inline="javascript">
+
+        var result=[[${result}]];
+        var pagelist;
+        var pageparam;
+        pageshow(result);
+
+        function pageshow(data){
+            pagelist=data.data.pagelist;
+            pageparam=data.data.pageparam;
+            detail();
+            showpagetohtml();
+        }
+
+    </script>
+</div>
+</body>
+</html>
