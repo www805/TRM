@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-15
  */
 public class Police_userinfo extends Model<Police_userinfo> {
 
@@ -114,12 +114,24 @@ public class Police_userinfo extends Model<Police_userinfo> {
      */
     private Date createtime;
 
+    /**
+     * 特殊人员说明：
+        1、无犯罪史
+        2、毒
+        3、逃
+        4、违
+     */
+    private Integer specialtype;
+
     private String ssid;
 
     private String string1;
 
     private String string2;
 
+    /**
+     * 特殊人员
+     */
     private Integer integer1;
 
     private Integer integer2;
@@ -257,6 +269,13 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+    public Integer getSpecialtype() {
+        return specialtype;
+    }
+
+    public void setSpecialtype(Integer specialtype) {
+        this.specialtype = specialtype;
+    }
     public String getSsid() {
         return ssid;
     }
@@ -320,6 +339,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
         ", residence=" + residence +
         ", workunits=" + workunits +
         ", createtime=" + createtime +
+        ", specialtype=" + specialtype +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

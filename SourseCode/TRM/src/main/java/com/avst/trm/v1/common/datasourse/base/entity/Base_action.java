@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-15
  */
 public class Base_action extends Model<Base_action> {
 
@@ -58,6 +58,11 @@ public class Base_action extends Model<Base_action> {
      * 创建时间
      */
     private Date createtime;
+
+    /**
+     * 动作说明
+     */
+    private String description;
 
     private String ssid;
 
@@ -125,6 +130,13 @@ public class Base_action extends Model<Base_action> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
     public String getSsid() {
         return ssid;
     }
@@ -177,6 +189,7 @@ public class Base_action extends Model<Base_action> {
         ", topagebool=" + topagebool +
         ", nextpageid=" + nextpageid +
         ", createtime=" + createtime +
+        ", description=" + description +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
