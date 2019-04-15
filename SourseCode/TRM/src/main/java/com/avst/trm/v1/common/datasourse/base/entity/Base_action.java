@@ -40,9 +40,9 @@ public class Base_action extends Model<Base_action> {
     private String actionname;
 
     /**
-     * 动作地址
+     * 动作地址id（接口表id）
      */
-    private String actionurl;
+    private Integer interfaceid;
 
     /**
      * 是否有页面跳转:1有-1没有
@@ -63,6 +63,11 @@ public class Base_action extends Model<Base_action> {
      * 动作说明
      */
     private String description;
+
+    /**
+     * 类型id
+     */
+    private Integer typeid;
 
     private String ssid;
 
@@ -102,12 +107,12 @@ public class Base_action extends Model<Base_action> {
     public void setActionname(String actionname) {
         this.actionname = actionname;
     }
-    public String getActionurl() {
-        return actionurl;
+    public Integer getInterfaceid() {
+        return interfaceid;
     }
 
-    public void setActionurl(String actionurl) {
-        this.actionurl = actionurl;
+    public void setInterfaceid(Integer interfaceid) {
+        this.interfaceid = interfaceid;
     }
     public Integer getTopagebool() {
         return topagebool;
@@ -136,6 +141,13 @@ public class Base_action extends Model<Base_action> {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+    public Integer getTypeid() {
+        return typeid;
+    }
+
+    public void setTypeid(Integer typeid) {
+        this.typeid = typeid;
     }
     public String getSsid() {
         return ssid;
@@ -185,11 +197,12 @@ public class Base_action extends Model<Base_action> {
         ", actionid=" + actionid +
         ", pageid=" + pageid +
         ", actionname=" + actionname +
-        ", actionurl=" + actionurl +
+        ", interfaceid=" + interfaceid +
         ", topagebool=" + topagebool +
         ", nextpageid=" + nextpageid +
         ", createtime=" + createtime +
         ", description=" + description +
+        ", typeid=" + typeid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
