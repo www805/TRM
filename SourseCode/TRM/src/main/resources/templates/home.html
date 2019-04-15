@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
@@ -20,6 +20,9 @@
         .p_num{
             margin: 12px;color: #1e9fff;
         }
+        .piece:hover {
+            background-color: #e2e2e2;
+        }
     </style>
 </head>
 
@@ -33,23 +36,31 @@
                 <div class="layui-card-header"><h3>笔录数据</h3></div>
                 <div class="layui-card-body " style="overflow:hidden;">
                     <div class="piece piece_left" >
-                        <p>模板</p>
-                        <h1 class="p_num">36</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>模板</p>
+                            <h1 class="p_num">36</h1>
+                        </a>
                     </div>
 
                     <div  class="piece">
-                        <p>提讯</p>
-                        <h1 class="p_num">578</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>提讯</p>
+                            <h1 class="p_num">578</h1>
+                        </a>
                     </div>
 
                     <div class="piece piece_left piece_bottom">
-                        <p>题目</p>
-                        <h1 class="p_num">1280</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>题目</p>
+                            <h1 class="p_num">1280</h1>
+                        </a>
                     </div>
 
                     <div  class="piece piece_bottom">
-                        <p>答案</p>
-                        <h1 class="p_num">8888</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>答案</p>
+                            <h1 class="p_num">8888</h1>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -59,18 +70,24 @@
                 <div class="layui-card-header"><h3>案件数据</h3></div>
                 <div class="layui-card-body" style="overflow:hidden;">
                     <div class="piece piece_left">
-                        <p>类型</p>
-                        <h1 class="p_num">17</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>类型</p>
+                            <h1 class="p_num">17</h1>
+                        </a>
                     </div>
 
                     <div  class="piece">
-                        <p>审讯</p>
-                        <h1 class="p_num">22</h1>
+                        <a th:href="@{/arraignment/getArraignment}">
+                            <p>审讯</p>
+                            <h1 class="p_num">22</h1>
+                        </a>
                     </div>
 
                     <div class="piece piece_left piece_bottom">
-                        <p>关键字</p>
-                        <h1 class="p_num">368</h1>
+                        <a th:href="@{/keyword/getKeyword}">
+                            <p>关键字</p>
+                            <h1 class="p_num">368</h1>
+                        </a>
                     </div>
 
                 </div>
@@ -82,13 +99,17 @@
                 <div class="layui-card-header"><h3>用户数据</h3></div>
                 <div class="layui-card-body" style="overflow:hidden;">
                     <div class="piece piece_left">
-                        <p>用户</p>
-                        <h1 class="p_num">2</h1>
+                        <a th:href="@{/user/getUserList}">
+                            <p>用户</p>
+                            <h1 class="p_num">2</h1>
+                        </a>
                     </div>
 
                     <div  class="piece">
-                        <p>角色</p>
-                        <h1 class="p_num">6</h1>
+                        <a th:href="@{/role/getRoleList}">
+                            <p>角色</p>
+                            <h1 class="p_num">6</h1>
+                        </a>
                     </div>
                 </div>
             </div>

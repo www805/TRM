@@ -25,8 +25,8 @@ public class RoleAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/getUserRole")
-    public ModelAndView getUserRole(Model model) {
+    @GetMapping(value = "/getRoleList")
+    public ModelAndView getRoleList(Model model) {
 
         RResult rResult=createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);
@@ -40,7 +40,7 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "角色列表");
-        return new ModelAndView("users/role", "roleModel", model);
+        return new ModelAndView("role/getRoleList", "roleModel", model);
 
     }
 
@@ -63,7 +63,7 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加角色");
-        return new ModelAndView("users/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("role/addOrUpdateRole", "roleModel", model);
     }
 
     /***
@@ -83,7 +83,7 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改角色");
-        return new ModelAndView("users/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("role/addOrUpdateRole", "roleModel", model);
     }
 
 

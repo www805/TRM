@@ -25,7 +25,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "关键字");
-        return new ModelAndView("keyword", "keywordModel", model);
+        return new ModelAndView("keyword/keyword", "keywordModel", model);
     }
 
     /**
@@ -42,7 +42,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加关键字");
-        return new ModelAndView("addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /***
@@ -58,7 +58,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改关键字");
-        return new ModelAndView("addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
 

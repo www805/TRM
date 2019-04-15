@@ -32,7 +32,7 @@ public class HomeAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/home")
+    @GetMapping(value = "/")
     public ModelAndView getHome(Model model) {
 
         RResult rResult=createNewResultOfFail();

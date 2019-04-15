@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="/uimaker/css/common.css">
     <style>
         .layui-form-item .layui-input-inline {
-            width: 140px;
+            width: 130px;
         }
     </style>
 </head>
 <body>
-
 
 <div style="margin: 15px;" class="layui-form">
 
@@ -72,7 +71,7 @@
             </div>
 
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
-            <a th:href="@{/web/ceshi/getAddUser}" class="layui-btn layui-btn-normal" >添加用户</a>
+            <a th:href="@{/user/getAddUser}" class="layui-btn layui-btn-normal" >添加用户</a>
         </div>
     </form>
 
@@ -99,7 +98,7 @@
                 <input type="checkbox" name="switch" lay-skin="switch" lay-text="正常|已禁用" disabled>
             </td>
             <td>
-                <a th:href="@{/web/ceshi/getUpdateUser}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a th:href="@{/user/getUpdateUser}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
                 <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>

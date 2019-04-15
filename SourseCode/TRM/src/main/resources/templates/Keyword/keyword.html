@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title th:text="${roleModel.title}">Title</title>
+    <title th:text="${keywordModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
@@ -12,17 +12,17 @@
 <div style="margin: 15px;" class="layui-form">
 
     <div class="layui-elem-quote">
-        <h3 th:text="${roleModel.title}"></h3>
+        <h3 th:text="${keywordModel.title}"></h3>
     </div>
 
     <form class="layui-form" action="">
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: auto;">角色名称</label>
+            <label class="layui-form-label" style="width: auto;">关键字</label>
             <div class="layui-input-inline">
-                <input type="text" name="roleName" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                <input type="text" name="roleName" required lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
             </div>
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
-            <a th:href="@{/web/ceshi/getAddRole}" class="layui-btn layui-btn-normal" >添加角色</a>
+            <a class="layui-btn layui-btn-normal" th:href="@{/keyword/getAddKeyword}" >添加关键字</a>
         </div>
     </form>
 
@@ -30,25 +30,27 @@
         <thead>
         <tr>
             <th>序号</th>
-            <th>角色名称</th>
-            <th>角色说明</th>
+            <th>关键字</th>
+            <th>替换字符</th>
+            <th>字体颜色</th>
             <th>创建时间</th>
-            <th>是否启用</th>
+            <th>是否屏蔽</th>
             <th>操作</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>1</td>
-            <td>超管</td>
-            <td>可以管理一切</td>
+            <td>习近平</td>
+            <td>***</td>
+            <td>#FFFF00</td>
             <td>2018-11-29</td>
             <td >
-                 <input type="checkbox" name="switch" lay-skin="switch" lay-text="已启用|未启用" disabled>
+                 <input type="checkbox" name="switch" lay-skin="switch" lay-text="屏蔽|不屏蔽" disabled checked>
             </td>
             <td>
-                <a th:href="@{/web/ceshi/getUpdateRole}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a th:href="@{/keyword/getUpdateKeyword}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a href="javascript:void(0);" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>
         </tbody>
@@ -57,8 +59,6 @@
     <div id="demo20" style="float: right;"></div>
     <ul id="biuuu_city_list"></ul>
 </div>
-
-
 
 <div th:replace="footer :: footer">...</div>
 
@@ -122,11 +122,11 @@
             ,jump: function(obj){
 
                 //加载层-风格4
-                // var index = layer.msg('加载中', {
-                //     icon: 16
-                //     ,shade: 0.01
-                //     ,time: 1000, //20s后自动关闭
-                // });
+                var index = layer.msg('加载中', {
+                    icon: 16
+                    ,shade: 0.01
+                    ,time: 1000, //20s后自动关闭
+                });
 
                 //模拟渲染
                 // document.getElementById('biuuu_city_list').innerHTML = function(){

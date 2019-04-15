@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${arraignmentModel.title}">Title</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
+    <style>
+        .layui-form-switch {
+            margin-top: 7px;
+        }
+    </style>
+
+    <style type="text/css">
+        .talk_con{
+            width:300px;
+            height:500px;
+            border:1px solid #666;
+            margin:50px auto 0;
+            background:#f9f9f9;
+        }
+        .talk_show{
+            /*width:280px;*/
+            height:420px;
+            /*border:1px solid #666;*/
+            background:#fff;
+            margin:10px auto 0;
+            overflow:auto;
+        }
+        .talk_input{
+            width:580px;
+            margin:10px auto 0;
+        }
+        .whotalk{
+            width:80px;
+            height:30px;
+            float:left;
+            outline:none;
+        }
+        .talk_word{
+            width:420px;
+            height:26px;
+            padding:0px;
+            float:left;
+            margin-left:10px;
+            outline:none;
+            text-indent:10px;
+        }
+        .talk_sub{
+            width:56px;
+            height:30px;
+            float:left;
+            margin-left:10px;
+        }
+        .atalk{
+            margin:10px;
+        }
+        .atalk span{
+            display:inline-block;
+            background:#0181cc;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+            word-wrap:break-word;
+        }
+        .btalk{
+            margin:10px;
+            text-align:right;
+        }
+        .btalk span{
+            display:inline-block;
+            background:#ef8201;
+            border-radius:10px;
+            color:#fff;
+            padding:5px 10px;
+            word-wrap:break-word;
+            /*text-align: left;*/
+        }
+    </style>
+</head>
+<body>
+
+<div>
+
+    <!--<div class="layui-elem-quote">-->
+        <!--<h3 th:text="${arraignmentModel.title}"></h3>-->
+    <!--</div>-->
+
+    <div style="padding: 10px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <!--<img src="https://img.sis.la/img/2019/04/14/d/f6ld/1555176615.27C.jpg" height="160" width="100%"/>-->
+                    <img src="https://s2.ax1x.com/2019/04/15/AXLO4s.jpg" height="160" width="100%"/>
+
+                    <div style="padding: 10px;overflow: hidden;">
+                        <div style="float: left;">
+
+                            <button class="layui-btn layui-btn-normal" onclick="history.go(-1);">返回上一页</button>
+                            <button class="layui-btn layui-btn-normal">播放</button>
+                            <button class="layui-btn layui-btn-normal">停止</button>
+                        </div>
+                        <div style="overflow: hidden;float: left;margin-top: 3px;margin-left: 15px;">
+                            <i class="layui-icon layui-icon-speaker" style="font-size: 30px;color: #1E9FFF;float: left;"></i>
+                            <div id="slideTest" class="demo-slider" style="width: 250px;float: left;padding: 15px 10px 0 8px;"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">关键字</div>
+                    <div class="layui-card-body" style="height: 100px;overflow:auto;">
+                        <span class="layui-badge">手机号码1888888888</span>
+                        <span class="layui-badge">认罪</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境</span>
+                        <span class="layui-badge">当时环境当时环境当时环境当时环境当时环境当时环境当时环境当时环境当时环境当时环境</span>
+                    </div>
+                </div>
+
+                <div class="layui-card">
+                    <div class="layui-card-header">实时笔录</div>
+                        <div class="talk_show" id="words">
+                            <div class="atalk">
+                                <p>2019-4-14 02:25:08</p>
+                                <span>检察官说：吃饭了吗？</span>
+                            </div>
+                            <div class="btalk">
+                                <p>2019-4-14 02:24:55</p>
+                                <span>犯人说：还没呢</span>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="layui-col-md9">
+                <div class="layui-card" style="height: 400px;">
+                    <div class="layui-card-header">模板笔录</div>
+
+                    <div class="layui-card-body layui-form">
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" style="width: auto;padding-left: 0;text-align: left;">当前使用模板</label>
+                                <div class="layui-input-inline">
+                                    <select name="quiz2">
+                                        <option value="卖淫">卖淫</option>
+                                        <option value="故意杀人" disabled>故意杀人</option>
+                                        <option value="强奸" disabled="">强奸</option>
+                                        <option value="抢劫" disabled="">抢劫</option>
+                                        <option value="贩卖毒品" disabled="">贩卖毒品</option>
+                                        <option value="放火" disabled="">放火</option>
+                                        <option value="爆炸" disabled="">爆炸</option>
+                                        <option value="投毒" disabled="">投毒</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        <table class="layui-table" lay-even="" lay-skin="nob">
+                            <tbody>
+                                <tr>
+                                    <td>问：寥××，你知道为什么被刑事拘留? </td>
+                                </tr>
+                                <tr>
+                                    <td>答：昨天晚上我在发廊卖淫被当场抓获。 </td>
+                                </tr>
+                                <tr>
+                                    <td>问：你把卖淫的情况交代清楚。</td>
+                                </tr>
+                                <tr>
+                                    <td>答：嗯，昨天晚上我们发廊来了一个中年男人，理发之后嬉皮笑脸说要让我陪陪他。大概10点钟吧，我关了门，他给了我200元钱，我就睡在沙发上让他玩，后来他就把我的衣服和裤子全脱了，再后来就被你们查夜发现了。</td>
+                                </tr>
+                                <tr>
+                                    <td>问：当时你有没有问过他姓什么? </td>
+                                </tr>
+                                <tr>
+                                    <td>答：是他自己对我说的，他说姓黄，具体名字就没告诉我了。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="footer :: footer">...</div>
+
+<script>
+    layui.use(['form', 'slider'], function(){
+        var $ = layui.$
+            ,slider = layui.slider;
+
+        //定义初始值
+        slider.render({
+            elem: '#slideTest'
+            ,value: 20 //初始值
+            ,theme: '#1E9FFF' //主题色
+        });
+
+
+    });
+
+
+</script>
+
+</body>
+</html>

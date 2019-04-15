@@ -25,7 +25,7 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "用户列表");
-        return new ModelAndView("users/list", "userModel", model);
+        return new ModelAndView("users/getUserList", "userModel", model);
 
     }
 
@@ -41,7 +41,7 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加用户");
-        return new ModelAndView("addOrUpdateUser", "userModel", model);
+        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
 
     }
 
@@ -57,7 +57,7 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改用户");
-        return new ModelAndView("addOrUpdateUser", "userModel", model);
+        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
 
     }
 
