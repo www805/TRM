@@ -16,7 +16,7 @@ function getPath() {
 }
 
 function getBasePath_manage(){
-	return getPath()+"/web";
+	return getPath();
 }
 
 
@@ -24,8 +24,21 @@ function getBasePath_manage(){
 function getUrl_manage() {
 	return {
 		//后台请求
-		ceshi3:getBasePath_manage()+"/ceshi/ceshi3",
+		ceshi3:getPath+getinterface_service().ceshi3,
 
-		ceshi2:getBasePath_manage()+"/ceshi/ceshi2",
+		ceshi2:getPath+getinterface_service().ceshi2,
+	};
+}
+
+
+function getinterface_service() {
+
+	var basepath="/web";
+
+	return {
+		//后台请求
+		ceshi3:basepath+"/ceshi/ceshi3",
+
+		ceshi2:basepath+"/ceshi/ceshi2",
 	};
 }
