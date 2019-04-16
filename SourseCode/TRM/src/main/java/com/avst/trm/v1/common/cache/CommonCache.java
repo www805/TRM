@@ -61,18 +61,15 @@ public class CommonCache {
         return currentServerType;
     }
 
-    public static int getCurrentServerTypeid(String type){
+    public static int getCurrentServerTypeid(){
 
-        if(StringUtils.isEmpty(type)){
-            type=getCurrentServerType();
-        }
-        if(StringUtils.isNotEmpty(type)){
-            Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
-
-            EntityWrapper ew=new EntityWrapper();
-            ew.eq("id",1);
-            ServerconfigAndType serverconfigAndType= base_serverconfigMapper.getServerconfigAndType(ew);//一整个写成缓存
-            return serverconfigAndType.getTypeid();
+        if(null==serverconfig){
+            ServerconfigAndType serverconfigAndType=getServerconfig();
+            if(null!=serverconfigAndType){
+                return serverconfigAndType.getTypeid();
+            }
+        }else{
+            return serverconfig.getTypeid();
         }
 
         return 0;

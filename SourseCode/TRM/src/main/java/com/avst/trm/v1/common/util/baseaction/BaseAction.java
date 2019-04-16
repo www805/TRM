@@ -25,6 +25,16 @@ public class BaseAction {
 		return rresult;
 	}
 
+	/**
+	 * 赋值上一个请求的页面id
+	 * @return
+	 */
+	public RResult createNewResultOfFail(String pageid) {
+		RResult rresult = createNewResultOfFail();
+		rresult.setNextpageid(pageid);
+		return rresult;
+	}
+
 	/** @param rdatas */
 	protected final <T> void changeResultToSuccess(RResult rresult, T rdatas,
 			String message) {
@@ -57,7 +67,6 @@ public class BaseAction {
 
 	
 
-	
 	
 
 

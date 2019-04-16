@@ -2,11 +2,14 @@ package com.avst.trm.v1.web.service.baseservice;
 
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdmintorole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.vo.basevo.Getlist3VO;
 import com.avst.trm.v1.web.vo.basevo.param.Getlist3VOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -134,5 +137,21 @@ public class CeshiService extends BaseService {
             System.out.println("请求结束");
         }
     }
+
+
+
+    public void gotolist_base(RResult rResult, GotolistParam reqParam, ActionAndinterfaceAndPage actionAndinterfaceAndPage){
+
+        //获取
+
+
+
+        //pageid
+
+        rResult.setNextpageid(actionAndinterfaceAndPage.getNextpageid());
+    }
+
+
+
 
 }

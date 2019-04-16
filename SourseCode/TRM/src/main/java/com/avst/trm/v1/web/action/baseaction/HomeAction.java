@@ -71,9 +71,14 @@ public class HomeAction extends BaseAction{
 
         model.addAttribute("title", "layui测试主页");
 
+
+
+
         return new ModelAndView("login1", "login", model);
 
 
     }
+
+
 
 }

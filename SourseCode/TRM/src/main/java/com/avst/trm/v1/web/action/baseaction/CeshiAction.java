@@ -1,9 +1,15 @@
 package com.avst.trm.v1.web.action.baseaction;
 
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
+import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.req.basereq.GotolistParam;
+import com.avst.trm.v1.web.service.baseservice.ActionService;
 import com.avst.trm.v1.web.service.baseservice.CeshiService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/web/ceshi")
-public class CeshiAction extends BaseAction{
+public class CeshiAction extends BaseAction {
 
     @Autowired
     private CeshiService ceshiService;
+
+    @Autowired
+    private ActionService actionService;
 
     @RequestMapping(value = "/ceshi")
     public RResult getlist(String username) {
@@ -66,12 +75,52 @@ public class CeshiAction extends BaseAction{
 
 
 
-    @RequestMapping(value = "/gotologin")
-    public ModelAndView gotologin(Model model) {
+//    @RequestMapping(value = "/gotolist")
+    @RequestMapping(value = "/{param.getActionid()}")
+    public ModelAndView gotolist(Model model,@PathVariable("param") GotolistParam param) {
 
-        model.addAttribute("title", "layui测试主页");
+        RResult rResult=createNewResultOfFail();
 
-        return new ModelAndView("login1", "login", model);
+        ActionAndinterfaceAndPage actionAndinterfaceAndPage= actionService.getAction(param.getActionid(),param.getPageid());//以后给缓存
+        if(null!=actionAndinterfaceAndPage){
 
+            if(actionAndinterfaceAndPage.getTypename().equals("base")){
+                ceshiService.gotolist_base(rResult,param,actionAndinterfaceAndPage);
+            }else if(actionAndinterfaceAndPage.getTypename().equals("police")){
+
+            }else if(actionAndinterfaceAndPage.getTypename().equals("meeting")){
+
+            }else if(actionAndinterfaceAndPage.getTypename().equals("court")){
+
+            }else if(actionAndinterfaceAndPage.getTypename().equals("dis")){
+
+            }
+        }else{
+            rResult.setMessage("对应处理事件异常 gotolist");
+            return new ModelAndView("404", "login", model);//给一个专门处理跳页面出错的页面（如果只是返回数据就不需要用这个）
+        }
+        model.addAttribute("result", rResult);
+        return new ModelAndView(rResult.getNextpageid(), "login", model);
     }
+
+
+//    public BaseService getBaseService(ActionAndinterfaceAndPage actionAndinterfaceAndPage) {
+//
+//        if (actionAndinterfaceAndPage.getTypename().equals("base")) {
+//            return ceshiService;
+//        } else if (actionAndinterfaceAndPage.getTypename().equals("police")) {
+//            return ceshiService;
+//        } else if (actionAndinterfaceAndPage.getTypename().equals("meeting")) {
+//            return ceshiService;
+//        } else if (actionAndinterfaceAndPage.getTypename().equals("court")) {
+//            return ceshiService;
+//        } else if (actionAndinterfaceAndPage.getTypename().equals("dis")) {
+//            return ceshiService;
+//        }
+//        return null;
+//    }
+//}
+
+
+
 }

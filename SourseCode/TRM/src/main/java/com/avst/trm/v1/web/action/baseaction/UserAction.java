@@ -24,6 +24,11 @@ public class UserAction extends BaseAction{
         RResult rResult=createNewResultOfFail();
 
         model.addAttribute("RResult", rResult);
+
+
+
+
+
         model.addAttribute("title", "用户列表");
         return new ModelAndView("users/getUserList", "userModel", model);
 
