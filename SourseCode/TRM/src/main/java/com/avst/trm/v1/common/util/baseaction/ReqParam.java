@@ -73,4 +73,28 @@ public class ReqParam<T> {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	public String getReqtime() {
+		return reqtime;
+	}
+
+	public void setReqtime(String reqtime) {
+		this.reqtime = reqtime;
+	}
+
+	public String getPageid() {
+		return pageid;
+	}
+
+	public void setPageid(String pageid) {
+		this.pageid = pageid;
+	}
+
+	public String getActionid() {
+		return actionid;
+	}
+
+	public void setActionid(String actionid) {
+		this.actionid = actionid;
+	}
 }

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_problem;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -46,13 +47,31 @@ public class ForClientBaseAction extends BaseAction {
     public RResult userlogin(ReqParam param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
         String token=param.getToken();
-        String clientkey=CommonCache.getClientKey();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token,clientkey)){
+        }else if (!checkToken(token)){
             result.setMessage("授权异常");
         }else{
             forClientBaseService.userlogin(result,param,httpSession);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 客户端管理员登出
+     * @return
+     */
+    @GetMapping(value = "/userloginout",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult userloginout(ReqParam param, HttpSession httpSession) {
+        RResult result=this.createNewResultOfFail();
+        String token=param.getToken();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(token)){
+            result.setMessage("授权异常");
+        }else{
+            forClientBaseService.userloginout(result,param,httpSession);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -64,29 +83,28 @@ public class ForClientBaseAction extends BaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/setServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/updateServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
     public RResult setServerconfig(ReqParam param){
         RResult result=this.createNewResultOfFail();
         String token=param.getToken();
-        String clientkey=CommonCache.getClientKey();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token,clientkey)){
+        }else if (!checkToken(token)){
             result.setMessage("授权异常");
         }else{
-            forClientBaseService.setServerconfig(result,param);
+            forClientBaseService.updateServerconfig(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
     }
 
 
-
     /**
      * 检测是否授权
      * @return
      */
-    public boolean checkToken( String token,String clientkey){
+    public boolean checkToken( String token){
+        String clientkey=CommonCache.getClientKey();
         System.out.println("token:"+token+"------clientkey:"+clientkey);
         if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
             return  false;
@@ -96,6 +114,8 @@ public class ForClientBaseAction extends BaseAction {
         }
         return  true;
     }
+
+
 
 
 
