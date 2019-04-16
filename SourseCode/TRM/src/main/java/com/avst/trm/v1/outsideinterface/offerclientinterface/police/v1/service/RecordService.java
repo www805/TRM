@@ -19,4 +19,13 @@ public class RecordService extends ForClientBaseService {
             record =gson.fromJson(parameter, Police_record.class);
         }
     }
+
+    public void addRecord(RResult result, ReqParam param){
+        Police_record record =new Police_record();
+        String parameter= (String) param.getParam();
+        if (StringUtils.isNotBlank(parameter)){
+            record =gson.fromJson(parameter, Police_record.class);
+        }
+    }
+
 }
