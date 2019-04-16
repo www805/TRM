@@ -103,7 +103,7 @@ public class AnalysisSQ {
                 servertype="0";
             }
             try {
-                serverconfig.setTypeid(CommonCache.getCurrentServerTypeid(servertype));
+                serverconfig.setTypeid(CommonCache.getCurrentServerTypeid());
                 if(StringUtils.isNotEmpty(clientName)){
                     serverconfig.setClientname(clientName);
                 }

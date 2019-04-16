@@ -148,7 +148,8 @@ public class CeshiService extends BaseService {
 
         //pageid
 
-        rResult.setNextpageid(actionAndinterfaceAndPage.getNextpageid());
+//        rResult.setNextpageid(actionAndinterfaceAndPage.getNextpageid());
+        rResult.setNextpageid("list");
     }
 
 
