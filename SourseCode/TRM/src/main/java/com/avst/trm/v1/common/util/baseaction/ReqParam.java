@@ -40,7 +40,7 @@ public class ReqParam<T> {
 	private String token;
 
 
-	
+
 	public String getVersion() {
 		return version;
 	}

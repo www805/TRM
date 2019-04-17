@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 关于模板
  */
 @RestController
-@RequestMapping("/v1/template")
+@RequestMapping("/v1/police/template")
 public class TemplateAction extends ForClientBaseAction {
 
     @Autowired
@@ -57,8 +57,8 @@ public class TemplateAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getProblems",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblems(ReqParam param){
+    @PostMapping(value = "/getProblems",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getProblems(ReqParam<GetProblemsParam> param){
         RResult result=this.createNewResultOfFail();
         String token=param.getToken();
         String clientkey= CommonCache.getClientKey();
@@ -344,6 +344,9 @@ public class TemplateAction extends ForClientBaseAction {
         return  result;
     }
 
+    public static void main(String[] args) {
+
+    }
 
 
 

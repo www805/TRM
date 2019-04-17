@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 关于笔录
  */
 @RestController
-@RequestMapping("/v1/record")
+@RequestMapping("/v1/police/record")
 public class RecordAction extends ForClientBaseAction {
     @Autowired
     private RecordService recordService;
@@ -60,6 +60,43 @@ public class RecordAction extends ForClientBaseAction {
         }
         return result;
     }
+
+    /**
+     * 添查看单个笔录
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/getRecordById",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getRecordById(ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        String token=param.getToken();
+        String clientkey= CommonCache.getClientKey();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(token)){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getRecordById(result,param);
+        }
+        return result;
+    }
+
+    @PostMapping(value = "/uploadRecord",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult uploadRecord(ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        String token=param.getToken();
+        String clientkey= CommonCache.getClientKey();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(token)){
+            result.setMessage("授权异常");
+        }else{
+            recordService.uploadRecord(result,param);
+        }
+        return result;
+    }
+
+
 
 
 

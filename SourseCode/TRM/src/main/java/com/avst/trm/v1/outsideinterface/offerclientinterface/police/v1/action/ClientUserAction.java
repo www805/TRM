@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 关于人员
  */
 @RestController
-@RequestMapping("/v1/clientUser")
+@RequestMapping("/v1/police/clientUser")
 public class ClientUserAction extends ForClientBaseAction {
     @Autowired
     private ClientUserService clientUserService;

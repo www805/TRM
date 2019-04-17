@@ -84,26 +84,40 @@ public class TemplateService extends ForClientBaseService {
         return;
     }
 
-    public void getProblems(RResult result, ReqParam param){
+    /**
+     * *****
+     * @param result
+     * @param param
+     */
+    public void getProblems(RResult result, ReqParam<GetProblemsParam> param){
         GetProblemsVO getProblemsVO=new GetProblemsVO();
-
+        System.out.println(param.getParam()+"----");
         //请求参数转换
-        GetProblemsParam getProblemsParam=new GetProblemsParam();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            getProblemsParam =gson.fromJson(parameter, GetProblemsParam.class);
-        }
+
+        // GetProblemsParam getProblemsParam=gson.fromJson(String.valueOf(param.getParam()),GetProblemsParam.class);
+        GetProblemsParam getProblemsParam=(GetProblemsParam)param.getParam();
         if (null==getProblemsParam){
             result.setMessage("参数为空");
             return;
         }
 
         //分页处理
-        int count=police_problemMapper.countgetProblemList(getProblemsParam);
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=getProblemsParam.getProblemtypeid()){
+           ew.eq(true,"pp.problemtypeid",getProblemsParam.getProblemtypeid());
+        }
+        if (StringUtils.isNotBlank(getProblemsParam.getKeyword())){
+            ew.like(true,"p.problem",getProblemsParam.getKeyword());
+        }
+        System.out.println( ew.getSqlSegment());
+
+        int count=police_problemMapper.countgetProblemList(ew);
         getProblemsParam.setRecordCount(count);
 
+        ew.orderBy("p.ordernum",true);
+        ew.orderBy("p.createtime",false);
         Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
-        List<Problem> problems=police_problemMapper.getProblemList(page,getProblemsParam);
+        List<Problem> problems=police_problemMapper.getProblemList(page,ew);
 
         getProblemsVO.setProblems(problems);
         getProblemsVO.setProblemsParam(getProblemsParam);
