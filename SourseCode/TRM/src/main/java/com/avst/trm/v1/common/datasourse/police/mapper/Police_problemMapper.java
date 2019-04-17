@@ -4,7 +4,10 @@ import com.avst.trm.v1.common.datasourse.police.entity.Police_problem;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problem;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetProblemsParam;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -17,7 +20,9 @@ import java.util.List;
  * @since 2019-04-09
  */
 public interface Police_problemMapper extends BaseMapper<Police_problem> {
-    List<Problem>  getProblemList(Page page, GetProblemsParam getProblemsParam);
+    @Select("select DISTINCT(p.id),p.* from police_problem p LEFT JOIN police_problemtotype pp  ON pp.problemid=p.id where 1=1 ${ew.sqlSegment}" )
+    List<Problem>  getProblemList(Page page, @Param("ew") EntityWrapper ew);
 
-    int countgetProblemList(GetProblemsParam getProblemsParam);
+    @Select("select count(DISTINCT(p.id)) from police_problem p  LEFT JOIN police_problemtotype pp  ON pp.problemid=p.id where 1=1 ${ew.sqlSegment}")
+    int countgetProblemList( @Param("ew") EntityWrapper ew);
 }

@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.datasourse.base.entity;
+package com.avst.trm.v1.common.datasourse.police.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
@@ -14,46 +14,30 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-17
  */
-public class Base_page extends Model<Base_page> {
+public class Police_casetype extends Model<Police_casetype> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 页面表
+     * 笔录类型表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 页面编号
+     * 类型名称
      */
-    private String pageid;
+    private String typename;
 
     /**
-     * 页面名称
+     * 排序
      */
-    private String pagename;
+    private Integer ordernum;
 
     /**
      * 创建时间
      */
     private Date createtime;
-
-    /**
-     * 页面说明
-     */
-    private String description;
-
-    /**
-     * 类型id
-     */
-    private Integer typeid;
-
-    /**
-     * 第一个页面:
-1是/-1不是（一种类型只有一个首页）
-     */
-    private Integer firstpage;
 
     private String ssid;
 
@@ -72,19 +56,19 @@ public class Base_page extends Model<Base_page> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getPageid() {
-        return pageid;
+    public String getTypename() {
+        return typename;
     }
 
-    public void setPageid(String pageid) {
-        this.pageid = pageid;
+    public void setTypename(String typename) {
+        this.typename = typename;
     }
-    public String getPagename() {
-        return pagename;
+    public Integer getOrdernum() {
+        return ordernum;
     }
 
-    public void setPagename(String pagename) {
-        this.pagename = pagename;
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -92,27 +76,6 @@ public class Base_page extends Model<Base_page> {
 
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
-    }
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-    public Integer getTypeid() {
-        return typeid;
-    }
-
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
-    }
-    public Integer getFirstpage() {
-        return firstpage;
-    }
-
-    public void setFirstpage(Integer firstpage) {
-        this.firstpage = firstpage;
     }
     public String getSsid() {
         return ssid;
@@ -157,14 +120,11 @@ public class Base_page extends Model<Base_page> {
 
     @Override
     public String toString() {
-        return "Base_page{" +
+        return "Police_casetype{" +
         "id=" + id +
-        ", pageid=" + pageid +
-        ", pagename=" + pagename +
+        ", typename=" + typename +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", description=" + description +
-        ", typeid=" + typeid +
-        ", firstpage=" + firstpage +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
