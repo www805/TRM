@@ -13,6 +13,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
+import com.avst.trm.v1.web.vo.AdminManage_session;
 import com.avst.trm.v1.web.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
@@ -194,7 +195,7 @@ public class CommonCache {
                     PageVO pageVO=new PageVO();
                     pageVO.setPageid(page.getPageid());
 
-                    List<ActionAndinterfaceAndPage> actionandpagelist= getActionListByPageid(page.getPageid());
+                    List<ActionAndinterfaceAndPage> actionandpagelist= getActionListByPageid(page.getPageid(),getCurrentWebType());
                     if(null!=actionandpagelist&&actionandpagelist.size() > 0){//把该页面的动作填入
                         List<ActionVO> actionList = new ArrayList<ActionVO>();
                         for(ActionAndinterfaceAndPage ap:actionandpagelist){
@@ -260,7 +261,7 @@ public class CommonCache {
                     PageVO pageVO=new PageVO();
                     pageVO.setPageid(page.getPageid());
 
-                    List<ActionAndinterfaceAndPage> actionandpagelist= getActionListByPageid(page.getPageid());
+                    List<ActionAndinterfaceAndPage> actionandpagelist= getActionListByPageid(page.getPageid(),getCurrentServerType());
                     if(null!=actionandpagelist&&actionandpagelist.size() > 0){//把该页面的动作填入
                         List<ActionVO> actionList = new ArrayList<ActionVO>();
                         for(ActionAndinterfaceAndPage ap:actionandpagelist){
@@ -368,17 +369,17 @@ public class CommonCache {
      * 获取 那一类型的所有动作
      * @return
      */
-    public static synchronized List<ActionAndinterfaceAndPage> getActionListByPageid(String pageid){
+    public static synchronized List<ActionAndinterfaceAndPage> getActionListByPageid(String pageid,String type){
 
         if(null==actionListMap){
             initActionListMap();
         }
 
-        String typename=getCurrentServerType();
-        if(null!=actionListMap&&actionListMap.containsKey(typename)){
+        if(null!=actionListMap&&actionListMap.containsKey(type)){
             List<ActionAndinterfaceAndPage> andPageList=new ArrayList<ActionAndinterfaceAndPage>();
 
-            for(ActionAndinterfaceAndPage action:actionListMap.get(typename)){
+            List<ActionAndinterfaceAndPage> pagelist=actionListMap.get(type);
+            for(ActionAndinterfaceAndPage action:pagelist){
                 if(action.getPageid().equals(pageid)){
                     andPageList.add(action);
                 }
@@ -401,20 +402,20 @@ public class CommonCache {
 
             for(ActionAndinterfaceAndPage action : list){
 
-                String typename=action.getTypename();
+                String type=action.getType();
                 addPageToList(action);
 
                 List<ActionAndinterfaceAndPage> actionlist;
-                if(actionListMap.containsKey(typename)){
+                if(!actionListMap.containsKey(type)){
                     actionlist=new ArrayList<ActionAndinterfaceAndPage>();
                 }else{
-                    actionlist=actionListMap.get(typename);
+                    actionlist=actionListMap.get(type);
                 }
                 if(null==actionlist){
                     actionlist=new ArrayList<ActionAndinterfaceAndPage>();
                 }
                 actionlist.add(action);//
-                actionListMap.put(typename,actionlist);
+                actionListMap.put(type,actionlist);
             }
             return true;
         }
@@ -428,12 +429,12 @@ public class CommonCache {
             pageListMap=new HashMap<String,List<Base_page>>();
         }
 
-        String typename=action.getTypename();
+        String type=action.getType();
         List<Base_page> pageList;
-        if(pageListMap.containsKey(typename)){
+        if(!pageListMap.containsKey(type)){
             pageList=new ArrayList<Base_page>();
         }else{
-            pageList=pageListMap.get(typename);
+            pageList=pageListMap.get(type);
         }
         boolean bool=true;
         if(null!=pageList&&pageList.size() > 0){
@@ -454,11 +455,28 @@ public class CommonCache {
             newpage.setPageid(action.getPageid());
             newpage.setTypeid(action.getTypeid());
             pageList.add(newpage);
-            pageListMap.put(typename,pageList);
+            pageListMap.put(type,pageList);
         }
 
     }
 
+
+    /**
+     * 用户在session中的缓存
+     */
+    private static  AdminManage_session adminManage_session;
+
+    public static AdminManage_session getAdminManage_session(){
+
+
+        return adminManage_session;
+    }
+
+    public static void setAdminManage_session(AdminManage_session admin){
+
+        adminManage_session=admin;
+
+    }
 
 
 }

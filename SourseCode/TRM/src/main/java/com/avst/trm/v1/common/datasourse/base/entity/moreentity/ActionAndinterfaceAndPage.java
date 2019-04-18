@@ -6,6 +6,8 @@ public class ActionAndinterfaceAndPage extends Base_action {
 
     private String typename;
 
+    private String type;
+
     private String interfaceurl;
 
     private Integer firstpage;//是否是这一分类的首页，1是，-1不是
@@ -48,6 +50,14 @@ public class ActionAndinterfaceAndPage extends Base_action {
 
     public Integer getFirstpage() {
         return firstpage;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setFirstpage(Integer firstpage) {

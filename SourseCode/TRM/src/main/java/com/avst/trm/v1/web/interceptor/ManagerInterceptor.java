@@ -35,6 +35,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         if(null==session.getAttribute(Constant.INIT_WEB)){//web客户端页面动作集
             disbool=false;
             initVO=CommonCache.getinit_WEB();
+            session.setAttribute(Constant.INIT_WEB,initVO);
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_WEB);
         }
