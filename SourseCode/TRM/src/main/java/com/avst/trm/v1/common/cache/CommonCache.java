@@ -13,6 +13,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
+import com.avst.trm.v1.web.vo.AdminManage_session;
 import com.avst.trm.v1.web.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
@@ -459,6 +460,23 @@ public class CommonCache {
 
     }
 
+
+    /**
+     * 用户在session中的缓存
+     */
+    private static  AdminManage_session adminManage_session;
+
+    public static AdminManage_session getAdminManage_session(){
+
+
+        return adminManage_session;
+    }
+
+    public static void setAdminManage_session(AdminManage_session admin){
+
+        adminManage_session=admin;
+
+    }
 
 
 }

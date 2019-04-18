@@ -16,7 +16,9 @@ function getAdminInfoPageByParam_init(currPage,pageSize){
 }
 
 function getAdminInfoPage(name,currPage,pageSize){
-    var url=getUrl_manage().ceshi2;
+
+
+    var url=getActionURL(getactionid_manage().main_getRole);
     var data={
         name:name,
         currPage:currPage,

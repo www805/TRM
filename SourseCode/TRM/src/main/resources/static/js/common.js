@@ -1195,3 +1195,72 @@ function detail() {
 		});
 	});
 }
+
+/**
+ * 当前页的所有动作
+ */
+var pageActionByPage;
+
+/**
+ * 给当前页面更新动作集合
+ * @param InitVO
+ * @param pageid
+ */
+function setpageAction(InitVO,pageid){
+
+	if(isNotEmpty(InitVO)&&isNotEmpty(pageid)){
+		var code=InitVO.code;
+		if(code=="0"){
+			var pageList=InitVO.pageList;
+			for(var i=0;i<pageList.length;i++){
+				if(pageid==pageList[i].pageid){
+					pageActionByPage=pageList[i];
+					break;
+				}
+			}
+		}
+	}
+}
+
+/**
+ * 通过动作actionid获取需要使用的动作对象
+ * @param actionid
+ * @returns {*}
+ */
+function getAction(actionid){
+
+	if(isNotEmpty(pageActionByPage)&&isNotEmpty(actionid)){
+
+		if(pageActionByPage.length==0){
+			return ;
+		}
+		for(var i=0;i<pageActionByPage.length;i++){
+			if(actionid==pageActionByPage[i].actionId){
+				return pageList[i];
+			}
+		}
+	}
+
+}
+
+
+/**
+ * 通过动作actionid获取需要使用的动作的URL
+ * @param actionid
+ * @returns {*}
+ */
+function getActionURL(actionid){
+
+	if(isNotEmpty(pageActionByPage)&&isNotEmpty(actionid)){
+
+		if(pageActionByPage.length==0){
+			return ;
+		}
+		for(var i=0;i<pageActionByPage.length;i++){
+			if(actionid==pageActionByPage[i].actionId){
+				return pageList[i].reqURL;
+			}
+		}
+	}
+
+}
