@@ -13,7 +13,7 @@ public static void main( String[] args){
  
 	try {
 
-		getLocalMac();
+		System.out.println(getLocalMac());
 	} catch (Exception e) {
 		
 		e.printStackTrace();

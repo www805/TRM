@@ -34,7 +34,7 @@ public class ForClientBaseAction extends BaseAction {
 
         InitVO initVO=new InitVO();
 
-        forClientBaseService.initClient(initVO);
+        initVO=forClientBaseService.initClient(initVO);
 
         return initVO;
     }

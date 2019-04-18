@@ -2,6 +2,8 @@ package com.avst.trm.v1.web.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
+import com.avst.trm.v1.web.vo.AdminManage_session;
 import com.avst.trm.v1.web.vo.InitVO;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -20,29 +22,41 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response, Object handler) throws Exception {
         System.out.println("执行preHandle方法-->01");
 
+        String url=request.getRequestURI();
+        if(url.endsWith("/publicweb/home/login")){//跳过进入登录页面的拦截
+            return true;
+        }
+
         //获取session，判断用户
         HttpSession session=request.getSession();
 
         boolean disbool=true;
         InitVO initVO;
         String servertype=CommonCache.getCurrentServerType();
-        if(null==session.getAttribute(Constant.INIT_WEB)){
+        if(null==session.getAttribute(Constant.INIT_WEB)){//web客户端页面动作集
             disbool=false;
-            CommonCache.getActionList();
-
-
-
+            initVO=CommonCache.getinit_WEB();
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_WEB);
         }
 
-
+        if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
+            disbool=false;
+        }
+        String basepath="/publicweb/home"; //首页的action只允许在homeaction里面
+        String forstpageid=basepath+"/login";
         //判断session中的用户信息是否可以通过
+        if(null==session.getAttribute(Constant.MANAGE_WEB)){
+            disbool=false;
+        }else{
+            String pageid=initVO.getFirstpageid();
+            forstpageid=basepath+ ( pageid.startsWith("/") ? pageid : ("/"+pageid) );
+        }
 
-        if (true) {
+        if (disbool) {
             return true;  //通过拦截器，继续执行请求
         } else {//跳转登录界面
-            request.getRequestDispatcher("/login").forward(request, response);
+            request.getRequestDispatcher(forstpageid).forward(request, response);
             return false;  //没有通过拦截器，返回登录页面
         }
     }

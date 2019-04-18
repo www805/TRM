@@ -1,8 +1,11 @@
 package com.avst.trm.v1.web.action.baseaction;
 
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.param.CheckSQParam;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.service.baseservice.ActionService;
@@ -31,6 +34,17 @@ public class CeshiAction extends BaseAction {
         RResult rResult=createNewResultOfFail();
         ceshiService.getadminlist(rResult,username);
         return rResult;
+    }
+
+    @RequestMapping(value = "/sq")
+    @ResponseBody
+    public String sq() {
+
+        String msg="";
+        String code="";
+        CheckSQParam checkSQParam=CommonCache.checkSQ();
+
+        return checkSQParam.getMsg();
     }
 
     @RequestMapping(value = "/ceshi2")

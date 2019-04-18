@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.cache;
 
+import com.avst.trm.v1.common.cache.param.CheckSQParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_action;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_page;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
@@ -13,6 +14,7 @@ import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.web.vo.InitVO;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -156,12 +158,13 @@ public class CommonCache {
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }
-            String msg="";
-            String code="";
-            if(!checkSQ(msg,code)){
+            InitVO init_web=new InitVO();
+            CheckSQParam checkSQParam=checkSQ();
+            init_web.setCode(checkSQParam.getCode());
+            init_web.setMsg(checkSQParam.getMsg());
+            if(!checkSQParam.isCheckbool()){
                 return null;
             }
-            InitVO init_web=new InitVO();
             init_web.setBaseUrl(getClientBaseurl());
             init_web.setServiceType(getCurrentWebType());
             List<PageVO> pageList=new ArrayList<PageVO>();
@@ -188,12 +191,15 @@ public class CommonCache {
                     if(null!=page.getFirstpage()&&page.getFirstpage()==1){//是否首页显示
                         init_web.setFirstpageid(page.getPageid());
                     }
-
                     pageList.add(pageVO);
                 }
                 init_web.setPageList(pageList);
+                init_WEB=init_web;
+            }else{
+                init_web.setMsg("没有找到任务一个页面，请联系管理员");
+                init_web.setCode(CodeForSQ.ERROR100002);
+                return init_web;
             }
-            init_WEB=init_web;
         }
 
         return init_WEB;
@@ -218,15 +224,12 @@ public class CommonCache {
             }
             com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO initvo=
                     new com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO();
-            String msg="";
-            String code="";
-            if(!checkSQ(msg,code)){
-                initvo.setMsg(msg);
-                initvo.setCode(code);
-                return null;
+            CheckSQParam checkSQParam=checkSQ();
+            initvo.setMsg(checkSQParam.getMsg());
+            initvo.setCode(checkSQParam.getCode());
+            if(!checkSQParam.isCheckbool()){
+                return initvo;
             }
-            initvo.setMsg(msg);
-            initvo.setCode(code);;
             initvo.setKey(getClientKey());
             initvo.setBaseUrl(getClientBaseurl());
             initvo.setServiceType(getCurrentServerType());
@@ -258,44 +261,52 @@ public class CommonCache {
                     pageList.add(pageVO);
                 }
                 initvo.setPageList(pageList);
+                init_CLIENT=initvo;
+            }else{
+                initvo.setCode(CodeForSQ.ERROR100002);
+                initvo.setMsg("该类型页面未找到，请联系管理员");
+                return initvo;
             }
-            init_CLIENT=initvo;
         }
 
         return init_CLIENT;
     }
 
-    private static boolean checkSQ(String msg,String code){
+    public static CheckSQParam checkSQ(){
+
+        CheckSQParam checkSQParam=new CheckSQParam();
         //判断是否生成隐性的ini文件
         Base_serverconfigMapper base_serverconfigMapper = SpringUtil.getBean(Base_serverconfigMapper.class);
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         String serverip=serverconfig.getServerip();
         String serverport=serverconfig.getServerport();
         if(StringUtils.isEmpty(serverip)||StringUtils.isEmpty(serverport)){
-            System.out.println("服务器配置访问IP/端口异常");
-            return false;
+            checkSQParam.setCode(CodeForSQ.ERROR100002);
+            checkSQParam.setMsg("服务器配置访问IP/端口异常");
+            return checkSQParam;
         }
-        int authorizebool=serverconfig.getAuthorizebool();
-        if(authorizebool!=1){//还没有生成隐性授权文件
+        Integer authorizebool=serverconfig.getAuthorizebool();
+        if(null==authorizebool||authorizebool!=1){//还没有生成隐性授权文件
             boolean bool=AnalysisSQ.createClientini(base_serverconfigMapper,serverconfig);
             System.out.println("initClient authorizebool:"+bool);
         }
 
         int bool=AnalysisSQ.checkUseTime();
         if(bool > -1){
-            code=CodeForSQ.TRUE;
-            msg="使用正常";
-            return true;
+            checkSQParam.setCheckbool(true);
+            checkSQParam.setCode(CodeForSQ.TRUE);
+            checkSQParam.setMsg("使用正常");
+            return checkSQParam;
         }else{
             if(bool == -100001){
-                code=CodeForSQ.ERROR100001;
+                checkSQParam.setCode(CodeForSQ.ERROR100001);
             }else if(bool == -100002){
-                code=CodeForSQ.ERROR100002;
+                checkSQParam.setCode(CodeForSQ.ERROR100002);
             }else{
-                code=CodeForSQ.ERROR100003;
+                checkSQParam.setCode(CodeForSQ.ERROR100003);
             }
-            msg="使用异常";
-            return false;
+            checkSQParam.setMsg("使用异常");
+            return checkSQParam;
         }
     }
 
@@ -362,7 +373,8 @@ public class CommonCache {
     public static synchronized boolean initActionListMap(){
         Base_actionMapper base_actionMapper = SpringUtil.getBean(Base_actionMapper.class);
 
-        List<ActionAndinterfaceAndPage> list=base_actionMapper.getActionAndinterfaceAndPage(null);
+        EntityWrapper ew=new EntityWrapper();
+        List<ActionAndinterfaceAndPage> list=base_actionMapper.getActionAndinterfaceAndPage(ew);
         if(null!=list&&list.size() > 0){
 
             actionListMap=new HashMap<String, List<ActionAndinterfaceAndPage>>();
@@ -420,22 +432,8 @@ public class CommonCache {
             pageListMap.put(typename,pageList);
         }
 
-
-
-
     }
 
 
-
-    /**
-     * 获取缓存中对应的动作对象
-     * @param url
-     * @return
-     */
-    public static Base_action getBase_action(String url,String type){
-
-
-        return null;
-    }
 
 }

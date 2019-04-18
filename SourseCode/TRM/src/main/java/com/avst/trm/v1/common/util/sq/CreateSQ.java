@@ -42,7 +42,17 @@ public class CreateSQ {
 
     public static void main(String[] args) {
 
-        System.out.println(deSQ(new SQEntity(),"E:\\trmshouquan"));
+        SQEntity sqEntity= new SQEntity();
+        sqEntity.setUnitCode("avst");
+        sqEntity.setSqDay(10000);
+        sqEntity.setSortNum(1);
+        sqEntity.setServerType("police");
+        sqEntity.setForeverBool(true);
+        sqEntity.setClientName("吴斌客户端服务器");
+        sqEntity.setCpuCode(NetTool.getLocalMac());
+        sqEntity.setStartTime(DateUtil.getDateAndMinute());
+
+        System.out.println(deSQ(sqEntity,"E:\\trmshouquan"));
 
     }
 
