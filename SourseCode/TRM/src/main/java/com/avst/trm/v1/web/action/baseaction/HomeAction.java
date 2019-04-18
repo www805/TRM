@@ -6,14 +6,20 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/home")
+@RequestMapping("/publicweb/home")
 public class HomeAction extends BaseAction{
 
 
+    @GetMapping(value = "/{pageid}")
+    public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
+
+        return new ModelAndView(pageid, "main", model);
+    }
 
 
     @GetMapping(value = "/gotomain")

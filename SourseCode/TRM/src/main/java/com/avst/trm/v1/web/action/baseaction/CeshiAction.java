@@ -26,6 +26,7 @@ public class CeshiAction extends BaseAction {
     private ActionService actionService;
 
     @RequestMapping(value = "/ceshi")
+    @ResponseBody
     public RResult getlist(String username) {
         RResult rResult=createNewResultOfFail();
         ceshiService.getadminlist(rResult,username);

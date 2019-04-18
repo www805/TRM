@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.param.GetAdminAndAdmintorol
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -24,6 +25,6 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
 
     @Select("select count(a.id) from base_admininfo a " +
             "left join base_admintorole ar " +
-            "on a.id=ar.adminid " )
-    public int getAdminAndAdmintorolecount(EntityWrapper ew);
+            "on a.id=ar.adminid where 1=1 ${ew.sqlSegment}" )
+    public int getAdminAndAdmintorolecount(@Param("ew") EntityWrapper ew);
 }

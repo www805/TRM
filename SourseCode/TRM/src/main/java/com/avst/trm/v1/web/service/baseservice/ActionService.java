@@ -1,10 +1,7 @@
 package com.avst.trm.v1.web.service.baseservice;
 
-import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_action;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_actionMapper;
-import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,7 @@ public class ActionService {
         entityWrapper.eq("interfaceurl",interfaceurl);
         entityWrapper.eq("pageid",pageid);
 
-        ActionAndinterfaceAndPage actionAndinterfaceAndPage=base_actionMapper.getActionAndinterfaceAndPage(entityWrapper);
+        ActionAndinterfaceAndPage actionAndinterfaceAndPage=base_actionMapper.getActionAndinterfaceAndPage(entityWrapper).get(0);
         if(null!=actionAndinterfaceAndPage){
 
 

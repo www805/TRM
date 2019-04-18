@@ -8,6 +8,12 @@ public class ActionAndinterfaceAndPage extends Base_action {
 
     private String interfaceurl;
 
+    private Integer firstpage;//是否是这一分类的首页，1是，-1不是
+
+    private Integer page_id_c;//当前页面的id
+
+    private Integer page_id_n;//下一个页面的id
+
     public String getTypename() {
         return typename;
     }
@@ -22,5 +28,29 @@ public class ActionAndinterfaceAndPage extends Base_action {
 
     public void setInterfaceurl(String interfaceurl) {
         this.interfaceurl = interfaceurl;
+    }
+
+    public Integer getPage_id_c() {
+        return page_id_c;
+    }
+
+    public void setPage_id_c(Integer page_id_c) {
+        this.page_id_c = page_id_c;
+    }
+
+    public Integer getPage_id_n() {
+        return page_id_n;
+    }
+
+    public void setPage_id_n(Integer page_id_n) {
+        this.page_id_n = page_id_n;
+    }
+
+    public Integer getFirstpage() {
+        return firstpage;
+    }
+
+    public void setFirstpage(Integer firstpage) {
+        this.firstpage = firstpage;
     }
 }

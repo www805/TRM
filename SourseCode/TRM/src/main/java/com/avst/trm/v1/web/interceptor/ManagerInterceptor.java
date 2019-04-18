@@ -1,5 +1,8 @@
 package com.avst.trm.v1.web.interceptor;
 
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.web.vo.InitVO;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -19,6 +22,20 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
 
         //获取session，判断用户
         HttpSession session=request.getSession();
+
+        boolean disbool=true;
+        InitVO initVO;
+        String servertype=CommonCache.getCurrentServerType();
+        if(null==session.getAttribute(Constant.INIT_WEB)){
+            disbool=false;
+            CommonCache.getActionList();
+
+
+
+        }else{
+            initVO=(InitVO)session.getAttribute(Constant.INIT_WEB);
+        }
+
 
         //判断session中的用户信息是否可以通过
 
