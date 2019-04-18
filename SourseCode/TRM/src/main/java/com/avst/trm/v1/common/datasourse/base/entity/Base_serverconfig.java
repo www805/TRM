@@ -80,9 +80,9 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private Integer authorizebool;
 
     /**
-     * 服务类型id
+     * 最基本的类型（如：court，说明要使用court_client和court_web 2类type）
      */
-    private Integer typeid;
+    private String type;
 
     public Integer getId() {
         return id;
@@ -189,12 +189,13 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setAuthorizebool(Integer authorizebool) {
         this.authorizebool = authorizebool;
     }
-    public Integer getTypeid() {
-        return typeid;
+
+    public String getType() {
+        return type;
     }
 
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
@@ -220,7 +221,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
         ", authorizebool=" + authorizebool +
-        ", typeid=" + typeid +
+        ", type=" + type +
         "}";
     }
 }
