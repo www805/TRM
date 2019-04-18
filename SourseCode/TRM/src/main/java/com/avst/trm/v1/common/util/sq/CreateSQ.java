@@ -45,11 +45,11 @@ public class CreateSQ {
         SQEntity sqEntity= new SQEntity();
         sqEntity.setUnitCode("avst");
         sqEntity.setSqDay(10000);
-        sqEntity.setSortNum(1);
+        sqEntity.setSortNum(2);
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(true);
-        sqEntity.setClientName("吴斌客户端服务器");
-        sqEntity.setCpuCode(NetTool.getLocalMac());
+        sqEntity.setClientName("庄杰麟客户端服务器");
+        sqEntity.setCpuCode("46453E76763E48463E4A723E42723E7274");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
         System.out.println(deSQ(sqEntity,"E:\\trmshouquan"));

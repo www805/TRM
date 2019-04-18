@@ -1073,19 +1073,18 @@ public static String numtoStr(int digit,Integer num){
 	public static String getXMSoursePath(){
 
 		//当前项目下路径
-		File file = new File("");
-		String filePath = null;
 		try {
-			filePath = file.getCanonicalPath();
+			String filePath = System.getProperty("user.dir");
 
 			filePath=filePath.substring(0,filePath.lastIndexOf("\\"));//win的截取方式
 
-		} catch (IOException e) {
+			System.out.println(filePath);
+			return filePath;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(filePath);
 
-		return filePath;
+		return null;
 	}
 
 	/**
@@ -1138,11 +1137,11 @@ public static String numtoStr(int digit,Integer num){
 	
 	public static void main(String[] args) {
 
-		String str="D:\\lswj\\NameSpace.java";
+//		String str="D:\\lswj\\NameSpace.java";
+//
+//		System.out.println(setFileHide(str));
 
-		System.out.println(setFileHide(str));
-
-		System.out.println(getJDKorJREPath());
+		System.out.println(System.getProperty("user.dir"));
 		
 	}
 }
