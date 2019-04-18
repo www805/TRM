@@ -32,7 +32,6 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
 
         boolean disbool=true;
         InitVO initVO;
-        String servertype=CommonCache.getCurrentServerType();
         if(null==session.getAttribute(Constant.INIT_WEB)){//web客户端页面动作集
             disbool=false;
             initVO=CommonCache.getinit_WEB();

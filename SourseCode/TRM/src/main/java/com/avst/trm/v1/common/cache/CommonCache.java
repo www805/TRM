@@ -47,7 +47,10 @@ public class CommonCache {
          return clientkey;
      }
 
-     private static String clientbaseurl;
+    /**
+     * client客户端base请求地址
+     */
+    private static String clientbaseurl;
 
     public static String getClientBaseurl(){
         if(StringUtils.isEmpty(clientbaseurl)){
@@ -55,6 +58,19 @@ public class CommonCache {
             initBase_Serverconfig();
         }
         return clientbaseurl;
+    }
+
+    /**
+     * web客户端base请求地址
+     */
+    private static String webbaseurl;
+
+    public static String getWebBaseurl(){
+        if(StringUtils.isEmpty(webbaseurl)){
+
+            initBase_Serverconfig();
+        }
+        return webbaseurl;
     }
 
 
@@ -85,7 +101,7 @@ public class CommonCache {
             initBase_Serverconfig();
         }
 
-        return currentServerType;
+        return currentWebType;
     }
 
 
@@ -110,7 +126,11 @@ public class CommonCache {
         String serverip=serverconfig.getServerip();
         String serverport=serverconfig.getServerport();
         if(StringUtils.isNotEmpty(serverip)&&StringUtils.isNotEmpty(serverport)){
-            clientbaseurl = "http://"+serverip+":"+serverport+ PropertiesListenerConfig.getProperty("pro.baseurl");
+            clientbaseurl = PropertiesListenerConfig.getProperty("pro.XY")+"://"
+                    +serverip+":"+serverport+ PropertiesListenerConfig.getProperty("pro.baseurl_client");
+            webbaseurl = PropertiesListenerConfig.getProperty("pro.XY")+"://"
+//                    +serverip+":"+serverport+ PropertiesListenerConfig.getProperty("pro.baseurl_web");
+                    +serverip+":"+serverport;//暂时不用 baseurl_web 这一级
         }
         String type=serverconfig.getType();
         if(StringUtils.isNotEmpty(type)){
@@ -165,7 +185,7 @@ public class CommonCache {
             if(!checkSQParam.isCheckbool()){
                 return null;
             }
-            init_web.setBaseUrl(getClientBaseurl());
+            init_web.setBaseUrl(getWebBaseurl());
             init_web.setServiceType(getCurrentWebType());
             List<PageVO> pageList=new ArrayList<PageVO>();
             List<Base_page> pagelist=getPageList(getCurrentWebType());
@@ -390,6 +410,9 @@ public class CommonCache {
                 }else{
                     actionlist=actionListMap.get(typename);
                 }
+                if(null==actionlist){
+                    actionlist=new ArrayList<ActionAndinterfaceAndPage>();
+                }
                 actionlist.add(action);//
                 actionListMap.put(typename,actionlist);
             }
@@ -420,6 +443,8 @@ public class CommonCache {
                     break;
                 }
             }
+        }else{
+            pageList=new ArrayList<Base_page>();
         }
 
         if(bool){
