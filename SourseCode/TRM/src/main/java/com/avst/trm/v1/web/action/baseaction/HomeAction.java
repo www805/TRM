@@ -58,12 +58,12 @@ public class HomeAction extends BaseAction{
     }
 
 
-    @GetMapping(value = "/error")
+    @GetMapping(value = "/404")
     public ModelAndView getError(Model model) {
 
         model.addAttribute("title", "错误页面404");
 
-        return new ModelAndView("police/404", "error", model);
+        return new ModelAndView("404", "error", model);
 
 
     }
