@@ -103,7 +103,7 @@ public class AnalysisSQ {
                 servertype="0";
             }
             try {
-                serverconfig.setTypeid(CommonCache.getCurrentServerTypeid());
+                serverconfig.setType(servertype);//授权基本类型
                 if(StringUtils.isNotEmpty(clientName)){
                     serverconfig.setClientname(clientName);
                 }

@@ -27,26 +27,27 @@ public class CeshiService extends BaseService {
     @Autowired
     private Base_admininfoMapper admininfoMapper;
 
+
     /**
      * 条件查询
      * @param result
      * @param username  13 4
      */
-    public void getadminlist(RResult<List<Base_admininfo>> result, String username){
+    public void getadminlist(RResult<Integer> result, String username){
 
         if(null==result){
-            result=new RResult<List<Base_admininfo>>();
+            result=new RResult<Integer>();
         }
-        List<Base_admininfo> list=new ArrayList<Base_admininfo>();
         try {
             EntityWrapper ew=new EntityWrapper();
 //            ew.setEntity(new Admininfo());
-            ew.eq("id",1);
-            list=(List<Base_admininfo>)admininfoMapper.selectList(ew);
-            result.setData(list);
+              ew.eq("a.id",1);
+            System.out.println(ew.getSqlSegment()+"---------");
+            int count=admininfoMapper.getAdminAndAdmintorolecount(ew);
+            result.setData(count);
             this.changeResultToSuccess(result);
         }catch (Exception e){
-            e.fillInStackTrace();
+            e.printStackTrace();
         }finally {
             System.out.println("请求结束");
         }

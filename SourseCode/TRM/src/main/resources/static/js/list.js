@@ -1,4 +1,7 @@
 
+
+
+
 function getAdminInfoPageByParam_init(currPage,pageSize){
 
     var url=getUrl_manage().ceshi2;
