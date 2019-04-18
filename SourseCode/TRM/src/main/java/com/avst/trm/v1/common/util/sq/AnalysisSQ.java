@@ -60,8 +60,8 @@ public class AnalysisSQ {
     }
 
 
-//    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
-    private static String inifilename="javatrm.ini";//main测试使用
+    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+//    private static String inifilename="javatrm.ini";//main测试使用
     /**
      *  初始化授权文件的路径
      */
