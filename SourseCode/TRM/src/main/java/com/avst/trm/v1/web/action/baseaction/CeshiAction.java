@@ -2,14 +2,11 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
-import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.service.baseservice.ActionService;
 import com.avst.trm.v1.web.service.baseservice.CeshiService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +42,7 @@ public class CeshiAction extends BaseAction {
     }
 
     @RequestMapping(value = "/ceshi3")
+
     public ModelAndView getlist3(Model model,Getlist3Param param) {
         RResult rResult=createNewResultOfFail();
         param.setPageSize(3);//测试

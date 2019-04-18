@@ -14,14 +14,39 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 
 @Controller
-@RequestMapping("/role")
+@RequestMapping("/web/role")
 public class RoleAction extends BaseAction{
 
     @Autowired
     private Base_roleMapper base_roleMapper;
 
-    /***
+
+    /**
      * 角色列表
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getRole")
+    public ModelAndView getRole(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        List<Base_role> base_roles = base_roleMapper.selectList(null);
+
+        rResult.setData(base_roles);
+
+        model.addAttribute("base_roles", base_roles);
+
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "角色列表");
+        return new ModelAndView("police/role/getRoleList", "roleModel", model);
+
+    }
+
+    /***
+     * 角色列表分页
      * @param model
      * @return
      */
@@ -40,11 +65,9 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "角色列表");
-        return new ModelAndView("role/getRoleList", "roleModel", model);
+        return new ModelAndView("police/role/getRoleList", "roleModel", model);
 
     }
-
-
 
     /**
      * 添加角色
@@ -63,7 +86,7 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加角色");
-        return new ModelAndView("role/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("police/role/addOrUpdateRole", "roleModel", model);
     }
 
     /***
@@ -83,7 +106,7 @@ public class RoleAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改角色");
-        return new ModelAndView("role/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("police/role/addOrUpdateRole", "roleModel", model);
     }
 
 

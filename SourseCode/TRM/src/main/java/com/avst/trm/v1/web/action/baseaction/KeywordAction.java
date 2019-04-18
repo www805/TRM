@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/keyword")
+@RequestMapping("/web/keyword")
 public class KeywordAction extends BaseAction{
 
     /**
@@ -25,7 +25,23 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "关键字");
-        return new ModelAndView("keyword/keyword", "keywordModel", model);
+        return new ModelAndView("police/keyword/getKeyword", "keywordModel", model);
+    }
+
+    /**
+     * 关键字分页
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getKeywordList")
+    public ModelAndView getKeywordList(Model model) {
+
+        RResult rResult = createNewResultOfFail();
+        //ceshiService.getadminlist3(rResult);
+
+        model.addAttribute("RResult", rResult);
+        model.addAttribute("title", "关键字");
+        return new ModelAndView("police/keyword/getKeyword", "keywordModel", model);
     }
 
     /**
@@ -42,7 +58,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加关键字");
-        return new ModelAndView("keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("police/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /***
@@ -58,7 +74,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改关键字");
-        return new ModelAndView("keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("police/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
 

@@ -2,65 +2,53 @@
 <html xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
-    <title th:text="${arraignmentModel.title}">Title</title>
+    <title th:text="${roleModel.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
 
 
-<div style="margin: 15px;">
+<div style="margin: 15px;" class="layui-form">
 
     <div class="layui-elem-quote">
-        <h3 th:text="${arraignmentModel.title}"></h3>
+        <h3 th:text="${roleModel.title}"></h3>
     </div>
 
     <form class="layui-form" action="">
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: auto;">案件名称</label>
+            <label class="layui-form-label" style="width: auto;">角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="roleName" lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
-            </div>
-            <label class="layui-form-label" style="width: auto;">案件编号</label>
-            <div class="layui-input-inline">
-                <input type="text" name="roleName" lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="roleName" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
             </div>
             <input type="submit" class="layui-btn layui-btn-normal" value="查询">
+            <a th:href="@{/web/role/getAddRole}" class="layui-btn layui-btn-normal" >添加角色</a>
         </div>
     </form>
 
-    <table class="layui-table">
+    <table class="layui-table" >
         <thead>
         <tr>
             <th>序号</th>
-            <th>案件名称</th>
-            <th>当前案由</th>
-            <th>案件编号</th>
-            <th>记录人</th>
-            <th>到案方式</th>
-
-            <th>案件发生时间</th>
-            <th>案发开始时间</th>
-            <th>案发结束时间</th>
-            <th>询问次数</th>
+            <th>角色名称</th>
+            <th>角色说明</th>
+            <th>创建时间</th>
+            <th>是否启用</th>
             <th>操作</th>
-
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>1</td>
-            <td>黑帮特大走私案</td>
-            <td>违反海关法规</td>
-            <td>165454</td>
-            <td>贤心</td>
-            <td>当场抓获</td>
-            <td>2016-11-29</td>
+            <td>超管</td>
+            <td>可以管理一切</td>
             <td>2018-11-29</td>
-            <td>2018-11-29</td>
-            <td>10</td>
+            <td >
+                 <input type="checkbox" name="switch" lay-skin="switch" lay-text="已启用|未启用" disabled>
+            </td>
             <td>
-                <a th:href="@{/arraignment/getArraignmentByid/1}" class="layui-btn layui-btn-normal layui-btn-sm">笔录详情</a>
+                <a th:href="@{/web/role/getUpdateRole}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>
         </tbody>
@@ -69,6 +57,8 @@
     <div id="demo20" style="float: right;"></div>
     <ul id="biuuu_city_list"></ul>
 </div>
+
+
 
 <div th:replace="footer :: footer">...</div>
 
@@ -132,11 +122,11 @@
             ,jump: function(obj){
 
                 //加载层-风格4
-                var index = layer.msg('加载中', {
-                    icon: 16
-                    ,shade: 0.01
-                    ,time: 1000, //20s后自动关闭
-                });
+                // var index = layer.msg('加载中', {
+                //     icon: 16
+                //     ,shade: 0.01
+                //     ,time: 1000, //20s后自动关闭
+                // });
 
                 //模拟渲染
                 // document.getElementById('biuuu_city_list').innerHTML = function(){

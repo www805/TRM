@@ -9,12 +9,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/web/user")
 public class UserAction extends BaseAction{
 
 
-    /***
+    /**
      * 用户列表
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getUser")
+    public ModelAndView getUser(Model model) {
+
+        RResult rResult=createNewResultOfFail();
+
+        model.addAttribute("RResult", rResult);
+
+        model.addAttribute("title", "用户列表");
+        return new ModelAndView("police/users/getUserList", "userModel", model);
+
+    }
+
+    /***
+     * 用户列表分页
      * @param model
      * @return
      */
@@ -25,14 +42,11 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
 
-
-
-
-
         model.addAttribute("title", "用户列表");
-        return new ModelAndView("users/getUserList", "userModel", model);
+        return new ModelAndView("police/users/getUserList", "userModel", model);
 
     }
+
 
     /***
      * 添加用户
@@ -46,7 +60,7 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "添加用户");
-        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
+        return new ModelAndView("police/users/addOrUpdateUser", "userModel", model);
 
     }
 
@@ -62,7 +76,7 @@ public class UserAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改用户");
-        return new ModelAndView("users/addOrUpdateUser", "userModel", model);
+        return new ModelAndView("police/users/addOrUpdateUser", "userModel", model);
 
     }
 

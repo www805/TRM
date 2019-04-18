@@ -30,7 +30,7 @@ public class CeshiService extends BaseService {
     /**
      * 条件查询
      * @param result
-     * @param username
+     * @param username  13 4
      */
     public void getadminlist(RResult<List<Base_admininfo>> result, String username){
 
