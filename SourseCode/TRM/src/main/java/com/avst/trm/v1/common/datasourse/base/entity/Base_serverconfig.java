@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-19
  */
 public class Base_serverconfig extends Model<Base_serverconfig> {
 
@@ -55,6 +55,16 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private String serverport;
 
     /**
+     * 1已授权，-1未授权
+     */
+    private Integer authorizebool;
+
+    /**
+     * 最基本的类型（如：court，说明要使用court_client和court_web 2类type）
+     */
+    private String type;
+
+    /**
      * 工作开始时间
      */
     private Date workstarttime;
@@ -63,6 +73,11 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
      * 同步工作天数
      */
     private Integer workdays;
+
+    /**
+     * 授权的单位编号:一个单位有可能有多个客户端服务器，所以需要对客户端服务器做标记
+     */
+    private Integer authorizesortnum;
 
     private String ssid;
 
@@ -73,16 +88,6 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private Integer integer1;
 
     private Integer integer2;
-
-    /**
-     * 1已授权，-1未授权
-     */
-    private Integer authorizebool;
-
-    /**
-     * 最基本的类型（如：court，说明要使用court_client和court_web 2类type）
-     */
-    private String type;
 
     public Integer getId() {
         return id;
@@ -133,6 +138,20 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setServerport(String serverport) {
         this.serverport = serverport;
     }
+    public Integer getAuthorizebool() {
+        return authorizebool;
+    }
+
+    public void setAuthorizebool(Integer authorizebool) {
+        this.authorizebool = authorizebool;
+    }
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
     public Date getWorkstarttime() {
         return workstarttime;
     }
@@ -146,6 +165,13 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
 
     public void setWorkdays(Integer workdays) {
         this.workdays = workdays;
+    }
+    public Integer getAuthorizesortnum() {
+        return authorizesortnum;
+    }
+
+    public void setAuthorizesortnum(Integer authorizesortnum) {
+        this.authorizesortnum = authorizesortnum;
     }
     public String getSsid() {
         return ssid;
@@ -182,21 +208,6 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setInteger2(Integer integer2) {
         this.integer2 = integer2;
     }
-    public Integer getAuthorizebool() {
-        return authorizebool;
-    }
-
-    public void setAuthorizebool(Integer authorizebool) {
-        this.authorizebool = authorizebool;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     @Override
     protected Serializable pkVal() {
@@ -213,15 +224,16 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", clienturl=" + clienturl +
         ", serverip=" + serverip +
         ", serverport=" + serverport +
+        ", authorizebool=" + authorizebool +
+        ", type=" + type +
         ", workstarttime=" + workstarttime +
         ", workdays=" + workdays +
+        ", authorizesortnum=" + authorizesortnum +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
-        ", authorizebool=" + authorizebool +
-        ", type=" + type +
         "}";
     }
 }
