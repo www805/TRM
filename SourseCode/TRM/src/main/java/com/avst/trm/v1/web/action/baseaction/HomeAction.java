@@ -2,21 +2,28 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.req.basereq.LoginParam;
+import com.avst.trm.v1.web.service.policeservice.LoginService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/publicweb/home")
 public class HomeAction extends BaseAction{
 
+    @Resource
+    private LoginService loginService;
 
     @GetMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
@@ -25,7 +32,7 @@ public class HomeAction extends BaseAction{
     }
 
 
-    @GetMapping(value = "/gotomain")
+    @GetMapping(value = "/main")
     public ModelAndView gotomain(Model model) {
 
         String type=CommonCache.getCurrentServerType();
@@ -35,7 +42,7 @@ public class HomeAction extends BaseAction{
         //获取统计数据信息
 
         model.addAttribute("title", "智能提讯管理系统");
-        return new ModelAndView("police/main", "main", model);
+        return new ModelAndView("main", "main", model);
     }
 
     /**
@@ -55,28 +62,57 @@ public class HomeAction extends BaseAction{
 
     }
 
-
+    /**
+     * 用户登录页面
+     * @param model
+     * @param request
+     * @param loginParam
+     * @return
+     */
     @GetMapping(value = "/login")
-    public ModelAndView gotologin(Model model, HttpServletRequest request) {
+    public ModelAndView gotologin(Model model, HttpServletRequest request, LoginParam loginParam) {
+        RResult rResult=createNewResultOfFail();
 
-        model.addAttribute("title", "layui测试主页");
+        model.addAttribute("result", rResult);
+        model.addAttribute("title", "欢迎登录后台管理界面平台");
 
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
+//        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");
 
         return new ModelAndView("/police/login", "login", model);
-
-
     }
 
+    @PostMapping(value = "/checklogin")
+    @ResponseBody
+    public RResult checklogin(Model model, HttpServletRequest request, LoginParam loginParam) {
+        RResult rResult=createNewResultOfFail();
+
+        if(!StringUtils.isEmpty(loginParam.getLoginaccount()) && !StringUtils.isEmpty(loginParam.getPassword())){
+            loginService.gotologin(rResult,request,loginParam);
+        }else{
+            rResult.setMessage("用户名或密码为空");
+            System.out.println("LogAction gotologin loginParam is null");
+        }
+
+        return rResult;
+    }
+
+    @RequestMapping(value = "/logout",produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public RResult logout(Model model,HttpServletRequest request) {
+        RResult rResult=createNewResultOfFail();
+
+        this.changeResultToSuccess(rResult);
+        rResult.setMessage("退出成功");
+
+        request.getSession().setAttribute(Constant.MANAGE_WEB,null);
+        return rResult;
+    }
 
     @GetMapping(value = "/404")
     public ModelAndView getError(Model model) {
-
         model.addAttribute("title", "错误页面404");
-
         return new ModelAndView("404", "error", model);
-
-
     }
 
 

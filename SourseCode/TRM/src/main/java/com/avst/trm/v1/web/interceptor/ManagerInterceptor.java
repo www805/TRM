@@ -23,7 +23,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         System.out.println("执行preHandle方法-->01");
 
         String url=request.getRequestURI();
-        if(url.endsWith("/publicweb/home/login")){//跳过进入登录页面的拦截
+        if(url.endsWith("/publicweb/home/login") || url.endsWith("/publicweb/home/checklogin")){//跳过进入登录页面的拦截
             return true;
         }
 
@@ -53,6 +53,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
             forstpageid=basepath+ ( pageid.startsWith("/") ? pageid : ("/"+pageid) );
         }
 
+//        disbool = true;  //暂时让他成功
         if (disbool) {
             return true;  //通过拦截器，继续执行请求
         } else {//跳转登录界面

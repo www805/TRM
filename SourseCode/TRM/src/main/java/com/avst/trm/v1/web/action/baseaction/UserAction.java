@@ -2,16 +2,20 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.service.policeservice.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/web/user")
 public class UserAction extends BaseAction{
 
+    @Autowired
+    private UserService userService;
 
     /**
      * 用户列表
@@ -19,11 +23,14 @@ public class UserAction extends BaseAction{
      * @return
      */
     @GetMapping(value = "/getUser")
-    public ModelAndView getUser(Model model) {
+    public ModelAndView getUser(Model model, Getlist3Param param) {
 
         RResult rResult=createNewResultOfFail();
 
-        model.addAttribute("RResult", rResult);
+        param.setPageSize(3);//测试
+        userService.getadminlist3(rResult,param);
+
+        model.addAttribute("result", rResult);
 
         model.addAttribute("title", "用户列表");
         return new ModelAndView("police/users/getUserList", "userModel", model);
@@ -35,16 +42,13 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/getUserList")
-    public ModelAndView getUserList(Model model) {
-
+    @RequestMapping(value = "/getUserList")
+    @ResponseBody
+    public RResult getUserList(Model model,Getlist3Param param) {
         RResult rResult=createNewResultOfFail();
-
-        model.addAttribute("RResult", rResult);
-
-        model.addAttribute("title", "用户列表");
-        return new ModelAndView("police/users/getUserList", "userModel", model);
-
+        param.setPageSize(3);//测试
+        userService.getadminlist3(rResult,param);
+        return rResult;
     }
 
 
@@ -69,13 +73,13 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/getUpdateUser")
-    public ModelAndView getUpdateUser(Model model) {
+    @GetMapping(value = "/getUpdateUser/{id}")
+    public ModelAndView getUpdateUser(Model model, @PathVariable("id") int id) {
 
         RResult rResult=createNewResultOfFail();
 
         model.addAttribute("RResult", rResult);
-        model.addAttribute("title", "修改用户");
+        model.addAttribute("title", "修改用户" + id);
         return new ModelAndView("police/users/addOrUpdateUser", "userModel", model);
 
     }

@@ -14,10 +14,14 @@
         var result=[[${result}]];
         var pagelist;
         var pageparam;
+        console.log(result);
         pageshow(result);
 
         function pageshow(data){
+
+
             pagelist=data.data.pagelist;
+
             pageparam=data.data.pageparam;
             detail();
             showpagetohtml();

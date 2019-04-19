@@ -73,7 +73,7 @@ public class CeshiAction extends BaseAction {
     public ModelAndView getuserbyid(Model model,@PathVariable("id")String id) {
 
         model.addAttribute("title", "第"+id+"个人");
-        return new ModelAndView("role", "userModel", model);
+        return new ModelAndView("AdminAndAdminRole", "userModel", model);
 
     }
 
