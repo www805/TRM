@@ -5,10 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_upserver">
         <id column="id" property="id" />
-        <result column="cnname" property="cnname" />
-        <result column="datasheetid" property="datasheetid" />
         <result column="lastuploadtime" property="lastuploadtime" />
-        <result column="dataid" property="dataid" />
         <result column="uploadcount" property="uploadcount" />
         <result column="unitsort" property="unitsort" />
         <result column="ssid" property="ssid" />

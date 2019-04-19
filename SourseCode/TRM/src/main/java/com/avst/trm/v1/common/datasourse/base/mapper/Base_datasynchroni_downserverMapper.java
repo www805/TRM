@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-19
  */
 public interface Base_datasynchroni_downserverMapper extends BaseMapper<Base_datasynchroni_downserver> {
 
