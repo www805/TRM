@@ -64,6 +64,11 @@ public class Base_permissions extends Model<Base_permissions> {
      */
     private Date createtime;
 
+    /**
+     * 排序
+     */
+    private Integer ordernum;
+
     private String ssid;
 
     private String string1;
@@ -73,6 +78,14 @@ public class Base_permissions extends Model<Base_permissions> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
+    }
 
     public Integer getId() {
         return id;

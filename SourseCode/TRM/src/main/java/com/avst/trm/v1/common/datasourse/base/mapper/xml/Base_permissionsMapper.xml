@@ -13,6 +13,7 @@
         <result column="type" property="type" />
         <result column="description" property="description" />
         <result column="createtime" property="createtime" />
+        <result column="ordernum" property="ordernum" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

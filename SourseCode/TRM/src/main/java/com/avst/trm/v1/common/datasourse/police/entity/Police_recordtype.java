@@ -12,9 +12,9 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-17
+ * @since 2019-04-19
  */
-public class Police_casetype extends Model<Police_casetype> {
+public class Police_recordtype extends Model<Police_recordtype> {
 
     private static final long serialVersionUID = 1L;
 
@@ -120,7 +120,7 @@ public class Police_casetype extends Model<Police_casetype> {
 
     @Override
     public String toString() {
-        return "Police_casetype{" +
+        return "Police_recordtype{" +
         "id=" + id +
         ", typename=" + typename +
         ", ordernum=" + ordernum +

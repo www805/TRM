@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-19
  */
 public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserver> {
 
@@ -25,32 +25,17 @@ public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserv
     private Integer id;
 
     /**
-     * 表单名称
-     */
-    private String cnname;
-
-    /**
-     * 可供同步的表单id
-     */
-    private Integer datasheetid;
-
-    /**
-     * 最后同步时间
+     * 最后同步时间：服务器的时间
      */
     private Date lastuploadtime;
 
     /**
-     * 最后同步id
-     */
-    private Integer dataid;
-
-    /**
-     * 同步次数
+     * 同步次数:一次同步按钮算一次
      */
     private Integer uploadcount;
 
     /**
-     * 单位中的排序
+     * 单位中的排序:用于确定是那台机子同步的
      */
     private Integer unitsort;
 
@@ -71,33 +56,12 @@ public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserv
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getCnname() {
-        return cnname;
-    }
-
-    public void setCnname(String cnname) {
-        this.cnname = cnname;
-    }
-    public Integer getDatasheetid() {
-        return datasheetid;
-    }
-
-    public void setDatasheetid(Integer datasheetid) {
-        this.datasheetid = datasheetid;
-    }
     public Date getLastuploadtime() {
         return lastuploadtime;
     }
 
     public void setLastuploadtime(Date lastuploadtime) {
         this.lastuploadtime = lastuploadtime;
-    }
-    public Integer getDataid() {
-        return dataid;
-    }
-
-    public void setDataid(Integer dataid) {
-        this.dataid = dataid;
     }
     public Integer getUploadcount() {
         return uploadcount;
@@ -158,10 +122,7 @@ public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserv
     public String toString() {
         return "Base_datasynchroni_upserver{" +
         "id=" + id +
-        ", cnname=" + cnname +
-        ", datasheetid=" + datasheetid +
         ", lastuploadtime=" + lastuploadtime +
-        ", dataid=" + dataid +
         ", uploadcount=" + uploadcount +
         ", unitsort=" + unitsort +
         ", ssid=" + ssid +

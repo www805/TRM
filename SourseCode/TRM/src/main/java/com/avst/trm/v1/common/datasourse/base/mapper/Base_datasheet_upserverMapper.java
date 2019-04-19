@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.mapper;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_datasheet;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_datasheet_upserver;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-19
  */
-public interface Base_datasheetMapper extends BaseMapper<Base_datasheet> {
+public interface Base_datasheet_upserverMapper extends BaseMapper<Base_datasheet_upserver> {
 
 }

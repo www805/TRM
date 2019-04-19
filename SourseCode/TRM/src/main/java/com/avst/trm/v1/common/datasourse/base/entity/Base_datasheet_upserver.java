@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
@@ -14,30 +13,40 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-19
  */
-public class Base_datasynchroni_downserver extends Model<Base_datasynchroni_downserver> {
+public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户端数据同步表(下级服务器使用)
+     * 同步表单对应的数据(上级服务器)
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 最后同步时间：客户端的时间
+     * 数据ssid
      */
-    private Date lastuploadtime;
+    private String datassid;
 
     /**
-     * 同步次数:一次同步按钮算一次（2张表同步次数可能不一样）
+     * 表单名
      */
-    private Integer uploadcount;
+    private String dataname;
 
     /**
-     * 上级服务器的IP
+     * 服务器数据同步id
      */
-    private String upserverip;
+    private Integer upserverid;
+
+    /**
+     * 是否同步文件:1同步文件，-1不是
+     */
+    private Integer filetype;
+
+    /**
+     * 文件名
+     */
+    private String filename;
 
     private String ssid;
 
@@ -56,26 +65,40 @@ public class Base_datasynchroni_downserver extends Model<Base_datasynchroni_down
     public void setId(Integer id) {
         this.id = id;
     }
-    public Date getLastuploadtime() {
-        return lastuploadtime;
+    public String getDatassid() {
+        return datassid;
     }
 
-    public void setLastuploadtime(Date lastuploadtime) {
-        this.lastuploadtime = lastuploadtime;
+    public void setDatassid(String datassid) {
+        this.datassid = datassid;
     }
-    public Integer getUploadcount() {
-        return uploadcount;
-    }
-
-    public void setUploadcount(Integer uploadcount) {
-        this.uploadcount = uploadcount;
-    }
-    public String getUpserverip() {
-        return upserverip;
+    public String getDataname() {
+        return dataname;
     }
 
-    public void setUpserverip(String upserverip) {
-        this.upserverip = upserverip;
+    public void setDataname(String dataname) {
+        this.dataname = dataname;
+    }
+    public Integer getUpserverid() {
+        return upserverid;
+    }
+
+    public void setUpserverid(Integer upserverid) {
+        this.upserverid = upserverid;
+    }
+    public Integer getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(Integer filetype) {
+        this.filetype = filetype;
+    }
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
     public String getSsid() {
         return ssid;
@@ -120,11 +143,13 @@ public class Base_datasynchroni_downserver extends Model<Base_datasynchroni_down
 
     @Override
     public String toString() {
-        return "Base_datasynchroni_downserver{" +
+        return "Base_datasheet_upserver{" +
         "id=" + id +
-        ", lastuploadtime=" + lastuploadtime +
-        ", uploadcount=" + uploadcount +
-        ", upserverip=" + upserverip +
+        ", datassid=" + datassid +
+        ", dataname=" + dataname +
+        ", upserverid=" + upserverid +
+        ", filetype=" + filetype +
+        ", filename=" + filename +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
