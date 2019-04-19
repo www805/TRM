@@ -11,27 +11,42 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-19
  */
-public class Base_datasheet extends Model<Base_datasheet> {
+public class Base_datasheet_downserver extends Model<Base_datasheet_downserver> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 可供同步的表单
+     * 同步表单对应的数据(下级服务器)
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 表单中文名称
+     * 数据ssid
      */
-    private String cnnane;
+    private String datassid;
 
     /**
      * 表单名
      */
     private String dataname;
+
+    /**
+     * 客户端数据同步id
+     */
+    private Integer downserverid;
+
+    /**
+     * 是否同步文件:1同步文件，-1不是
+     */
+    private Integer filetype;
+
+    /**
+     * 文件名
+     */
+    private String filename;
 
     private String ssid;
 
@@ -50,12 +65,12 @@ public class Base_datasheet extends Model<Base_datasheet> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getCnnane() {
-        return cnnane;
+    public String getDatassid() {
+        return datassid;
     }
 
-    public void setCnnane(String cnnane) {
-        this.cnnane = cnnane;
+    public void setDatassid(String datassid) {
+        this.datassid = datassid;
     }
     public String getDataname() {
         return dataname;
@@ -63,6 +78,27 @@ public class Base_datasheet extends Model<Base_datasheet> {
 
     public void setDataname(String dataname) {
         this.dataname = dataname;
+    }
+    public Integer getDownserverid() {
+        return downserverid;
+    }
+
+    public void setDownserverid(Integer downserverid) {
+        this.downserverid = downserverid;
+    }
+    public Integer getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(Integer filetype) {
+        this.filetype = filetype;
+    }
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
     public String getSsid() {
         return ssid;
@@ -107,10 +143,13 @@ public class Base_datasheet extends Model<Base_datasheet> {
 
     @Override
     public String toString() {
-        return "Base_datasheet{" +
+        return "Base_datasheet_downserver{" +
         "id=" + id +
-        ", cnnane=" + cnnane +
+        ", datassid=" + datassid +
         ", dataname=" + dataname +
+        ", downserverid=" + downserverid +
+        ", filetype=" + filetype +
+        ", filename=" + filename +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

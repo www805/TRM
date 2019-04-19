@@ -11,15 +11,16 @@
         <result column="clienturl" property="clienturl" />
         <result column="serverip" property="serverip" />
         <result column="serverport" property="serverport" />
+        <result column="authorizebool" property="authorizebool" />
+        <result column="type" property="type" />
         <result column="workstarttime" property="workstarttime" />
         <result column="workdays" property="workdays" />
+        <result column="authorizesortnum" property="authorizesortnum" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />
         <result column="integer2" property="integer2" />
-        <result column="authorizebool" property="authorizebool" />
-        <result column="type" property="type" />
     </resultMap>
 
 </mapper>

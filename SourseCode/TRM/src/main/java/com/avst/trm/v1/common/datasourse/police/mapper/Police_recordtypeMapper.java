@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.mapper;
 
-import com.avst.trm.v1.common.datasourse.police.entity.Police_casetype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * </p>
  *
  * @author Admin
- * @since 2019-04-17
+ * @since 2019-04-19
  */
-public interface Police_casetypeMapper extends BaseMapper<Police_casetype> {
+public interface Police_recordtypeMapper extends BaseMapper<Police_recordtype> {
 
 }

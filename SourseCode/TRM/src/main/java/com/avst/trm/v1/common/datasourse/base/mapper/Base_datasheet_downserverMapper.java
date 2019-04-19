@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.base.mapper;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_downserver;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_datasheet_downserver;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author Admin
  * @since 2019-04-19
  */
-public interface Base_datasynchroni_downserverMapper extends BaseMapper<Base_datasynchroni_downserver> {
+public interface Base_datasheet_downserverMapper extends BaseMapper<Base_datasheet_downserver> {
 
 }
