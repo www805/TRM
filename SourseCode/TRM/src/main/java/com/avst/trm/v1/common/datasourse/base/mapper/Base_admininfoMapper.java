@@ -23,7 +23,7 @@ import java.util.List;
  */
 public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
     @Select("select a.* ,ar.id admintoroleid,ar.adminid,ar.roleid " +
-            "from base_admininfo a left join base_admintorole ar on a.id=ar.adminid ")
+            "from base_admininfo a left join base_admintorole ar on a.ssid=ar.adminssid ")
     public List<AdminAndAdmintorole> getAdminAndAdmintorolelist(Page page, EntityWrapper ew);
 
     /**
@@ -34,13 +34,14 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      * @return
      */
     @Select("select a.*,ro.rolename " +
-            "from base_admininfo a left join base_admintorole ar on a.id=ar.adminid " +
-            "left join base_role ro on ro.id = ar.roleid ")
+            "from base_admininfo a " +
+            "left join base_admintorole ar on a.ssid=ar.adminssid " +
+            "left join base_role ro on ro.ssid = ar.rolessid ")
     public List<AdminAndAdminRole> getAdminAndAdminRolelist(Page page, EntityWrapper ew);
 
     @Select("select count(a.id) from base_admininfo a " +
             "left join base_admintorole ar " +
-            "on a.id=ar.adminid where 1=1 ${ew.sqlSegment}" )
+            "on a.ssid=ar.adminssid where 1=1 ${ew.sqlSegment}" )
     public int getAdminAndAdmintorolecount(@Param("ew") EntityWrapper ew);
 
     /**
@@ -50,6 +51,6 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      */
     @Select("select * from base_admininfo a " +
             "left join base_admintorole ar " +
-            "on a.id=ar.adminid where 1=1 ${ew.sqlSegment}" )
+            "on a.ssid=ar.adminssid where 1=1 ${ew.sqlSegment}" )
     public AdminManage_session getAdminAndAdmintorole(@Param("ew") EntityWrapper ew);
 }
