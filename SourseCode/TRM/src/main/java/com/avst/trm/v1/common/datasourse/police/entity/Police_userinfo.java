@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-15
+ * @since 2019-04-22
  */
 public class Police_userinfo extends Model<Police_userinfo> {
 
@@ -67,12 +67,12 @@ public class Police_userinfo extends Model<Police_userinfo> {
     /**
      * 民族
      */
-    private String national;
+    private String nationalssid;
 
     /**
      * 国籍
      */
-    private String nationality;
+    private String nationalityssid;
 
     /**
      * 职业
@@ -116,10 +116,10 @@ public class Police_userinfo extends Model<Police_userinfo> {
 
     /**
      * 特殊人员说明：
-        1、无犯罪史
-        2、毒
-        3、逃
-        4、违
+1、无犯罪史
+2、毒
+3、逃
+4、违
      */
     private Integer specialtype;
 
@@ -199,19 +199,19 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setBoth(Date both) {
         this.both = both;
     }
-    public String getNational() {
-        return national;
+    public String getNationalssid() {
+        return nationalssid;
     }
 
-    public void setNational(String national) {
-        this.national = national;
+    public void setNationalssid(String nationalssid) {
+        this.nationalssid = nationalssid;
     }
-    public String getNationality() {
-        return nationality;
+    public String getNationalityssid() {
+        return nationalityssid;
     }
 
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
+    public void setNationalityssid(String nationalityssid) {
+        this.nationalityssid = nationalityssid;
     }
     public String getProfessional() {
         return professional;
@@ -329,8 +329,8 @@ public class Police_userinfo extends Model<Police_userinfo> {
         ", age=" + age +
         ", sex=" + sex +
         ", both=" + both +
-        ", national=" + national +
-        ", nationality=" + nationality +
+        ", nationalssid=" + nationalssid +
+        ", nationalityssid=" + nationalityssid +
         ", professional=" + professional +
         ", educationlevel=" + educationlevel +
         ", politicsstatus=" + politicsstatus +

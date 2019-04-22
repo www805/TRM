@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="datassid" property="datassid" />
         <result column="dataname" property="dataname" />
-        <result column="upserverid" property="upserverid" />
+        <result column="upserverssid" property="upserverssid" />
         <result column="filetype" property="filetype" />
         <result column="filename" property="filename" />
         <result column="ssid" property="ssid" />

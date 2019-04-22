@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_answer extends Model<Police_answer> {
 
@@ -27,12 +27,12 @@ public class Police_answer extends Model<Police_answer> {
     /**
      * 笔录id
      */
-    private Integer recordid;
+    private String recordssid;
 
     /**
      * 题目id
      */
-    private Integer problemid;
+    private String problemssid;
 
     /**
      * 答案
@@ -71,19 +71,19 @@ public class Police_answer extends Model<Police_answer> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getRecordid() {
-        return recordid;
+    public String getRecordssid() {
+        return recordssid;
     }
 
-    public void setRecordid(Integer recordid) {
-        this.recordid = recordid;
+    public void setRecordssid(String recordssid) {
+        this.recordssid = recordssid;
     }
-    public Integer getProblemid() {
-        return problemid;
+    public String getProblemssid() {
+        return problemssid;
     }
 
-    public void setProblemid(Integer problemid) {
-        this.problemid = problemid;
+    public void setProblemssid(String problemssid) {
+        this.problemssid = problemssid;
     }
     public String getAnswer() {
         return answer;
@@ -158,8 +158,8 @@ public class Police_answer extends Model<Police_answer> {
     public String toString() {
         return "Police_answer{" +
         "id=" + id +
-        ", recordid=" + recordid +
-        ", problemid=" + problemid +
+        ", recordssid=" + recordssid +
+        ", problemssid=" + problemssid +
         ", answer=" + answer +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +

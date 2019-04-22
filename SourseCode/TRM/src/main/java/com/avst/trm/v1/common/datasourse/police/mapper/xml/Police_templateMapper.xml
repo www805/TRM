@@ -16,41 +16,4 @@
         <result column="integer2" property="integer2" />
     </resultMap>
 
-
-    <select id="getTemplateList" resultType="com.avst.trm.v1.common.datasourse.police.entity.moreentity.Template" parameterType="com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplatesParam">
-      select DISTINCT(t.id),t.* from police_template t
-      LEFT JOIN police_templatetotype tt ON tt.templateid=t.id
-      <where>
-          <if test="null!=templatetypeid">
-              tt.templatetypeid=#{templatetypeid}
-          </if>
-          <if test="null!=keyword">
-              and t.title like '%${keyword}%'
-          </if>
-      </where>
-      order by t.ordernum asc,t.createtime desc
-    </select>
-
-    <select id="countgetTemplateList" resultType="java.lang.Integer" parameterType="com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplatesParam">
-        select count(DISTINCT(t.id))  from police_template t
-        LEFT JOIN police_templatetotype tt ON tt.templateid=t.id
-        <where>
-            <if test="null!=templatetypeid">
-                tt.templatetypeid=#{templatetypeid}
-            </if>
-            <if test="null!=keyword">
-                and t.title like '%${keyword}%'
-            </if>
-        </where>
-    </select>
-    
-    <select id="getTemplateById" resultType="com.avst.trm.v1.common.datasourse.police.entity.moreentity.Template" parameterType="com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplateByIdParam">
-        select DISTINCT(t.id),t.* from police_template t
-        LEFT JOIN police_templatetotype tt ON tt.templateid=t.id
-        <where>
-            <if test="null!=templatebyid">
-                t.id=#{templatebyid}
-            </if>
-        </where>
-    </select>
 </mapper>

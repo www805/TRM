@@ -5,12 +5,12 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_recordreal">
         <id column="id" property="id" />
-        <result column="recordid" property="recordid" />
+        <result column="recordssid" property="recordssid" />
         <result column="translatext" property="translatext" />
         <result column="downurl" property="downurl" />
         <result column="realurl" property="realurl" />
         <result column="time" property="time" />
-        <result column="userid" property="userid" />
+        <result column="userssid" property="userssid" />
         <result column="recordtype" property="recordtype" />
         <result column="starttime" property="starttime" />
         <result column="ordernum" property="ordernum" />

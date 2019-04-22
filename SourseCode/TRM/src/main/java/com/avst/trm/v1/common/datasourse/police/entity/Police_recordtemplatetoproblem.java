@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_recordtemplatetoproblem extends Model<Police_recordtemplatetoproblem> {
 
@@ -27,12 +27,12 @@ public class Police_recordtemplatetoproblem extends Model<Police_recordtemplatet
     /**
      * 笔录模板id
      */
-    private Integer recordtemplateid;
+    private String recordtemplatessid;
 
     /**
      * 题目id
      */
-    private Integer problemid;
+    private String problemssid;
 
     /**
      * 排序
@@ -61,19 +61,19 @@ public class Police_recordtemplatetoproblem extends Model<Police_recordtemplatet
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getRecordtemplateid() {
-        return recordtemplateid;
+    public String getRecordtemplatessid() {
+        return recordtemplatessid;
     }
 
-    public void setRecordtemplateid(Integer recordtemplateid) {
-        this.recordtemplateid = recordtemplateid;
+    public void setRecordtemplatessid(String recordtemplatessid) {
+        this.recordtemplatessid = recordtemplatessid;
     }
-    public Integer getProblemid() {
-        return problemid;
+    public String getProblemssid() {
+        return problemssid;
     }
 
-    public void setProblemid(Integer problemid) {
-        this.problemid = problemid;
+    public void setProblemssid(String problemssid) {
+        this.problemssid = problemssid;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -134,8 +134,8 @@ public class Police_recordtemplatetoproblem extends Model<Police_recordtemplatet
     public String toString() {
         return "Police_recordtemplatetoproblem{" +
         "id=" + id +
-        ", recordtemplateid=" + recordtemplateid +
-        ", problemid=" + problemid +
+        ", recordtemplatessid=" + recordtemplatessid +
+        ", problemssid=" + problemssid +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +

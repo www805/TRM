@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-17
+ * @since 2019-04-22
  */
 public class Base_page extends Model<Base_page> {
 
@@ -47,7 +47,7 @@ public class Base_page extends Model<Base_page> {
     /**
      * 类型id
      */
-    private Integer typeid;
+    private String typessid;
 
     /**
      * 第一个页面:
@@ -100,12 +100,12 @@ public class Base_page extends Model<Base_page> {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Integer getTypeid() {
-        return typeid;
+    public String getTypessid() {
+        return typessid;
     }
 
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
+    public void setTypessid(String typessid) {
+        this.typessid = typessid;
     }
     public Integer getFirstpage() {
         return firstpage;
@@ -163,7 +163,7 @@ public class Base_page extends Model<Base_page> {
         ", pagename=" + pagename +
         ", createtime=" + createtime +
         ", description=" + description +
-        ", typeid=" + typeid +
+        ", typessid=" + typessid +
         ", firstpage=" + firstpage +
         ", ssid=" + ssid +
         ", string1=" + string1 +

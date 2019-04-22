@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-15
+ * @since 2019-04-22
  */
 public class Base_interface extends Model<Base_interface> {
 
@@ -47,7 +47,7 @@ public class Base_interface extends Model<Base_interface> {
     /**
      * 类型id
      */
-    private Integer typeid;
+    private String typessid;
 
     private String ssid;
 
@@ -94,12 +94,12 @@ public class Base_interface extends Model<Base_interface> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public Integer getTypeid() {
-        return typeid;
+    public String getTypessid() {
+        return typessid;
     }
 
-    public void setTypeid(Integer typeid) {
-        this.typeid = typeid;
+    public void setTypessid(String typessid) {
+        this.typessid = typessid;
     }
     public String getSsid() {
         return ssid;
@@ -150,7 +150,7 @@ public class Base_interface extends Model<Base_interface> {
         ", interfaceurl=" + interfaceurl +
         ", description=" + description +
         ", createtime=" + createtime +
-        ", typeid=" + typeid +
+        ", typessid=" + typessid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_templatetoproblem">
         <id column="id" property="id" />
-        <result column="templateid" property="templateid" />
-        <result column="problemid" property="problemid" />
+        <result column="templatessid" property="templatessid" />
+        <result column="problemssid" property="problemssid" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
@@ -15,12 +15,5 @@
         <result column="integer1" property="integer1" />
         <result column="integer2" property="integer2" />
     </resultMap>
-    <select id="getTemplateToProblems" resultType="com.avst.trm.v1.common.datasourse.police.entity.moreentity.TemplateToProblem">
-        select p.problem,p.referanswer,tp.ordernum,tp.templateid ,tp.problemid from police_templatetoproblem tp
-        left join  police_problem  p on p.id=tp.problemid
-        left join  police_template  t on t.id=tp.templateid
-        where tp.templateid=#{templateid}
-        order by tp.ordernum
 
-    </select>
 </mapper>

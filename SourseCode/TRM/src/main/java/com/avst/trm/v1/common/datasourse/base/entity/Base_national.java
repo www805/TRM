@@ -14,25 +14,27 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-22
  */
-public class Base_admintorole extends Model<Base_admintorole> {
+public class Base_national extends Model<Base_national> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 用户角色表
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 民族代号
      */
-    private String adminssid;
+    private Integer nationcode;
 
     /**
-     * 角色id
+     * 民族名称
      */
-    private String rolessid;
+    private String nationname;
+
+    /**
+     * 排序
+     */
+    private Integer ordernum;
 
     /**
      * 创建时间
@@ -56,19 +58,26 @@ public class Base_admintorole extends Model<Base_admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getAdminssid() {
-        return adminssid;
+    public Integer getNationcode() {
+        return nationcode;
     }
 
-    public void setAdminssid(String adminssid) {
-        this.adminssid = adminssid;
+    public void setNationcode(Integer nationcode) {
+        this.nationcode = nationcode;
     }
-    public String getRolessid() {
-        return rolessid;
+    public String getNationname() {
+        return nationname;
     }
 
-    public void setRolessid(String rolessid) {
-        this.rolessid = rolessid;
+    public void setNationname(String nationname) {
+        this.nationname = nationname;
+    }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +129,11 @@ public class Base_admintorole extends Model<Base_admintorole> {
 
     @Override
     public String toString() {
-        return "Base_admintorole{" +
+        return "Base_national{" +
         "id=" + id +
-        ", adminssid=" + adminssid +
-        ", rolessid=" + rolessid +
+        ", nationcode=" + nationcode +
+        ", nationname=" + nationname +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

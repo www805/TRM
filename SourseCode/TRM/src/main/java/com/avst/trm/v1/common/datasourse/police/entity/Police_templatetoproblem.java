@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
 
@@ -27,12 +27,12 @@ public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
     /**
      * 模板id
      */
-    private Integer templateid;
+    private String templatessid;
 
     /**
      * 题目id
      */
-    private Integer problemid;
+    private String problemssid;
 
     /**
      * 排序
@@ -61,19 +61,19 @@ public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getTemplateid() {
-        return templateid;
+    public String getTemplatessid() {
+        return templatessid;
     }
 
-    public void setTemplateid(Integer templateid) {
-        this.templateid = templateid;
+    public void setTemplatessid(String templatessid) {
+        this.templatessid = templatessid;
     }
-    public Integer getProblemid() {
-        return problemid;
+    public String getProblemssid() {
+        return problemssid;
     }
 
-    public void setProblemid(Integer problemid) {
-        this.problemid = problemid;
+    public void setProblemssid(String problemssid) {
+        this.problemssid = problemssid;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -134,8 +134,8 @@ public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
     public String toString() {
         return "Police_templatetoproblem{" +
         "id=" + id +
-        ", templateid=" + templateid +
-        ", problemid=" + problemid +
+        ", templatessid=" + templatessid +
+        ", problemssid=" + problemssid +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +

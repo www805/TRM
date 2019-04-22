@@ -14,25 +14,35 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-22
  */
-public class Base_admintorole extends Model<Base_admintorole> {
+public class Base_nationality extends Model<Base_nationality> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 国籍表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 用户id
+     * 国际代码
      */
-    private String adminssid;
+    private String nationalitycode;
 
     /**
-     * 角色id
+     * 国籍中文名称
      */
-    private String rolessid;
+    private String zhname;
+
+    /**
+     * 国籍英文名称
+     */
+    private String enname;
+
+    /**
+     * 排序
+     */
+    private Integer ordernum;
 
     /**
      * 创建时间
@@ -56,19 +66,33 @@ public class Base_admintorole extends Model<Base_admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getAdminssid() {
-        return adminssid;
+    public String getNationalitycode() {
+        return nationalitycode;
     }
 
-    public void setAdminssid(String adminssid) {
-        this.adminssid = adminssid;
+    public void setNationalitycode(String nationalitycode) {
+        this.nationalitycode = nationalitycode;
     }
-    public String getRolessid() {
-        return rolessid;
+    public String getZhname() {
+        return zhname;
     }
 
-    public void setRolessid(String rolessid) {
-        this.rolessid = rolessid;
+    public void setZhname(String zhname) {
+        this.zhname = zhname;
+    }
+    public String getEnname() {
+        return enname;
+    }
+
+    public void setEnname(String enname) {
+        this.enname = enname;
+    }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -120,10 +144,12 @@ public class Base_admintorole extends Model<Base_admintorole> {
 
     @Override
     public String toString() {
-        return "Base_admintorole{" +
+        return "Base_nationality{" +
         "id=" + id +
-        ", adminssid=" + adminssid +
-        ", rolessid=" + rolessid +
+        ", nationalitycode=" + nationalitycode +
+        ", zhname=" + zhname +
+        ", enname=" + enname +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

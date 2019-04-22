@@ -11,7 +11,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-19
+ * @since 2019-04-22
  */
 public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
 
@@ -36,7 +36,7 @@ public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
     /**
      * 服务器数据同步id
      */
-    private Integer upserverid;
+    private String upserverssid;
 
     /**
      * 是否同步文件:1同步文件，-1不是
@@ -79,12 +79,12 @@ public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
     public void setDataname(String dataname) {
         this.dataname = dataname;
     }
-    public Integer getUpserverid() {
-        return upserverid;
+    public String getUpserverssid() {
+        return upserverssid;
     }
 
-    public void setUpserverid(Integer upserverid) {
-        this.upserverid = upserverid;
+    public void setUpserverssid(String upserverssid) {
+        this.upserverssid = upserverssid;
     }
     public Integer getFiletype() {
         return filetype;
@@ -147,7 +147,7 @@ public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
         "id=" + id +
         ", datassid=" + datassid +
         ", dataname=" + dataname +
-        ", upserverid=" + upserverid +
+        ", upserverssid=" + upserverssid +
         ", filetype=" + filetype +
         ", filename=" + filename +
         ", ssid=" + ssid +

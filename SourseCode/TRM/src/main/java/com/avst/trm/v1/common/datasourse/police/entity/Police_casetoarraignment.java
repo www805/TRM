@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
 
@@ -24,9 +24,9 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private Integer caseid;
+    private String casessid;
 
-    private Integer arraignmentid;
+    private String arraignmentssid;
 
     private Date createtime;
 
@@ -47,19 +47,19 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getCaseid() {
-        return caseid;
+    public String getCasessid() {
+        return casessid;
     }
 
-    public void setCaseid(Integer caseid) {
-        this.caseid = caseid;
+    public void setCasessid(String casessid) {
+        this.casessid = casessid;
     }
-    public Integer getArraignmentid() {
-        return arraignmentid;
+    public String getArraignmentssid() {
+        return arraignmentssid;
     }
 
-    public void setArraignmentid(Integer arraignmentid) {
-        this.arraignmentid = arraignmentid;
+    public void setArraignmentssid(String arraignmentssid) {
+        this.arraignmentssid = arraignmentssid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -113,8 +113,8 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
     public String toString() {
         return "Police_casetoarraignment{" +
         "id=" + id +
-        ", caseid=" + caseid +
-        ", arraignmentid=" + arraignmentid +
+        ", casessid=" + casessid +
+        ", arraignmentssid=" + arraignmentssid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

@@ -4,8 +4,6 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 
 /**
@@ -14,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-22
  */
 public class Base_admininfo extends Model<Base_admininfo> {
 
@@ -49,7 +47,7 @@ public class Base_admininfo extends Model<Base_admininfo> {
     /**
      * 工作单位id
      */
-    private Integer workunitid;
+    private String workunitssid;
 
     /**
      * 单位中的排序,用于客户端的使用者（办案人员）
@@ -69,7 +67,6 @@ public class Base_admininfo extends Model<Base_admininfo> {
     /**
      * 最后一次登陆时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastlogintime;
 
     private String ssid;
@@ -117,12 +114,12 @@ public class Base_admininfo extends Model<Base_admininfo> {
     public void setAdminbool(Integer adminbool) {
         this.adminbool = adminbool;
     }
-    public Integer getWorkunitid() {
-        return workunitid;
+    public String getWorkunitssid() {
+        return workunitssid;
     }
 
-    public void setWorkunitid(Integer workunitid) {
-        this.workunitid = workunitid;
+    public void setWorkunitssid(String workunitssid) {
+        this.workunitssid = workunitssid;
     }
     public Integer getUnitsort() {
         return unitsort;
@@ -201,7 +198,7 @@ public class Base_admininfo extends Model<Base_admininfo> {
         ", username=" + username +
         ", password=" + password +
         ", adminbool=" + adminbool +
-        ", workunitid=" + workunitid +
+        ", workunitssid=" + workunitssid +
         ", unitsort=" + unitsort +
         ", registertime=" + registertime +
         ", updatetime=" + updatetime +

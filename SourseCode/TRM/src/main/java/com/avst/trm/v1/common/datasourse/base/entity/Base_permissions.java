@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-22
  */
 public class Base_permissions extends Model<Base_permissions> {
 
@@ -79,14 +79,6 @@ public class Base_permissions extends Model<Base_permissions> {
 
     private Integer integer2;
 
-    public Integer getOrdernum() {
-        return ordernum;
-    }
-
-    public void setOrdernum(Integer ordernum) {
-        this.ordernum = ordernum;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -150,6 +142,13 @@ public class Base_permissions extends Model<Base_permissions> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+    public Integer getOrdernum() {
+        return ordernum;
+    }
+
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
+    }
     public String getSsid() {
         return ssid;
     }
@@ -203,6 +202,7 @@ public class Base_permissions extends Model<Base_permissions> {
         ", type=" + type +
         ", description=" + description +
         ", createtime=" + createtime +
+        ", ordernum=" + ordernum +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-22
  */
 public class Base_roletopermissions extends Model<Base_roletopermissions> {
 
@@ -27,12 +27,12 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     /**
      * 权限id
      */
-    private Integer permissionsid;
+    private String permissionsssid;
 
     /**
      * 角色id
      */
-    private Integer roleid;
+    private String rolessid;
 
     /**
      * 创建时间
@@ -56,19 +56,19 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getPermissionsid() {
-        return permissionsid;
+    public String getPermissionsssid() {
+        return permissionsssid;
     }
 
-    public void setPermissionsid(Integer permissionsid) {
-        this.permissionsid = permissionsid;
+    public void setPermissionsssid(String permissionsssid) {
+        this.permissionsssid = permissionsssid;
     }
-    public Integer getRoleid() {
-        return roleid;
+    public String getRolessid() {
+        return rolessid;
     }
 
-    public void setRoleid(Integer roleid) {
-        this.roleid = roleid;
+    public void setRolessid(String rolessid) {
+        this.rolessid = rolessid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -122,8 +122,8 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     public String toString() {
         return "Base_roletopermissions{" +
         "id=" + id +
-        ", permissionsid=" + permissionsid +
-        ", roleid=" + roleid +
+        ", permissionsssid=" + permissionsssid +
+        ", rolessid=" + rolessid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

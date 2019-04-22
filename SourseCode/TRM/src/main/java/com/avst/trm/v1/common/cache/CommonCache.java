@@ -469,7 +469,7 @@ public class CommonCache {
             newpage.setFirstpage(action.getFirstpage());
             newpage.setId(action.getPage_id_c());
             newpage.setPageid(action.getPageid());
-            newpage.setTypeid(action.getTypeid());
+            newpage.setTypessid(action.getTypessid());
             pageList.add(newpage);
             pageListMap.put(type,pageList);
         }

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_problemtotype extends Model<Police_problemtotype> {
 
@@ -27,12 +27,12 @@ public class Police_problemtotype extends Model<Police_problemtotype> {
     /**
      * 题目id
      */
-    private Integer problemid;
+    private String problemssid;
 
     /**
      * 题目类型id
      */
-    private Integer problemtypeid;
+    private String problemtypessid;
 
     /**
      * 创建时间
@@ -56,19 +56,19 @@ public class Police_problemtotype extends Model<Police_problemtotype> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getProblemid() {
-        return problemid;
+    public String getProblemssid() {
+        return problemssid;
     }
 
-    public void setProblemid(Integer problemid) {
-        this.problemid = problemid;
+    public void setProblemssid(String problemssid) {
+        this.problemssid = problemssid;
     }
-    public Integer getProblemtypeid() {
-        return problemtypeid;
+    public String getProblemtypessid() {
+        return problemtypessid;
     }
 
-    public void setProblemtypeid(Integer problemtypeid) {
-        this.problemtypeid = problemtypeid;
+    public void setProblemtypessid(String problemtypessid) {
+        this.problemtypessid = problemtypessid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -122,8 +122,8 @@ public class Police_problemtotype extends Model<Police_problemtotype> {
     public String toString() {
         return "Police_problemtotype{" +
         "id=" + id +
-        ", problemid=" + problemid +
-        ", problemtypeid=" + problemtypeid +
+        ", problemssid=" + problemssid +
+        ", problemtypessid=" + problemtypessid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

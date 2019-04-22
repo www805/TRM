@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_arraignment extends Model<Police_arraignment> {
 
@@ -27,12 +27,12 @@ public class Police_arraignment extends Model<Police_arraignment> {
     /**
      * 询问人id
      */
-    private Integer adminid;
+    private String adminssid;
 
     /**
      * 记录人id
      */
-    private Integer recordadminid;
+    private String recordadminssid;
 
     /**
      * 问话地点
@@ -71,19 +71,19 @@ public class Police_arraignment extends Model<Police_arraignment> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminid() {
-        return adminid;
+    public String getAdminssid() {
+        return adminssid;
     }
 
-    public void setAdminid(Integer adminid) {
-        this.adminid = adminid;
+    public void setAdminssid(String adminssid) {
+        this.adminssid = adminssid;
     }
-    public Integer getRecordadminid() {
-        return recordadminid;
+    public String getRecordadminssid() {
+        return recordadminssid;
     }
 
-    public void setRecordadminid(Integer recordadminid) {
-        this.recordadminid = recordadminid;
+    public void setRecordadminssid(String recordadminssid) {
+        this.recordadminssid = recordadminssid;
     }
     public String getRecordplace() {
         return recordplace;
@@ -158,8 +158,8 @@ public class Police_arraignment extends Model<Police_arraignment> {
     public String toString() {
         return "Police_arraignment{" +
         "id=" + id +
-        ", adminid=" + adminid +
-        ", recordadminid=" + recordadminid +
+        ", adminssid=" + adminssid +
+        ", recordadminssid=" + recordadminssid +
         ", recordplace=" + recordplace +
         ", askobj=" + askobj +
         ", asknum=" + asknum +

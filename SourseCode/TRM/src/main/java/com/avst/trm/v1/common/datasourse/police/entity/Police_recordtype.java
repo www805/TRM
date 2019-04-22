@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-19
+ * @since 2019-04-22
  */
 public class Police_recordtype extends Model<Police_recordtype> {
 
