@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_recordtemplatetoproblem">
         <id column="id" property="id" />
-        <result column="recordtemplateid" property="recordtemplateid" />
-        <result column="problemid" property="problemid" />
+        <result column="recordtemplatessid" property="recordtemplatessid" />
+        <result column="problemssid" property="problemssid" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />

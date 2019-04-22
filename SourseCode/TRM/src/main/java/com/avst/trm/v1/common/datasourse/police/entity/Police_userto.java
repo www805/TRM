@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_userto extends Model<Police_userto> {
 
@@ -24,12 +24,12 @@ public class Police_userto extends Model<Police_userto> {
     /**
      * 被询问人id
      */
-    private Integer userid;
+    private Integer userssid;
 
     /**
      * 其他关系人id
      */
-    private Integer otheruserid;
+    private Integer otheruserssid;
 
     /**
      * 所属关系 例：父子，母女
@@ -63,19 +63,19 @@ public class Police_userto extends Model<Police_userto> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserssid() {
+        return userssid;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserssid(Integer userssid) {
+        this.userssid = userssid;
     }
-    public Integer getOtheruserid() {
-        return otheruserid;
+    public Integer getOtheruserssid() {
+        return otheruserssid;
     }
 
-    public void setOtheruserid(Integer otheruserid) {
-        this.otheruserid = otheruserid;
+    public void setOtheruserssid(Integer otheruserssid) {
+        this.otheruserssid = otheruserssid;
     }
     public String getRelation() {
         return relation;
@@ -143,8 +143,8 @@ public class Police_userto extends Model<Police_userto> {
     public String toString() {
         return "Police_userto{" +
         "id=" + id +
-        ", userid=" + userid +
-        ", otheruserid=" + otheruserid +
+        ", userssid=" + userssid +
+        ", otheruserssid=" + otheruserssid +
         ", relation=" + relation +
         ", usertype=" + usertype +
         ", createtime=" + createtime +

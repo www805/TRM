@@ -6,8 +6,8 @@
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_record">
         <id column="id" property="id" />
         <result column="recordname" property="recordname" />
-        <result column="templateid" property="templateid" />
-        <result column="caseid" property="caseid" />
+        <result column="templatessid" property="templatessid" />
+        <result column="casessid" property="casessid" />
         <result column="recorddownurl" property="recorddownurl" />
         <result column="recordrealurl" property="recordrealurl" />
         <result column="recordtime" property="recordtime" />

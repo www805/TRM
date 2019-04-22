@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_recordreal extends Model<Police_recordreal> {
 
@@ -27,7 +27,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 笔录id
      */
-    private Integer recordid;
+    private Integer recordssid;
 
     /**
      * 翻译文字
@@ -52,7 +52,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 录音人id
      */
-    private Integer userid;
+    private Integer userssid;
 
     /**
      * 录音人类型：1询问人（系统用户admin）
@@ -92,12 +92,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getRecordid() {
-        return recordid;
+    public Integer getRecordssid() {
+        return recordssid;
     }
 
-    public void setRecordid(Integer recordid) {
-        this.recordid = recordid;
+    public void setRecordssid(Integer recordssid) {
+        this.recordssid = recordssid;
     }
     public String getTranslatext() {
         return translatext;
@@ -127,12 +127,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setTime(Long time) {
         this.time = time;
     }
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserssid() {
+        return userssid;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserssid(Integer userssid) {
+        this.userssid = userssid;
     }
     public Integer getRecordtype() {
         return recordtype;
@@ -207,12 +207,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public String toString() {
         return "Police_recordreal{" +
         "id=" + id +
-        ", recordid=" + recordid +
+        ", recordssid=" + recordssid +
         ", translatext=" + translatext +
         ", downurl=" + downurl +
         ", realurl=" + realurl +
         ", time=" + time +
-        ", userid=" + userid +
+        ", userssid=" + userssid +
         ", recordtype=" + recordtype +
         ", starttime=" + starttime +
         ", ordernum=" + ordernum +

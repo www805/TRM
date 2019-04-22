@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_templatetotype extends Model<Police_templatetotype> {
 
@@ -27,7 +27,7 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     /**
      * 模板id
      */
-    private Integer templateid;
+    private Integer templatessid;
 
     /**
      * 是否为默认模板：1默认/-1非默认
@@ -37,7 +37,7 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     /**
      * 模板类型id
      */
-    private Integer templatetypeid;
+    private Integer templatetypessid;
 
     /**
      * 创建时间
@@ -61,12 +61,12 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getTemplateid() {
-        return templateid;
+    public Integer getTemplatessid() {
+        return templatessid;
     }
 
-    public void setTemplateid(Integer templateid) {
-        this.templateid = templateid;
+    public void setTemplatessid(Integer templatessid) {
+        this.templatessid = templatessid;
     }
     public Integer getTemplatebool() {
         return templatebool;
@@ -75,12 +75,12 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     public void setTemplatebool(Integer templatebool) {
         this.templatebool = templatebool;
     }
-    public Integer getTemplatetypeid() {
-        return templatetypeid;
+    public Integer getTemplatetypessid() {
+        return templatetypessid;
     }
 
-    public void setTemplatetypeid(Integer templatetypeid) {
-        this.templatetypeid = templatetypeid;
+    public void setTemplatetypessid(Integer templatetypessid) {
+        this.templatetypessid = templatetypessid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -134,9 +134,9 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     public String toString() {
         return "Police_templatetotype{" +
         "id=" + id +
-        ", templateid=" + templateid +
+        ", templatessid=" + templatessid +
         ", templatebool=" + templatebool +
-        ", templatetypeid=" + templatetypeid +
+        ", templatetypessid=" + templatetypessid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

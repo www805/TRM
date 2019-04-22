@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.datasourse.police.entity;
+package com.avst.trm.v1.common.datasourse.base.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
@@ -14,40 +14,27 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-22
  */
-public class Police_arraignment extends Model<Police_arraignment> {
+public class Base_national extends Model<Base_national> {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 提讯表
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 询问人id
+     * 民族代号
      */
-    private Integer adminssid;
+    private Integer nationcode;
 
     /**
-     * 记录人id
+     * 民族名称
      */
-    private Integer recordadminssid;
+    private String nationname;
 
     /**
-     * 问话地点
+     * 排序
      */
-    private String recordplace;
-
-    /**
-     * 询问对象:例如：犯罪嫌疑人，被害人
-     */
-    private String askobj;
-
-    /**
-     * 询问次数:默认1
-     */
-    private Integer asknum;
+    private Integer ordernum;
 
     /**
      * 创建时间
@@ -71,40 +58,26 @@ public class Police_arraignment extends Model<Police_arraignment> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminssid() {
-        return adminssid;
+    public Integer getNationcode() {
+        return nationcode;
     }
 
-    public void setAdminssid(Integer adminssid) {
-        this.adminssid = adminssid;
+    public void setNationcode(Integer nationcode) {
+        this.nationcode = nationcode;
     }
-    public Integer getRecordadminssid() {
-        return recordadminssid;
-    }
-
-    public void setRecordadminssid(Integer recordadminssid) {
-        this.recordadminssid = recordadminssid;
-    }
-    public String getRecordplace() {
-        return recordplace;
+    public String getNationname() {
+        return nationname;
     }
 
-    public void setRecordplace(String recordplace) {
-        this.recordplace = recordplace;
+    public void setNationname(String nationname) {
+        this.nationname = nationname;
     }
-    public String getAskobj() {
-        return askobj;
-    }
-
-    public void setAskobj(String askobj) {
-        this.askobj = askobj;
-    }
-    public Integer getAsknum() {
-        return asknum;
+    public Integer getOrdernum() {
+        return ordernum;
     }
 
-    public void setAsknum(Integer asknum) {
-        this.asknum = asknum;
+    public void setOrdernum(Integer ordernum) {
+        this.ordernum = ordernum;
     }
     public Date getCreatetime() {
         return createtime;
@@ -156,13 +129,11 @@ public class Police_arraignment extends Model<Police_arraignment> {
 
     @Override
     public String toString() {
-        return "Police_arraignment{" +
+        return "Base_national{" +
         "id=" + id +
-        ", adminssid=" + adminssid +
-        ", recordadminssid=" + recordadminssid +
-        ", recordplace=" + recordplace +
-        ", askobj=" + askobj +
-        ", asknum=" + asknum +
+        ", nationcode=" + nationcode +
+        ", nationname=" + nationname +
+        ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

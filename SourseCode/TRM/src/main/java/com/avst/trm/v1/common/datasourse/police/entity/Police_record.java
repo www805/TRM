@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-09
+ * @since 2019-04-22
  */
 public class Police_record extends Model<Police_record> {
 
@@ -32,12 +32,12 @@ public class Police_record extends Model<Police_record> {
     /**
      *   模板id
      */
-    private Integer templateid;
+    private Integer templatessid;
 
     /**
      * 案件id
      */
-    private Integer caseid;
+    private Integer casessid;
 
     /**
      * 总录音下载地址
@@ -93,19 +93,19 @@ public class Police_record extends Model<Police_record> {
     public void setRecordname(String recordname) {
         this.recordname = recordname;
     }
-    public Integer getTemplateid() {
-        return templateid;
+    public Integer getTemplatessid() {
+        return templatessid;
     }
 
-    public void setTemplateid(Integer templateid) {
-        this.templateid = templateid;
+    public void setTemplatessid(Integer templatessid) {
+        this.templatessid = templatessid;
     }
-    public Integer getCaseid() {
-        return caseid;
+    public Integer getCasessid() {
+        return casessid;
     }
 
-    public void setCaseid(Integer caseid) {
-        this.caseid = caseid;
+    public void setCasessid(Integer casessid) {
+        this.casessid = casessid;
     }
     public String getRecorddownurl() {
         return recorddownurl;
@@ -195,8 +195,8 @@ public class Police_record extends Model<Police_record> {
         return "Police_record{" +
         "id=" + id +
         ", recordname=" + recordname +
-        ", templateid=" + templateid +
-        ", caseid=" + caseid +
+        ", templatessid=" + templatessid +
+        ", casessid=" + casessid +
         ", recorddownurl=" + recorddownurl +
         ", recordrealurl=" + recordrealurl +
         ", recordtime=" + recordtime +

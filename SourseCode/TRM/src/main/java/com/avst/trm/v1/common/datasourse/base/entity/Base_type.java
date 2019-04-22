@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-22
  */
 public class Base_type extends Model<Base_type> {
 
@@ -25,7 +25,7 @@ public class Base_type extends Model<Base_type> {
     private Integer id;
 
     /**
-     * 类型名称：法院、检察院、公安、会议、publicweb
+     * 类型名称：法院、检察院、公安、会议、web
      */
     private String type;
 

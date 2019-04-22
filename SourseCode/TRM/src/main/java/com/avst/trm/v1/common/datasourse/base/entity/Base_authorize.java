@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-11
+ * @since 2019-04-22
  */
 public class Base_authorize extends Model<Base_authorize> {
 
@@ -32,7 +32,7 @@ public class Base_authorize extends Model<Base_authorize> {
     /**
      * 是否是永久授权
      */
-    private Boolean foreverbool;
+    private Integer foreverbool;
 
     /**
      * 授权开始时间
@@ -60,7 +60,7 @@ public class Base_authorize extends Model<Base_authorize> {
     private String unitcode;
 
     /**
-     * 排序
+     * 排序:一个单位有一台主机，short=0；若干个办公客户端sort从1开始继增
      */
     private Integer sortnum;
 
@@ -88,11 +88,11 @@ public class Base_authorize extends Model<Base_authorize> {
     public void setServertype(String servertype) {
         this.servertype = servertype;
     }
-    public Boolean getForeverbool() {
+    public Integer getForeverbool() {
         return foreverbool;
     }
 
-    public void setForeverbool(Boolean foreverbool) {
+    public void setForeverbool(Integer foreverbool) {
         this.foreverbool = foreverbool;
     }
     public Date getStarttime() {

@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_casetoarraignment">
         <id column="id" property="id" />
-        <result column="caseid" property="caseid" />
-        <result column="arraignmentid" property="arraignmentid" />
+        <result column="casessid" property="casessid" />
+        <result column="arraignmentssid" property="arraignmentssid" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />

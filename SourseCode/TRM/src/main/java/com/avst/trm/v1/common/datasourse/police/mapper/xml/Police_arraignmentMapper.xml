@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment">
         <id column="id" property="id" />
-        <result column="adminid" property="adminid" />
-        <result column="recordadminid" property="recordadminid" />
+        <result column="adminssid" property="adminssid" />
+        <result column="recordadminssid" property="recordadminssid" />
         <result column="recordplace" property="recordplace" />
         <result column="askobj" property="askobj" />
         <result column="asknum" property="asknum" />

@@ -9,7 +9,7 @@
         <result column="interfaceurl" property="interfaceurl" />
         <result column="description" property="description" />
         <result column="createtime" property="createtime" />
-        <result column="typeid" property="typeid" />
+        <result column="typessid" property="typessid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-19
+ * @since 2019-04-22
  */
 public class Police_case extends Model<Police_case> {
 
@@ -72,7 +72,7 @@ public class Police_case extends Model<Police_case> {
     /**
      * 案件人id
      */
-    private Integer userid;
+    private Integer userssid;
 
     private String ssid;
 
@@ -154,12 +154,12 @@ public class Police_case extends Model<Police_case> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public Integer getUserid() {
-        return userid;
+    public Integer getUserssid() {
+        return userssid;
     }
 
-    public void setUserid(Integer userid) {
-        this.userid = userid;
+    public void setUserssid(Integer userssid) {
+        this.userssid = userssid;
     }
     public String getSsid() {
         return ssid;
@@ -215,7 +215,7 @@ public class Police_case extends Model<Police_case> {
         ", caseway=" + caseway +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", userid=" + userid +
+        ", userssid=" + userssid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

@@ -5,9 +5,9 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_templatetotype">
         <id column="id" property="id" />
-        <result column="templateid" property="templateid" />
+        <result column="templatessid" property="templatessid" />
         <result column="templatebool" property="templatebool" />
-        <result column="templatetypeid" property="templatetypeid" />
+        <result column="templatetypessid" property="templatetypessid" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />

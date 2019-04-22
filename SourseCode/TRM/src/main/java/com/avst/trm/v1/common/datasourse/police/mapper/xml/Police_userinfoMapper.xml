@@ -13,8 +13,8 @@
         <result column="age" property="age" />
         <result column="sex" property="sex" />
         <result column="both" property="both" />
-        <result column="national" property="national" />
-        <result column="nationality" property="nationality" />
+        <result column="nationalssid" property="nationalssid" />
+        <result column="nationalityssid" property="nationalityssid" />
         <result column="professional" property="professional" />
         <result column="educationlevel" property="educationlevel" />
         <result column="politicsstatus" property="politicsstatus" />

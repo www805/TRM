@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-19
+ * @since 2019-04-22
  */
 public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserver> {
 

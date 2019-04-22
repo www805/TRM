@@ -17,5 +17,4 @@
         <result column="integer2" property="integer2" />
     </resultMap>
 
-
 </mapper>

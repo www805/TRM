@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Base_roletopermissions">
         <id column="id" property="id" />
-        <result column="permissionsid" property="permissionsid" />
-        <result column="roleid" property="roleid" />
+        <result column="permissionsssid" property="permissionsssid" />
+        <result column="rolessid" property="rolessid" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />

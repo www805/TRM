@@ -5,8 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Base_keyword">
         <id column="id" property="id" />
-        <result column="color" property="color" />
         <result column="text" property="text" />
+        <result column="color" property="color" />
         <result column="backgroundcolor" property="backgroundcolor" />
         <result column="replacetext" property="replacetext" />
         <result column="shieldbool" property="shieldbool" />

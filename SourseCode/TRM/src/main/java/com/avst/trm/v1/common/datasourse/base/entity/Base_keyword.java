@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-17
+ * @since 2019-04-22
  */
 public class Base_keyword extends Model<Base_keyword> {
 
@@ -25,14 +25,14 @@ public class Base_keyword extends Model<Base_keyword> {
     private Integer id;
 
     /**
-     * 字体颜色
-     */
-    private String color;
-
-    /**
      * 关键字文本
      */
     private String text;
+
+    /**
+     * 字体颜色
+     */
+    private String color;
 
     /**
      * 背景颜色
@@ -71,19 +71,19 @@ public class Base_keyword extends Model<Base_keyword> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
     public String getText() {
         return text;
     }
 
     public void setText(String text) {
         this.text = text;
+    }
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
     public String getBackgroundcolor() {
         return backgroundcolor;
@@ -158,8 +158,8 @@ public class Base_keyword extends Model<Base_keyword> {
     public String toString() {
         return "Base_keyword{" +
         "id=" + id +
-        ", color=" + color +
         ", text=" + text +
+        ", color=" + color +
         ", backgroundcolor=" + backgroundcolor +
         ", replacetext=" + replacetext +
         ", shieldbool=" + shieldbool +
