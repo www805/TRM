@@ -42,7 +42,7 @@ public class Base_action extends Model<Base_action> {
     /**
      * 动作地址id（接口表id）
      */
-    private Integer interfaceid;
+    private String interfacessid;
 
     /**
      * 是否有页面跳转:1有-1没有
@@ -107,13 +107,15 @@ public class Base_action extends Model<Base_action> {
     public void setActionname(String actionname) {
         this.actionname = actionname;
     }
-    public Integer getInterfaceid() {
-        return interfaceid;
+
+    public String getInterfacessid() {
+        return interfacessid;
     }
 
-    public void setInterfaceid(Integer interfaceid) {
-        this.interfaceid = interfaceid;
+    public void setInterfacessid(String interfacessid) {
+        this.interfacessid = interfacessid;
     }
+
     public Integer getTopagebool() {
         return topagebool;
     }
@@ -197,7 +199,7 @@ public class Base_action extends Model<Base_action> {
         ", actionid=" + actionid +
         ", pageid=" + pageid +
         ", actionname=" + actionname +
-        ", interfaceid=" + interfaceid +
+        ", interfacessid=" + interfacessid +
         ", topagebool=" + topagebool +
         ", nextpageid=" + nextpageid +
         ", createtime=" + createtime +

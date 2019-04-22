@@ -8,7 +8,7 @@
         <result column="actionid" property="actionid" />
         <result column="pageid" property="pageid" />
         <result column="actionname" property="actionname" />
-        <result column="interfaceid" property="interfaceid" />
+        <result column="interfacessid" property="interfacessid" />
         <result column="topagebool" property="topagebool" />
         <result column="nextpageid" property="nextpageid" />
         <result column="createtime" property="createtime" />
