@@ -427,7 +427,20 @@ public class CommonCache {
                 if(null==actionlist){
                     actionlist=new ArrayList<ActionAndinterfaceAndPage>();
                 }
-                actionlist.add(action);//
+                if(actionlist.size() > 0){
+                    boolean bool=false;
+                    for(ActionAndinterfaceAndPage action2:actionlist){
+                        if(action2.getActionid().equals(action.getActionid())){
+                            bool=true;
+                            break;
+                        }
+                    }
+                    if(!bool){
+                        actionlist.add(action);//
+                    }
+                }else{
+                    actionlist.add(action);//
+                }
                 actionListMap.put(type,actionlist);
             }
             return true;
