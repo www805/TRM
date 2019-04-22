@@ -1178,6 +1178,7 @@ function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 }
 
 
+
 /**
  * laytpl 更新数据
  * pagelisttemplates 模板对应的script
@@ -1209,8 +1210,6 @@ var pageActionByPage;
  * @param pageid
  */
 function setpageAction(InitVO,pageid){
-
-	console.log(InitVO);
 
 	if(isNotEmpty(InitVO)&&isNotEmpty(pageid)){
 		var code=InitVO.code;
@@ -1261,8 +1260,6 @@ function getActionURL(actionid){
 			return ;
 		}
 		for(var i=0;i<pageActionByPage.actionList.length;i++){
-
-			console.log(pageActionByPage.actionList[i].actionId);
 
 			if(actionid==pageActionByPage.actionList[i].actionId){
 				return pageActionByPage.actionList[i].reqURL;

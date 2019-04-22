@@ -197,14 +197,14 @@
                     // });
 
                     //模拟渲染
-                    // document.getElementById('biuuu_city_list').innerHTML = function(){
-                    //     var arr = []
-                    //         ,thisData = data.concat().splice(obj.curr*obj.limit - obj.limit, obj.limit);
-                    //     layui.each(thisData, function(index, item){
-                    //         arr.push('<li>'+ item +'</li>');
-                    //     });
-                    //     return arr.join('');
-                    // }();
+                    document.getElementById('biuuu_city_list').innerHTML = function(){
+                        var arr = []
+                            ,thisData = data.concat().splice(obj.curr*obj.limit - obj.limit, obj.limit);
+                        layui.each(thisData, function(index, item){
+                            arr.push('<li>'+ item +'</li>');
+                        });
+                        return arr.join('');
+                    }();
 
                     // console.log(index);
 
@@ -240,7 +240,7 @@
                 <tbody>
                 {{#  layui.each(pagelist, function(index, value){ }}
                 <tr>
-                    <td>{{value.id}}</td>
+                    <td>{{index+1}}</td>
                     <td>{{value.rolename}}</td>
                     <td>{{value.username}}</td>
                     <td>{{value.loginaccount}}</td>
