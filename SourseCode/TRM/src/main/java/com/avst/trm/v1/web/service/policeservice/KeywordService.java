@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.req.basereq.KeywordParam;
 import com.avst.trm.v1.web.vo.basevo.KeywordListVO;
 import com.avst.trm.v1.web.vo.basevo.RoleListVO;
 import com.avst.trm.v1.web.vo.basevo.UserListVO;
@@ -58,7 +59,7 @@ public class KeywordService extends BaseService {
      * @param result
      * @param param
      */
-    public void findKeywordlist(RResult<KeywordListVO> result, Getlist3Param param){
+    public void findKeywordlist(RResult<KeywordListVO> result, KeywordParam param){
 
         if(null==result){
             result=new RResult<KeywordListVO>();
@@ -70,6 +71,11 @@ public class KeywordService extends BaseService {
             EntityWrapper ew=new EntityWrapper();
 //            ew.setEntity(new Admininfo());
 //            ew.between("id",2,5);
+            if(null!=param){
+                if(StringUtils.isNotEmpty(param.getText())){
+                    ew.like("text",param.getText());
+                }
+            }
 
             int count=keywordMapper.selectCount(ew);
             param.setRecordCount(count);

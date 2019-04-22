@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.action.baseaction;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
+import com.avst.trm.v1.web.req.basereq.KeywordParam;
 import com.avst.trm.v1.web.service.policeservice.KeywordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,7 @@ public class KeywordAction extends BaseAction{
      * @return
      */
     @GetMapping(value = "/getKeyword")
-    public ModelAndView getUser(Model model, Getlist3Param param) {
+    public ModelAndView getUser(Model model, KeywordParam param) {
 
         RResult rResult=createNewResultOfFail();
 
@@ -48,7 +49,7 @@ public class KeywordAction extends BaseAction{
      */
     @RequestMapping(value = "/getKeywordList")
     @ResponseBody
-    public RResult getUserList(Model model,Getlist3Param param) {
+    public RResult getUserList(Model model,KeywordParam param) {
         RResult rResult=createNewResultOfFail();
         param.setPageSize(3);//测试
         keywordService.findKeywordlist(rResult,param);
@@ -61,7 +62,7 @@ public class KeywordAction extends BaseAction{
      * @return
      *
      */
-    @GetMapping(value = "/getAddKeyword")
+    @GetMapping(value = "/getAddOrUpdateKeyword")
     public ModelAndView getAddKeyword(Model model) {
 
         RResult rResult = createNewResultOfFail();
@@ -77,8 +78,8 @@ public class KeywordAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/getUpdateKeyword/{id}")
-    public ModelAndView getUpdateKeyword(Model model, @PathVariable("id") int id) {
+    @GetMapping(value = "/getAddOrUpdateKeyword/{id}")
+    public ModelAndView getAddOrUpdateKeyword(Model model, @PathVariable("id") int id) {
 
         RResult rResult = createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);

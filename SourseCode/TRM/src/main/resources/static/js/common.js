@@ -1201,11 +1201,15 @@ function detail() {
 		var getTpl = document.getElementById("pagelisttemplates").innerHTML;
 		var tpl = laytpl(getTpl);
 
-		tpl.render(pagelist, function (html) {
-			var dataview=document.getElementById("pagelistview");
-			dataview.innerHTML = html;
+		if(pagelist){
 
-		});
+			tpl.render(pagelist, function (html) {
+				var dataview=document.getElementById("pagelistview");
+				dataview.innerHTML = html;
+
+			});
+
+		}
 	});
 }
 
