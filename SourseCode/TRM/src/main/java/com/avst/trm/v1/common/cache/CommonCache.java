@@ -405,6 +405,8 @@ public class CommonCache {
                         if(!bool){
                             andPageList.add(action);
                         }
+                    }else{
+                        andPageList.add(action);
                     }
                 }
             }
