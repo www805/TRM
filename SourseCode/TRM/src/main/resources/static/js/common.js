@@ -729,7 +729,7 @@ function adda4(data, onclick) {
  */
 function addbutton(data, onclick, classname, name, id, style, title, other) {
 
-	var rr = '<button ';
+	var rr = '<a ';
 	if (isNotEmpty(id)) {
 		rr += 'id="' + id + '" ';
 	}
@@ -755,7 +755,7 @@ function addbutton(data, onclick, classname, name, id, style, title, other) {
 	if (isNotEmpty(data)) {
 		rr += data;
 	}
-	rr += '</button>';
+	rr += '</a>';
 	return rr;
 }
 
@@ -943,6 +943,16 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		pageid = "paging";
 	}
 
+	var noFirstClass = null;
+	var noLastClass = null;
+	if(currPage == 1){
+		noFirstClass = "layui-disabled";
+	}
+
+	if(currPage == pageCount){
+		noLastClass = "layui-disabled";
+	}
+
 	var page10_d = Math.ceil(currPage / 10);
 	var startsize = page10_d * 10 - 9;
 	var stopsize = page10_d * 10;
@@ -972,8 +982,8 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 	}
 
 	var pagetxt = addbutton("首页", getdatafun + '(' + reqparamdata + 1 + ','
-			+ pageSize + ')', "layui-btn layui-btn-sm layui-btn-radius layui-btn-normal", null, null, null, null,
-			'type="button"');
+			+ pageSize + ')', noFirstClass, null, null, "padding:3px 15px;", null,
+		null);
 	buttonnum++;
 	if (startsize > 1) {// 还可以往前翻页
 		// 去单引号，要不然转义会出错
@@ -981,19 +991,19 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton("«", 'gotobackpage(' + getdatafun + ',\''
 				+ reqparamdataprv + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null,
+				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;",
 				null, null);
 	}
 
 	for (var i = startsize; i <= stopsize; i++) {
 		if (currPage == i) {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', "layui-btn", null, null, null,
-					null, 'type="button"');
+					+ pageSize + ')', null, null, null, "color:#fff;background-color: #1e9fff;border-color: #1e9fff;padding:3px 15px;",
+					null, null);
 		} else {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null, null,
-					'type="button"');
+					+ pageSize + ')', null, null, null, "padding:3px 15px;", null,
+				null);
 			// pagetxt +='<a href="javascript:;" onclick="getdatafun + \'(\' + reqparamdata + i + \',\'+ pageSize + \')\'" data-page="3">3</a>';
 
 		}
@@ -1005,24 +1015,24 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton('»', 'gotonextpage(' + getdatafun + ',\''
 				+ reqparamdatanext + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null,
+				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;",
 				null, null);
 	}
 	pagetxt += addbutton("末页", getdatafun + '(' + reqparamdata + pageCount
-			+ ',' + pageSize + ')', "layui-btn layui-btn-sm layui-btn-radius layui-btn-normal", null, null, null, null,
-			'type="button"');
+			+ ',' + pageSize + ')', noLastClass, null, null, "padding:3px 15px;", null,
+		null);
 	buttonnum++;
 	if (pageCount <= 1) {
 		pagetxt = '';
 	}
 	$('#' + pageid).html(pagetxt);
-	if (pageCount > 1000) {
-		$('#' + pageid).width((52 * buttonnum + 45) + "px");
-	} else if (pageCount > 100) {
-		$('#' + pageid).width((55 * buttonnum + 40) + "px");
-	} else {
-		$('#' + pageid).width((45 * buttonnum + 40) + "px");
-	}
+	// if (pageCount > 1000) {
+	// 	$('#' + pageid).width((52 * buttonnum + 45) + "px");
+	// } else if (pageCount > 100) {
+	// 	$('#' + pageid).width((55 * buttonnum + 40) + "px");
+	// } else {
+	// 	$('#' + pageid).width((45 * buttonnum + 40) + "px");
+	// }
 
 }
 

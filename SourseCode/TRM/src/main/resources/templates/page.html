@@ -7,7 +7,7 @@
 <body>
 <div  data-th-fragment="page">
     <div id="pagelistview" class="container-fluid"></div>
-    <div id="paging"  class="container-fluid" style="text-align:center;">
+    <div id="paging"  class="layui-box layui-laypage layui-laypage-molv" style="text-align:center;cursor:pointer;">
 
     <script th:inline="javascript">
 
@@ -19,7 +19,6 @@
         function pageshow(data){
 
             pagelist=data.data.pagelist;
-
             pageparam=data.data.pageparam;
             detail();
             showpagetohtml();
