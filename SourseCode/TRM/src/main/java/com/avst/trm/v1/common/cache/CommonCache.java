@@ -18,10 +18,7 @@ import com.avst.trm.v1.web.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 一些常用的公共的缓存
@@ -455,7 +452,8 @@ public class CommonCache {
         boolean bool=true;
         if(null!=pageList&&pageList.size() > 0){
             for(Base_page page:pageList){
-                if(page.getId().intValue()==action.getPage_id_c()){
+                if(page.getId().intValue()==action.getPage_id_c()
+                ||page.getPageid().equals(action.getPageid())){//这里的判断要注意
                     bool=false;
                     break;
                 }
@@ -470,6 +468,7 @@ public class CommonCache {
             newpage.setId(action.getPage_id_c());
             newpage.setPageid(action.getPageid());
             newpage.setTypessid(action.getTypessid());
+
             pageList.add(newpage);
             pageListMap.put(type,pageList);
         }

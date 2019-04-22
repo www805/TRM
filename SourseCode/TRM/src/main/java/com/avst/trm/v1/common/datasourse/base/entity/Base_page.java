@@ -5,6 +5,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * <p>
@@ -171,5 +172,19 @@ public class Base_page extends Model<Base_page> {
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
         "}";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Base_page base_page = (Base_page) o;
+        return  Objects.equals(pageid, base_page.pageid) || Objects.equals(ssid, base_page.ssid) ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, pageid, pagename, createtime, description, typessid, firstpage, ssid, string1, string2, integer1, integer2);
     }
 }
