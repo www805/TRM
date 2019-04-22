@@ -36,7 +36,7 @@ public class Base_datasheet_downserver extends Model<Base_datasheet_downserver> 
     /**
      * 客户端数据同步id
      */
-    private Integer downserverssid;
+    private String downserverssid;
 
     /**
      * 是否同步文件:1同步文件，-1不是
@@ -79,11 +79,11 @@ public class Base_datasheet_downserver extends Model<Base_datasheet_downserver> 
     public void setDataname(String dataname) {
         this.dataname = dataname;
     }
-    public Integer getDownserverssid() {
+    public String getDownserverssid() {
         return downserverssid;
     }
 
-    public void setDownserverssid(Integer downserverssid) {
+    public void setDownserverssid(String downserverssid) {
         this.downserverssid = downserverssid;
     }
     public Integer getFiletype() {

@@ -24,12 +24,12 @@ public class Police_userto extends Model<Police_userto> {
     /**
      * 被询问人id
      */
-    private Integer userssid;
+    private String userssid;
 
     /**
      * 其他关系人id
      */
-    private Integer otheruserssid;
+    private String otheruserssid;
 
     /**
      * 所属关系 例：父子，母女
@@ -63,18 +63,18 @@ public class Police_userto extends Model<Police_userto> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getUserssid() {
+    public String getUserssid() {
         return userssid;
     }
 
-    public void setUserssid(Integer userssid) {
+    public void setUserssid(String userssid) {
         this.userssid = userssid;
     }
-    public Integer getOtheruserssid() {
+    public String getOtheruserssid() {
         return otheruserssid;
     }
 
-    public void setOtheruserssid(Integer otheruserssid) {
+    public void setOtheruserssid(String otheruserssid) {
         this.otheruserssid = otheruserssid;
     }
     public String getRelation() {

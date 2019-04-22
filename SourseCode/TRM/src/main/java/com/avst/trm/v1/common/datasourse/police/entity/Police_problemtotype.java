@@ -27,12 +27,12 @@ public class Police_problemtotype extends Model<Police_problemtotype> {
     /**
      * 题目id
      */
-    private Integer problemssid;
+    private String problemssid;
 
     /**
      * 题目类型id
      */
-    private Integer problemtypessid;
+    private String problemtypessid;
 
     /**
      * 创建时间
@@ -56,18 +56,18 @@ public class Police_problemtotype extends Model<Police_problemtotype> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getProblemssid() {
+    public String getProblemssid() {
         return problemssid;
     }
 
-    public void setProblemssid(Integer problemssid) {
+    public void setProblemssid(String problemssid) {
         this.problemssid = problemssid;
     }
-    public Integer getProblemtypessid() {
+    public String getProblemtypessid() {
         return problemtypessid;
     }
 
-    public void setProblemtypessid(Integer problemtypessid) {
+    public void setProblemtypessid(String problemtypessid) {
         this.problemtypessid = problemtypessid;
     }
     public Date getCreatetime() {

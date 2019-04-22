@@ -27,12 +27,12 @@ public class Police_arraignment extends Model<Police_arraignment> {
     /**
      * 询问人id
      */
-    private Integer adminssid;
+    private String adminssid;
 
     /**
      * 记录人id
      */
-    private Integer recordadminssid;
+    private String recordadminssid;
 
     /**
      * 问话地点
@@ -71,18 +71,18 @@ public class Police_arraignment extends Model<Police_arraignment> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminssid() {
+    public String getAdminssid() {
         return adminssid;
     }
 
-    public void setAdminssid(Integer adminssid) {
+    public void setAdminssid(String adminssid) {
         this.adminssid = adminssid;
     }
-    public Integer getRecordadminssid() {
+    public String getRecordadminssid() {
         return recordadminssid;
     }
 
-    public void setRecordadminssid(Integer recordadminssid) {
+    public void setRecordadminssid(String recordadminssid) {
         this.recordadminssid = recordadminssid;
     }
     public String getRecordplace() {

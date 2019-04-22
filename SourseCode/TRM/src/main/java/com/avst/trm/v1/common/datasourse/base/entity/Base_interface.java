@@ -47,7 +47,7 @@ public class Base_interface extends Model<Base_interface> {
     /**
      * 类型id
      */
-    private Integer typessid;
+    private String typessid;
 
     private String ssid;
 
@@ -94,11 +94,11 @@ public class Base_interface extends Model<Base_interface> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public Integer getTypessid() {
+    public String getTypessid() {
         return typessid;
     }
 
-    public void setTypessid(Integer typessid) {
+    public void setTypessid(String typessid) {
         this.typessid = typessid;
     }
     public String getSsid() {

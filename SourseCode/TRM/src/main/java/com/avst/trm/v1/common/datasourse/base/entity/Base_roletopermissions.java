@@ -27,12 +27,12 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     /**
      * 权限id
      */
-    private Integer permissionsssid;
+    private String permissionsssid;
 
     /**
      * 角色id
      */
-    private Integer rolessid;
+    private String rolessid;
 
     /**
      * 创建时间
@@ -56,18 +56,18 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getPermissionsssid() {
+    public String getPermissionsssid() {
         return permissionsssid;
     }
 
-    public void setPermissionsssid(Integer permissionsssid) {
+    public void setPermissionsssid(String permissionsssid) {
         this.permissionsssid = permissionsssid;
     }
-    public Integer getRolessid() {
+    public String getRolessid() {
         return rolessid;
     }
 
-    public void setRolessid(Integer rolessid) {
+    public void setRolessid(String rolessid) {
         this.rolessid = rolessid;
     }
     public Date getCreatetime() {

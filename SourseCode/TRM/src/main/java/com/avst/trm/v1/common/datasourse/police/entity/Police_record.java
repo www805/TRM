@@ -32,12 +32,12 @@ public class Police_record extends Model<Police_record> {
     /**
      *   模板id
      */
-    private Integer templatessid;
+    private String templatessid;
 
     /**
      * 案件id
      */
-    private Integer casessid;
+    private String casessid;
 
     /**
      * 总录音下载地址
@@ -93,18 +93,18 @@ public class Police_record extends Model<Police_record> {
     public void setRecordname(String recordname) {
         this.recordname = recordname;
     }
-    public Integer getTemplatessid() {
+    public String getTemplatessid() {
         return templatessid;
     }
 
-    public void setTemplatessid(Integer templatessid) {
+    public void setTemplatessid(String templatessid) {
         this.templatessid = templatessid;
     }
-    public Integer getCasessid() {
+    public String getCasessid() {
         return casessid;
     }
 
-    public void setCasessid(Integer casessid) {
+    public void setCasessid(String casessid) {
         this.casessid = casessid;
     }
     public String getRecorddownurl() {

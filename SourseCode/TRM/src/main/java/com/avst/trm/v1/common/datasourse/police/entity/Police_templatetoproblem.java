@@ -27,12 +27,12 @@ public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
     /**
      * 模板id
      */
-    private Integer templatessid;
+    private String templatessid;
 
     /**
      * 题目id
      */
-    private Integer problemssid;
+    private String problemssid;
 
     /**
      * 排序
@@ -61,18 +61,18 @@ public class Police_templatetoproblem extends Model<Police_templatetoproblem> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getTemplatessid() {
+    public String getTemplatessid() {
         return templatessid;
     }
 
-    public void setTemplatessid(Integer templatessid) {
+    public void setTemplatessid(String templatessid) {
         this.templatessid = templatessid;
     }
-    public Integer getProblemssid() {
+    public String getProblemssid() {
         return problemssid;
     }
 
-    public void setProblemssid(Integer problemssid) {
+    public void setProblemssid(String problemssid) {
         this.problemssid = problemssid;
     }
     public Integer getOrdernum() {

@@ -24,9 +24,9 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    private Integer casessid;
+    private String casessid;
 
-    private Integer arraignmentssid;
+    private String arraignmentssid;
 
     private Date createtime;
 
@@ -47,18 +47,18 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getCasessid() {
+    public String getCasessid() {
         return casessid;
     }
 
-    public void setCasessid(Integer casessid) {
+    public void setCasessid(String casessid) {
         this.casessid = casessid;
     }
-    public Integer getArraignmentssid() {
+    public String getArraignmentssid() {
         return arraignmentssid;
     }
 
-    public void setArraignmentssid(Integer arraignmentssid) {
+    public void setArraignmentssid(String arraignmentssid) {
         this.arraignmentssid = arraignmentssid;
     }
     public Date getCreatetime() {

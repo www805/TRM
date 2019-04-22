@@ -27,12 +27,12 @@ public class Base_admintorole extends Model<Base_admintorole> {
     /**
      * 用户id
      */
-    private Integer adminssid;
+    private String adminssid;
 
     /**
      * 角色id
      */
-    private Integer rolessid;
+    private String rolessid;
 
     /**
      * 创建时间
@@ -56,18 +56,18 @@ public class Base_admintorole extends Model<Base_admintorole> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getAdminssid() {
+    public String getAdminssid() {
         return adminssid;
     }
 
-    public void setAdminssid(Integer adminssid) {
+    public void setAdminssid(String adminssid) {
         this.adminssid = adminssid;
     }
-    public Integer getRolessid() {
+    public String getRolessid() {
         return rolessid;
     }
 
-    public void setRolessid(Integer rolessid) {
+    public void setRolessid(String rolessid) {
         this.rolessid = rolessid;
     }
     public Date getCreatetime() {

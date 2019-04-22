@@ -27,12 +27,12 @@ public class Police_answer extends Model<Police_answer> {
     /**
      * 笔录id
      */
-    private Integer recordssid;
+    private String recordssid;
 
     /**
      * 题目id
      */
-    private Integer problemssid;
+    private String problemssid;
 
     /**
      * 答案
@@ -71,18 +71,18 @@ public class Police_answer extends Model<Police_answer> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getRecordssid() {
+    public String getRecordssid() {
         return recordssid;
     }
 
-    public void setRecordssid(Integer recordssid) {
+    public void setRecordssid(String recordssid) {
         this.recordssid = recordssid;
     }
-    public Integer getProblemssid() {
+    public String getProblemssid() {
         return problemssid;
     }
 
-    public void setProblemssid(Integer problemssid) {
+    public void setProblemssid(String problemssid) {
         this.problemssid = problemssid;
     }
     public String getAnswer() {

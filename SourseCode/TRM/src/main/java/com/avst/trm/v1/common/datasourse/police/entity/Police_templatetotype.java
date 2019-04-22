@@ -27,7 +27,7 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     /**
      * 模板id
      */
-    private Integer templatessid;
+    private String templatessid;
 
     /**
      * 是否为默认模板：1默认/-1非默认
@@ -37,7 +37,7 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     /**
      * 模板类型id
      */
-    private Integer templatetypessid;
+    private String templatetypessid;
 
     /**
      * 创建时间
@@ -61,11 +61,11 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getTemplatessid() {
+    public String getTemplatessid() {
         return templatessid;
     }
 
-    public void setTemplatessid(Integer templatessid) {
+    public void setTemplatessid(String templatessid) {
         this.templatessid = templatessid;
     }
     public Integer getTemplatebool() {
@@ -75,11 +75,11 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
     public void setTemplatebool(Integer templatebool) {
         this.templatebool = templatebool;
     }
-    public Integer getTemplatetypessid() {
+    public String getTemplatetypessid() {
         return templatetypessid;
     }
 
-    public void setTemplatetypessid(Integer templatetypessid) {
+    public void setTemplatetypessid(String templatetypessid) {
         this.templatetypessid = templatetypessid;
     }
     public Date getCreatetime() {

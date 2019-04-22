@@ -67,12 +67,12 @@ public class Police_userinfo extends Model<Police_userinfo> {
     /**
      * 民族
      */
-    private Integer nationalssid;
+    private String nationalssid;
 
     /**
      * 国籍
      */
-    private Integer nationalityssid;
+    private String nationalityssid;
 
     /**
      * 职业
@@ -199,18 +199,18 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setBoth(Date both) {
         this.both = both;
     }
-    public Integer getNationalssid() {
+    public String getNationalssid() {
         return nationalssid;
     }
 
-    public void setNationalssid(Integer nationalssid) {
+    public void setNationalssid(String nationalssid) {
         this.nationalssid = nationalssid;
     }
-    public Integer getNationalityssid() {
+    public String getNationalityssid() {
         return nationalityssid;
     }
 
-    public void setNationalityssid(Integer nationalityssid) {
+    public void setNationalityssid(String nationalityssid) {
         this.nationalityssid = nationalityssid;
     }
     public String getProfessional() {

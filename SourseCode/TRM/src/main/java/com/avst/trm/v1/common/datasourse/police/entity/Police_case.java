@@ -72,7 +72,7 @@ public class Police_case extends Model<Police_case> {
     /**
      * 案件人id
      */
-    private Integer userssid;
+    private String userssid;
 
     private String ssid;
 
@@ -154,11 +154,11 @@ public class Police_case extends Model<Police_case> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public Integer getUserssid() {
+    public String getUserssid() {
         return userssid;
     }
 
-    public void setUserssid(Integer userssid) {
+    public void setUserssid(String userssid) {
         this.userssid = userssid;
     }
     public String getSsid() {

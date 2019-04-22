@@ -47,7 +47,7 @@ public class Base_page extends Model<Base_page> {
     /**
      * 类型id
      */
-    private Integer typessid;
+    private String typessid;
 
     /**
      * 第一个页面:
@@ -100,11 +100,11 @@ public class Base_page extends Model<Base_page> {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Integer getTypessid() {
+    public String getTypessid() {
         return typessid;
     }
 
-    public void setTypessid(Integer typessid) {
+    public void setTypessid(String typessid) {
         this.typessid = typessid;
     }
     public Integer getFirstpage() {

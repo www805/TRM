@@ -67,7 +67,7 @@ public class Base_action extends Model<Base_action> {
     /**
      * 类型id
      */
-    private Integer typessid;
+    private String typessid;
 
     private String ssid;
 
@@ -142,11 +142,11 @@ public class Base_action extends Model<Base_action> {
     public void setDescription(String description) {
         this.description = description;
     }
-    public Integer getTypessid() {
+    public String getTypessid() {
         return typessid;
     }
 
-    public void setTypessid(Integer typessid) {
+    public void setTypessid(String typessid) {
         this.typessid = typessid;
     }
     public String getSsid() {

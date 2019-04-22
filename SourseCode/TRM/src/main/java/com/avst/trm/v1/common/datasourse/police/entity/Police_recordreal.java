@@ -27,7 +27,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 笔录id
      */
-    private Integer recordssid;
+    private String recordssid;
 
     /**
      * 翻译文字
@@ -52,7 +52,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 录音人id
      */
-    private Integer userssid;
+    private String userssid;
 
     /**
      * 录音人类型：1询问人（系统用户admin）
@@ -92,11 +92,11 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public Integer getRecordssid() {
+    public String getRecordssid() {
         return recordssid;
     }
 
-    public void setRecordssid(Integer recordssid) {
+    public void setRecordssid(String recordssid) {
         this.recordssid = recordssid;
     }
     public String getTranslatext() {
@@ -127,11 +127,11 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setTime(Long time) {
         this.time = time;
     }
-    public Integer getUserssid() {
+    public String getUserssid() {
         return userssid;
     }
 
-    public void setUserssid(Integer userssid) {
+    public void setUserssid(String userssid) {
         this.userssid = userssid;
     }
     public Integer getRecordtype() {
