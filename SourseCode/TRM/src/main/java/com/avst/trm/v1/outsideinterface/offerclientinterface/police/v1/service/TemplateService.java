@@ -46,15 +46,12 @@ public class TemplateService extends ForClientBaseService {
     @Autowired
     private Police_templatetoproblemMapper police_templatetoproblemMapper;
 
-    public void getTemplates(RResult result, ReqParam param){
+
+    public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
 
         //请求参数转换
-        GetTemplatesParam getTemplatesParam= new GetTemplatesParam();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            getTemplatesParam =gson.fromJson(parameter, GetTemplatesParam.class);
-        }
+        GetTemplatesParam getTemplatesParam = param.getParam();
        if (null==getTemplatesParam){
             result.setMessage("参数为空");
             return;
@@ -84,91 +81,11 @@ public class TemplateService extends ForClientBaseService {
         return;
     }
 
-    /**
-     * *****
-     * @param result
-     * @param param
-     */
-    public void getProblems(RResult result, ReqParam<GetProblemsParam> param){
-        GetProblemsVO getProblemsVO=new GetProblemsVO();
-        System.out.println(param.getParam()+"----");
-        //请求参数转换
-
-        // GetProblemsParam getProblemsParam=gson.fromJson(String.valueOf(param.getParam()),GetProblemsParam.class);
-        GetProblemsParam getProblemsParam=(GetProblemsParam)param.getParam();
-        if (null==getProblemsParam){
-            result.setMessage("参数为空");
-            return;
-        }
-
-        //分页处理
-        EntityWrapper ew=new EntityWrapper();
-        if (null!=getProblemsParam.getProblemtypeid()){
-           ew.eq(true,"pp.problemtypeid",getProblemsParam.getProblemtypeid());
-        }
-        if (StringUtils.isNotBlank(getProblemsParam.getKeyword())){
-            ew.like(true,"p.problem",getProblemsParam.getKeyword());
-        }
-        System.out.println( ew.getSqlSegment());
-
-        int count=police_problemMapper.countgetProblemList(ew);
-        getProblemsParam.setRecordCount(count);
-
-        ew.orderBy("p.ordernum",true);
-        ew.orderBy("p.createtime",false);
-        Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
-        List<Problem> problems=police_problemMapper.getProblemList(page,ew);
-
-        getProblemsVO.setProblems(problems);
-        getProblemsVO.setProblemsParam(getProblemsParam);
-        result.setData(getProblemsVO);
-        changeResultToSuccess(result);
-        return;
-    }
-
-    public void getTemplateTypes(RResult result){
-        GetTemplateTypesVO getTemplateTypesVO=new GetTemplateTypesVO();
-
-        EntityWrapper ew=new EntityWrapper();
-        ew.orderBy("ordernum",true);
-        ew.orderBy("createtime",false);
-        List<Police_templatetype> list=police_templatetypeMapper.selectList(ew);
-        List<Templatetype> templatetypes=new ArrayList<>();
-        if (null!=list&&list.size()>0){
-           templatetypes = gson.fromJson(gson.toJson(list), new TypeToken<List<Templatetype>>(){}.getType());
-        }
-        getTemplateTypesVO.setTemplatetypes(templatetypes);
-        result.setData(getTemplateTypesVO);
-        changeResultToSuccess(result);
-        return;
-    }
-
-    public void  getProblemTypes(RResult result){
-        GetProblemTypesVO getProblemTypesVO=new GetProblemTypesVO();
-
-        EntityWrapper ew=new EntityWrapper();
-        ew.orderBy("ordernum",true);
-        ew.orderBy("createtime",false);
-        List<Police_problemtype> list=police_problemtypeMapper.selectList(ew);
-        List<Problemtype> problemtypes=new ArrayList<>();
-        if (null!=list&&list.size()>0){
-            problemtypes = gson.fromJson(gson.toJson(list), new TypeToken<List<Problemtype>>(){}.getType());
-        }
-        getProblemTypesVO.setProblemtypes(problemtypes);
-        result.setData(getProblemTypesVO);
-        changeResultToSuccess(result);
-        return;
-    }
-
-
-    public void updateTemplate(RResult result,ReqParam param){
+    public void updateTemplate(RResult result,ReqParam<UpdateTemplateParam> param){
         UpdateTemplateVO updateTemplateVO=new UpdateTemplateVO();
+
         //请求参数转换
-        UpdateTemplateParam template=new UpdateTemplateParam();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            template =gson.fromJson(parameter, UpdateTemplateParam.class);
-        }
+        UpdateTemplateParam template=param.getParam();
         if (null==template){
             result.setMessage("参数为空");
             return;
@@ -188,7 +105,7 @@ public class TemplateService extends ForClientBaseService {
 
             //添加关联题目
             List<Integer> ids=template.getTemplatetoproblemids();
-            if (null!=ids&&ids.size()>0){
+           /* if (null!=ids&&ids.size()>0){
                 for (Integer id : ids) {
                     Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                     templatetoproblem.setCreatetime(new Date());
@@ -199,7 +116,7 @@ public class TemplateService extends ForClientBaseService {
                     int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                     System.out.println("insert_bool__"+insert_bool);
                 }
-            }
+            }*/
         }
 
         //修改模板数据
@@ -217,14 +134,10 @@ public class TemplateService extends ForClientBaseService {
         return;
     }
 
-    public void getTemplateById(RResult result,ReqParam param){
+    public void getTemplateById(RResult result,ReqParam<GetTemplateByIdParam> param){
         GetTemplateByIdVO getTemplateByIdVO=new GetTemplateByIdVO();
 
-        GetTemplateByIdParam getTemplateByIdParam=new GetTemplateByIdParam();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            getTemplateByIdParam =gson.fromJson(parameter, GetTemplateByIdParam.class);
-        }
+        GetTemplateByIdParam getTemplateByIdParam=param.getParam();
         if (null==getTemplateByIdParam){
             result.setMessage("参数为空");
             return;
@@ -256,15 +169,10 @@ public class TemplateService extends ForClientBaseService {
         return;
     }
 
-    public void addTemplate(RResult result,ReqParam param){
+    public void addTemplate(RResult result,ReqParam<AddTemplateParam> param){
         AddTemplateVO addTemplateVO=new AddTemplateVO();
 
-        AddTemplateParam addTemplateParam=new AddTemplateParam();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            addTemplateParam =gson.fromJson(parameter, AddTemplateParam.class);
-        }
-
+        AddTemplateParam addTemplateParam=param.getParam();
         if (null==addTemplateParam){
             result.setMessage("参数为空");
             return;
@@ -288,7 +196,7 @@ public class TemplateService extends ForClientBaseService {
 
         //添加模板题目关联数据
         List<Integer> ids=addTemplateParam.getTemplatetoproblemids();
-        if (null!=ids&&ids.size()>0){
+        /*if (null!=ids&&ids.size()>0){
             for (Integer id : ids) {
                 Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                 templatetoproblem.setCreatetime(new Date());
@@ -299,73 +207,171 @@ public class TemplateService extends ForClientBaseService {
                 int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                 System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
             }
-        }
+        }*/
 
         addTemplateVO.setBool(insert_bool);
         result.setData(addTemplateVO);
         changeResultToSuccess(result);
         return;
     }
-/***/
-    public void updateProblem(RResult result,ReqParam param){
-        Police_problem problem=new Police_problem();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            problem =gson.fromJson(parameter, Police_problem.class);
-        }
-    }
 
-    public void getProblemById(RResult result,ReqParam param){
-        Police_problem problem=new Police_problem();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            problem =gson.fromJson(parameter, Police_problem.class);
-        }
-    }
+    public void getTemplateTypes(RResult result,ReqParam param){
+        GetTemplateTypesVO getTemplateTypesVO=new GetTemplateTypesVO();
 
-    public void addProblem(RResult result,ReqParam param){
-        Police_problem problem=new Police_problem();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            problem =gson.fromJson(parameter, Police_problem.class);
+        EntityWrapper ew=new EntityWrapper();
+        ew.orderBy("ordernum",true);
+        ew.orderBy("createtime",false);
+        List<Police_templatetype> list=police_templatetypeMapper.selectList(ew);
+        List<Templatetype> templatetypes=new ArrayList<>();
+        if (null!=list&&list.size()>0){
+            templatetypes = gson.fromJson(gson.toJson(list), new TypeToken<List<Templatetype>>(){}.getType());
         }
+        getTemplateTypesVO.setTemplatetypes(templatetypes);
+        result.setData(getTemplateTypesVO);
+        changeResultToSuccess(result);
+        return;
     }
 
     public void addTemplateType(RResult result,ReqParam param){
-        Police_template template=new Police_template();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            template =gson.fromJson(parameter, Police_template.class);
-        }
+        return;
     }
 
     public void updateTemplateType(RResult result,ReqParam param){
-        Police_template template=new Police_template();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            template =gson.fromJson(parameter, Police_template.class);
-        }
-    }
-
-    public void addProblemType(RResult result,ReqParam param){
-        Police_problem problem=new Police_problem();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            problem =gson.fromJson(parameter, Police_problem.class);
-        }
-    }
-
-    public void updateProblemType(RResult result,ReqParam param){
-        Police_problem problem=new Police_problem();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            problem =gson.fromJson(parameter, Police_problem.class);
-        }
+        return;
     }
 
     public void setDefaultTemplate(RResult result,ReqParam param){
         return;
     }
+
+    public  void getProblems(RResult result, ReqParam<GetProblemsParam> param){
+        GetProblemsVO getProblemsVO=new GetProblemsVO();
+
+        GetProblemsParam getProblemsParam=param.getParam();
+        if (null==getProblemsParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //分页处理
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=getProblemsParam.getProblemtypeid()){
+            ew.eq(true,"pp.problemtypeid",getProblemsParam.getProblemtypeid());
+        }
+        if (StringUtils.isNotBlank(getProblemsParam.getKeyword())){
+            ew.like(true,"p.problem",getProblemsParam.getKeyword());
+        }
+
+        int count=police_problemMapper.countgetProblemList(ew);
+        getProblemsParam.setRecordCount(count);
+
+        ew.orderBy("p.ordernum",true);
+        ew.orderBy("p.createtime",false);
+        Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
+        List<Problem> problems=police_problemMapper.getProblemList(page,ew);
+
+        getProblemsVO.setProblems(problems);
+        getProblemsVO.setProblemsParam(getProblemsParam);
+        result.setData(getProblemsVO);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void updateProblem(RResult result,ReqParam param){
+        return;
+    }
+
+    public void getProblemById(RResult result,ReqParam param){
+        return;
+    }
+
+    public void addProblem(RResult result,ReqParam param){
+        return;
+    }
+
+    public void  getProblemTypes(RResult result,ReqParam param){
+        GetProblemTypesVO getProblemTypesVO=new GetProblemTypesVO();
+
+        EntityWrapper ew=new EntityWrapper();
+        ew.orderBy("ordernum",true);
+        ew.orderBy("createtime",false);
+        List<Police_problemtype> list=police_problemtypeMapper.selectList(ew);
+        List<Problemtype> problemtypes=new ArrayList<>();
+        if (null!=list&&list.size()>0){
+            problemtypes = gson.fromJson(gson.toJson(list), new TypeToken<List<Problemtype>>(){}.getType());
+        }
+        getProblemTypesVO.setProblemtypes(problemtypes);
+        result.setData(getProblemTypesVO);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void addProblemType(RResult result,ReqParam param){
+        return;
+    }
+
+    public void updateProblemType(RResult result,ReqParam param){
+        return;
+    }
+
+    public void addOrupdateTemplateIndex(RResult result,ReqParam param){
+        return;
+    }
+
+    public void getTemplateTypeById(RResult result,ReqParam param){
+        return;
+    }
+
+    public void getProblemTypeById(RResult result,ReqParam param){
+        return;
+    }
+
+    public void templateIndex(RResult result,ReqParam param){
+        return;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

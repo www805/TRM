@@ -13,35 +13,47 @@ public class RecordService extends ForClientBaseService {
     private Gson gson = new Gson();
 
     public void getRecords(RResult result, ReqParam param){
-        Police_record record =new Police_record();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            record =gson.fromJson(parameter, Police_record.class);
-        }
+      return;
     }
 
     public void addRecord(RResult result, ReqParam param){
-        Police_record record =new Police_record();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            record =gson.fromJson(parameter, Police_record.class);
-        }
+        return;
     }
 
     public void getRecordById(RResult result, ReqParam param){
-        Police_record record =new Police_record();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            record =gson.fromJson(parameter, Police_record.class);
-        }
+        return;
     }
 
     public void uploadRecord(RResult result, ReqParam param){
-        Police_record record =new Police_record();
-        String parameter= (String) param.getParam();
-        if (StringUtils.isNotBlank(parameter)){
-            record =gson.fromJson(parameter, Police_record.class);
-        }
+        return;
+    }
+
+    public void recordIndex(RResult result, ReqParam param){
+        return;
+    }
+
+    public void getRecordtypes(RResult result, ReqParam param){
+        return;
+    }
+
+    public void getRecordtypeById(RResult result, ReqParam param){
+        return;
+    }
+
+    public void addRecordtype(RResult result, ReqParam param){
+        return;
+    }
+
+    public void updateRecordtype(RResult result, ReqParam param){
+        return;
+    }
+
+    public void addRecordTemplate(RResult result, ReqParam param){
+        return;
+    }
+
+    public void addCaseToArraignment(RResult result, ReqParam param){
+        return;
     }
 
 

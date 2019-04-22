@@ -7,22 +7,24 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetServerconfigParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.req.UpdateServerconfigParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.vo.UserloginVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.req.UserloginParam;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 
 /**
  * 对客户端开放服务的基础接口,基本流程上的接口都在这里展现
  */
-@RestController
+@Controller
 @RequestMapping("/forClient")
 public class ForClientBaseAction extends BaseAction {
 
@@ -30,6 +32,7 @@ public class ForClientBaseAction extends BaseAction {
     private ForClientBaseService forClientBaseService;
 
     @GetMapping(value = "/init",produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
     public InitVO initClient() {
 
         InitVO initVO=new InitVO();
@@ -39,17 +42,19 @@ public class ForClientBaseAction extends BaseAction {
         return initVO;
     }
 
+
+
     /**
      * 客户端管理员登陆
      * @return
      */
     @GetMapping(value = "/userlogin",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult userlogin(ReqParam param, HttpSession httpSession) {
+    @ResponseBody
+    public RResult userlogin(@RequestBody ReqParam<UserloginParam> param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
             forClientBaseService.userlogin(result,param,httpSession);
@@ -63,12 +68,12 @@ public class ForClientBaseAction extends BaseAction {
      * @return
      */
     @GetMapping(value = "/userloginout",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult userloginout(ReqParam param, HttpSession httpSession) {
+    @ResponseBody
+    public RResult userloginout(@RequestBody  ReqParam param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
             forClientBaseService.userloginout(result,param,httpSession);
@@ -84,12 +89,12 @@ public class ForClientBaseAction extends BaseAction {
      * @return
      */
     @GetMapping(value = "/updateServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult setServerconfig(ReqParam param){
+    @ResponseBody
+    public RResult updateServerconfig(@RequestBody ReqParam<UpdateServerconfigParam> param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
             forClientBaseService.updateServerconfig(result,param);
@@ -97,6 +102,55 @@ public class ForClientBaseAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
     }
+
+    /**
+     * 获取服务器配置
+     * @param param
+     * @return
+     */
+    @GetMapping(value = "/getServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
+    @ResponseBody
+    public RResult getServerconfig(@RequestBody ReqParam<GetServerconfigParam> param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            forClientBaseService.getServerconfig(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 跳转==》修改服务器配置页面
+     */
+    @GetMapping(value = "/gotoupdateServerconfig")
+    public ModelAndView gotoupdateServerconfig(Model model,Integer id){
+        model.addAttribute("id","id");
+        return  new ModelAndView("police/updateServerconfig","updateServerconfig", model);
+    }
+
+    /**
+     * 跳转==》登陆页
+     */
+    @GetMapping(value = "/gotologin")
+    public ModelAndView gotologin(Model model){
+        return  new ModelAndView("police/login","login", model);
+    }
+
+    /**
+     * 跳转==》主页
+     */
+    @GetMapping(value = "/gotomain")
+    public ModelAndView gotomain(Model model){
+        return  new ModelAndView("police/main","main", model);
+    }
+
+
+
+
 
 
     /**

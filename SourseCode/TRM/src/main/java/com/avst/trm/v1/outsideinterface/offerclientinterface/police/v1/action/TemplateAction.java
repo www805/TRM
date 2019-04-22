@@ -16,10 +16,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetTem
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 关于模板
@@ -32,81 +29,40 @@ public class TemplateAction extends ForClientBaseAction {
     private TemplateService templateService;
 
     /**
+     * ① 获取模板列表：/v1/police/template/getTemplates
+     * ②  修改模板：/v1/police/template/updateTemplate
+     * ③  查看单个模板：/v1/police/template/getTemplateById
+     * ④  添加模板：/v1/police/template/addTemplate
+     * ⑤  获取模板类型列表：/v1/police/template/getTemplateTypes
+     * ⑥  添加模板类型：/v1/police/template/addTemplateType
+     * ⑦  修改模板类型：/v1/police/template/updateTemplateType
+     * ⑧  设置默认模板：/v1/police/template/setDefaultTemplate
+     * ⑨  获取问题列表：/v1/police/template/getProblems
+     * ⑩  修改问题：/v1/police/template/updateProblem
+     * ⑪  查询单个问题：/v1/police/template/getProblemById
+     * ⑫  添加问题：/v1/police/template/addProblem
+     * ⑬  获取问题类型列表：/v1/police/template/getProblemTypes
+     * ⑭  添加问题类型：/v1/police/template/addProblemType
+     * ⑮  修改问题类型：/v1/police/template/updateProblemType
+     * ⑯  获取模板编辑页主数据：/v1/police/template/addOrupdateTemplateIndex
+     * ⑰  查询单个模板类型：/v1/police/template/getTemplateTypeById
+     * ⑱  查询单个问题类型：/v1/police/template/getProblemTypeById
+     * ⑲  获取模板主页数据：/v1/police/template/templateIndex
+     */
+    /**
      * 获取模板列表
      * @param param
      * @return
      */
     @GetMapping(value = "/getTemplates",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getTemplates(ReqParam param){
+    public RResult getTemplates(@RequestBody ReqParam<GetTemplatesParam> param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if(null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.getTemplates(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取问题列表
-     * @param param
-     * @return
-     */
-    @PostMapping(value = "/getProblems",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblems(ReqParam<GetProblemsParam> param){
-        RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
-        if(null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(token)){
-            result.setMessage("授权异常");
-        }else {
-            templateService.getProblems(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-
-    /**
-     * 获取模板类型
-     * @param param
-     * @return
-     */
-    @GetMapping(value = "/getTemplateTypes",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getTemplateTypes(ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
-        if (!checkToken(token)){
-            result.setMessage("授权异常");
-        }else {
-            templateService.getTemplateTypes(result);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取问题类型
-     * @param param
-     * @return
-     */
-    @GetMapping(value = "/getProblemTypes",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblemTypes(ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
-        if (!checkToken(token)){
-            result.setMessage("授权异常");
-        }else {
-            templateService.getProblemTypes(result);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -118,13 +74,11 @@ public class TemplateAction extends ForClientBaseAction {
      * @return
      */
     @PostMapping(value = "/updateTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateTemplate(ReqParam param){
+    public RResult updateTemplate(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.updateTemplate(result,param);
@@ -139,13 +93,11 @@ public class TemplateAction extends ForClientBaseAction {
      * @return
      */
     @GetMapping(value = "/getTemplateById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getTemplateById(ReqParam param){
+    public RResult getTemplateById(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.getTemplateById(result,param);
@@ -154,20 +106,17 @@ public class TemplateAction extends ForClientBaseAction {
         return  result;
     }
 
-
     /**
      * 添加模板
      * @param param
      * @return
      */
     @PostMapping(value = "/addTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addTemplate(ReqParam param){
+    public RResult addTemplate(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.addTemplate(result,param);
@@ -177,18 +126,112 @@ public class TemplateAction extends ForClientBaseAction {
     }
 
     /**
+     * 获取模板类型
+     * @param param
+     * @return
+     */
+    @GetMapping(value = "/getTemplateTypes",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getTemplateTypes(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.getTemplateTypes(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 添加模板类型
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/addTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult addTemplateType(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.addTemplateType(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 修改模板类型
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/updateTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult updateTemplateType(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.updateTemplateType(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 设置默认模板
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/setDefaultTemplate",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult setDefaultTemplate(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.setDefaultTemplate(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 获取问题列表
+     * @param param
+     * @return
+     */
+    @GetMapping(value = "/getProblems",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getProblems(@RequestBody ReqParam<GetProblemsParam> param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.getProblems(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
      * 修改问题
      * @param param
      * @return
      */
-    @GetMapping(value = "/updateProblem",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateProblem(ReqParam param){
+    @PostMapping(value = "/updateProblem",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult updateProblem(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.updateProblem(result,param);
@@ -203,13 +246,11 @@ public class TemplateAction extends ForClientBaseAction {
      * @return
      */
     @GetMapping(value = "/getProblemById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblemById(ReqParam param){
+    public RResult getProblemById(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.getProblemById(result,param);
@@ -223,14 +264,12 @@ public class TemplateAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/addProblem",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addProblem(ReqParam param){
+    @PostMapping(value = "/addProblem",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult addProblem(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.addProblem(result,param);
@@ -240,45 +279,22 @@ public class TemplateAction extends ForClientBaseAction {
     }
 
     /**
-     * 添加模板类型
+     * 获取问题类型
      * @param param
      * @return
      */
-    @GetMapping(value = "/addTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addTemplateType(ReqParam param){
+    @GetMapping(value = "/getProblemTypes",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getProblemTypes(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            templateService.addTemplateType(result,param);
+            templateService.getProblemTypes(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
-        return  result;
-    }
-
-    /**
-     * 修改模板类型
-     * @param param
-     * @return
-     */
-    @GetMapping(value = "/updateTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateTemplateType(ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(token)){
-            result.setMessage("授权异常");
-        }else {
-            templateService.updateTemplateType(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return  result;
+        return result;
     }
 
     /**
@@ -286,14 +302,12 @@ public class TemplateAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/addProblemType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addProblemType(ReqParam param){
+    @PostMapping(value = "/addProblemType",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult addProblemType(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.addProblemType(result,param);
@@ -307,14 +321,12 @@ public class TemplateAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/updateProblemType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateProblemType(ReqParam param){
+    @PostMapping(value = "/updateProblemType",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult updateProblemType(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
             templateService.updateProblemType(result,param);
@@ -323,30 +335,108 @@ public class TemplateAction extends ForClientBaseAction {
         return  result;
     }
 
-    /**
-     * 设置默认模板
-     * @param param
-     * @return
-     */
-    @GetMapping(value = "/setDefaultTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult setDefaultTemplate(ReqParam param){
+    @PostMapping(value = "/addOrupdateTemplateIndex",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult addOrupdateTemplateIndex(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
-        String token=param.getToken();
-        String clientkey= CommonCache.getClientKey();
         if (null==param){
             result.setMessage("参数为空");
-        }else if (!checkToken(token)){
+        }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            templateService.setDefaultTemplate(result,param);
+            templateService.addOrupdateTemplateIndex(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
     }
 
-    public static void main(String[] args) {
-
+    @GetMapping(value = "/getTemplateTypeById",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getTemplateTypeById(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.getTemplateTypeById(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
     }
+
+    @GetMapping(value = "/getProblemTypeById",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult getProblemTypeById(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.getProblemTypeById(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    @GetMapping(value = "/templateIndex",produces = MediaType.APPLICATION_XML_VALUE)
+    public RResult templateIndex(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.templateIndex(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
