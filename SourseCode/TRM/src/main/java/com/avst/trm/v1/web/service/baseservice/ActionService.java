@@ -18,8 +18,8 @@ public class ActionService {
     public ActionAndinterfaceAndPage getAction(String interfaceurl,String pageid ){
 
         EntityWrapper entityWrapper=new EntityWrapper();
-        entityWrapper.eq("interfaceurl",interfaceurl);
-        entityWrapper.eq("pageid",pageid);
+        entityWrapper.eq("i.interfaceurl",interfaceurl);
+        entityWrapper.eq("a.pageid",pageid);
 
         ActionAndinterfaceAndPage actionAndinterfaceAndPage=base_actionMapper.getActionAndinterfaceAndPage(entityWrapper).get(0);
         if(null!=actionAndinterfaceAndPage){

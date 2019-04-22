@@ -11,7 +11,7 @@ public class PageVO {
 
     private List<ActionVO> actionList;//该页面对应的所有请求动作集合
 
-    public String getPageid() {
+    public  String getPageid() {
         return pageid;
     }
 

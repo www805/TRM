@@ -60,8 +60,8 @@ public class AnalysisSQ {
     }
 
 
-    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
-//    private static String inifilename="javatrm.ini";//main测试使用
+//    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+    private static String inifilename="javatrm.ini";//main测试使用
     /**
      *  初始化授权文件的路径
      */
@@ -247,6 +247,23 @@ public class AnalysisSQ {
     public static String getClientKey(){
 
         try {
+            String code=getServerSQCode();
+            String key=code.substring(0,10)+ DateUtil.getSeconds();
+            return encode_uid(key);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 根据隐藏的ini授权记录获取授权的code
+     * @return
+     */
+    public static String getServerSQCode(){
+
+        try {
             File file=new File(inipath);
             if(!file.exists()){
                 Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
@@ -257,14 +274,12 @@ public class AnalysisSQ {
                 }
             }
             String code=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
-            String key=code.substring(0,10)+ DateUtil.getSeconds();
-            return encode_uid(key);
+            return code;
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
     }
-
 
 
 

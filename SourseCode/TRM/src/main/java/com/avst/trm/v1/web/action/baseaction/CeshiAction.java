@@ -6,6 +6,8 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfa
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
+import com.avst.trm.v1.report.toupserver.ToUpServerBaseDealClass;
+import com.avst.trm.v1.report.toupserver.ToUpServerBaseReqClass;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.service.baseservice.ActionService;
@@ -33,6 +35,8 @@ public class CeshiAction extends BaseAction {
     public RResult getlist(String username) {
         RResult rResult=createNewResultOfFail();
         ceshiService.getadminlist(rResult,username);
+
+        ToUpServerBaseReqClass.initsynchronizeddata();
         return rResult;
     }
 

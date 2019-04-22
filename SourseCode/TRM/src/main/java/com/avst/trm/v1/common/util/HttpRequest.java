@@ -30,10 +30,8 @@ import org.apache.commons.lang.StringUtils;
 public class HttpRequest {
 	
        
-       public static String readContentFromGet(String url,String param) throws IOException { 
+       public static String readContentFromGet(String url,String param)  {
 
-           
-    	   
     	    HttpURLConnection connection=null;
     	    HttpsURLConnection connections=null;
     		BufferedReader reader=null;
@@ -127,7 +125,7 @@ public class HttpRequest {
      			
      			   lines = reader.readLine();
      			  int code = connection.getResponseCode();
-     			  System.out.println("----https协议请求的返回code："+code);
+     			  System.out.println("----http协议请求的返回code："+code);
     			}
     			
     			   

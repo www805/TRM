@@ -5,7 +5,6 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -37,6 +36,7 @@ public class TrmApplication {
         //注册监听器
         SpringApplication application = new SpringApplication(TrmApplication.class);
         application.addListeners(new PropertiesListener("application.properties"));
+
         application.run( args);
 
     }

@@ -32,6 +32,22 @@ public class CommonCache {
      * 客户端访问时使用的key
      */
     private static String clientkey=null;
+
+    /**
+     * 授权的code值
+     */
+    private static String serverSQCode=null;
+
+    public static String getServerSQCode(){
+        if(!clientSQbool){
+            return null;
+        }
+        if(StringUtils.isEmpty(serverSQCode)){
+            serverSQCode = AnalysisSQ.getServerSQCode();
+        }
+        return serverSQCode;
+    }
+
     /**
      * 授权是否正常
      * 定时器里面要每天要进行检测
