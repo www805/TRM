@@ -394,7 +394,18 @@ public class CommonCache {
             List<ActionAndinterfaceAndPage> pagelist=actionListMap.get(type);
             for(ActionAndinterfaceAndPage action:pagelist){
                 if(action.getPageid().equals(pageid)){
-                    andPageList.add(action);
+                    if(andPageList.size() > 0){
+                        boolean bool= false;
+                        for(ActionAndinterfaceAndPage action2 : andPageList){
+                            if(action2.getActionid().equals(action.getActionid())){
+                                bool=true;
+                                break;
+                            }
+                        }
+                        if(!bool){
+                            andPageList.add(action);
+                        }
+                    }
                 }
             }
             return andPageList;
