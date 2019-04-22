@@ -994,6 +994,8 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
 					+ pageSize + ')', "layui-btn layui-btn-sm layui-btn-primary", null, null, null, null,
 					'type="button"');
+			// pagetxt +='<a href="javascript:;" onclick="getdatafun + \'(\' + reqparamdata + i + \',\'+ pageSize + \')\'" data-page="3">3</a>';
+
 		}
 		buttonnum++;
 	}
@@ -1231,12 +1233,12 @@ function getAction(actionid){
 
 	if(isNotEmpty(pageActionByPage)&&isNotEmpty(actionid)){
 
-		if(pageActionByPage.length==0){
+		if(pageActionByPage.actionList.length==0){
 			return ;
 		}
-		for(var i=0;i<pageActionByPage.length;i++){
-			if(actionid==pageActionByPage[i].actionId){
-				return pageList[i];
+		for(var i=0;i<pageActionByPage.actionList.length;i++){
+			if(actionid==pageActionByPage.actionList[i].actionId){
+				return pageActionByPage.actionList[i];
 			}
 		}
 	}
@@ -1253,12 +1255,12 @@ function getActionURL(actionid){
 
 	if(isNotEmpty(pageActionByPage)&&isNotEmpty(actionid)){
 
-		if(pageActionByPage.length==0){
+		if(pageActionByPage.actionList.length==0){
 			return ;
 		}
-		for(var i=0;i<pageActionByPage.length;i++){
-			if(actionid==pageActionByPage[i].actionId){
-				return pageList[i].reqURL;
+		for(var i=0;i<pageActionByPage.actionList.length;i++){
+			if(actionid==pageActionByPage.actionList[i].actionId){
+				return pageActionByPage.actionList[i].reqURL;
 			}
 		}
 	}

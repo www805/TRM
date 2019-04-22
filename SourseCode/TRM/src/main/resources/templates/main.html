@@ -30,8 +30,8 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">用户管理</a>
                 <dl class="layui-nav-child">
-                    <dd><a th:href="@{/web/user/getUserList}" target="option">用户列表</a></dd>
-                    <dd><a th:href="@{/web/role/getRoleList}" target="option">角色列表</a></dd>
+                    <dd><a th:href="@{/web/user/getUser}" target="option">用户列表</a></dd>
+                    <dd><a th:href="@{/web/role/getRole}" target="option">角色列表</a></dd>
                 </dl>
             </li>
             <li class="layui-nav-item"><a th:href="@{/web/arraignment/getArraignment}"  target="option">提讯笔录</a></li>
@@ -57,7 +57,7 @@
     <div class="layui-body" style="left: 0">
         <!-- 内容主体区域 -->
         <div class="layui-show">
-            <iframe src="/web/home/home" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
+            <iframe src="/publicweb/home/home" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
             <!--<iframe src="/publicweb/ceshi/getAddUser" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>-->
         </div>
     </div>

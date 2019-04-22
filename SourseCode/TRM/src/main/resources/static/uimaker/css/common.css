@@ -10,3 +10,6 @@
 .layui-form-switch {
     margin-top: 0;
 }
+#paging{
+    float: right;
+}
