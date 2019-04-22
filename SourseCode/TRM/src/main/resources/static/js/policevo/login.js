@@ -1,7 +1,7 @@
 
 function login_login(){
 
-    var url=getActionURL(getactionid_manage().login_checklogin);
+    var url=getActionURL(getactionid_manage().login_login);
 
     var loginaccount =$('input[name="loginaccount"]').val();
     var password =$('input[name="password"]').val();

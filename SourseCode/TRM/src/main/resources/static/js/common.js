@@ -1210,6 +1210,8 @@ var pageActionByPage;
  */
 function setpageAction(InitVO,pageid){
 
+	console.log(InitVO);
+
 	if(isNotEmpty(InitVO)&&isNotEmpty(pageid)){
 		var code=InitVO.code;
 		if(code=="0"){
@@ -1259,6 +1261,9 @@ function getActionURL(actionid){
 			return ;
 		}
 		for(var i=0;i<pageActionByPage.actionList.length;i++){
+
+			console.log(pageActionByPage.actionList[i].actionId);
+
 			if(actionid==pageActionByPage.actionList[i].actionId){
 				return pageActionByPage.actionList[i].reqURL;
 			}

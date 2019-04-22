@@ -6,7 +6,7 @@ function getactionid_manage() {
 
         main_getRole:"main_getRole",
         main_logout:"main_logout",
-        login_checklogin:"login_checklogin",
+        login_login:"login_login",
         login_main:"login_main",
 
         getRoleList_getRoleList:"getRoleList_getRoleList",
