@@ -13,30 +13,40 @@ import java.io.Serializable;
  * @author Admin
  * @since 2019-04-23
  */
-public class Base_datainfo extends Model<Base_datainfo> {
+public class Base_filesave extends Model<Base_filesave> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 可以同步的表单(客户端和服务器都有)
+     * 文件存储表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 表单名
+     * 真实路径文件名：32加密的名字，真实路径的名字（没有中文和特殊符号）
      */
-    private String dataname;
+    private String realfilename;
 
     /**
-     * 表单中文名称
+     * 文件本身的文件名
      */
-    private String dataname_cn;
+    private String uploadfilename;
 
     /**
-     * 对应的mapper
+     * 从属表的ssid
      */
-    private String mappername;
+    private String zhname;
+
+    /**
+     * 下载地址
+     */
+    private String recorddownurl;
+
+    /**
+     * 真实存储地址
+     */
+    private String recordrealurl;
 
     private String ssid;
 
@@ -55,26 +65,40 @@ public class Base_datainfo extends Model<Base_datainfo> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getDataname() {
-        return dataname;
+    public String getRealfilename() {
+        return realfilename;
     }
 
-    public void setDataname(String dataname) {
-        this.dataname = dataname;
+    public void setRealfilename(String realfilename) {
+        this.realfilename = realfilename;
     }
-    public String getDataname_cn() {
-        return dataname_cn;
-    }
-
-    public void setDataname_cn(String dataname_cn) {
-        this.dataname_cn = dataname_cn;
-    }
-    public String getMappername() {
-        return mappername;
+    public String getUploadfilename() {
+        return uploadfilename;
     }
 
-    public void setMappername(String mappername) {
-        this.mappername = mappername;
+    public void setUploadfilename(String uploadfilename) {
+        this.uploadfilename = uploadfilename;
+    }
+    public String getZhname() {
+        return zhname;
+    }
+
+    public void setZhname(String zhname) {
+        this.zhname = zhname;
+    }
+    public String getRecorddownurl() {
+        return recorddownurl;
+    }
+
+    public void setRecorddownurl(String recorddownurl) {
+        this.recorddownurl = recorddownurl;
+    }
+    public String getRecordrealurl() {
+        return recordrealurl;
+    }
+
+    public void setRecordrealurl(String recordrealurl) {
+        this.recordrealurl = recordrealurl;
     }
     public String getSsid() {
         return ssid;
@@ -119,11 +143,13 @@ public class Base_datainfo extends Model<Base_datainfo> {
 
     @Override
     public String toString() {
-        return "Base_datainfo{" +
+        return "Base_filesave{" +
         "id=" + id +
-        ", dataname=" + dataname +
-        ", dataname_cn=" + dataname_cn +
-        ", mappername=" + mappername +
+        ", realfilename=" + realfilename +
+        ", uploadfilename=" + uploadfilename +
+        ", zhname=" + zhname +
+        ", recorddownurl=" + recorddownurl +
+        ", recordrealurl=" + recordrealurl +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
