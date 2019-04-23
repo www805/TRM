@@ -1,15 +1,16 @@
 package com.avst.trm.v1.web.vo.basevo;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
+import com.avst.trm.v1.web.req.basereq.GetRoleListParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 
 import java.util.List;
 
-public class RoleListVO {
+public class GetRoleListVO {
 
     private List<Base_role> pagelist;
 
-    private Getlist3Param pageparam;
+    private GetRoleListParam pageparam;
 
     public List<Base_role> getPagelist() {
         return pagelist;
@@ -19,11 +20,11 @@ public class RoleListVO {
         this.pagelist = pagelist;
     }
 
-    public Getlist3Param getPageparam() {
+    public GetRoleListParam getPageparam() {
         return pageparam;
     }
 
-    public void setPageparam(Getlist3Param pageparam) {
+    public void setPageparam(GetRoleListParam pageparam) {
         this.pageparam = pageparam;
     }
 }

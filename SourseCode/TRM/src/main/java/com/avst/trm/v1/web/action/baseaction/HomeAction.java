@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -85,16 +86,15 @@ public class HomeAction extends BaseAction{
     @PostMapping(value = "/checklogin")
     @ResponseBody
     public RResult checklogin(Model model, HttpServletRequest request, LoginParam loginParam) {
-        RResult rResult=createNewResultOfFail();
-
-        if(!StringUtils.isEmpty(loginParam.getLoginaccount()) && !StringUtils.isEmpty(loginParam.getPassword())){
-            loginService.gotologin(rResult,request,loginParam);
+        RResult result=createNewResultOfFail();
+        if(StringUtils.isNotBlank(loginParam.getLoginaccount()) && StringUtils.isNotBlank(loginParam.getPassword())){
+            loginService.gotologin(result,request,loginParam);
         }else{
-            rResult.setMessage("用户名或密码为空");
+            result.setMessage("用户名密码不能为空");
             System.out.println("LogAction gotologin loginParam is null");
         }
-
-        return rResult;
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
     }
 
     @RequestMapping(value = "/logout",produces = MediaType.APPLICATION_JSON_VALUE)

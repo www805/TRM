@@ -2,8 +2,10 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.web.req.basereq.GetRoleListParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.service.policeservice.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,38 +27,33 @@ public class RoleAction extends BaseAction{
     private RoleService roleService;
 
     /***
-     * 角色列表
+     * 跳转用户列表页
      * @param model
      * @param param
      * @return
      */
     @GetMapping(value = "/getRole")
     public ModelAndView getUser(Model model, Getlist3Param param) {
-
-        RResult rResult=createNewResultOfFail();
-
-        param.setPageSize(3);//测试
-        roleService.findAdminlist(rResult,param);
-
-        model.addAttribute("result", rResult);
-
-        model.addAttribute("title", "用户列表");
+        model.addAttribute("title", "角色列表");
         return new ModelAndView("police/role/getRoleList", "roleModel", model);
 
     }
 
     /***
      * 角色列表分页
-     * @param model
      * @return
      */
     @RequestMapping(value = "/getRoleList")
     @ResponseBody
-    public RResult getUserList(Model model,Getlist3Param param) {
-        RResult rResult=createNewResultOfFail();
-        param.setPageSize(3);//测试
-        roleService.findAdminlist(rResult,param);
-        return rResult;
+    public RResult getRoleList(GetRoleListParam param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            roleService.getRoleList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
     }
 
     /**

@@ -32,9 +32,21 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="roleName" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                <input type="text" name="rolename"  id="rolename" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
             </div>
-            <input type="submit" class="layui-btn layui-btn-normal" value="查询">
+
+
+            <label class="layui-form-label" style="width: auto;">是否启用</label>
+            <div class="layui-input-inline">
+                <select name="rolebool" id="rolebool">
+                    <option value="">请选择启用状态</option>
+                    <option value="1">正常</option>
+                    <option value="2">禁用</option>
+                </select>
+            </div>
+
+
+            <input type="button" class="layui-btn layui-btn-normal" value="查询">
             <a th:href="@{/web/role/getAddRole}" class="layui-btn layui-btn-normal" >添加角色</a>
         </div>
     </form>

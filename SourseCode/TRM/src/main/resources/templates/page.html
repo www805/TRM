@@ -14,16 +14,20 @@
         var result=[[${result}]];
         var pagelist;
         var pageparam;
-        // console.log(result);
-        pageshow(result);
+        if (isNotEmpty(result)) {
+            pageshow(result);
+        }
 
         function pageshow(data){
-
             pagelist=data.data.pagelist;
             pageparam=data.data.pageparam;
+            $("#pagelisttemplates_tbody").html("");
+            $("#paging").html("");
+            if (isNotEmpty(pagelist)) {
+                detail();
+                showpagetohtml();
+            }
 
-            detail();
-            showpagetohtml();
         }
 
     </script>

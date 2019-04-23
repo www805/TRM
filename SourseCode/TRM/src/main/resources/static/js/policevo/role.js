@@ -1,8 +1,4 @@
-
-function getAdminInfoPage(name,currPage,pageSize){
-
-    var aa = getactionid_manage().getRoleList_getRoleList;
-
+function getRoleList_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().getRoleList_getRoleList);
     var data={
         name:name,
@@ -10,16 +6,17 @@ function getAdminInfoPage(name,currPage,pageSize){
         pageSize:pageSize
     };
 
-    //加载层-风格4
-    var index = layer.msg('加载中', {
-        icon: 16
-        ,shade: 0.01
-        ,time: 6000, //20s后自动关闭
-    });
+    ajaxSubmit(url,data,callbackgetAdminInfoPage);
+}
+function getRoleList(name,currPage,pageSize){
+    var url=getActionURL(getactionid_manage().getRoleList_getRoleList);
+    var data={
+        name:name,
+        currPage:currPage,
+        pageSize:pageSize
+    };
 
     ajaxSubmit(url,data,callbackgetAdminInfoPage);
-
-    layer.close(index);
 }
 
 
@@ -37,18 +34,17 @@ function callbackgetAdminInfoPage(data){
 /**
  * 局部刷新
  */
-function getAdminInfoPageByParam(){
-
+function getRoleListByParam(){
     var len=arguments.length;
 
     if(len==0){
         var currPage=1;
         var pageSize=3;//测试
-        getAdminInfoPageByParam_init(currPage,pageSize);
+        getRoleList_init(currPage,pageSize);
     }else if (len==2){
-        getAdminInfoPage('',arguments[0],arguments[1]);
+        getRoleList('',arguments[0],arguments[1]);
     }else if(len>2){
-        getAdminInfoPage(arguments[0],arguments[1],arguments[2]);
+        getRoleList(arguments[0],arguments[1],arguments[2]);
     }
 
 }
@@ -63,7 +59,7 @@ function showpagetohtml(){
         var name=pageparam.name;
         var arrparam=new Array();
         arrparam[0]=name;
-        showpage("paging",arrparam,'getAdminInfoPageByParam',currPage,pageCount,pageSize);
+        showpage("paging",arrparam,'getRoleListByParam',currPage,pageCount,pageSize);
     }
 
 
