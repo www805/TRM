@@ -21,6 +21,12 @@ function getactionid_manage() {
         getKeyword_getAddOrUpdateKeyword:"getKeyword_getAddOrUpdateKeyword",
         getKeyword_deleteKeyword:"getKeyword_deleteKeyword",
 
+        addOrUpdateKeyword_getAddOrUpdateKeyword: "addOrUpdateKeyword_getAddOrUpdateKeyword",
+        addOrUpdateKeyword_getKeyword: "addOrUpdateKeyword_getKeyword",
+
+        serverconfig_uploadByImg: "serverconfig_uploadByImg",
+        serverconfig_getServerConfig: "serverconfig_getServerConfig",
+
 
     };
 }

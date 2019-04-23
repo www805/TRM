@@ -22,8 +22,30 @@ function callbackgetAdminInfoPage(data){
         window.location.href=url;
     }else{
         //parent.layer.msg(data.message,{icon: 2},1);
-        alert(data.message);
+        // alert(data.message);
+        layer.msg(data.message, {time: 5000, icon:6});
     }
 
 }
+
+function login_logout(){
+
+    var url=getActionURL(getactionid_manage().main_logout);
+
+    ajaxSubmit(url,null,callLogout);
+}
+
+function callLogout(data){
+
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        alert(data.message);
+        var url=getActionURL(getactionid_manage().login_main);
+        window.location.href=url;
+    }else{
+        // alert(data.message);
+        layer.msg(data.message, {time: 5000, icon:6});
+    }
+
+}
+
 

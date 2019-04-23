@@ -101,10 +101,8 @@ public class HomeAction extends BaseAction{
     @ResponseBody
     public RResult logout(Model model,HttpServletRequest request) {
         RResult rResult=createNewResultOfFail();
-
         this.changeResultToSuccess(rResult);
         rResult.setMessage("退出成功");
-
         request.getSession().setAttribute(Constant.MANAGE_WEB,null);
         return rResult;
     }

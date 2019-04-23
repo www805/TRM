@@ -16,12 +16,15 @@
         var updateurl="";
         var addurl="";
         var laypage;
+        var init_web = null;
 
-        $(function(){
-            setpageAction([[${session.INIT_WEB}]],"police/keyword/getKeyword");
+        $(function () {
+            init_web = [[${session.INIT_WEB}]];
+
+            setpageAction(init_web, "police/keyword/getKeyword");
             getAction();
-            updateurl=getActionURL(getactionid_manage().getKeyword_getAddOrUpdateKeyword);
-            deleteurl=getActionURL(getactionid_manage().getKeyword_deleteKeyword);
+            updateurl = getActionURL(getactionid_manage().getKeyword_getAddOrUpdateKeyword);
+            deleteurl = getActionURL(getactionid_manage().getKeyword_deleteKeyword);
         });
     </script>
 </head>
@@ -81,11 +84,11 @@
                     <td>{{value.backgroundcolor}}</td>
                     <td>{{value.createtime}}</td>
                     <td >
-                        <input type="checkbox" name="switch" lay-skin="switch" lay-text="启用|禁用"  disabled {{value.shieldbool==0?'':'checked'}}>
+                        <input type="checkbox" name="switch" lay-skin="switch" lay-text="不屏蔽|屏蔽"  disabled {{value.shieldbool==-1?'':'checked'}} >
                     </td>
                     <td>
                         <a href="{{updateurl}}/{{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                        <a href="{{deleteurl}}/{{value.id}}" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                        <a href="javascript:;"  onclick="deleteKeyword({{value.id}});" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
                     </td>
 
                 </tr>

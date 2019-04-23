@@ -1,4 +1,43 @@
+var KeywordAction = null;
 
+function getAddOrUpdateKeyword(){
+
+    var url = "";
+
+    var id =$('input[name="id"]').val();
+    var text =$('input[name="text"]').val();
+    var replacetext =$('input[name="replacetext"]').val();
+    var color =$('input[name="color"]').val();
+    var backgroundcolor =$('input[name="backgroundcolor"]').val();
+    var shieldbool =$('input[name="shieldbool"]').val();
+
+    console.log(shieldbool);
+    console.log($("div[class='.layui-form-onswitch']"));
+
+
+    if (shieldbool == "") {
+        shieldbool = -1;
+    }else{
+        shieldbool = 1;
+    }
+
+    var data={
+        id:id,
+        text:text,
+        replacetext:replacetext,
+        color:color,
+        backgroundcolor:backgroundcolor,
+        shieldbool:shieldbool
+    };
+
+    if(id){
+        url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword) + "/" + id;
+    }else{
+        url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword);
+    }
+
+    //ajaxSubmit(url,data,calladdOrUpdataKeyWordPage);
+}
 
 /**
  * 带参数的
@@ -28,19 +67,67 @@ function getKeyWordPage(text,currPage,pageSize){
 }
 
 
+function deleteKeyword(id){
+
+    var aa = layer.confirm('你确定要删除关键字？', {
+        btn: ['确定','取消'] //按钮
+    }, function(){
+
+        layer.close(aa);
+        KeywordAction = getAction(getactionid_manage().getKeyword_deleteKeyword);
+        var data={
+            id:id
+        };
+        ajaxSubmit(KeywordAction.reqURL,data,callDeleteKeyword);
+
+    }, function(){
+        return;
+    });
+
+}
+
 function callbackgetKeyWordPage(data){
-    //
-    // console.log("=====================");
-    // console.log(data);
+
     $("#listqk").html("");
 
     if(null!=data&&data.actioncode=='SUCCESS'){
         pageshow(data);
     }else{
-        //parent.layer.msg(data.message,{icon: 2},1);
-        alert(data.message);
+        // alert(data.message);
+        layer.msg(data.message, {time: 5000, icon:5});
     }
+}
 
+function calladdOrUpdataKeyWordPage(data){
+
+    if(null!=data&&data.actioncode=='SUCCESS'){
+
+        setpageAction(init_web,"police/keyword/getKeyword");
+
+        var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
+        window.location.href=url;
+    }else{
+        // alert(data.message);
+        layer.msg(data.message, {time: 5000, icon:5});
+    }
+}
+
+function callDeleteKeyword(data){
+
+    if(null!=data&&data.actioncode=='SUCCESS'){
+
+        if (KeywordAction.gotopageOrRefresh == 1) {
+
+            setpageAction(init_web,KeywordAction.nextPageId);
+
+            var url=getActionURL(getactionid_manage().main_getKeyword);
+            window.location.href=url;
+        }
+
+    }else{
+        // alert(data.message);
+        layer.msg(data.message, {time: 5000, icon:5});
+    }
 }
 
 /**
