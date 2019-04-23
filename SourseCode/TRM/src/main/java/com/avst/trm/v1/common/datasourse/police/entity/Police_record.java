@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-04-23
  */
 public class Police_record extends Model<Police_record> {
 
@@ -30,9 +30,9 @@ public class Police_record extends Model<Police_record> {
     private String recordname;
 
     /**
-     *   模板id
+     *  笔录模板id
      */
-    private String templatessid;
+    private String recordtemplatessid;
 
     /**
      * 案件id
@@ -65,6 +65,16 @@ public class Police_record extends Model<Police_record> {
     private Integer recordbool;
 
     /**
+     * PDF下载地址
+     */
+    private String pdfdownurl;
+
+    /**
+     * PDF真实地址
+     */
+    private String pdfrealurl;
+
+    /**
      * 创建时间
      */
     private Date createtime;
@@ -93,12 +103,12 @@ public class Police_record extends Model<Police_record> {
     public void setRecordname(String recordname) {
         this.recordname = recordname;
     }
-    public String getTemplatessid() {
-        return templatessid;
+    public String getRecordtemplatessid() {
+        return recordtemplatessid;
     }
 
-    public void setTemplatessid(String templatessid) {
-        this.templatessid = templatessid;
+    public void setRecordtemplatessid(String recordtemplatessid) {
+        this.recordtemplatessid = recordtemplatessid;
     }
     public String getCasessid() {
         return casessid;
@@ -141,6 +151,20 @@ public class Police_record extends Model<Police_record> {
 
     public void setRecordbool(Integer recordbool) {
         this.recordbool = recordbool;
+    }
+    public String getPdfdownurl() {
+        return pdfdownurl;
+    }
+
+    public void setPdfdownurl(String pdfdownurl) {
+        this.pdfdownurl = pdfdownurl;
+    }
+    public String getPdfrealurl() {
+        return pdfrealurl;
+    }
+
+    public void setPdfrealurl(String pdfrealurl) {
+        this.pdfrealurl = pdfrealurl;
     }
     public Date getCreatetime() {
         return createtime;
@@ -195,13 +219,15 @@ public class Police_record extends Model<Police_record> {
         return "Police_record{" +
         "id=" + id +
         ", recordname=" + recordname +
-        ", templatessid=" + templatessid +
+        ", recordtemplatessid=" + recordtemplatessid +
         ", casessid=" + casessid +
         ", recorddownurl=" + recorddownurl +
         ", recordrealurl=" + recordrealurl +
         ", recordtime=" + recordtime +
         ", recordingtime=" + recordingtime +
         ", recordbool=" + recordbool +
+        ", pdfdownurl=" + pdfdownurl +
+        ", pdfrealurl=" + pdfrealurl +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +
