@@ -40,7 +40,7 @@ public class LoginService extends BaseService {
 
             System.out.println(ew.getSqlSegment()+"---------");
             List<Base_admininfo> adminManage=admininfoMapper.selectList(ew);
-            if (null==adminManage&&adminManage.size()<1){
+            if (null==adminManage||adminManage.size()<1){
                 result.setMessage("未找到该用户");
                 return;
             }
