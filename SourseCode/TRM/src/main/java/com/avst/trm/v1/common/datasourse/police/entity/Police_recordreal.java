@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-04-23
  */
 public class Police_recordreal extends Model<Police_recordreal> {
 
@@ -35,14 +35,9 @@ public class Police_recordreal extends Model<Police_recordreal> {
     private String translatext;
 
     /**
-     * 录音下载地址
+     * 实时录音地址
      */
-    private String downurl;
-
-    /**
-     * 录音真实地址
-     */
-    private String realurl;
+    private String recordreal_filesavessid;
 
     /**
      * 录音时长ms
@@ -106,19 +101,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setTranslatext(String translatext) {
         this.translatext = translatext;
     }
-    public String getDownurl() {
-        return downurl;
+    public String getRecordreal_filesavessid() {
+        return recordreal_filesavessid;
     }
 
-    public void setDownurl(String downurl) {
-        this.downurl = downurl;
-    }
-    public String getRealurl() {
-        return realurl;
-    }
-
-    public void setRealurl(String realurl) {
-        this.realurl = realurl;
+    public void setRecordreal_filesavessid(String recordreal_filesavessid) {
+        this.recordreal_filesavessid = recordreal_filesavessid;
     }
     public Long getTime() {
         return time;
@@ -209,8 +197,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
         "id=" + id +
         ", recordssid=" + recordssid +
         ", translatext=" + translatext +
-        ", downurl=" + downurl +
-        ", realurl=" + realurl +
+        ", recordreal_filesavessid=" + recordreal_filesavessid +
         ", time=" + time +
         ", userssid=" + userssid +
         ", recordtype=" + recordtype +

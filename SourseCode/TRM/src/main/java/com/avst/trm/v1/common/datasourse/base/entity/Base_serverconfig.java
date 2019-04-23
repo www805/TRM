@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-04-23
  */
 public class Base_serverconfig extends Model<Base_serverconfig> {
 
@@ -32,7 +32,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     /**
      * 系统logo地址
      */
-    private String syslogourl;
+    private String syslogo_filesavessid;
 
     /**
      * 客户端名称
@@ -42,7 +42,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     /**
      * 客户端logo地址
      */
-    private String clienturl;
+    private String client_filesavessid;
 
     /**
      * 服务器IP
@@ -103,12 +103,12 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setSysname(String sysname) {
         this.sysname = sysname;
     }
-    public String getSyslogourl() {
-        return syslogourl;
+    public String getSyslogo_filesavessid() {
+        return syslogo_filesavessid;
     }
 
-    public void setSyslogourl(String syslogourl) {
-        this.syslogourl = syslogourl;
+    public void setSyslogo_filesavessid(String syslogo_filesavessid) {
+        this.syslogo_filesavessid = syslogo_filesavessid;
     }
     public String getClientname() {
         return clientname;
@@ -117,12 +117,12 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     public void setClientname(String clientname) {
         this.clientname = clientname;
     }
-    public String getClienturl() {
-        return clienturl;
+    public String getClient_filesavessid() {
+        return client_filesavessid;
     }
 
-    public void setClienturl(String clienturl) {
-        this.clienturl = clienturl;
+    public void setClient_filesavessid(String client_filesavessid) {
+        this.client_filesavessid = client_filesavessid;
     }
     public String getServerip() {
         return serverip;
@@ -219,9 +219,9 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         return "Base_serverconfig{" +
         "id=" + id +
         ", sysname=" + sysname +
-        ", syslogourl=" + syslogourl +
+        ", syslogo_filesavessid=" + syslogo_filesavessid +
         ", clientname=" + clientname +
-        ", clienturl=" + clienturl +
+        ", client_filesavessid=" + client_filesavessid +
         ", serverip=" + serverip +
         ", serverport=" + serverport +
         ", authorizebool=" + authorizebool +

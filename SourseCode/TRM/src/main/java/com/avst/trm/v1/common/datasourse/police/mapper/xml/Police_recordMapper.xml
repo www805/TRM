@@ -8,13 +8,11 @@
         <result column="recordname" property="recordname" />
         <result column="recordtemplatessid" property="recordtemplatessid" />
         <result column="casessid" property="casessid" />
-        <result column="recorddownurl" property="recorddownurl" />
-        <result column="recordrealurl" property="recordrealurl" />
+        <result column="record__filesavessid" property="record__filesavessid" />
         <result column="recordtime" property="recordtime" />
         <result column="recordingtime" property="recordingtime" />
         <result column="recordbool" property="recordbool" />
-        <result column="pdfdownurl" property="pdfdownurl" />
-        <result column="pdfrealurl" property="pdfrealurl" />
+        <result column="pdf_filesavessid" property="pdf_filesavessid" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
