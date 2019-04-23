@@ -6,9 +6,9 @@
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig">
         <id column="id" property="id" />
         <result column="sysname" property="sysname" />
-        <result column="syslogourl" property="syslogourl" />
+        <result column="syslogo_filesavessid" property="syslogo_filesavessid" />
         <result column="clientname" property="clientname" />
-        <result column="clienturl" property="clienturl" />
+        <result column="client_filesavessid" property="client_filesavessid" />
         <result column="serverip" property="serverip" />
         <result column="serverport" property="serverport" />
         <result column="authorizebool" property="authorizebool" />

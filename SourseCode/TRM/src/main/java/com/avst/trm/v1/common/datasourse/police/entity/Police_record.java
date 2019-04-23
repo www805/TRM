@@ -42,12 +42,12 @@ public class Police_record extends Model<Police_record> {
     /**
      * 总录音下载地址
      */
-    private String recorddownurl;
+    private String recorddown__filesavessid;
 
     /**
      * 总录音真实地址
      */
-    private String recordrealurl;
+    private String recordreal_filesavessid;
 
     /**
      * 总录音时长
@@ -67,12 +67,12 @@ public class Police_record extends Model<Police_record> {
     /**
      * PDF下载地址
      */
-    private String pdfdownurl;
+    private String pdfdown_filesavessid;
 
     /**
      * PDF真实地址
      */
-    private String pdfrealurl;
+    private String pdfreal_filesavessid;
 
     /**
      * 创建时间
@@ -117,19 +117,19 @@ public class Police_record extends Model<Police_record> {
     public void setCasessid(String casessid) {
         this.casessid = casessid;
     }
-    public String getRecorddownurl() {
-        return recorddownurl;
+    public String getRecorddown__filesavessid() {
+        return recorddown__filesavessid;
     }
 
-    public void setRecorddownurl(String recorddownurl) {
-        this.recorddownurl = recorddownurl;
+    public void setRecorddown__filesavessid(String recorddown__filesavessid) {
+        this.recorddown__filesavessid = recorddown__filesavessid;
     }
-    public String getRecordrealurl() {
-        return recordrealurl;
+    public String getRecordreal_filesavessid() {
+        return recordreal_filesavessid;
     }
 
-    public void setRecordrealurl(String recordrealurl) {
-        this.recordrealurl = recordrealurl;
+    public void setRecordreal_filesavessid(String recordreal_filesavessid) {
+        this.recordreal_filesavessid = recordreal_filesavessid;
     }
     public Integer getRecordtime() {
         return recordtime;
@@ -152,19 +152,19 @@ public class Police_record extends Model<Police_record> {
     public void setRecordbool(Integer recordbool) {
         this.recordbool = recordbool;
     }
-    public String getPdfdownurl() {
-        return pdfdownurl;
+    public String getPdfdown_filesavessid() {
+        return pdfdown_filesavessid;
     }
 
-    public void setPdfdownurl(String pdfdownurl) {
-        this.pdfdownurl = pdfdownurl;
+    public void setPdfdown_filesavessid(String pdfdown_filesavessid) {
+        this.pdfdown_filesavessid = pdfdown_filesavessid;
     }
-    public String getPdfrealurl() {
-        return pdfrealurl;
+    public String getPdfreal_filesavessid() {
+        return pdfreal_filesavessid;
     }
 
-    public void setPdfrealurl(String pdfrealurl) {
-        this.pdfrealurl = pdfrealurl;
+    public void setPdfreal_filesavessid(String pdfreal_filesavessid) {
+        this.pdfreal_filesavessid = pdfreal_filesavessid;
     }
     public Date getCreatetime() {
         return createtime;
@@ -221,13 +221,13 @@ public class Police_record extends Model<Police_record> {
         ", recordname=" + recordname +
         ", recordtemplatessid=" + recordtemplatessid +
         ", casessid=" + casessid +
-        ", recorddownurl=" + recorddownurl +
-        ", recordrealurl=" + recordrealurl +
+        ", recorddown__filesavessid=" + recorddown__filesavessid +
+        ", recordreal_filesavessid=" + recordreal_filesavessid +
         ", recordtime=" + recordtime +
         ", recordingtime=" + recordingtime +
         ", recordbool=" + recordbool +
-        ", pdfdownurl=" + pdfdownurl +
-        ", pdfrealurl=" + pdfrealurl +
+        ", pdfdown_filesavessid=" + pdfdown_filesavessid +
+        ", pdfreal_filesavessid=" + pdfreal_filesavessid +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
         ", string1=" + string1 +

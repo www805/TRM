@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-04-23
  */
 public class Police_recordreal extends Model<Police_recordreal> {
 
@@ -37,12 +37,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 录音下载地址
      */
-    private String downurl;
+    private String down_filesavessid;
 
     /**
      * 录音真实地址
      */
-    private String realurl;
+    private String real_filesavessid;
 
     /**
      * 录音时长ms
@@ -106,19 +106,19 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setTranslatext(String translatext) {
         this.translatext = translatext;
     }
-    public String getDownurl() {
-        return downurl;
+    public String getDown_filesavessid() {
+        return down_filesavessid;
     }
 
-    public void setDownurl(String downurl) {
-        this.downurl = downurl;
+    public void setDown_filesavessid(String down_filesavessid) {
+        this.down_filesavessid = down_filesavessid;
     }
-    public String getRealurl() {
-        return realurl;
+    public String getReal_filesavessid() {
+        return real_filesavessid;
     }
 
-    public void setRealurl(String realurl) {
-        this.realurl = realurl;
+    public void setReal_filesavessid(String real_filesavessid) {
+        this.real_filesavessid = real_filesavessid;
     }
     public Long getTime() {
         return time;
@@ -209,8 +209,8 @@ public class Police_recordreal extends Model<Police_recordreal> {
         "id=" + id +
         ", recordssid=" + recordssid +
         ", translatext=" + translatext +
-        ", downurl=" + downurl +
-        ", realurl=" + realurl +
+        ", down_filesavessid=" + down_filesavessid +
+        ", real_filesavessid=" + real_filesavessid +
         ", time=" + time +
         ", userssid=" + userssid +
         ", recordtype=" + recordtype +
