@@ -36,7 +36,7 @@ public class Base_filesave extends Model<Base_filesave> {
     /**
      * 从属表的ssid
      */
-    private String zhname;
+    private String datassid;
 
     /**
      * 下载地址
@@ -79,12 +79,12 @@ public class Base_filesave extends Model<Base_filesave> {
     public void setUploadfilename(String uploadfilename) {
         this.uploadfilename = uploadfilename;
     }
-    public String getZhname() {
-        return zhname;
+    public String getDatassid() {
+        return datassid;
     }
 
-    public void setZhname(String zhname) {
-        this.zhname = zhname;
+    public void setDatassid(String datassid) {
+        this.datassid = datassid;
     }
     public String getRecorddownurl() {
         return recorddownurl;
@@ -147,7 +147,7 @@ public class Base_filesave extends Model<Base_filesave> {
         "id=" + id +
         ", realfilename=" + realfilename +
         ", uploadfilename=" + uploadfilename +
-        ", zhname=" + zhname +
+        ", datassid=" + datassid +
         ", recorddownurl=" + recorddownurl +
         ", recordrealurl=" + recordrealurl +
         ", ssid=" + ssid +

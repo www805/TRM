@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="realfilename" property="realfilename" />
         <result column="uploadfilename" property="uploadfilename" />
-        <result column="zhname" property="zhname" />
+        <result column="datassid" property="datassid" />
         <result column="recorddownurl" property="recorddownurl" />
         <result column="recordrealurl" property="recordrealurl" />
         <result column="ssid" property="ssid" />
