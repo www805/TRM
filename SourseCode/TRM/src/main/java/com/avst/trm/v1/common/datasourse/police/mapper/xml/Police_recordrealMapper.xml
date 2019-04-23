@@ -7,8 +7,7 @@
         <id column="id" property="id" />
         <result column="recordssid" property="recordssid" />
         <result column="translatext" property="translatext" />
-        <result column="down_filesavessid" property="down_filesavessid" />
-        <result column="real_filesavessid" property="real_filesavessid" />
+        <result column="recordreal_filesavessid" property="recordreal_filesavessid" />
         <result column="time" property="time" />
         <result column="userssid" property="userssid" />
         <result column="recordtype" property="recordtype" />

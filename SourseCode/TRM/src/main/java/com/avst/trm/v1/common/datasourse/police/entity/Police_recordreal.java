@@ -35,14 +35,9 @@ public class Police_recordreal extends Model<Police_recordreal> {
     private String translatext;
 
     /**
-     * 录音下载地址
+     * 实时录音地址
      */
-    private String down_filesavessid;
-
-    /**
-     * 录音真实地址
-     */
-    private String real_filesavessid;
+    private String recordreal_filesavessid;
 
     /**
      * 录音时长ms
@@ -106,19 +101,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setTranslatext(String translatext) {
         this.translatext = translatext;
     }
-    public String getDown_filesavessid() {
-        return down_filesavessid;
+    public String getRecordreal_filesavessid() {
+        return recordreal_filesavessid;
     }
 
-    public void setDown_filesavessid(String down_filesavessid) {
-        this.down_filesavessid = down_filesavessid;
-    }
-    public String getReal_filesavessid() {
-        return real_filesavessid;
-    }
-
-    public void setReal_filesavessid(String real_filesavessid) {
-        this.real_filesavessid = real_filesavessid;
+    public void setRecordreal_filesavessid(String recordreal_filesavessid) {
+        this.recordreal_filesavessid = recordreal_filesavessid;
     }
     public Long getTime() {
         return time;
@@ -209,8 +197,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
         "id=" + id +
         ", recordssid=" + recordssid +
         ", translatext=" + translatext +
-        ", down_filesavessid=" + down_filesavessid +
-        ", real_filesavessid=" + real_filesavessid +
+        ", recordreal_filesavessid=" + recordreal_filesavessid +
         ", time=" + time +
         ", userssid=" + userssid +
         ", recordtype=" + recordtype +
