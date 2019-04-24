@@ -9,28 +9,29 @@
     <div id="pagelistview" class="container-fluid"></div>
     <div id="paging"  class="layui-box layui-laypage layui-laypage-molv" style="text-align:center;cursor:pointer;">
 
-    <script th:inline="javascript">
+        <script th:inline="javascript">
 
-        var result=[[${result}]];
-        var pagelist;
-        var pageparam;
-        if (isNotEmpty(result)) {
-            pageshow(result);
-        }
-
-        function pageshow(data){
-            pagelist=data.data.pagelist;
-            pageparam=data.data.pageparam;
-            $("#pagelisttemplates_tbody").html("");
-            $("#paging").html("");
-            if (isNotEmpty(pagelist)) {
-                detail();
-                showpagetohtml();
+            var result=[[${result}]];
+            var pagelist;
+            var pageparam;
+            if (null!=result) {
+                pageshow(result);
             }
 
-        }
+            function pageshow(data){
+                pagelist=data.data.pagelist;
+                pageparam=data.data.pageparam;
+                $("#pagelisttemplates_tbody").html("");//清空tbody数据
+                $("#paging").html("");//清空分页数据
+                //*存在问题：页面初步加载没有数据的时候table的thead也不会加载...
+                if (isNotEmpty(pagelist)) {
+                    detail();
+                    showpagetohtml();
+                }
 
-    </script>
-</div>
+            }
+
+        </script>
+    </div>
 </body>
 </html>

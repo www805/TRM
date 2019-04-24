@@ -16,7 +16,11 @@
     <script th:inline="javascript">
         $(function(){
             setpageAction([[${session.INIT_WEB}]],"police/users/getUserList");
+            addOupdateurl=getActionURL(getactionid_manage().getUserList_getAddOrUpdateUser);
+            getRoles();
+            getWorkunits();
             getUserListByParam();
+
         });
     </script>
 </head>
@@ -63,7 +67,7 @@
             </div>
 
             <input type="button" class="layui-btn layui-btn-normal" onclick="getUserList_init(1,3);" value="查询"/>
-            <a th:href="@{/web/user/getAddUser}" class="layui-btn layui-btn-normal" >添加用户</a>
+            <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加用户</a>
         </div>
     </form>
 
@@ -87,6 +91,7 @@
             <th>所属角色</th>
             <th>工作单位</th>
             <th>注册时间</th>
+            <th>更新时间</th>
             <th>最后登录时间</th>
             <th>操作</th>
         </tr>
@@ -96,7 +101,7 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            <td> <input type="checkbox" name="switch" id="adminbool_switch" lay-skin="switch" lay-text="正常|禁用"   checked></td>
+            <td> <input type="checkbox" name="switch" id="adminbool_switch" lay-skin="switch" lay-text="正常|禁用"   {{value.adminbool==1?"checked":""}} disabled></td>
             <td>{{value.loginaccount==null?"":value.loginaccount}}</td>
             <td>{{value.username==null?"":value.username}}</td>
             <td>
@@ -107,16 +112,14 @@
             </td>
             <td>{{value.workname==null?"":value.workname}}</td>
             <td>{{value.registertime==null?"":value.registertime}}</td>
+            <td>{{value.updatetime==null?"":value.updatetime}}</td>
             <td>{{value.lastlogintime==null?"":value.lastlogintime}}</td>
             <td>
-                <a href="/web/user/getUpdateUser/{{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a href="http://www.layui.com" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>
         {{#  }); }}
-        <!--{{#  layui.use('form', function(){ }}-->
-        <!--{{#    var form = layui.form; }}-->
-        <!--{{#    form.render();});  }}-->
         </tbody>
     </table>
 

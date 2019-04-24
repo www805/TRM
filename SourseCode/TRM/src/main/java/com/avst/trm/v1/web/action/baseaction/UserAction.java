@@ -1,11 +1,11 @@
 package com.avst.trm.v1.web.action.baseaction;
 
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.web.req.basereq.ChangeboolUserParam;
 import com.avst.trm.v1.web.req.basereq.GetUserListParam;
-import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.service.baseservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,8 +20,9 @@ public class UserAction extends BaseAction{
     @Autowired
     private UserService userService;
 
+
     /**
-     * 跳转用户列表页
+     * 跳转用户列表页pp
      * @param model
      * @return
      */
@@ -32,7 +33,7 @@ public class UserAction extends BaseAction{
     }
 
     /***
-     * 用户列表分页
+     * 用户列表分页pp
      * @return
      */
     @RequestMapping(value = "/getUserList")
@@ -49,33 +50,110 @@ public class UserAction extends BaseAction{
     }
 
 
-    /***
-     * 添加用户
-     * @param model
+    /**
+     * 删除用户：改变用户状态pp
+     * @param param
      * @return
      */
-    @GetMapping(value = "/getAddUser")
-    public ModelAndView getAddUser(Model model) {
-
-        RResult rResult=createNewResultOfFail();
-
-        model.addAttribute("RResult", rResult);
-        model.addAttribute("title", "添加用户");
-        return new ModelAndView("police/users/addOrUpdateUser", "userModel", model);
-
+    @RequestMapping(value = "/deleteUser")
+    @ResponseBody
+    public RResult deleteUser(ChangeboolUserParam param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            userService.changeboolUser(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
     }
 
     /**
-     * 跳转到修改页面
+     * 获取全部单位pp
+     * @return
+     */
+    @RequestMapping(value = "/getWorkunits")
+    @ResponseBody
+    public RResult getWorkunits(){
+        RResult result=createNewResultOfFail();
+        userService.getWorkunits(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 跳转到添加或者修改页面pp
      * @param model
      * @return
      */
-    @GetMapping(value = "/getUpdateUser/{id}")
-    public ModelAndView getUpdateUser(Model model, @PathVariable("id") Integer id) {
-        model.addAttribute("id",id);
-        return new ModelAndView("police/users/addOrUpdateUser", "userModel", model);
-
+    @GetMapping(value = "/getAddOrUpdateUser")
+    public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
+        model.addAttribute("ssid", ssid);
+        model.addAttribute("title", "添加/修改用户");
+        return new ModelAndView("police/users/AddOrUpdateUser", "userModel", model);
     }
+
+    /**
+     * 查询单个pp
+     * @param ssid
+     * @return
+     */
+    @RequestMapping(value = "/getUserBySsid")
+    @ResponseBody
+    public RResult getUserBySsid(String ssid){
+        RResult result=createNewResultOfFail();
+        if (null==ssid){
+            result.setMessage("参数为空");
+        }else{
+            userService.getUserBySsid(result,ssid);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 添加用户pp
+     * @return
+     */
+    @RequestMapping(value = "/addUser")
+    @ResponseBody
+    public RResult addUser(@RequestBody AdminAndWorkunit param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            userService.addUser(result,param);
+        }
+
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /***
+     * 修改用户pp
+     * @return
+     */
+    @RequestMapping(value = "/updateUser")
+    @ResponseBody
+    public RResult updateUser(@RequestBody  AdminAndWorkunit param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            userService.updateUser(result,param);
+        }
+
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
+
+
 
 
 

@@ -43,7 +43,7 @@ function callbackgetUserList(data){
             });
         }
     }else{
-        parent.layer.msg(data.message,{icon: 2},1);
+        layer.msg(data.message,{icon: 2});
     }
 }
 
@@ -86,5 +86,80 @@ function showpagetohtml(){
         showpage("paging",arrparam,'getUserListByParam',currPage,pageCount,pageSize);
     }
 
+}
 
+function getRoles() {
+    var url=getActionURL(getactionid_manage().getUserList_getRoles);
+    ajaxSubmit(url,null,callbackgetRoles);
+}
+
+function callbackgetRoles(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var list=data.data;
+            if (isNotEmpty(list)){
+                for (var i = 0; i < list.length; i++) {
+                    var roles = list[i];
+                    $("#rolessid").append("<option value='"+roles.ssid+"' >"+roles.rolename+"</option>");
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function getWorkunits() {
+    var url=getActionURL(getactionid_manage().getUserList_getWorkunits);
+    ajaxSubmit(url,null,callbackgetWorkunits);
+}
+
+function callbackgetWorkunits(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var list=data.data;
+            if (isNotEmpty(list)){
+                for (var i = 0; i < list.length; i++) {
+                    var workunits = list[i];
+                    $("#workunitssid").append("<option value='"+workunits.ssid+"' >"+workunits.workname+"</option>");
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function deleteUser(ssid) {
+    if (!isNotEmpty(ssid)){
+        layer.msg("系统异常",{icon: 2});
+        return;
+    }
+
+    layer.confirm('确定要删除该用户吗', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().getUserList_deleteUser);
+        var data={
+            ssid:ssid,
+            adminbool:-1
+        };
+        ajaxSubmit(url,data,callbackdeleteUser);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+function callbackdeleteUser(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            if (isNotEmpty(data.data)){
+                getUserList_init(1,3);
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
 }
