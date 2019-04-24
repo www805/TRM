@@ -7,8 +7,7 @@
         <id column="id" property="id" />
         <result column="recordname" property="recordname" />
         <result column="recordtemplatessid" property="recordtemplatessid" />
-        <result column="casessid" property="casessid" />
-        <result column="record__filesavessid" property="record__filesavessid" />
+        <result column="record_filesavessid" property="record_filesavessid" />
         <result column="recordtime" property="recordtime" />
         <result column="recordingtime" property="recordingtime" />
         <result column="recordbool" property="recordbool" />

@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-23
+ * @since 2019-04-24
  */
 public class Police_record extends Model<Police_record> {
 
@@ -35,14 +35,9 @@ public class Police_record extends Model<Police_record> {
     private String recordtemplatessid;
 
     /**
-     * 案件id
-     */
-    private String casessid;
-
-    /**
      * 总录音地址
      */
-    private String record__filesavessid;
+    private String record_filesavessid;
 
     /**
      * 总录音时长
@@ -100,19 +95,12 @@ public class Police_record extends Model<Police_record> {
     public void setRecordtemplatessid(String recordtemplatessid) {
         this.recordtemplatessid = recordtemplatessid;
     }
-    public String getCasessid() {
-        return casessid;
+    public String getRecord_filesavessid() {
+        return record_filesavessid;
     }
 
-    public void setCasessid(String casessid) {
-        this.casessid = casessid;
-    }
-    public String getRecord__filesavessid() {
-        return record__filesavessid;
-    }
-
-    public void setRecord__filesavessid(String record__filesavessid) {
-        this.record__filesavessid = record__filesavessid;
+    public void setRecord_filesavessid(String record_filesavessid) {
+        this.record_filesavessid = record_filesavessid;
     }
     public Integer getRecordtime() {
         return recordtime;
@@ -196,8 +184,7 @@ public class Police_record extends Model<Police_record> {
         "id=" + id +
         ", recordname=" + recordname +
         ", recordtemplatessid=" + recordtemplatessid +
-        ", casessid=" + casessid +
-        ", record__filesavessid=" + record__filesavessid +
+        ", record_filesavessid=" + record_filesavessid +
         ", recordtime=" + recordtime +
         ", recordingtime=" + recordingtime +
         ", recordbool=" + recordbool +
