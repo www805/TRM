@@ -5,9 +5,9 @@ function getUpdateServerConfig(){
 
     var id =$('input[name="id"]').val();
     var sysname =$('input[name="sysname"]').val();
-    var syslogourl =$('input[name="syslogourl"]').val();
+    var syslogo_filesavessid =$('input[name="syslogo_filesavessid"]').val();
     var clientname =$('input[name="clientname"]').val();
-    var clienturl =$('input[name="clienturl"]').val();
+    var client_filesavessid =$('input[name="client_filesavessid"]').val();
     var serverip =$('input[name="serverip"]').val();
     var serverport =$('input[name="serverport"]').val();
     var authorizebool =$('input[name="authorizebool"]').val();
@@ -19,9 +19,9 @@ function getUpdateServerConfig(){
     var data={
         id:id,
         sysname:sysname,
-        syslogourl:syslogourl,
+        syslogo_filesavessid:syslogo_filesavessid,
         clientname:clientname,
-        clienturl:clienturl,
+        client_filesavessid:client_filesavessid,
         serverip:serverip,
         serverport:serverport,
         authorizebool:authorizebool,
@@ -31,18 +31,17 @@ function getUpdateServerConfig(){
         authorizesortnum:authorizesortnum
     };
 
-    console.log(url);
-    console.log(data);
-
-    // ajaxSubmit(url,data,callServerConfig);
+    ajaxSubmit(url,data,callServerConfig);
 }
 
 function callServerConfig(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
 
-        var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
-        window.location.href=url;
+        // var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
+        // window.location.href=url;
+        alert(data.message);
+        window.location.reload();
     }else{
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});
@@ -60,6 +59,5 @@ function showpagetohtml(){
         arrparam[0]=text;
         showpage("paging",arrparam,'getKeyWordByParam',currPage,pageCount,pageSize);
     }
-
-
 }
+

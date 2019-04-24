@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ResourceUtils;
@@ -40,8 +41,11 @@ public class ServerConfigService extends BaseService {
     @Autowired
     private Base_serverconfigMapper serverconfigMapper;
 
+    @Value("${spring.images.filePath}")
+    private String filePath;
+
     /**
-     * 通过id查询关键字
+     * 通过id查询配置项
      * @param result
      */
     public void getServerConfigById(RResult<Base_serverconfig> result){
@@ -59,99 +63,6 @@ public class ServerConfigService extends BaseService {
     }
 
     /**
-     * 分页查询
-     * @param result
-     * @param param
-     */
-    public void findKeywordlist(RResult<KeywordListVO> result, KeywordParam param){
-
-        if(null==result){
-            result=new RResult<KeywordListVO>();
-        }
-        List<Base_keyword> list=new ArrayList<Base_keyword>();
-        try {
-//分页的条件，基本上都有
-            KeywordListVO getlist3VO=new KeywordListVO();
-            EntityWrapper ew=new EntityWrapper();
-//            ew.setEntity(new Admininfo());
-//            ew.between("id",2,5);
-            if(null!=param){
-                if(StringUtils.isNotEmpty(param.getText())){
-                    ew.like("text",param.getText());
-                }
-            }
-
-            int count=serverconfigMapper.selectCount(ew);
-            param.setRecordCount(count);
-            getlist3VO.setPageparam(param);
-
-//current 第多少页，size 每页多少条
-            Page<Base_role> page=new Page<Base_role>(param.getCurrPage(),param.getPageSize());
-            page.setTotal(count);
-
-
-//            page.setRecords(list);
-            list=serverconfigMapper.selectPage(page,ew );
-
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
-                    page.getTotal()+"-----"+page.getPages());
-
-            if(null!=list&&list.size() > 0){
-                getlist3VO.setPagelist(list);
-            }
-
-            result.setData(getlist3VO);
-            this.changeResultToSuccess(result);
-        }catch (Exception e){
-            e.fillInStackTrace();
-        }finally {
-            System.out.println("请求结束");
-        }
-    }
-
-    /**
-     * 多表查询
-     * @param result
-     */
-    public void getadminlist3(RResult<UserListVO> result, Getlist3Param param){
-
-        if(null==result){
-            result=new RResult<UserListVO>();
-        }
-        List<AdminAndAdminRole> list=new ArrayList<AdminAndAdminRole>();
-        try {
-            UserListVO getlist3VO=new UserListVO();
-            EntityWrapper ew=new EntityWrapper();
-            if(null!=param){
-                if(StringUtils.isNotEmpty(param.getName())){
-
-                    ew.like("username",param.getName());
-                }
-            }
-            int count = serverconfigMapper.selectCount(ew);
-            param.setRecordCount(count);
-            getlist3VO.setPageparam(param);
-//current 第多少页，size 每页多少条
-            Page<AdminAndAdminRole> page=new Page<AdminAndAdminRole>(param.getCurrPage(),param.getPageSize());
-//            page.setRecords(list);
-            list=serverconfigMapper.selectPage(page,ew );
-
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
-                    page.getTotal()+"-----"+page.getPages());
-            if(null!=list&&list.size() > 0){
-                getlist3VO.setPagelist(list);
-            }
-
-            result.setData(getlist3VO);
-            this.changeResultToSuccess(result);
-        }catch (Exception e){
-            e.printStackTrace();
-        }finally {
-            System.out.println("请求结束");
-        }
-    }
-
-    /**
      * 修改配置
      * @param rResult
      * @param serverconfig
@@ -164,6 +75,7 @@ public class ServerConfigService extends BaseService {
         if (update > 0) {
             rResult.setData(update);
             this.changeResultToSuccess(rResult);
+            rResult.setMessage("系统配置修改成功");
         }
     }
 
@@ -186,6 +98,7 @@ public class ServerConfigService extends BaseService {
         //2 获取随机文件名
         String imageName = getRandomFileName();
 
+        //获取文件后缀
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         imageName += suffix;
 
@@ -193,8 +106,7 @@ public class ServerConfigService extends BaseService {
 //        String basePath = request.getSession().getServletContext().getRealPath("/upload");
 
         //4 获取两层目录
-
-        String path = null;
+//        String path = null;
 //        try {
 //            String serverpath= ResourceUtils.getURL("classpath:static").getPath().replace("%20"," ").replace('/', '\\');
 //            path=serverpath.substring(1);//从路径字符串中取出工程路径
@@ -202,19 +114,17 @@ public class ServerConfigService extends BaseService {
 //            e.printStackTrace();
 //        }
 
-
-
-        path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
+//        path = ClassUtils.getDefaultClassLoader().getResource("").getPath();
 
 //        String filePath = "D:/uploadImage/";
-        String filePath = path;
+//        String filePath = path;
 
         //5 创建目录
-//        File fileMkdir = new File(filePath);
-//        if (!fileMkdir.exists()) {
-//            //如果不存在，就创建该目录
-//            fileMkdir.mkdir();
-//        }
+        File fileMkdir = new File(filePath);
+        if (!fileMkdir.exists()) {
+            //如果不存在，就创建该目录
+            fileMkdir.mkdir();
+        }
 
         //6 把图片保存到指定位置
 //        upload.transferTo(new File(file, imageName));

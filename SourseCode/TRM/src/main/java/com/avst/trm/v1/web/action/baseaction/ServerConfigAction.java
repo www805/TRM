@@ -46,7 +46,7 @@ public class ServerConfigAction extends BaseAction{
      * 修改配置
      * @return
      */
-    @PostMapping(value = "/UpdateServerConfig",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getServerConfig",produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RResult UpdateServerConfig(ServerconfigParam serverconfigParam) {
 

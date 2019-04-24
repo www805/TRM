@@ -43,7 +43,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">系统logo</label>
             <div class="layui-input-inline">
-                <input type="text" name="syslogourl" lay-verify="required" th:value="${configModel.RResult.data.syslogourl}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >
+                <input type="text" name="syslogo_filesavessid" lay-verify="required" th:value="${configModel?.RResult?.data?.syslogo_filesavessid}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >
             </div>
 
             <button type="button" class="layui-btn layui-btn-danger" id="test1"><i class="layui-icon"></i>上传图片</button>
@@ -51,7 +51,7 @@
                 这里以限制 1MB 为例
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
-                <img class="layui-upload-img" id="demo1" style="width: 300px;" th:src="${configModel.RResult.data.syslogourl}">
+                <img class="layui-upload-img" id="demo1" style="width: 300px;">
                 <p id="demoText"></p>
             </div>
 
@@ -66,7 +66,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">客户端logo</label>
             <div class="layui-input-inline">
-                <input type="text" name="clienturl" lay-verify="required" th:value="${configModel.RResult.data.clienturl}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >
+                <input type="text" name="client_filesavessid" lay-verify="required" th:value="${configModel.RResult.data.client_filesavessid}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >
             </div>
 
             <button type="button" class="layui-btn layui-btn-danger" id="test2"><i class="layui-icon"></i>上传图片</button>
@@ -125,7 +125,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">授权的单位编号</label>
             <div class="layui-input-block">
-                <input type="text" name="authorizesortnum" required th:value="${configModel.RResult.data.authorizesortnum}"  lay-verify="required" placeholder="请输入授权信息" autocomplete="off" class="layui-input">
+                <input type="text" name="authorizesortnum" th:value="${configModel.RResult.data.authorizesortnum}"  lay-verify="required" placeholder="请输入授权信息" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -165,7 +165,7 @@
                 }
                 //上传成功
                 //把图片地址回显在输入框中
-                $('input[name="syslogourl"]').val(res.data);
+                $('input[name="syslogo_filesavessid"]').val(res.data);
             }
             ,error: function(){
                 //演示失败状态，并实现重传
@@ -197,7 +197,7 @@
                 }
                 //上传成功
                 //把图片地址回显在输入框中
-                $('input[name="clienturl"]').val(res.data);
+                $('input[name="client_filesavessid"]').val(res.data);
             }
             ,error: function(){
                 //演示失败状态，并实现重传
