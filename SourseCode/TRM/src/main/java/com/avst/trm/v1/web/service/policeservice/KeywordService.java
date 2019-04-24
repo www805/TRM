@@ -19,7 +19,9 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -171,6 +173,10 @@ public class KeywordService extends BaseService {
             return;
         }
 
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+//        System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
+
+        keyword.setCreatetime(new Date());
         Integer insert = keywordMapper.insert(keyword);
         if (insert > 0) {
             rResult.setData(insert);

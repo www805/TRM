@@ -11,7 +11,7 @@
     <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
-    <script th:src="@{/js/policevo/keyword.js}" type="text/javascript"></script>
+    <script th:src="@{/js/policevo/getKeywordList.js}" type="text/javascript"></script>
     <script th:inline="javascript">
         var init_web = null;
 
@@ -66,13 +66,13 @@
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">是否屏蔽</label>
             <div class="layui-input-block">
-                <input type="checkbox" name="shieldbool" lay-skin="switch" lay-filter="switchTest" lay-text="不屏蔽|屏蔽" th:checked="${keywordModel.RResult.data.shieldbool}" th:value="${keywordModel.RResult.data.shieldbool}" >
+                <input type="checkbox" id="shieldbool" name="shieldbool" lay-skin="switch" lay-filter="switchTest" lay-text="不屏蔽|屏蔽" th:checked="${keywordModel.RResult.data.shieldbool}" th:value="${keywordModel.RResult.data.shieldbool}" >
             </div>
             <!--th:if="${keywordModel.RResult.data.shieldbool!=null} checked" th:checked="${keywordModel.RResult.data.shieldbool}"-->
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" onclick="getAddOrUpdateKeyword()" th:text="${keywordModel.title}">添加关键字</button>
+                <button class="layui-btn layui-btn-normal" onclick="getKeywordList()" th:text="${keywordModel.title}">添加关键字</button>
                 <button class="layui-btn layui-btn-normal" onclick="history.go(-1);">返回</button>
             </div>
         </div>
@@ -86,14 +86,7 @@
 <script>
     //Demo
     layui.use('form', function(){
-
-        $('div').find('.layui-form-onswitch').on('click', function(){
-            alert(22222);
-            console.log(this);
-        });
-
     });
-
 
 </script>
 

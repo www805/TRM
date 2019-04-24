@@ -1,6 +1,6 @@
 var KeywordAction = null;
 
-function getAddOrUpdateKeyword(){
+function getKeywordList(){
 
     var url = "";
 
@@ -9,16 +9,12 @@ function getAddOrUpdateKeyword(){
     var replacetext =$('input[name="replacetext"]').val();
     var color =$('input[name="color"]').val();
     var backgroundcolor =$('input[name="backgroundcolor"]').val();
-    var shieldbool =$('input[name="shieldbool"]').val();
+    var shieldbool =$('#shieldbool').prop("checked");
 
-    console.log(shieldbool);
-    console.log($("div[class='.layui-form-onswitch']"));
-
-
-    if (shieldbool == "") {
-        shieldbool = -1;
-    }else{
+    if (shieldbool) {
         shieldbool = 1;
+    }else{
+        shieldbool = -1;
     }
 
     var data={
@@ -36,7 +32,7 @@ function getAddOrUpdateKeyword(){
         url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword);
     }
 
-    //ajaxSubmit(url,data,calladdOrUpdataKeyWordPage);
+    ajaxSubmit(url,data,calladdOrUpdataKeyWordPage);
 }
 
 /**

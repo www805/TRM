@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 
 /**
@@ -106,6 +108,8 @@ public class Base_keyword extends Model<Base_keyword> {
     public void setShieldbool(Integer shieldbool) {
         this.shieldbool = shieldbool;
     }
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date getCreatetime() {
         return createtime;
     }

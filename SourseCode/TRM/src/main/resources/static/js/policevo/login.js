@@ -38,7 +38,7 @@ function login_logout(){
 function callLogout(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
-        alert(data.message);
+        //alert(data.message);
         var url=getActionURL(getactionid_manage().login_main);
         window.location.href=url;
     }else{

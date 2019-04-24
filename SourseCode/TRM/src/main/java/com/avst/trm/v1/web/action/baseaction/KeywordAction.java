@@ -26,7 +26,7 @@ public class KeywordAction extends BaseAction{
      * @return
      */
     @GetMapping(value = "/getKeyword")
-    public ModelAndView getUser(Model model, KeywordParam param) {
+    public ModelAndView getKeyword(Model model, KeywordParam param) {
         RResult rResult=createNewResultOfFail();
 
 //        param.setPageSize(3);
@@ -44,7 +44,7 @@ public class KeywordAction extends BaseAction{
      */
     @RequestMapping(value = "/getKeywordList")
     @ResponseBody
-    public RResult getUserList(KeywordParam param) {
+    public RResult getKeywordList(KeywordParam param) {
         RResult result=createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -129,7 +129,7 @@ public class KeywordAction extends BaseAction{
     }
 
 
-//    @PostMapping(value = "/getAddOrUpdateKeyword",produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PostMapping(value = "/getKeywordList",produces = MediaType.APPLICATION_JSON_VALUE)
 //    @ResponseBody
 //    public RResult AddKeyword(AddOrUpdateKeywordParam keyword) {
 //        RResult rResult = createNewResultOfFail();

@@ -11,18 +11,7 @@
     <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
     <script type="text/javascript" th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
-    <script th:src="@{/js/policevo/serverConfig.js}" type="text/javascript"></script>
-    <script th:inline="javascript">
-        var init_web = null;
-
-        $(function(){
-            init_web = [[${session.INIT_WEB}]];
-            setpageAction(init_web,"police/serverconfig");
-        });
-    </script>
-
-
-
+    <script th:src="@{/js/policevo/getServerConfig.js}" type="text/javascript"></script>
 </head>
 <body>
 
@@ -32,7 +21,7 @@
         <h3 th:text="${configModel.title}"></h3>
     </div>
 
-    <form class="layui-form layui-main site-inline" action="" style="margin-top: 30px;">
+    <div class="layui-form layui-main site-inline" action="" style="margin-top: 30px;">
         <input type="hidden" name="id" th:value="${configModel.RResult.data.id}">
         <div class="layui-form-item">
             <label class="layui-form-label">系统名称</label>
@@ -111,7 +100,8 @@
         <div class="layui-form-item">
             <label class="layui-form-label">工作开始时间</label>
             <div class="layui-input-block">
-                <input type="text" name="workstarttime" required th:value="${configModel.RResult.data.workstarttime}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
+
+                <input type="text" name="workstarttime" required th:value="${#dates.format(configModel.RResult.data.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -130,17 +120,24 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" lay-submit lay-filter="formDemo" onclick="getUpdateServerConfig()">保存配置</button>
+                <button class="layui-btn layui-btn-normal" lay-filter="formDemo" onclick="getUpdateServerConfig()">保存配置</button>
             </div>
         </div>
-    </form>
+    </div>
 
 
 </div>
 
 <div th:replace="footer :: footer">...</div>
 
-<script>
+<script th:inline="javascript">
+    var init_web = null;
+
+    $(function(){
+        init_web = [[${session.INIT_WEB}]];
+        setpageAction(init_web,"police/serverconfig");
+    });
+
     layui.use('upload', function(){
         var $ = layui.jquery
             ,upload = layui.upload;

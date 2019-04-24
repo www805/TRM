@@ -37,11 +37,8 @@ function getUpdateServerConfig(){
 function callServerConfig(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
+        layer.msg(data.message, {icon:1});
 
-        // var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
-        // window.location.href=url;
-        alert(data.message);
-        window.location.reload();
     }else{
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});

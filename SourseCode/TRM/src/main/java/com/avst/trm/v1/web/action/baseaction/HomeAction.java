@@ -8,8 +8,10 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.LoginParam;
+import com.avst.trm.v1.web.service.policeservice.HomeService;
 import com.avst.trm.v1.web.service.policeservice.LoginService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,9 @@ public class HomeAction extends BaseAction{
 
     @Resource
     private LoginService loginService;
+
+    @Autowired
+    private HomeService homeService;
 
     @GetMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
@@ -56,6 +61,8 @@ public class HomeAction extends BaseAction{
 
         RResult rResult=createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);
+
+        homeService.getAllCount(rResult, model);
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "首页");
