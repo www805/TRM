@@ -11,7 +11,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-04-23
+ * @since 2019-04-24
  */
 public class Base_datainfo extends Model<Base_datainfo> {
 
@@ -34,9 +34,14 @@ public class Base_datainfo extends Model<Base_datainfo> {
     private String dataname_cn;
 
     /**
-     * 对应的mapper
+     * 对应服务器中的mapper对象名
      */
     private String mappername;
+
+    /**
+     * 类型的ssid
+     */
+    private String typessid;
 
     private String ssid;
 
@@ -75,6 +80,13 @@ public class Base_datainfo extends Model<Base_datainfo> {
 
     public void setMappername(String mappername) {
         this.mappername = mappername;
+    }
+    public String getTypessid() {
+        return typessid;
+    }
+
+    public void setTypessid(String typessid) {
+        this.typessid = typessid;
     }
     public String getSsid() {
         return ssid;
@@ -124,6 +136,7 @@ public class Base_datainfo extends Model<Base_datainfo> {
         ", dataname=" + dataname +
         ", dataname_cn=" + dataname_cn +
         ", mappername=" + mappername +
+        ", typessid=" + typessid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
