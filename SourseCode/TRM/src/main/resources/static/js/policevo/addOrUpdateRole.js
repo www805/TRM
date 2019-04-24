@@ -70,11 +70,12 @@ function callbackaddOrUpdateRole(data) {
             if (isNotEmpty(data)){
                 layer.msg("保存成功",{icon: 1});
 
+
                 var nextparam=getAction(getactionid_manage().addOrUpdateRole_updateRole);
                 if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                    // window.location.href=nextparam.nextPageId;//****
-                    window.history.go(-1);return false;
                 }
+                window.history.go(-1);return false;
             }
         }
     }else{
