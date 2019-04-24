@@ -59,7 +59,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
 
 
     /******************************************************/
-     @Select("select  DISTINCT(a.id),a.*,w.workname as 'workname'" +
+     @Select("select  DISTINCT(a.ssid),a.*,w.workname as 'workname'" +
              "from base_admininfo a " +
              "left join police_workunit w on a.workunitssid=w.ssid " +
              "left join base_admintorole ar on ar.adminssid=a.ssid " +
@@ -67,7 +67,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
              "where 1=1 ${ew.sqlSegment}")
      List<AdminAndWorkunit> getUserList(Page page,@Param("ew") EntityWrapper ew);
 
-     @Select("select count(DISTINCT(a.id))" +
+     @Select("select count(DISTINCT(a.ssid))" +
              "from base_admininfo a " +
              "left join police_workunit w on a.workunitssid=w.ssid " +
              "left join base_admintorole ar on ar.adminssid=a.ssid " +

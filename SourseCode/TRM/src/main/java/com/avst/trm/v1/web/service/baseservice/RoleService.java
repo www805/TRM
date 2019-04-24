@@ -33,7 +33,7 @@ public class RoleService extends BaseService {
         try {
             EntityWrapper ew=new EntityWrapper();
             if (StringUtils.isNotBlank(param.getRolename())){
-                ew.like("rolename",param.getRolename());
+                ew.like("rolename",param.getRolename().trim());
             }
             if (null!=param.getRolebool()) {
                 ew.eq("rolebool", param.getRolebool());

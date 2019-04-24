@@ -44,19 +44,16 @@ public class UserService extends BaseService {
         //请求参数组合
         EntityWrapper ew=new EntityWrapper();
         if (null!=param.getLoginaccount()){
-            ew.like(true,"a.loginaccount",param.getLoginaccount());
+            ew.like(true,"a.loginaccount",param.getLoginaccount().trim());
         }
         if (StringUtils.isNotBlank(param.getUsername())){
-            ew.like(true,"a.username",param.getUsername());
+            ew.like(true,"a.username",param.getUsername().trim());
         }
         if (StringUtils.isNotBlank(param.getWorkunitssid())){
-            ew.eq(true,"a.workunitssid",param.getWorkunitssid());
+            ew.eq(true,"a.workunitssid",param.getWorkunitssid().trim());
         }
         if (StringUtils.isNotBlank(param.getRolessid())){
-            ew.eq(true,"ar.rolessid",param.getRolessid());
-        }
-        if (null!=param.getAdminbool()){
-            ew.eq(true,"a.adminbool",param.getAdminbool());
+            ew.eq(true,"ar.rolessid",param.getRolessid().trim());
         }
         if (null!=param.getAdminbool()){
             ew.eq(true,"a.adminbool",param.getAdminbool());

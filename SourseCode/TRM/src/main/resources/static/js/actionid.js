@@ -44,5 +44,11 @@ function getactionid_manage() {
         arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
         arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint",
 
+        arraignment_getArraignmentList:"arraignment_getArraignmentList",
+        arraignment_getArraignmentByCaseSsid:"arraignment_getArraignmentByCaseSsid",
+        arraignment_getArraignmentShow:"arraignment_getArraignmentShow",
+
+        getArraignmentShow_getArraignmentBySsid:"getArraignmentShow_getArraignmentBySsid"
+
     };
 }

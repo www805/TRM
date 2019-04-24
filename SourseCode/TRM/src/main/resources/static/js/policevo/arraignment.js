@@ -1,0 +1,152 @@
+function getArraignmentList_init(currPage,pageSize) {
+    var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
+    var casename=$("#casename").val();
+    var casenum=$("#casenum").val();
+    var username=$("#username").val();
+    var data={
+        casename:casename,
+        casenum:casenum,
+        username:username,
+        currPage:currPage,
+        pageSize:pageSize
+    };
+  ajaxSubmit(url,data,callbackgetArraignmentList);
+}
+
+function getArraignmentList(casename,casenum,username,currPage,pageSize) {
+    var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
+    var data={
+        casename:casename,
+        casenum:casenum,
+        username:username,
+        currPage:currPage,
+        pageSize:pageSize
+    };
+     ajaxSubmit(url,data,callbackgetArraignmentList);
+}
+
+function callbackgetArraignmentList(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            pageshow(data);
+            layui.use('form', function(){
+                var form =  layui.form;
+                form.render();
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function getArraignmentListByParam(){
+    var len=arguments.length;
+    if(len==0){
+        var currPage=1;
+        var pageSize=3;//测试
+        getArraignmentList_init(currPage,pageSize);
+    }else if (len==2){
+        getArraignmentList('',arguments[0],arguments[1]);
+    }else if(len>2){
+        getArraignmentList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]);
+    }
+}
+
+
+function showpagetohtml(){
+    if(isNotEmpty(pageparam)){
+        var pageSize=pageparam.pageSize;
+        var pageCount=pageparam.pageCount;
+        var currPage=pageparam.currPage;
+
+        var casename=pageparam.casename;
+        var casenum=pageparam.casenum;
+        var username=pageparam.username;
+        var arrparam=new Array();
+        arrparam[0] = casename;
+        arrparam[1]=casenum;
+        arrparam[2]=username;
+        showpage("paging",arrparam,'getArraignmentListByParam',currPage,pageCount,pageSize);
+    }
+}
+
+function openModel(ssid) {
+    if (isNotEmpty(ssid)) {
+        var html='<table class="layui-hide" lay-filter="openModelhtml" id="openModelhtml"></table>';
+
+        var url=getActionURL(getactionid_manage().arraignment_getArraignmentByCaseSsid);
+        var data={
+            caseSsid:ssid
+        };
+        ajaxSubmit(url,data,callbackgetArraignmentByCaseSsid);
+
+
+        layui.use(['layer'], function(){
+            var layer = layui.layer;
+            layer.open({
+                type: 1,
+                title: "选择提讯进行查看(双击跳转详情页)",
+                shade: 0.5,
+                shadeClose : true,
+                area: ['700px', '500px'],
+                content: html,
+                btn: ['返回'],
+                skin: 'demo-class',
+                yes: function(index, layero){
+                    layer.close(index);
+                }
+            });
+        });
+    }else{
+        layer.msg("参数错误",{icon: 2});
+        return false;
+    }
+}
+
+function callbackgetArraignmentByCaseSsid(data) {
+
+
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+            layui.use(['table'], function(){
+                var table = layui.table;
+
+                //展示已知数据
+                table.render({
+                    elem: '#openModelhtml'
+                    ,cols: [[ //标题栏
+                        {field: 'recordbool', title: '笔录状态'}
+                        ,{field: 'recordname', title: '笔录名称'}
+                        ,{field: 'recordtime', title: '笔录时长' }
+                        ,{field: 'askobj', title: '询问对象'}
+                        ,{field: 'adminname', title: '询问人'}
+                        ,{field: 'recordplace', title: '询问地点'}
+                        ,{field: 'recordadminname', title: '记录人'}
+                    ]]
+                    ,data: data
+                    ,skin: 'row' //表格风格
+                    ,even: true
+                });
+                table.on('rowDouble(openModelhtml)', function(obj){
+                    console.log(obj);
+                    var arraignment=dada=obj.data;
+                    if (isNotEmpty(arraignment)){
+                        var ssid=arraignment.recordssid;
+                        var getArraignmentShowurl=getActionURL(getactionid_manage().arraignment_getArraignmentShow);
+                        console.log(ssid);
+                      window.location.href=getArraignmentShowurl+"?ssid="+ssid;
+                    }
+                });
+
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+
+
+
+
+}
+
