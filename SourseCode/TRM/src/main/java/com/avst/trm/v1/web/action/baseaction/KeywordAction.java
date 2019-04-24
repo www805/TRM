@@ -29,7 +29,7 @@ public class KeywordAction extends BaseAction{
     public ModelAndView getKeyword(Model model, KeywordParam param) {
         RResult rResult=createNewResultOfFail();
 
-//        param.setPageSize(3);
+        param.setPageSize(3);
         keywordService.findKeywordlist(rResult,param);
 
         model.addAttribute("result", rResult);

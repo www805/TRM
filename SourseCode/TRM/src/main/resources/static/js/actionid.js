@@ -41,6 +41,8 @@ function getactionid_manage() {
         serverconfig_uploadByImg: "serverconfig_uploadByImg",
         serverconfig_getServerConfig: "serverconfig_getServerConfig",
 
+        arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
+        arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint",
 
     };
 }
