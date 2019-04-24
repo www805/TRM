@@ -115,13 +115,18 @@ public class Arraignment_countService extends BaseService {
             ArraignmentCountVO getlist3VO=new ArraignmentCountVO();
             EntityWrapper ew=new EntityWrapper();
 
-//            if(null!=param){
-//                if(StringUtils.isNotEmpty(param.getTimes())){
-//
-//                    ew.like("username",param.getName());
-//                }
-//            }
-            int count = arraignmentCountMapper.selectCount(ew);
+            Base_arraignmentCount arraignmentCount = null;
+            if(null!=param){
+
+                if(StringUtils.isNotEmpty(param.getTimes())){
+                    ew.ge("r.time",param.getTimes());
+                }
+                if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
+                    ew.between("r.createtime", param.getStarttime(), param.getEndtime());
+                }
+
+            }
+            int count = arraignmentCountMapper.getArraignmentCountCount(ew);
             param.setRecordCount(count);
             getlist3VO.setPageparam(param);
 //current 第多少页，size 每页多少条
@@ -129,10 +134,25 @@ public class Arraignment_countService extends BaseService {
 //            page.setRecords(list);
             list = arraignmentCountMapper.getArraignmentCountList(page, ew);
 
+            if(null!=list&&list.size() > 0){
 
+                for (int i = 0; i < list.size(); i++) {
+
+                    EntityWrapper ew2=new EntityWrapper();
+
+                    ew2.eq("a.id", list.get(i).getId());
+
+                    arraignmentCount = arraignmentCountMapper.getArraignmentCount(ew2);
+
+                    list.get(i).setRecordCount(arraignmentCount.getRecordCount());
+                    list.get(i).setRecordrealCount(arraignmentCount.getRecordrealCount());
+                    list.get(i).setRecordtimeCount(arraignmentCount.getRecordtimeCount());
+                    list.get(i).setTimeCount(arraignmentCount.getTimeCount());
+                    list.get(i).setTranslatextCount(arraignmentCount.getTranslatextCount());
+                }
+
+            }
 //            AdminAndWorkunit list1 = arraignmentCountMapper.getList(page, ew);
-
-
 
             System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());

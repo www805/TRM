@@ -16,7 +16,6 @@
     <script th:inline="javascript">
         $(function(){
             setpageAction([[${session.INIT_WEB}]],"police/arraignment/arraignment_count");
-            // addOupdateurl=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
             getArraignment_countByParam();
         });
 
@@ -30,11 +29,12 @@
         <h3 th:text="${arraignment_countModel.title}"></h3>
     </div>
 
-    <div class="layui-form" >
+    <form class="layui-form"  action="" >
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">统计时段</label>
             <div class="layui-input-inline">
                 <input type="text" name="starttime" id="starttime" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+
             </div>
 
             <label class="layui-form-label" style="width: auto;">-</label>
@@ -44,15 +44,15 @@
 
             <label class="layui-form-label" style="width: auto;">语音笔录时长阈值</label>
             <div class="layui-input-inline">
-                <input type="text" name="times" required lay-verify="required" placeholder="请输入阈值" autocomplete="off" class="layui-input">
+                <input type="text" name="times" id="times" lay-verify="required" placeholder="请输入阈值" autocomplete="off" class="layui-input">
             </div>
             <label class="layui-form-label" style="width: auto;">分钟</label>
 
-            <input type="submit" class="layui-btn layui-btn-normal" value="查询">
+            <input type="button" class="layui-btn layui-btn-normal" onclick="getArraignment_count_search()" value="查询">
 
             <input type="button" class="layui-btn layui-btn-normal" value="导出表格">
         </div>
-    </div>
+    </form>
 
     <div th:replace="page :: page">...</div>
 
@@ -97,8 +97,21 @@
 <script>
     //Demo
     layui.use(['form', 'layedit', 'laydate','laypage', 'layer'], function(){
-        laypage = layui.laypage
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+
+        var laypage = layui.laypage
             ,layer = layui.layer;
+
+        //日期
+        laydate.render({
+            elem: '#starttime'
+        });
+        laydate.render({
+            elem: '#endtime'
+        });
     });
 
 </script>

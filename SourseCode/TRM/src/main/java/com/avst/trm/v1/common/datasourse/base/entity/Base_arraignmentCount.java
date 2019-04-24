@@ -35,17 +35,17 @@ public class Base_arraignmentCount extends Base_admininfo{
     /**
      * 笔录总时长
      */
-    private Date recordtimeCount;
+    private Integer recordtimeCount;
 
     /**
      * 录音时长
      */
-    private Date timeCount;
+    private Integer timeCount;
 
     /**
      * 笔录字数
      */
-    private String translatextCount;
+    private Integer translatextCount;
 
     /**
      * 登录次数
@@ -68,27 +68,27 @@ public class Base_arraignmentCount extends Base_admininfo{
         this.recordrealCount = recordrealCount;
     }
 
-    public Date getRecordtimeCount() {
+    public Integer getRecordtimeCount() {
         return recordtimeCount;
     }
 
-    public void setRecordtimeCount(Date recordtimeCount) {
+    public void setRecordtimeCount(Integer recordtimeCount) {
         this.recordtimeCount = recordtimeCount;
     }
 
-    public Date getTimeCount() {
+    public Integer getTimeCount() {
         return timeCount;
     }
 
-    public void setTimeCount(Date timeCount) {
+    public void setTimeCount(Integer timeCount) {
         this.timeCount = timeCount;
     }
 
-    public String getTranslatextCount() {
+    public Integer getTranslatextCount() {
         return translatextCount;
     }
 
-    public void setTranslatextCount(String translatextCount) {
+    public void setTranslatextCount(Integer translatextCount) {
         this.translatextCount = translatextCount;
     }
 
@@ -107,7 +107,7 @@ public class Base_arraignmentCount extends Base_admininfo{
                 ", recordrealCount='" + recordrealCount + '\'' +
                 ", recordtimeCount=" + recordtimeCount +
                 ", timeCount=" + timeCount +
-                ", translatextCount='" + translatextCount + '\'' +
+                ", translatextCount=" + translatextCount +
                 ", loginCount=" + loginCount +
                 '}';
     }

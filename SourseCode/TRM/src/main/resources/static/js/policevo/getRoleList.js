@@ -19,6 +19,7 @@ function getRoleList(rolename,rolebool,currPage,pageSize){
         currPage:currPage,
         pageSize:pageSize
     };
+    console.log(data);
     ajaxSubmit(url,data,callbackgetRoleList);
 }
 

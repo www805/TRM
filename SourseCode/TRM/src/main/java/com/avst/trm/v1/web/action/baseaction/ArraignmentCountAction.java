@@ -19,9 +19,9 @@ public class ArraignmentCountAction extends BaseAction{
     @Autowired
     private Arraignment_countService arraignmentCountService;
 
-    @PostMapping(value = "/getArraignment_countList",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getArraignment_countList")
     @ResponseBody
-    public RResult getArraignment_countList(Model model, Arraignment_countParam param) {
+    public RResult getArraignment_countList(Arraignment_countParam param) {
         RResult rResult=createNewResultOfFail();
         if (null==param){
             rResult.setMessage("参数为空");

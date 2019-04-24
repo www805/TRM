@@ -18,26 +18,36 @@ function getArraignment_countList(starttime,endtime,times,currPage,pageSize){
         pageSize:pageSize
     };
 
-    console.log(url);
-    console.log(data);
-
     ajaxSubmit(url,data,callbackgetRoleList);
 }
 
+function getArraignment_count_search(currPage,pageSize) {
+
+    var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
+
+    var starttime=$("#starttime").val();
+    var endtime=$("#endtime").val();
+    var times=$("#times").val();
+
+    var data={
+        starttime:starttime,
+        endtime:endtime,
+        times:times,
+        currPage:currPage,
+        pageSize:pageSize
+    };
+    ajaxSubmit(url,data,callbackgetRoleList);
+}
 
 function callbackgetRoleList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            console.log(data);
             pageshow(data);
         }
     }else{
         layer.msg(data.message,{icon: 2});
     }
-    layui.use('form', function(){
-        var form =  layui.form;
-        form.render();
-    });
+
 }
 
 /**
