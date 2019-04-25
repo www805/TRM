@@ -133,6 +133,10 @@ function calladdOrUpdataKeyWordPage(data){
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});
     }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 function callDeleteKeyword(data){
@@ -146,11 +150,14 @@ function callDeleteKeyword(data){
             var url=getActionURL(getactionid_manage().main_getKeyword);
             window.location.href=url;
         }
-
     }else{
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});
     }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 /**
