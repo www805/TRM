@@ -1,5 +1,28 @@
 var KeywordAction = null;
 
+function getKeyword_init(currPage,pageSize) {
+
+    var url=getActionURL(getactionid_manage().getKeyword_getKeywordList);
+    var data={
+        currPage:currPage,
+        pageSize:pageSize
+    };
+
+    ajaxSubmit(url,data,callbackgetKeyWordPage);
+}
+
+function getKeyword_search(currPage,pageSize) {
+
+    var url=getActionURL(getactionid_manage().getKeyword_getKeywordList);
+    var text=$("#kText").val();
+    var data={
+        text:text,
+        currPage:currPage,
+        pageSize:pageSize
+    };
+    ajaxSubmit(url,data,callbackgetKeyWordPage);
+}
+
 function getKeywordList(){
 
     var url = "";
@@ -84,14 +107,18 @@ function deleteKeyword(id){
 
 function callbackgetKeyWordPage(data){
 
-    $("#listqk").html("");
-
     if(null!=data&&data.actioncode=='SUCCESS'){
-        pageshow(data);
+        if (isNotEmpty(data)){
+            pageshow(data);
+        }
     }else{
         // alert(data.message);
-        layer.msg(data.message, {time: 5000, icon:5});
+        layer.msg(data.message,{icon: 2});
     }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 function calladdOrUpdataKeyWordPage(data){
@@ -133,13 +160,10 @@ function getKeyWordByParam() {
 
     var len = arguments.length;
 
-    var currPage = 1;
-    var pageSize = 3;//测试
-    var text = $(" input[ name='text' ] ").val();
-
-
     if (len == 0) {
-        getKeyWordPage(text, currPage, pageSize);
+        var currPage = 1;
+        var pageSize = 3;//测试
+        getKeyword_init(currPage, pageSize);
     }  else if (len == 2) {
         getKeyWordPage('', arguments[0], arguments[1]);
     } else if (len > 2) {
