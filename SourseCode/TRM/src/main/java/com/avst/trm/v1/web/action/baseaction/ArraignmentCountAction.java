@@ -46,5 +46,20 @@ public class ArraignmentCountAction extends BaseAction{
         return new ModelAndView("police/arraignment/getArraignment_count", "arraignment_countModel", model);
     }
 
+    /**
+     * 笔录使用情况统计表
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping(value = "/getArraignment_countPrint")
+    @ResponseBody
+    public RResult getArraignment_countPrint(Model model, Arraignment_countParam param) {
 
+        RResult rResult = createNewResultOfFail();
+        arraignmentCountService.exportExcel(rResult, param);
+
+        model.addAttribute("RResult", rResult);
+        return rResult;
+    }
 }

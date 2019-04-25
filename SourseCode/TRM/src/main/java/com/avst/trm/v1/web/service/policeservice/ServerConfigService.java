@@ -18,6 +18,8 @@ import com.avst.trm.v1.web.vo.basevo.UserListVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -172,16 +175,17 @@ public class ServerConfigService extends BaseService {
      */
     private Boolean checkKeyword(RResult rResult, ServerconfigParam serverconfig) {
 
-//        if(StringUtils.isEmpty(serverconfig.getText()) || StringUtils.isEmpty(serverconfig.getReplacetext())){
-//            rResult.setMessage("关键字名称 或 替换字符不能为空");
-//            return false;
-//        }
-//        if(StringUtils.isEmpty(keyword.getColor()) || StringUtils.isEmpty(keyword.getBackgroundcolor())){
-//            rResult.setMessage("字体颜色 或 背景颜色不能为空");
-//            return false;
-//        }
+        if(StringUtils.isEmpty(serverconfig.getSysname()) || StringUtils.isEmpty(serverconfig.getClientname())){
+            rResult.setMessage("客户端名称 或 系统名称不能为空");
+            return false;
+        }
+        if(StringUtils.isEmpty(serverconfig.getServerip()) || StringUtils.isEmpty(serverconfig.getServerport())){
+            rResult.setMessage("服务器IP 或 服务器端口不能为空");
+            return false;
+        }
         return true;
     }
+
 
 
 }

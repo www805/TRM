@@ -125,10 +125,11 @@ function calladdOrUpdataKeyWordPage(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
 
-        setpageAction(init_web,"police/keyword/getKeyword");
-
-        var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
-        window.location.href=url;
+        // setpageAction(init_web,"police/keyword/getKeyword");
+        //
+        // var url=getActionURL(getactionid_manage().addOrUpdateKeyword_getKeyword);
+        // window.location.href=url;
+        window.history.go(-1);return false;
     }else{
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});

@@ -28,10 +28,6 @@ public class KeywordAction extends BaseAction{
     @GetMapping(value = "/getKeyword")
     public ModelAndView getKeyword(Model model, KeywordParam param) {
         RResult rResult=createNewResultOfFail();
-
-//        param.setPageSize(3);
-//        keywordService.findKeywordlist(rResult,param);
-
         model.addAttribute("result", rResult);
         model.addAttribute("title", "关键字");
         return new ModelAndView("police/keyword/getKeyword", "keywordModel", model);
@@ -94,7 +90,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @PostMapping(value = "/getAddOrUpdateKeyword/{id}",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getAddOrUpdateKeyword/{id}")
     @ResponseBody
     public RResult UpdateKeyword(@PathVariable("id") int id, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
@@ -107,7 +103,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @PostMapping(value = "/getAddOrUpdateKeyword",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/getAddOrUpdateKeyword")
     @ResponseBody
     public RResult AddKeyword(AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
@@ -120,7 +116,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @PostMapping(value = "/deleteKeyword",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/deleteKeyword")
     @ResponseBody
     public RResult deleteKeyword(AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
@@ -129,11 +125,4 @@ public class KeywordAction extends BaseAction{
     }
 
 
-//    @PostMapping(value = "/getKeywordList",produces = MediaType.APPLICATION_JSON_VALUE)
-//    @ResponseBody
-//    public RResult AddKeyword(AddOrUpdateKeywordParam keyword) {
-//        RResult rResult = createNewResultOfFail();
-//        keywordService.AddKeyword(rResult, keyword);
-//        return rResult;
-//    }
 }
