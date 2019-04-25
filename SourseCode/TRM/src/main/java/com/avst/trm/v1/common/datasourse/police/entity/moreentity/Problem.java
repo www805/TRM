@@ -1,7 +1,14 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
-import java.util.Date;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 问题
+ */
 public class Problem {
     private Integer id;
 
@@ -23,12 +30,37 @@ public class Problem {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createtime;
 
     /**
      * 更新时间
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updatetime;
+
+    private String ssid;
+
+    /**
+     * 问题
+     */
+    private List<Police_answer> answers;
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    public List<Police_answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Police_answer> answers) {
+        this.answers = answers;
+    }
 
     public Integer getId() {
         return id;
