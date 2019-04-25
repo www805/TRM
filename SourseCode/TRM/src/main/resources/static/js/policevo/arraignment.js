@@ -109,6 +109,23 @@ function callbackgetArraignmentByCaseSsid(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var data=data.data;
+            for (var i = 0; i < data.length; i++) {
+                var datum = data[i];
+                if (datum.recordbool==1){
+                    datum.recordbool="进行中";
+                }else{
+                    datum.recordbool="未开始";
+                }
+
+
+                if (datum.askobj==1){
+                    datum.askobj="犯罪嫌疑人";
+                }else{
+                    datum.askobj="其他";
+                }
+                
+            } 
+
             layui.use(['table'], function(){
                 var table = layui.table;
 
@@ -129,12 +146,10 @@ function callbackgetArraignmentByCaseSsid(data) {
                     ,even: true
                 });
                 table.on('rowDouble(openModelhtml)', function(obj){
-                    console.log(obj);
                     var arraignment=dada=obj.data;
                     if (isNotEmpty(arraignment)){
                         var ssid=arraignment.recordssid;
                         var getArraignmentShowurl=getActionURL(getactionid_manage().arraignment_getArraignmentShow);
-                        console.log(ssid);
                       window.location.href=getArraignmentShowurl+"?ssid="+ssid;
                     }
                 });

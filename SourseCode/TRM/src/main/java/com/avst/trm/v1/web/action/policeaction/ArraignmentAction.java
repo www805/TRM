@@ -57,7 +57,7 @@ public class ArraignmentAction extends BaseAction{
      */
     @RequestMapping(value = "/getArraignmentByCaseSsid")
     @ResponseBody
-    public RResult getArraignments(Integer caseSsid) {
+    public RResult getArraignments(String caseSsid) {
         RResult result=createNewResultOfFail();
         if (null==caseSsid){
             result.setMessage("参数为空");
@@ -75,7 +75,7 @@ public class ArraignmentAction extends BaseAction{
      * @return
      */
     @GetMapping(value = "/getArraignmentShow")
-    public ModelAndView getArraignmentShow(Model model,Integer ssid) {
+    public ModelAndView getArraignmentShow(Model model,String ssid) {
         model.addAttribute("title", "笔录详情");
         model.addAttribute("ssid",ssid);
         return new ModelAndView("police/arraignment/getArraignmentShow", "arraignmentModel", model);
@@ -89,7 +89,7 @@ public class ArraignmentAction extends BaseAction{
      */
     @RequestMapping(value = "/getArraignmentBySsid")
     @ResponseBody
-    public RResult getArraignmentBySsid(Integer ssid) {
+    public RResult getArraignmentBySsid(String ssid) {
         RResult result=createNewResultOfFail();
         if (null==ssid){
             result.setMessage("参数为空");
