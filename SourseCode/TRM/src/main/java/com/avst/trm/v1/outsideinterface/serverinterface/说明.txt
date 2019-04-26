@@ -1,7 +1,7 @@
 
 ForDownServerBaseAction 对下级服务器开放服务的基础接口
 
-ForDownServerBaseService 对下级服务器开放服务的基础处理类（一般只会做BaseAction调用，转到对应的类型的service处理类）
+ForDownServerBaseServiceIntegerface 对下级服务器开放服务的基础处理接口类（一般只会做BaseAction调用，转到对应的类型的service处理类）
 
 court 法院开发包
 

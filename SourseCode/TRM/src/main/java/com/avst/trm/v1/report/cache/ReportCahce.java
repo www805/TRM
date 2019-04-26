@@ -1,4 +1,4 @@
-package com.avst.trm.v1.report.conf;
+package com.avst.trm.v1.report.cache;
 
 /**
  * 请求服务器过程中的缓存
@@ -7,7 +7,7 @@ public class ReportCahce {
 
     private static String  toupserverTBToken;//一次只能有一个同步任务
 
-    public static String getToupserverTBToken(){
+    public synchronized static String getToupserverTBToken(){
         return toupserverTBToken;
     }
 
@@ -16,7 +16,7 @@ public class ReportCahce {
      * @param token
      * @return
      */
-    public static boolean setToupserverTBToken(String token){
+    public synchronized static boolean setToupserverTBToken(String token){
 
         if(null!=toupserverTBToken){
             return false;
@@ -29,7 +29,7 @@ public class ReportCahce {
      * 关闭本次同步token认证
      * @return
      */
-    public static boolean delToupserverTBToken(){
+    public synchronized static boolean delToupserverTBToken(){
 
         toupserverTBToken=null;
         return true;

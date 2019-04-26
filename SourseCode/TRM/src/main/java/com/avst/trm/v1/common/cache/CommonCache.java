@@ -322,6 +322,11 @@ public class CommonCache {
         Integer authorizebool=serverconfig.getAuthorizebool();
         if(null==authorizebool||authorizebool!=1){//还没有生成隐性授权文件
             boolean bool=AnalysisSQ.createClientini(base_serverconfigMapper,serverconfig);
+            if(!bool){
+                checkSQParam.setCode(CodeForSQ.ERROR100002);
+                checkSQParam.setMsg("服务器授权异常");
+                return checkSQParam;
+            }
             System.out.println("initClient authorizebool:"+bool);
         }
 

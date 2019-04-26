@@ -18,5 +18,10 @@ public enum Code {
 	/**
 	 * 登录失败
 	 */
-	LOGINFAIL
+	LOGINFAIL,
+
+	/**
+	 * 请求成功，但是没有数据
+	 */
+	SUCCESS_NOTHINGTODO
 }

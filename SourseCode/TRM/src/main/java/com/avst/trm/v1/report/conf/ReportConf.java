@@ -1,6 +1,8 @@
 package com.avst.trm.v1.report.conf;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.report.cache.ReportCahce;
+import org.apache.commons.lang.StringUtils;
 
 public class ReportConf {
 
@@ -16,7 +18,11 @@ public class ReportConf {
             return "sqNum="+shortnum+"&sqCode="+sqCode ;
         }else{
             String token= ReportCahce.getToupserverTBToken();
-            return "data="+data+"&sqNum="+shortnum+"&token="+token ;
+            String rr="sqNum="+shortnum+"&token="+token;
+            if(StringUtils.isEmpty(data)){
+                rr="data="+data+"&"+rr;
+            }
+            return rr;
         }
     }
 

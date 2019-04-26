@@ -44,4 +44,9 @@ public class RRParam<T> {
 	public void setT(T t) {
 		this.t = t;
 	}
+
+	public RRParam(){
+		message="请求失败";
+		code=Code.FAIL.hashCode();//失败的hashcode值
+	}
 }

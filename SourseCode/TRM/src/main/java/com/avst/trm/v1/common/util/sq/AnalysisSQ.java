@@ -98,6 +98,7 @@ public class AnalysisSQ {
             String servertype=sqcodearr[0];
             String clientName=sqcodearr[5];
             String startTime=sqcodearr[2];//授权开始时间
+            String sortnum=sqcodearr[7];
 
             if(StringUtils.isEmpty(servertype)){
                 servertype="0";
@@ -108,16 +109,17 @@ public class AnalysisSQ {
                     serverconfig.setClientname(clientName);
                 }
                 serverconfig.setAuthorizebool(1);
+                if(StringUtils.isNotEmpty(sortnum)){
+                    serverconfig.setAuthorizesortnum(Integer.parseInt(sortnum));
+                }
                 serverconfig.setWorkstarttime(DateUtil.getNowTime());
                 serverconfig.setWorkdays(1);
+                serverconfig.setSsid(OpenUtil.getUUID_32());
                 int updatebool=base_serverconfigMapper.updateById(serverconfig);
                 System.out.println(updatebool+":updatebool");
             }catch (Exception e){
                 e.printStackTrace();
             }
-
-
-
             return true;
         }catch (Exception e){
             e.printStackTrace();
@@ -201,7 +203,10 @@ public class AnalysisSQ {
     }
 
 
-
+    /**
+     * 本地授权信息获取
+     * @return
+     */
     public static SQEntity getSQEntity(){
 
         File file=new File(inipath);
@@ -224,6 +229,53 @@ public class AnalysisSQ {
             String clientName=sqcodearr[5];
             String unitCode=sqcodearr[6];
             String sortNum=sqcodearr[7];
+
+            SQEntity sqEntity=new SQEntity();
+            sqEntity.setClientName(clientName);
+            sqEntity.setCpuCode(cpuCode);
+            sqEntity.setForeverBool(Boolean.valueOf(foreverBool));
+            sqEntity.setServerType(serverType);
+            sqEntity.setSortNum(Integer.parseInt(sortNum));
+            sqEntity.setSqDay(Integer.parseInt(sqDay));
+            sqEntity.setUnitCode(unitCode);
+            return sqEntity;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 解析其他人的授权信息
+     * @param sq
+     * @return
+     */
+    public static SQEntity getSQEntity(String sq){
+
+        try {
+
+            sq=decode_uid(sq);
+            String sqcode=sq.split(";")[0];
+            int usetime=Integer.parseInt(sq.split(";")[1]);
+            String[] sqcodearr= DeCodeUtil.decoderByDES(sqcode).split(";");
+            String serverType=sqcodearr[0];
+            String foreverBool=sqcodearr[1];
+            String startTime=sqcodearr[2];
+            String cpuCode=sqcodearr[3];
+            String sqDay=sqcodearr[4];
+            String clientName=sqcodearr[5];
+            String unitCode=sqcodearr[6];
+            String sortNum=sqcodearr[7];
+
+            if(foreverBool.equals("true")){//永久授权不用检查使用剩余时间
+
+            }else{
+                int sqDay_int=Integer.parseInt(sqDay);
+                if((sqDay_int-usetime) < 0){ //还剩多少使用时间
+                    return null;
+                }
+            }
+
             SQEntity sqEntity=new SQEntity();
             sqEntity.setClientName(clientName);
             sqEntity.setCpuCode(cpuCode);
@@ -242,6 +294,7 @@ public class AnalysisSQ {
 
     /**
      * 根据隐藏的ini授权记录文件获取
+     * 也可以生产唯一的token
      * @return
      */
     public static String getClientKey(){

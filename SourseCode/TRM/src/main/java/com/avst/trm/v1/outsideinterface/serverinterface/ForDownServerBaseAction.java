@@ -11,8 +11,15 @@ import com.avst.trm.v1.outsideinterface.reqparam.BaseReqParam;
 import com.avst.trm.v1.outsideinterface.serverinterface.police.v1.service.ForDownServerService_police;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 
 /**
  * 对下级服务器提供的同步接口
@@ -22,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ForDownServerBaseAction extends BaseAction {
 
 
-    private ForDownServerBaseServiceInterface forDownServerBaseServiceInterface=null;
+    private ForDownServerBaseServiceInterface forDownServerBaseServiceInterface;
 
     @RequestMapping("/initsynchronizeddata")
     @ResponseBody
@@ -33,14 +40,12 @@ public class ForDownServerBaseAction extends BaseAction {
             rResult.setEndtime(DateUtil.getDateAndMinute());
             return rResult;
         }
-        if(null==forDownServerBaseServiceInterface){
-            forDownServerBaseServiceInterface=getForDownServerBaseServiceImpl();
-        }
-        forDownServerBaseServiceInterface.initsynchronizeddata(sqCode,sqNum);
+        getForDownServerBaseServiceImpl().initsynchronizeddata(sqCode,sqNum,rResult);
 
         return rResult;
     };
-
+    @RequestMapping("/startSynchronizedata")
+    @ResponseBody
     public  RResult startSynchronizedata(BaseReqParam param){
         RResult rResult=createNewResultOfFail();
         RRParam rr=checkToken(param.getSqNum(),param.getToken());
@@ -49,13 +54,17 @@ public class ForDownServerBaseAction extends BaseAction {
             rResult.setEndtime(DateUtil.getDateAndMinute());
             return rResult;
         }
-        if(null==forDownServerBaseServiceInterface){
-            forDownServerBaseServiceInterface=getForDownServerBaseServiceImpl();
-        }
-        forDownServerBaseServiceInterface.startSynchronizedata(param,rResult);
+        getForDownServerBaseServiceImpl().startSynchronizedata(param,rResult);
         return rResult;
     };
 
+    /**
+     * 上传数据
+     * @param param
+     * @return
+     */
+    @RequestMapping("/synchronizedata")
+    @ResponseBody
     public  RResult synchronizedata(BaseReqParam param){
         RResult rResult=createNewResultOfFail();
         RRParam rr=checkToken(param.getSqNum(),param.getToken());
@@ -64,15 +73,46 @@ public class ForDownServerBaseAction extends BaseAction {
             rResult.setEndtime(DateUtil.getDateAndMinute());
             return rResult;
         }
-        if(null==forDownServerBaseServiceInterface){
-            forDownServerBaseServiceInterface=getForDownServerBaseServiceImpl();
-        }
-        forDownServerBaseServiceInterface.synchronizedata(param,rResult);
-
-
+        getForDownServerBaseServiceImpl().synchronizedata(param,rResult,null,1);
         return rResult;
     };
 
+    /**
+     * 上传文件
+     * @param file
+     * @param request
+     * @return
+     */
+    @RequestMapping("/synchronizedata_file")
+    @ResponseBody
+    public  RResult synchronizedata_file(@RequestParam("file") MultipartFile file, HttpServletRequest request,BaseReqParam param){
+        RResult rResult=createNewResultOfFail();
+
+        try{
+
+            RRParam rr=checkToken(param.getSqNum(),param.getToken());
+            if(null==rr||rr.getCode()!=0){
+                rResult.setMessage(rr.getMessage());
+                rResult.setEndtime(DateUtil.getDateAndMinute());
+                return rResult;
+            }
+
+            if(null==file){//基本上不可能出现
+                rResult.setMessage("文件未找到");
+                return rResult;
+            }
+
+            getForDownServerBaseServiceImpl().synchronizedata(param,rResult,file,2);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return rResult;
+    };
+
+
+    @RequestMapping("/overSynchronizedata")
+    @ResponseBody
     public  RResult overSynchronizedata(BaseReqParam param){
         RResult rResult=createNewResultOfFail();
         RRParam rr=checkToken(param.getSqNum(),param.getToken());
@@ -81,10 +121,7 @@ public class ForDownServerBaseAction extends BaseAction {
             rResult.setEndtime(DateUtil.getDateAndMinute());
             return rResult;
         }
-        if(null==forDownServerBaseServiceInterface){
-            forDownServerBaseServiceInterface=getForDownServerBaseServiceImpl();
-        }
-        forDownServerBaseServiceInterface.overSynchronizedata(param,rResult);
+        getForDownServerBaseServiceImpl().overSynchronizedata(param,rResult);
         return rResult;
     };
 
@@ -95,21 +132,35 @@ public class ForDownServerBaseAction extends BaseAction {
      */
     private ForDownServerBaseServiceInterface getForDownServerBaseServiceImpl(){
 
-        String serverType= CommonCache.getCurrentServerType();
+        if(null!=forDownServerBaseServiceInterface){
+            return forDownServerBaseServiceInterface;
+        }
+
+        String serverType= null;
+        try {
+            serverType = CommonCache.getCurrentServerType();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if(serverType.startsWith("court")){
 
         }else if(serverType.startsWith("police")){
-            return (ForDownServerService_police)SpringUtil.getBean("ForDownServerService_police");
+            forDownServerBaseServiceInterface= (ForDownServerService_police)SpringUtil.getBean("ForDownServerService_police");
         }else if(serverType.startsWith("meeting")){
 
         }else if(serverType.startsWith("dis")){
 
         }
-
-        return null;
+        return forDownServerBaseServiceInterface;
     }
 
+    /**
+     * 暂时当前同步一个下级服务器只能有一个
+     * @param sqNum
+     * @param token
+     * @return
+     */
     private RRParam checkToken(String sqNum, String token){
 
         RRParam rrParam=new RRParam();

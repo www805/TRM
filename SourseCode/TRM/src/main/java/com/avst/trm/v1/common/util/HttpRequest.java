@@ -1,15 +1,9 @@
 package com.avst.trm.v1.common.util;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -289,8 +283,270 @@ public class HttpRequest {
    		   
    		   return lines;
    		
-   		} 
-       
+   		}
+
+	/**
+	 * 文件上传的方法
+	 * 可以携带参数
+	 * @param actionUrl：上传的路径
+	 * @param uploadFilePath：需要上传的文件路径
+	 * @return
+	 */
+	@SuppressWarnings("finally")
+	public static String uploadFile(String actionUrl, String uploadFilePath,Map<String,String> map) {
+		String end = "\r\n";
+		String twoHyphens = "--";
+		String boundary = "*****";
+
+		URLConnection urlConnection=null;
+		HttpURLConnection httpURLConnection=null;
+		HttpsURLConnection httpsURLConnection=null;
+		OutputStream out=null;
+		InputStream inputStream = null;
+		InputStreamReader inputStreamReader = null;
+		BufferedReader reader = null;
+		StringBuffer resultBuffer = new StringBuffer();
+		String tempLine = null;
+		File file = new File(uploadFilePath);
+
+		//文件上传
+		String uploadFile = uploadFilePath;
+		String filename = file.getName();
+
+		try {
+
+			// 统一资源
+			URL url = new URL(actionUrl);
+			// 连接类的父类，抽象类
+			urlConnection = url.openConnection();
+			if(actionUrl.startsWith("https://")){
+				// https的连接类
+				httpsURLConnection=(HttpsURLConnection)urlConnection;
+
+				TrustManager[] trustAllCerts = new TrustManager[]{
+						new X509TrustManager() {
+
+							@Override
+							public X509Certificate[] getAcceptedIssuers() {
+								return null;
+							}
+
+							@Override
+							public void checkServerTrusted(X509Certificate[] arg0, String arg1)
+									throws CertificateException {
+
+							}
+
+							@Override
+							public void checkClientTrusted(X509Certificate[] arg0, String arg1)
+									throws CertificateException {
+
+							}
+
+						}
+				};
+				SSLContext sc = SSLContext.getInstance("SSL", "SunJSSE");
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				httpsURLConnection.setSSLSocketFactory(sc.getSocketFactory());
+				HostnameVerifier hv = new HostnameVerifier() {
+
+					@Override
+					public boolean verify(String arg0, SSLSession arg1) {
+						return true;
+					}
+				};
+				httpsURLConnection.setHostnameVerifier(hv);
+
+				// httpsURLConnection，默认情况下是true;
+				httpsURLConnection.setDoInput(true);
+				// 设置是否向httpUrlConnection输出
+				httpsURLConnection.setDoOutput(true);
+				// Post 请求不能使用缓存
+				httpsURLConnection.setUseCaches(false);
+				// 设定请求的方法，默认是GET
+				httpsURLConnection.setRequestMethod("POST");
+				// 设置字符编码连接参数
+				httpsURLConnection.setRequestProperty("Connection", "Keep-Alive");
+				// 设置字符编码
+				httpsURLConnection.setRequestProperty("Charset", "UTF-8");
+				httpsURLConnection.setRequestProperty("User-Agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
+				// 设置请求内容类型
+				httpsURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+
+
+
+				// 请求正文信息
+				// 第一部分：
+				StringBuilder sb = new StringBuilder();
+				if(null!=map){
+					for (Map.Entry<String, String> entry : map.entrySet()) {
+						sb.append(twoHyphens);
+						sb.append(boundary);
+						sb.append(end);
+						sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + end);
+						sb.append("Content-Type: text/plain; charset=UTF-8"  + end);
+						sb.append("Content-Transfer-Encoding: 8bit" + end);
+						sb.append(end);
+						sb.append(entry.getValue());
+						sb.append(end);
+					}
+				}
+
+
+				sb.append("--"); // 必须多两道线
+				sb.append(boundary);
+				sb.append("\r\n");
+				sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + filename + "\"\r\n");
+				//未知文件类型，以流的方式上传
+				sb.append("Content-Type:application/octet-stream\r\n\r\n");
+				byte[] head = sb.toString().getBytes("utf-8");
+				// 获得输出流
+				out = new DataOutputStream(httpURLConnection.getOutputStream());
+				// 输出表头
+				out.write(head);
+				// 文件正文部分
+				// 把文件已流文件的方式 推入到url中
+				inputStream = new FileInputStream(file);
+				DataInputStream dataIn = new DataInputStream(inputStream);
+				int bytes = 0;
+				byte[] bufferOut = new byte[1024];
+				while ((bytes = dataIn.read(bufferOut)) != -1) {
+					out.write(bufferOut, 0, bytes);
+				}
+				inputStream.close();
+				// 结尾部分
+				byte[] foot = ("\r\n--" + boundary + "--\r\n").getBytes("utf-8");// 定义最后数据分隔线
+				out.write(foot);
+				out.flush();
+				out.close();
+
+				if (httpURLConnection.getResponseCode() >= 300) {
+					throw new Exception(
+							"HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+				}
+
+				if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					inputStream = httpURLConnection.getInputStream();
+					inputStreamReader = new InputStreamReader(inputStream);
+					reader = new BufferedReader(inputStreamReader);
+					tempLine = null;
+					resultBuffer = new StringBuffer();
+					while ((tempLine = reader.readLine()) != null) {
+						resultBuffer.append(tempLine);
+						resultBuffer.append("\n");
+					}
+				}
+			}else{
+				// http的连接类
+				httpURLConnection = (HttpURLConnection) urlConnection;
+				// 设置是否从httpUrlConnection读入，默认情况下是true;
+				httpURLConnection.setDoInput(true);
+				// 设置是否向httpUrlConnection输出
+				httpURLConnection.setDoOutput(true);
+				// Post 请求不能使用缓存
+				httpURLConnection.setUseCaches(false);
+				// 设定请求的方法，默认是GET
+				httpURLConnection.setRequestMethod("POST");
+				// 设置字符编码连接参数
+				httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
+				// 设置字符编码
+				httpURLConnection.setRequestProperty("Charset", "UTF-8");
+				httpURLConnection.setRequestProperty("User-Agent",
+						"Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
+				// 设置请求内容类型
+				httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+
+				// 请求正文信息
+				// 第一部分：
+				StringBuilder sb = new StringBuilder();
+
+				if(null!=map){
+					for (Map.Entry<String, String> entry : map.entrySet()) {
+						sb.append(twoHyphens);
+						sb.append(boundary);
+						sb.append(end);
+						sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + end);
+						sb.append("Content-Type: text/plain; charset=UTF-8"  + end);
+						sb.append("Content-Transfer-Encoding: 8bit" + end);
+						sb.append(end);
+						sb.append(entry.getValue());
+						sb.append(end);
+					}
+				}
+
+
+				sb.append(twoHyphens); // 必须多两道线
+				sb.append(boundary);
+				sb.append(end);
+				sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + filename + "\""+end);
+				//未知文件类型，以流的方式上传
+				sb.append("Content-Type:application/octet-stream"+end+end);
+				byte[] head = sb.toString().getBytes("utf-8");
+				// 获得输出流
+				out = new DataOutputStream(httpURLConnection.getOutputStream());
+				// 输出表头
+				out.write(head);
+				// 文件正文部分
+				// 把文件已流文件的方式 推入到url中
+				inputStream = new FileInputStream(file);
+				DataInputStream dataIn = new DataInputStream(inputStream);
+				int bytes = 0;
+				byte[] bufferOut = new byte[1024];
+				while ((bytes = dataIn.read(bufferOut)) != -1) {
+					out.write(bufferOut, 0, bytes);
+				}
+				inputStream.close();
+				// 结尾部分
+				byte[] foot = (end+twoHyphens + boundary + twoHyphens+end).getBytes("utf-8");// 定义最后数据分隔线
+				out.write(foot);
+				out.flush();
+				out.close();
+
+				//返回值
+				if (httpURLConnection.getResponseCode() >= 300) {
+					throw new Exception(
+							"HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+				}
+
+				if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+					inputStream = httpURLConnection.getInputStream();
+					inputStreamReader = new InputStreamReader(inputStream);
+					reader = new BufferedReader(inputStreamReader);
+					tempLine = null;
+					resultBuffer = new StringBuffer();
+					while ((tempLine = reader.readLine()) != null) {
+						resultBuffer.append(tempLine);
+						resultBuffer.append("\n");
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+
+			closecon(httpURLConnection,httpsURLConnection,reader, null,inputStream,inputStreamReader);
+
+
+			if(null!=out){
+				try{
+					out.close();
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+
+			if(null!=urlConnection){
+				urlConnection=null;
+			}
+
+		}
+		return resultBuffer.toString();
+	}
+
 
        
       
@@ -566,5 +822,99 @@ public class HttpRequest {
 			e.printStackTrace();
 		}	
 		
-	}	
+	}
+
+
+
+
+
+	public static String uploadToUrl(String filepath,String url,Map<String,String> map)  {
+
+		StringBuffer strBuf= null;
+		try {
+			File file=new File(filepath);
+			String fileName = file.getName();
+			strBuf = null;
+
+			// 获取文件输入流
+			InputStream in = new FileInputStream(file);
+			if (null != in) {
+				URL urlObj = new URL(url);
+				HttpURLConnection con = (HttpURLConnection) urlObj.openConnection();
+				con.setRequestMethod("POST"); // 设置关键值,以Post方式提交表单，默认get方式
+				con.setDoInput(true);
+				con.setDoOutput(true);
+				con.setUseCaches(false); // post方式不能使用缓存
+				// 设置请求头信息
+				con.setRequestProperty("Connection", "Keep-Alive");
+				con.setRequestProperty("Charset", "UTF-8");
+				// 设置边界
+				String BOUNDARY = "----------" + System.currentTimeMillis();
+				con.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + BOUNDARY);
+				// 请求正文信息
+				// 第一部分：
+				StringBuilder sb = new StringBuilder();
+
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					sb.append("--");
+					sb.append(BOUNDARY);
+					sb.append("\r\n");
+					sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + "\r\n");
+					sb.append("Content-Type: text/plain; charset=UTF-8"  + "\r\n");
+					sb.append("Content-Transfer-Encoding: 8bit" + "\r\n");
+					sb.append("\r\n");
+					sb.append(entry.getValue());
+					sb.append("\r\n");
+
+				}
+
+
+				sb.append("--"); // 必须多两道线
+				sb.append(BOUNDARY);
+				sb.append("\r\n");
+				sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + fileName + "\"\r\n");
+				//未知文件类型，以流的方式上传
+				sb.append("Content-Type:application/octet-stream\r\n\r\n");
+				byte[] head = sb.toString().getBytes("utf-8");
+				// 获得输出流
+				OutputStream out = new DataOutputStream(con.getOutputStream());
+				// 输出表头
+				out.write(head);
+				// 文件正文部分
+				// 把文件已流文件的方式 推入到url中
+				DataInputStream dataIn = new DataInputStream(in);
+				int bytes = 0;
+				byte[] bufferOut = new byte[1024];
+				while ((bytes = dataIn.read(bufferOut)) != -1) {
+					out.write(bufferOut, 0, bytes);
+				}
+				in.close();
+				// 结尾部分
+				byte[] foot = ("\r\n--" + BOUNDARY + "--\r\n").getBytes("utf-8");// 定义最后数据分隔线
+				out.write(foot);
+				out.flush();
+				out.close();
+
+				// 读取返回数据
+				strBuf = new StringBuffer();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String line = null;
+				while ((line = reader.readLine()) != null) {
+					strBuf.append(line).append("\n");
+				}
+				reader.close();
+				con.disconnect();
+				con = null;
+			} else {
+				throw new Throwable("获取文件流失败,文件下载地址url=" + filepath);
+			}
+		} catch (Throwable throwable) {
+			throwable.printStackTrace();
+		} finally {
+		}
+		return  strBuf.toString();
+	}
+
+
+
 }

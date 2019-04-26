@@ -1,7 +1,9 @@
 package com.avst.trm.v1.common.util;
 
+import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -44,6 +46,31 @@ public class JacksonUtil {
 				System.out.println("stringToObjebt_1转换出错json："+json);
 			}
 		 return null;
+	}
+
+
+	/**
+	 * 专门把string直接转成list
+	 * @param json
+	 * 公用的
+	 * 用了第一层的转换，第二层就可以强转了
+	 * @return
+	 */
+	public static List stringToObjebt_2(String json,Object t ){
+
+		if(null==json||json.trim().equals("")){
+			return null;
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		try {
+			List<Object> lendReco = mapper.readValue(json,new TypeReference<List<Object>>() { });
+			return lendReco;
+		} catch (Exception e) {
+			System.out.println("stringToObjebt_1转换出错json："+json);
+		}
+		return null;
 	}
 	
 	/**

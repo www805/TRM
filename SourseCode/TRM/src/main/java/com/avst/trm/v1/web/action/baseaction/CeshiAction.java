@@ -2,16 +2,18 @@ package com.avst.trm.v1.web.action.baseaction;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.CheckSQParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
+import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.common.util.sq.AnalysisSQ;
-import com.avst.trm.v1.report.toupserver.ToUpServerBaseDealClass;
-import com.avst.trm.v1.report.toupserver.ToUpServerBaseReqClass;
+import com.avst.trm.v1.report.toupserver.common.conf.AddDataToSynchronizeDataConf;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.service.baseservice.ActionService;
 import com.avst.trm.v1.web.service.baseservice.CeshiService;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,9 +36,20 @@ public class CeshiAction extends BaseAction {
     @ResponseBody
     public RResult getlist(String username) {
         RResult rResult=createNewResultOfFail();
-        ceshiService.getadminlist(rResult,username);
+//        ceshiService.getadminlist(rResult,username);
 
-        ToUpServerBaseReqClass.initsynchronizeddata();
+//        ToUpServerBaseReqClass.initsynchronizeddata();
+
+        BaseMapper mapper=(BaseMapper)SpringUtil.getBean("base_filesaveMapper");
+        Base_filesave base_filesave=new Base_filesave();
+        base_filesave.setDatassid("2we34rt6");
+        base_filesave.setRealfilename("测试文件");
+        base_filesave.setRecordrealurl("测试文件路径");
+        base_filesave.setSsid("sjcyfnj572");
+        base_filesave.setId(23);
+        Object o=base_filesave;
+        System.out.println("-------------"+mapper.insert(o));
+
         return rResult;
     }
 
