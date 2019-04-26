@@ -68,6 +68,4 @@ public class ServerConfigAction extends BaseAction{
         return rResult;
     }
 
-
-
 }

@@ -6,7 +6,7 @@ function getArraignment_count_init(currPage,pageSize) {
         currPage:currPage,
         pageSize:pageSize
     };
-    ajaxSubmit(url,data,callbackgetRoleList);
+    ajaxSubmit(url,data,callCountList);
 }
 function getArraignment_countList(starttime,endtime,times,currPage,pageSize){
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
@@ -18,9 +18,9 @@ function getArraignment_countList(starttime,endtime,times,currPage,pageSize){
         pageSize:pageSize
     };
 
-    ajaxSubmit(url,data,callbackgetRoleList);
+    ajaxSubmit(url,data,callCountList);
 }
-
+//查询
 function getArraignment_count_search(currPage,pageSize) {
 
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
@@ -36,10 +36,43 @@ function getArraignment_count_search(currPage,pageSize) {
         currPage:currPage,
         pageSize:pageSize
     };
-    ajaxSubmit(url,data,callbackgetRoleList);
+    ajaxSubmit(url,data,callCountList);
 }
 
-function callbackgetRoleList(data){
+function getArraignment_count_Excel(){
+    var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countPrint);
+    var starttime=$("#starttime").val();
+    var endtime=$("#endtime").val();
+    var times=$("#times").val();
+
+    var data={
+        starttime:starttime,
+        endtime:endtime,
+        times:times
+    };
+
+    ajaxSubmit(url,data,callCountExcelList);
+}
+
+function callCountExcelList(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            layer.msg(data.message,{icon: 1});
+            // window.location.href = "file://" + data.data;
+            window.location.href = data.data;
+            // window.open("file:///" + data.data);
+            // window.open(data.data);
+            layui.use('form', function(){
+                var form =  layui.form;
+                form.render();
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function callCountList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
@@ -47,7 +80,6 @@ function callbackgetRoleList(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
-
 }
 
 /**
