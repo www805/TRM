@@ -1,5 +1,6 @@
 package com.avst.trm.v1.report.toupserver.common.cache;
 
+import com.avst.trm.v1.report.cache.ReportCahce;
 import com.avst.trm.v1.report.toupserver.common.reqparam.StartSynchronizedata_1_Param;
 import com.avst.trm.v1.report.toupserver.common.reqparam.StartSynchronizedata_2_Param;
 
@@ -204,6 +205,8 @@ public class SynchronizedataCache {
                 //再关闭本次同步
                 synchronizeDataMap.remove(toupserverTBToken);
             }
+
+            ReportCahce.delToupserverTBToken();//关闭token
         }
         return true;
     }

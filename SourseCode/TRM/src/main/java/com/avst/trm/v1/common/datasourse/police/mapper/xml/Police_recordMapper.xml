@@ -9,7 +9,7 @@
         <result column="recordtemplatessid" property="recordtemplatessid" />
         <result column="record_filesavessid" property="record_filesavessid" />
         <result column="recordtime" property="recordtime" />
-        <result column="recordingtime" property="recordingtime" />
+        <result column="recordstarttime" property="recordstarttime" />
         <result column="recordbool" property="recordbool" />
         <result column="pdf_filesavessid" property="pdf_filesavessid" />
         <result column="createtime" property="createtime" />

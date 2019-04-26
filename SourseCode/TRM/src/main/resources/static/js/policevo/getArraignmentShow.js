@@ -1,4 +1,4 @@
-jQuery.support.cors = true;
+var recordstarttime=null;//录音开始时间戳
 function getArraignmentBySsid(ssid) {
     if (!isNotEmpty(ssid)){
         layer.msg("系统异常",{icon: 2});
@@ -84,6 +84,10 @@ function callbackgetArraignmentBySsid(data) {
                         wavesurfer.load(record.recorddownurl);
                     }
 
+                    if (isNotEmpty(record.recordstarttime)){
+                        recordstarttime=record.recordstarttime;
+                    }
+
 
                     var recordreals=record.recordreals;
                     $("#recordreals").html("");
@@ -126,8 +130,11 @@ function callbackgetArraignmentBySsid(data) {
 }
 
 function showrecord(times) {
-    console.log(times);
-    
+    if (isNotEmpty(recordstarttime)&&isNotEmpty(times)){
+        var locationtime=times-recordstarttime;
+        locationtime=locationtime/1000<0?0:locationtime/1000;
+        wavesurfer.play(locationtime);//时间戳设置，需要处理设置**
+    }
 }
 
 var wavesurfer;
@@ -150,6 +157,8 @@ $(function () {
     wavesurfer.on("audioprocess",function () {
         $("#currenttime").text(wavesurfer.getCurrentTime());
     });
+
+
 
 
     //播放按钮

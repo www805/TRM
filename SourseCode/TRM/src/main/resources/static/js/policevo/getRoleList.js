@@ -99,8 +99,17 @@ function deleteRole(ssid){
 function callbackdeleteRole(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            if (isNotEmpty(data.data)){
-                getRoleList_init(1,3);
+            var data=data.data;
+            if (isNotEmpty(data)){
+                layer.msg("删除成功",{icon: 1,time:500},function () {
+                   /* var nextparam=getAction(getactionid_manage().getRoleList_deleteRole);
+                    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                        setpageAction(INIT_WEB,nextparam.nextPageId);
+                        var url=getActionURL(getactionid_manage().main_getRole);
+                        window.location.href=url;
+                    }*/
+                    getRoleList_init(1,3);
+                });
             }
         }
     }else{

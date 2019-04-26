@@ -37,14 +37,14 @@ function callbackgetUserList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
-            layui.use('form', function(){
-             var form =  layui.form;
-             form.render();
-            });
         }
     }else{
         layer.msg(data.message,{icon: 2});
     }
+    layui.use('form', function(){
+        var form =  layui.form;
+        form.render();
+    });
 }
 
 /**
@@ -156,10 +156,19 @@ function callbackdeleteUser(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             if (isNotEmpty(data.data)){
-                getUserList_init(1,3);
+                layer.msg("删除成功",{icon: 1,time:500},function () {
+                  /* var nextparam=getAction(getactionid_manage().getUserList_deleteUser);
+                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                         setpageAction(INIT_WEB,nextparam.nextPageId);
+                         var url=getActionURL(getactionid_manage().main_getUser);
+                         window.location.href=url;
+                     }*/
+                    getUserList_init(1,3);
+                });
             }
         }
     }else{
         layer.msg(data.message,{icon: 2});
     }
 }
+

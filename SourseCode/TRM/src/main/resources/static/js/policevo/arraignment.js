@@ -85,10 +85,10 @@ function openModel(ssid) {
             var layer = layui.layer;
             layer.open({
                 type: 1,
-                title: "选择提讯进行查看(双击跳转详情页)",
+                title: "选择提讯进行查看(<span style='color: red;font-size: 12px'>双击跳转详情页</span>)",
                 shade: 0.5,
                 shadeClose : true,
-                area: ['700px', '500px'],
+                area: ['800px', '500px'],
                 content: html,
                 btn: ['返回'],
                 skin: 'demo-class',
@@ -135,14 +135,14 @@ function callbackgetArraignmentByCaseSsid(data) {
                     ,cols: [[ //标题栏
                         {field: 'recordbool', title: '笔录状态'}
                         ,{field: 'recordname', title: '笔录名称'}
-                        ,{field: 'recordtime', title: '笔录时长' }
                         ,{field: 'askobj', title: '询问对象'}
                         ,{field: 'adminname', title: '询问人'}
                         ,{field: 'recordplace', title: '询问地点'}
                         ,{field: 'recordadminname', title: '记录人'}
+                        ,{field: 'createtime', title: '记录时间',width:'170'}
                     ]]
                     ,data: data
-                    ,skin: 'row' //表格风格
+                    ,skin: 'line' //表格风格
                     ,even: true
                 });
                 table.on('rowDouble(openModelhtml)', function(obj){

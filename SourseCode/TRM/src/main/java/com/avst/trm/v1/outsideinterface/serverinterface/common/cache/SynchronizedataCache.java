@@ -1,5 +1,6 @@
 package com.avst.trm.v1.outsideinterface.serverinterface.common.cache;
 
+import com.avst.trm.v1.outsideinterface.conf.OutSideIntegerfaceCache;
 import com.avst.trm.v1.outsideinterface.serverinterface.common.reqparam.StartSynchronizedata_1_Param;
 import com.avst.trm.v1.outsideinterface.serverinterface.common.reqparam.StartSynchronizedata_2_Param;
 
@@ -217,12 +218,13 @@ public class SynchronizedataCache {
      * 关闭本次同步
      * @return
      */
-    public synchronized static boolean delSynchronizedataBySortnum(String toupserverTBToken){
+    public synchronized static boolean delSynchronizedataBySortnum(String toupserverTBToken,String sortnum){
 
         if(null!=synchronizeDataMap&&synchronizeDataMap.containsKey(toupserverTBToken)){
             synchronized(synchronizeDataMap){
                 synchronizeDataMap.remove(toupserverTBToken);
             }
+            OutSideIntegerfaceCache.delToupserverTBToken(sortnum);//关闭本次同步的token
         }
         return true;
     }
