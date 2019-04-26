@@ -97,6 +97,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
 
         //先查看该序号的在缓存中有没有未完成的任务，没有就新增对应缓存并开始比较，有的话直接比较再添加
         String data=param.getData();
+        String sortnum=param.getSqNum();
         if(StringUtils.isEmpty(data)){
             result.setMessage("同步的参数为空");
             return ;
@@ -169,7 +170,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
                 startSynchronizedata_1_param.setSdTableSsid(newssid);
                 SynchronizedataCache.setSynchronizedataBySortnum(token,startSynchronizedata_1_param);
             }else{//如果不成功，直接删除缓存
-                SynchronizedataCache.delSynchronizedataBySortnum(token);
+                SynchronizedataCache.delSynchronizedataBySortnum(token,sortnum);
                 result.setMessage("上级服务器新增同步数据关系失败");
                 return ;
             }
@@ -340,12 +341,14 @@ public class ForDownServerService_police extends BaseService implements ForDownS
     public void overSynchronizedata(BaseReqParam param, RResult result) {
 
         String token=param.getToken();
+        String sortnum=param.getSqNum();
 
         StartSynchronizedata_1_Param startSynchronizedata_1_param=SynchronizedataCache.getSynchronizeData(token);
 
         if(null==startSynchronizedata_1_param||null==startSynchronizedata_1_param.getDatalist()
                 ||startSynchronizedata_1_param.getDatalist().size() == 0){
             result.setMessage("没有找到对应的缓存，可以已经被干掉了，下级服务器直接关闭本次同步");
+            SynchronizedataCache.delSynchronizedataBySortnum(token,sortnum);//关闭本次同步
             changeResultToSuccess(result);
             return ;
         }
@@ -354,7 +357,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
         int totalnum=startSynchronizedata_1_param.getTotalnum();
         if(finishednum >= totalnum){
 
-            SynchronizedataCache.delSynchronizedataBySortnum(token);//关闭本次同步
+            SynchronizedataCache.delSynchronizedataBySortnum(token,sortnum);//关闭本次同步
             changeResultToSuccess(result);
         }else{
             List<StartSynchronizedata_2_Param> list= startSynchronizedata_1_param.getDatalist();
@@ -365,13 +368,34 @@ public class ForDownServerService_police extends BaseService implements ForDownS
                 }
             }
             if(rrlist.size()==0){
-                SynchronizedataCache.delSynchronizedataBySortnum(token);//关闭本次同步
+                SynchronizedataCache.delSynchronizedataBySortnum(token,sortnum);//关闭本次同步
                 changeResultToSuccess(result);
             }else{
                 result.setData(rrlist);
             }
         }
 
-        return ;
     }
+
+    public void overSynchronizedata_must(BaseReqParam param, RResult result){
+
+        String mustOver=param.getData();
+        String sortnum=param.getSqNum();
+        if(mustOver.equals("false")){
+            overSynchronizedata(param,result);
+        }else{//强制结束本次同步
+            String token=param.getToken();
+            StartSynchronizedata_1_Param startSynchronizedata_1_param=SynchronizedataCache.getSynchronizeData(token);
+
+            if(null==startSynchronizedata_1_param||null==startSynchronizedata_1_param.getDatalist()
+                    ||startSynchronizedata_1_param.getDatalist().size() == 0){
+                result.setMessage("没有找到对应的缓存，可以已经被干掉了，下级服务器直接关闭本次同步");
+            }
+            SynchronizedataCache.delSynchronizedataBySortnum(token,sortnum);//关闭本次同步
+            changeResultToSuccess(result);
+        }
+
+
+
+    };
 }

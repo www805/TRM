@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 数据同步的执行线程
  */
-public class SynchronizedataThread implements Runnable{
+public class SynchronizedataThread extends Thread{
 
     public boolean workbool=true;//用于中断线程
 
