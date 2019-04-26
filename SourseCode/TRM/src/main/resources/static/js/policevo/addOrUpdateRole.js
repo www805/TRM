@@ -68,14 +68,14 @@ function callbackaddOrUpdateRole(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                layer.msg("保存成功",{icon: 1});
-
-
-                var nextparam=getAction(getactionid_manage().addOrUpdateRole_updateRole);
-                if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                   // window.location.href=nextparam.nextPageId;//****
-                }
-                window.history.go(-1);return false;
+                layer.msg("保存成功",{icon: 1,time:500},function () {
+                    var nextparam=getAction(getactionid_manage().addOrUpdateRole_updateRole);
+                    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                        setpageAction(INIT_WEB,nextparam.nextPageId);
+                        var url=getActionURL(getactionid_manage().main_getRole);
+                        window.location.href=url;
+                    }
+                });
             }
         }
     }else{

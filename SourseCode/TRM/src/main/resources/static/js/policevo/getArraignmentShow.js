@@ -126,8 +126,7 @@ function callbackgetArraignmentBySsid(data) {
 }
 
 function showrecord(times) {
-    console.log(times);
-    
+    wavesurfer.play(10);//时间戳设置，需要处理设置**
 }
 
 var wavesurfer;
@@ -150,6 +149,8 @@ $(function () {
     wavesurfer.on("audioprocess",function () {
         $("#currenttime").text(wavesurfer.getCurrentTime());
     });
+
+
 
 
     //播放按钮
