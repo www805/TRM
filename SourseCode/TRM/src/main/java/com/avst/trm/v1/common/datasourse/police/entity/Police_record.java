@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * InnoDB free: 90112 kB
+ * InnoDB free: 89088 kB
  * </p>
  *
  * @author Admin
- * @since 2019-04-24
+ * @since 2019-04-26
  */
 public class Police_record extends Model<Police_record> {
 
@@ -45,9 +45,9 @@ public class Police_record extends Model<Police_record> {
     private Integer recordtime;
 
     /**
-     * 笔录进行时间
+     * 笔录开始时间 ms
      */
-    private Date recordingtime;
+    private Long recordstarttime;
 
     /**
      * 笔录状态：1进行中2未开始
@@ -109,12 +109,12 @@ public class Police_record extends Model<Police_record> {
     public void setRecordtime(Integer recordtime) {
         this.recordtime = recordtime;
     }
-    public Date getRecordingtime() {
-        return recordingtime;
+    public Long getRecordstarttime() {
+        return recordstarttime;
     }
 
-    public void setRecordingtime(Date recordingtime) {
-        this.recordingtime = recordingtime;
+    public void setRecordstarttime(Long recordstarttime) {
+        this.recordstarttime = recordstarttime;
     }
     public Integer getRecordbool() {
         return recordbool;
@@ -186,7 +186,7 @@ public class Police_record extends Model<Police_record> {
         ", recordtemplatessid=" + recordtemplatessid +
         ", record_filesavessid=" + record_filesavessid +
         ", recordtime=" + recordtime +
-        ", recordingtime=" + recordingtime +
+        ", recordstarttime=" + recordstarttime +
         ", recordbool=" + recordbool +
         ", pdf_filesavessid=" + pdf_filesavessid +
         ", createtime=" + createtime +
@@ -196,5 +196,13 @@ public class Police_record extends Model<Police_record> {
         ", integer1=" + integer1 +
         ", integer2=" + integer2 +
         "}";
+    }
+
+
+    public static void main(String[] args) {
+        long a=1556245697000L;
+        long b=1556246444000L;
+
+        System.out.println((b-a)/ 1000);
     }
 }
