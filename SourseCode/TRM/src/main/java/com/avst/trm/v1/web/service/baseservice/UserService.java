@@ -212,6 +212,7 @@ public class UserService extends BaseService {
                     admintorole.setAdminssid(admininfo.getSsid());
                     admintorole.setRolessid(role.getSsid());
                     admintorole.setCreatetime(new Date());
+                    admintorole.setSsid(OpenUtil.getUUID_32());
                     int admintorole_insertbool = base_admintoroleMapper.insert(admintorole);
                     System.out.println("admintorole_insertbool__" + admintorole_insertbool + "添加的角色为：" + role.getRolename());
                 }
