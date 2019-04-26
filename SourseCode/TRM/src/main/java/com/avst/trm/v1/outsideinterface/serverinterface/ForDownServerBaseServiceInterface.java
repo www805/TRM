@@ -21,4 +21,7 @@ public interface ForDownServerBaseServiceInterface {
 
     public void overSynchronizedata(BaseReqParam param, RResult result);
 
+    public void overSynchronizedata_must(BaseReqParam param, RResult result);
+
+
 }

@@ -28,6 +28,12 @@ public class SynchronizedataThreadCache {
 
         if(null!=synchronizedataThread){
             synchronizedataThread.workbool=false;
+
+            try {
+                synchronizedataThread.interrupt();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         synchronizedataThread=null;
     }

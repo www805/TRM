@@ -255,14 +255,42 @@ public class ToUpServerBaseDealClass {
                     SynchronizedataCache.addSynchronizedataListBySortnum(token,list);
                     GotoSynchronizedataParam synchronizedataParam=new GotoSynchronizedataParam();
                     synchronizedataParam.setSdIP(SynchronizedataCache.getSynchronizeData(token).getSdip());
-                    ToUpServerBaseReqClass.synchronizedata(synchronizedataParam);
-                }
+//                    ToUpServerBaseReqClass.synchronizedata(synchronizedataParam);//让用户在下级服务器中手动启动
 
+                    //先关闭线程，再次开启就行了
+                    SynchronizedataThreadCache.delSynchronizedataThread();
+                }
             }
         }
         return rrParam;
     }
 
+    public RRParam overSynchronizedata_must(String url,boolean mustOver) {
+        RRParam rrParam=new RRParam();
+
+        if(mustOver){
+            String param= ReportConf.getParam(mustOver+"",false);
+            String rr=HttpRequest.readContentFromGet(url,param);
+            if(StringUtils.isNotEmpty(rr)) {
+
+                RResult<List<StartSynchronizedata_2_Param>> result = (RResult<List<StartSynchronizedata_2_Param>>) JacksonUtil.stringToObjebt_1(rr, RResult.class);
+                System.out.println(result.getActioncode() + ":result.getActioncode()");
+
+                rrParam.setCode(result.getActioncode().hashCode());
+                rrParam.setMessage(result.getMessage());
+            }else{
+                rrParam.setMessage("请求强制关闭同步失败");
+            }
+
+            //删除本次同步缓存
+            String token = ReportCahce.getToupserverTBToken();
+            SynchronizedataCache.delSynchronizedataBySortnum(token);
+        }else{
+            overSynchronizedata(url);
+        }
+
+        return rrParam;
+    }
 
 
 

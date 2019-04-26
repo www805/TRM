@@ -73,10 +73,26 @@ public class ToUpServerBaseReqClass {
         toUpServerBaseDealClass.gotosynchronizedata(doing_toupurl,doing_toup_file,synchronizedataParam);
     };
 
+    /**
+     * 结束本次同步
+     * 这个接口只会在结束同步overSynchronizedata之后出现未同步完成的时候调用，
+     * 如果多次同步不成功，可以强制要求本次结束同步，也可以不强制，就是走一半的结束同步overSynchronizedata
+     * @param mustOver 是否强制结束
+     */
+    public static void overSynchronizedata_must(boolean mustOver){
+
+        String url= baseurl +PropertiesListenerConfig.getProperty("re.mustover_toup");
+        toUpServerBaseDealClass.overSynchronizedata_must(url,mustOver);
+    };
+
+    /**
+     * 结束本次同步
+     */
     public static void overSynchronizedata(){
 
         String url= baseurl +PropertiesListenerConfig.getProperty("re.over_toup");
         toUpServerBaseDealClass.overSynchronizedata(url);
     };
+
 
 }

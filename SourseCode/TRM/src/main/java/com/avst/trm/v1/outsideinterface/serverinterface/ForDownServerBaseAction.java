@@ -125,6 +125,20 @@ public class ForDownServerBaseAction extends BaseAction {
         return rResult;
     };
 
+    @RequestMapping("/overSynchronizedata_must")
+    @ResponseBody
+    public  RResult overSynchronizedata_must(BaseReqParam param){
+        RResult rResult=createNewResultOfFail();
+        RRParam rr=checkToken(param.getSqNum(),param.getToken());
+        if(null==rr||rr.getCode()!=0){
+            rResult.setMessage(rr.getMessage());
+            rResult.setEndtime(DateUtil.getDateAndMinute());
+            return rResult;
+        }
+        getForDownServerBaseServiceImpl().overSynchronizedata_must(param,rResult);
+        return rResult;
+    };
+
 
     /**
      * 根据类型查找对应的处理类
