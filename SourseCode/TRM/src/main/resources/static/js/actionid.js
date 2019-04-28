@@ -49,7 +49,12 @@ function getactionid_manage() {
         arraignment_getArraignmentByCaseSsid:"arraignment_getArraignmentByCaseSsid",
         arraignment_getArraignmentShow:"arraignment_getArraignmentShow",
 
-        getArraignmentShow_getArraignmentBySsid:"getArraignmentShow_getArraignmentBySsid"
+        getArraignmentShow_getArraignmentBySsid:"getArraignmentShow_getArraignmentBySsid",
+
+        permissionsShow_getRoles:"permissionsShow_getRoles",
+        permissionsShow_getPermissions:"permissionsShow_getPermissions",
+        permissionsShow_getPermissionsByRoleSsid:"permissionsShow_getPermissionsByRoleSsid",
+        permissionsShow_updateRoleToPermissions:"permissionsShow_updateRoleToPermissions"
 
     };
 }
