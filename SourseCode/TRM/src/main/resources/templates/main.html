@@ -53,7 +53,14 @@
             <li class="layui-nav-item"><a th:href="@{/web/arraignment/getArraignment}"  target="option">提讯笔录</a></li>
             <li class="layui-nav-item"><a th:href="@{/web/keyword/getKeyword}" target="option">关键字</a></li>
             <li class="layui-nav-item"><a th:href="@{/web/arraignmentCount/getArraignment_count}" target="option">笔录统计</a></li>
-            <li class="layui-nav-item"><a th:href="@{/web/config/getServerConfig}" target="option">系统配置</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a th:href="@{/web/config/getServerConfig}" target="option">系统配置</a></dd>
+                    <dd><a th:href="@{/web/downServer/todownServer}" target="option">同步数据</a></dd>
+
+                </dl>
+            </li>
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">

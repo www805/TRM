@@ -107,6 +107,10 @@ function callbackgetRoles(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
+    layui.use('form', function(){
+        var form =  layui.form;
+        form.render();
+    });
 }
 
 function getWorkunits() {
@@ -128,6 +132,10 @@ function callbackgetWorkunits(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
+    layui.use('form', function(){
+        var form =  layui.form;
+        form.render();
+    });
 }
 
 function deleteUser(ssid) {
@@ -171,4 +179,67 @@ function callbackdeleteUser(data) {
         layer.msg(data.message,{icon: 2});
     }
 }
+
+/**
+ * 此处调用的是getUserList_deleteUser
+ * @param obj
+ * @param ssid
+ */
+function changeUser(obj,ssid) {
+    if (!isNotEmpty(ssid)){
+        layer.msg("系统异常",{icon: 2});
+        return;
+    }
+
+    var con;
+    var adminbool;
+    if (obj.value) {
+        con="你确定要恢复这个用户吗";
+        adminbool=1;
+    }else{
+        con="你确定要禁用这个用户吗";
+        adminbool=2;
+    }
+
+    layer.confirm(con, {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().getUserList_deleteUser);
+        var data={
+            ssid:ssid,
+            adminbool:adminbool
+        };
+        ajaxSubmit(url,data,callbackchangeUser);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+function callbackchangeUser(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            if (isNotEmpty(data.data)){
+                layer.msg("操作成功",{icon: 1,time:500},function () {
+                    getUserList_init(1,3);
+                });
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+
+$(function () {
+    layui.use(['layer','form'], function(){
+        var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
+            ,form = layui.form;
+
+        form.on('switch(adminbool_switch)', function(data){
+            changeUser(data.elem.checked,data.value);
+        });
+    });
+});
 

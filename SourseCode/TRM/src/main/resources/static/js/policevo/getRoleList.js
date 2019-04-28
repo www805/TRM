@@ -19,7 +19,6 @@ function getRoleList(rolename,rolebool,currPage,pageSize){
         currPage:currPage,
         pageSize:pageSize
     };
-    console.log(data);
     ajaxSubmit(url,data,callbackgetRoleList);
 }
 
@@ -116,3 +115,69 @@ function callbackdeleteRole(data) {
         layer.msg(data.message,{icon: 2});
     }
 }
+
+
+
+/**
+ * 此处调用的是getRoleList_deleteRole
+ * @param obj
+ * @param ssid
+ */
+function changeRole(obj,ssid) {
+    if (!isNotEmpty(ssid)||null==obj){
+        layer.msg("系统异常",{icon: 2});
+        return;
+    }
+
+    var con;
+    var rolebool;
+    if (obj) {
+        con="你确定要启动这个角色吗";
+        rolebool=1;
+    }else{
+        con="你确定要禁用这个角色吗";
+        rolebool=2;
+    }
+
+    layer.confirm(con, {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().getRoleList_deleteRole);
+        var data={
+            ssid:ssid,
+            rolebool:rolebool
+        };
+        ajaxSubmit(url,data,callbackchangeRole);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+function callbackchangeRole(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            if (isNotEmpty(data.data)){
+                layer.msg("操作成功",{icon: 1,time:500},function () {
+                    getRoleList_init(1,3);
+                });
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+$(function () {
+    layui.use(['layer','form'], function(){
+        var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
+            ,form = layui.form;
+
+        form.on('switch(rolebool_switch)', function(data){
+            changeRole(data.elem.checked,data.value);
+        });
+    });
+});
+
+
