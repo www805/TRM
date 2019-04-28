@@ -124,5 +124,17 @@ public class KeywordAction extends BaseAction{
         return rResult;
     }
 
+    /**
+     * 修改关键字状态
+     * @param keyword
+     * @return
+     */
+    @PostMapping(value = "/updateShieldbool")
+    @ResponseBody
+    public RResult updateShieldbool(AddOrUpdateKeywordParam keyword) {
+        RResult rResult = createNewResultOfFail();
+        keywordService.updateShieldbool(rResult, keyword);
+        return rResult;
+    }
 
 }

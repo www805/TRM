@@ -57,15 +57,26 @@ public class ServerConfigAction extends BaseAction{
     }
 
     /***
-     * 图片上传接口
+     * 系统logo图片上传接口
      * @return
      */
     @PostMapping(value = "/uploadByImg")
     @ResponseBody
     public RResult uploadByImg(@RequestParam("file") MultipartFile file) {
         RResult rResult = createNewResultOfFail();
-        serverConfigService.uploadByImg(rResult, file);
+        serverConfigService.uploadByImg(rResult, file, "syslogo_filesavessid");
         return rResult;
     }
 
+    /***
+     * 客户端logo图片上传接口
+     * @return
+     */
+    @PostMapping(value = "/uploadByClientImg")
+    @ResponseBody
+    public RResult uploadByClientImg(@RequestParam("file") MultipartFile file) {
+        RResult rResult = createNewResultOfFail();
+        serverConfigService.uploadByImg(rResult, file,"client_filesavessid");
+        return rResult;
+    }
 }

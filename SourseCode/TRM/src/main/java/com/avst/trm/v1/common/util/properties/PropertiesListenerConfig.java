@@ -38,6 +38,9 @@ public class PropertiesListenerConfig {
     }
 
     public static String getProperty(String name) {
+
+        String s = propertiesMap.get(name);
+
         return propertiesMap.get(name).toString();
     }
 

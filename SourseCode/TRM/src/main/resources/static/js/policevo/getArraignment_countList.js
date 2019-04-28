@@ -18,7 +18,16 @@ function getArraignment_countList(starttime,endtime,times,currPage,pageSize){
         pageSize:pageSize
     };
 
+    //加载层-风格4
+    var index = layer.msg('加载中', {
+        icon: 16
+        ,shade: 0.01
+        ,time: 6000, //20s后自动关闭
+    });
+
     ajaxSubmit(url,data,callCountList);
+
+    layer.close(index);
 }
 //查询
 function getArraignment_count_search(currPage,pageSize) {

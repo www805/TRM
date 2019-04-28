@@ -32,12 +32,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label">系统logo</label>
             <div class="layui-input-inline">
-                <input type="text" name="syslogo_filesavessid" lay-verify="required" th:value="${configModel?.RResult?.data?.syslogo_filesavessid}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >
+                <!--<input type="text" name="syslogo_filesavessid" lay-verify="required" th:value="${configModel?.RResult?.data?.syslogo_filesavessid}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >-->
             </div>
 
             <button type="button" class="layui-btn layui-btn-danger" id="test1"><i class="layui-icon"></i>上传图片</button>
             <div class="layui-inline layui-word-aux">
-                这里以限制 1MB 为例
+                这里以限制 512kB 为例
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
                 <img class="layui-upload-img" id="demo1" style="width: 300px;">
@@ -55,12 +55,12 @@
         <div class="layui-form-item">
             <label class="layui-form-label">客户端logo</label>
             <div class="layui-input-inline">
-                <input type="text" name="client_filesavessid" lay-verify="required" th:value="${configModel.RResult.data.client_filesavessid}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >
+                <!--<input type="text" name="client_filesavessid" lay-verify="required" th:value="${configModel.RResult.data.client_filesavessid}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >-->
             </div>
 
             <button type="button" class="layui-btn layui-btn-danger" id="test2"><i class="layui-icon"></i>上传图片</button>
             <div class="layui-inline layui-word-aux">
-                这里以限制 1MB 为例
+                这里以限制 512kB 为例
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
                 <img class="layui-upload-img" id="demo2" style="width: 300px;">
@@ -101,7 +101,7 @@
             <label class="layui-form-label">工作开始时间</label>
             <div class="layui-input-block">
 
-                <input type="text" name="workstarttime" required th:value="${#dates.format(configModel.RResult.data.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
+                <input type="text" name="workstarttime" disabled th:value="${#dates.format(configModel.RResult.data.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -143,9 +143,10 @@
             , upload = layui.upload;
 
         var url=getActionURL(getactionid_manage().serverconfig_uploadByImg);
+        var url2=getActionURL(getactionid_manage().serverconfig_uploadByClientImg);
 
         updateLogo(upload, '#test1', url, '#demo1', "syslogo_filesavessid", '#demoText');
-        updateLogo(upload, '#test2', url, '#demo2', "client_filesavessid", '#demoText2');
+        updateLogo(upload, '#test2', url2, '#demo2', "client_filesavessid", '#demoText2');
 
     });
 
@@ -156,7 +157,7 @@
             elem: elem
             ,url: url
             ,exts: 'jpg|png' //只允许上传图片文件
-            ,size: 1024 //限制文件大小，单位 KB
+            ,size: 512 //限制文件大小，单位 KB
             ,before: function(obj){
 
                 //预读本地文件示例，不支持ie8

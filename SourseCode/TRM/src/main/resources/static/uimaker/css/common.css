@@ -13,3 +13,11 @@
 #paging{
     float: right;
 }
+
+ .layui-table th{
+     font-weight: bold;
+     text-align: center;
+ }
+.layui-table td{
+    text-align: center;
+}

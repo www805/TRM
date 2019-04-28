@@ -1,14 +1,18 @@
 package com.avst.trm.v1.web.service.policeservice;
 
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRole;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.req.basereq.KeywordParam;
 import com.avst.trm.v1.web.req.policereq.AddOrUpdateKeywordParam;
@@ -16,6 +20,7 @@ import com.avst.trm.v1.web.req.policereq.ServerconfigParam;
 import com.avst.trm.v1.web.vo.basevo.KeywordListVO;
 import com.avst.trm.v1.web.vo.basevo.UserListVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
@@ -43,6 +48,9 @@ public class ServerConfigService extends BaseService {
 
     @Autowired
     private Base_serverconfigMapper serverconfigMapper;
+
+    @Autowired
+    private Base_filesaveMapper filesaveMapper;
 
     @Value("${spring.images.filePath}")
     private String filePath;
@@ -88,7 +96,7 @@ public class ServerConfigService extends BaseService {
      * @param rResult
      * @param file
      */
-    public void uploadByImg(RResult rResult, MultipartFile file) {
+    public void uploadByImg(RResult rResult, MultipartFile file, String datassid) {
 
         if (file.isEmpty()) {
             rResult.setMessage("上传失败，请选择文件");
@@ -126,18 +134,48 @@ public class ServerConfigService extends BaseService {
         File fileMkdir = new File(filePath);
         if (!fileMkdir.exists()) {
             //如果不存在，就创建该目录
-            fileMkdir.mkdir();
+            fileMkdir.mkdirs();
         }
 
         //6 把图片保存到指定位置
 //        upload.transferTo(new File(file, imageName));
 
-        File dest = new File(filePath + imageName);
+        String realpath = filePath + imageName;
+        File dest = new File(realpath);
         try {
             file.transferTo(dest);
-            this.changeResultToSuccess(rResult);
-            rResult.setMessage("上传成功");
-            rResult.setData(filePath + imageName);
+
+            //解析下载地址
+            String uploadpath=OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),realpath);
+            rResult.setData(uploadpath);
+
+            //上传的文件保存到数据库表里
+            Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
+
+            Base_filesave filesave = new Base_filesave();
+            filesave.setRealfilename(imageName);//真实路径文件名
+            filesave.setUploadfilename(fileName);//文件本身的文件名
+            filesave.setRecordrealurl(realpath);//真实存储地址
+            filesave.setRecorddownurl(uploadpath);//下载地址
+
+            if("syslogo_filesavessid".equals(datassid)){
+                datassid = serverconfig.getSyslogo_filesavessid();
+            }else{
+                datassid = serverconfig.getClient_filesavessid();
+            }
+
+            filesave.setDatassid(datassid);//从属表的ssid
+
+            EntityWrapper ew=new EntityWrapper();
+            ew.eq("datassid", datassid);
+
+            Integer update = filesaveMapper.update(filesave, ew);
+            if (update == 0) {
+                update = filesaveMapper.insert(filesave);
+                this.changeResultToSuccess(rResult);
+                rResult.setMessage("上传成功");
+            }
+
         } catch (IOException e) {
             rResult.setMessage(e.toString());
         }

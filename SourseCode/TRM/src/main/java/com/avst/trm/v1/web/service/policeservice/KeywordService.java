@@ -202,6 +202,22 @@ public class KeywordService extends BaseService {
     }
 
     /**
+     * 修改关键字状态
+     * @param rResult
+     * @param keyword
+     */
+    public void updateShieldbool(RResult rResult, AddOrUpdateKeywordParam keyword) {
+        if(null != keyword.getShieldbool()){
+            Integer integer = keywordMapper.updateById(keyword);
+            if (integer > 0) {
+                rResult.setData(integer);
+                this.changeResultToSuccess(rResult, "关键字屏蔽修改成功!");
+                rResult.setMessage("关键字屏蔽修改成功");
+            }
+        }
+    }
+
+    /**
      * 校验参数
      * @param rResult
      * @param keyword
@@ -219,6 +235,7 @@ public class KeywordService extends BaseService {
         }
         return true;
     }
+
 
 
 }

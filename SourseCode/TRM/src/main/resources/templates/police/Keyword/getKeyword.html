@@ -29,6 +29,7 @@
             getKeyWordByParam();
         });
     </script>
+
 </head>
 <body>
 
@@ -79,7 +80,7 @@
             <td>{{value.color==null?"":value.color}}</td>
             <td>{{value.backgroundcolor==null?"":value.backgroundcolor}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
-            <td ><input type="checkbox" name="switch" lay-skin="switch" lay-text="不屏蔽|屏蔽" {{value.shieldbool==-1?'':'checked'}} disabled ></td>
+            <td ><input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchTest" lay-text="正常|屏蔽" {{value.shieldbool==-1?'':'checked'}} value="{{value.id}}"></td>
             <td>
                 <a href="{{updateurl}}/{{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
                 <a href="javascript:;"  onclick="deleteKeyword({{value.id}});" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
@@ -91,4 +92,5 @@
     </table>
 
 </script>
+
 </html>

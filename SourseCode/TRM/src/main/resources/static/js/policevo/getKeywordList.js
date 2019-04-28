@@ -1,5 +1,16 @@
 var KeywordAction = null;
 
+function updateShieldbool(id, shieldbool) {
+
+    var url = getActionURL(getactionid_manage().getKeyword_updateShieldbool);
+    var data = {
+        id: id,
+        shieldbool: shieldbool
+    };
+
+    ajaxSubmit(url,data,callupdateShieldbool);
+}
+
 function getKeyword_init(currPage,pageSize) {
 
     var url=getActionURL(getactionid_manage().getKeyword_getKeywordList);
@@ -105,6 +116,16 @@ function deleteKeyword(id){
 
 }
 
+function callupdateShieldbool(data) {
+
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        layer.msg(data.message,{icon: 1});
+    }else{
+        // alert(data.message);
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
 function callbackgetKeyWordPage(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -117,6 +138,15 @@ function callbackgetKeyWordPage(data){
     }
     layui.use('form', function(){
         var form = layui.form;
+
+        //监听指定开关
+        form.on('switch(switchTest)', function(data){
+            var shieldbool = -1;
+            if(this.checked){
+                shieldbool = 1;
+            }
+            updateShieldbool(data.value, shieldbool);
+        });
         form.render();
     });
 }
@@ -134,10 +164,6 @@ function calladdOrUpdataKeyWordPage(data){
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});
     }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
 }
 
 function callDeleteKeyword(data){
@@ -155,10 +181,6 @@ function callDeleteKeyword(data){
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:5});
     }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
 }
 
 /**

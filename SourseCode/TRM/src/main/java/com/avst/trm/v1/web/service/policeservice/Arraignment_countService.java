@@ -4,8 +4,10 @@ package com.avst.trm.v1.web.service.policeservice;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.vo.basevo.ArraignmentCountVO;
 import com.avst.trm.v1.web.vo.basevo.KeywordListVO;
@@ -15,8 +17,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,8 @@ public class Arraignment_countService extends BaseService {
     @Autowired
     private Base_admininfoMapper arraignmentCountMapper;
 
+    @Value("${spring.images.filePath}")
+    private String filePath;
 
     /**
      * 通过id查询关键字
@@ -260,12 +266,20 @@ public class Arraignment_countService extends BaseService {
 
         try {
             //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
-            String path = "D:/提讯案件列表.xls";
+            // 创建目录
+            File fileMkdir = new File(filePath);
+            if (!fileMkdir.exists()) {
+                //如果不存在，就创建该目录
+                fileMkdir.mkdirs();
+            }
+
+            String path = filePath + "/提讯案件列表.xls";
             FileOutputStream fout = new FileOutputStream(path);
             wb.write(fout);
             fout.close();
 
-            result.setData(path);
+            String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            result.setData(uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("表格导出成功");

@@ -35,12 +35,14 @@ function getactionid_manage() {
         getKeyword_getKeywordList:"getKeyword_getKeywordList",
         getKeyword_getAddOrUpdateKeyword:"getKeyword_getAddOrUpdateKeyword",
         getKeyword_deleteKeyword:"getKeyword_deleteKeyword",
+        getKeyword_updateShieldbool:"getKeyword_updateShieldbool",
 
         addOrUpdateKeyword_getAddOrUpdateKeyword: "addOrUpdateKeyword_getAddOrUpdateKeyword",
         addOrUpdateKeyword_getKeyword: "addOrUpdateKeyword_getKeyword",
 
         serverconfig_uploadByImg: "serverconfig_uploadByImg",
         serverconfig_getServerConfig: "serverconfig_getServerConfig",
+        serverconfig_uploadByClientImg: "serverconfig_uploadByClientImg",
 
         arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
         arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint ",
