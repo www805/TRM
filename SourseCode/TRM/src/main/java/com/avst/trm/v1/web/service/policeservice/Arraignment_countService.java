@@ -185,7 +185,7 @@ public class Arraignment_countService extends BaseService {
             }
 
         }
-        List<Base_arraignmentCount> list = arraignmentCountMapper.getArraignmentCountList2(ew);
+        List<Base_arraignmentCount> list = arraignmentCountMapper.getArraignmentCountListNoPage(ew);
 
         Base_arraignmentCount arraignmentCount = null;
 
