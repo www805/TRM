@@ -48,7 +48,7 @@ public class ToUpServerBaseReqClass {
                     String doing_toupurl= baseurl +PropertiesListenerConfig.getProperty("re.doing_toup");
                     String doing_toup_file= baseurl +PropertiesListenerConfig.getProperty("re.doing_toup_file");
                     SynchronizedataThread thread=new SynchronizedataThread(doing_toupurl,doing_toup_file) ;
-                    thread.run();
+                    thread.start();
                 }
                 return false;
             }else{//说明是有残留的token直接干掉

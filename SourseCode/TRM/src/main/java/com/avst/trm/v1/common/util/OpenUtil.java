@@ -656,34 +656,7 @@ public static String numtoStr(int digit,Integer num){
 		return null;
 	}
 	
-	/**
-	 * 判断文本语料下发检测每个语料的合格性
-	 * @param str
-	 * @return
-	 */
-	public static boolean Checkstr(String str){
-	boolean flag=true;
-	/*if (isbiaodianfuhao(str)) {
-		flag=false;
-	}*/
-	str=str.trim();
-	if (StringUtils.isEmpty(str)) {
-		flag=false;
-	}
-	if (str.contains("�")) {
-		flag=false;
-	}
-	if (HasDigit(str)) {
-		flag=false;
-	}
-	if (isNotEnglish(str)) {
-		flag=false;
-	}
-	if (isSpecialChar(str)) {
-		flag=false;
-	}
-	return flag;
-	}
+
 	
 	
 	/**
@@ -1142,6 +1115,7 @@ public static String numtoStr(int digit,Integer num){
 //		System.out.println(setFileHide(str));
 
 		System.out.println(System.getProperty("user.dir"));
-		
+
+
 	}
 }
