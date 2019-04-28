@@ -215,7 +215,7 @@ public class ToUpServerBaseDealClass {
             return rrParam;
         }
         thread=new SynchronizedataThread(url_data,url_file);
-        thread.run();//开始同步中
+        thread.start();//开始同步中
 
         rrParam.setCode(Code.SUCCESS.hashCode());
         rrParam.setMessage("开始同步中，请稍等");
