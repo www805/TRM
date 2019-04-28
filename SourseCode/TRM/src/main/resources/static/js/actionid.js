@@ -56,7 +56,12 @@ function getactionid_manage() {
         permissionsShow_getRoles:"permissionsShow_getRoles",
         permissionsShow_getPermissions:"permissionsShow_getPermissions",
         permissionsShow_getPermissionsByRoleSsid:"permissionsShow_getPermissionsByRoleSsid",
-        permissionsShow_updateRoleToPermissions:"permissionsShow_updateRoleToPermissions"
+        permissionsShow_updateRoleToPermissions:"permissionsShow_updateRoleToPermissions",
+
+        downServer_getdownServers:"downServer_getdownServers",
+        downServer_startdownServer:"downServer_startdownServer",
+        downServer_closeddownServer:"downServer_closeddownServer"
+
 
     };
 }

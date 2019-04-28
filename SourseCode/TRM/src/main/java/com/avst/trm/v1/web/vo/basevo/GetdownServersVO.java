@@ -2,20 +2,23 @@ package com.avst.trm.v1.web.vo.basevo;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datainfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_downserver;
+import com.avst.trm.v1.web.req.basereq.GetdownServersParam;
 
 import java.util.List;
 
 public class GetdownServersVO {
-    private List<Base_datasynchroni_downserver> datasynchroni_downservers;
+    private List<Base_datasynchroni_downserver> pagelist;
 
     private List<Base_datainfo> datainfos;
 
-    public List<Base_datasynchroni_downserver> getDatasynchroni_downservers() {
-        return datasynchroni_downservers;
+    private GetdownServersParam pageparam;
+
+    public List<Base_datasynchroni_downserver> getPagelist() {
+        return pagelist;
     }
 
-    public void setDatasynchroni_downservers(List<Base_datasynchroni_downserver> datasynchroni_downservers) {
-        this.datasynchroni_downservers = datasynchroni_downservers;
+    public void setPagelist(List<Base_datasynchroni_downserver> pagelist) {
+        this.pagelist = pagelist;
     }
 
     public List<Base_datainfo> getDatainfos() {
@@ -24,5 +27,13 @@ public class GetdownServersVO {
 
     public void setDatainfos(List<Base_datainfo> datainfos) {
         this.datainfos = datainfos;
+    }
+
+    public GetdownServersParam getPageparam() {
+        return pageparam;
+    }
+
+    public void setPageparam(GetdownServersParam pageparam) {
+        this.pageparam = pageparam;
     }
 }

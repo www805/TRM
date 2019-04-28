@@ -139,7 +139,7 @@ function callbackgetArraignmentByCaseSsid(data) {
                         ,{field: 'adminname', title: '询问人'}
                         ,{field: 'recordplace', title: '询问地点'}
                         ,{field: 'recordadminname', title: '记录人'}
-                        ,{field: 'createtime', title: '记录时间',width:'170'}
+                        ,{field: 'createtime', title: '记录时间'}
                     ]]
                     ,data: data
                     ,skin: 'line' //表格风格
