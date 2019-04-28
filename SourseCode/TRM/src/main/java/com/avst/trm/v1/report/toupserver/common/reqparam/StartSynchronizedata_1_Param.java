@@ -19,6 +19,8 @@ public class StartSynchronizedata_1_Param {
 
     private String sdip;//同步的上级服务器的IP
 
+    //同步状态**
+
     public String getSdip() {
         return sdip;
     }
