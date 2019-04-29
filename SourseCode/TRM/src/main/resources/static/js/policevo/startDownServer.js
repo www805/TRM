@@ -70,7 +70,7 @@ function startdownServer(type,datainfossid) {
         layer.msg("请输入要你要同步的上级服务器IP",{icon: 2});
         return false;
     }
-    
+
     if (null==type) {
         layer.msg("系统异常",{icon: 2});
         return false;
@@ -91,9 +91,6 @@ function startdownServer(type,datainfossid) {
     xhr.onload = function(data) {
         $("#startdownServer_btn").removeClass('layui-btn-disabled').prop("disabled",false);
         $("#startdownServer_btn").text("全部同步");
-        $("[lay-filter='progress_demo']").css("visibility","hidden");
-        $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
-        $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
         callbackstartdownServer(xhr.responseText);
     };
     xhr.upload.addEventListener("progress", progressFunction, false);
@@ -118,7 +115,7 @@ function callbackstartdownServer(data) {
 
         }
     }else{
-       // layer.msg(data.message,{icon: 2});
+        // layer.msg(data.message,{icon: 2});
         $("#closeddownServer_btn").show();
         $("#startdownServer_btn").addClass('layui-btn-disabled').prop("disabled" , true);
         $("[lay-filter='progress_demo']").css("visibility","hidden");
@@ -132,49 +129,49 @@ function callbackstartdownServer(data) {
 
 function closeddownServer() {
     $("#closeddownServer_btn").hide();
-    $("#startdownServer_btn").removeClass('layui-btn-disabled');
+    $("#startdownServer_btn").removeClass('layui-btn-disabled').prop("disabled" , false);
     $("#startdownServer_btn").val("全部同步");
-   /* var datainfossids=[];
-    if (datainfossid==-1){
-        //全部同步
-        if (isNotEmpty(datainfos)){
-            for (var i = 0; i < datainfos.length; i++) {
-                var datum = datainfos[i];
-                datainfossids.push(datum.ssid);
-            }
-        }
-    }else{
-        datainfossids.push(datainfossid);
-    }
+    /* var datainfossids=[];
+     if (datainfossid==-1){
+         //全部同步
+         if (isNotEmpty(datainfos)){
+             for (var i = 0; i < datainfos.length; i++) {
+                 var datum = datainfos[i];
+                 datainfossids.push(datum.ssid);
+             }
+         }
+     }else{
+         datainfossids.push(datainfossid);
+     }
 
 
-    var url=getActionURL(getactionid_manage().downServer_closeddownServer);
-    var data={
-        datainfossids:datainfossids,
-        downserverssid:downserverssid,
-    };
-    index = layer.load(1, {
-        shade: [0.1,'#fff'] //0.1透明度的白色背景
-        ,title:"关闭同步中"
-    });
-    $.ajax({
-        url : url,
-        type : "post",
-        async : true,
-        dataType : "json",
-        data : JSON.stringify(data),
-        timeout : 60000,
-        contentType: "application/json",
-        success : function(reData) {
-            if ($.trim(reData) == null) {
-                parent.layer.msg("本次请求失败",{icon: 2});
-            } else {
-                callbackcloseddownServer(reData);
-            }
-        },error : function(){
-            parent.layer.msg("请求异常",{icon: 2});
-        }
-    });*/
+     var url=getActionURL(getactionid_manage().downServer_closeddownServer);
+     var data={
+         datainfossids:datainfossids,
+         downserverssid:downserverssid,
+     };
+     index = layer.load(1, {
+         shade: [0.1,'#fff'] //0.1透明度的白色背景
+         ,title:"关闭同步中"
+     });
+     $.ajax({
+         url : url,
+         type : "post",
+         async : true,
+         dataType : "json",
+         data : JSON.stringify(data),
+         timeout : 60000,
+         contentType: "application/json",
+         success : function(reData) {
+             if ($.trim(reData) == null) {
+                 parent.layer.msg("本次请求失败",{icon: 2});
+             } else {
+                 callbackcloseddownServer(reData);
+             }
+         },error : function(){
+             parent.layer.msg("请求异常",{icon: 2});
+         }
+     });*/
 }
 function callbackcloseddownServer(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
