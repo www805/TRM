@@ -83,7 +83,7 @@ public class HomeAction extends BaseAction{
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
 //        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");
 
-        return new ModelAndView("/police/login", "login", model);
+        return new ModelAndView("police/login", "login", model);
     }
 
     @PostMapping(value = "/checklogin")

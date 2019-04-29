@@ -221,10 +221,4 @@ public class ArraignmentService extends BaseService {
         return;
     }
 
-
-    public void getArraignment_countList(RResult result, GetArraignment_countListParam param){
-
-
-        return;
-    }
 }

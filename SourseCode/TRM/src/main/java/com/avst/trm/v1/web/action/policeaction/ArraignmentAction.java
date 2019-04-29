@@ -102,41 +102,5 @@ public class ArraignmentAction extends BaseAction{
     }
 
 
-    /*************************/
-
-
-
-    /***
-     * 跳转笔录统计页面
-     * @param model
-     * @return
-     */
-    @GetMapping(value = "/getArraignment_count")
-    public ModelAndView getArraignment_count(Model model) {
-        model.addAttribute("title", "笔录使用情况统计表");
-        return new ModelAndView("police/arraignment/getArraignment_count", "arraignment_countModel", model);
-    }
-
-
-    /**
-     *
-     * 获取统计数据
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/getArraignment_countList")
-    @ResponseBody
-    public RResult getArraignment_countList(GetArraignment_countListParam param) {
-        RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            arraignmentService.getArraignment_countList(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-
 
 }
