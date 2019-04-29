@@ -41,10 +41,6 @@ function callbackgetUserList(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
-    layui.use('form', function(){
-        var form =  layui.form;
-        form.render();
-    });
 }
 
 /**
@@ -107,10 +103,6 @@ function callbackgetRoles(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
-    layui.use('form', function(){
-        var form =  layui.form;
-        form.render();
-    });
 }
 
 function getWorkunits() {
@@ -132,10 +124,6 @@ function callbackgetWorkunits(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
-    layui.use('form', function(){
-        var form =  layui.form;
-        form.render();
-    });
 }
 
 function deleteUser(ssid) {
@@ -193,7 +181,7 @@ function changeUser(obj,ssid) {
 
     var con;
     var adminbool;
-    if (obj.value) {
+    if (obj) {
         con="你确定要恢复这个用户吗";
         adminbool=1;
     }else{

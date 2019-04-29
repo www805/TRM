@@ -59,8 +59,11 @@ function getactionid_manage() {
         permissionsShow_updateRoleToPermissions:"permissionsShow_updateRoleToPermissions",
 
         downServer_getdownServers:"downServer_getdownServers",
-        downServer_startdownServer:"downServer_startdownServer",
-        downServer_closeddownServer:"downServer_closeddownServer"
+        downServer_tostartDownServer:"downServer_tostartDownServer",
+
+        startDownServer_startdownServer:"startDownServer_startdownServer",
+        startDownServer_closeddownServer:"startDownServer_closeddownServer",
+        startDownServer_getdataInfos:"startDownServer_getdataInfos"
 
 
     };

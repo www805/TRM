@@ -31,10 +31,6 @@ function callbackgetRoleList(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
-    layui.use('form', function(){
-        var form =  layui.form;
-        form.render();
-    });
 }
 
 /**

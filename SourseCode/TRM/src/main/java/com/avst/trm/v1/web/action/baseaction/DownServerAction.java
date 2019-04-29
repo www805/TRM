@@ -62,7 +62,7 @@ public class DownServerAction extends BaseAction {
      */
     @RequestMapping(value = "/startdownServer")
     @ResponseBody
-    public RResult startdownServer(@RequestBody  StartdownServerParam param){
+    public RResult startdownServer(StartdownServerParam param){
         RResult result=createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");

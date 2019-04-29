@@ -3,25 +3,33 @@ package com.avst.trm.v1.web.req.basereq;
 import java.util.List;
 
 public class StartdownServerParam {
-    private String downserverssid;//同步服务器的ssid
+    private String upserverip;//同步服务器的ip
 
-    private List<String> datainfossids;//表单ssid集合
+    private String datainfossid;//表单ssid
 
+    private Integer type;//同步的类型，0同步全部数据，1同步一个表的数据，2同步一条数据
 
-
-    public String getDownserverssid() {
-        return downserverssid;
+    public Integer getType() {
+        return type;
     }
 
-    public void setDownserverssid(String downserverssid) {
-        this.downserverssid = downserverssid;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    public List<String> getDatainfossids() {
-        return datainfossids;
+    public String getUpserverip() {
+        return upserverip;
     }
 
-    public void setDatainfossids(List<String> datainfossids) {
-        this.datainfossids = datainfossids;
+    public void setUpserverip(String upserverip) {
+        this.upserverip = upserverip;
+    }
+
+    public String getDatainfossid() {
+        return datainfossid;
+    }
+
+    public void setDatainfossid(String datainfossid) {
+        this.datainfossid = datainfossid;
     }
 }

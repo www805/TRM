@@ -1,32 +1,32 @@
 package com.avst.trm.v1.web.vo.basevo;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datainfo;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_downserver;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.DownserverAndDatainfo;
 import com.avst.trm.v1.web.req.basereq.GetdownServersParam;
 
 import java.util.List;
 
 public class GetdownServersVO {
-    private List<Base_datasynchroni_downserver> pagelist;
-
-    private List<Base_datainfo> datainfos;
+    private List<DownserverAndDatainfo> pagelist;
 
     private GetdownServersParam pageparam;
 
-    public List<Base_datasynchroni_downserver> getPagelist() {
+    private String lastIP;//最后一次同步的IP
+
+    public String getLastIP() {
+        return lastIP;
+    }
+
+    public void setLastIP(String lastIP) {
+        this.lastIP = lastIP;
+    }
+
+    public List<DownserverAndDatainfo> getPagelist() {
         return pagelist;
     }
 
-    public void setPagelist(List<Base_datasynchroni_downserver> pagelist) {
+    public void setPagelist(List<DownserverAndDatainfo> pagelist) {
         this.pagelist = pagelist;
-    }
-
-    public List<Base_datainfo> getDatainfos() {
-        return datainfos;
-    }
-
-    public void setDatainfos(List<Base_datainfo> datainfos) {
-        this.datainfos = datainfos;
     }
 
     public GetdownServersParam getPageparam() {

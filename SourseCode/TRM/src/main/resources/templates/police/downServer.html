@@ -31,6 +31,7 @@
             </div>
 
             <input type="button" class="layui-btn layui-btn-normal" onclick="getdownServers_init(1,3);" value="查询"/>
+            <button class="layui-btn layui-btn-normal" type="button"  id="startdownServer">开始同步</button>
         </div>
     </form>
 
@@ -39,33 +40,31 @@
     <div th:replace="footer :: footer">...</div>
 
 </div>
-<script type="text/html" id="barDemo">
-    <button class="layui-btn layui-btn-normal layui-btn-xs"   lay-event="startdownServer_btn" >同步</button>
-    <button class="layui-btn layui-btn-danger layui-btn-xs" lay-event="closeddownServer_btn" >强制关闭同步</button>
-</script>
 <script id="pagelisttemplates" type="text/html">
-
     <table class="layui-table">
         <thead>
         <tr>
             <th>序号</th>
+            <th>同步表单名</th>
+            <th>是否同步文件</th>
+            <th>同步文件名</th>
+            <th>所属类型</th>
             <th>上级服务器IP</th>
             <th>同步次数</th>
             <th>最后同步时间</th>
-            <th>操作</th>
         </tr>
         </thead>
         <tbody id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
+            <td>{{value.dataname_cn==null?"0":value.dataname_cn}}</td>
+            <td>{{value.filetype==null?"未知":(value.filetype==1?"是":"否")}}</td>
+            <td>{{value.filename==null?"/":value.filename}}</td>
+            <td>{{value.typename==null?"":value.typename}}</td>
             <td>{{value.upserverip==null?"":value.upserverip}}</td>
             <td>{{value.uploadcount==null?"0":value.uploadcount}}</td>
             <td>{{value.lastuploadtime==null?"":value.lastuploadtime}}</td>
-            <td>
-                <a href="javascript:;"   title="{{datainfos==null?'未找到表单数据':'点击选择表单'}}"   {{datainfos==null?'disabled':''}} onclick="openModel('{{value.ssid}}')" class="layui-btn {{datainfos==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm">选择表单进行同步</a>
-            </td>
-
         </tr>
         {{#  }); }}
         </tbody>

@@ -25,4 +25,7 @@ public interface Base_datasynchroni_downserverMapper extends BaseMapper<Base_dat
             " where 1=1 ${ew.sqlSelect}")
     public List<GetSynchronizedDataSheet_DownServer> getSynchronizedDataSheet_DownServer(EntityWrapper ew);
 
+    @Select("select upserverip from base_datasynchroni_downserver order by lastuploadtime desc,id desc LIMIT 1")
+    String getLastIpByTime();
+
 }

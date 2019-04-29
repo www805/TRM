@@ -29,10 +29,6 @@ function callbackgetArraignmentList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
-            layui.use('form', function(){
-                var form =  layui.form;
-                form.render();
-            });
         }
     }else{
         layer.msg(data.message,{icon: 2});

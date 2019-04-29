@@ -2,7 +2,10 @@ package com.avst.trm.v1.web.service.baseservice;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datainfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_downserver;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.DatainfoAndType;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.DownserverAndDatainfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_datainfoMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasheet_downserverMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_downserverMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -20,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("downServerService")
@@ -30,6 +32,8 @@ public class DownServerService extends BaseService {
     private Base_datasynchroni_downserverMapper base_datasynchroni_downserverMapper;
     @Autowired
     private Base_datainfoMapper base_datainfoMapper;
+    @Autowired
+    private Base_datasheet_downserverMapper datasheet_downserverMapper;
 
 
     public void  getdownServers(RResult result, GetdownServersParam param){
@@ -37,25 +41,25 @@ public class DownServerService extends BaseService {
 
         EntityWrapper ew=new EntityWrapper();
         if (null!=param.getUpserverip()){
-            ew.like(true,"upserverip",param.getUpserverip().trim());
+            ew.like(true,"dsd.upserverip",param.getUpserverip().trim());
         }
 
-
-        int count = base_datasynchroni_downserverMapper.selectCount(ew);
+        int count = datasheet_downserverMapper.countgetdownServers(ew);
         param.setRecordCount(count);
 
-        ew.orderBy("lastuploadtime",false);
-        Page<Base_datasynchroni_downserver> page=new Page<Base_datasynchroni_downserver>(param.getCurrPage(),param.getPageSize());
-        List<Base_datasynchroni_downserver> list=base_datasynchroni_downserverMapper.selectPage(page,ew);
+        ew.orderBy("dsd.lastuploadtime",false);
+        Page<DownserverAndDatainfo> page=new Page<DownserverAndDatainfo>(param.getCurrPage(),param.getPageSize());
+        List<DownserverAndDatainfo> list=datasheet_downserverMapper.getdownServers(page,ew);
         getdownServersVO.setPageparam(param);
 
         if (null!=list&&list.size()>0){
             getdownServersVO.setPagelist(list);
         }
 
-        List<Base_datainfo> datainfos =  base_datainfoMapper.selectList(null);
-        if (null!=datainfos&&datainfos.size()>0){
-            getdownServersVO.setDatainfos(datainfos);
+
+        String lastIp=base_datasynchroni_downserverMapper.getLastIpByTime();
+        if (StringUtils.isNotBlank(lastIp)){
+            getdownServersVO.setLastIP(lastIp);
         }
 
         result.setData(getdownServersVO);
@@ -64,11 +68,11 @@ public class DownServerService extends BaseService {
     }
 
     public void  startdownServer(RResult result, StartdownServerParam param){
-        String downserverssid=param.getDownserverssid();//同步服务器的ssid
+        String upserverip=param.getUpserverip();//同步服务器的ssid
+        String datainfossid=param.getDatainfossid();//表单ssid集合
+        Integer type=param.getType();//0同步全部数据，1同步一个表的数据，2同步一条数据
 
-        List<String> datainfossids=param.getDatainfossids();//表单ssid集合
-
-        if (StringUtils.isBlank(downserverssid)||null==datainfossids||datainfossids.size()<1){
+        if (StringUtils.isBlank(upserverip)||null==type){
             result.setMessage("参数有误");
             return;
         }
@@ -82,36 +86,28 @@ public class DownServerService extends BaseService {
         }
 
 
-        Base_datasynchroni_downserver datasynchroni_downserver=new Base_datasynchroni_downserver();
-        datasynchroni_downserver.setSsid(downserverssid);
-        datasynchroni_downserver=base_datasynchroni_downserverMapper.selectOne(datasynchroni_downserver);
-        if (null!=datasynchroni_downserver){
-            //开始
-            for (String datainfossid : datainfossids) {
+        SynchronizeDataTypeParam synchronizeDataTypeParam=new SynchronizeDataTypeParam();
+        synchronizeDataTypeParam.setSdIP(upserverip);
+        synchronizeDataTypeParam.setType(type);
+        if (type.intValue()==0){
+            //同步全部表单
+            ToUpServerBaseReqClass.startSynchronizedata(synchronizeDataTypeParam);
+        }else if (type.intValue()==1){
+                if (StringUtils.isEmpty(datainfossid)){
+                    result.setMessage("参数有误");
+                    return;
+                }
+                //同步单个表单
                 Base_datainfo base_datainfo=new Base_datainfo();
                 base_datainfo.setSsid(datainfossid);
                 base_datainfo=base_datainfoMapper.selectOne(base_datainfo);
-
-
-                SynchronizeDataTypeParam synchronizeDataTypeParam=new SynchronizeDataTypeParam();
-                synchronizeDataTypeParam.setSdIP(datasynchroni_downserver.getUpserverip());
-                synchronizeDataTypeParam.setDatassid(datainfossid);
-             //   synchronizeDataTypeParam.setType(base_datainfo.getTypessid());
-                ToUpServerBaseReqClass.startSynchronizedata(synchronizeDataTypeParam);
-
-
-                GotoSynchronizedataParam gotoSynchronizedataParam=new GotoSynchronizedataParam();
-                gotoSynchronizedataParam.setSdIP(datasynchroni_downserver.getUpserverip());
-                ToUpServerBaseReqClass.synchronizedata(gotoSynchronizedataParam);
-
-            }
-            
-            
-
-
+                if (null!=base_datainfo){
+                    synchronizeDataTypeParam.setDatatablename(base_datainfo.getDataname());
+                    ToUpServerBaseReqClass.startSynchronizedata(synchronizeDataTypeParam);
+                }
+        }else if (type.intValue()==2){
+            //单个数据
         }
-
-
         changeResultToSuccess(result);
         return;
     }
