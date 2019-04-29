@@ -64,6 +64,7 @@ public class ServerConfigAction extends BaseAction{
     @ResponseBody
     public RResult uploadByImg(@RequestParam("file") MultipartFile file) {
         RResult rResult = createNewResultOfFail();
+
         serverConfigService.uploadByImg(rResult, file, "syslogo_filesavessid");
         return rResult;
     }

@@ -107,7 +107,8 @@ public class ServerConfigService extends BaseService {
         String fileName = file.getOriginalFilename();
 
         //2 获取随机文件名
-        String imageName = getRandomFileName();
+//        String imageName = getRandomFileName();
+        String imageName = OpenUtil.getUUID_32();
 
         //获取文件后缀
         String suffix = fileName.substring(fileName.lastIndexOf("."));
@@ -131,16 +132,18 @@ public class ServerConfigService extends BaseService {
 //        String filePath = path;
 
         //5 创建目录
-        File fileMkdir = new File(filePath);
-        if (!fileMkdir.exists()) {
-            //如果不存在，就创建该目录
-            fileMkdir.mkdirs();
-        }
+//        File fileMkdir = new File(filePath);
+//        if (!fileMkdir.exists()) {
+//            //如果不存在，就创建该目录
+//            fileMkdir.mkdirs();
+//        }
+
+        String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
 
         //6 把图片保存到指定位置
 //        upload.transferTo(new File(file, imageName));
 
-        String realpath = filePath + imageName;
+        String realpath = filePathNew + imageName;
         File dest = new File(realpath);
         try {
             file.transferTo(dest);
@@ -163,6 +166,8 @@ public class ServerConfigService extends BaseService {
             }else{
                 datassid = serverconfig.getClient_filesavessid();
             }
+
+            filesave.setSsid(OpenUtil.getUUID_32());
 
             filesave.setDatassid(datassid);//从属表的ssid
 

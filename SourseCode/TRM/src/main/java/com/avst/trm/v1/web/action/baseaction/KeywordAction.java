@@ -59,7 +59,7 @@ public class KeywordAction extends BaseAction{
     public ModelAndView getAddKeyword(Model model, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
 
-        keyword.setShieldbool(1);
+//        keyword.setShieldbool(1);
         rResult.setData(keyword);
         model.addAttribute("RResult", rResult);
 

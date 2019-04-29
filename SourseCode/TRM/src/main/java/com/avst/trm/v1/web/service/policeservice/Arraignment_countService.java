@@ -31,7 +31,7 @@ public class Arraignment_countService extends BaseService {
     @Autowired
     private Base_admininfoMapper arraignmentCountMapper;
 
-    @Value("${spring.images.filePath}")
+    @Value("${file.basepath}")
     private String filePath;
 
     /**
@@ -260,20 +260,20 @@ public class Arraignment_countService extends BaseService {
             row.createCell((short) 5).setCellValue(list.get(i).getTimeCount());// 录音时长
             row.createCell((short) 6).setCellValue(list.get(i).getTranslatextCount());// 笔录字数
 
-
         }
 
 
         try {
             //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
             // 创建目录
-            File fileMkdir = new File(filePath);
+            String filePathNew = filePath + "/zips";
+            File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
                 //如果不存在，就创建该目录
                 fileMkdir.mkdirs();
             }
 
-            String path = filePath + "/提讯案件列表.xls";
+            String path = filePathNew + "/提讯案件列表.xls";
             FileOutputStream fout = new FileOutputStream(path);
             wb.write(fout);
             fout.close();
