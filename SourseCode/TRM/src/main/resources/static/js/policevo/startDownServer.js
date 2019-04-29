@@ -60,10 +60,10 @@ function showpagetohtml(){
     }
 }
 
+
+
+var index;
 function startdownServer(type,datainfossid) {
-    $("[lay-filter='progress_demo']").css("visibility","visible");
-    $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
-    $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
 
     var upserverip=$("#upserverip").val();
     if (!isNotEmpty(upserverip)){
@@ -76,6 +76,10 @@ function startdownServer(type,datainfossid) {
         return false;
     }
 
+    //初始化进度条
+    $("[lay-filter='progress_demo']").css("visibility","visible");
+    $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
+    $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
     var url=getActionURL(getactionid_manage().startDownServer_startdownServer);
 
 
@@ -85,12 +89,15 @@ function startdownServer(type,datainfossid) {
     if (isNotEmpty(datainfossid)){
         formData.append("datainfossid",datainfossid);
     }
+
+    index = layer.load(1, {
+        shade: [0.1,'#fff']
+    });
+
     var xhr = new XMLHttpRequest();
     xhr.open("post", url, true);
     xhr.timeout = 500000;
     xhr.onload = function(data) {
-        $("#startdownServer_btn").removeClass('layui-btn-disabled').prop("disabled",false);
-        $("#startdownServer_btn").text("全部同步");
         callbackstartdownServer(xhr.responseText);
     };
     xhr.upload.addEventListener("progress", progressFunction, false);
@@ -101,8 +108,7 @@ function startdownServer(type,datainfossid) {
 function progressFunction(evt) {
     if (evt.lengthComputable) {
         var completePercent = Math.round(evt.loaded / evt.total * 100)+ "%";
-        $("#startdownServer_btn").text("同步中" + completePercent);
-        $("#startdownServer_btn").addClass('layui-btn-disabled').prop("disabled" , true);
+        $("#startdownServer_btn").text("同步中" + completePercent).addClass('layui-btn-disabled').prop("disabled" , true);
         $("[lay-filter='progress_demo']").css("visibility","visible");
         $("[lay-filter='progress_demo'] .layui-progress-text").text(completePercent);
         $("[lay-filter='progress_demo'] .layui-progress-bar").width(completePercent);
@@ -112,76 +118,74 @@ function progressFunction(evt) {
 function callbackstartdownServer(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-
+            layer.msg("同步成功",{icon: 2});
+            $("#closeddownServer_btn").hide();
+            $("#startdownServer_btn").text("全部同步").removeClass('layui-btn-disabled').prop("disabled" , false);
         }
     }else{
-        // layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 2});
         $("#closeddownServer_btn").show();
-        $("#startdownServer_btn").addClass('layui-btn-disabled').prop("disabled" , true);
-        $("[lay-filter='progress_demo']").css("visibility","hidden");
-        $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
-        $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
-
+        $("#startdownServer_btn").text("同步失败").addClass('layui-btn-disabled').prop("disabled" , true);
     }
+    $("[lay-filter='progress_demo']").css("visibility","hidden");
+    $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
+    $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
+    layer.close(index);
 }
 
 
 
 function closeddownServer() {
-    $("#closeddownServer_btn").hide();
-    $("#startdownServer_btn").removeClass('layui-btn-disabled').prop("disabled" , false);
-    $("#startdownServer_btn").val("全部同步");
-    /* var datainfossids=[];
-     if (datainfossid==-1){
-         //全部同步
-         if (isNotEmpty(datainfos)){
-             for (var i = 0; i < datainfos.length; i++) {
-                 var datum = datainfos[i];
-                 datainfossids.push(datum.ssid);
-             }
-         }
-     }else{
-         datainfossids.push(datainfossid);
-     }
+    $("[lay-filter='progress_demo']").css("visibility","hidden");
+    $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
+    $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
 
+    var upserverip=$("#upserverip").val();
+     var url=getActionURL(getactionid_manage().startDownServer_closeddownServer);
 
-     var url=getActionURL(getactionid_manage().downServer_closeddownServer);
-     var data={
-         datainfossids:datainfossids,
-         downserverssid:downserverssid,
-     };
-     index = layer.load(1, {
-         shade: [0.1,'#fff'] //0.1透明度的白色背景
-         ,title:"关闭同步中"
-     });
-     $.ajax({
-         url : url,
-         type : "post",
-         async : true,
-         dataType : "json",
-         data : JSON.stringify(data),
-         timeout : 60000,
-         contentType: "application/json",
-         success : function(reData) {
-             if ($.trim(reData) == null) {
-                 parent.layer.msg("本次请求失败",{icon: 2});
-             } else {
-                 callbackcloseddownServer(reData);
-             }
-         },error : function(){
-             parent.layer.msg("请求异常",{icon: 2});
-         }
-     });*/
+    var formData = new FormData();
+    formData.append("upserverip",upserverip);
+
+    index = layer.load(1, {
+        shade: [0.1,'#fff'] //0.1透明度的白色背景
+        ,title:"关闭同步中"
+    });
+    var xhr = new XMLHttpRequest();
+    xhr.open("post", url, true);
+    xhr.timeout = 500000;
+    xhr.onload = function(data) {
+        callbackcloseddownServer(xhr.responseText);
+    };
+    xhr.upload.addEventListener("progress", progressFunction2, false);
+
+    xhr.send(formData);
+
 }
+
+function progressFunction2(evt) {
+    if (evt.lengthComputable) {
+        var completePercent = Math.round(evt.loaded / evt.total * 100)+ "%";
+        $("#closeddownServer_btn").text("关闭同步中" + completePercent).addClass('layui-btn-disabled').prop("disabled" , true);
+        $("[lay-filter='progress_demo']").css("visibility","visible");
+        $("[lay-filter='progress_demo'] .layui-progress-text").text(completePercent);
+        $("[lay-filter='progress_demo'] .layui-progress-bar").width(completePercent);
+    }
+};
 function callbackcloseddownServer(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-
+            $("#closeddownServer_btn").hide();
+            $("#startdownServer_btn").text("全部同步").removeClass('layui-btn-disabled').prop("disabled" , false);
         }
     }else{
         layer.msg(data.message,{icon: 2});
+        $("#closeddownServer_btn").show().text("强制关闭同步").removeClass('layui-btn-disabled').prop("disabled" , false);
     }
     layer.close(index);
+    $("[lay-filter='progress_demo']").css("visibility","hidden");
+    $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
+    $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
+
 }
 
 

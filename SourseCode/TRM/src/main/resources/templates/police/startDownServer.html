@@ -49,7 +49,7 @@
                     <input type="text" name="upserverip" id="upserverip"  lay-verify="required"  placeholder="请输入上级服务器IP" class="layui-input" th:value="${startDownServerModel.lastIP}=='null'?'':(${startDownServerModel.lastIP}==null?'':${startDownServerModel.lastIP})">
                 </div>
                 <button  type="button" class="layui-btn layui-btn-normal"  onclick="startdownServer(0,null);" id="startdownServer_btn">全部同步</button>
-                <button  type="button" class="layui-btn layui-btn-danger" onclick="closeddownServer(0,null);" id="closeddownServer_btn" style="display: none">强制关闭同步</button>
+                <button  type="button" class="layui-btn layui-btn-danger" onclick="closeddownServer();" id="closeddownServer_btn" style="display: none">强制关闭同步</button>
             </div>
         </div>
     </form>
