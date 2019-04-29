@@ -16,16 +16,11 @@ function login_login(){
 function callbackgetAdminInfoPage(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
-        //pageshow(data);
-        // alert("登录成功");
         var url=getActionURL(getactionid_manage().login_main);
         window.location.href=url;
     }else{
-        //parent.layer.msg(data.message,{icon: 2},1);
-        // alert(data.message);
-        layer.msg(data.message, {time: 5000, icon:6});
+        layer.msg(data.message, {icon: 2});
     }
-
 }
 
 function login_logout(){

@@ -58,12 +58,8 @@ public class HomeAction extends BaseAction{
      */
     @GetMapping(value = "/home")
     public ModelAndView getHome(Model model) {
-
         RResult rResult=createNewResultOfFail();
-        //ceshiService.getadminlist3(rResult);
-
         homeService.getAllCount(rResult, model);
-
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "首页");
         return new ModelAndView("police/home", "homeModel", model);
@@ -94,12 +90,7 @@ public class HomeAction extends BaseAction{
     @ResponseBody
     public RResult checklogin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult result=createNewResultOfFail();
-        if(StringUtils.isNotBlank(loginParam.getLoginaccount()) && StringUtils.isNotBlank(loginParam.getPassword())){
-            loginService.gotologin(result,request,loginParam);
-        }else{
-            result.setMessage("用户名密码不能为空");
-            System.out.println("LogAction gotologin loginParam is null");
-        }
+        loginService.gotologin(result,request,loginParam);
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }

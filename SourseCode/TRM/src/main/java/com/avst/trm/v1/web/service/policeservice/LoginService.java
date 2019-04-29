@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.LoginParam;
 import com.avst.trm.v1.web.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,12 @@ public class LoginService extends BaseService {
     public void gotologin(RResult<AdminManage_session> result, HttpServletRequest request, LoginParam loginParam){
         String loginaccount=loginParam.getLoginaccount();
         String password=loginParam.getPassword();
+
+        if(!StringUtils.isNotBlank(loginaccount) && !StringUtils.isNotBlank(password)){
+            result.setMessage("用户名密码不能为空");
+            System.out.println("LogAction gotologin loginParam is null");
+            return;
+        }
 
         if(null==result){
             result=new RResult<AdminManage_session>();

@@ -100,7 +100,7 @@ public class TemplateAction extends ForClientBaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            templateService.getTemplateById(result,param);
+//            templateService.getTemplateById(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
