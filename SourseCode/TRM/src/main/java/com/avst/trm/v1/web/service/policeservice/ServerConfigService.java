@@ -167,8 +167,6 @@ public class ServerConfigService extends BaseService {
                 datassid = serverconfig.getClient_filesavessid();
             }
 
-            filesave.setSsid(OpenUtil.getUUID_32());
-
             filesave.setDatassid(datassid);//从属表的ssid
 
             EntityWrapper ew=new EntityWrapper();
@@ -176,6 +174,7 @@ public class ServerConfigService extends BaseService {
 
             Integer update = filesaveMapper.update(filesave, ew);
             if (update == 0) {
+                filesave.setSsid(OpenUtil.getUUID_32());
                 update = filesaveMapper.insert(filesave);
                 this.changeResultToSuccess(rResult);
                 rResult.setMessage("上传成功");

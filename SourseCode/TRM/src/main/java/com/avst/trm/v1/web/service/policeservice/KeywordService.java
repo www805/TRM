@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
@@ -177,6 +178,7 @@ public class KeywordService extends BaseService {
 //        System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 
         keyword.setCreatetime(new Date());
+        keyword.setSsid(OpenUtil.getUUID_32());
         Integer insert = keywordMapper.insert(keyword);
         if (insert > 0) {
             rResult.setData(insert);
