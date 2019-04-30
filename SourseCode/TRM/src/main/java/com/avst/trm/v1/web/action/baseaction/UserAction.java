@@ -149,6 +149,27 @@ public class UserAction extends BaseAction{
     }
 
 
+    /**
+     * 用户状态修改
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/changeboolUser")
+    @ResponseBody
+    public RResult changeboolUser(ChangeboolUserParam param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            userService.changeboolUser(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
 
 
 

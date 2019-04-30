@@ -153,6 +153,25 @@ public class RoleAction extends BaseAction{
         return result;
     }
 
+    /**
+     * 角色状态修改
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/changeboolRole")
+    @ResponseBody
+    public RResult changeboolRole(ChangeboolRoleParam param) {
+        RResult result=createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else{
+            roleService.changeboolRole(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 

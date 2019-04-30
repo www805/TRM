@@ -13,6 +13,7 @@ function getactionid_manage() {
         getRoleList_getRoleList:"getRoleList_getRoleList",
         getRoleList_getAddOrUpdateRole:"getRoleList_getAddOrUpdateRole",
         getRoleList_deleteRole:"getRoleList_deleteRole",
+        getRoleList_changeboolRole:"getRoleList_changeboolRole",
 
         addOrUpdateRole_getRoleBySsid:"addOrUpdateRole_getRoleBySsid",//pp
         addOrUpdateRole_addRole:"addOrUpdateRole_addRole",//pp
@@ -24,6 +25,7 @@ function getactionid_manage() {
         getUserList_deleteUser:"getUserList_deleteUser",
         getUserList_getRoles:"getUserList_getRoles",//pp
         getUserList_getWorkunits:"getUserList_getWorkunits",//pp
+        getUserList_changeboolUser:"getUserList_changeboolUser",//pp
 
         addOrUpdateUser_getUserBySsid:"addOrUpdateUser_getUserBySsid",//pp
         addOrUpdateUser_getWorkunits:"addOrUpdateUser_getWorkunits",//pp

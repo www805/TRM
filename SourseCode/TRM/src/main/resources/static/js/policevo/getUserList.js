@@ -210,12 +210,12 @@ $(function () {
                 content:con
                 ,btn: ['确定', '取消']
                 ,yes: function(index, layero){
-                    var url=getActionURL(getactionid_manage().getUserList_deleteUser);
+                    var url=getActionURL(getactionid_manage().getUserList_changeboolUser);
                     var data={
                         ssid:ssid,
                         adminbool:adminbool
                     };
-                    ajaxSubmit(url,data,callbackdeleteUser);
+                    ajaxSubmit(url,data,callbackchangeUser);
                     switchdata.elem.checked=obj;
                     form.render();
                     layer.close(index);

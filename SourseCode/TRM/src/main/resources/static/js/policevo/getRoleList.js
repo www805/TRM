@@ -154,7 +154,7 @@ $(function () {
                 content:con
                 ,btn: ['确定', '取消']
                 ,yes: function(index, layero){
-                    var url=getActionURL(getactionid_manage().getRoleList_deleteRole);
+                    var url=getActionURL(getactionid_manage().getRoleList_changeboolRole);
                     var data={
                         ssid:ssid,
                         rolebool:rolebool
