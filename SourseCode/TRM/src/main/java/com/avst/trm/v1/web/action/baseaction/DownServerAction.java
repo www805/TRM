@@ -36,7 +36,7 @@ public class DownServerAction extends BaseAction {
     @GetMapping(value = "/todownServer")
     public ModelAndView todownServer(Model model) {
         model.addAttribute("title","同步数据");
-        return new ModelAndView("police/downServer", "downServerModel", model);
+        return new ModelAndView("server_web/police/downServer", "downServerModel", model);
     }
 
     /**

@@ -168,42 +168,6 @@ function callbackdeleteUser(data) {
     }
 }
 
-/**
- * 此处调用的是getUserList_deleteUser
- * @param obj
- * @param ssid
- */
-function changeUser(obj,ssid) {
-    if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
-        return;
-    }
-
-    var con;
-    var adminbool;
-    if (obj) {
-        con="你确定要恢复这个用户吗";
-        adminbool=1;
-    }else{
-        con="你确定要禁用这个用户吗";
-        adminbool=2;
-    }
-
-    layer.confirm(con, {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-        var url=getActionURL(getactionid_manage().getUserList_deleteUser);
-        var data={
-            ssid:ssid,
-            adminbool:adminbool
-        };
-        ajaxSubmit(url,data,callbackchangeUser);
-        layer.close(index);
-    }, function(index){
-        layer.close(index);
-    });
-}
 
 function callbackchangeUser(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -225,8 +189,49 @@ $(function () {
         var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
             ,form = layui.form;
 
-        form.on('switch(adminbool_switch)', function(data){
-            changeUser(data.elem.checked,data.value);
+        form.on('switch(adminbool_switch)', function(switchdata){
+            var obj=switchdata.elem.checked;
+            var ssid=switchdata.value;
+            if (!isNotEmpty(ssid)){
+                layer.msg("系统异常",{icon: 2});
+                return;
+            }
+
+            var con;
+            var adminbool;
+            if (obj) {
+                con="你确定要恢复这个用户吗";
+                adminbool=1;
+            }else{
+                con="你确定要禁用这个用户吗";
+                adminbool=2;
+            }
+            layer.open({
+                content:con
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                    var url=getActionURL(getactionid_manage().getUserList_deleteUser);
+                    var data={
+                        ssid:ssid,
+                        adminbool:adminbool
+                    };
+                    ajaxSubmit(url,data,callbackdeleteUser);
+                    switchdata.elem.checked=obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    //按钮【按钮二】的回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,cancel: function(){
+                    //右上角关闭回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                }
+            });
         });
     });
 });

@@ -38,7 +38,7 @@ public class DatainfoAction extends BaseAction {
         if (StringUtils.isNotBlank(lastIP)){
             model.addAttribute("lastIP",lastIP);
         }
-        return new ModelAndView("police/startDownServer", "startDownServerModel", model);
+        return new ModelAndView("server_web/police/startDownServer", "startDownServerModel", model);
     }
 
     /**

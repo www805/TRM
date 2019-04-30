@@ -29,7 +29,7 @@ public class UserAction extends BaseAction{
     @GetMapping(value = "/getUser")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title","管理员列表");
-        return new ModelAndView("police/users/getUserList", "userModel", model);
+        return new ModelAndView("server_web/police/users/getUserList", "userModel", model);
     }
 
     /***
@@ -90,7 +90,7 @@ public class UserAction extends BaseAction{
     public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
         model.addAttribute("title", "添加/修改用户");
-        return new ModelAndView("police/users/AddOrUpdateUser", "userModel", model);
+        return new ModelAndView("server_web/police/users/AddOrUpdateUser", "userModel", model);
     }
 
     /**

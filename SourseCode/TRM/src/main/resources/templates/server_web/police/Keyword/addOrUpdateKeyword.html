@@ -17,20 +17,20 @@
 
         $(function(){
             init_web = [[${session.INIT_WEB}]];
-            setpageAction(init_web,"police/keyword/addOrUpdateKeyword");
+            setpageAction(init_web,"server_web/police/keyword/addOrUpdateKeyword");
         });
     </script>
 
     <style>
         .layui-form-switch {
-            margin-top: 7px;
+            margin-top: 7px;`
         }
     </style>
 </head>
 <body>
 
 <div style="margin: 15px;">
-
+    <div th:replace="server_web/header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${keywordModel.title}"></h3>
     </div>
@@ -81,7 +81,7 @@
 
 </div>
 
-<div th:replace="footer :: footer">...</div>
+<div th:replace="server_web/footer :: footer">...</div>
 
 <script>
     //Demo

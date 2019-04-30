@@ -34,7 +34,7 @@ public class HomeAction extends BaseAction{
     @GetMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
 
-        return new ModelAndView(pageid, "main", model);
+        return new ModelAndView(pageid, "server_web/main", model);
     }
 
 
@@ -48,7 +48,7 @@ public class HomeAction extends BaseAction{
         //获取统计数据信息
 
         model.addAttribute("title", "智能提讯管理系统");
-        return new ModelAndView("main", "main", model);
+        return new ModelAndView("server_web/main", "main", model);
     }
 
     /**
@@ -62,7 +62,7 @@ public class HomeAction extends BaseAction{
         homeService.getAllCount(rResult, model);
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "首页");
-        return new ModelAndView("police/home", "homeModel", model);
+        return new ModelAndView("server_web/police/home", "homeModel", model);
 
     }
 
@@ -83,7 +83,7 @@ public class HomeAction extends BaseAction{
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
 //        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");
 
-        return new ModelAndView("police/login", "login", model);
+        return new ModelAndView("server_web/police/login", "login", model);
     }
 
     @PostMapping(value = "/checklogin")
@@ -108,7 +108,7 @@ public class HomeAction extends BaseAction{
     @GetMapping(value = "/404")
     public ModelAndView getError(Model model) {
         model.addAttribute("title", "错误页面404");
-        return new ModelAndView("404", "error", model);
+        return new ModelAndView("server_web/404", "error", model);
     }
 
 

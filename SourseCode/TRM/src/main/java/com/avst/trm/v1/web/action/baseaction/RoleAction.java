@@ -32,7 +32,7 @@ public class RoleAction extends BaseAction{
     @GetMapping(value = "/getRole")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title", "角色列表");
-        return new ModelAndView("police/role/getRoleList", "roleModel", model);
+        return new ModelAndView("server_web/police/role/getRoleList", "roleModel", model);
 
     }
 
@@ -94,7 +94,7 @@ public class RoleAction extends BaseAction{
     public ModelAndView getAddOrUpdateRole(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
         model.addAttribute("title", "添加/修改角色");
-        return new ModelAndView("police/role/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("server_web/police/role/addOrUpdateRole", "roleModel", model);
     }
 
     /**

@@ -13,7 +13,7 @@
 </style>
 <body>
 <div style="margin: 15px;" class="layui-form">
-
+    <div th:replace="server_web/header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${permissionsModel.title}"></h3>
     </div>
@@ -60,7 +60,7 @@
         </div>
     </div>
 
-
+    <div th:replace="server_web/footer :: footer">...</div>
 </div>
 
 </body>
@@ -76,7 +76,7 @@
     var INIT_WEB;
     $(function(){
         INIT_WEB=[[${session.INIT_WEB}]];
-        setpageAction(INIT_WEB,"police/permissions/permissionsShow");
+        setpageAction(INIT_WEB,"server_web/police/permissions/permissionsShow");
         getRoles();
         getPermissions();
 

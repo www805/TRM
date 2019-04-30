@@ -16,7 +16,7 @@
 <body>
 
 <div style="margin: 15px;">
-
+    <div th:replace="server_web/header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${configModel.title}"></h3>
     </div>
@@ -108,7 +108,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">同步工作天数</label>
             <div class="layui-input-block">
-                <input type="text" name="workdays" required disabled th:value="*{workdays}" lay-verify="required" placeholder="请输入节点单位名称" autocomplete="off" class="layui-input">
+                <input type="text" name="workdays" required th:value="*{workdays}" lay-verify="required" placeholder="请输入节点单位名称" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -128,14 +128,14 @@
 
 </div>
 
-<div th:replace="footer :: footer">...</div>
+<div th:replace="server_web/footer :: footer">...</div>
 
 <script th:inline="javascript">
     var init_web = null;
 
     $(function(){
         init_web = [[${session.INIT_WEB}]];
-        setpageAction(init_web,"police/serverconfig");
+        setpageAction(init_web,"server_web/police/serverconfig");
     });
 
     layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload'], function () {

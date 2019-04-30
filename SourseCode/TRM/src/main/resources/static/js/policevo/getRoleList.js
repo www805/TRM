@@ -113,44 +113,6 @@ function callbackdeleteRole(data) {
 }
 
 
-
-/**
- * 此处调用的是getRoleList_deleteRole
- * @param obj
- * @param ssid
- */
-function changeRole(obj,ssid) {
-    if (!isNotEmpty(ssid)||null==obj){
-        layer.msg("系统异常",{icon: 2});
-        return;
-    }
-
-    var con;
-    var rolebool;
-    if (obj) {
-        con="你确定要启动这个角色吗";
-        rolebool=1;
-    }else{
-        con="你确定要禁用这个角色吗";
-        rolebool=2;
-    }
-
-    layer.confirm(con, {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-        var url=getActionURL(getactionid_manage().getRoleList_deleteRole);
-        var data={
-            ssid:ssid,
-            rolebool:rolebool
-        };
-        ajaxSubmit(url,data,callbackchangeRole);
-        layer.close(index);
-    }, function(index){
-        layer.close(index);
-    });
-}
-
 function callbackchangeRole(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -170,8 +132,50 @@ $(function () {
         var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
             ,form = layui.form;
 
-        form.on('switch(rolebool_switch)', function(data){
-            changeRole(data.elem.checked,data.value);
+        form.on('switch(rolebool_switch)', function(switchdata){
+            var obj=switchdata.elem.checked;
+            var ssid=switchdata.value;
+            if (!isNotEmpty(ssid)||null==obj){
+                layer.msg("系统异常",{icon: 2});
+                return;
+            }
+
+            var con;
+            var rolebool;
+            if (obj) {
+                con="你确定要启动这个角色吗";
+                rolebool=1;
+            }else{
+                con="你确定要禁用这个角色吗";
+                rolebool=2;
+            }
+
+            layer.open({
+                content:con
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                    var url=getActionURL(getactionid_manage().getRoleList_deleteRole);
+                    var data={
+                        ssid:ssid,
+                        rolebool:rolebool
+                    };
+                    ajaxSubmit(url,data,callbackchangeRole);
+                    switchdata.elem.checked=obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    //按钮【按钮二】的回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,cancel: function(){
+                    //右上角关闭回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                }
+            });
         });
     });
 });

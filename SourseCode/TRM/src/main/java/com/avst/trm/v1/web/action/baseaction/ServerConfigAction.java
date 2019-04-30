@@ -39,7 +39,7 @@ public class ServerConfigAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "系统配置");
-        return new ModelAndView("police/serverconfig", "configModel", model);
+        return new ModelAndView("server_web/police/serverconfig", "configModel", model);
     }
 
     /**

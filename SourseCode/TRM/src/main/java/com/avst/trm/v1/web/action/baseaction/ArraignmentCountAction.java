@@ -43,7 +43,7 @@ public class ArraignmentCountAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "笔录使用情况统计表");
-        return new ModelAndView("police/arraignment/getArraignment_count", "arraignment_countModel", model);
+        return new ModelAndView("server_web/police/arraignment/getArraignment_count", "arraignment_countModel", model);
     }
 
     /**

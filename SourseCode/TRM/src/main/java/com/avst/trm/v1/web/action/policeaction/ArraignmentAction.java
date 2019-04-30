@@ -29,7 +29,7 @@ public class ArraignmentAction extends BaseAction{
     @GetMapping(value = "/getArraignment")
     public ModelAndView getArraignment(Model model) {
         model.addAttribute("title", "笔录提讯");
-        return new ModelAndView("police/arraignment/arraignment", "arraignmentModel", model);
+        return new ModelAndView("server_web/police/arraignment/arraignment", "arraignmentModel", model);
 
     }
 
@@ -78,7 +78,7 @@ public class ArraignmentAction extends BaseAction{
     public ModelAndView getArraignmentShow(Model model,String ssid) {
         model.addAttribute("title", "笔录详情");
         model.addAttribute("ssid",ssid);
-        return new ModelAndView("police/arraignment/getArraignmentShow", "arraignmentModel", model);
+        return new ModelAndView("server_web/police/arraignment/getArraignmentShow", "arraignmentModel", model);
 
     }
 

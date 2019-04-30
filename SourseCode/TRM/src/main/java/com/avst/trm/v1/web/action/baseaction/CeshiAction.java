@@ -127,7 +127,7 @@ public class CeshiAction extends BaseAction {
             }
         }else{
             rResult.setMessage("对应处理事件异常 gotolist");
-            return new ModelAndView("404", "login", model);//给一个专门处理跳页面出错的页面（如果只是返回数据就不需要用这个）
+            return new ModelAndView("server_web/404", "login", model);//给一个专门处理跳页面出错的页面（如果只是返回数据就不需要用这个）
         }
         model.addAttribute("result", rResult);
         return new ModelAndView(rResult.getNextpageid(), "login", model);

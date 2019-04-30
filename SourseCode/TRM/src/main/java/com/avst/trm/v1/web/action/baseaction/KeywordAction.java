@@ -30,7 +30,7 @@ public class KeywordAction extends BaseAction{
         RResult rResult=createNewResultOfFail();
         model.addAttribute("result", rResult);
         model.addAttribute("title", "关键字");
-        return new ModelAndView("police/keyword/getKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/police/keyword/getKeyword", "keywordModel", model);
 
     }
 
@@ -64,7 +64,7 @@ public class KeywordAction extends BaseAction{
         model.addAttribute("RResult", rResult);
 
         model.addAttribute("title", "添加关键字");
-        return new ModelAndView("police/keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/police/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /**
@@ -81,7 +81,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改关键字");
-        return new ModelAndView("police/keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/police/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /**

@@ -28,7 +28,7 @@ public class PermissionsAction extends BaseAction {
     @GetMapping(value = "/topermissionsShow")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title","设置角色权限");
-        return new ModelAndView("police/permissions/permissionsShow", "permissionsModel", model);
+        return new ModelAndView("server_web/police/permissions/permissionsShow", "permissionsModel", model);
     }
 
     /**
