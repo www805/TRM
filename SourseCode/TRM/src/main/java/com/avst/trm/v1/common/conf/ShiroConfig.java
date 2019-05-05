@@ -51,7 +51,7 @@ public class ShiroConfig {
 
 
     /**
-     * 过滤
+     *
      * @param securityManager
      * @return
      */
@@ -59,17 +59,6 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        Map<String, String> filterMap = new LinkedHashMap<String, String>();
-        filterMap.put("/static/**", "anon");
-        filterMap.put("/layui/**", "anon");
-        filterMap.put("/js/**", "anon");
-        filterMap.put("/uimaker/**", "anon");
-        filterMap.put("/publicweb/home/checklogin", "anon");
-        filterMap.put(" /publicweb/**", "authc");
-        filterMap.put("/**", "authc");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterMap);
-        shiroFilterFactoryBean.setLoginUrl("/publicweb/home/login");
-        shiroFilterFactoryBean.setSuccessUrl("/publicweb/home/main");
         return shiroFilterFactoryBean;
     }
 

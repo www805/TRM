@@ -129,7 +129,7 @@ public class ForClientBaseAction extends BaseAction {
     @GetMapping(value = "/gotoupdateServerconfig")
     public ModelAndView gotoupdateServerconfig(Model model,Integer id){
         model.addAttribute("id","id");
-        return  new ModelAndView("police/updateServerconfig","updateServerconfig", model);
+        return  new ModelAndView("client_web/updateServerconfig","updateServerconfig", model);
     }
 
     /**
@@ -137,7 +137,8 @@ public class ForClientBaseAction extends BaseAction {
      */
     @GetMapping(value = "/gotologin")
     public ModelAndView gotologin(Model model){
-        return  new ModelAndView("police/login","login", model);
+        model.addAttribute("title","欢迎来到智能提讯系统");
+        return  new ModelAndView("client_web/login","loginModel", model);
     }
 
     /**
@@ -145,7 +146,8 @@ public class ForClientBaseAction extends BaseAction {
      */
     @GetMapping(value = "/gotomain")
     public ModelAndView gotomain(Model model){
-        return  new ModelAndView("police/main","main", model);
+        model.addAttribute("title","智能提讯系统");
+        return  new ModelAndView("client_web/main","mainModel", model);
     }
 
 
