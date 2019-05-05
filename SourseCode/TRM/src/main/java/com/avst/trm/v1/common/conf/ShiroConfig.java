@@ -51,7 +51,7 @@ public class ShiroConfig {
 
 
     /**
-     *
+     * 过滤
      * @param securityManager
      * @return
      */
