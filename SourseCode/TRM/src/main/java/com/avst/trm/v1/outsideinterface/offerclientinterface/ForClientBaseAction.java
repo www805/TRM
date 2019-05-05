@@ -48,7 +48,7 @@ public class ForClientBaseAction extends BaseAction {
      * 客户端管理员登陆
      * @return
      */
-    @GetMapping(value = "/userlogin",produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = "/userlogin")
     @ResponseBody
     public RResult userlogin(@RequestBody ReqParam<UserloginParam> param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
