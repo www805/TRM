@@ -1,6 +1,7 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
@@ -88,7 +89,7 @@ public class ForClientBaseService extends BaseService {
                     Integer adminbool=user.getAdminbool();//状态
 
                      if (!password.equals(password1.trim())){
-                        System.out.println("账户:"+loginaccount1+"用户密码不正确--"+loginaccount1);
+                        System.out.println("账户:"+loginaccount1+"用户密码不正确--"+password1);
                          result.setMessage("密码错误");
                         return;
                      }
@@ -106,8 +107,8 @@ public class ForClientBaseService extends BaseService {
                             int updateById_bool=base_admininfoMapper.updateById(user);
                             System.out.println("updateById_bool--"+updateById_bool);
 
-                            //session存储
-                            httpSession.setAttribute("user", user);
+                           //session存储
+                           httpSession.setAttribute(Constant.MANAGE_WEB,user);
                            result.setData(userloginVO);
                            changeResultToSuccess(result);
                            return;
@@ -128,8 +129,8 @@ public class ForClientBaseService extends BaseService {
 
 
     public void userloginout(RResult result,ReqParam param,HttpSession session){
-        if (null!=session.getAttribute("user")){
-            session.removeAttribute("user");
+        if (null!=session.getAttribute(Constant.MANAGE_WEB)){
+            session.removeAttribute(Constant.MANAGE_WEB);
             System.out.println("登出成功");
             result.setMessage("登出成功");
         }

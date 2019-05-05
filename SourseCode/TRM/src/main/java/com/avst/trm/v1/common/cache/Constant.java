@@ -16,6 +16,12 @@ public class Constant {
     public static final String INIT_CLIENT="INIT_CLIENT";
 
     /**
+     * 客户端初始化TOKEN
+     */
+    public static final String INIT_CLIENTKEY="INIT_CLIENTKEY";
+
+
+    /**
      * web后台当前管理员信息的保存名
      */
     public static final String MANAGE_WEB="MANAGE_WEB";

@@ -338,6 +338,25 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 	}
 }
 
+/**
+ * json格式ajax提交 pp
+ * @param url
+ * @param data
+ * @param success_fun
+ */
+function ajaxSubmitByJson(url, data, success_fun,error_fun) {
+    $.ajax({
+        url : url,
+        type : "post",
+        async : true,
+        dataType : "json",
+        contentType: "application/json",
+        data : JSON.stringify(data),
+        timeout : 60000,
+        success : success_fun,
+        error : (error_fun != null ? error_fun : ajaxErrDialog)
+    });
+}
 
 /**
  * ajax 请求失败的提醒

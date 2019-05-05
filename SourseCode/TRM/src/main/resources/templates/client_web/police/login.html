@@ -3,59 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${loginModel.title}">欢迎来到智能提讯系统</title>
-    <link rel="stylesheet" href="/uimaker/css/style.css">
-<style>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <style>
     /**police_login*/
-    * { font: 13px/1.5 '微软雅黑'; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box; padding:0; margin:0; list-style:none; box-sizing: border-box; }
-    body, html { height:100%; overflow:hidden; }
-    body { background:#1e9fff; background-size: cover; }
-    img{ border:none;}
-    .login_box{ width:1100px; margin:150px auto 0;}
-    .login_box .login_l_img{ float:left; width:432px; height:440px; margin-left:50px;}
-    .login_box .login_l_img img{width:500px; height:440px; }
-    .login {height:360px; width:400px; padding:50px; background-color: #ffffff;border-radius:6px;box-sizing: border-box; float:right; margin-right:50px; position:relative; margin-top:50px;}
-    .login_logo{ width:120px; height:120px; border:5px solid #1e9fff;border-radius:100px; background:#FFFFFF; text-align:center; line-height:110px; position:absolute; top:-60px; right:140px;}
+    * {  -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box; padding:0; margin:0; list-style:none; box-sizing: border-box; }
+    body { background:#01AAED; background-size: cover; }
+    .login {text-align:center;height:360px; width:400px; padding:50px; background-color: #ffffff;border-radius:6px;box-sizing: border-box; position:relative;margin: auto }
+    .login_logo{ width:120px; height:120px; border:5px solid #01AAED;border-radius:100px; background:#FFFFFF; text-align:center; line-height:110px; position:absolute; top:-60px; right:140px;}
     .login_name{ width:100%; float:left; text-align:center; margin-top:20px;}
     .login_name p{ width:100%; text-align:center; font-size:18px; color:#444; padding:10px 0 20px;}
-    .login_logo img{ width:60px; height:60px;display: inline-block; vertical-align: middle;}
-    input[type=text], input[type=file], input[type=password], input[type=email], select { border: 1px solid #DCDEE0; vertical-align: middle; border-radius: 3px; height: 50px; padding: 0px 16px; font-size: 14px; color: #555555; outline:none; width:100%;margin-bottom: 15px;line-height:50px; color:#888;}
-    input[type=text]:focus, input[type=file]:focus, input[type=password]:focus, input[type=email]:focus, select:focus { border: 1px solid #1e9fff; }
-    input[type=submit], input[type=button] { display: inline-block; vertical-align: middle; padding: 12px 24px; margin: 0px; font-size:16px; line-height: 24px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; color: #ffffff; background-color: #1e9fff; border-radius: 3px; border: none; -webkit-appearance: none; outline:none; width:100%; }
-    .copyright { font-size:14px; color:#fff; display:block;width:100%; float:left; text-align:center;margin-top: 50px}
-    .copyright a{font-weight:bold;color:#fff;text-decoration:none; cursor:pointer;}
-    .copyright a:hover{color:#fff;}
+    .login_logo img{ border:none;width:60px; height:60px;display: inline-block; vertical-align: middle;}
+    input[type=text], input[type=password]{ border: 1px solid #DCDEE0; vertical-align: middle; border-radius: 3px; height: 50px; padding: 0px 16px; font-size: 14px; color: #555555; outline:none; width:100%;margin-bottom: 15px;line-height:50px; color:#888;}
+    input[type=text]:focus, input[type=password]:focus{ border: 1px solid #01AAED; }
+    button { display: inline-block; vertical-align: middle; padding: 12px 24px; margin: 0px; font-size:16px; line-height: 24px; text-align: center; white-space: nowrap; vertical-align: middle; cursor: pointer; color: #ffffff; background-color: #01AAED; border-radius: 3px; border: none; -webkit-appearance: none; outline:none; width:100%; }
 </style>
 </head>
-<body>
-<div class="login_box">
-    <div class="login_l_img"><img src="/uimaker/images/login-img.png" /></div>
-    <div class="login">
-        <div class="login_logo"><a href="#"><img src="/uimaker/images/login_logo.png" /></a></div>
-        <div class="login_name">
-            <p>智能提讯系统</p>
-        </div>
-        <form>
-            <input name="username" id="loginaccount" type="text" placeholder="用户名">
-            <input name="password" id="password" type="password" placeholder="密码">
-            <input value="登录" style="width:100%;" type="button">
-        </form>
+<body  class="layui-layout-body"  style="height:100%;">
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header" style="    background-color: rgba(0, 0, 0, 0.44);">
+        <div class="layui-logo" style="color:#fff;font-weight: bold;font-size: 18px">欢迎来到智能提讯系统</div>
+        <ul class="layui-nav layui-layout-right">
+        </ul>
     </div>
-    <div class="copyright">版权所有  2019  <a href="http://www.avst.cn">顺泰伟成科技有限公司</a> </div>
+
+
+<div  >
+        <div class="layui-row" style="margin-top: 10%">
+            <div class="layui-col-md12">
+                <div class="login">
+                    <div class="login_logo"><a href="#"><img src="/uimaker/images/login_logo.png" /></a></div>
+                    <div class="login_name">
+                        <p>智能提讯系统</p>
+                    </div>
+                    <input name="loginaccount" id="loginaccount" type="text" placeholder="用户名" value="admin">
+                    <input name="password" id="password" type="password" placeholder="密码" value="admin">
+                    <button  type="button"onclick="userlogin();">登录</button>
+                </div>
+            </div>
+        </div>
 </div>
+
+
+<div class="layui-footer"  style="left: 0;">
+        <p style=" text-align:center;">版权所有  © 2019 <a href="http://www.avst.cn">顺泰伟成科技有限公司</a></p>
+    </div>
+</div>
+</body>
 
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
 <script th:src="@{/js/common.js}"  type="text/javascript" ></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
-<script th:src="@{/js/list.js}" type="text/javascript"></script>
 <script th:src="@{/layui/layui.js}"type="text/javascript"></script>
-<script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/login.js}" type="text/javascript"></script>
 <script th:inline="javascript">
     var INIT_CLIENT;
+    var INIT_CLIENTKEY;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
+        INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/login");
+
+        document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) { //回车键的键值为13
+                userlogin();
+            }
+        };
+    });
+    layui.use(['layer','element'], function(){
+        var layer = layui.layer; //获得layer模块
+        var element = layui.element;
+        //使用模块
     });
 </script>
-</body>
 </html>

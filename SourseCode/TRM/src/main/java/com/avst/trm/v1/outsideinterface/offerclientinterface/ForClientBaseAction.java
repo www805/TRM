@@ -44,11 +44,11 @@ public class ForClientBaseAction extends BaseAction {
 
 
 
-    /**
+    /*
      * 客户端管理员登陆
      * @return
      */
-    @GetMapping(value = "/userlogin")
+    @RequestMapping(value = "/userlogin")
     @ResponseBody
     public RResult userlogin(@RequestBody ReqParam<UserloginParam> param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
@@ -67,7 +67,7 @@ public class ForClientBaseAction extends BaseAction {
      * 客户端管理员登出
      * @return
      */
-    @GetMapping(value = "/userloginout",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/userloginout")
     @ResponseBody
     public RResult userloginout(@RequestBody  ReqParam param, HttpSession httpSession) {
         RResult result=this.createNewResultOfFail();
@@ -129,7 +129,7 @@ public class ForClientBaseAction extends BaseAction {
     @GetMapping(value = "/gotoupdateServerconfig")
     public ModelAndView gotoupdateServerconfig(Model model,Integer id){
         model.addAttribute("id","id");
-        return  new ModelAndView("client_web/police/updateServerconfig","updateServerconfig", model);
+        return  new ModelAndView("client_web/police/updateServerconfig","updateServerconfigModel", model);
     }
 
     /**
@@ -139,6 +139,7 @@ public class ForClientBaseAction extends BaseAction {
     public ModelAndView gotologin(Model model, HttpServletRequest request){
         model.addAttribute("title","欢迎来到智能提讯系统");
         request.getSession().setAttribute(Constant.INIT_CLIENT,CommonCache.getinit_CLIENT());
+        request.getSession().setAttribute(Constant.INIT_CLIENTKEY,CommonCache.getClientKey());
         return  new ModelAndView("client_web/police/login","loginModel", model);
     }
 
@@ -148,7 +149,7 @@ public class ForClientBaseAction extends BaseAction {
     @GetMapping(value = "/gotomain")
     public ModelAndView gotomain(Model model){
         model.addAttribute("title","智能提讯系统");
-        return  new ModelAndView("client_web/main","mainModel", model);
+        return  new ModelAndView("client_web/police/main","mainModel", model);
     }
 
 

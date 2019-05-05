@@ -70,7 +70,10 @@ function getactionid_manage() {
         startDownServer_getdataInfos:"startDownServer_getdataInfos",
 
         /*police*/
-        login_userlogin:"login_userlogin"
+        login_userlogin:"login_userlogin",
+        login_gotomain:"login_gotomain",
+        main_userloginout:"main_userloginout",
+        login_gotologin:"login_gotologin"
 
 
     };
