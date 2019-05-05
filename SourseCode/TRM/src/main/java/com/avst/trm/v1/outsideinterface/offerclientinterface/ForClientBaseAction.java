@@ -1,6 +1,7 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -17,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -134,8 +136,9 @@ public class ForClientBaseAction extends BaseAction {
      * 跳转==》登陆页
      */
     @GetMapping(value = "/gotologin")
-    public ModelAndView gotologin(Model model){
+    public ModelAndView gotologin(Model model, HttpServletRequest request){
         model.addAttribute("title","欢迎来到智能提讯系统");
+        request.getSession().setAttribute(Constant.INIT_CLIENT,CommonCache.getinit_CLIENT());
         return  new ModelAndView("client_web/police/login","loginModel", model);
     }
 
