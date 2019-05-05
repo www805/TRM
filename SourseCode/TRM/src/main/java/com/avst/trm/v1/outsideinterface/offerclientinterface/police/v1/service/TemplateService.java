@@ -46,6 +46,8 @@ public class TemplateService extends ForClientBaseService {
     @Autowired
     private Police_templatetoproblemMapper police_templatetoproblemMapper;
 
+    @Autowired
+    private Police_templatetotypeMapper police_templatetotypeMapper;
 
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
@@ -57,18 +59,35 @@ public class TemplateService extends ForClientBaseService {
             return;
         }
 
+        EntityWrapper ew = new EntityWrapper();
+
+        if (StringUtils.isNotBlank(getTemplatesParam.getKeyword())){
+            ew.like("te.title", getTemplatesParam.getKeyword().trim());
+        }
+        if (null != getTemplatesParam.getTemplatetypeid()) {
+            ew.eq("t.id", getTemplatesParam.getTemplatetypeid());
+        }
+
         //分页处理
-        int count=police_templateMapper.countgetTemplateList(getTemplatesParam);
+        int count = police_templateMapper.countgetTemplateList(ew);
         getTemplatesParam.setRecordCount(count);
 
         Page<Template> page=new Page<Template>(getTemplatesParam.getCurrPage(),getTemplatesParam.getPageSize());
-        List<Template> templates=police_templateMapper.getTemplateList(page,getTemplatesParam);
+        List<Template> templates = police_templateMapper.getTemplateList(page, ew);
         if (null!=templates&&templates.size()>0){
             //添加题目列表
             for (Template template : templates) {
                 GetTemplateToProblemsParam getTemplateToProblemsParam=new GetTemplateToProblemsParam();
                 getTemplateToProblemsParam.setTemplateid(template.getId());
-                List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(getTemplateToProblemsParam);
+                EntityWrapper ew2 = new EntityWrapper();
+
+                if (null != getTemplateToProblemsParam.getTemplateid()) {
+                    ew2.eq("t.id", getTemplateToProblemsParam.getTemplateid());
+                }
+
+                ew2.orderBy("b.ordernum", true); //fasle大到小   true小到大
+
+                List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(ew2);
                 if (null!=templateToProblems&&templateToProblems.size()>0){
                     template.setTemplateToProblems(templateToProblems);
                 }
@@ -98,26 +117,38 @@ public class TemplateService extends ForClientBaseService {
 
         //删除关联题目
         EntityWrapper ew=new EntityWrapper();
-        ew.eq("templateid",template.getId());
+        ew.eq("templatessid",template.getId());
         int delete_bool = police_templatetoproblemMapper.delete(ew);
         System.out.println("delete_bool__"+delete_bool);
         if (delete_bool>0){
 
             //添加关联题目
             List<Integer> ids=template.getTemplatetoproblemids();
-           /* if (null!=ids&&ids.size()>0){
+            if (null!=ids&&ids.size()>0){
                 for (Integer id : ids) {
                     Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                     templatetoproblem.setCreatetime(new Date());
-                    templatetoproblem.setTemplateid(template.getId());
-                    templatetoproblem.setProblemid(id);
+
+                    templatetoproblem.setTemplatessid(template.getId() + "");//模板id
+                    templatetoproblem.setProblemssid(id + "");//题目id
+
                     templatetoproblem.setOrdernum(1);
                     templatetoproblem.setSsid(OpenUtil.getUUID_32());
                     int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                     System.out.println("insert_bool__"+insert_bool);
                 }
-            }*/
+            }
         }
+
+//        Police_templatetotype templatetotype = new Police_templatetotype();
+//        templatetotype.setId(template.getId());
+//        templatetotype.setTemplatessid(addTemplateParam.getId() + "");
+//        templatetotype.setTemplatebool(-1);
+//        templatetotype.setTemplatetypessid(addTemplateParam.getTemplatetypeid() + "");
+//        templatetotype.setCreatetime(new Date());
+
+//        int insert_type = police_templatetotypeMapper.insert(templatetotype);
+//        System.out.println("insert_type "+insert_type);
 
         //修改模板数据
         template.setUpdatetime(new Date());
@@ -148,7 +179,10 @@ public class TemplateService extends ForClientBaseService {
             return;
         }
 
-        Template template=police_templateMapper.getTemplateById(getTemplateByIdParam);
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("id", getTemplateByIdParam.getTemplatebyid());
+
+        Template template = police_templateMapper.getTemplateById(ew);
 
         if (null==template){
             result.setMessage("未找到该模板信息");
@@ -158,7 +192,13 @@ public class TemplateService extends ForClientBaseService {
         //添加题目列表
         GetTemplateToProblemsParam getTemplateToProblemsParam=new GetTemplateToProblemsParam();
         getTemplateToProblemsParam.setTemplateid(template.getId());
-        List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(getTemplateToProblemsParam);
+
+        EntityWrapper ew2 = new EntityWrapper();
+        if (null != getTemplateToProblemsParam.getTemplateid()) {
+            ew2.eq("t.id", getTemplateToProblemsParam.getTemplateid());
+        }
+
+        List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(ew2);
         if (null!=templateToProblems&&templateToProblems.size()>0){
             template.setTemplateToProblems(templateToProblems);
         }
@@ -196,18 +236,27 @@ public class TemplateService extends ForClientBaseService {
 
         //添加模板题目关联数据
         List<Integer> ids=addTemplateParam.getTemplatetoproblemids();
-        /*if (null!=ids&&ids.size()>0){
+        if (null!=ids&&ids.size()>0){
             for (Integer id : ids) {
                 Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                 templatetoproblem.setCreatetime(new Date());
-                templatetoproblem.setTemplateid(addTemplateParam.getId());
-                templatetoproblem.setProblemid(id);
+                templatetoproblem.setTemplatessid(addTemplateParam.getId() + "");//模板id
+                templatetoproblem.setProblemssid(id + "");//题目id
                 templatetoproblem.setOrdernum(1);
                 templatetoproblem.setSsid(OpenUtil.getUUID_32());
                 int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                 System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
             }
-        }*/
+        }
+
+        Police_templatetotype templatetotype = new Police_templatetotype();
+        templatetotype.setTemplatessid(addTemplateParam.getId() + "");
+        templatetotype.setTemplatebool(-1);
+        templatetotype.setTemplatetypessid(addTemplateParam.getTemplatetypeid() + "");
+        templatetotype.setCreatetime(new Date());
+
+        int insert_type = police_templatetotypeMapper.insert(templatetotype);
+        System.out.println("insert_type "+insert_type);
 
         addTemplateVO.setBool(insert_bool);
         result.setData(addTemplateVO);

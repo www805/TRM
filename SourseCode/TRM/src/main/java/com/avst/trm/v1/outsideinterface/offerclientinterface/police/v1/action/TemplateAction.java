@@ -6,8 +6,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.ForClientBaseAction;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetProblemsParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplatesParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.*;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.service.TemplateService;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetProblemTypesVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetProblemsVO;
@@ -29,10 +28,10 @@ public class TemplateAction extends ForClientBaseAction {
     private TemplateService templateService;
 
     /**
-     * ① 获取模板列表：/v1/police/template/getTemplates
-     * ②  修改模板：/v1/police/template/updateTemplate
-     * ③  查看单个模板：/v1/police/template/getTemplateById
-     * ④  添加模板：/v1/police/template/addTemplate
+     * ① 获取模板列表：/v1/police/template/getTemplates √
+     * ②  修改模板：/v1/police/template/updateTemplate √
+     * ③  查看单个模板：/v1/police/template/getTemplateById √
+     * ④  添加模板：/v1/police/template/addTemplate √
      * ⑤  获取模板类型列表：/v1/police/template/getTemplateTypes
      * ⑥  添加模板类型：/v1/police/template/addTemplateType
      * ⑦  修改模板类型：/v1/police/template/updateTemplateType
@@ -74,7 +73,7 @@ public class TemplateAction extends ForClientBaseAction {
      * @return
      */
     @PostMapping(value = "/updateTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateTemplate(@RequestBody ReqParam param){
+    public RResult updateTemplate(@RequestBody ReqParam<UpdateTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -93,14 +92,14 @@ public class TemplateAction extends ForClientBaseAction {
      * @return
      */
     @GetMapping(value = "/getTemplateById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getTemplateById(@RequestBody ReqParam param){
+    public RResult getTemplateById(@RequestBody ReqParam<GetTemplateByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-//            templateService.getTemplateById(result,param);
+            templateService.getTemplateById(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
@@ -111,8 +110,8 @@ public class TemplateAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addTemplate(@RequestBody ReqParam param){
+    @PostMapping(value = "/addTemplate",produces = MediaType.APPLICATION_JSON_VALUE)
+    public RResult addTemplate(@RequestBody ReqParam<AddTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
