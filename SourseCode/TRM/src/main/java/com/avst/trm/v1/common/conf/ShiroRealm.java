@@ -85,12 +85,10 @@ public class ShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken usernamePasswordToken=(UsernamePasswordToken )authenticationToken;
-        String username = (String) usernamePasswordToken.getPrincipal();
-        String password=String.valueOf(usernamePasswordToken.getPassword());
 
         EntityWrapper ew=new EntityWrapper();
-        ew.eq("loginaccount", username);
-        ew.eq("password", password);
+        ew.eq("loginaccount", (String) usernamePasswordToken.getPrincipal());
+        ew.eq("password", String.valueOf(usernamePasswordToken.getPassword()));
         List<Base_admininfo> adminManage=base_admininfoMapper.selectList(ew);
         if (null==adminManage||adminManage.size()!=1){  throw new UnknownAccountException();}
         Base_admininfo user=adminManage.get(0);
