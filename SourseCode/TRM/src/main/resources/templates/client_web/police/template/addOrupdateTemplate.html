@@ -74,7 +74,7 @@
                         <td>
                             <div class="layui-table-cell laytable-cell-13-0-5">
 
-                                <a class="layui-btn layui-btn-sm" lay-event="edit">
+                                <a class="layui-btn layui-btn-sm" onclick="addUpdateinfo();" lay-event="edit">
                                     <i class="layui-icon layui-icon-edit"></i>修改
                                 </a>
                                 <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
@@ -87,7 +87,7 @@
                         <td>答：小明</td>
                         <td>
                             <div class="layui-table-cell laytable-cell-13-0-5">
-                                <a class="layui-btn layui-btn-sm" lay-event="edit">
+                                <a class="layui-btn layui-btn-sm" onclick="addUpdateinfo();" lay-event="edit">
                                     <i class="layui-icon layui-icon-edit"></i>修改
                                 </a>
                                 <a class="layui-btn layui-btn-normal layui-btn-sm" lay-event="edit">
@@ -245,8 +245,14 @@
             type: 1,
             title:"新增问题/答案",
             offset: '100px',
-            area: ['420px', '240px'], //宽高
-            content: 'html内容222222222'
+            area: ['620px', '230px'], //宽高
+            shadeClose :true,
+            content: "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
+                "    <label class=\"layui-form-label\">问题/答案</label>\n" +
+                "    <div class=\"layui-input-block\">\n" +
+                "      <textarea placeholder=\"请输入内容\" class=\"layui-textarea\"></textarea>\n" +
+                "    </div>\n" +
+                "<button class=\"layui-btn layui-btn-normal\" style='float: right;margin-top: 10px;'>添加</button></div>"
         });
 
         // layer.open({
