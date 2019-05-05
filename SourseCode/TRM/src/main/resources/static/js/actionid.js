@@ -2,6 +2,7 @@
 
 function getactionid_manage() {
     return {
+        /*web*/
         main_getKeyword:"main_getKeyword",
 
         main_getRole:"main_getRole",
@@ -66,7 +67,10 @@ function getactionid_manage() {
 
         startDownServer_startdownServer:"startDownServer_startdownServer",
         startDownServer_closeddownServer:"startDownServer_closeddownServer",
-        startDownServer_getdataInfos:"startDownServer_getdataInfos"
+        startDownServer_getdataInfos:"startDownServer_getdataInfos",
+
+        /*police*/
+        login_userlogin:"login_userlogin"
 
 
     };
