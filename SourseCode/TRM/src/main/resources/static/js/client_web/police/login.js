@@ -19,13 +19,13 @@ function callbackuserlogin(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg("登陆成功",{icon: 1,time:500,offset: ['45%', '45%']},function () {
+            layer.msg("登陆成功",{icon: 1,time:500},function () {
                 var url=getActionURL(getactionid_manage().login_gotomain);
                 window.location.href=url;
             });
         }
     }else{
-        layer.msg(data.message,{offset: ['45%', '45%']});
+        layer.msg(data.message);
 
     }
 }
