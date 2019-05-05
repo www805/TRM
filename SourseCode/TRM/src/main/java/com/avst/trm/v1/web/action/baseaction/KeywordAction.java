@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.KeywordParam;
 import com.avst.trm.v1.web.req.policereq.AddOrUpdateKeywordParam;
 import com.avst.trm.v1.web.service.policeservice.KeywordService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,7 @@ public class KeywordAction extends BaseAction{
      * @param param
      * @return
      */
+    @RequiresPermissions("getKeyword")
     @GetMapping(value = "/getKeyword")
     public ModelAndView getKeyword(Model model, KeywordParam param) {
         RResult rResult=createNewResultOfFail();
@@ -38,6 +40,7 @@ public class KeywordAction extends BaseAction{
      * 关键字列表分页
      * @return
      */
+    @RequiresPermissions("getKeywordList")
     @RequestMapping(value = "/getKeywordList")
     @ResponseBody
     public RResult getKeywordList(KeywordParam param) {
@@ -55,6 +58,7 @@ public class KeywordAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateKeyword")
     @GetMapping(value = "/getAddOrUpdateKeyword")
     public ModelAndView getAddKeyword(Model model, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
@@ -73,6 +77,7 @@ public class KeywordAction extends BaseAction{
      * @param id
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateKeyword")
     @GetMapping(value = "/getAddOrUpdateKeyword/{id}")
     public ModelAndView getUpdateKeyword(Model model,  @PathVariable("id") int id) {
 
@@ -90,6 +95,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateKeyword")
     @PostMapping(value = "/getAddOrUpdateKeyword/{id}")
     @ResponseBody
     public RResult UpdateKeyword(@PathVariable("id") int id, AddOrUpdateKeywordParam keyword) {
@@ -103,6 +109,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateKeyword")
     @PostMapping(value = "/getAddOrUpdateKeyword")
     @ResponseBody
     public RResult AddKeyword(AddOrUpdateKeywordParam keyword) {
@@ -116,6 +123,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
+    @RequiresPermissions("deleteKeyword")
     @PostMapping(value = "/deleteKeyword")
     @ResponseBody
     public RResult deleteKeyword(AddOrUpdateKeywordParam keyword) {
@@ -129,6 +137,7 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
+    @RequiresPermissions("updateShieldbool")
     @PostMapping(value = "/updateShieldbool")
     @ResponseBody
     public RResult updateShieldbool(AddOrUpdateKeywordParam keyword) {

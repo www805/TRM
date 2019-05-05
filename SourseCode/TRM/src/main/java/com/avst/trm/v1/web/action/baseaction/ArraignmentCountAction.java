@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.service.policeservice.Arraignment_countService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ public class ArraignmentCountAction extends BaseAction{
     @Autowired
     private Arraignment_countService arraignmentCountService;
 
+    @RequiresPermissions("getArraignment_countList")
     @PostMapping(value = "/getArraignment_countList")
     @ResponseBody
     public RResult getArraignment_countList(Arraignment_countParam param) {
@@ -33,9 +35,10 @@ public class ArraignmentCountAction extends BaseAction{
 
     /***
      * 笔录统计
-     * @param model
+     * @param model  首页使用不拦截
      * @return
      */
+
     @GetMapping(value = "/getArraignment_count")
     public ModelAndView getArraignment_count(Model model) {
         RResult rResult = createNewResultOfFail();
@@ -50,6 +53,7 @@ public class ArraignmentCountAction extends BaseAction{
      * 笔录使用情况统计表
      * @return
      */
+    @RequiresPermissions("getArraignment_countPrint")
     @RequestMapping(value = "/getArraignment_countPrint")
     @ResponseBody
     public RResult getArraignment_countPrint(Arraignment_countParam param) {

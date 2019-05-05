@@ -11,10 +11,13 @@ import com.avst.trm.v1.web.req.basereq.LoginParam;
 import com.avst.trm.v1.web.service.policeservice.HomeService;
 import com.avst.trm.v1.web.service.policeservice.LoginService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -95,13 +98,15 @@ public class HomeAction extends BaseAction{
         return result;
     }
 
-    @RequestMapping(value = "/logout",produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/logout")
     @ResponseBody
     public RResult logout(Model model,HttpServletRequest request) {
         RResult rResult=createNewResultOfFail();
         this.changeResultToSuccess(rResult);
         rResult.setMessage("退出成功");
         request.getSession().setAttribute(Constant.MANAGE_WEB,null);
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
         return rResult;
     }
 

@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.policereq.GetArraignmentListParam;
 import com.avst.trm.v1.web.req.policereq.GetArraignment_countListParam;
 import com.avst.trm.v1.web.service.policeservice.ArraignmentService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ public class ArraignmentAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getArraignment")
     @GetMapping(value = "/getArraignment")
     public ModelAndView getArraignment(Model model) {
         model.addAttribute("title", "笔录提讯");
@@ -38,6 +40,7 @@ public class ArraignmentAction extends BaseAction{
      * @param param
      * @return
      */
+    @RequiresPermissions("getArraignmentList")
     @RequestMapping(value = "/getArraignmentList")
     @ResponseBody
     public RResult getArraignmentList(GetArraignmentListParam param) {
@@ -55,6 +58,7 @@ public class ArraignmentAction extends BaseAction{
      * 获取笔录列表
      * @return
      */
+    @RequiresPermissions("getArraignmentByCaseSsid")
     @RequestMapping(value = "/getArraignmentByCaseSsid")
     @ResponseBody
     public RResult getArraignments(String caseSsid) {
@@ -74,6 +78,7 @@ public class ArraignmentAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getArraignmentShow")
     @GetMapping(value = "/getArraignmentShow")
     public ModelAndView getArraignmentShow(Model model,String ssid) {
         model.addAttribute("title", "笔录详情");
@@ -87,6 +92,7 @@ public class ArraignmentAction extends BaseAction{
      * @param ssid
      * @return
      */
+    @RequiresPermissions("getArraignmentBySsid")
     @RequestMapping(value = "/getArraignmentBySsid")
     @ResponseBody
     public RResult getArraignmentBySsid(String ssid) {

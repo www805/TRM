@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.UpdateRoleToPermissionsParam;
 import com.avst.trm.v1.web.service.baseservice.PermissionsService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,7 @@ public class PermissionsAction extends BaseAction {
      * @param model
      * @return
      */
+    @RequiresPermissions("topermissionsShow")
     @GetMapping(value = "/topermissionsShow")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title","设置角色权限");
@@ -35,6 +37,7 @@ public class PermissionsAction extends BaseAction {
      *获取全部权限
      * @return
      */
+    @RequiresPermissions("getPermissions")
     @RequestMapping(value = "/getPermissions")
     @ResponseBody
     public RResult getPermissions() {
@@ -49,9 +52,10 @@ public class PermissionsAction extends BaseAction {
      * 根据角色ssid角色权限
      * @return
      */
+    @RequiresPermissions("getPermissionsByRoleSsid")
     @RequestMapping(value = "/getPermissionsByRoleSsid")
     @ResponseBody
-    public RResult getPermissionsByRoleSsid(Integer rolessid) {
+    public RResult getPermissionsByRoleSsid(String rolessid) {
         RResult result=createNewResultOfFail();
         if (null==rolessid){
             result.setMessage("参数为空");
@@ -66,6 +70,7 @@ public class PermissionsAction extends BaseAction {
      *设置角色权限
      * @return
      */
+    @RequiresPermissions("updateRoleToPermissions")
     @RequestMapping(value = "/updateRoleToPermissions")
     @ResponseBody
     public RResult updateRoleToPermissions(@RequestBody  UpdateRoleToPermissionsParam param) {
@@ -78,6 +83,21 @@ public class PermissionsAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 获取菜单
+     * @return
+     */
+    @RequestMapping(value = "/getPermissionsByMenu")
+    @ResponseBody
+    public RResult getPermissionsByMenu() {
+        RResult result=createNewResultOfFail();
+        permissionsService.getPermissionsByMenu(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 

@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.policereq.ServerconfigParam;
 import com.avst.trm.v1.web.service.policeservice.ServerConfigService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class ServerConfigAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getServerConfig")
     @GetMapping(value = "/getServerConfig")
     public ModelAndView getServerConfig(Model model) {
 
@@ -46,6 +48,7 @@ public class ServerConfigAction extends BaseAction{
      * 修改配置
      * @return
      */
+    @RequiresPermissions("getServerConfig")
     @PostMapping(value = "/getServerConfig",produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public RResult UpdateServerConfig(ServerconfigParam serverconfigParam) {
@@ -60,6 +63,7 @@ public class ServerConfigAction extends BaseAction{
      * 系统logo图片上传接口
      * @return
      */
+    @RequiresPermissions("uploadByImg")
     @PostMapping(value = "/uploadByImg")
     @ResponseBody
     public RResult uploadByImg(@RequestParam("file") MultipartFile file) {
@@ -72,6 +76,7 @@ public class ServerConfigAction extends BaseAction{
      * 客户端logo图片上传接口
      * @return
      */
+    @RequiresPermissions("uploadByClientImg")
     @PostMapping(value = "/uploadByClientImg")
     @ResponseBody
     public RResult uploadByClientImg(@RequestParam("file") MultipartFile file) {

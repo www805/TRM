@@ -17,7 +17,6 @@ function callbackgetArraignmentBySsid(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                console.log(data);
                 //全部模板
                 var recordtemplates=data.recordtemplates;
                 $("#recordtemplates").html("");

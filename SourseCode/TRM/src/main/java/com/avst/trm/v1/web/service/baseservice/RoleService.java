@@ -39,7 +39,7 @@ public class RoleService extends BaseService {
                 ew.eq("rolebool", param.getRolebool());
             }
             ew.ne("rolebool",-1);//状态为删除的不显示
-            ew.ne("ssid","role1");//超级管理员不显示
+           // ew.ne("ssid","role1");//超级管理员不显示
 
             int count=roleMapper.selectCount(ew);
             param.setRecordCount(count);
@@ -68,7 +68,7 @@ public class RoleService extends BaseService {
 
             EntityWrapper ew=new EntityWrapper();
             ew.ne("rolebool",-1);//状态为删除的不显示
-            ew.ne("ssid","role1");//超级管理员不显示
+           // ew.ne("ssid","role1");//超级管理员不显示
             List<Base_role> list= roleMapper.selectList(ew);
             if (null!=list&&list.size()>0){
                 result.setData(list);

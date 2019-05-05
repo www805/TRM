@@ -7,6 +7,7 @@ import com.avst.trm.v1.web.req.basereq.GetdataInfosParam;
 import com.avst.trm.v1.web.req.basereq.StartdownServerParam;
 import com.avst.trm.v1.web.service.baseservice.DatainfoService;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class DatainfoAction extends BaseAction {
      * @param model
      * @return
      */
+    @RequiresPermissions("tostartDownServer")
     @GetMapping(value = "/tostartDownServer")
     public ModelAndView tostartDownServer(Model model,String lastIP) {
         model.addAttribute("title","表单列表");
@@ -46,6 +48,7 @@ public class DatainfoAction extends BaseAction {
      * @param param
      * @return
      */
+    @RequiresPermissions("getdataInfos")
     @RequestMapping(value = "/getdataInfos")
     @ResponseBody
     public RResult getdataInfos(GetdataInfosParam param){

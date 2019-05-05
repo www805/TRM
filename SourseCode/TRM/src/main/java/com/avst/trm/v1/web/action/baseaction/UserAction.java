@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.req.basereq.ChangeboolUserParam;
 import com.avst.trm.v1.web.req.basereq.GetUserListParam;
 import com.avst.trm.v1.web.service.baseservice.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +27,7 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getUser")
     @GetMapping(value = "/getUser")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title","管理员列表");
@@ -36,6 +38,7 @@ public class UserAction extends BaseAction{
      * 用户列表分页pp
      * @return
      */
+    @RequiresPermissions("getUserList")
     @RequestMapping(value = "/getUserList")
     @ResponseBody
     public RResult getUserList(GetUserListParam param) {
@@ -55,6 +58,7 @@ public class UserAction extends BaseAction{
      * @param param
      * @return
      */
+    @RequiresPermissions("deleteUser")
     @RequestMapping(value = "/deleteUser")
     @ResponseBody
     public RResult deleteUser(ChangeboolUserParam param) {
@@ -72,6 +76,7 @@ public class UserAction extends BaseAction{
      * 获取全部单位pp
      * @return
      */
+    @RequiresPermissions("getWorkunits")
     @RequestMapping(value = "/getWorkunits")
     @ResponseBody
     public RResult getWorkunits(){
@@ -86,6 +91,7 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateUser")
     @GetMapping(value = "/getAddOrUpdateUser")
     public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
@@ -98,6 +104,7 @@ public class UserAction extends BaseAction{
      * @param ssid
      * @return
      */
+    @RequiresPermissions("getUserBySsid")
     @RequestMapping(value = "/getUserBySsid")
     @ResponseBody
     public RResult getUserBySsid(String ssid){
@@ -115,6 +122,7 @@ public class UserAction extends BaseAction{
      * 添加用户pp
      * @return
      */
+    @RequiresPermissions("addUser")
     @RequestMapping(value = "/addUser")
     @ResponseBody
     public RResult addUser(@RequestBody AdminAndWorkunit param) {
@@ -134,6 +142,7 @@ public class UserAction extends BaseAction{
      * 修改用户pp
      * @return
      */
+    @RequiresPermissions("updateUser")
     @RequestMapping(value = "/updateUser")
     @ResponseBody
     public RResult updateUser(@RequestBody  AdminAndWorkunit param) {
@@ -154,6 +163,7 @@ public class UserAction extends BaseAction{
      * @param param
      * @return
      */
+    @RequiresPermissions(value = "changeboolUser")
     @RequestMapping(value = "/changeboolUser")
     @ResponseBody
     public RResult changeboolUser(ChangeboolUserParam param) {

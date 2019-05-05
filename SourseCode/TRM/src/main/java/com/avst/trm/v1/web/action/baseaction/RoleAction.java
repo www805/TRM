@@ -8,6 +8,7 @@ import com.avst.trm.v1.web.req.basereq.ChangeboolRoleParam;
 import com.avst.trm.v1.web.req.basereq.GetRoleListParam;
 import com.avst.trm.v1.web.req.basereq.Getlist3Param;
 import com.avst.trm.v1.web.service.baseservice.RoleService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,7 @@ public class RoleAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getRole")
     @GetMapping(value = "/getRole")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title", "角色列表");
@@ -40,6 +42,7 @@ public class RoleAction extends BaseAction{
      * 角色列表分页pp
      * @return
      */
+    @RequiresPermissions("getRoleList")
     @RequestMapping(value = "/getRoleList")
     @ResponseBody
     public RResult getRoleList(GetRoleListParam param) {
@@ -57,6 +60,7 @@ public class RoleAction extends BaseAction{
      * 获取全部角色pp
      * @return
      */
+    @RequiresPermissions("getRoles")
     @RequestMapping(value = "/getRoles")
     @ResponseBody
     public RResult getRoles() {
@@ -72,6 +76,7 @@ public class RoleAction extends BaseAction{
      * @param param
      * @return
      */
+    @RequiresPermissions("deleteRole")
     @RequestMapping(value = "/deleteRole")
     @ResponseBody
     public RResult deleteRole(ChangeboolRoleParam param) {
@@ -90,6 +95,7 @@ public class RoleAction extends BaseAction{
      * @param model
      * @return
      */
+    @RequiresPermissions("getAddOrUpdateRole")
     @GetMapping(value = "/getAddOrUpdateRole")
     public ModelAndView getAddOrUpdateRole(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
@@ -102,6 +108,7 @@ public class RoleAction extends BaseAction{
      * @param ssid
      * @return
      */
+    @RequiresPermissions("getRoleBySsid")
     @RequestMapping(value = "/getRoleBySsid")
     @ResponseBody
     public RResult getRoleBySsid(String ssid){
@@ -120,6 +127,7 @@ public class RoleAction extends BaseAction{
      * 添加角色pp
      * @return
      */
+    @RequiresPermissions("addRole")
     @RequestMapping(value = "/addRole")
     @ResponseBody
     public RResult addRole(Base_role param) {
@@ -139,6 +147,7 @@ public class RoleAction extends BaseAction{
      * 修改角色pp
      * @return
      */
+    @RequiresPermissions("updateRole")
     @RequestMapping(value = "/updateRole")
     @ResponseBody
     public RResult updateRole(Base_role param) {
@@ -154,10 +163,11 @@ public class RoleAction extends BaseAction{
     }
 
     /**
-     * 角色状态修改
+     * 状态pp
      * @param param
      * @return
      */
+    @RequiresPermissions("changeboolRole")
     @RequestMapping(value = "/changeboolRole")
     @ResponseBody
     public RResult changeboolRole(ChangeboolRoleParam param) {

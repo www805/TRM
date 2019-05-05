@@ -7,6 +7,7 @@ function getactionid_manage() {
         main_getRole:"main_getRole",
         main_logout:"main_logout",
         main_getUser:"main_getUser",
+        main_getPermissionsByMenu:"main_getPermissionsByMenu",
         login_login:"login_login",
         login_main:"login_main",
 

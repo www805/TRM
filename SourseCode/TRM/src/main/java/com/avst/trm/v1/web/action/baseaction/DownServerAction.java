@@ -7,6 +7,7 @@ import com.avst.trm.v1.web.req.basereq.CloseddownServerParam;
 import com.avst.trm.v1.web.req.basereq.GetdownServersParam;
 import com.avst.trm.v1.web.req.basereq.StartdownServerParam;
 import com.avst.trm.v1.web.service.baseservice.DownServerService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,7 @@ public class DownServerAction extends BaseAction {
      * @param model
      * @return
      */
+    @RequiresPermissions("todownServer")
     @GetMapping(value = "/todownServer")
     public ModelAndView todownServer(Model model) {
         model.addAttribute("title","同步数据");
@@ -43,6 +45,7 @@ public class DownServerAction extends BaseAction {
      * 获取同步列表
      * @return
      */
+    @RequiresPermissions("getdownServers")
     @RequestMapping(value = "/getdownServers")
     @ResponseBody
     public RResult getdownServers(GetdownServersParam param){
@@ -60,6 +63,7 @@ public class DownServerAction extends BaseAction {
      * 开始同步
      * @return
      */
+    @RequiresPermissions("startdownServer")
     @RequestMapping(value = "/startdownServer")
     @ResponseBody
     public RResult startdownServer(StartdownServerParam param){
@@ -77,6 +81,7 @@ public class DownServerAction extends BaseAction {
      * 强制关闭同步
      * @return
      */
+    @RequiresPermissions("closeddownServer")
     @RequestMapping(value = "/closeddownServer")
     @ResponseBody
     public RResult closeddownServer(@RequestBody  CloseddownServerParam param){

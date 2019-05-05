@@ -34,7 +34,6 @@ function callgetPermissions(data){
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                console.log(data)
                 var permissionsVOParams=data.permissionsVOParams;
                 $("#menuBody").html("");
                 $("#funBody").html("");

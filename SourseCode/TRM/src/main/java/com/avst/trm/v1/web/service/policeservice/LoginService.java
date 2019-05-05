@@ -10,6 +10,9 @@ import com.avst.trm.v1.web.req.basereq.LoginParam;
 import com.avst.trm.v1.web.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,12 @@ public class LoginService extends BaseService {
             result=new RResult<AdminManage_session>();
         }
         try {
+
+            Subject subject =  SecurityUtils.getSubject();
+            if (subject.isAuthenticated()){
+                subject.logout();
+            }
+
             EntityWrapper ew=new EntityWrapper();
             ew.eq("loginaccount", loginParam.getLoginaccount());
 
@@ -60,8 +69,15 @@ public class LoginService extends BaseService {
                             result.setMessage("请输入正确的密码");
                             return;
                         }
-                        System.out.println("登陆成功--"+loginaccount);
+                        if (base_admininfo.getAdminbool()!=1){
+                            result.setMessage("用户异常");
+                            return;
+                        }
+
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
+                        subject.login( new UsernamePasswordToken(loginaccount, password));   //完成登录
+                        System.out.println("用户是否登录："+subject.isAuthenticated());
+
 
                         //修改用户最后一次登陆
                         base_admininfo.setLastlogintime(new Date());

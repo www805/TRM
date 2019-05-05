@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.service.baseservice;
 
+import com.avst.trm.v1.common.conf.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admintorole;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
@@ -214,10 +215,10 @@ public class UserService extends BaseService {
                     admintorole.setCreatetime(new Date());
                     admintorole.setSsid(OpenUtil.getUUID_32());
                     int admintorole_insertbool = base_admintoroleMapper.insert(admintorole);
-                    System.out.println("admintorole_insertbool__" + admintorole_insertbool + "添加的角色为：" + role.getRolename());
+                    System.out.println("admintorole_insertbool__" + admintorole_insertbool );
                 }
             }
-
+            ShiroRealm.reloadAuthorizing();
             result.setData(update_bool);
             changeResultToSuccess(result);
             return;
