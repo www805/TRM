@@ -152,6 +152,15 @@ public class ForClientBaseAction extends BaseAction {
         return  new ModelAndView("client_web/police/main","mainModel", model);
     }
 
+    /**
+     * 跳转==》主页
+     */
+    @GetMapping(value = "/gotohome")
+    public ModelAndView gotohome(Model model){
+        model.addAttribute("title","智能提讯系统");
+        return  new ModelAndView("client_web/police/home","homeModel", model);
+    }
+
 
 
 

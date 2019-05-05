@@ -23,13 +23,23 @@
 </style>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
-    <div class="layui-header layui-bg-blue">
+    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED">
         <a th:href="@{/forClient/gotomain}"><h1 class="layui-logo"  style="color: #fff; font-size: 18px; font-weight:bold; font-style:italic" th:text="${mainModel.title}"></h1></a>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
-            <li class="layui-nav-item"><a th:href="@{/web/arraignment/getArraignment}"  target="option">笔录制作</a></li>
-            <li class="layui-nav-item"><a th:href="@{/web/keyword/getKeyword}" target="option">笔录查看</a></li>
-            <li class="layui-nav-item"><a th:href="@{/web/arraignmentCount/getArraignment_count}" target="option">模板管理</a></li>
+            <li class="layui-nav-item"><a  target="option">笔录制作</a></li>
+            <li class="layui-nav-item"><a  target="option">笔录查看</a></li>
+            <li class="layui-nav-item"><a  target="option">模板管理</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">基础配置</a>
+                <dl class="layui-nav-child">
+                    <dd><a target="option">问题类型</a></dd>
+                    <dd><a target="option">模板类型</a></dd>
+                    <dd><a target="option">笔录类型</a></dd>
+                    <dd><a target="option">系统配置</a></dd>
+                </dl>
+            </li>
+
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
@@ -46,7 +56,7 @@
     <div class="layui-body" style="left: 0">
         <!-- 内容主体区域 -->
         <div class="layui-show">
-            <iframe src="/publicweb/home/home" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
+            <iframe src="/forClient/gotohome" frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
         </div>
     </div>
 
