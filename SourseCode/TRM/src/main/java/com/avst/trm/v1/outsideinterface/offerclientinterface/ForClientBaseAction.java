@@ -1,7 +1,6 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_problem;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -9,7 +8,6 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetServerconfigParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.req.UpdateServerconfigParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.vo.UserloginVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.req.UserloginParam;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,7 +127,7 @@ public class ForClientBaseAction extends BaseAction {
     @GetMapping(value = "/gotoupdateServerconfig")
     public ModelAndView gotoupdateServerconfig(Model model,Integer id){
         model.addAttribute("id","id");
-        return  new ModelAndView("client_web/updateServerconfig","updateServerconfig", model);
+        return  new ModelAndView("client_web/police/updateServerconfig","updateServerconfig", model);
     }
 
     /**
@@ -138,7 +136,7 @@ public class ForClientBaseAction extends BaseAction {
     @GetMapping(value = "/gotologin")
     public ModelAndView gotologin(Model model){
         model.addAttribute("title","欢迎来到智能提讯系统");
-        return  new ModelAndView("client_web/login","loginModel", model);
+        return  new ModelAndView("client_web/police/login","loginModel", model);
     }
 
     /**
