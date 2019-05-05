@@ -3,9 +3,6 @@ function login_login(){
 
     var url=getActionURL(getactionid_manage().login_login);
 
-    console.log(pageActionByPage);
-    console.log(url);
-
     var loginaccount =$('input[name="loginaccount"]').val();
     var password =$('input[name="password"]').val();
     var data={
@@ -24,6 +21,10 @@ function callbackgetAdminInfoPage(data){
     }else{
         layer.msg(data.message, {icon: 2});
     }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 function login_logout(){

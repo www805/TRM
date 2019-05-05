@@ -16,13 +16,25 @@ import org.springframework.web.servlet.ModelAndView;
 public class PolicePageAction {
 
     /*********************************关于模板 start*********************************/
+    /**
+     * /v1/police/policePage/totemplateIndex
+     * @param model
+     * @return
+     */
     @GetMapping("totemplateIndex")
     public ModelAndView totemplateIndex(Model model){
+        model.addAttribute("title","笔录模板");
         return new ModelAndView("client_web/police/template/templateIndex", "templateIndex", model);
     }
 
+    /**
+     * /v1/police/policePage/toaddOrupdateTemplate
+     * @param model
+     * @return
+     */
     @GetMapping("toaddOrupdateTemplate")
     public ModelAndView toaddOrupdateTemplate(Model model){
+        model.addAttribute("title","题目选择");
         return new ModelAndView("client_web/police/template/addOrupdateTemplate", "addOrupdateTemplate", model);
     }
 

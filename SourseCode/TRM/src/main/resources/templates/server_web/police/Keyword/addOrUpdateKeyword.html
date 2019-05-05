@@ -53,16 +53,25 @@
 
         <div class="layui-form-item">
             <label class="layui-form-label">字体颜色</label>
-            <div class="layui-input-block">
-                <input type="text" name="color" id="color" required th:value="*{color}" lay-verify="required" placeholder="请输入字体颜色" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline" style="width: 120px;">
+                <input type="text" name="color" id="test-form-input" required th:value="*{color}" lay-verify="required" placeholder="请选择字体颜色" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-inline" style="left: -11px;">
+                <div id="test-form"></div>
             </div>
         </div>
+
         <div class="layui-form-item">
             <label class="layui-form-label">背景颜色</label>
-            <div class="layui-input-block">
-                <input type="text" name="backgroundcolor" id="backgroundcolor" required th:value="*{backgroundcolor}" lay-verify="required" placeholder="请输入字体颜色" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline" style="width: 120px;">
+                <input type="text" name="backgroundcolor" id="backgroundcolor" required th:value="*{backgroundcolor}" lay-verify="required" placeholder="请选择背景颜色" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-inline" style="left: -11px;">
+                <div id="background-form"></div>
             </div>
         </div>
+
+
         <div class="layui-form-item layui-form-text">
             <label class="layui-form-label">是否屏蔽</label>
             <div class="layui-input-block">
@@ -85,7 +94,30 @@
 
 <script>
     //Demo
-    layui.use('form', function(){
+    layui.use(['form','colorpicker'], function(){
+        var $ = layui.$
+            ,colorpicker = layui.colorpicker;
+
+        var test_form_input = $("#test-form-input").val();
+        var backgroundcolor = $("#backgroundcolor").val();
+
+        //表单赋值
+        colorpicker.render({
+            elem: '#test-form'
+            ,color: test_form_input
+            ,done: function(color){
+                $('#test-form-input').val(color);
+            }
+        });
+        //背景颜色
+        colorpicker.render({
+            elem: '#background-form'
+            ,color: backgroundcolor
+            ,done: function(color){
+                $('#backgroundcolor').val(color);
+            }
+        });
+
     });
 
 </script>
