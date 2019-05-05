@@ -4,50 +4,27 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title th:text="${title}">欢迎登录后台管理系统</title>
 <link href="/uimaker/css/style.css" rel="stylesheet" type="text/css" />
-<script language="JavaScript" src="/js/jquery-1.11.1.js"></script>
-    <script language="JavaScript" src="/js/common.js"></script>
-<script src="/uimaker/js/cloud.js" type="text/javascript"></script>
-
-    <script src="/layui/layui.js"></script>
-    <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
-    <script th:src="@{/js/policevo/login.js}" type="text/javascript"></script>
-
-<script th:inline="javascript">
-	$(function(){
-    $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
-	$(window).resize(function(){  
-    $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
-    })
-
-    setpageAction([[${session.INIT_WEB}]],"server_web/police/login");
-});
-</script> 
-
 </head>
 
 <body style="background-color:#1c77ac; background-image:url(/uimaker/images/light.png); background-repeat:no-repeat; background-position:center top; overflow:hidden;">
-
-
-
     <div id="mainBody">
       <div id="cloud1" class="cloud"></div>
       <div id="cloud2" class="cloud"></div>
-    </div>  
+    </div>
 
-
-<div class="logintop">    
+<div class="logintop">
     <span th:text="${title}">欢迎登录后台管理界面平台</span>
     <ul>
     <li><a href="#">回首页</a></li>
     <li><a href="#">帮助</a></li>
     <li><a href="#">关于</a></li>
-    </ul>    
+    </ul>
     </div>
-    
+
     <div class="loginbody">
-    
-    <span class="systemlogo"></span> 
-       
+
+    <span class="systemlogo"></span>
+
     <div class="loginbox">
 
         <ul>
@@ -59,12 +36,28 @@
     </div>
     <!--onclick="javascript:window.location='main.html'"  -->
     </div>
-    
-    
-    
+
+
+
     <div class="loginbm">版权所有  2019  <a href="http://www.avst.cn">顺泰伟成科技有限公司</a> </div>
-	
-    
+
+
 </body>
+<script language="JavaScript" src="/js/jquery-1.11.1.js"></script>
+<script language="JavaScript" src="/js/common.js"></script>
+<script src="/uimaker/js/cloud.js" type="text/javascript"></script>
+<script src="/layui/layui.js"></script>
+<script th:src="@{/js/actionid.js}" type="text/javascript"></script>
+<script th:src="@{/js/policevo/login.js}" type="text/javascript"></script>
 <script src="/js/canvas-nest.js" type="text/javascript"></script>
+<script th:inline="javascript">
+    $(function(){
+        $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+        $(window).resize(function(){
+            $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
+        })
+
+        setpageAction([[${session.INIT_WEB}]],"server_web/police/login");
+    });
+</script>
 </html>

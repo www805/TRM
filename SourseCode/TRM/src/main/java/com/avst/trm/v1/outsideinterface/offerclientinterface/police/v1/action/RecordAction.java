@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.ForClientBaseAction;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetRecordsParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -37,8 +38,8 @@ public class RecordAction extends ForClientBaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getRecords",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getRecords(@RequestBody ReqParam param){
+    @GetMapping(value = "/getRecords")
+    public RResult getRecords(@RequestBody ReqParam<GetRecordsParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
