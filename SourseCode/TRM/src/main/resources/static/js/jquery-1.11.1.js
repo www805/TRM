@@ -376,7 +376,7 @@ jQuery.extend({
 				}
 			}
 
-		// A special, fast, case for the most cache use of each
+		// A special, fast, case for the most common use of each
 		} else {
 			if ( isArray ) {
 				for ( ; i < length; i++ ) {
@@ -1395,7 +1395,7 @@ setDocument = Sizzle.setDocument = function( node ) {
 		}
 
 		return i ?
-			// Do a sibling check if the nodes have a cache ancestor
+			// Do a sibling check if the nodes have a common ancestor
 			siblingCheck( ap[i], bp[i] ) :
 
 			// Otherwise nodes in our document sort first
@@ -7728,7 +7728,7 @@ jQuery.fn.extend({
 				ret = elem.value;
 
 				return typeof ret === "string" ?
-					// handle most cache string cases
+					// handle most common string cases
 					ret.replace(rreturn, "") :
 					// handle cases where value is null/undef or number
 					ret == null ? "" : ret;
@@ -9329,7 +9329,7 @@ jQuery.each( [ "get", "post" ], function( i, method ) {
 	};
 });
 
-// Attach a bunch of functions for handling cache AJAX events
+// Attach a bunch of functions for handling common AJAX events
 jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ) {
 	jQuery.fn[ type ] = function( fn ) {
 		return this.on( type, fn );
@@ -10214,19 +10214,19 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 					// As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
 					// isn't a whole lot we can do. See pull request at this URL for discussion:
 					// https://github.com/jquery/jquery/pull/764
-					return elem.document.documentElement[ "说明" + name ];
+					return elem.document.documentElement[ "client" + name ];
 				}
 
 				// Get document width or height
 				if ( elem.nodeType === 9 ) {
 					doc = elem.documentElement;
 
-					// Either scroll[Width/Height] or offset[Width/Height] or 说明[Width/Height], whichever is greatest
+					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
 					// unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
 					return Math.max(
 						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
 						elem.body[ "offset" + name ], doc[ "offset" + name ],
-						doc[ "说明" + name ]
+						doc[ "client" + name ]
 					);
 				}
 
