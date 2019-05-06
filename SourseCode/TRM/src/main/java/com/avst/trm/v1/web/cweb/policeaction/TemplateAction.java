@@ -3,9 +3,9 @@ package com.avst.trm.v1.web.cweb.policeaction;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.ForClientBaseAction;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.*;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.service.TemplateService;
+import com.avst.trm.v1.web.cweb.baseaction.MainAction;
+import com.avst.trm.v1.web.cweb.req.*;
+import com.avst.trm.v1.web.cweb.service.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/cweb/police/template")
-public class TemplateAction extends ForClientBaseAction {
+public class TemplateAction extends MainAction {
 
     @Autowired
     private TemplateService templateService;

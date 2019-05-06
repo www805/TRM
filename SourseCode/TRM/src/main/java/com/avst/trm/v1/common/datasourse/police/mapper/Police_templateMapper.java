@@ -2,8 +2,6 @@ package com.avst.trm.v1.common.datasourse.police.mapper;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_template;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Template;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplateByIdParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetTemplatesParam;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;

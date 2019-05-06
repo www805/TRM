@@ -3,7 +3,7 @@ package com.avst.trm.v1.web.cweb.interceptor;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.web.cweb.param.InitVO;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -43,7 +43,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             disbool=false;
         }
         String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
-        String forstpageid=basepath+"/userlogin";
+        String forstpageid=basepath+"/gotologin";
         //判断session中的用户信息是否可以通过
         if(null==session.getAttribute(Constant.MANAGE_CLIENT)){
             disbool=false;

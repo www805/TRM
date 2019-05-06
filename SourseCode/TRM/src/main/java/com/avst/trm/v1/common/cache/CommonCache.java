@@ -10,8 +10,8 @@ import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
+import com.avst.trm.v1.web.cweb.param.ActionVO;
+import com.avst.trm.v1.web.cweb.param.PageVO;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -242,21 +242,21 @@ public class CommonCache {
     /**
      * 页面动作初始化第三方客户端
      */
-    private static com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO init_CLIENT;
+    private static com.avst.trm.v1.web.cweb.param.InitVO init_CLIENT;
 
     /**
      * 获取第三方客户端页面动作初始化数据
      * @return
      */
-    public static synchronized com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO getinit_CLIENT(){
+    public static synchronized com.avst.trm.v1.web.cweb.param.InitVO getinit_CLIENT(){
 
         if(null==init_CLIENT){
 
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }
-            com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO initvo=
-                    new com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO();
+            com.avst.trm.v1.web.cweb.param.InitVO initvo=
+                    new com.avst.trm.v1.web.cweb.param.InitVO();
             CheckSQParam checkSQParam=checkSQ();
             initvo.setMsg(checkSQParam.getMsg());
             initvo.setCode(checkSQParam.getCode());

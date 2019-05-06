@@ -1,13 +1,14 @@
 package com.avst.trm.v1.web.cweb.policeaction;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.ForClientBaseAction;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetCaseByIdParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetRecordsParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.GetUserByCardParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.service.RecordService;
+import com.avst.trm.v1.web.cweb.baseaction.MainAction;
+import com.avst.trm.v1.web.cweb.req.GetCaseByIdParam;
+import com.avst.trm.v1.web.cweb.req.GetRecordsParam;
+import com.avst.trm.v1.web.cweb.req.GetUserByCardParam;
+import com.avst.trm.v1.web.cweb.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/cweb/police/record")
-public class RecordAction extends ForClientBaseAction {
+public class RecordAction extends MainAction {
     @Autowired
     private RecordService recordService;
 
