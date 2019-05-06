@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,18 +28,11 @@ public class MainAction extends BaseAction {
     @Autowired
     private ForClientBaseService forClientBaseService;
 
-    @GetMapping(value = "/init",produces = MediaType.APPLICATION_XML_VALUE)
-    @ResponseBody
-    public InitVO initClient() {
+    @RequestMapping(value = "/{pageid}")
+    public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
 
-        InitVO initVO=new InitVO();
-
-        initVO=forClientBaseService.initClient(initVO);
-
-        return initVO;
+        return new ModelAndView(pageid, pageid, model);
     }
-
-
 
     /*
      * 客户端管理员登陆

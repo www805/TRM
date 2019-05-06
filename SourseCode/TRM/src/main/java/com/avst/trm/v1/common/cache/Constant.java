@@ -26,5 +26,10 @@ public class Constant {
      */
     public static final String MANAGE_WEB="MANAGE_WEB";
 
+    /**
+     * web客户端当前管理员信息的保存名
+     */
+    public static final String MANAGE_CLIENT="MANAGE_CLIENT";
+
 
 }

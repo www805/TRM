@@ -3,7 +3,7 @@ package com.avst.trm.v1.web.cweb.interceptor;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
-import com.avst.trm.v1.web.sweb.vo.InitVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -22,7 +22,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         System.out.println("执行preHandle方法-->01");
 
         String url=request.getRequestURI();
-        if(url.endsWith("/cweb/public/home/login") || url.endsWith("/cweb/public/home/checklogin")){//跳过进入登录页面的拦截
+        if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
             return true;
         }
 
@@ -31,21 +31,21 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
         boolean disbool=true;
         InitVO initVO;
-        if(null==session.getAttribute(Constant.INIT_WEB)){//web客户端页面动作集
+        if(null==session.getAttribute(Constant.INIT_CLIENT)){//web客户端页面动作集
             disbool=false;
-            initVO=CommonCache.getinit_WEB();
-            session.setAttribute(Constant.INIT_WEB,initVO);
+            initVO=CommonCache.getinit_CLIENT();
+            session.setAttribute(Constant.INIT_CLIENT,initVO);
         }else{
-            initVO=(InitVO)session.getAttribute(Constant.INIT_WEB);
+            initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
         }
 
         if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
         }
-        String basepath="/cweb/public/home"; //首页的action只允许在homeaction里面
-        String forstpageid=basepath+"/login";
+        String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
+        String forstpageid=basepath+"/userlogin";
         //判断session中的用户信息是否可以通过
-        if(null==session.getAttribute(Constant.MANAGE_WEB)){
+        if(null==session.getAttribute(Constant.MANAGE_CLIENT)){
             disbool=false;
         }else{
             String pageid=initVO.getFirstpageid();

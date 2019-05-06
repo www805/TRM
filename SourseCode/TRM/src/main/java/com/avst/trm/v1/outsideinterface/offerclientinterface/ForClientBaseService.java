@@ -108,7 +108,7 @@ public class ForClientBaseService extends BaseService {
                             System.out.println("updateById_bool--"+updateById_bool);
 
                            //session存储
-                           httpSession.setAttribute(Constant.MANAGE_WEB,user);
+                           httpSession.setAttribute(Constant.MANAGE_CLIENT,user);
                            result.setData(userloginVO);
                            changeResultToSuccess(result);
                            return;
@@ -129,8 +129,8 @@ public class ForClientBaseService extends BaseService {
 
 
     public void userloginout(RResult result,ReqParam param,HttpSession session){
-        if (null!=session.getAttribute(Constant.MANAGE_WEB)){
-            session.removeAttribute(Constant.MANAGE_WEB);
+        if (null!=session.getAttribute(Constant.MANAGE_CLIENT)){
+            session.removeAttribute(Constant.MANAGE_CLIENT);
             System.out.println("登出成功");
             result.setMessage("登出成功");
         }
