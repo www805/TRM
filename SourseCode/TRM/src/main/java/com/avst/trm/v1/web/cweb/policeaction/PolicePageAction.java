@@ -70,53 +70,53 @@ public class PolicePageAction {
     /*********************************关于笔录 start*********************************/
     @GetMapping("torecordIndex")
     public ModelAndView torecordIndex(Model model){
-        return new ModelAndView("police/recordIndex", "recordIndex", model);
+        return new ModelAndView("client_web/police/record/recordIndex", "recordIndex", model);
     }
 
     @GetMapping("torecordTypeList")
     public ModelAndView torecordTypeList(Model model){
-        return new ModelAndView("police/recordTypeList", "recordTypeList", model);
+        return new ModelAndView("client_web/police/record/recordTypeList", "recordTypeList", model);
     }
 
     @GetMapping("toaddOrupdateRecordType")
     public ModelAndView toaddOrupdateRecordType(Model model){
-       return new ModelAndView("police/addOrupdateRecordType", "addOrupdateRecordType", model);
+       return new ModelAndView("client_web/police/record/addOrupdateRecordType", "addOrupdateRecordType", model);
     }
 
 
     @GetMapping("toaddCaseToUser")
     public ModelAndView toaddCaseToUser(Model model){
-        return new ModelAndView("police/addCaseToUser", "addCaseToUser", model);
+        return new ModelAndView("client_web/police/record/addCaseToUser", "addCaseToUser", model);
     }
 
 
     @GetMapping("towaitRecord")
     public ModelAndView towaitRecord(Model model){
-       return new ModelAndView("police/waitRecord", "waitRecord", model);
+       return new ModelAndView("client_web/police/record/waitRecord", "waitRecord", model);
     }
 
 
     @GetMapping("tomoreTemplate")
     public ModelAndView tomoreTemplate(Model model){
-        return new ModelAndView("police/moreTemplate", "moreTemplate", model);
+        return new ModelAndView("client_web/police/record/moreTemplate", "moreTemplate", model);
     }
 
 
     @GetMapping("torecordReal")
     public ModelAndView torecordReal(Model model){
-        return new ModelAndView("police/recordReal", "recordReal", model);
+        return new ModelAndView("client_web/police/record/recordReal", "recordReal", model);
     }
 
 
     @GetMapping("togetRecordById")
     public ModelAndView togetRecordById(Model model){
-       return new ModelAndView("police/getRecordById", "getRecordById", model);
+       return new ModelAndView("client_web/police/record/getRecordById", "getRecordById", model);
     }
 
 
     @GetMapping("tomoreRecord")
     public ModelAndView tomoreRecord(Model model){
-       return new ModelAndView("police/moreRecord", "moreRecord", model);
+       return new ModelAndView("client_web/police/record/moreRecord", "moreRecord", model);
     }
     /*********************************关于笔录 end*********************************/
 

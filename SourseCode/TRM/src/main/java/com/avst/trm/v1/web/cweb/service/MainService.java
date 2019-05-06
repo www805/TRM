@@ -123,8 +123,8 @@ public class MainService extends BaseService {
 
 
     public void userloginout(RResult result,ReqParam param,HttpSession session){
-        if (null!=session.getAttribute(Constant.MANAGE_WEB)){
-            session.removeAttribute(Constant.MANAGE_WEB);
+        if (null!=session.getAttribute(Constant.MANAGE_CLIENT)){
+            session.removeAttribute(Constant.MANAGE_CLIENT);
             System.out.println("登出成功");
             result.setMessage("登出成功");
         }

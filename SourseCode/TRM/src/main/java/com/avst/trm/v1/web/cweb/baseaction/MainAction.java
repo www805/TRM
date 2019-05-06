@@ -127,8 +127,6 @@ public class MainAction extends BaseAction {
     @RequestMapping(value = "/gotologin")
     public ModelAndView gotologin(Model model, HttpServletRequest request){
         model.addAttribute("title","欢迎来到智能提讯系统");
-        request.getSession().setAttribute(Constant.INIT_CLIENT, CommonCache.getinit_CLIENT());
-        request.getSession().setAttribute(Constant.INIT_CLIENTKEY,CommonCache.getClientKey());
         return  new ModelAndView("client_web/base/login","loginModel", model);
     }
 

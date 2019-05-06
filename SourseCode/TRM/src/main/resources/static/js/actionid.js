@@ -72,8 +72,17 @@ function getactionid_manage() {
         /*police*/
         login_userlogin:"login_userlogin",
         login_gotomain:"login_gotomain",
+        login_gotologin:"login_gotologin",
+
         main_userloginout:"main_userloginout",
-        login_gotologin:"login_gotologin"
+        main_toaddCaseToUser:"main_toaddCaseToUser",
+        mian_home:"mian_home",
+        main_torecordIndex:"main_torecordIndex",
+        main_toTemplateIndex:"main_toTemplateIndex",
+        main_totemplateTypeList:"main_totemplateTypeList",
+        main_toproblemTypeList:"main_toproblemTypeList",
+        main_torecordTypeList:"main_torecordTypeList",
+        main_gotoupdateServerconfig:"main_gotoupdateServerconfig",
 
 
     };

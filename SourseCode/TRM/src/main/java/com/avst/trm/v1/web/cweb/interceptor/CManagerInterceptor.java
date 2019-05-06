@@ -35,6 +35,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             disbool=false;
             initVO=CommonCache.getinit_CLIENT();
             session.setAttribute(Constant.INIT_CLIENT,initVO);
+            session.setAttribute(Constant.INIT_CLIENTKEY,CommonCache.getClientKey());
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
         }
