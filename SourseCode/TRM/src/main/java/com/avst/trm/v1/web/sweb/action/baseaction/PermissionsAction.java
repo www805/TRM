@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/permissions")
+@RequestMapping("/sweb/base/permissions")
 public class PermissionsAction extends BaseAction {
     @Autowired
     private PermissionsService permissionsService;

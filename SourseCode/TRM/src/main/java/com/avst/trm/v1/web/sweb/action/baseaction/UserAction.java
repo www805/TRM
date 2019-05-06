@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/user")
+@RequestMapping("/sweb/base/user")
 public class UserAction extends BaseAction{
 
     @Autowired

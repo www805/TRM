@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/keyword")
+@RequestMapping("/sweb/base/keyword")
 public class KeywordAction extends BaseAction{
 
     @Autowired

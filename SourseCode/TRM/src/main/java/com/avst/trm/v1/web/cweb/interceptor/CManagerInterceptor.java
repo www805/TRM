@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.sweb.interceptor;
+package com.avst.trm.v1.web.cweb.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 /**
  * 管理员拦截器
  */
-public class ManagerInterceptor extends HandlerInterceptorAdapter {
+public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
     //在控制器执行前调用
     public boolean preHandle(HttpServletRequest request,
@@ -22,7 +22,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         System.out.println("执行preHandle方法-->01");
 
         String url=request.getRequestURI();
-        if(url.endsWith("/sweb/public/home/login") || url.endsWith("/sweb/public/home/checklogin")){//跳过进入登录页面的拦截
+        if(url.endsWith("/cweb/public/home/login") || url.endsWith("/cweb/public/home/checklogin")){//跳过进入登录页面的拦截
             return true;
         }
 
@@ -42,7 +42,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
         }
-        String basepath="/sweb/public/home"; //首页的action只允许在homeaction里面
+        String basepath="/cweb/public/home"; //首页的action只允许在homeaction里面
         String forstpageid=basepath+"/login";
         //判断session中的用户信息是否可以通过
         if(null==session.getAttribute(Constant.MANAGE_WEB)){

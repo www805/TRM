@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/publicweb/home")
+@RequestMapping("/sweb/base/home")
 public class HomeAction extends BaseAction{
 
     @Resource

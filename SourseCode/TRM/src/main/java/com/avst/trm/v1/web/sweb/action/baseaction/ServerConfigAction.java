@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/config")
+@RequestMapping("/sweb/base/config")
 public class ServerConfigAction extends BaseAction{
 
     @Autowired
