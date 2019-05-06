@@ -21,7 +21,7 @@
         var INIT_WEB;
         $(function(){
             INIT_WEB=[[${session.INIT_WEB}]];
-            setpageAction(INIT_WEB,"server_web/police/users/getUserList");
+            setpageAction(INIT_WEB,"server_web/base/users/getUserList");
             addOupdateurl=getActionURL(getactionid_manage().getUserList_getAddOrUpdateUser);
             getRoles();
             getWorkunits();
@@ -46,7 +46,7 @@
 </style>
 <body>
 <div style="margin: 15px;" class="layui-form">
-    <div th:replace="server_web/header :: header">...</div>
+    <div th:replace="header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${userModel.title}"></h3>
     </div>
@@ -93,9 +93,9 @@
 
 
 
-    <div th:replace="server_web/page :: page">...</div>
+    <div th:replace="page :: page">...</div>
 
-    <div th:replace="server_web/footer :: footer">...</div>
+    <div th:replace="footer :: footer">...</div>
 
 
     <video id='myvideo' width=960 height=540 class="video-js vjs-default-skin" controls>

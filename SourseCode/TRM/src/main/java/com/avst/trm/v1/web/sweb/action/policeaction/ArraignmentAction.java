@@ -9,13 +9,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/arraignment")
+@RequestMapping("/sweb/police/arraignment")
 public class ArraignmentAction extends BaseAction{
     @Autowired
     private ArraignmentService arraignmentService;
@@ -27,7 +27,7 @@ public class ArraignmentAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getArraignment")
-    @GetMapping(value = "/getArraignment")
+    @RequestMapping(value = "/getArraignment")
     public ModelAndView getArraignment(Model model) {
         model.addAttribute("title", "笔录提讯");
         return new ModelAndView("server_web/police/arraignment/arraignment", "arraignmentModel", model);
@@ -78,7 +78,7 @@ public class ArraignmentAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getArraignmentShow")
-    @GetMapping(value = "/getArraignmentShow")
+    @RequestMapping(value = "/getArraignmentShow")
     public ModelAndView getArraignmentShow(Model model,String ssid) {
         model.addAttribute("title", "笔录详情");
         model.addAttribute("ssid",ssid);

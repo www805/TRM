@@ -25,7 +25,7 @@
 <body>
 
 <div style="margin: 15px;" class="layui-form">
-    <div th:replace="server_web/header :: header">...</div>
+    <div th:replace="header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${arraignment_countModel.title}"></h3>
     </div>
@@ -55,9 +55,9 @@
         </div>
     </form>
 
-    <div th:replace="server_web/page :: page">...</div>
+    <div th:replace="page :: page">...</div>
 
-    <div th:replace="server_web/footer :: footer">...</div>
+    <div th:replace="footer :: footer">...</div>
 
     <script id="pagelisttemplates" type="text/html">
 

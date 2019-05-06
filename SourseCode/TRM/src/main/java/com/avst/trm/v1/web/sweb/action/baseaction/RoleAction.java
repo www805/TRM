@@ -11,13 +11,13 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/role")
+@RequestMapping("/sweb/base/role")
 public class RoleAction extends BaseAction{
 
     @Autowired
@@ -29,10 +29,10 @@ public class RoleAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getRole")
-    @GetMapping(value = "/getRole")
+    @RequestMapping(value = "/getRole")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title", "角色列表");
-        return new ModelAndView("server_web/police/role/getRoleList", "roleModel", model);
+        return new ModelAndView("server_web/base/role/getRoleList", "roleModel", model);
 
     }
 
@@ -94,11 +94,11 @@ public class RoleAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getAddOrUpdateRole")
-    @GetMapping(value = "/getAddOrUpdateRole")
+    @RequestMapping(value = "/getAddOrUpdateRole")
     public ModelAndView getAddOrUpdateRole(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
         model.addAttribute("title", "添加/修改角色");
-        return new ModelAndView("server_web/police/role/addOrUpdateRole", "roleModel", model);
+        return new ModelAndView("server_web/base/role/addOrUpdateRole", "roleModel", model);
     }
 
     /**

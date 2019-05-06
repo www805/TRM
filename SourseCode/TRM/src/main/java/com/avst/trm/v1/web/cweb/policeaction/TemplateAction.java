@@ -1,18 +1,11 @@
-package com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.action;
+package com.avst.trm.v1.web.cweb.policeaction;
 
-import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.ForClientBaseAction;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.req.*;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.service.TemplateService;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetProblemTypesVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetProblemsVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetTemplateTypesVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.vo.GetTemplatesVO;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  * 关于模板
  */
 @RestController
-@RequestMapping("/v1/police/template")
+@RequestMapping("/cweb/police/template")
 public class TemplateAction extends ForClientBaseAction {
 
     @Autowired

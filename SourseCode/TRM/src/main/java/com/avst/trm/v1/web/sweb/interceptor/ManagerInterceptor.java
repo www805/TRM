@@ -22,7 +22,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         System.out.println("执行preHandle方法-->01");
 
         String url=request.getRequestURI();
-        if(url.endsWith("/publicweb/home/login") || url.endsWith("/publicweb/home/checklogin")){//跳过进入登录页面的拦截
+        if(url.endsWith("/sweb/base/home/login") || url.endsWith("/sweb/base/home/checklogin")){//跳过进入登录页面的拦截
             return true;
         }
 
@@ -42,7 +42,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
         }
-        String basepath="/publicweb/home"; //首页的action只允许在homeaction里面
+        String basepath="/sweb/base/home"; //首页的action只允许在homeaction里面
         String forstpageid=basepath+"/login";
         //判断session中的用户信息是否可以通过
         if(null==session.getAttribute(Constant.MANAGE_WEB)){

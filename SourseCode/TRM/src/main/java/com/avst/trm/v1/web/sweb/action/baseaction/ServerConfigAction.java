@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/config")
+@RequestMapping("/sweb/base/config")
 public class ServerConfigAction extends BaseAction{
 
     @Autowired
@@ -26,7 +26,7 @@ public class ServerConfigAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getServerConfig")
-    @GetMapping(value = "/getServerConfig")
+    @RequestMapping(value = "/getServerConfig")
     public ModelAndView getServerConfig(Model model) {
 
         RResult rResult = createNewResultOfFail();
@@ -34,7 +34,7 @@ public class ServerConfigAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "系统配置");
-        return new ModelAndView("server_web/police/serverconfig", "configModel", model);
+        return new ModelAndView("server_web/base/serverconfig", "configModel", model);
     }
 
     /**

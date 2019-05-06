@@ -16,7 +16,7 @@
 <body>
 
 <div style="margin: 15px;">
-    <div th:replace="server_web/header :: header">...</div>
+    <div th:replace="header :: header">...</div>
     <div class="layui-elem-quote">
         <h3 th:text="${configModel.title}"></h3>
     </div>
@@ -128,14 +128,14 @@
 
 </div>
 
-<div th:replace="server_web/footer :: footer">...</div>
+<div th:replace="footer :: footer">...</div>
 
 <script th:inline="javascript">
     var init_web = null;
 
     $(function(){
         init_web = [[${session.INIT_WEB}]];
-        setpageAction(init_web,"server_web/police/serverconfig");
+        setpageAction(init_web,"server_web/base/serverconfig");
     });
 
     layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload'], function () {

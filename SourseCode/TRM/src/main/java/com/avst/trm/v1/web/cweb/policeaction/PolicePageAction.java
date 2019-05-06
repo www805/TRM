@@ -1,18 +1,16 @@
-package com.avst.trm.v1.outsideinterface.offerclientinterface.police.v1.action;
+package com.avst.trm.v1.web.cweb.policeaction;
 
-import com.avst.trm.v1.common.util.baseaction.RResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
  * 跳转页面
  */
 @Controller
-@RequestMapping("/v1/police/policePage")
+@RequestMapping("/cweb/police/policePage")
 public class PolicePageAction {
 
     /*********************************关于模板 start*********************************/

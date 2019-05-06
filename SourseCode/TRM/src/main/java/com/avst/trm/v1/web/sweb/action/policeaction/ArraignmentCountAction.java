@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.sweb.action.baseaction;
+package com.avst.trm.v1.web.sweb.action.policeaction;
 
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -12,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/sweb/base/arraignmentCount")
-/**
- *
- */
+@RequestMapping("/sweb/police/arraignmentCount")
 public class ArraignmentCountAction extends BaseAction{
 
     @Autowired
@@ -40,7 +37,7 @@ public class ArraignmentCountAction extends BaseAction{
      * @return
      */
 
-    @GetMapping(value = "/getArraignment_count")
+    @RequestMapping(value = "/getArraignment_count")
     public ModelAndView getArraignment_count(Model model) {
         RResult rResult = createNewResultOfFail();
         //ceshiService.getadminlist3(rResult);

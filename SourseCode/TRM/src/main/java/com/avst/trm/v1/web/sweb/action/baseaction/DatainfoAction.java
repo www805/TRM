@@ -19,7 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 下级服务器同步
  */
 @Controller
-@RequestMapping("/web/datainfo")
+@RequestMapping("/sweb/base/datainfo")
 public class DatainfoAction extends BaseAction {
     @Autowired
     private DatainfoService datainfoService;
@@ -32,13 +32,13 @@ public class DatainfoAction extends BaseAction {
      * @return
      */
     @RequiresPermissions("tostartDownServer")
-    @GetMapping(value = "/tostartDownServer")
+    @RequestMapping(value = "/tostartDownServer")
     public ModelAndView tostartDownServer(Model model,String lastIP) {
         model.addAttribute("title","表单列表");
         if (StringUtils.isNotBlank(lastIP)){
             model.addAttribute("lastIP",lastIP);
         }
-        return new ModelAndView("server_web/police/startDownServer", "startDownServerModel", model);
+        return new ModelAndView("server_web/base/startDownServer", "startDownServerModel", model);
     }
 
     /**

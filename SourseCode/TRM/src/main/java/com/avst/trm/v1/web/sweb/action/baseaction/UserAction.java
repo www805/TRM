@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/user")
+@RequestMapping("/sweb/base/user")
 public class UserAction extends BaseAction{
 
     @Autowired
@@ -28,10 +28,10 @@ public class UserAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getUser")
-    @GetMapping(value = "/getUser")
+    @RequestMapping(value = "/getUser")
     public ModelAndView getUser(Model model) {
         model.addAttribute("title","管理员列表");
-        return new ModelAndView("server_web/police/users/getUserList", "userModel", model);
+        return new ModelAndView("server_web/base/users/getUserList", "userModel", model);
     }
 
     /***
@@ -92,11 +92,11 @@ public class UserAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getAddOrUpdateUser")
-    @GetMapping(value = "/getAddOrUpdateUser")
+    @RequestMapping(value = "/getAddOrUpdateUser")
     public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
         model.addAttribute("title", "添加/修改用户");
-        return new ModelAndView("server_web/police/users/AddOrUpdateUser", "userModel", model);
+        return new ModelAndView("server_web/base/users/AddOrUpdateUser", "userModel", model);
     }
 
     /**

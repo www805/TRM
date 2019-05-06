@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/web/keyword")
+@RequestMapping("/sweb/base/keyword")
 public class KeywordAction extends BaseAction{
 
     @Autowired
@@ -26,12 +26,12 @@ public class KeywordAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getKeyword")
-    @GetMapping(value = "/getKeyword")
+    @RequestMapping(value = "/getKeyword")
     public ModelAndView getKeyword(Model model, KeywordParam param) {
         RResult rResult=createNewResultOfFail();
         model.addAttribute("result", rResult);
         model.addAttribute("title", "关键字");
-        return new ModelAndView("server_web/police/keyword/getKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/base/keyword/getKeyword", "keywordModel", model);
 
     }
 
@@ -58,7 +58,7 @@ public class KeywordAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getAddOrUpdateKeyword")
-    @GetMapping(value = "/getAddOrUpdateKeyword")
+    @RequestMapping(value = "/getAddOrUpdateKeyword")
     public ModelAndView getAddKeyword(Model model, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
 
@@ -67,7 +67,7 @@ public class KeywordAction extends BaseAction{
         model.addAttribute("RResult", rResult);
 
         model.addAttribute("title", "添加关键字");
-        return new ModelAndView("server_web/police/keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /**
@@ -77,7 +77,7 @@ public class KeywordAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getAddOrUpdateKeyword")
-    @GetMapping(value = "/getAddOrUpdateKeyword/{id}")
+    @RequestMapping(value = "/getAddOrUpdateKeyword/{id}")
     public ModelAndView getUpdateKeyword(Model model,  @PathVariable("id") int id) {
 
         RResult rResult = createNewResultOfFail(); // AddKeywordParam addKeywordParam,
@@ -85,7 +85,7 @@ public class KeywordAction extends BaseAction{
 
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "修改关键字");
-        return new ModelAndView("server_web/police/keyword/addOrUpdateKeyword", "keywordModel", model);
+        return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
     }
 
     /**

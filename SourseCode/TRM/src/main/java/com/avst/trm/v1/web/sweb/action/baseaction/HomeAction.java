@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/publicweb/home")
+@RequestMapping("/sweb/base/home")
 public class HomeAction extends BaseAction{
 
     @Resource
@@ -29,14 +29,14 @@ public class HomeAction extends BaseAction{
     @Autowired
     private HomeService homeService;
 
-    @GetMapping(value = "/{pageid}")
+    @RequestMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
 
-        return new ModelAndView(pageid, "server_web/main", model);
+        return new ModelAndView(pageid, "server_web/base/main", model);
     }
 
 
-    @GetMapping(value = "/main")
+    @RequestMapping(value = "/main")
     public ModelAndView gotomain(Model model) {
 
         String type=CommonCache.getCurrentServerType();
@@ -46,7 +46,7 @@ public class HomeAction extends BaseAction{
         //获取统计数据信息
 
         model.addAttribute("title", "智能提讯管理系统");
-        return new ModelAndView("server_web/main", "main", model);
+        return new ModelAndView("server_web/base/main", "main", model);
     }
 
     /**
@@ -54,13 +54,13 @@ public class HomeAction extends BaseAction{
      * @param model
      * @return
      */
-    @GetMapping(value = "/home")
+    @RequestMapping(value = "/home")
     public ModelAndView getHome(Model model) {
         RResult rResult=createNewResultOfFail();
         homeService.getAllCount(rResult, model);
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "首页");
-        return new ModelAndView("server_web/police/home", "homeModel", model);
+        return new ModelAndView("server_web/base/home", "homeModel", model);
 
     }
 
@@ -71,7 +71,7 @@ public class HomeAction extends BaseAction{
      * @param loginParam
      * @return
      */
-    @GetMapping(value = "/login")
+    @RequestMapping(value = "/login")
     public ModelAndView gotologin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult rResult=createNewResultOfFail();
 
@@ -81,7 +81,7 @@ public class HomeAction extends BaseAction{
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
 //        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");
 
-        return new ModelAndView("server_web/police/login", "login", model);
+        return new ModelAndView("server_web/base/login", "login", model);
     }
 
     @PostMapping(value = "/checklogin")
@@ -105,7 +105,7 @@ public class HomeAction extends BaseAction{
         return rResult;
     }
 
-    @GetMapping(value = "/404")
+    @RequestMapping(value = "/404")
     public ModelAndView getError(Model model) {
         model.addAttribute("title", "错误页面404");
         return new ModelAndView("server_web/404", "error", model);
