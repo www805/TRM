@@ -2,7 +2,7 @@
 
 function getactionid_manage() {
     return {
-        /*web*/
+        /*sweb*/
         main_getKeyword:"main_getKeyword",
 
         main_getRole:"main_getRole",

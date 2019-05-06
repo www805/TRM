@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.cache;
 
 import com.avst.trm.v1.common.cache.param.CheckSQParam;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_action;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_page;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
@@ -13,8 +12,8 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
-import com.avst.trm.v1.web.vo.AdminManage_session;
-import com.avst.trm.v1.web.vo.InitVO;
+import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
+import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 

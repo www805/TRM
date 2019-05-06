@@ -1116,6 +1116,8 @@ public static String numtoStr(int digit,Integer num){
 
 		System.out.println(System.getProperty("user.dir"));
 
+		getUUID_32();
+
 
 	}
 }

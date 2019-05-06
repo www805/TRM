@@ -2,7 +2,7 @@
 function getKeywordById(ssid) {
 
     // var url = getActionURL(getactionid_manage().getKeyword_updateShieldbool);
-    var url = "/web/keyword/getKeywordById";
+    var url = "/sweb/keyword/getKeywordById";
 
     var data = {
         ssid: ssid

@@ -33,7 +33,7 @@ function getUrl_manage() {
 
 function getinterface_service() {
 
-	var basepath="/web";
+	var basepath="/sweb";
 
 	return {
 		//后台请求
