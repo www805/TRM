@@ -70,53 +70,62 @@ public class PolicePageAction {
     /*********************************关于笔录 start*********************************/
     @GetMapping("torecordIndex")
     public ModelAndView torecordIndex(Model model){
-        return new ModelAndView("client_web/police/record/recordIndex", "recordIndex", model);
+        model.addAttribute("title","笔录查看");
+        return new ModelAndView("client_web/police/record/recordIndex", "recordIndexModel", model);
     }
 
     @GetMapping("torecordTypeList")
     public ModelAndView torecordTypeList(Model model){
-        return new ModelAndView("client_web/police/record/recordTypeList", "recordTypeList", model);
+        model.addAttribute("title","笔录类型查看");
+        return new ModelAndView("client_web/police/record/recordTypeList", "recordTypeListModel", model);
     }
 
     @GetMapping("toaddOrupdateRecordType")
     public ModelAndView toaddOrupdateRecordType(Model model){
-       return new ModelAndView("client_web/police/record/addOrupdateRecordType", "addOrupdateRecordType", model);
+        model.addAttribute("title","笔录类型编辑");
+       return new ModelAndView("client_web/police/record/addOrupdateRecordType", "addOrupdateRecordTypeModel", model);
     }
 
 
     @GetMapping("toaddCaseToUser")
     public ModelAndView toaddCaseToUser(Model model){
-        return new ModelAndView("client_web/police/record/addCaseToUser", "addCaseToUser", model);
+        model.addAttribute("title","笔录制作");
+        return new ModelAndView("client_web/police/record/addCaseToUser", "addCaseToUserModel", model);
     }
 
 
     @GetMapping("towaitRecord")
     public ModelAndView towaitRecord(Model model){
-       return new ModelAndView("client_web/police/record/waitRecord", "waitRecord", model);
+        model.addAttribute("title","笔录制作");
+       return new ModelAndView("client_web/police/record/waitRecord", "waitRecordModel", model);
     }
 
 
     @GetMapping("tomoreTemplate")
     public ModelAndView tomoreTemplate(Model model){
-        return new ModelAndView("client_web/police/record/moreTemplate", "moreTemplate", model);
+        model.addAttribute("title","更多模板");
+        return new ModelAndView("client_web/police/record/moreTemplate", "moreTemplateModel", model);
     }
 
 
     @GetMapping("torecordReal")
     public ModelAndView torecordReal(Model model){
-        return new ModelAndView("client_web/police/record/recordReal", "recordReal", model);
+        model.addAttribute("title","笔录实时文件");
+        return new ModelAndView("client_web/police/record/recordReal", "recordRealModel", model);
     }
 
 
     @GetMapping("togetRecordById")
     public ModelAndView togetRecordById(Model model){
-       return new ModelAndView("client_web/police/record/getRecordById", "getRecordById", model);
+        model.addAttribute("title","笔录详情");
+       return new ModelAndView("client_web/police/record/getRecordById", "getRecordByIdModel", model);
     }
 
 
     @GetMapping("tomoreRecord")
     public ModelAndView tomoreRecord(Model model){
-       return new ModelAndView("client_web/police/record/moreRecord", "moreRecord", model);
+       model.addAttribute("title","更多笔录");
+       return new ModelAndView("client_web/police/record/moreRecord", "moreRecordModel", model);
     }
     /*********************************关于笔录 end*********************************/
 

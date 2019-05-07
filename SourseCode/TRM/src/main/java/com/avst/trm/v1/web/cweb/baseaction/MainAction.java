@@ -116,8 +116,8 @@ public class MainAction extends BaseAction {
      * 跳转==》修改服务器配置页面
      */
     @RequestMapping(value = "/gotoupdateServerconfig")
-    public ModelAndView gotoupdateServerconfig(Model model, Integer id){
-        model.addAttribute("id","id");
+    public ModelAndView gotoupdateServerconfig(Model model){
+        model.addAttribute("title","系统配置");
         return  new ModelAndView("client_web/base/updateServerconfig","updateServerconfigModel", model);
     }
 
@@ -125,7 +125,7 @@ public class MainAction extends BaseAction {
      * 跳转==》登陆页
      */
     @RequestMapping(value = "/gotologin")
-    public ModelAndView gotologin(Model model, HttpServletRequest request){
+    public ModelAndView gotologin(Model model){
         model.addAttribute("title","欢迎来到智能提讯系统");
         return  new ModelAndView("client_web/base/login","loginModel", model);
     }

@@ -21,11 +21,6 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
                              HttpServletResponse response, Object handler) throws Exception {
         System.out.println("执行preHandle方法-->01");
 
-        String url=request.getRequestURI();
-        if(url.endsWith("/sweb/base/home/login") || url.endsWith("/sweb/base/home/checklogin")){//跳过进入登录页面的拦截
-            return true;
-        }
-
         //获取session，判断用户
         HttpSession session=request.getSession();
 
@@ -38,6 +33,14 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_WEB);
         }
+
+
+
+        String url=request.getRequestURI();
+        if(url.endsWith("/sweb/base/home/login") || url.endsWith("/sweb/base/home/checklogin")){//跳过进入登录页面的拦截
+            return true;
+        }
+
 
         if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
