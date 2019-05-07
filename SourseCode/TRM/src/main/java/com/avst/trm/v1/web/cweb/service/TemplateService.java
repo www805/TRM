@@ -262,7 +262,7 @@ public class TemplateService extends BaseService {
         GetTemplateTypesVO getTemplateTypesVO=new GetTemplateTypesVO();
 
         EntityWrapper ew=new EntityWrapper();
-        ew.orderBy("ordernum",true);
+        ew.orderBy("ordernum",false);
         ew.orderBy("createtime",false);
         List<Police_templatetype> list=police_templatetypeMapper.selectList(ew);
         List<Templatetype> templatetypes=new ArrayList<>();
@@ -275,7 +275,34 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void addTemplateType(RResult result,ReqParam param){
+    public void addTemplateType(RResult result,ReqParam<AddTemplatetypeParam> param){
+
+        AddTemplateTypeVO addTemplateTypeVO=new AddTemplateTypeVO();
+
+        AddTemplatetypeParam addTemplatetypeParam = param.getParam();
+        if (null==addTemplatetypeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==addTemplatetypeParam.getTypename()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //添加问题类型
+        addTemplatetypeParam.setCreatetime(new Date());
+        addTemplatetypeParam.setSsid(OpenUtil.getUUID_32());
+        int insert_bool = police_templatetypeMapper.insert(addTemplatetypeParam);
+        System.out.println("insert_bool__"+insert_bool);
+        if (insert_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        addTemplateTypeVO.setBool(insert_bool);
+        result.setData(addTemplateTypeVO);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -299,7 +326,7 @@ public class TemplateService extends BaseService {
         //分页处理
         EntityWrapper ew=new EntityWrapper();
         if (null!=getProblemsParam.getProblemtypeid()){
-            ew.eq(true,"pp.problemtypeid",getProblemsParam.getProblemtypeid());
+            ew.eq(true,"pp.problemtypessid",getProblemsParam.getProblemtypeid());
         }
         if (StringUtils.isNotBlank(getProblemsParam.getKeyword())){
             ew.like(true,"p.problem",getProblemsParam.getKeyword());
@@ -336,7 +363,7 @@ public class TemplateService extends BaseService {
         GetProblemTypesVO getProblemTypesVO=new GetProblemTypesVO();
 
         EntityWrapper ew=new EntityWrapper();
-        ew.orderBy("ordernum",true);
+        ew.orderBy("ordernum",false);
         ew.orderBy("createtime",false);
         List<Police_problemtype> list=police_problemtypeMapper.selectList(ew);
         List<Problemtype> problemtypes=new ArrayList<>();
@@ -349,7 +376,39 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void addProblemType(RResult result,ReqParam param){
+    /**
+     * 添加问题
+     * @param result
+     * @param param
+     */
+    public void addProblemType(RResult result,ReqParam<AddProblemtypeParam> param){
+
+        AddProblemTypeVO addProblemTypeVO=new AddProblemTypeVO();
+
+        AddProblemtypeParam addProblemtypeParam = param.getParam();
+        if (null==addProblemtypeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==addProblemtypeParam.getTypename()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //添加问题类型
+        addProblemtypeParam.setCreatetime(new Date());
+        addProblemtypeParam.setSsid(OpenUtil.getUUID_32());
+        int insert_bool = police_problemtypeMapper.insert(addProblemtypeParam);
+        System.out.println("insert_bool__"+insert_bool);
+        if (insert_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        addProblemTypeVO.setBool(insert_bool);
+        result.setData(addProblemTypeVO);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -361,11 +420,68 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void getTemplateTypeById(RResult result,ReqParam param){
+    /**
+     * 模板类型
+     * @param result
+     * @param param
+     */
+    public void getTemplateTypeById(RResult result,ReqParam<GetTemplateByIdParam> param){
+
+        GetTemplateTypesVO getTemplateTypesVO=new GetTemplateTypesVO();
+
+        GetTemplateByIdParam getTemplateByIdParam=param.getParam();
+        if (null==getTemplateByIdParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=getTemplateByIdParam.getTemplatebyid()){
+            ew.eq("p.templatessid",getTemplateByIdParam.getTemplatebyid());
+        }
+
+        ew.orderBy("p2.ordernum",true);
+        ew.orderBy("p2.createtime",false);
+        List<Templatetype> templatetypes=police_templatetotypeMapper.getTemplateTypeById(ew);
+
+        getTemplateTypesVO.setTemplatetypes(templatetypes);
+        result.setData(getTemplateTypesVO);
+        changeResultToSuccess(result);
         return;
     }
 
-    public void getProblemTypeById(RResult result,ReqParam param){
+    /**
+     * 问题类型
+     * @param result
+     * @param param
+     */
+    public void getProblemTypeById(RResult result,ReqParam<GetProblemTypeByIdParam> param){
+
+        GetProblemTypesVO getProblemTypesVO=new GetProblemTypesVO();
+
+        GetProblemTypeByIdParam getProblemTypeByIdParam=param.getParam();
+        if (null==getProblemTypeByIdParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //分页处理
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=getProblemTypeByIdParam.getId()){
+            ew.eq("p.id",getProblemTypeByIdParam.getId());
+        }
+
+        int count=police_problemtypeMapper.countgetProblemTypeById(ew);
+        getProblemTypeByIdParam.setRecordCount(count);
+
+        ew.orderBy("p.ordernum",true);
+        ew.orderBy("p.createtime",false);
+        Page<Problemtype> page=new Page<>(getProblemTypeByIdParam.getCurrPage(),getProblemTypeByIdParam.getPageSize());
+        List<Problemtype> problemtypes=police_problemtypeMapper.getProblemTypeById(page,ew);
+
+        getProblemTypesVO.setProblemtypes(problemtypes);
+        result.setData(getProblemTypesVO);
+        changeResultToSuccess(result);
         return;
     }
 

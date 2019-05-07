@@ -242,17 +242,39 @@ function addUpdateinfo(num, type) {
         "            <div class=\"layui-input-block\">\n" +
         "                <textarea placeholder=\"请输入答案\" class=\"layui-textarea\"></textarea>\n" +
         "            </div>\n" +
-        "            <button class=\"layui-btn layui-btn-normal\" style='float: right;margin-top: 10px;'>添加</button>\n" +
+        "            <button class=\"layui-btn layui-btn-normal\" style='float: right;margin-top: 10px;'>" + version + "</button>\n" +
         "        </div>";
 
-    //页面层
+    //弹窗层
     layer.open({
         type: 1,
         title: version,
-        offset: '100px',
         area: ['620px', '390px'], //宽高
         shadeClose: true,
         content: content
     });
+}
 
+function addTemplateProblem(obj) {
+    var text = $(obj).parents('tr').find("td").eq(0).text();
+
+    var btn = '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>';
+
+    $("#testTable tbody").append("<tr><td>" + text + "</td><td>" + btn + "</td></tr>");
+}
+
+function DeleteProblem(obj) {
+    $(obj).parents('tr').remove();
+}
+
+function tan() {
+
+    layer.open({
+        type: 2,
+        title: ['模板变更', 'text-align:left;background: #1e9fff;color:#fff;'],
+        shadeClose: true,
+        shade: false,
+        area: ['1200px', '600px'],
+        content: 'templateList'
+    });
 }
