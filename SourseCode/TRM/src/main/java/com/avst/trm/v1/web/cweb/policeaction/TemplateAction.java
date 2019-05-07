@@ -21,25 +21,25 @@ public class TemplateAction extends MainAction {
     private TemplateService templateService;
 
     /**
-     * ① 获取模板列表：/v1/police/template/getTemplates √
-     * ②  修改模板：/v1/police/template/updateTemplate √
-     * ③  查看单个模板：/v1/police/template/getTemplateById √
-     * ④  添加模板：/v1/police/template/addTemplate √
-     * ⑤  获取模板类型列表：/v1/police/template/getTemplateTypes
-     * ⑥  添加模板类型：/v1/police/template/addTemplateType
-     * ⑦  修改模板类型：/v1/police/template/updateTemplateType
-     * ⑧  设置默认模板：/v1/police/template/setDefaultTemplate
-     * ⑨  获取问题列表：/v1/police/template/getProblems
-     * ⑩  修改问题：/v1/police/template/updateProblem
-     * ⑪  查询单个问题：/v1/police/template/getProblemById
-     * ⑫  添加问题：/v1/police/template/addProblem
-     * ⑬  获取问题类型列表：/v1/police/template/getProblemTypes
-     * ⑭  添加问题类型：/v1/police/template/addProblemType
-     * ⑮  修改问题类型：/v1/police/template/updateProblemType
-     * ⑯  获取模板编辑页主数据：/v1/police/template/addOrupdateTemplateIndex
-     * ⑰  查询单个模板类型：/v1/police/template/getTemplateTypeById
-     * ⑱  查询单个问题类型：/v1/police/template/getProblemTypeById
-     * ⑲  获取模板主页数据：/v1/police/template/templateIndex
+     * ① 获取模板列表：/cweb/police/template/getTemplates √
+     * ②  修改模板：/cweb/police/template/updateTemplate √
+     * ③  查看单个模板：/cweb/police/template/getTemplateById √
+     * ④  添加模板：/cweb/police/template/addTemplate √
+     * ⑤  获取模板类型列表：/cweb/police/template/getTemplateTypes
+     * ⑥  添加模板类型：/cweb/police/template/addTemplateType
+     * ⑦  修改模板类型：/cweb/police/template/updateTemplateType
+     * ⑧  设置默认模板：/cweb/police/template/setDefaultTemplate
+     * ⑨  获取问题列表：/cweb/police/template/getProblems *
+     * ⑩  修改问题：/cweb/police/template/updateProblem
+     * ⑪  查询单个问题：/cweb/police/template/getProblemById
+     * ⑫  添加问题：/cweb/police/template/addProblem
+     * ⑬  获取问题类型列表：/cweb/police/template/getProblemTypes
+     * ⑭  添加问题类型：/cweb/police/template/addProblemType
+     * ⑮  修改问题类型：/cweb/police/template/updateProblemType
+     * ⑯  获取模板编辑页主数据：/cweb/police/template/addOrupdateTemplateIndex
+     * ⑰  查询单个模板类型：/cweb/police/template/getTemplateTypeById
+     * ⑱  查询单个问题类型：/cweb/police/template/getProblemTypeById
+     * ⑲  获取模板主页数据：/cweb/police/template/templateIndex
      */
     /**
      * 获取模板列表
@@ -195,7 +195,7 @@ public class TemplateAction extends MainAction {
     }
 
     /**
-     * 获取问题列表
+     * TODO 获取问题列表
      * @param param
      * @return
      */
@@ -211,6 +211,7 @@ public class TemplateAction extends MainAction {
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
+
     }
 
     /**

@@ -36,6 +36,18 @@ public class PolicePageAction {
         return new ModelAndView("client_web/police/template/addOrupdateTemplate", "addOrupdateTemplate", model);
     }
 
+    /**
+     * 变更模板
+     * @param model
+     * @return
+     */
+    @GetMapping("templateList")
+    public ModelAndView templateList(Model model){
+        return new ModelAndView("client_web/police/template/templateList", "problemIndex", model);
+    }
+
+
+
     @GetMapping("toproblemIndex")
     public ModelAndView toproblemIndex(Model model){
         return new ModelAndView("client_web/police/template/problemIndex", "problemIndex", model);
