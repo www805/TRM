@@ -4,19 +4,71 @@
     <meta charset="UTF-8">
     <title  th:text="${recordTypeListModel.title}">智能提讯系统</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
-    <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
-<div class="layui-form" style="margin: 15px;">
+<div class="layui-fluid" style="margin: 15px;">
     <div th:replace="header :: header">...</div>
 
     <div class="layui-elem-quote">
         <h3 th:text="${recordTypeListModel.title}">智能提讯系统</h3>
     </div>
 
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label">类型名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入类型名称" autocomplete="off" class="layui-input">
+            </div>
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="" >
+            <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="opneModal_1();" >
+        </div>
+    </form>
+
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>类型名称</th>
+            <th>创建时间</th>
+            <th>排序</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>序号</td>
+            <td>类型名称</td>
+            <td>创建时间</td>
+            <td>排序</td>
+            <td>
+                <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+            </td>
+        </tr>
+        <tr>
+            <td>序号</td>
+            <td>类型名称</td>
+            <td>创建时间</td>
+            <td>排序</td>
+            <td>
+                <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+            </td>
+        </tr> <tr>
+            <td>序号</td>
+            <td>类型名称</td>
+            <td>创建时间</td>
+            <td>排序</td>
+            <td>
+                <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
     <div th:replace="footer :: footer">...</div>
 </div>
+
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
 <script th:src="@{/js/common.js}"  type="text/javascript" ></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>

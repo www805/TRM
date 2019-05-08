@@ -84,6 +84,9 @@ function getactionid_manage() {
         main_torecordTypeList:"main_torecordTypeList",
         main_gotoupdateServerconfig:"main_gotoupdateServerconfig",
 
+        addCaseToUser_addCaseToArraignment:"addCaseToUser_addCaseToArraignment",
+        addCaseToUser_towaitRecord:"addCaseToUser_towaitRecord",
+
 
     };
 }

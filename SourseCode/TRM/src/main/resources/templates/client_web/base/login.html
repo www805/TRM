@@ -9,7 +9,7 @@
     /**police_login*/
     * {  -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -box-sizing: border-box; padding:0; margin:0; list-style:none; box-sizing: border-box; }
     body { background:#01AAED; background-size: cover; }
-    .login {text-align:center;height:360px; width:400px; padding:50px; background-color: #ffffff;border-radius:6px;box-sizing: border-box; position:relative;margin: auto }
+    .login {float: left;text-align:center;height:360px; width:400px; padding:50px; background-color: #ffffff;border-radius:6px;box-sizing: border-box; position:relative;margin: auto }
     .login_logo{ width:120px; height:120px; border:5px solid #01AAED;border-radius:100px; background:#FFFFFF; text-align:center; line-height:110px; position:absolute; top:-60px; right:140px;}
     .login_name{ width:100%; float:left; text-align:center; margin-top:20px;}
     .login_name p{ width:100%; text-align:center; font-size:18px; color:#444; padding:10px 0 20px;}
@@ -31,15 +31,20 @@
 
 <div  >
         <div class="layui-row" style="margin-top: 10%">
-            <div class="layui-col-md12">
-                <div class="login">
-                    <div class="login_logo"><a href="#"><img src="/uimaker/images/login_logo.png" /></a></div>
-                    <div class="login_name">
-                        <p>智能提讯系统</p>
+            <div class="layui-col-md12 ">
+                <div class="layui-col-md6 ">
+                    <div style="float: right; width:432px; height:400px;"><img src="/uimaker/images/login-img.png" style="width:432px; height:400px;"/></div>
+                </div>
+                <div class="layui-col-md6 ">
+                    <div class="login" style="margin-left: 100px">
+                        <div class="login_logo"><a href="#"><img src="/uimaker/images/login_logo.png" /></a></div>
+                        <div class="login_name">
+                            <p>智能提讯系统</p>
+                        </div>
+                        <input name="loginaccount" id="loginaccount" type="text" placeholder="用户名" value="admin">
+                        <input name="password" id="password" type="password" placeholder="密码" value="admin">
+                        <button  type="button"onclick="userlogin();">登录</button>
                     </div>
-                    <input name="loginaccount" id="loginaccount" type="text" placeholder="用户名" value="admin">
-                    <input name="password" id="password" type="password" placeholder="密码" value="admin">
-                    <button  type="button"onclick="userlogin();">登录</button>
                 </div>
             </div>
         </div>

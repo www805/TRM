@@ -92,11 +92,11 @@ public class PolicePageAction {
         return new ModelAndView("client_web/police/record/recordTypeList", "recordTypeListModel", model);
     }
 
-    @GetMapping("toaddOrupdateRecordType")
+ /*   @GetMapping("toaddOrupdateRecordType")
     public ModelAndView toaddOrupdateRecordType(Model model){
         model.addAttribute("title","笔录类型编辑");
        return new ModelAndView("client_web/police/record/addOrupdateRecordType", "addOrupdateRecordTypeModel", model);
-    }
+    }*/
 
 
     @GetMapping("toaddCaseToUser")
@@ -108,7 +108,7 @@ public class PolicePageAction {
 
     @GetMapping("towaitRecord")
     public ModelAndView towaitRecord(Model model){
-        model.addAttribute("title","笔录制作");
+        model.addAttribute("title","等待笔录");
        return new ModelAndView("client_web/police/record/waitRecord", "waitRecordModel", model);
     }
 
