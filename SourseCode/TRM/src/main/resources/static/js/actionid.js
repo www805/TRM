@@ -87,6 +87,8 @@ function getactionid_manage() {
         addCaseToUser_addCaseToArraignment:"addCaseToUser_addCaseToArraignment",
         addCaseToUser_towaitRecord:"addCaseToUser_towaitRecord",
 
+        updateServerconfig_getServerconfig:"updateServerconfig_getServerconfig",
+        updateServerconfig_updateServerconfig:"updateServerconfig_updateServerconfig"
 
     };
 }

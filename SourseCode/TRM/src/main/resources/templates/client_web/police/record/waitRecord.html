@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
+    <link rel="stylesheet" href="/layui/css/layui.mobile.css">
+
 </head>
 <style>
     .layui-card{
@@ -18,9 +20,6 @@
     ::-webkit-scrollbar{
         width: 0px;
     }
-    ::-webkit-scrollbar{
-           width: 0px;
-       }
 
     html{
         background-color: #FFFFFF;
@@ -42,6 +41,41 @@
     #table4 td{
         text-align: left;
     }
+    .layui-colla-title  i{
+        display: none;
+    }
+    .atalk{
+        margin:10px;
+    }
+    .atalk p{
+        color: #999;
+    }
+    .atalk span{
+        display:inline-block;
+        background:#0181cc;
+        border-radius:10px;
+        color:#fff;
+        padding:5px 10px;
+        word-wrap:break-word;
+        margin-top: 5px;
+    }
+    .btalk{
+        margin:10px;
+        text-align:right;
+    }
+    .btalk p{
+        color: #999;
+    }
+    .btalk span{
+        display:inline-block;
+        background:#ef8201;
+        border-radius:10px;
+        color:#fff;
+        padding:5px 10px;
+        word-wrap:break-word;
+        /*text-align: left;*/
+        margin-top: 5px;
+    }
 </style>
 <body>
 <div class="layui-form" style="margin: 15px;">
@@ -51,96 +85,145 @@
         <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
     </div>
 
-    <div class="layui-row" id="layui-row1">
-        <div  style="height: 650px;">
-            <div class="layui-col-md3"  style="border:1px solid #F2F2F2; " >
-                <div class="layui-card" >
-                    <div class="layui-card-header">
-                        问答模板<span style="color: red">（双击，添加到笔录中）</span>
-                        <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
-                    </div>
-                    <div style="height: 600px; overflow-x: hidden; overflow-y: scroll;">
-                        <div class="layui-card-body layui-row " style="padding: 0;" >
-                            <div class="layui-col-lg12">
-                                <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;display:block">
-                                    <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
-                                        <thead>
-                                        <th>
-                                            当前模板：模板名称
-                                        </th>
-                                        </thead>
-                                        <tbody >
-                                        <tr>
-                                            <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：的大方的说法</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：的大方的说法</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>笔录类型</td>
-                                        </tr><tr>
-                                            <td>笔录类型</td>
-                                        </tr>
-                                        <tr>
-                                            <td>笔录类型</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：的大方的说法</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：的大方的说法</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>问：将恢复少又何妨</td>
-                                        </tr>
-                                        <tr>
-                                            <td>笔录类型</td>
-                                        </tr><tr>
-                                            <td>笔录类型</td>
-                                        </tr>
-                                        <tr>
-                                            <td>笔录类型</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="layui-col-lg12">
-                                <div class="layui-card" >
-                                    <div class="layui-card-header">持续时间 00:00:00</div>
-                                    <div class="layui-card-body layui-row " >fsdfdf
-                                        <div style="position: relative;bottom: 0" >
-                                            111
+    <div class="layui-row " id="layui-row1">
+        <div  style="height: 650px; border:1px solid #F2F2F2;" >
+            <div class="layui-col-md3 "style="position: relative" >
+                <!---->
+                <div class="layui-col-md12 layui-collapse ">
+                    <div class="layui-colla-item">
+                        <h2 class="layui-colla-title layui-card-header">
+                            问答模板<span style="color: red">（双击，添加到笔录中）</span>
+                            <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
+                        </h2>
+                                <div class="layui-colla-content layui-show layui-card-body layui-row " style="padding: 0;" >
+                                    <div class="layui-col-lg12">
+                                        <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;">
+                                            <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
+                                                <thead>
+                                                <th>
+                                                    当前模板：模板名称
+                                                </th>
+                                                </thead>
+                                                <tbody >
+                                                <tr>
+                                                    <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：的大方的说法</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：的大方的说法</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>笔录类型</td>
+                                                </tr><tr>
+                                                    <td>笔录类型</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>笔录类型</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：的大方的说法</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：的大方的说法</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>问：将恢复少又何妨</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>笔录类型</td>
+                                                </tr><tr>
+                                                    <td>笔录类型</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>笔录类型</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        dfsf
+                                    </div>
+                                </div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">持续时间 00:00:00</div>
+                    </div>
+                    <div style="height: 220px; overflow-x: hidden; overflow-y: scroll;">
+                        <div class="layui-card-body layui-row">
+                            <div class="layui-col-md12 ">
+                                <div class="talk_show" >
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                </div>
+                <!---->
+                <div class="layui-col-md12 " style="position: absolute;bottom: 0;height: 10%;background-color: #FFFFFF;z-index:1;" >
+                    <div class="layui-col-md4 " >
+                        <button class="layui-btn layui-btn-xs layui-btn-normal">音量波动</button>
+
+                    </div>
+                    <div class="layui-col-md4 ">
+                        <button class="layui-btn layui-btn-xs layui-btn-normal">长按录音</button>
+
+                    </div>
+                    <div class="layui-col-md4 ">
+                        <button class="layui-btn layui-btn-xs layui-btn-normal">音量波动</button>
+
+                    </div>
+                </div>
+                <!---->
             </div>
             <div class="layui-col-md9"  style="border:1px solid #F2F2F2; ">
                 <div class="layui-card" >

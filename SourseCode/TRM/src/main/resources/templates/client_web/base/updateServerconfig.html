@@ -86,6 +86,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/updateServerconfig");
+        getServerconfig();
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

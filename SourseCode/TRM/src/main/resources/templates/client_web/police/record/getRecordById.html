@@ -7,6 +7,63 @@
     <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
+<style>
+    .layui-card{
+        box-shadow: 0 0px 0px 0 rgba(0,0,0,.05);
+    }
+    .layui-card-header{
+        background-color: #E5F4FD;
+        border: 2px solid #FFFFFF;
+    }
+
+    ::-webkit-scrollbar{
+        width: 0px;
+    }
+    html{
+        background-color: #FFFFFF;
+    }
+    .font_red_color{
+        color: red;
+    }
+    .font_blue_color{
+        color: #1171d6;
+    }
+    .layui-col-md9 td{
+        text-align: left;
+    }
+    .atalk{
+        margin:10px;
+    }
+    .atalk p{
+        color: #999;
+    }
+    .atalk span{
+        display:inline-block;
+        background:#0181cc;
+        border-radius:10px;
+        color:#fff;
+        padding:5px 10px;
+        word-wrap:break-word;
+        margin-top: 5px;
+    }
+    .btalk{
+        margin:10px;
+        text-align:right;
+    }
+    .btalk p{
+        color: #999;
+    }
+    .btalk span{
+        display:inline-block;
+        background:#ef8201;
+        border-radius:10px;
+        color:#fff;
+        padding:5px 10px;
+        word-wrap:break-word;
+        /*text-align: left;*/
+        margin-top: 5px;
+    }
+</style>
 <body>
 <div class="layui-form" style="margin: 15px;">
     <div th:replace="header :: header">...</div>
@@ -14,6 +71,199 @@
     <div class="layui-elem-quote">
         <h3 th:text="${getRecordByIdModel.title}">智能提讯系统</h3>
     </div>
+
+    <div class="layui-row " >
+        <div  style="height: 650px; " >
+            <div class="layui-col-md3 "style="border:1px solid #F2F2F2;" >
+                <div class="layui-card">
+                    <div class="layui-card-header" style="background-color: #FFFFFF">
+                        当前笔录：笔录名称
+                        <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>
+                    </div>
+                </div>
+                <div >
+                    <div class="layui-card">
+                        <div class="layui-card-header">案件信息</div>
+                        <div class="layui-card-body">
+                            <blockquote class="layui-elem-quote layui-quote-nm"style="height: 50px; overflow-x: hidden; overflow-y: scroll; ">
+                               案件名称：安吉那个么<br>
+                                案件发生：45454<br>
+                                案件名称：安吉那个么<br>
+                                案件发生：45454<br>
+                                案件名称：安吉那个么<br>
+                                案件发生：45454<br>
+                            </blockquote>
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">笔录实时回访</div>
+                        <div style="height: 370px; overflow-x: hidden; overflow-y: scroll;">
+                            <div class="layui-card-body">
+                                <div class="talk_show" >
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                    <div class="atalk">
+                                        <p>【检察官】 2019-4-14 02:25:08</p>
+                                        <span>吃饭了吗？</span>
+                                    </div>
+                                    <div class="btalk">
+                                        <p>【犯人】 2019-4-14 02:24:55</p>
+                                        <span>还没呢</span>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md9" style="border:1px solid #F2F2F2;" >
+                <div class="layui-card">
+                    <div class="layui-card-header" style="background-color: #FFFFFF">
+                        <button class=" layui-btn layui-btn-sm layui-btn-normal">按钮</button>
+                        <button class=" layui-btn layui-btn-sm layui-btn-normal">按钮</button>
+                    </div>
+                </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">当前笔录录音</div>
+                        <div class="layui-card-body">
+                            <img src="https://s2.ax1x.com/2019/04/15/AXLO4s.jpg" height="160" width="100%"/>
+                            <br>
+
+                            <div class="layui-row" style="margin-top: 15px">
+                                <div class="layui-col-md9" >
+                                    <div style="float: left;">
+
+                                        <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
+                                        <button class="layui-btn layui-btn-normal" id="recordplay">播放</button>
+                                        <button class="layui-btn layui-btn-normal" id="recordpause">停止</button>
+                                    </div>
+                                    <div style="overflow: hidden;float: left;margin-top: 3px;margin-left: 15px;">
+                                        <i class="layui-icon layui-icon-speaker" style="font-size: 30px;color: #1E9FFF;float: left;"></i>
+                                        <div id="slideTest" class="demo-slider" style="width: 250px;float: left;padding: 15px 10px 0 8px;"></div>
+                                    </div>
+                                </div>
+                                <div class="layui-col-md3">
+                                    <div class="layui-col-md7" style="color: #1E9FFF">时间：<span id="currenttime">0</span>秒</div>
+                                    <div class="layui-col-md5" style="color: #1E9FFF">时长：<span id="recordtime">0</span>秒</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-card">
+                        <div style="height: 295px; overflow-x: hidden; overflow-y: scroll;">
+                            <div class="layui-card-body">
+                            <table class="layui-table" lay-even lay-skin="nob">
+                                <tbody >
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+
+                    </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
 
     <div th:replace="footer :: footer">...</div>
 </div>
@@ -32,9 +282,10 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/getRecordById");
     });
-    layui.use(['layer','element'], function(){
+    layui.use(['layer','element','slider'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
+        var slider = layui.slider;
         //使用模块
     });
 </script>

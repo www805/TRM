@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.vo;
+package com.avst.trm.v1.web.cweb.vo.basevo;
 
 public class UserloginVO {
     private String type;

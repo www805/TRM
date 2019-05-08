@@ -1,6 +1,6 @@
-package com.avst.trm.v1.web.cweb.vo;
+package com.avst.trm.v1.web.cweb.vo.policevo;
 
-public class AddTemplateVO {
+public class AddProblemTypeVO {
     private int bool; //是否成功 成功1 失败0
 
     public int getBool() {

@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.vo;
+package com.avst.trm.v1.web.cweb.vo.basevo;
 
 public class UpdateServerconfigVO {
     private int bool; //是否修改成功 成功1 失败0

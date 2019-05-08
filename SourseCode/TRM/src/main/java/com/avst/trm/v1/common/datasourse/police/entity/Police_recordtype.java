@@ -39,6 +39,8 @@ public class Police_recordtype extends Model<Police_recordtype> {
      */
     private Date createtime;
 
+    private Integer pid;
+
     private String ssid;
 
     private String string1;
@@ -118,18 +120,27 @@ public class Police_recordtype extends Model<Police_recordtype> {
         return this.id;
     }
 
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
+    }
+
     @Override
     public String toString() {
         return "Police_recordtype{" +
-        "id=" + id +
-        ", typename=" + typename +
-        ", ordernum=" + ordernum +
-        ", createtime=" + createtime +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", typename='" + typename + '\'' +
+                ", ordernum=" + ordernum +
+                ", createtime=" + createtime +
+                ", pid=" + pid +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 }

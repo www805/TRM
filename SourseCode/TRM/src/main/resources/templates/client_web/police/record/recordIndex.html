@@ -7,6 +7,33 @@
     <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
+<style>
+    .layui-card{
+        box-shadow: 0 0px 0px 0 rgba(0,0,0,.05);
+    }
+    .layui-card-header{
+        background-color: #E5F4FD;
+        border: 2px solid #FFFFFF;
+    }
+
+    ::-webkit-scrollbar{
+        width: 0px;
+    }
+    html{
+        background-color: #FFFFFF;
+    }
+    .font_red_color{
+        color: red;
+    }
+    .font_blue_color{
+        color: #1171d6;
+    }
+    .layui-col-md9 td{
+        text-align: left;
+    }
+
+
+</style>
 <body>
 <div class="layui-form" style="margin: 15px;">
     <div th:replace="header :: header">...</div>
@@ -14,6 +41,174 @@
     <div class="layui-elem-quote">
         <h3 th:text="${recordIndexModel.title}">智能提讯系统</h3>
     </div>
+
+    <div class="layui-row " >
+        <div  style="height: 650px; " >
+            <div class="layui-col-md3 "style="border:1px solid #F2F2F2;" >
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <div class="layui-form-item" >
+                            <div class="layui-inline" >
+                                <label class="layui-form-mid">范围</label>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="price_min" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid">关键字</div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <input type="text" name="price_max" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-input-inline" style="width: 100px;">
+                                    <button class=" layui-btn layui-btn-sm layui-btn-normal">百搭按钮</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="height: 600px; overflow-x: hidden; overflow-y: scroll;">
+                        <div class="layui-card-body" style="padding: 0;">
+                            <table class="layui-table" lay-even="" lay-skin="nob">
+                                <tbody>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                <tr>
+                                    <td>笔录标题</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div id="test-laypage-demo2"><div class="layui-box layui-laypage layui-laypage-molv" id="layui-laypage-3"><a href="javascript:;" class="layui-laypage-prev layui-disabled" data-page="0">上一页</a><span class="layui-laypage-curr"><em class="layui-laypage-em" style="background-color:#1E9FFF;"></em><em>1</em></span><a href="javascript:;" data-page="2">2</a><a href="javascript:;" data-page="3">3</a><a href="javascript:;" data-page="4">4</a><a href="javascript:;" data-page="5">5</a><span class="layui-laypage-spr">…</span><a href="javascript:;" class="layui-laypage-last" title="尾页" data-page="10">10</a><a href="javascript:;" class="layui-laypage-next" data-page="2">下一页</a></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md9" style="border:1px solid #F2F2F2;" >
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        选择的笔录标题
+                        <a class="layui-icon  layui-icon-more layuiadmin-badge" title="详情查看" th:href="@{/cweb/police/policePage/togetRecordById}"></a>
+                    </div>
+                    <div style="height: 600px; overflow-x: hidden; overflow-y: scroll;">
+                        <div class="layui-card-body">
+                            <table class="layui-table" lay-even="" lay-skin="nob">
+                                <tbody >
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_red_color">人生就像是一场修行</td>
+                                </tr>
+                                <tr>
+                                    <td class="font_blue_color">人生就像是一场修行</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <div th:replace="footer :: footer">...</div>
 </div>

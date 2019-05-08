@@ -8,6 +8,7 @@
         <result column="typename" property="typename" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
+        <result column="pid" property="pid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
