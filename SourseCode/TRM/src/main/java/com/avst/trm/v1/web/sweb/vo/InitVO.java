@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.sweb.vo;
 
-import com.avst.trm.v1.web.cweb.param.PageVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 
 import java.util.List;
 

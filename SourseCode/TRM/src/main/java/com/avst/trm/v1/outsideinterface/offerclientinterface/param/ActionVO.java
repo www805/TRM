@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.param;
+package com.avst.trm.v1.outsideinterface.offerclientinterface.param;
 
 /**
  * 客户端请求动作的集合

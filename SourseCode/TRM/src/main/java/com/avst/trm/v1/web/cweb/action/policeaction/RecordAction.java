@@ -1,14 +1,13 @@
-package com.avst.trm.v1.web.cweb.policeaction;
+package com.avst.trm.v1.web.cweb.action.policeaction;
 
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.web.cweb.baseaction.MainAction;
-import com.avst.trm.v1.web.cweb.req.GetCaseByIdParam;
-import com.avst.trm.v1.web.cweb.req.GetRecordsParam;
-import com.avst.trm.v1.web.cweb.req.GetUserByCardParam;
-import com.avst.trm.v1.web.cweb.service.RecordService;
+import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
+import com.avst.trm.v1.web.cweb.req.policereq.GetCaseByIdParam;
+import com.avst.trm.v1.web.cweb.req.policereq.GetRecordsParam;
+import com.avst.trm.v1.web.cweb.req.policereq.GetUserByCardParam;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

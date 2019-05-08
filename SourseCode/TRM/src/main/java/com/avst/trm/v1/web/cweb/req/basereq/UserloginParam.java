@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.req;
+package com.avst.trm.v1.web.cweb.req.basereq;
 
 public class UserloginParam {
     private String loginaccount;//用户账号

@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.param;
+package com.avst.trm.v1.outsideinterface.offerclientinterface.param;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;

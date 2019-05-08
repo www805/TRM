@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.policeaction;
+package com.avst.trm.v1.web.cweb.action.policeaction;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

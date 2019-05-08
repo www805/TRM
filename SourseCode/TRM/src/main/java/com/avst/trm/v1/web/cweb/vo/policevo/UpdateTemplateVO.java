@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.vo;
+package com.avst.trm.v1.web.cweb.vo.policevo;
 
 public class UpdateTemplateVO {
     private int bool; //是否成功 成功1 失败0

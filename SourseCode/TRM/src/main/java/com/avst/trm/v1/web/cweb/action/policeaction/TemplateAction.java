@@ -1,11 +1,11 @@
-package com.avst.trm.v1.web.cweb.policeaction;
+package com.avst.trm.v1.web.cweb.action.policeaction;
 
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.web.cweb.baseaction.MainAction;
-import com.avst.trm.v1.web.cweb.req.*;
-import com.avst.trm.v1.web.cweb.service.TemplateService;
+import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
+import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.service.policeservice.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
