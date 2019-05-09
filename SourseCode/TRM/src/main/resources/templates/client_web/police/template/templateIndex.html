@@ -33,9 +33,6 @@
         .layui-table td, .layui-table th{
             text-align:left;
         }
-    </style>
-
-    <style>
         .layui-card{
             border: 1px solid #F2F2F2;
         }
@@ -79,7 +76,11 @@
 
 
     <div class="layui-row" id="layui-row1">
-        <div class="layui-col-md4" style="border:1px solid #F2F2F2;">
+        <div style="padding:8px;margin-bottom: 0px;background: #E5F4FD;border-left: 5px solid #1e9fff;">
+            <span style="font-size: 16px;font-weight: bold;">模板管理</span>
+        </div>
+        <div class="layui-col-md5" style="border:1px solid #F2F2F2;padding-top: 5px;">
+
             <label class="layui-form-label" style="width: auto; padding-left: 5px;">关键字</label>
 
             <div class="layui-input-inline" style="float: left; ">
@@ -87,7 +88,7 @@
             </div>
 
             <label class="layui-form-label" style="width: auto;">类型</label>
-            <div class="layui-input-inline" style="width: 100px;float: left;margin-right: 10px;">
+            <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
                 <select name="city" lay-verify="">
                     <option value="">全部</option>
                     <option value="010">抢劫</option>
@@ -101,8 +102,8 @@
                 <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="window.location.href='toaddOrupdateTemplate';" >
             </div>
 
-            <div style="overflow:auto;width: 100%; height: 600px;" >
-                <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
+            <div style="overflow:auto;width: 100%; height: 455px;" >
+                <table class="layui-table" lay-skin="line" style="table-layout: fixed;margin-top: 7px;">
                     <tbody>
                         <tr><td>抢劫笔录第一版1</td></tr>
                         <tr><td>抢劫笔录第一版2</td></tr>
@@ -127,25 +128,25 @@
                 </table>
 
             </div>
-            <div id="demo1" style="margin-left: 60px; "></div>
+            <div id="demo1" style="margin-left: 100px; "></div>
         </div>
         <!--<div th:replace="server_web/page :: page">...</div>-->
 
-        <div class="layui-col-md8" style="border:1px solid #F2F2F2; ">
-        <div class="layui-btn-group">
-            <button class="layui-btn layui-btn-normal" onclick="window.location.href='toaddOrupdateTemplate';" >编辑</button>
-            <button class="layui-btn layui-btn-normal">打印</button>
-            <button class="layui-btn layui-btn-normal">导出</button>
-        </div>
+        <div class="layui-col-md7" style="border:1px solid #F2F2F2; padding-top: 5px;">
+            <div class="layui-btn-group">
+                <button class="layui-btn layui-btn-normal" onclick="window.location.href='toaddOrupdateTemplate';" >编辑</button>
+                <button class="layui-btn layui-btn-normal">打印</button>
+                <button class="layui-btn layui-btn-normal">导出</button>
+            </div>
 
-        <div class="layui-card-header" style="margin-top: 8px;padding:0 8px 8px 8px;margin-bottom: 0px;">
-            <b style="padding-right: 20px;">抢劫笔录第一版</b>
-            <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
-            <span>查看中....</span>
-        </div>
+            <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
+                <b style="padding-right: 20px;">抢劫笔录第一版</b>
+                <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
+                <span>查看中....</span>
+            </div>
 
-        <div style="width: 100%; overflow-x: hidden; overflow-y: scroll;display:block; height: 593px;" >
-            <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;">
+        <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 452px;" >
+            <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;margin-top: 0px;">
                 <tbody>
                     <tr><td class="font_red_color">问：姓名</td></tr>
                     <tr><td class="font_blue_color">答：张三</td></tr>

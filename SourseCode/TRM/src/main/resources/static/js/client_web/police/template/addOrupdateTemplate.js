@@ -212,7 +212,7 @@ function addTemplateProblem(obj) {
 '                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>' +
         '</div>';
 
-    var textHtml = '<p class="table_td_tt table_td_tt2">' + text + '</p><p class="table_td_tt table_td_tt2 font_blue_color">1答：小明</p>';
+    var textHtml = '<p class="table_td_tt table_td_tt2">' + text + '</p><p class="table_td_tt table_td_tt2 font_blue_color">答：小明</p>';
 
     $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\">" + textHtml + "</td><td>" + updown + "</td></tr>");
 
