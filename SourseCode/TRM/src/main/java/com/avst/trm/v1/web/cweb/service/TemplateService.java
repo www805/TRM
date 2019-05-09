@@ -1,4 +1,4 @@
-package com.avst.trm.v1.web.cweb.service.policeservice;
+package com.avst.trm.v1.web.cweb.service;
 
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
@@ -7,7 +7,9 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.web.cweb.req.*;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.vo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service("templateService2")
+@Service("templateService")
 public class TemplateService extends BaseService {
     private Gson gson = new Gson();
 
@@ -412,7 +414,38 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void updateProblemType(RResult result,ReqParam param){
+    public void updateProblemType(RResult result,ReqParam<UpdateProblemtypeParam> param){
+        UpdateProblemTypeVO updateProblemTypeVO=new UpdateProblemTypeVO();
+
+        UpdateProblemtypeParam updateProblemtypeParam = param.getParam();
+        if (null==updateProblemtypeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==updateProblemtypeParam.getTypename()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=updateProblemtypeParam.getId()){
+            ew.eq("id",updateProblemtypeParam.getId());
+        }
+
+        //修改问题类型
+        updateProblemtypeParam.setCreatetime(new Date());
+        updateProblemtypeParam.setSsid(OpenUtil.getUUID_32());
+        int insert_bool = police_problemtypeMapper.update(updateProblemtypeParam, ew);
+        System.out.println("insert_bool__"+insert_bool);
+        if (insert_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        updateProblemTypeVO.setBool(insert_bool);
+        result.setData(updateProblemTypeVO);
+        changeResultToSuccess(result);
         return;
     }
 

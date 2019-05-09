@@ -60,7 +60,8 @@ public class PolicePageAction {
 
     @GetMapping("totemplateTypeList")
     public ModelAndView totemplateTypeList(Model model){
-        return new ModelAndView("client_web/police/template/templateTypeList", "templateTypeList", model);
+        model.addAttribute("title", "模板类型");
+        return new ModelAndView("client_web/police/template/templateTypeList", "templateTypeListModel", model);
     }
 
     @GetMapping("toaddOrupdateTemplateType")
@@ -70,7 +71,8 @@ public class PolicePageAction {
 
     @GetMapping("toproblemTypeList")
     public ModelAndView toproblemTypeList(Model model){
-        return new ModelAndView("client_web/police/template/problemTypeList", "problemTypeList", model);
+        model.addAttribute("title", "问题类型");
+        return new ModelAndView("client_web/police/template/problemTypeList", "problemTypeListModel", model);
     }
 
     @GetMapping("toaddOrupdateProblemType")

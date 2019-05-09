@@ -34,104 +34,146 @@
             text-align:left;
         }
     </style>
+
+    <style>
+        .layui-card{
+            border: 1px solid #F2F2F2;
+        }
+        .layui-card-header{
+            background-color: #E5F4FD;
+            border: 2px solid #FFFFFF;
+        }
+        ::-webkit-scrollbar{
+            width: 0px;
+        }
+        ::-webkit-scrollbar{
+            width: 0px;
+        }
+
+        html{
+            background-color: #FFFFFF;
+        }
+        #layui-row1 .layui-table td{
+            text-align: left;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow:ellipsis;
+        }
+
+        .font_red_color{
+            color: red;
+        }
+        .font_blue_color{
+            color: #1171d6;
+        }
+
+        #table4 td{
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
 
 <div style="margin: 5px;" class="layui-form">
+    <div th:replace="header :: header">...</div>
 
-    <div class="layui-col-md5">
 
-        <b class="layui-form-label" style="width: auto; padding:9px 5px;font-weight:bold;" th:text="${templateIndex.title}"></b>
-        <label class="layui-form-label" style="width: auto;">关键字</label>
+    <div class="layui-row" id="layui-row1">
+        <div class="layui-col-md4" style="border:1px solid #F2F2F2;">
+            <label class="layui-form-label" style="width: auto; padding-left: 5px;">关键字</label>
 
-        <div class="layui-input-inline" style="float: left; ">
-            <input type="text" name="text" id="kText" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+            <div class="layui-input-inline" style="float: left; ">
+                <input type="text" name="text" id="kText" style="width: 120px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+            </div>
+
+            <label class="layui-form-label" style="width: auto;">类型</label>
+            <div class="layui-input-inline" style="width: 100px;float: left;margin-right: 10px;">
+                <select name="city" lay-verify="">
+                    <option value="">全部</option>
+                    <option value="010">抢劫</option>
+                    <option value="021">诈骗</option>
+                    <option value="0571">杭州</option>
+                </select>
+            </div>
+
+            <div style="float: left;">
+                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getKeyword_search(1,3);" >
+                <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="window.location.href='toaddOrupdateTemplate';" >
+            </div>
+
+            <div style="overflow:auto;width: 100%; height: 600px;" >
+                <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
+                    <tbody>
+                        <tr><td>抢劫笔录第一版1</td></tr>
+                        <tr><td>抢劫笔录第一版2</td></tr>
+                        <tr><td>抢劫笔录第一版3</td></tr>
+                        <tr><td>抢劫笔录第一版4</td></tr>
+                        <tr><td>抢劫笔录第一版5</td></tr>
+                        <tr><td>抢劫笔录第一版6</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版6</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版6</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版6</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版6</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                        <tr><td>抢劫笔录第一版7</td></tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <div id="demo1" style="margin-left: 60px; "></div>
         </div>
+        <!--<div th:replace="server_web/page :: page">...</div>-->
 
-        <label class="layui-form-label" style="width: auto;">类型</label>
-        <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-            <select name="city" lay-verify="">
-                <option value="">全部</option>
-                <option value="010">抢劫</option>
-                <option value="021">诈骗</option>
-                <option value="0571">杭州</option>
-            </select>
-        </div>
-
-        <div style="float: left;">
-            <button class="layui-icon layui-icon-search layuiadmin-button-btn" style="font-size: 30px; color: #1e9fff;" onclicka="getKeyword_search(1,3);" ></button>
-            <button class="layui-icon layui-icon-add-circle" style="font-size: 30px; color: #1e9fff;" onclick="window.location.href='toaddOrupdateTemplate';" ></button>
-        </div>
-
-        <div style="overflow:auto;width: 100%; height: 600px;" >
-            <table class="layui-table" lay-even="" lay-skin="line" >
-                <tbody>
-                    <tr><td>抢劫笔录第一版1</td></tr>
-                    <tr><td>抢劫笔录第一版2</td></tr>
-                    <tr><td>抢劫笔录第一版3</td></tr>
-                    <tr><td>抢劫笔录第一版4</td></tr>
-                    <tr><td>抢劫笔录第一版5</td></tr>
-                    <tr><td>抢劫笔录第一版6</td></tr>
-                    <tr><td>抢劫笔录第一版7</td></tr>
-                    <tr><td>抢劫笔录第一版6</td></tr>
-                    <tr><td>抢劫笔录第一版7</td></tr>
-                    <tr><td>抢劫笔录第一版6</td></tr>
-                    <tr><td>抢劫笔录第一版7</td></tr>
-                    <tr><td>抢劫笔录第一版6</td></tr>
-                    <tr><td>抢劫笔录第一版7</td></tr>
-                    <tr><td>抢劫笔录第一版6</td></tr>
-                    <tr><td>抢劫笔录第一版7</td></tr>
-                </tbody>
-            </table>
-
-        </div>
-        <div id="demo1" style="margin-left: 120px; "></div>
-
-    </div>
-    <!--<div th:replace="server_web/page :: page">...</div>-->
-
-    <div class="layui-col-md7">
+        <div class="layui-col-md8" style="border:1px solid #F2F2F2; ">
         <div class="layui-btn-group">
-            <button class="layui-btn layui-btn-normal">编辑</button>
+            <button class="layui-btn layui-btn-normal" onclick="window.location.href='toaddOrupdateTemplate';" >编辑</button>
             <button class="layui-btn layui-btn-normal">打印</button>
             <button class="layui-btn layui-btn-normal">导出</button>
         </div>
 
-        <div class="layui-elem-quote" style="margin-top: 8px;padding: 8px;margin-bottom: 0px;">
-            <span style="padding-right: 20px;">抢劫笔录第一版</span>
+        <div class="layui-card-header" style="margin-top: 8px;padding:0 8px 8px 8px;margin-bottom: 0px;">
+            <b style="padding-right: 20px;">抢劫笔录第一版</b>
             <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
             <span>查看中....</span>
         </div>
 
-        <div style="overflow:auto;width: 100%; height: 580px;" >
-            <table class="layui-table" lay-even="" lay-skin="line" >
+        <div style="width: 100%; overflow-x: hidden; overflow-y: scroll;display:block; height: 593px;" >
+            <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;">
                 <tbody>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
-                    <tr><td>问：姓名</td></tr>
-                    <tr><td>答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
+                    <tr><td class="font_red_color">问：姓名</td></tr>
+                    <tr><td class="font_blue_color">答：张三</td></tr>
                 </tbody>
             </table>
         </div>
 
     </div>
 
+    </div>
 
-
+    <div th:replace="footer :: footer">...</div>
 </div>
-<div th:replace="footer :: footer">...</div>
+
 
 <script>
     layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){

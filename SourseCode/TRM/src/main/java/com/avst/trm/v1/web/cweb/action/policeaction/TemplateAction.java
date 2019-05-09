@@ -4,11 +4,14 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
+import com.avst.trm.v1.web.cweb.req.UpdateProblemtypeParam;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 
 /**
  * 关于模板
@@ -17,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/cweb/police/template")
 public class TemplateAction extends MainAction {
 
-    @Autowired
+    @Resource(name="templateService2")
     private TemplateService templateService;
 
     /**
-     * ① 获取模板列表：/cweb/police/template/getTemplates √
+     * ①  获取模板列表：/cweb/police/template/getTemplates √
      * ②  修改模板：/cweb/police/template/updateTemplate √
      * ③  查看单个模板：/cweb/police/template/getTemplateById √
      * ④  添加模板：/cweb/police/template/addTemplate √
@@ -315,7 +318,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/updateProblemType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateProblemType(@RequestBody ReqParam param){
+    public RResult updateProblemType(@RequestBody ReqParam<UpdateProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");

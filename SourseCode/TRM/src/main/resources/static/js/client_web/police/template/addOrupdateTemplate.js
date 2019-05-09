@@ -167,58 +167,6 @@ function callbackchangeUser(data){
 }
 
 
-$(function () {
-    layui.use(['layer','form'], function(){
-        var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
-            ,form = layui.form;
-
-        form.on('switch(adminbool_switch)', function(switchdata){
-            var obj=switchdata.elem.checked;
-            var ssid=switchdata.value;
-            if (!isNotEmpty(ssid)){
-                layer.msg("系统异常",{icon: 2});
-                return;
-            }
-
-            var con;
-            var adminbool;
-            if (obj) {
-                con="你确定要恢复这个用户吗";
-                adminbool=1;
-            }else{
-                con="你确定要禁用这个用户吗";
-                adminbool=2;
-            }
-            layer.open({
-                content:con
-                ,btn: ['确定', '取消']
-                ,yes: function(index, layero){
-                    var url=getActionURL(getactionid_manage().getUserList_changeboolUser);
-                    var data={
-                        ssid:ssid,
-                        adminbool:adminbool
-                    };
-                    ajaxSubmit(url,data,callbackchangeUser);
-                    switchdata.elem.checked=obj;
-                    form.render();
-                    layer.close(index);
-                }
-                ,btn2: function(index, layero){
-                    //按钮【按钮二】的回调
-                    switchdata.elem.checked=!obj;
-                    form.render();
-                    layer.close(index);
-                }
-                ,cancel: function(){
-                    //右上角关闭回调
-                    switchdata.elem.checked=!obj;
-                    form.render();
-                }
-            });
-        });
-    });
-});
-
 function addUpdateinfo(num, type) {
     var version = "修改";
     if (type) {
@@ -258,23 +206,35 @@ function addUpdateinfo(num, type) {
 function addTemplateProblem(obj) {
     var text = $(obj).parents('tr').find("td").eq(0).text();
 
-    var btn = '<a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>';
+    var updown = '<div class="layui-btn-group">\n' +
+'                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
+'                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
+'                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>' +
+        '</div>';
 
-    $("#testTable tbody").append("<tr><td>" + text + "</td><td>" + btn + "</td></tr>");
+    var textHtml = '<p class="table_td_tt table_td_tt2">' + text + '</p><p class="table_td_tt table_td_tt2 font_blue_color">1答：小明</p>';
+
+    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\">" + textHtml + "</td><td>" + updown + "</td></tr>");
+
 }
 
 function DeleteProblem(obj) {
     $(obj).parents('tr').remove();
 }
 
-function tan() {
+//拿到所有数据
+function getDataAll() {
 
-    layer.open({
-        type: 2,
-        title: ['模板变更', 'text-align:left;background: #1e9fff;color:#fff;'],
-        shadeClose: true,
-        shade: false,
-        area: ['1200px', '600px'],
-        content: 'templateList'
-    });
+    // var t01 = $("#testTable tr").length;
+    // alert(t01);
+    $("#testTable").find("td.onetd").each(function(i) {
+        var str = $(this).text();
+        str = str.replace(/\s/g,'');
+        str = str.replace('问：','');
+        arr = str.split('答：');
+        console.log(arr);
+        //上传更新模板
+        var title =$("input[name='title']").val();
+    })
+
 }
