@@ -43,6 +43,9 @@ public class TemplateService extends BaseService {
     @Autowired
     private Police_templatetotypeMapper police_templatetotypeMapper;
 
+    @Autowired
+    private Police_problemtotypeMapper policeProblemtotypeMapper;
+
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
 
@@ -306,11 +309,90 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void updateTemplateType(RResult result,ReqParam param){
+    public void updateTemplateType(RResult result,ReqParam<UpdateTemplateTypeParam> param){
+        DefaultTemplateVO defaultTemplateVO=new DefaultTemplateVO();
+
+        UpdateTemplateTypeParam updateTemplateTypeParam = param.getParam();
+        if (null==updateTemplateTypeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==updateTemplateTypeParam.getTemplatetypessid() || null==updateTemplateTypeParam.getTemplatessid()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew = new EntityWrapper();
+        if (null != updateTemplateTypeParam.getTemplatetypessid()) {
+            ew.eq("templatetypessid", updateTemplateTypeParam.getTemplatetypessid());
+        }
+        if (null != updateTemplateTypeParam.getTemplatessid()) {
+            ew.eq("templatessid", updateTemplateTypeParam.getTemplatessid());
+        }
+
+        //先查有没有该模板
+        int update_bool = police_templatetotypeMapper.selectCount(ew);
+        if (update_bool <= 0) {
+            updateTemplateTypeParam.setId(null);
+            //添加模板类型
+            updateTemplateTypeParam.setCreatetime(new Date());
+            updateTemplateTypeParam.setTemplatebool(-1);
+            updateTemplateTypeParam.setSsid(OpenUtil.getUUID_32());
+            update_bool = police_templatetotypeMapper.insert(updateTemplateTypeParam);
+        }
+        System.out.println("update_bool__"+update_bool);
+        if (update_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }else if(update_bool==0){
+            result.setMessage("没有找到该模板类型");
+            return;
+        }
+
+
+        defaultTemplateVO.setBool(update_bool);
+        result.setData(defaultTemplateVO);
+        changeResultToSuccess(result);
         return;
     }
 
-    public void setDefaultTemplate(RResult result,ReqParam param){
+    public void setDefaultTemplate(RResult result,ReqParam<DefaultTemplateParam> param){
+        DefaultTemplateVO defaultTemplateVO=new DefaultTemplateVO();
+
+        DefaultTemplateParam defaultTemplateParam = param.getParam();
+        if (null==defaultTemplateParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==defaultTemplateParam.getTemplatebool() || null==defaultTemplateParam.getTemplatessid() || null==defaultTemplateParam.getTemplatetypessid()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew = new EntityWrapper();
+        if (null != defaultTemplateParam.getTemplatessid()) {
+            ew.eq("templatessid", defaultTemplateParam.getTemplatessid());
+        }
+        if (null != defaultTemplateParam.getTemplatetypessid()) {
+            ew.eq("templatetypessid", defaultTemplateParam.getTemplatetypessid());
+        }
+
+        //修改模板为默认模板
+        int update_bool = police_templatetotypeMapper.update(defaultTemplateParam, ew);
+        System.out.println("update_bool__"+update_bool);
+        if (update_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }else if(update_bool==0){
+            result.setMessage("没有找到该模板");
+            return;
+        }
+
+        defaultTemplateVO.setBool(update_bool);
+        result.setData(defaultTemplateVO);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -347,15 +429,125 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void updateProblem(RResult result,ReqParam param){
+    public void updateProblem(RResult result,ReqParam<UpdateProblemParam> param){
+
+        UpdateProblemVO updateProblemVO=new UpdateProblemVO();
+
+        UpdateProblemParam updateProblemParam = param.getParam();
+        if (null==updateProblemParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==updateProblemParam.getProblem() || null==updateProblemParam.getReferanswer() || null==updateProblemParam.getProblemtypessid() || null==updateProblemParam.getId()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=updateProblemParam.getId()){
+            ew.eq("id",updateProblemParam.getId());
+        }
+
+
+        //修改问题
+        int update_bool = police_problemMapper.update(updateProblemParam, ew);
+
+        EntityWrapper ew2=new EntityWrapper();
+        if (null!=updateProblemParam.getProblemtypessid()){
+            ew2.eq("problemtypessid",updateProblemParam.getProblemtypessid());
+        }
+        if (null!=updateProblemParam.getProblemssid()){
+            ew2.eq("problemssid",updateProblemParam.getProblemssid());
+        }
+
+        Police_problemtotype problemtotype = new Police_problemtotype();
+        problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid() + "");
+        problemtotype.setProblemssid(updateProblemParam.getId() + "");
+
+        Police_problemtotype problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
+        if(null == problemtotype1){
+            problemtotype.setCreatetime(new Date());
+            problemtotype.setSsid(OpenUtil.getUUID_32());
+            policeProblemtotypeMapper.insert(problemtotype);
+        }
+
+        System.out.println("update_bool"+update_bool);
+        if (update_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        updateProblemVO.setBool(update_bool);
+        result.setData(updateProblemVO);
+        changeResultToSuccess(result);
         return;
     }
 
-    public void getProblemById(RResult result,ReqParam param){
+    public void getProblemById(RResult result,ReqParam<GetProblemsByIdParam> param){
+        ProblemByIdVO problemByIdVO=new ProblemByIdVO();
+
+        GetProblemsByIdParam getProblemsByIdParam = param.getParam();
+        if (null==getProblemsByIdParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==getProblemsByIdParam.getId()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //先查有没有该模板
+        Police_problem ProblemById = police_problemMapper.selectById(getProblemsByIdParam.getId());
+        if (null==ProblemById){
+            result.setMessage("未找到该问题信息");
+            return;
+        }
+
+        problemByIdVO.setProblem(ProblemById);
+        result.setData(problemByIdVO);
+        changeResultToSuccess(result);
         return;
     }
 
-    public void addProblem(RResult result,ReqParam param){
+    public void addProblem(RResult result,ReqParam<AddProblemParam> param){
+
+        AddProblemVO addProblemVO=new AddProblemVO();
+        Police_problemtotype problemtotype = new Police_problemtotype();
+
+        AddProblemParam addProblemParam = param.getParam();
+        if (null==addProblemParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==addProblemParam.getProblem() || null==addProblemParam.getReferanswer() || null==addProblemParam.getProblemtypessid()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //添加问题类型
+        addProblemParam.setCreatetime(new Date());
+        addProblemParam.setSsid(OpenUtil.getUUID_32());
+        int insert_bool = police_problemMapper.insert(addProblemParam);
+
+        Police_problem police_problem = police_problemMapper.selectOne(addProblemParam);
+        problemtotype.setProblemssid(police_problem.getId() + "");
+        problemtotype.setProblemtypessid(addProblemParam.getProblemtypessid());
+        problemtotype.setSsid(OpenUtil.getUUID_32());
+        problemtotype.setCreatetime(new Date());
+
+        int insert_totype = policeProblemtotypeMapper.insert(problemtotype);
+        System.out.println("insert_bool__"+insert_bool);
+        if (insert_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        addProblemVO.setBool(insert_bool);
+        result.setData(addProblemVO);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -377,7 +569,7 @@ public class TemplateService extends BaseService {
     }
 
     /**
-     * 添加问题
+     * 添加问题类型
      * @param result
      * @param param
      */
@@ -412,7 +604,37 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void updateProblemType(RResult result,ReqParam param){
+    public void updateProblemType(RResult result,ReqParam<UpdateProblemtypeParam> param){
+
+        UpdateProblemTypeVO updateProblemTypeVO=new UpdateProblemTypeVO();
+
+        UpdateProblemtypeParam updateProblemtypeParam = param.getParam();
+        if (null==updateProblemtypeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (null==updateProblemtypeParam.getTypename() || null==updateProblemtypeParam.getOrdernum() || null==updateProblemtypeParam.getId()){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew=new EntityWrapper();
+        if (null!=updateProblemtypeParam.getId()){
+            ew.eq("id",updateProblemtypeParam.getId());
+        }
+
+        //添加问题类型
+        int update_bool = police_problemtypeMapper.update(updateProblemtypeParam, ew);
+        System.out.println("update_bool__"+update_bool);
+        if (update_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        updateProblemTypeVO.setBool(update_bool);
+        result.setData(updateProblemTypeVO);
+        changeResultToSuccess(result);
         return;
     }
 

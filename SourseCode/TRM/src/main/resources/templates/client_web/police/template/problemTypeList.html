@@ -7,16 +7,16 @@
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <body>
-<div class="layui-fluid" style="margin: 15px;">
+<div class="layui-fluid" style="padding: 5px;">
     <div th:replace="header :: header">...</div>
 
-    <div class="layui-elem-quote">
-        <h3 th:text="${problemTypeListModel.title}">智能提讯系统</h3>
+    <div style="padding:8px;margin-bottom: 10px;background: #E5F4FD;border-left: 5px solid #1e9fff;">
+        <span style="font-size: 16px;font-weight: bold;" th:text="${problemTypeListModel.title}">新增 / 修改模板</span>
     </div>
 
     <form class="layui-form" >
         <div class="layui-form-item">
-            <label class="layui-form-label">类型名称</label>
+            <label class="layui-form-label" style="text-align: left;padding: 9px;">类型名称</label>
             <div class="layui-input-inline">
                 <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入类型名称" autocomplete="off" class="layui-input">
             </div>
@@ -25,7 +25,14 @@
         </div>
     </form>
 
-<table class="layui-table">
+    <table class="layui-table">
+        <colgroup>
+            <col width="100">
+            <col>
+            <col>
+            <col>
+            <col width="200">
+        </colgroup>
         <thead>
         <tr>
             <th>序号</th>
@@ -43,6 +50,7 @@
             <td>排序</td>
             <td>
                 <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+                <a  class="layui-btn layui-btn-danger layui-btn-sm" onclick="problemDelete();">删除</a>
             </td>
         </tr>
         <tr>
@@ -52,6 +60,7 @@
             <td>排序</td>
             <td>
                 <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+                <a  class="layui-btn layui-btn-danger layui-btn-sm" onclick="problemDelete();">删除</a>
             </td>
         </tr> <tr>
             <td>序号</td>
@@ -60,6 +69,7 @@
             <td>排序</td>
             <td>
                 <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
+                <a  class="layui-btn layui-btn-danger layui-btn-sm" onclick="problemDelete();">删除</a>
             </td>
         </tr>
 

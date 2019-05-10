@@ -6,29 +6,6 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 
-    <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
-    <script src="/layui/layui.js"></script>
-    <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
-    <script type="text/javascript" th:src="@{/js/common.js}"></script>
-    <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
-    <script th:src="@{/js/list.js}" type="text/javascript"></script>
-    <script th:src="@{/js/client_web/police/template/templateIndex.js}" type="text/javascript"></script>
-    <script th:inline="javascript">
-        var updateurl="";
-        var addurl="";
-        var laypage;
-        var init_web = null;
-
-        $(function () {
-            // init_web = [[${session.INIT_WEB}]];
-            //
-            // setpageAction(init_web, "server_web/police/keyword/getKeyword");
-            // getAction();
-            // updateurl = getActionURL(getactionid_manage().getKeyword_getAddOrUpdateKeyword);
-            // deleteurl = getActionURL(getactionid_manage().getKeyword_deleteKeyword);
-            // getKeyWordByParam();
-        });
-    </script>
     <style>
         .layui-table td, .layui-table th{
             text-align:left;
@@ -81,7 +58,7 @@
         </div>
         <div class="layui-col-md5" style="border:1px solid #F2F2F2;padding-top: 5px;">
 
-            <label class="layui-form-label" style="width: auto; padding-left: 5px;">关键字</label>
+            <label class="layui-form-label" style="width: auto;">关键字</label>
 
             <div class="layui-input-inline" style="float: left; ">
                 <input type="text" name="text" id="kText" style="width: 120px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
@@ -145,7 +122,7 @@
                 <span>查看中....</span>
             </div>
 
-        <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 452px;" >
+        <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 451px;" >
             <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;margin-top: 0px;">
                 <tbody>
                     <tr><td class="font_red_color">问：姓名</td></tr>
@@ -175,6 +152,29 @@
     <div th:replace="footer :: footer">...</div>
 </div>
 
+<script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
+<script src="/layui/layui.js"></script>
+<script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
+<script type="text/javascript" th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/actionid.js}" type="text/javascript"></script>
+<script th:src="@{/js/list.js}" type="text/javascript"></script>
+<script th:src="@{/js/client_web/police/template/templateIndex.js}" type="text/javascript"></script>
+<script th:inline="javascript">
+    var updateurl="";
+    var addurl="";
+    var laypage;
+    var init_web = null;
+
+    $(function () {
+        // init_web = [[${session.INIT_WEB}]];
+        //
+        // setpageAction(init_web, "server_web/police/keyword/getKeyword");
+        // getAction();
+        // updateurl = getActionURL(getactionid_manage().getKeyword_getAddOrUpdateKeyword);
+        // deleteurl = getActionURL(getactionid_manage().getKeyword_deleteKeyword);
+        // getKeyWordByParam();
+    });
+</script>
 
 <script>
     layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){

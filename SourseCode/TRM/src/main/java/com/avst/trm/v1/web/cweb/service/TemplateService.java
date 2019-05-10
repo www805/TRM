@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.req.*;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.UpdateProblemtypeParam;
 import com.avst.trm.v1.web.cweb.vo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;

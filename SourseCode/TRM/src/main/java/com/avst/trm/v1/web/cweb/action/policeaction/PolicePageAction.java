@@ -37,48 +37,56 @@ public class PolicePageAction {
     }
 
     /**
-     * 变更模板
+     * 模板类型
      * @param model
      * @return
      */
-    @GetMapping("templateList")
-    public ModelAndView templateList(Model model){
-        return new ModelAndView("client_web/police/template/templateList", "problemIndex", model);
-    }
-
-
-
-    @GetMapping("toproblemIndex")
-    public ModelAndView toproblemIndex(Model model){
-        return new ModelAndView("client_web/police/template/problemIndex", "problemIndex", model);
-    }
-
-    @GetMapping("toaddOrupdateProblem")
-    public ModelAndView toaddOrupdateProblem(Model model){
-        return new ModelAndView("client_web/police/template/addOrupdateProblem", "addOrupdateProblem", model);
-    }
-
     @GetMapping("totemplateTypeList")
     public ModelAndView totemplateTypeList(Model model){
         model.addAttribute("title", "模板类型");
         return new ModelAndView("client_web/police/template/templateTypeList", "templateTypeListModel", model);
     }
 
-    @GetMapping("toaddOrupdateTemplateType")
-    public ModelAndView toaddOrupdateTemplateType(Model model){
-        return new ModelAndView("client_web/police/template/addOrupdateTemplateType", "addOrupdateTemplateType", model);
-    }
-
+    /**
+     * 问题类型
+     * @param model
+     * @return
+     */
     @GetMapping("toproblemTypeList")
     public ModelAndView toproblemTypeList(Model model){
         model.addAttribute("title", "问题类型");
         return new ModelAndView("client_web/police/template/problemTypeList", "problemTypeListModel", model);
     }
 
-    @GetMapping("toaddOrupdateProblemType")
-    public ModelAndView toaddOrupdateProblemType(Model model){
-        return new ModelAndView("client_web/police/template/addOrupdateProblemType", "addOrupdateProblemType", model);
-    }
+    /**
+     * 变更模板
+     * @param model
+     * @return
+     */
+//    @GetMapping("templateList")
+//    public ModelAndView templateList(Model model){
+//        return new ModelAndView("client_web/police/template/templateList", "problemIndex", model);
+//    }
+
+//    @GetMapping("toproblemIndex")
+//    public ModelAndView toproblemIndex(Model model){
+//        return new ModelAndView("client_web/police/template/problemIndex", "problemIndex", model);
+//    }
+//
+//    @GetMapping("toaddOrupdateProblem")
+//    public ModelAndView toaddOrupdateProblem(Model model){
+//        return new ModelAndView("client_web/police/template/addOrupdateProblem", "addOrupdateProblem", model);
+//    }
+
+//    @GetMapping("toaddOrupdateTemplateType")
+//    public ModelAndView toaddOrupdateTemplateType(Model model){
+//        return new ModelAndView("client_web/police/template/addOrupdateTemplateType", "addOrupdateTemplateType", model);
+//    }
+
+//    @GetMapping("toaddOrupdateProblemType")
+//    public ModelAndView toaddOrupdateProblemType(Model model){
+//        return new ModelAndView("client_web/police/template/addOrupdateProblemType", "addOrupdateProblemType", model);
+//    }
     /*********************************关于模板 end*********************************/
 
     /*********************************关于笔录 start*********************************/

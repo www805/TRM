@@ -4,7 +4,6 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
-import com.avst.trm.v1.web.cweb.req.UpdateProblemtypeParam;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.TemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +29,15 @@ public class TemplateAction extends MainAction {
      * ④  添加模板：/cweb/police/template/addTemplate √
      * ⑤  获取模板类型列表：/cweb/police/template/getTemplateTypes √
      * ⑥  添加模板类型：/cweb/police/template/addTemplateType √
-     * ⑦  修改模板类型：/cweb/police/template/updateTemplateType
-     * ⑧  设置默认模板：/cweb/police/template/setDefaultTemplate
+     * ⑦  修改模板类型：/cweb/police/template/updateTemplateType √
+     * ⑧  设置默认模板：/cweb/police/template/setDefaultTemplate √
      * ⑨  获取问题列表：/cweb/police/template/getProblems √
-     * ⑩  修改问题：/cweb/police/template/updateProblem
-     * ⑪  查询单个问题：/cweb/police/template/getProblemById
-     * ⑫  添加问题：/cweb/police/template/addProblem
+     * ⑩  修改问题：/cweb/police/template/updateProblem √
+     * ⑪  查询单个问题：/cweb/police/template/getProblemById √
+     * ⑫  添加问题：/cweb/police/template/addProblem √
      * ⑬  获取问题类型列表：/cweb/police/template/getProblemTypes √
      * ⑭  添加问题类型：/cweb/police/template/addProblemType √
-     * ⑮  修改问题类型：/cweb/police/template/updateProblemType
+     * ⑮  修改问题类型：/cweb/police/template/updateProblemType √
      * ⑯  获取模板编辑页主数据：/cweb/police/template/addOrupdateTemplateIndex
      * ⑰  查询单个模板类型：/cweb/police/template/getTemplateTypeById √
      * ⑱  查询单个问题类型：/cweb/police/template/getProblemTypeById √
@@ -165,7 +164,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/updateTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateTemplateType(@RequestBody ReqParam param){
+    public RResult updateTemplateType(@RequestBody ReqParam<UpdateTemplateTypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -184,7 +183,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/setDefaultTemplate",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult setDefaultTemplate(@RequestBody ReqParam param){
+    public RResult setDefaultTemplate(@RequestBody ReqParam<DefaultTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -223,7 +222,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/updateProblem",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateProblem(@RequestBody ReqParam param){
+    public RResult updateProblem(@RequestBody ReqParam<UpdateProblemParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -242,7 +241,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @GetMapping(value = "/getProblemById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblemById(@RequestBody ReqParam param){
+    public RResult getProblemById(@RequestBody ReqParam<GetProblemsByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -261,7 +260,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/addProblem",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addProblem(@RequestBody ReqParam param){
+    public RResult addProblem(@RequestBody ReqParam<AddProblemParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
