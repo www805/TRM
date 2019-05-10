@@ -5,8 +5,6 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo">
         <id column="id" property="id" />
-        <result column="cardtypeid" property="cardtypeid" />
-        <result column="cardid" property="cardid" />
         <result column="username" property="username" />
         <result column="beforename" property="beforename" />
         <result column="nickname" property="nickname" />

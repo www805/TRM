@@ -8,31 +8,21 @@ import java.io.Serializable;
 
 /**
  * <p>
- * InnoDB free: 90112 kB
+ * InnoDB free: 89088 kB
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-05-10
  */
 public class Police_userinfo extends Model<Police_userinfo> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 用户角色表
+     * 用户表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
-    /**
-     * 证件类型
-     */
-    private Integer cardtypeid;
-
-    /**
-     * 证件号码
-     */
-    private String cardid;
 
     /**
      * 姓名
@@ -142,20 +132,6 @@ public class Police_userinfo extends Model<Police_userinfo> {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-    public Integer getCardtypeid() {
-        return cardtypeid;
-    }
-
-    public void setCardtypeid(Integer cardtypeid) {
-        this.cardtypeid = cardtypeid;
-    }
-    public String getCardid() {
-        return cardid;
-    }
-
-    public void setCardid(String cardid) {
-        this.cardid = cardid;
     }
     public String getUsername() {
         return username;
@@ -321,8 +297,6 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public String toString() {
         return "Police_userinfo{" +
         "id=" + id +
-        ", cardtypeid=" + cardtypeid +
-        ", cardid=" + cardid +
         ", username=" + username +
         ", beforename=" + beforename +
         ", nickname=" + nickname +

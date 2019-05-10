@@ -1,5 +1,9 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtypeMapper;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -31,6 +35,12 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Police_recordtypeMapper police_recordtypeMapper;
+
+    @Autowired
+    private Base_nationalityMapper base_nationalityMapper;
+
+    @Autowired
+    private Base_nationalMapper base_nationalMapper;
 
 
 
@@ -205,6 +215,20 @@ public class RecordService extends BaseService {
         }
 
 
+        return;
+    }
+
+    public void getNationalitys(RResult result, ReqParam param){
+        List<Base_nationality> list=base_nationalityMapper.selectList(null);
+        result.setData(list);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getNationals(RResult result, ReqParam param){
+        List<Base_national> list=base_nationalMapper.selectList(null);
+        result.setData(list);
+        changeResultToSuccess(result);
         return;
     }
 

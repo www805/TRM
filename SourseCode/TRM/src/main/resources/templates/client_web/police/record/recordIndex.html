@@ -35,16 +35,15 @@
 
 </style>
 <body>
-<div class="layui-form" style="margin: 15px;">
+<div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
     <div th:replace="header :: header">...</div>
 
-    <div class="layui-elem-quote">
+    <div class="layui-elem-quote" style=" padding: 10px;">
         <h3 th:text="${recordIndexModel.title}">智能提讯系统</h3>
     </div>
 
     <div class="layui-row " >
-        <div  style="height: 650px; " >
-            <div class="layui-col-md3 "style="border:1px solid #F2F2F2;" >
+            <div class="layui-col-md3 "style="border:1px solid #F2F2F2;height: 100%" >
                 <div class="layui-card">
                     <div class="layui-card-header">
                         <div class="layui-form-item" >
@@ -205,7 +204,6 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 
 

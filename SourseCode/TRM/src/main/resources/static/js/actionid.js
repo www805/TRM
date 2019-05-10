@@ -94,7 +94,11 @@ function getactionid_manage() {
         recordTypeList_getPidRecordtypes:"recordTypeList_getPidRecordtypes",
         recordTypeList_getRecordtypeById:"recordTypeList_getRecordtypeById",
         recordTypeList_updateRecordtype:"recordTypeList_updateRecordtype",
-        recordTypeList_addRecordtype:"recordTypeList_addRecordtype"
+        recordTypeList_addRecordtype:"recordTypeList_addRecordtype",
+
+        addCaseToUser_getRecordtypes:"addCaseToUser_getRecordtypes",
+        addCaseToUser_getNationalitys:"addCaseToUser_getNationalitys",
+        addCaseToUser_getNationals:"addCaseToUser_getNationals"
 
 
     };

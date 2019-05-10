@@ -27,13 +27,16 @@
     cite{
         font-size: 16px
     }
+    .layui-nav .layui-nav-item{
+        line-height: 45px;
+    }
 
 </style>
 <body class="layui-layout-body" id="">
 
 <div class="layui-layout layui-layout-admin" >
-    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED">
-        <a th:href="@{/cweb/base/main/gotomain}"><h1 class="layui-logo"  style="color: #fff; font-size: 18px; font-weight:bold; font-style:italic" th:text="${mainModel.title}"></h1></a>
+    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 45px">
+        <a th:href="@{/cweb/base/main/gotomain}"><h1 class="layui-logo"  style="color: #fff; font-size: 22px; font-weight:bold; font-style:italic;line-height: 45px" th:text="${mainModel.title}"></h1></a>
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item">
                 <a target="option" th:href="@{/cweb/police/policePage/toaddCaseToUser}">
@@ -89,8 +92,8 @@
         </div>
     </div>
 
-    <div class="layui-footer"  style="left: 0;">
-        <p style=" text-align:center;">版权所有  © 2019 深圳顺泰伟成科技有限公司</p>
+    <div class="layui-footer"  style="left: 0; height: 30px; line-height: 30px;font-size: 12px">
+        <p style=" text-align:center;">版权所有  © 2019 <a href="http://www.avst.cn">顺泰伟成科技有限公司</a></p>
     </div>
 </div>
 

@@ -236,7 +236,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            //clientUserService.getUserByCard(result,param);
+            recordService.getUserByCard(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -255,11 +255,50 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-           // clientUserService.getCaseById(result,param);
+           recordService.getCaseById(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 获取全部国籍
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getNationalitys")
+    public RResult getNationalitys(@RequestBody  ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getNationalitys(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取全部民族
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getNationals")
+    public RResult getNationals(@RequestBody  ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getNationals(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
     /**
      * 检测是否授权
