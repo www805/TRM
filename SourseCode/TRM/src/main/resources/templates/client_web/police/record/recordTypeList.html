@@ -16,11 +16,13 @@
 
     <form class="layui-form" >
         <div class="layui-form-item">
-            <label class="layui-form-label">类型名称</label>
+            <label class="layui-form-label">类型父类</label>
             <div class="layui-input-inline">
-                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入类型名称" autocomplete="off" class="layui-input">
+                <select name="pid" lay-verify="required" id="pid">
+                    <option value="">全部</option>
+                </select>
             </div>
-            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="" >
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecordtypes();" >
             <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="opneModal_1();" >
         </div>
     </form>
@@ -31,38 +33,18 @@
             <th>序号</th>
             <th>类型名称</th>
             <th>创建时间</th>
-            <th>排序</th>
             <th>操作</th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
+        <tbody id="recordtypehtml">
+        <!--<tr>
             <td>序号</td>
             <td>类型名称</td>
             <td>创建时间</td>
-            <td>排序</td>
             <td>
                 <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
             </td>
-        </tr>
-        <tr>
-            <td>序号</td>
-            <td>类型名称</td>
-            <td>创建时间</td>
-            <td>排序</td>
-            <td>
-                <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
-            </td>
-        </tr> <tr>
-            <td>序号</td>
-            <td>类型名称</td>
-            <td>创建时间</td>
-            <td>排序</td>
-            <td>
-                <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1();">修改</a>
-            </td>
-        </tr>
-
+        </tr>-->
         </tbody>
     </table>
 
@@ -83,8 +65,10 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/recordTypeList");
+        getPidRecordtypes();
+        getRecordtypes();
     });
-    layui.use(['layer','element'], function(){
+    layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         //使用模块

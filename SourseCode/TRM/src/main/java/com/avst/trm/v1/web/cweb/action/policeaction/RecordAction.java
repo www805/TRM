@@ -1,13 +1,15 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
-import com.avst.trm.v1.web.cweb.req.policereq.GetCaseByIdParam;
-import com.avst.trm.v1.web.cweb.req.policereq.GetRecordsParam;
-import com.avst.trm.v1.web.cweb.req.policereq.GetUserByCardParam;
+import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/cweb/police/record")
-public class RecordAction extends MainAction {
+public class RecordAction extends BaseAction {
     @Autowired
     private RecordService recordService;
 
@@ -119,8 +121,8 @@ public class RecordAction extends MainAction {
         return result;
     }
 
-    @GetMapping(value = "/getRecordtypes",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getRecordtypes(@RequestBody ReqParam param){
+    @RequestMapping(value = "/getRecordtypes")
+    public RResult getRecordtypes(@RequestBody ReqParam<GetRecordtypesParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -133,8 +135,25 @@ public class RecordAction extends MainAction {
         return result;
     }
 
-    @GetMapping(value = "/getRecordtypeById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getRecordtypeById(@RequestBody ReqParam param){
+
+    @RequestMapping(value = "/getPidRecordtypes")
+    public RResult getPidRecordtypes(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getPidRecordtypes(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+    @RequestMapping(value = "/getRecordtypeById")
+    public RResult getRecordtypeById(@RequestBody ReqParam<GetRecordtypeByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -147,8 +166,8 @@ public class RecordAction extends MainAction {
         return result;
     }
 
-    @PostMapping(value = "/addRecordtype",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addRecordtype(@RequestBody ReqParam param){
+    @RequestMapping(value = "/addRecordtype")
+    public RResult addRecordtype(@RequestBody ReqParam<Police_recordtype> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -161,8 +180,8 @@ public class RecordAction extends MainAction {
         return result;
     }
 
-    @PostMapping(value = "/updateRecordtype",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult updateRecordtype(@RequestBody ReqParam param){
+    @RequestMapping(value = "/updateRecordtype")
+    public RResult updateRecordtype(@RequestBody ReqParam<Police_recordtype> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -242,7 +261,21 @@ public class RecordAction extends MainAction {
         return result;
     }
 
-
+    /**
+     * 检测是否授权
+     * @return
+     */
+    public boolean checkToken( String token){
+        String clientkey= CommonCache.getClientKey();
+        System.out.println("token:"+token+"------clientkey:"+clientkey);
+        if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
+            return  false;
+        }
+        if (!token.trim().equals(clientkey.trim())){
+            return  false;
+        }
+        return  true;
+    }
 
 
 

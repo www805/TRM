@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -74,16 +75,16 @@ public class MainAction extends BaseAction {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/updateServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/updateServerconfig")
     @ResponseBody
-    public RResult updateServerconfig(@RequestBody ReqParam<UpdateServerconfigParam> param){
+    public RResult updateServerconfig(ReqParam param,@RequestParam(value="client_url",required=false) MultipartFile multipartfile){
         RResult result=this.createNewResultOfFail();
         if(null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            mainService.updateServerconfig(result,param);
+            mainService.updateServerconfig(result,param,multipartfile);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
@@ -94,7 +95,7 @@ public class MainAction extends BaseAction {
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getServerconfig",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getServerconfig")
     @ResponseBody
     public RResult getServerconfig(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
