@@ -186,8 +186,8 @@ function callbackgetPidRecordtypes(data) {
             if (isNotEmpty(data)){
                 for (var i = 0; i < data.length; i++) {
                     var recordtypes = data[i];
-                    $("#pid").append("<option value='"+recordtypes.id+"'>|-- "+recordtypes.typename+"</option>");
-                    $("#pidm").append("<option value='"+recordtypes.id+"'>|-- "+recordtypes.typename+"</option>");
+                    $("#pid").append("<option value='"+recordtypes.id+"'>|---- "+recordtypes.typename+"</option>");
+                    $("#pidm").append("<option value='"+recordtypes.id+"'>|---- "+recordtypes.typename+"</option>");
                 }
             }
         }
