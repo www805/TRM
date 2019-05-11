@@ -8,6 +8,7 @@
         <result column="userssid" property="userssid" />
         <result column="otheruserssid" property="otheruserssid" />
         <result column="relation" property="relation" />
+        <result column="language" property="language" />
         <result column="usertype" property="usertype" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />

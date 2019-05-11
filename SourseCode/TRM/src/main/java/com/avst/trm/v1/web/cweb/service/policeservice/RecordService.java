@@ -1,11 +1,21 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_case;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_cardtypeMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtypeMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -25,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +48,16 @@ public class RecordService extends BaseService {
     private Police_recordtypeMapper police_recordtypeMapper;
 
     @Autowired
-    private Base_nationalityMapper base_nationalityMapper;
+    private Police_cardtypeMapper police_cardtypeMapper;
 
     @Autowired
-    private Base_nationalMapper base_nationalMapper;
+    private Police_userinfoMapper police_userinfoMapper;
+
+    @Autowired
+    private Police_caseMapper police_caseMapper;
+
+    @Autowired
+    private Base_admininfoMapper base_admininfoMapper;
 
 
 
@@ -193,7 +210,7 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void getUserByCard(RResult result, ReqParam<GetUserByCardParam> param){
+    public void getUserByCard(RResult result, ReqParam<GetUserByCardParam> param, HttpSession httpSession){
         GetUserByCardVO getUserByCardVO=new GetUserByCardVO();
 
         GetUserByCardParam getUserByCardParam=param.getParam();
@@ -201,7 +218,63 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+         String cardtypesssid=getUserByCardParam.getCardtypesssid();//证件类型ssid
+         String cardnum=getUserByCardParam.getCardnum();//证件号
+        System.out.println("证件类型："+cardtypesssid);
+        System.out.println("证件号码："+cardnum);
 
+        if (StringUtils.isBlank(cardtypesssid)||StringUtils.isBlank(cardnum)){
+            result.setMessage("请输入证件号");
+            return;
+        }
+
+        //根据证件类型和证件号查询用户信息
+        EntityWrapper userparam=new EntityWrapper();
+        userparam.eq("ut.cardtypessid",cardtypesssid);
+        userparam.eq("ut.cardnum",cardnum);
+        List<Police_userinfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+        if (null==userinfos||userinfos.size()<1){
+            result.setMessage("未找到该人员信息");
+            return;
+        }
+
+        if (null!=userinfos&&userinfos.size()>0){
+            if (userinfos.size()==1){
+                Police_userinfo police_userinfo=userinfos.get(0);
+                getUserByCardVO.setUserinfo(police_userinfo);
+
+
+                //根据用户userssid查询案件列表：需要加入询问次数
+                EntityWrapper caseparam=new EntityWrapper();
+                caseparam.eq("userssid",police_userinfo.getSsid());
+                caseparam.orderBy("occurrencetime",false);
+                List<Police_case> cases=police_caseMapper.selectList(caseparam);
+                if (null!=cases&&cases.size()>0){
+                    getUserByCardVO.setCases(cases);
+                }
+
+                //询问人等
+                Base_admininfo admininfo=(Base_admininfo)httpSession.getAttribute(Constant.MANAGE_CLIENT);
+
+                EntityWrapper otheruserinfosparam=new EntityWrapper();
+                otheruserinfosparam.ne("a.ssid",admininfo.getSsid());
+                otheruserinfosparam.eq("a.adminbool",1);//正常人
+                List<AdminAndWorkunit> otheruserinfos=base_admininfoMapper.getAdminListAndWorkunit(otheruserinfosparam);
+                if (null!=cases&&cases.size()>0){
+                    getUserByCardVO.setOtheruserinfos(otheruserinfos);
+                }
+
+                //其他在场人员信息关联：疑问？其他在场人员应该是关联案件和人员ssid 的：数据库需要修改。。。
+
+
+                result.setData(getUserByCardVO);
+                changeResultToSuccess(result);
+            }else{
+                System.out.println("人员用户找到多个--"+cardnum);
+                result.setMessage("系统异常");
+                return;
+            }
+        }
         return;
     }
 
@@ -214,23 +287,30 @@ public class RecordService extends BaseService {
             return;
         }
 
-
+        String casessid=getCaseByIdParam.getCasessid();
+        if (StringUtils.isBlank(casessid)){
+            result.setMessage("参数为空");
+            return;
+        }
+        //根据案件ssid查询该案件信息
+        changeResultToSuccess(result);
         return;
     }
 
-    public void getNationalitys(RResult result, ReqParam param){
-        List<Base_nationality> list=base_nationalityMapper.selectList(null);
+    public void getCards(RResult result, ReqParam param){
+        List<Police_cardtype> list=police_cardtypeMapper.selectList(null);
         result.setData(list);
         changeResultToSuccess(result);
         return;
     }
 
-    public void getNationals(RResult result, ReqParam param){
-        List<Base_national> list=base_nationalMapper.selectList(null);
-        result.setData(list);
-        changeResultToSuccess(result);
-        return;
+
+    public static void main(String[] args) {
+
+
+
     }
+
 
 
 

@@ -111,6 +111,47 @@ public class MainAction extends BaseAction {
     }
 
     /**
+     * 获取全部国籍
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getNationalitys")
+    @ResponseBody
+    public RResult getNationalitys(@RequestBody  ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getNationalitys(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取全部民族
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getNationals")
+    @ResponseBody
+    public RResult getNationals(@RequestBody  ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getNationals(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
      * 跳转==》修改服务器配置页面
      */
     @RequestMapping(value = "/gotoupdateServerconfig")

@@ -76,6 +76,13 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      int countgetUserList(@Param("ew") EntityWrapper ew);
 
 
+
+     @Select("select  a.*,w.workname as 'workname'" +
+             " from base_admininfo a " +
+             " left join police_workunit w on a.workunitssid=w.ssid " +
+             " where 1=1 ${ew.sqlSegment}")
+    List<AdminAndWorkunit> getAdminListAndWorkunit(@Param("ew") EntityWrapper ew);
+
     /******************笔录统计******************/
     @Select("select count(distinct a.id) from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
             "where 1=1 ${ew.sqlSegment} " )

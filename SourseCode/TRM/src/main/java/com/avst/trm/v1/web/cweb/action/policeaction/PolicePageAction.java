@@ -149,6 +149,12 @@ public class PolicePageAction {
        model.addAttribute("title","更多笔录");
        return new ModelAndView("client_web/police/record/moreRecord", "moreRecordModel", model);
     }
+
+    @GetMapping("toaddCaseToUserDetail")
+    public ModelAndView toaddCaseToUserDetail(Model model){
+        model.addAttribute("title","笔录制作详情");
+        return new ModelAndView("client_web/police/record/addCaseToUserDetail", "addCaseToUserDetailModel", model);
+    }
     /*********************************关于笔录 end*********************************/
 
 

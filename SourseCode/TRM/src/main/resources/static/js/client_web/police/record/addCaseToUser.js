@@ -1,3 +1,5 @@
+var cases=null;//案件数据
+var otheruserinfos=null;//询问人员数据
 function addCaseToArraignment() {
     //添加笔录案件关联，跳转页面
 
@@ -5,9 +7,8 @@ function addCaseToArraignment() {
     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
         setpageAction(INIT_CLIENT,nextparam.nextPageId);
         var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-        window.location.href=url;
+        parent.location.href=url;
     }
-
 }
 
 /**
@@ -32,6 +33,8 @@ function callbackgetRecordtypes(data) {
             var list=data.getRecordtypesVOParamList;
            gettree(list);
         }
+    }else{
+        layer.msg(data.message);
     }
 }
 function gettree(data){
@@ -45,7 +48,7 @@ function gettree(data){
             if (l.police_recordtypes.length>0){
                 for (var j = 0; j < l.police_recordtypes.length; j++) {
                     var ls = l.police_recordtypes[j];
-                    html+=' <tr><td>'+ls.typename+'</td></tr>';
+                    html+=' <tr><td><a >'+ls.typename+'</td></a></tr>';
                 }
             }
             html+='</table> </div></div>';
@@ -53,13 +56,26 @@ function gettree(data){
         }
     }
     $('#recotdtypes td').eq(0).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
-    $('#recotdtypes td').dblclick(function() {
-        $('#recotdtypes td').not(this).css({"background-color":"#ffffff","color":"#000000"});
-        $(this).css({"background-color":"#1E9FFF","color":"#FFFFFF"});//还原所有td的颜色
+    $('#recotdtypes td').click(function() {
+        var obj=this;
+       layer.confirm('人员案件信息将会重置，确定要切换笔录类型吗', {
+            btn: ['确认','取消'], //按钮
+            shade: [0.1,'#fff'], //不显示遮罩
+        }, function(index){
+            $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
+            $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});//还原所有td的颜色'
+           $("iframe").prop("src","/cweb/police/policePage/toaddCaseToUserDetail");/*target="ifranmehtml"  href="/cweb/police/policePage/toaddCaseToUserDetail"*/
+            layer.close(index);
+        }, function(index){
+            layer.close(index);
+        });
+
     });
-    layui.use('element', function(){
+    layui.use(['element','form'], function(){
         var element = layui.element;
+        var form=layui.form;
         element.render();
+        form.render();
     });
 }
 
@@ -71,7 +87,6 @@ function getNationalitys(){
     };
     ajaxSubmitByJson(url,data,callbackgetNationalitys);
 }
-
 function callbackgetNationalitys(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -80,10 +95,12 @@ function callbackgetNationalitys(data) {
             if (isNotEmpty(data)) {
                     for (var i = 0; i < data.length; i++) {
                         var l = data[i];
-                        $("#nationality").append("<option value='"+l.id+"' title='"+l.enname+"'> "+l.zhname+"</option>");
+                        $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
                     }
             }
         }
+    }else{
+        layer.msg(data.message);
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -98,8 +115,6 @@ function getNationals(){
     };
     ajaxSubmitByJson(url,data,callbackgetNationals);
 }
-
-
 function callbackgetNationals(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -107,7 +122,7 @@ function callbackgetNationals(data) {
         if (isNotEmpty(data)) {
             for (var i = 0; i < data.length; i++) {
                 var l = data[i];
-                $("#national").append("<option value='"+l.id+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
+                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
             }
         }
     }
@@ -117,11 +132,215 @@ function callbackgetNationals(data) {
     });
 }
 
+function getCards(){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getCards);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetCards);
+}
+function callbackgetCards(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        $('#cards1 option').not(":lt(1)").remove();
+        $('#cards2 option').not(":lt(1)").remove();
+        $('#cards3 option').not(":lt(1)").remove();
+        $('#cards4 option').not(":lt(1)").remove();
+        if (isNotEmpty(data)){
+            if (isNotEmpty(data)) {
+                for (var i = 0; i < data.length; i++) {
+                    var l = data[i];
+                    $("#cards1").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                    $("#cards2").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                    $("#cards3").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                    $("#cards4").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+
+function getUserByCard(){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
+    var cards1=$("#cards1 option:selected").val();
+    var cardnum1=$("#cardnum1").val();
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            cardtypesssid:cards1,
+            cardnum:cardnum1
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetUserByCard);
+}
+function callbackgetUserByCard(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var userinfo=data.userinfo;
+             cases=data.cases;
+             otheruserinfos=data.otheruserinfos;
+            
+            if (isNotEmpty(userinfo)){
+                /*人员信息*/
+                $("#username").val(userinfo.username);
+                $("#beforename").val(userinfo.beforename);
+                $("#nickname").val(userinfo.nickname);
+                $("#both").val(userinfo.both);
+                $("#professional").val(userinfo.professional);
+                $("#phone").val(userinfo.phone);
+                $("#domicile").val(userinfo.domicile);
+                $("#residence").val(userinfo.residence);
+                $("#workunits").val(userinfo.workunits);
+                $("#age").val(userinfo.age);
+                $("#sex").find("option[value='"+userinfo.sex+"']").attr("selected",true);
+                $("#national").find("option[value='"+userinfo.nationalssid+"']").attr("selected",true);
+                $("#nationality").find("option[value='"+userinfo.nationalityssid+"']").attr("selected",true);
+                $("#educationlevel").find("option[value='"+userinfo.educationlevel+"']").attr("selected",true);
+                $("#politicsstatus").find("option[value='"+userinfo.politicsstatus+"']").attr("selected",true);
+            }
+
+            $('#casename option').not(":lt(1)").remove();
+            if (isNotEmpty(cases)){
+                setcases(cases);
+            }
+
+            $('#otheruserinfos option').not(":lt(1)").remove();
+            $('#recordadmin option').not(":lt(1)").remove();
+            if (isNotEmpty(otheruserinfos)){
+                for (var i = 0; i < otheruserinfos.length; i++) {
+                    var u= otheruserinfos[i];
+                    $("#otheruserinfos").append("<option value='"+u.ssid+"' >"+u.username+"</option>")
+                    $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>")
+                }
+            }
+
+        }
+
+        /*其他在场人员数据渲染*/
+        $("#cards2").find("option[value='2']").attr("selected",true);
+        $("#cardnum2").val("4301978784564564");
+        $("#username2").val("李四");
+        $("#phone2").val("19646852384");
+        $("#sex2").find("option[value='1']").attr("selected",true);
+        $("#language").find("option[value='2']").attr("selected",true);
+
+        $("#cards3").find("option[value='2']").attr("selected",true);
+        $("#cardnum3").val("44532456478787874");
+        $("#username3").val("李吴");
+        $("#phone3").val("1486787787");
+        $("#sex3").find("option[value='1']").attr("selected",true);
+
+        $("#cards4").find("option[value='2']").attr("selected",true);
+        $("#cardnum4").val("42454656457457458");
+        $("#username4").val("李留");
+        $("#phone4").val("79814132454");
+        $("#sex4").find("option[value='1']").attr("selected",true);
+        $("#relation").find("option[value='2']").attr("selected",true);
+
+
+    }else{
+        layer.msg(data.message);
+    }
+    layui.use(['element','form'], function(){
+        var element = layui.element;
+        var form=layui.form;
+        element.render();
+        form.render();
+    });
+}
+function setcases(cases){
+    $('#casename option').not(":lt(1)").remove();
+    if (isNotEmpty(cases)){
+        for (var i = 0; i < cases.length; i++) {
+            var c= cases[i];
+            $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
+        }
+    }
+}
+
+function getCaseById(casessid){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getCaseById);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            casessid:casessid
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetCaseById);
+}
+function callbackgetCaseById(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+
+        }
+        console.log("111");
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+
 
 $(function () {
-    $('#recotdtypes td').eq(0).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
-    $('#recotdtypes td').dblclick(function() {
-        $('#recotdtypes td').not(this).css({"background-color":"#ffffff","color":"#000000"});
-        $(this).css({"background-color":"#1E9FFF","color":"#FFFFFF"});//还原所有td的颜色
+    layui.use(['form','jquery'], function() {
+        form=layui.form;
+
+        form.on('select(change_card)', function(data){
+            var val=data.value;
+            $("input").val("");
+            $('select').not("#cards1").prop('selectedIndex', 0);
+            form.render();
+        });
+
+        form.on('select(change_case)', function(data){
+            var casessid=data.value;
+            var title=data.elem[data.elem.selectedIndex].title;
+            $("#casename").find("option[value='"+casessid+"']").text(title);
+            form.render();
+            setcases(cases);
+            $("#cause").val("");
+            $("#casenum").val("");
+            $("#occurrencetime").val("");
+            $("#starttime").val("");
+            $("#endtime").val("");
+            $("#caseway").val("");
+            if (isNotEmpty(cases)){
+                for (var i = 0; i < cases.length; i++) {
+                    var c = cases[i];
+                    if (casessid==c.ssid){
+                        $("#cause").val(c.cause);
+                        $("#casenum").val(c.casenum);
+                        $("#occurrencetime").val(c.occurrencetime);
+                        $("#starttime").val(c.starttime);
+                        $("#endtime").val(c.endtime);
+                        $("#caseway").val(c.caseway);
+                    }
+                }
+            }
+        });
+
+        form.on('select(change_otheruserinfos)', function(data){
+            var adminssid=data.value;
+            if (isNotEmpty(cases)){
+                for (var i = 0; i < otheruserinfos.length; i++) {
+                    var u = otheruserinfos[i];
+                    if (adminssid==u.ssid){
+                        $("#otherworkname").val(u.workname);
+                    }
+                }
+            }
+            form.render();
+        });
+
+
     });
 });
