@@ -85,7 +85,7 @@
             <td>{{value.endtime==null?"":value.endtime}}</td>
             <td {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</td>
             <td>
-                <button onclick="openModel('{{value.ssid}}')"   title="{{value.arraignments==null?'该案件暂未被提讯':'点击查看提讯'}}"    {{value.arraignments==null?'disabled':''}}   class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >选择提讯</button>
+                <button onclick="openModel('{{value.id}}')"   title="{{value.arraignments==null?'该案件暂未被提讯':'点击查看提讯'}}"    {{value.arraignments==null?'disabled':''}}   class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >选择提讯</button>
             </td>
         </tr>
         {{#  }); }}

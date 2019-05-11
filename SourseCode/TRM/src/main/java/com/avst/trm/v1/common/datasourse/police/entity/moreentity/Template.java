@@ -32,6 +32,29 @@ public class Template {
     private Date updatetime;
 
     /**
+     * ssid唯一值
+     */
+    private String ssid;
+
+    private String templatetypessid;
+
+    public String getTemplatetypessid() {
+        return templatetypessid;
+    }
+
+    public void setTemplatetypessid(String templatetypessid) {
+        this.templatetypessid = templatetypessid;
+    }
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
+
+    /**
      * 题目列表
      */
     private List<TemplateToProblem> templateToProblems=new ArrayList<>();

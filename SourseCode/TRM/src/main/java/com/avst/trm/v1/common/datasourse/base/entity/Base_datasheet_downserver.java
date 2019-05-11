@@ -150,7 +150,7 @@ public class Base_datasheet_downserver extends Model<Base_datasheet_downserver> 
         ", downserverssid=" + downserverssid +
         ", filetype=" + filetype +
         ", filename=" + filename +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

@@ -199,9 +199,7 @@ function getKeyWordByParam() {
     } else if (len > 2) {
         getKeyWordPage(arguments[0], arguments[1], arguments[2]);
     }
-
 }
-
 
 function showpagetohtml(){
 
@@ -214,6 +212,4 @@ function showpagetohtml(){
         arrparam[0]=text;
         showpage("paging",arrparam,'getKeyWordByParam',currPage,pageCount,pageSize);
     }
-
-
 }

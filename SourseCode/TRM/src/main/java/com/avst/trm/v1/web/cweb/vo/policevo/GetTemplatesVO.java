@@ -6,22 +6,22 @@ import com.avst.trm.v1.web.cweb.req.policereq.GetTemplatesParam;
 import java.util.List;
 
 public class GetTemplatesVO {
-    private List<Template> templates;
-    private GetTemplatesParam templatesParam;
+    private List<Template> pagelist;
+    private GetTemplatesParam pageparam;
 
-    public List<Template> getTemplates() {
-        return templates;
+    public List<Template> getPagelist() {
+        return pagelist;
     }
 
-    public void setTemplates(List<Template> templates) {
-        this.templates = templates;
+    public void setPagelist(List<Template> templates) {
+        this.pagelist = templates;
     }
 
-    public GetTemplatesParam getTemplatesParam() {
-        return templatesParam;
+    public GetTemplatesParam getPageparam() {
+        return pageparam;
     }
 
-    public void setTemplatesParam(GetTemplatesParam templatesParam) {
-        this.templatesParam = templatesParam;
+    public void setPageparam(GetTemplatesParam pageparam) {
+        this.pageparam = pageparam;
     }
 }

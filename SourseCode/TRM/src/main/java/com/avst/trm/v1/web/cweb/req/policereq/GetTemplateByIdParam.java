@@ -1,13 +1,13 @@
 package com.avst.trm.v1.web.cweb.req.policereq;
 
 public class GetTemplateByIdParam {
-    private Integer templatebyid;
+    private String ssid;
 
-    public Integer getTemplatebyid() {
-        return templatebyid;
+    public String getSsid() {
+        return ssid;
     }
 
-    public void setTemplatebyid(Integer templatebyid) {
-        this.templatebyid = templatebyid;
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
     }
 }

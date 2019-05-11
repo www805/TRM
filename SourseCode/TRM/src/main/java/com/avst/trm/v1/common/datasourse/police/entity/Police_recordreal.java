@@ -207,7 +207,7 @@ public class Police_recordreal extends Model<Police_recordreal> {
         ", starttime=" + starttime +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

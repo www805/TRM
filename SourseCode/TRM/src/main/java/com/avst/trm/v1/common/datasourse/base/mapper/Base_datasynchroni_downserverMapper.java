@@ -21,7 +21,7 @@ public interface Base_datasynchroni_downserverMapper extends BaseMapper<Base_dat
 
     @Select("select dt.* ,dd.lastuploadtime lastuploadtime,dd.uploadcount uploadcount,dd.upserverip upserverip" +
             " from base_datasheet_downserver dt " +
-            " left join base_datasynchroni_downserver dd on dt.downserverssid = dd.ssid" +
+            " left join base_datasynchroni_downserver dd on dt.downserverssid = dd.id" +
             " where 1=1 ${ew.sqlSelect}")
     public List<GetSynchronizedDataSheet_DownServer> getSynchronizedDataSheet_DownServer(EntityWrapper ew);
 

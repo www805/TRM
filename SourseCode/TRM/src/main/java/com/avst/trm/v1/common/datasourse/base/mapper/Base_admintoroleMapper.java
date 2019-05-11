@@ -20,7 +20,7 @@ import java.util.List;
 public interface Base_admintoroleMapper extends BaseMapper<Base_admintorole> {
 
 
-    @Select("select * from base_role r where r.ssid in(select ar.rolessid from base_admintorole ar where 1=1 ${ew.sqlSegment}) and r.rolebool!=-1")
+    @Select("select * from base_role r where r.id in(select ar.rolessid from base_admintorole ar where 1=1 ${ew.sqlSegment}) and r.rolebool!=-1")
     List<Base_role> getRolesByAdminSsid(@Param("ew")EntityWrapper ew);
 
 }

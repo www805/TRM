@@ -132,7 +132,7 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            <td> <input  type="checkbox" name="switch" lay-skin="switch" id="adminbool_switch" lay-text="正常|禁用"   lay-filter="adminbool_switch" {{value.adminbool==1?"checked":""}} value="{{value.ssid}}" ></td>
+            <td> <input  type="checkbox" name="switch" lay-skin="switch" id="adminbool_switch" lay-text="正常|禁用"   lay-filter="adminbool_switch" {{value.adminbool==1?"checked":""}} value="{{value.id}}" ></td>
             <td>{{value.loginaccount==null?"":value.loginaccount}}</td>
             <td>{{value.username==null?"":value.username}}</td>
             <td>
@@ -146,8 +146,8 @@
             <td>{{value.updatetime==null?"":value.updatetime}}</td>
             <td>{{value.lastlogintime==null?"":value.lastlogintime}}</td>
             <td>
-                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{addOupdateurl}}?id={{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a onclick="deleteUser('{{value.id}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
         </tr>
         {{#  }); }}

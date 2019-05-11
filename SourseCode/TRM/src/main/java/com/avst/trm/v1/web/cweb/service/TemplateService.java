@@ -7,7 +7,6 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.web.cweb.req.*;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.UpdateProblemtypeParam;
 
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Service("templateService")
+@Service
 public class TemplateService extends BaseService {
     private Gson gson = new Gson();
 
@@ -90,8 +89,8 @@ public class TemplateService extends BaseService {
                 }
             }
         }
-        getTemplatesVO.setTemplates(templates);
-        getTemplatesVO.setTemplatesParam(getTemplatesParam);
+        getTemplatesVO.setPagelist(templates);
+        getTemplatesVO.setPageparam(getTemplatesParam);
         result.setData(getTemplatesVO);
         changeResultToSuccess(result);
         return;
@@ -171,13 +170,13 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        if (null==getTemplateByIdParam.getTemplatebyid()){
+        if (null==getTemplateByIdParam.getSsid()){
             result.setMessage("参数为空");
             return;
         }
 
         EntityWrapper ew = new EntityWrapper();
-        ew.eq("id", getTemplateByIdParam.getTemplatebyid());
+        ew.eq("id", getTemplateByIdParam.getSsid());
 
         Template template = police_templateMapper.getTemplateById(ew);
 
@@ -232,14 +231,14 @@ public class TemplateService extends BaseService {
         }
 
         //添加模板题目关联数据
-        List<Integer> ids=addTemplateParam.getTemplatetoproblemids();
+        List<Police_problem> ids=addTemplateParam.getTemplatetoproblemids();
         if (null!=ids&&ids.size()>0){
-            for (Integer id : ids) {
+            for (Police_problem problem : ids) {
                 Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                 templatetoproblem.setCreatetime(new Date());
                 templatetoproblem.setTemplatessid(addTemplateParam.getId() + "");//模板id
-                templatetoproblem.setProblemssid(id + "");//题目id
-                templatetoproblem.setOrdernum(1);
+                templatetoproblem.setProblemssid(problem.getId() + "");//题目id
+                templatetoproblem.setOrdernum(problem.getOrdernum());
                 templatetoproblem.setSsid(OpenUtil.getUUID_32());
                 int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                 System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
@@ -343,8 +342,8 @@ public class TemplateService extends BaseService {
         Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
         List<Problem> problems=police_problemMapper.getProblemList(page,ew);
 
-        getProblemsVO.setProblems(problems);
-        getProblemsVO.setProblemsParam(getProblemsParam);
+        getProblemsVO.setPagelist(problems);
+        getProblemsVO.setPageparam(getProblemsParam);
         result.setData(getProblemsVO);
         changeResultToSuccess(result);
         return;
@@ -470,8 +469,8 @@ public class TemplateService extends BaseService {
         }
 
         EntityWrapper ew=new EntityWrapper();
-        if (null!=getTemplateByIdParam.getTemplatebyid()){
-            ew.eq("p.templatessid",getTemplateByIdParam.getTemplatebyid());
+        if (null!=getTemplateByIdParam.getSsid()){
+            ew.eq("p.templatessid",getTemplateByIdParam.getSsid());
         }
 
         ew.orderBy("p2.ordernum",true);

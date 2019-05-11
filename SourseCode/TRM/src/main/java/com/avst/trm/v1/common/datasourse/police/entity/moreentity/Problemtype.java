@@ -23,6 +23,18 @@ public class Problemtype {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createtime;
 
+    /**
+     * ssid唯一值
+     */
+    private String ssid;
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
 
     public Integer getOrdernum() {
         return ordernum;

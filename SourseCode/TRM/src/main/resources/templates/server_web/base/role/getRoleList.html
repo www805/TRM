@@ -71,14 +71,14 @@
         <tr>
             <td>{{index+1}}</td>
             <td >
-                <input type="checkbox" name="rolebool"  id="rolebool_switch" lay-skin="switch"  lay-text="启用|禁用"  lay-filter="rolebool_switch"  {{value.rolebool==1?"checked":"" }} value="{{value.ssid}}" >
+                <input type="checkbox" name="rolebool"  id="rolebool_switch" lay-skin="switch"  lay-text="启用|禁用"  lay-filter="rolebool_switch"  {{value.rolebool==1?"checked":"" }} value="{{value.id}}" >
             </td>
             <td>{{value.rolename==null?"":value.rolename}}</td>
             <td>{{value.description==null?"":value.description}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <td>
-                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a onclick="deleteRole('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{addOupdateurl}}?id={{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
+                <a onclick="deleteRole('{{value.id}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
             </td>
 
         </tr>

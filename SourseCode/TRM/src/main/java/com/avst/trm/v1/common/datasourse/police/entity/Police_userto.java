@@ -148,7 +148,7 @@ public class Police_userto extends Model<Police_userto> {
         ", relation=" + relation +
         ", usertype=" + usertype +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

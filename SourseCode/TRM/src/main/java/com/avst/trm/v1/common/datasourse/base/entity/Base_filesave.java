@@ -150,7 +150,7 @@ public class Base_filesave extends Model<Base_filesave> {
         ", datassid=" + datassid +
         ", recorddownurl=" + recorddownurl +
         ", recordrealurl=" + recordrealurl +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

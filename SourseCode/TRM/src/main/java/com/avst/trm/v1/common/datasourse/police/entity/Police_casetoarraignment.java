@@ -116,7 +116,7 @@ public class Police_casetoarraignment extends Model<Police_casetoarraignment> {
         ", casessid=" + casessid +
         ", arraignmentssid=" + arraignmentssid +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

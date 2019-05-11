@@ -166,7 +166,7 @@ public class Base_page extends Model<Base_page> {
         ", description=" + description +
         ", typessid=" + typessid +
         ", firstpage=" + firstpage +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

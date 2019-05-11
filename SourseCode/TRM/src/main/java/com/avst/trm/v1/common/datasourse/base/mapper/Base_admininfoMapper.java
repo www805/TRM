@@ -24,7 +24,7 @@ import java.util.List;
  */
 public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
     @Select("select a.* ,ar.id admintoroleid,ar.adminssid,ar.rolessid " +
-            "from base_admininfo a left join base_admintorole ar on a.ssid=ar.adminssid ")
+            "from base_admininfo a left join base_admintorole ar on a.id=ar.adminssid ")
     public List<AdminAndAdmintorole> getAdminAndAdmintorolelist(Page page, EntityWrapper ew);
 
 
@@ -37,13 +37,13 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      */
     @Select("select a.*,ro.rolename " +
             "from base_admininfo a " +
-            "left join base_admintorole ar on a.ssid=ar.adminssid " +
-            "left join base_role ro on ro.ssid = ar.rolessid ")
+            "left join base_admintorole ar on a.id=ar.adminssid " +
+            "left join base_role ro on ro.id = ar.rolessid ")
     public List<AdminAndAdminRole> getAdminAndAdminRolelist(Page page, EntityWrapper ew);
 
     @Select("select count(a.id) from base_admininfo a " +
             "left join base_admintorole ar " +
-            "on a.ssid=ar.adminssid where 1=1 ${ew.sqlSegment}" )
+            "on a.id=ar.adminssid where 1=1 ${ew.sqlSegment}" )
     public int getAdminAndAdmintorolecount(@Param("ew") EntityWrapper ew);
 
     /**
@@ -53,31 +53,31 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      */
     @Select("select * from base_admininfo a " +
             "left join base_admintorole ar " +
-            "on a.ssid=ar.adminssid where 1=1 ${ew.sqlSegment}" )
+            "on a.id=ar.adminssid where 1=1 ${ew.sqlSegment}" )
     public AdminManage_session getAdminAndAdmintorole(@Param("ew") EntityWrapper ew);
 
 
 
     /******************************************************/
-     @Select("select  DISTINCT(a.ssid),a.*,w.workname as 'workname'" +
+     @Select("select  DISTINCT(a.id),a.*,w.workname as 'workname'" +
              "from base_admininfo a " +
-             "left join police_workunit w on a.workunitssid=w.ssid " +
-             "left join base_admintorole ar on ar.adminssid=a.ssid " +
-             "left join base_role r on r.ssid=ar.rolessid " +
+             "left join police_workunit w on a.workunitssid=w.id " +
+             "left join base_admintorole ar on ar.adminssid=a.id " +
+             "left join base_role r on r.id=ar.rolessid " +
              "where 1=1 ${ew.sqlSegment}")
      List<AdminAndWorkunit> getUserList(Page page,@Param("ew") EntityWrapper ew);
 
-     @Select("select count(DISTINCT(a.ssid))" +
+     @Select("select count(DISTINCT(a.id))" +
              "from base_admininfo a " +
-             "left join police_workunit w on a.workunitssid=w.ssid " +
-             "left join base_admintorole ar on ar.adminssid=a.ssid " +
-             "left join base_role r on r.ssid=ar.rolessid " +
+             "left join police_workunit w on a.workunitssid=w.id " +
+             "left join base_admintorole ar on ar.adminssid=a.id " +
+             "left join base_role r on r.id=ar.rolessid " +
              "where 1=1 ${ew.sqlSegment}")
      int countgetUserList(@Param("ew") EntityWrapper ew);
 
 
     /******************笔录统计******************/
-    @Select("select count(distinct a.id) from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+    @Select("select count(distinct a.id) from base_admininfo a left join police_recordreal r on a.id = r.userssid left join police_record re on re.id = r.recordssid " +
             "where 1=1 ${ew.sqlSegment} " )
     public int getArraignmentCountCount(@Param("ew") EntityWrapper ew);
 
@@ -85,7 +85,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      * 笔录统计
      * @return
      */
-    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+    @Select("select * from base_admininfo a left join police_recordreal r on a.id = r.userssid left join police_record re on re.id = r.recordssid " +
             "where 1=1 ${ew.sqlSegment} GROUP BY a.id " )
     public List<Base_arraignmentCount> getArraignmentCountList(Page page, @Param("ew") EntityWrapper ew);
 
@@ -94,14 +94,14 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      * @param ew
      * @return
      */
-    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+    @Select("select * from base_admininfo a left join police_recordreal r on a.id = r.userssid left join police_record re on re.id = r.recordssid " +
             "where 1=1 ${ew.sqlSegment} GROUP BY a.id " )
     public List<Base_arraignmentCount> getArraignmentCountListNoPage(@Param("ew") EntityWrapper ew);
 
 
     @Select("select count(re.id) recordCount,count(re.id) recordrealCount ,ifnull(sum(re.recordtime),0) recordtimeCount,ifnull(sum(r.time),0) timeCount, ifnull(sum(CHAR_LENGTH(r.translatext)),0) translatextCount " +
             "from base_admininfo a " +
-            "left join police_recordreal r on a.ssid = r.userssid " +
+            "left join police_recordreal r on a.id = r.userssid " +
             "left join police_record re on re.id = r.recordssid " +
             "where 1=1 ${ew.sqlSegment} " )
     public Base_arraignmentCount getArraignmentCount(@Param("ew") EntityWrapper ew);

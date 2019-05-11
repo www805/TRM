@@ -19,10 +19,10 @@ import java.util.List;
  * @since 2019-04-09
  */
 public interface Police_problemMapper extends BaseMapper<Police_problem> {
-    @Select("select DISTINCT(p.id),p.* from police_problem p LEFT JOIN police_problemtotype pp  ON pp.problemtypessid=p.id where 1=1 ${ew.sqlSegment}" )
+    @Select("select DISTINCT(p.id),p.* from police_problem p LEFT JOIN police_problemtotype pp  ON pp.problemssid=p.id where 1=1 ${ew.sqlSegment}" )
     List<Problem>  getProblemList(Page page, @Param("ew") EntityWrapper ew);
 
-    @Select("select count(DISTINCT(p.id)) from police_problem p  LEFT JOIN police_problemtotype pp  ON pp.problemtypessid=p.id where 1=1 ${ew.sqlSegment}")
+    @Select("select count(DISTINCT(p.id)) from police_problem p  LEFT JOIN police_problemtotype pp  ON pp.problemssid=p.id where 1=1 ${ew.sqlSegment}")
     int countgetProblemList( @Param("ew") EntityWrapper ew);
 
 

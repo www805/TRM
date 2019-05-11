@@ -125,7 +125,7 @@ public class Base_admintorole extends Model<Base_admintorole> {
         ", adminssid=" + adminssid +
         ", rolessid=" + rolessid +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

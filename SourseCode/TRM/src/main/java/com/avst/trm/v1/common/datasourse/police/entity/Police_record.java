@@ -190,7 +190,7 @@ public class Police_record extends Model<Police_record> {
         ", recordbool=" + recordbool +
         ", pdf_filesavessid=" + pdf_filesavessid +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

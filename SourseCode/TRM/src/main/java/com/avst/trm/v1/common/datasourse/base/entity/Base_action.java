@@ -205,7 +205,7 @@ public class Base_action extends Model<Base_action> {
         ", createtime=" + createtime +
         ", description=" + description +
         ", typessid=" + typessid +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

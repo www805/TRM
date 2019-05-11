@@ -20,8 +20,8 @@ import java.util.List;
 public interface Base_serverconfigMapper extends BaseMapper<Base_serverconfig> {
 
     @Select("select b.*,f.recorddownurl as client_downurl,f.recordrealurl as client_realurl,f1.recorddownurl as syslogo_downurl,f1.recordrealurl as syslogo_realurl from base_serverconfig b\n" +
-            "left join base_filesave f on f.ssid=b.client_filesavessid\n" +
-            "left join base_filesave f1 on f1.ssid=b.syslogo_filesavessid where 1=1 ${ew.sqlSelect}")
+            "left join base_filesave f on f.id=b.client_filesavessid\n" +
+            "left join base_filesave f1 on f1.id=b.syslogo_filesavessid where 1=1 ${ew.sqlSelect}")
     List<ServerconfigAndFilesave> getServerconfig(@Param("ew") EntityWrapper ew);
 
 }

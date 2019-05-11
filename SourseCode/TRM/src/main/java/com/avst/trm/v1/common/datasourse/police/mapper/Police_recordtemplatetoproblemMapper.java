@@ -21,7 +21,7 @@ public interface Police_recordtemplatetoproblemMapper extends BaseMapper<Police_
 
     @Select(" select p.* from police_record r " +
             " left join police_recordtemplatetoproblem  rtp on rtp.recordtemplatessid=r.recordtemplatessid " +
-            " left join police_problem p on p.ssid=rtp.problemssid " +
+            " left join police_problem p on p.id=rtp.problemssid " +
             " where 1=1 ${ew.sqlSegment} ")
    List<Problem> getProblemByRecordSsid(@Param("ew") EntityWrapper ew);
 

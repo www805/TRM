@@ -151,7 +151,7 @@ public class Base_interface extends Model<Base_interface> {
         ", description=" + description +
         ", createtime=" + createtime +
         ", typessid=" + typessid +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

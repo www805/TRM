@@ -125,7 +125,7 @@ public class Police_templatetype extends Model<Police_templatetype> {
         ", typename=" + typename +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

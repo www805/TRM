@@ -190,7 +190,7 @@ public class Base_authorize extends Model<Base_authorize> {
         ", clientname=" + clientname +
         ", unitcode=" + unitcode +
         ", sortnum=" + sortnum +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

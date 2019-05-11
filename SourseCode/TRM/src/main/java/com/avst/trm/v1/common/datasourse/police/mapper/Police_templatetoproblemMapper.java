@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface Police_templatetoproblemMapper extends BaseMapper<Police_templatetoproblem> {
 
-    @Select("select * from police_template t " +
+    @Select("select b.* from police_template t " +
             " left join police_templatetoproblem p on t.id = p.templatessid " +
             " left join police_problem b on p.problemssid = b.id where 1=1 ${ew.sqlSegment} ")
     List<TemplateToProblem> getTemplateToProblems(@Param("ew") EntityWrapper ew);

@@ -128,7 +128,7 @@ public class Base_datasynchroni_downserver extends Model<Base_datasynchroni_down
         ", lastuploadtime=" + lastuploadtime +
         ", uploadcount=" + uploadcount +
         ", upserverip=" + upserverip +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

@@ -138,7 +138,7 @@ public class Police_templatetotype extends Model<Police_templatetotype> {
         ", templatebool=" + templatebool +
         ", templatetypessid=" + templatetypessid +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

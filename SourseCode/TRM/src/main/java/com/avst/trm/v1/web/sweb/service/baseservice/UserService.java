@@ -109,7 +109,7 @@ public class UserService extends BaseService {
         }
         try {
             EntityWrapper ew=new EntityWrapper();
-            ew.eq("ssid",ssid);
+            ew.eq("id",ssid);
             Base_admininfo admininfo=new Base_admininfo();
             admininfo.setAdminbool(adminbool);
             int delete_bool= base_admininfoMapper.update(admininfo,ew);
@@ -128,7 +128,7 @@ public class UserService extends BaseService {
 
     public void getUserBySsid(RResult result,String ssid){
         EntityWrapper ew=new EntityWrapper();
-        ew.eq(true,"ssid",ssid);
+        ew.eq(true,"id",ssid);
         List<AdminAndWorkunit> list = base_admininfoMapper.selectList(ew);
         if (null==list||list.size()<1){
             result.setMessage("未找到该用户");
@@ -193,7 +193,7 @@ public class UserService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
-        ew.eq("ssid",param.getSsid());
+        ew.eq("id",param.getSsid());
         param.setUpdatetime(new Date());
         Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
         int update_bool = base_admininfoMapper.update(admininfo,ew);

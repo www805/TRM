@@ -150,7 +150,7 @@ public class Base_datasheet_upserver extends Model<Base_datasheet_upserver> {
         ", upserverssid=" + upserverssid +
         ", filetype=" + filetype +
         ", filename=" + filename +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

@@ -11,7 +11,7 @@
         <result column="replacetext" property="replacetext" />
         <result column="shieldbool" property="shieldbool" />
         <result column="createtime" property="createtime" />
-        <result column="ssid" property="ssid" />
+        <result column="id" property="id" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

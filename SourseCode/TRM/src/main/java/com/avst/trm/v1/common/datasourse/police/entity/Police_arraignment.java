@@ -180,7 +180,7 @@ public class Police_arraignment extends Model<Police_arraignment> {
         ", asknum=" + asknum +
         ", createtime=" + createtime +
         ", recordssid=" + recordssid +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

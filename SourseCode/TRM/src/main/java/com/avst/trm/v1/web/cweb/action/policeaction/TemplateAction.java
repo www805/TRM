@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problemtype;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -48,7 +49,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getTemplates",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getTemplates")
     public RResult getTemplates(@RequestBody ReqParam<GetTemplatesParam> param){
         RResult result=this.createNewResultOfFail();
         if(null==param){
@@ -67,7 +68,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateTemplate",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/updateTemplate")
     public RResult updateTemplate(@RequestBody ReqParam<UpdateTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -86,7 +87,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getTemplateById",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getTemplateById")
     public RResult getTemplateById(@RequestBody ReqParam<GetTemplateByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -105,7 +106,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addTemplate",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/addTemplate")
     public RResult addTemplate(@RequestBody ReqParam<AddTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -124,7 +125,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getTemplateTypes",produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getTemplateTypes")
     public RResult getTemplateTypes(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -144,7 +145,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/addTemplateType")
     public RResult addTemplateType(@RequestBody ReqParam<AddTemplatetypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -163,7 +164,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateTemplateType",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/updateTemplateType")
     public RResult updateTemplateType(@RequestBody ReqParam<UpdateTemplateTypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -182,7 +183,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/setDefaultTemplate",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/setDefaultTemplate")
     public RResult setDefaultTemplate(@RequestBody ReqParam<DefaultTemplateParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -201,7 +202,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getProblems",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getProblems")
     public RResult getProblems(@RequestBody ReqParam<GetProblemsParam> param){
         RResult result=this.createNewResultOfFail();
         if(null==param){
@@ -221,7 +222,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateProblem",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/updateProblem")
     public RResult updateProblem(@RequestBody ReqParam<UpdateProblemParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -240,7 +241,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getProblemById",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getProblemById")
     public RResult getProblemById(@RequestBody ReqParam<GetProblemsByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -259,7 +260,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addProblem",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/addProblem")
     public RResult addProblem(@RequestBody ReqParam<AddProblemParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -278,8 +279,8 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getProblemTypes",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getProblemTypes(@RequestBody ReqParam param){
+    @PostMapping(value = "/getProblemTypes")
+    public RResult getProblemTypes(@RequestBody ReqParam<Problemtype> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -297,7 +298,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addProblemType",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/addProblemType")
     public RResult addProblemType(@RequestBody ReqParam<AddProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -316,7 +317,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateProblemType",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/updateProblemType")
     public RResult updateProblemType(@RequestBody ReqParam<UpdateProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -330,7 +331,7 @@ public class TemplateAction extends MainAction {
         return  result;
     }
 
-    @PostMapping(value = "/addOrupdateTemplateIndex",produces = MediaType.APPLICATION_XML_VALUE)
+    @PostMapping(value = "/addOrupdateTemplateIndex")
     public RResult addOrupdateTemplateIndex(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -349,7 +350,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getTemplateTypeById",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getTemplateTypeById")
     public RResult getTemplateTypeById(@RequestBody ReqParam<GetTemplateByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -368,7 +369,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getProblemTypeById",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getProblemTypeById")
     public RResult getProblemTypeById(@RequestBody ReqParam<GetProblemTypeByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -382,7 +383,7 @@ public class TemplateAction extends MainAction {
         return  result;
     }
 
-    @GetMapping(value = "/templateIndex",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/templateIndex")
     public RResult templateIndex(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){

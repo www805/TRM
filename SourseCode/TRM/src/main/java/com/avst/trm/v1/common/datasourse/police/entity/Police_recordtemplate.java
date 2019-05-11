@@ -138,7 +138,7 @@ public class Police_recordtemplate extends Model<Police_recordtemplate> {
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", updatetime=" + updatetime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

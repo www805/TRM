@@ -20,7 +20,7 @@ public interface Base_datasynchroni_upserverMapper extends BaseMapper<Base_datas
 
     @Select("select dt.* ,dd.lastuploadtime lastuploadtime,dd.uploadcount uploadcount,dd.unitsort unitsort" +
             " from base_datasheet_upserver dt " +
-            " left join base_datasynchroni_upserver dd on dt.upserverssid = dd.ssid" +
+            " left join base_datasynchroni_upserver dd on dt.upserverssid = dd.id" +
             " where 1=1 ${ew.sqlSelect}")
     public List<GetSynchronizedDataSheet_UpServer> getSynchronizedDataSheet_UpServer(EntityWrapper ew);
 

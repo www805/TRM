@@ -39,7 +39,7 @@ public class RoleService extends BaseService {
                 ew.eq("rolebool", param.getRolebool());
             }
             ew.ne("rolebool",-1);//状态为删除的不显示
-           // ew.ne("ssid","role1");//超级管理员不显示
+           // ew.ne("id","role1");//超级管理员不显示
 
             int count=roleMapper.selectCount(ew);
             param.setRecordCount(count);
@@ -68,7 +68,7 @@ public class RoleService extends BaseService {
 
             EntityWrapper ew=new EntityWrapper();
             ew.ne("rolebool",-1);//状态为删除的不显示
-           // ew.ne("ssid","role1");//超级管理员不显示
+           // ew.ne("id","role1");//超级管理员不显示
             List<Base_role> list= roleMapper.selectList(ew);
             if (null!=list&&list.size()>0){
                 result.setData(list);
@@ -90,7 +90,7 @@ public class RoleService extends BaseService {
         }
         try {
             EntityWrapper ew=new EntityWrapper();
-            ew.eq("ssid",ssid);
+            ew.eq("id",ssid);
             Base_role role=new Base_role();
             role.setRolebool(rolebool);
             int delete_bool= roleMapper.update(role,ew);
@@ -109,7 +109,7 @@ public class RoleService extends BaseService {
 
     public void getRoleBySsid(RResult result,String ssid){
         EntityWrapper ew=new EntityWrapper();
-        ew.eq(true,"ssid",ssid);
+        ew.eq(true,"id",ssid);
        List<Base_role> list = roleMapper.selectList(ew);
        if (null==list||list.size()<1){
            result.setMessage("未找到该角色");
@@ -133,7 +133,7 @@ public class RoleService extends BaseService {
     public void updateRole(RResult result,Base_role param){
         try {
             EntityWrapper ew=new EntityWrapper();
-            ew.eq(true,"ssid",param.getSsid());
+            ew.eq(true,"id",param.getSsid());
             int update_bool=roleMapper.update(param,ew);
             System.out.println("update_bool--"+update_bool);
             if (update_bool<1){

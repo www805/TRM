@@ -168,7 +168,7 @@ public class Base_keyword extends Model<Base_keyword> {
         ", replacetext=" + replacetext +
         ", shieldbool=" + shieldbool +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

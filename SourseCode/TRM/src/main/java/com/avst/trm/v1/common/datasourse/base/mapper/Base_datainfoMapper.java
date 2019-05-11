@@ -21,10 +21,10 @@ import java.util.List;
 public interface Base_datainfoMapper extends BaseMapper<Base_datainfo> {
 
     @Select(" select d.*,t.typename from base_datainfo d " +
-            " left join base_type t on t.ssid = d.typessid  where 1=1 ${ew.sqlSegment} ")
+            " left join base_type t on t.id = d.typessid  where 1=1 ${ew.sqlSegment} ")
     List<DatainfoAndType> getdataInfos(Page page,@Param("ew") EntityWrapper ew);
 
-    @Select(" select count(d.ssid) from base_datainfo d " +
-            " left join base_type t on t.ssid = d.typessid  where 1=1 ${ew.sqlSegment} ")
+    @Select(" select count(d.id) from base_datainfo d " +
+            " left join base_type t on t.id = d.typessid  where 1=1 ${ew.sqlSegment} ")
     int countgetdataInfos(@Param("ew") EntityWrapper ew);
 }

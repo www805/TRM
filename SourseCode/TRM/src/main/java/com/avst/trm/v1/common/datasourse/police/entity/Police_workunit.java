@@ -125,7 +125,7 @@ public class Police_workunit extends Model<Police_workunit> {
         ", pid=" + pid +
         ", workname=" + workname +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

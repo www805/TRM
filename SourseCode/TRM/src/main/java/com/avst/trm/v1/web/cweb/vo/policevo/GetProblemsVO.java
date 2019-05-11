@@ -6,23 +6,23 @@ import com.avst.trm.v1.web.cweb.req.policereq.GetProblemsParam;
 import java.util.List;
 
 public class GetProblemsVO {
-    private List<Problem> problems;
+    private List<Problem> pagelist;
 
-    private GetProblemsParam problemsParam;
+    private GetProblemsParam pageparam;
 
-    public List<Problem> getProblems() {
-        return problems;
+    public List<Problem> getPagelist() {
+        return pagelist;
     }
 
-    public void setProblems(List<Problem> problems) {
-        this.problems = problems;
+    public void setPagelist(List<Problem> problems) {
+        this.pagelist = problems;
     }
 
-    public GetProblemsParam getProblemsParam() {
-        return problemsParam;
+    public GetProblemsParam getPageparam() {
+        return pageparam;
     }
 
-    public void setProblemsParam(GetProblemsParam problemsParam) {
-        this.problemsParam = problemsParam;
+    public void setPageparam(GetProblemsParam problemsParam) {
+        this.pageparam = problemsParam;
     }
 }

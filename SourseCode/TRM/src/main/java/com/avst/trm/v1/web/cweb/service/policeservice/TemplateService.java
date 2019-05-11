@@ -59,10 +59,10 @@ public class TemplateService extends BaseService {
         EntityWrapper ew = new EntityWrapper();
 
         if (StringUtils.isNotBlank(getTemplatesParam.getKeyword())){
-            ew.like("te.title", getTemplatesParam.getKeyword().trim());
+            ew.like("t.title", getTemplatesParam.getKeyword().trim());
         }
         if (null != getTemplatesParam.getTemplatetypeid()) {
-            ew.eq("t.id", getTemplatesParam.getTemplatetypeid());
+            ew.eq("l.templatetypessid", getTemplatesParam.getTemplatetypeid());
         }
 
         //分页处理
@@ -74,12 +74,10 @@ public class TemplateService extends BaseService {
         if (null!=templates&&templates.size()>0){
             //添加题目列表
             for (Template template : templates) {
-                GetTemplateToProblemsParam getTemplateToProblemsParam=new GetTemplateToProblemsParam();
-                getTemplateToProblemsParam.setTemplateid(template.getId());
                 EntityWrapper ew2 = new EntityWrapper();
 
-                if (null != getTemplateToProblemsParam.getTemplateid()) {
-                    ew2.eq("t.id", getTemplateToProblemsParam.getTemplateid());
+                if (null != template.getId()) {
+                    ew2.eq("t.id", template.getId());
                 }
 
                 ew2.orderBy("b.ordernum", true); //fasle大到小   true小到大
@@ -90,8 +88,8 @@ public class TemplateService extends BaseService {
                 }
             }
         }
-        getTemplatesVO.setTemplates(templates);
-        getTemplatesVO.setTemplatesParam(getTemplatesParam);
+        getTemplatesVO.setPagelist(templates);
+        getTemplatesVO.setPageparam(getTemplatesParam);
         result.setData(getTemplatesVO);
         changeResultToSuccess(result);
         return;
@@ -171,13 +169,13 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        if (null==getTemplateByIdParam.getTemplatebyid()){
+        if (null==getTemplateByIdParam.getSsid()){
             result.setMessage("参数为空");
             return;
         }
 
         EntityWrapper ew = new EntityWrapper();
-        ew.eq("id", getTemplateByIdParam.getTemplatebyid());
+        ew.eq("ssid", getTemplateByIdParam.getSsid());
 
         Template template = police_templateMapper.getTemplateById(ew);
 
@@ -215,7 +213,7 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        if (null==addTemplateParam.getTitle()){
+        if (null==addTemplateParam.getTitle() || null==addTemplateParam.getTemplatetoproblemids()){
             result.setMessage("参数为空");
             return;
         }
@@ -223,7 +221,7 @@ public class TemplateService extends BaseService {
         //添加模板数据
         addTemplateParam.setCreatetime(new Date());
         addTemplateParam.setSsid(OpenUtil.getUUID_32());
-        addTemplateParam.setOrdernum(1);
+//        addTemplateParam.setOrdernum(1);
         int insert_bool = police_templateMapper.insert(addTemplateParam);
         System.out.println("insert_bool__"+insert_bool);
         if (insert_bool<0){
@@ -231,15 +229,15 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        //添加模板题目关联数据
-        List<Integer> ids=addTemplateParam.getTemplatetoproblemids();
+        //添加模板题目关联数据p
+        List<Police_problem> ids=addTemplateParam.getTemplatetoproblemids();
         if (null!=ids&&ids.size()>0){
-            for (Integer id : ids) {
+            for (Police_problem problem : ids) {
                 Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
                 templatetoproblem.setCreatetime(new Date());
                 templatetoproblem.setTemplatessid(addTemplateParam.getId() + "");//模板id
-                templatetoproblem.setProblemssid(id + "");//题目id
-                templatetoproblem.setOrdernum(1);
+                templatetoproblem.setProblemssid(problem.getId() + "");//题目id
+                templatetoproblem.setOrdernum(problem.getOrdernum());
                 templatetoproblem.setSsid(OpenUtil.getUUID_32());
                 int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                 System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
@@ -422,8 +420,8 @@ public class TemplateService extends BaseService {
         Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
         List<Problem> problems=police_problemMapper.getProblemList(page,ew);
 
-        getProblemsVO.setProblems(problems);
-        getProblemsVO.setProblemsParam(getProblemsParam);
+        getProblemsVO.setPagelist(problems);
+        getProblemsVO.setPageparam(getProblemsParam);
         result.setData(getProblemsVO);
         changeResultToSuccess(result);
         return;
@@ -448,7 +446,6 @@ public class TemplateService extends BaseService {
         if (null!=updateProblemParam.getId()){
             ew.eq("id",updateProblemParam.getId());
         }
-
 
         //修改问题
         int update_bool = police_problemMapper.update(updateProblemParam, ew);
@@ -498,8 +495,11 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        Police_problem problem = new Police_problem();
+        problem.setSsid(getProblemsByIdParam.getId());
+
         //先查有没有该模板
-        Police_problem ProblemById = police_problemMapper.selectById(getProblemsByIdParam.getId());
+        Police_problem ProblemById = police_problemMapper.selectOne(problem);
         if (null==ProblemById){
             result.setMessage("未找到该问题信息");
             return;
@@ -551,7 +551,7 @@ public class TemplateService extends BaseService {
         return;
     }
 
-    public void  getProblemTypes(RResult result,ReqParam param){
+    public void  getProblemTypes(RResult result,ReqParam<Problemtype> param){
         GetProblemTypesVO getProblemTypesVO=new GetProblemTypesVO();
 
         EntityWrapper ew=new EntityWrapper();
@@ -658,8 +658,8 @@ public class TemplateService extends BaseService {
         }
 
         EntityWrapper ew=new EntityWrapper();
-        if (null!=getTemplateByIdParam.getTemplatebyid()){
-            ew.eq("p.templatessid",getTemplateByIdParam.getTemplatebyid());
+        if (null!=getTemplateByIdParam.getSsid()){
+            ew.eq("p.templatessid",getTemplateByIdParam.getSsid());
         }
 
         ew.orderBy("p2.ordernum",true);

@@ -165,7 +165,7 @@ public class MainService extends BaseService {
 
         //old数据
         EntityWrapper ew=new EntityWrapper();
-        ew.eq("b.ssid",updateServerconfigParam.getSsid());
+        ew.eq("b.id",updateServerconfigParam.getSsid());
         List<ServerconfigAndFilesave> list=base_serverconfigMapper.getServerconfig(ew);
         ServerconfigAndFilesave serverconfig=new ServerconfigAndFilesave();
         if (null!=list&&list.size()==1){
@@ -219,7 +219,7 @@ public class MainService extends BaseService {
                     if (StringUtils.isNotBlank(oldfilepath)){
                         //修改
                         EntityWrapper filesaveparam = new EntityWrapper();
-                        filesaveparam.eq("ssid",client_filesavessid);
+                        filesaveparam.eq("id",client_filesavessid);
                         int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
                         System.out.println("filesaveupdate_bool__"+filesaveupdate_bool);
                     }else{
@@ -238,7 +238,7 @@ public class MainService extends BaseService {
 
         //修改配置数据
         EntityWrapper serverconfigparam = new EntityWrapper();
-        serverconfigparam.eq("ssid",updateServerconfigParam.getSsid());
+        serverconfigparam.eq("id",updateServerconfigParam.getSsid());
         updateServerconfigParam.setClient_filesavessid(client_filesavessid);
        int updateById_bool=base_serverconfigMapper.update(updateServerconfigParam,serverconfigparam);//没有任何需要修改值的时候会报错
         System.out.println("updateById_bool"+updateById_bool);

@@ -1,6 +1,9 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
 public class TemplateToProblem {
+
+    private Integer id;
+
     private Integer templateid;
 
     private Integer problemid;
@@ -10,6 +13,15 @@ public class TemplateToProblem {
     private String referanswer;
 
     private Integer ordernum;
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public Integer getTemplateid() {
         return templateid;

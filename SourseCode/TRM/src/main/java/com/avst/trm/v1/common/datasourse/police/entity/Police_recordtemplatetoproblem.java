@@ -138,7 +138,7 @@ public class Police_recordtemplatetoproblem extends Model<Police_recordtemplatet
         ", problemssid=" + problemssid +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

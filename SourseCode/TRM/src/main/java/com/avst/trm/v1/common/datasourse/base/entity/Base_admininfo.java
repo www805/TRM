@@ -208,7 +208,7 @@ public class Base_admininfo extends Model<Base_admininfo> {
         ", registertime=" + registertime +
         ", updatetime=" + updatetime +
         ", lastlogintime=" + lastlogintime +
-        ", ssid=" + ssid +
+        ", id=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +
