@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -117,7 +118,10 @@ public class PolicePageAction {
 
 
     @GetMapping("towaitRecord")
-    public ModelAndView towaitRecord(Model model){
+    public ModelAndView towaitRecord(Model model,String ssid){
+        if (StringUtils.isNotBlank(ssid)){
+            model.addAttribute("recordssid",ssid);
+        }
         model.addAttribute("title","等待笔录");
        return new ModelAndView("client_web/police/record/waitRecord", "waitRecordModel", model);
     }

@@ -59,6 +59,20 @@ public class Police_record extends Model<Police_record> {
      */
     private String pdf_filesavessid;
 
+
+    /**
+     * 笔录类型
+     */
+    private  String recordtypessid;
+
+    public String getRecordtypessid() {
+        return recordtypessid;
+    }
+
+    public void setRecordtypessid(String recordtypessid) {
+        this.recordtypessid = recordtypessid;
+    }
+
     /**
      * 创建时间
      */
@@ -181,28 +195,22 @@ public class Police_record extends Model<Police_record> {
     @Override
     public String toString() {
         return "Police_record{" +
-        "id=" + id +
-        ", recordname=" + recordname +
-        ", recordtemplatessid=" + recordtemplatessid +
-        ", record_filesavessid=" + record_filesavessid +
-        ", recordtime=" + recordtime +
-        ", recordstarttime=" + recordstarttime +
-        ", recordbool=" + recordbool +
-        ", pdf_filesavessid=" + pdf_filesavessid +
-        ", createtime=" + createtime +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", recordname='" + recordname + '\'' +
+                ", recordtemplatessid='" + recordtemplatessid + '\'' +
+                ", record_filesavessid='" + record_filesavessid + '\'' +
+                ", recordtime=" + recordtime +
+                ", recordstarttime=" + recordstarttime +
+                ", recordbool=" + recordbool +
+                ", pdf_filesavessid='" + pdf_filesavessid + '\'' +
+                ", recordtypessid='" + recordtypessid + '\'' +
+                ", createtime=" + createtime +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 
-
-    public static void main(String[] args) {
-        long a=1556245697000L;
-        long b=1556246444000L;
-
-        System.out.println((b-a)/ 1000);
-    }
 }

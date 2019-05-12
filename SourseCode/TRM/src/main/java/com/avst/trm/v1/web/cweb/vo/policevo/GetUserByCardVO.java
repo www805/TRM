@@ -13,17 +13,6 @@ public class GetUserByCardVO {
 
     private List<AdminAndWorkunit> otheruserinfos;//询问人员等
 
-    private Integer asknum;//提讯次数；
-
-
-    public Integer getAsknum() {
-        return asknum;
-    }
-
-    public void setAsknum(Integer asknum) {
-        this.asknum = asknum;
-    }
-
     public List<AdminAndWorkunit> getOtheruserinfos() {
         return otheruserinfos;
     }

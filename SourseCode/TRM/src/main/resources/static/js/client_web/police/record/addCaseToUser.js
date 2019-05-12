@@ -1,13 +1,81 @@
 var cases=null;//案件数据
 var otheruserinfos=null;//询问人员数据
-function addCaseToArraignment() {
-    //添加笔录案件关联，跳转页面
 
-    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-        setpageAction(INIT_CLIENT,nextparam.nextPageId);
-        var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-        parent.location.href=url;
+
+function addCaseToArraignment() {
+    var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
+
+    var cardnum1=$("#cardnum1").val();
+    if (!isNotEmpty(cardnum1)){
+        layer.msg("证件号码不能为空");
+        return;
+    }
+
+    var recordtypessid= $("td[recordtypebool='true']",parent.document).attr("recordtype");
+    if (!isNotEmpty(recordtypessid)){
+        layer.msg("系统异常");
+        return;
+    }
+
+
+
+    var casessid=$("#casename  option:selected").val();
+    if (!isNotEmpty(casessid)){
+        layer.msg("案件不能为空");
+        return;
+    }
+
+    var adminssid=$("#adminssid1").val();
+    var otheradminssid=$("#otheruserinfos  option:selected").val();
+    if (!isNotEmpty(otheradminssid)){
+        layer.msg("询问人二不能为空");
+        return;
+    }
+
+    var recordadminssid=$("#recordadmin  option:selected").val();
+    if (!isNotEmpty(recordadminssid)){
+        layer.msg("记录人不能为空");
+        return;
+    }
+    var recordplace=$("#recordplace").val();
+    var askobj=$("#askobj  option:selected").val();
+    if (!isNotEmpty(askobj)){
+        layer.msg("询问对象不能为空");
+        return;
+    }
+    var asknum=$("#asknum  option:selected").val();
+
+
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            casessid:casessid,
+            adminssid:adminssid,
+            otheradminssid:otheradminssid,
+            recordadminssid:recordadminssid,
+            recordplace:recordplace,
+            askobj:askobj,
+            asknum:asknum,
+            recordtypessid:recordtypessid
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
+}
+
+function callbackaddCaseToArraignment(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+            if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                setpageAction(INIT_CLIENT,nextparam.nextPageId);
+                var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+                parent.location.href=url+"?ssid="+data;
+            }
+        }
+    }else{
+        layer.msg(data.message);
     }
 }
 
@@ -48,7 +116,7 @@ function gettree(data){
             if (l.police_recordtypes.length>0){
                 for (var j = 0; j < l.police_recordtypes.length; j++) {
                     var ls = l.police_recordtypes[j];
-                    html+=' <tr><td><a >'+ls.typename+'</td></a></tr>';
+                    html+=' <tr><td recordtype='+ls.ssid+' recordtypebool="false">'+ls.typename+'</td></tr>';
                 }
             }
             html+='</table> </div></div>';
@@ -56,6 +124,8 @@ function gettree(data){
         }
     }
     $('#recotdtypes td').eq(0).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
+    $('#recotdtypes td').eq(0).attr("recordtypebool","true");
+
     $('#recotdtypes td').click(function() {
         var obj=this;
        layer.confirm('人员案件信息将会重置，确定要切换笔录类型吗', {
@@ -63,7 +133,11 @@ function gettree(data){
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
             $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
-            $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});//还原所有td的颜色'
+           $('#recotdtypes td').not(obj).attr("recordtypebool","false");
+
+           $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
+           $(obj).attr("recordtypebool","true");
+
            $("iframe").prop("src","/cweb/police/policePage/toaddCaseToUserDetail");/*target="ifranmehtml"  href="/cweb/police/policePage/toaddCaseToUserDetail"*/
             layer.close(index);
         }, function(index){
@@ -79,7 +153,9 @@ function gettree(data){
     });
 }
 
-
+/**
+ * 获取国籍
+ */
 function getNationalitys(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getNationalitys);
     var data={
@@ -108,6 +184,9 @@ function callbackgetNationalitys(data) {
     });
 }
 
+/**
+ * 获取民族
+ */
 function getNationals(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getNationals);
     var data={
@@ -125,6 +204,8 @@ function callbackgetNationals(data) {
                 $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
             }
         }
+    }else{
+        layer.msg(data.message);
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -132,6 +213,9 @@ function callbackgetNationals(data) {
     });
 }
 
+/**
+ * 获取证件类型
+ */
 function getCards(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getCards);
     var data={
@@ -166,6 +250,9 @@ function callbackgetCards(data) {
     });
 }
 
+/**
+ * 获取人员信息
+ */
 function getUserByCard(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
     var cards1=$("#cards1 option:selected").val();
@@ -265,48 +352,49 @@ function setcases(cases){
     }
 }
 
-function getCaseById(casessid){
-    var url=getActionURL(getactionid_manage().addCaseToUser_getCaseById);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            casessid:casessid
-        }
-    };
-    ajaxSubmitByJson(url,data,callbackgetCaseById);
-}
-function callbackgetCaseById(data){
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-
-        }
-        console.log("111");
-    }else{
-        layer.msg(data.message);
-    }
-}
-
-
 
 
 $(function () {
-    layui.use(['form','jquery'], function() {
-        form=layui.form;
-
+    layui.use(['form','jquery','laydate'], function() {
+        var form=layui.form;
+        var laydate = layui.laydate;
         form.on('select(change_card)', function(data){
             var val=data.value;
-            $("input").val("");
+            $("input:not('#adminssid1'):not('#workname1'):not('#recordplace')").val("");
             $('select').not("#cards1").prop('selectedIndex', 0);
+
+            laydate.render({
+                elem: '#occurrencetime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#starttime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#endtime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+           $("#adminssid1").val(sessionusername);
+            $("#workname1").val(sessionusername);
+            $("#recordplace").val(sessionworkname);
+            //使用模块
             form.render();
         });
 
         form.on('select(change_case)', function(data){
             var casessid=data.value;
             var title=data.elem[data.elem.selectedIndex].title;
-            $("#casename").find("option[value='"+casessid+"']").text(title);
-            form.render();
-            setcases(cases);
+           /* $("#casename").find("option[value='"+casessid+"']").text(title);
+           form.render();
+
+            setcases(cases);*/
             $("#cause").val("");
             $("#casenum").val("");
             $("#occurrencetime").val("");
@@ -338,7 +426,7 @@ $(function () {
                     }
                 }
             }
-            form.render();
+            form.render('select','change_otheruserinfos');
         });
 
 

@@ -210,8 +210,8 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @PostMapping(value = "/addCaseToArraignment",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addCaseToArraignment(@RequestBody ReqParam param){
+    @RequestMapping(value = "/addCaseToArraignment")
+    public RResult addCaseToArraignment(@RequestBody ReqParam<AddCaseToArraignmentParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");

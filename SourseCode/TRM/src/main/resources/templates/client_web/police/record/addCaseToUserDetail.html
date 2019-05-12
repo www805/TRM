@@ -38,10 +38,10 @@
 </style>
 <body>
     <div class="layui-form layui-row" >
-        <div class="layui-col-md6" style="border:1px solid #F2F2F2;">
+        <div class="layui-col-md6" >
             <div class="layui-card" >
                 <div class="layui-card-header">人员基本信息</div>
-                <div style="height: 700px; overflow-x: hidden; overflow-y: scroll;">
+                <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card-body  layui-row layui-col-space10"  >
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">证件类型</label>
@@ -87,7 +87,7 @@
                                 <label class="layui-form-label" >性别</label>
                                 <div class="layui-input-block" >
                                     <select name="sex" lay-verify="required" id="sex">
-                                        <option value="请选择"></option>
+                                        <option value=""></option>
                                         <option value="1">男</option>
                                         <option value="2">女</option>
                                         <option value="-1">未知</option>
@@ -105,7 +105,7 @@
                             <label class="layui-form-label">民族</label>
                             <div class="layui-input-block">
                                 <select name="national" lay-verify="required" lay-search="" id="national">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                 </select>
                             </div>
                         </div>
@@ -113,7 +113,7 @@
                             <label class="layui-form-label">国籍</label>
                             <div class="layui-input-block">
                                 <select name="city" lay-verify="required" lay-search="" id="nationality">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                 </select>
                             </div>
                         </div>
@@ -127,7 +127,7 @@
                             <label class="layui-form-label">文化程度</label>
                             <div class="layui-input-block">
                                 <select name="educationlevel" lay-verify="required"  lay-search="" id="educationlevel">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                     <option value="1">小学</option>
                                     <option value="2">初中</option>
                                     <option value="3">高中</option>
@@ -147,7 +147,7 @@
                             <label class="layui-form-label">政治面貌</label>
                             <div class="layui-input-block">
                                 <select name="politicsstatus" lay-verify="required"  lay-search="" id="politicsstatus">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                     <option value="1">群众</option>
                                     <option value="2">中国致公党党员</option>
                                     <option value="3">台湾民主自治同盟盟员</option>
@@ -209,7 +209,7 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
-                                                            <select name="cards4" lay-verify="required" id="cards4" >
+                                                            <select name="cards4" lay-verify="required" id="cards4"  disabled>
 
                                                             </select>
                                                         </div>
@@ -230,7 +230,7 @@
                                                         <label class="layui-form-label">性别</label>
                                                         <div class="layui-input-block">
                                                             <select name="sex4" lay-verify="required" id="sex4">
-                                                                <option value="请选择"></option>
+                                                                <option value=""></option>
                                                                 <option value="1">男</option>
                                                                 <option value="2">女</option>
                                                                 <option value="-1">未知</option>
@@ -247,7 +247,7 @@
                                                         <label class="layui-form-label">关系</label>
                                                         <div class="layui-input-block">
                                                             <select name="relation" lay-verify="required" id="relation">
-                                                                <option value="请选择"></option>
+                                                                <option value=""></option>
                                                                 <option value="1">父亲</option>
                                                                 <option value="2">母亲</option>
                                                                 <option value="3">妹妹</option>
@@ -266,7 +266,7 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
-                                                            <select name="city" lay-verify="required" id="cards2">
+                                                            <select name="city" lay-verify="required" id="cards2" disabled>
 
                                                             </select>
                                                         </div>
@@ -287,7 +287,7 @@
                                                         <label class="layui-form-label">性别</label>
                                                         <div class="layui-input-block">
                                                             <select name="sex2" lay-verify="required" id="sex2">
-                                                                <option value="请选择"></option>
+                                                                <option value=""></option>
                                                                 <option value="1">男</option>
                                                                 <option value="2">女</option>
                                                                 <option value="-1">未知</option>
@@ -304,7 +304,7 @@
                                                         <label class="layui-form-label">语种</label>
                                                         <div class="layui-input-block">
                                                             <select name="language" lay-verify="required" id="language">
-                                                                <option value="请选择"></option>
+                                                                <option value=""></option>
                                                                 <option value="1">英语</option>
                                                                 <option value="2">法语</option>
                                                                 <option value="3">俄语</option>
@@ -320,7 +320,7 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
-                                                            <select name="cards3" lay-verify="required" id="cards3">
+                                                            <select name="cards3" lay-verify="required" id="cards3" disabled>
 
                                                             </select>
                                                         </div>
@@ -341,7 +341,7 @@
                                                         <label class="layui-form-label">性别</label>
                                                         <div class="layui-input-block">
                                                             <select name="sex3" lay-verify="required" id="sex3">
-                                                                <option value="请选择"></option>
+                                                                <option value=""></option>
                                                                 <option value="1">男</option>
                                                                 <option value="2">女</option>
                                                                 <option value="-1">未知</option>
@@ -371,16 +371,16 @@
             </div>
 
         </div>
-        <div class="layui-col-md6" style="border:1px solid #F2F2F2;">
+        <div class="layui-col-md6">
             <div class="layui-card" >
                 <div class="layui-card-header">案件基本信息</div>
-                <div style="height: 700px; overflow-x: hidden; overflow-y: scroll;">
+                <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card-body  layui-row layui-col-space10" >
                         <div class="layui-col-lg12">
                             <label class="layui-form-label">案件名称</label>
                             <div class="layui-input-block">
                                 <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                 </select>
                             </div>
                         </div>
@@ -436,7 +436,7 @@
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问人二</label>
                             <div class="layui-input-block">
                                 <select name="otheruserinfos" id="otheruserinfos" lay-verify="required" lay-search="" lay-filter="change_otheruserinfos">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
 
                                 </select>
                             </div>
@@ -451,7 +451,7 @@
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>记录人</label>
                             <div class="layui-input-block">
                                 <select name="recordadmin"  id="recordadmin" lay-verify="required" lay-search="">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
 
                                 </select>
                             </div>
@@ -459,14 +459,14 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">问话地点</label>
                             <div class="layui-input-block">
-                                <input type="text" name="recordplace" id="recordplace" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="recordplace" id="recordplace" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" th:value="${session.MANAGE_CLIENT.workname}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">询问对象</label>
                             <div class="layui-input-block">
                                 <select name="askobj" lay-verify="required" id="askobj">
-                                    <option value="请选择"></option>
+                                    <option value=""></option>
                                     <option value="1">被害人</option>
                                     <option value="2">证人</option>
                                 </select>
@@ -475,7 +475,17 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问次数</label>
                             <div class="layui-input-block">
-                                <input type="number" name="asknum"  id="asknum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled>
+                                <select name="asknum" lay-verify="required" id="asknum">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-col-lg12 ">
@@ -501,6 +511,8 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var sessionworkname=[[${session.MANAGE_CLIENT.workname}]];
+    var sessionusername=[[${session.MANAGE_CLIENT.username}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

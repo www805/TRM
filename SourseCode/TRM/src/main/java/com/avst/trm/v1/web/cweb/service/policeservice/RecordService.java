@@ -8,14 +8,8 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_case;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_cardtypeMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtypeMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.*;
+import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -58,6 +52,17 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Base_admininfoMapper base_admininfoMapper;
+
+    @Autowired
+    private Police_recordMapper police_recordMapper;
+
+    @Autowired
+    private Police_arraignmentMapper police_arraignmentMapper;
+
+    @Autowired
+    private Police_casetoarraignmentMapper police_casetoarraignmentMapper;
+
+
 
 
 
@@ -206,7 +211,61 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void addCaseToArraignment(RResult result, ReqParam param){
+    public void addCaseToArraignment(RResult result, ReqParam<AddCaseToArraignmentParam> param){
+        AddCaseToArraignmentParam addCaseToArraignmentParam=param.getParam();
+        if (null==addCaseToArraignmentParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+
+        //添加笔录信息
+        Police_record record=new Police_record();
+        record.setSsid(OpenUtil.getUUID_32());
+        record.setCreatetime(new Date());
+        record.setRecordbool(2);//1进行中2未开始
+        record.setRecordtypessid(addCaseToArraignmentParam.getRecordtypessid());
+        int insertrecord_bool=police_recordMapper.insert(record);
+        System.out.println("insertrecord_bool__"+insertrecord_bool);
+        if (insertrecord_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+            //添加提讯数据
+            Police_arraignment arraignment=new Police_arraignment();
+            arraignment.setSsid(OpenUtil.getUUID_32());
+            arraignment.setCreatetime(new Date());
+            arraignment.setAdminssid(addCaseToArraignmentParam.getAdminssid());
+            arraignment.setAsknum(addCaseToArraignmentParam.getAsknum());
+            arraignment.setAskobj(addCaseToArraignmentParam.getAskobj());
+            arraignment.setRecordadminssid(addCaseToArraignmentParam.getRecordadminssid());
+            arraignment.setRecordplace(addCaseToArraignmentParam.getRecordplace());
+            arraignment.setOtheradminssid(addCaseToArraignmentParam.getOtheradminssid());
+
+            arraignment.setRecordssid(record.getSsid());
+            int insertarraignment_bool=police_arraignmentMapper.insert(arraignment);
+            System.out.println("insertarraignment_bool__"+insertarraignment_bool);
+
+        if (insertarraignment_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
+
+        if (StringUtils.isNotBlank(addCaseToArraignmentParam.getCasessid())){
+            //添加笔录提讯信息
+            Police_casetoarraignment casetoarraignment=new Police_casetoarraignment();
+            casetoarraignment.setCreatetime(new Date());
+            casetoarraignment.setSsid(OpenUtil.getUUID_32());
+            casetoarraignment.setArraignmentssid(arraignment.getSsid());
+            casetoarraignment.setCasessid(addCaseToArraignmentParam.getCasessid());
+            int insertcasetoarraignment_bool=police_casetoarraignmentMapper.insert(casetoarraignment);
+            System.out.println("insertcasetoarraignment_bool__"+insertcasetoarraignment_bool);
+        }
+
+
+         result.setData(record.getSsid());//返回开始笔录的ssid
+        changeResultToSuccess(result);
         return;
     }
 
@@ -244,7 +303,7 @@ public class RecordService extends BaseService {
                 getUserByCardVO.setUserinfo(police_userinfo);
 
 
-                //根据用户userssid查询案件列表：需要加入询问次数
+                //根据用户userssid查询案件列表
                 EntityWrapper caseparam=new EntityWrapper();
                 caseparam.eq("userssid",police_userinfo.getSsid());
                 caseparam.orderBy("occurrencetime",false);
@@ -296,6 +355,7 @@ public class RecordService extends BaseService {
         changeResultToSuccess(result);
         return;
     }
+
 
     public void getCards(RResult result, ReqParam param){
         List<Police_cardtype> list=police_cardtypeMapper.selectList(null);

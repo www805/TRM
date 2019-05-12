@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment">
         <id column="id" property="id" />
         <result column="adminssid" property="adminssid" />
+        <result column="otheradminssid" property="otheradminssid" />
         <result column="recordadminssid" property="recordadminssid" />
         <result column="recordplace" property="recordplace" />
         <result column="askobj" property="askobj" />
