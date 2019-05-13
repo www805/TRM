@@ -19,6 +19,16 @@ public class Record extends Police_record {
 
     private List<Recordreal> recordreals;//笔录实时文件s
 
+    private List<Problem> problems;//笔录的问题模板
+
+    public List<Problem> getProblems() {
+        return problems;
+    }
+
+    public void setProblems(List<Problem> problems) {
+        this.problems = problems;
+    }
+
     public String getRecorddownurl() {
         return recorddownurl;
     }

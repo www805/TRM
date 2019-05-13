@@ -101,8 +101,17 @@ function getactionid_manage() {
         addCaseToUser_getNationals:"addCaseToUser_getNationals",
         addCaseToUser_getCards:"addCaseToUser_getCards",
         addCaseToUser_getUserByCard:"addCaseToUser_getUserByCard",
-        addCaseToUser_getCaseById:"addCaseToUser_getCaseById"
+        addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
 
+        recordIndex_getRecords:"recordIndex_getRecords",
+        recordIndex_getRecordtypes:"recordIndex_getRecordtypes",
+        recordIndex_togetRecordById:"recordIndex_togetRecordById",
+
+        getRecordById_getRecordById:"getRecordById_getRecordById",
+        getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
+
+        moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
+        moreRecord_getRecords:"moreRecord_getRecords",
 
     };
 }

@@ -175,6 +175,7 @@ public class ArraignmentService extends BaseService {
             EntityWrapper recordParam=new EntityWrapper();
             recordParam.eq("r.id",recordssid);
             Record record=police_recordMapper.getRecordBySsid(recordParam);
+
             if (null!=record){
                 //获取实时文件
                 EntityWrapper recordrealsParam=new EntityWrapper();

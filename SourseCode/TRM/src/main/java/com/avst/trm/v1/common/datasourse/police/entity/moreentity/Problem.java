@@ -12,38 +12,20 @@ import java.util.List;
 public class Problem {
     private Integer id;
 
-    /**
-     * 问题内容
-     */
     private String problem;
 
-    /**
-     * 参考答案
-     */
     private String referanswer;
 
-    /**
-     * 排序
-     */
     private Integer ordernum;
 
-    /**
-     * 创建时间
-     */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createtime;
 
-    /**
-     * 更新时间
-     */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updatetime;
 
     private String ssid;
 
-    /**
-     * 问题
-     */
     private List<Police_answer> answers;
 
     public String getSsid() {
@@ -108,5 +90,19 @@ public class Problem {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    @Override
+    public String toString() {
+        return "Problem{" +
+                "id=" + id +
+                ", problem='" + problem + '\'' +
+                ", referanswer='" + referanswer + '\'' +
+                ", ordernum=" + ordernum +
+                ", createtime=" + createtime +
+                ", updatetime=" + updatetime +
+                ", ssid='" + ssid + '\'' +
+                ", answers=" + answers +
+                '}';
     }
 }

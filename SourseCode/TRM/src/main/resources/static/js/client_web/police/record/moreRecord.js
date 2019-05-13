@@ -1,11 +1,8 @@
 var records=null;//笔录数据
 var recordssid_go=null;//选择的笔录ssid
-
-
-
+/*弹出框数据*/
 function getRecordtypesindex() {
-    var url=getActionURL(getactionid_manage().recordIndex_getRecordtypes);
-
+    var url=getActionURL(getactionid_manage().moreRecord_getRecordtypes);
     var data={
         token:INIT_CLIENTKEY,
         param:{}
@@ -24,29 +21,31 @@ function callbackgetRecordtypes(data) {
         layer.msg(data.message);
     }
 }
- var len="-";
+var len="-";
 function gets(data) {
-        if (isNotEmpty(data)){
-            for (var i = 0; i < data.length; i++) {
-                var l = data[i];
-                if (l.pid!=0){
-                    $("#recordtypessid").append("<option value='"+l.ssid+"' > |"+len+" "+l.typename+"</option>");
-                }
-                if (l.police_recordtypes.length>0){
-                    len+=len;
-                    gets(l.police_recordtypes);
-                    len="-";
-                }
+    if (isNotEmpty(data)){
+        for (var i = 0; i < data.length; i++) {
+            var l = data[i];
+            if (l.pid!=0){
+                $("#recordtypessid").append("<option value='"+l.ssid+"' > |"+len+" "+l.typename+"</option>");
+            }
+            if (l.police_recordtypes.length>0){
+                len+=len;
+                gets(l.police_recordtypes);
+                len="-";
             }
         }
+    }
     layui.use('form', function(){
         var form = layui.form;
         form.render();
     });
 }
 
+
+
 function getRecords_init(currPage,pageSize) {
-    var url=getActionURL(getactionid_manage().recordIndex_getRecords);
+    var url=getActionURL(getactionid_manage().moreRecord_getRecords);
     var recordtypessid=$("#recordtypessid option:selected").val();
     var recordname=$("#recordname").val();
     var data={
@@ -61,7 +60,7 @@ function getRecords_init(currPage,pageSize) {
     ajaxSubmitByJson(url,data,callbackgetRecords);
 }
 function getRecords(recordtypessid,recordname,currPage,pageSize){
-    var url=getActionURL(getactionid_manage().recordIndex_getRecords);
+    var url=getActionURL(getactionid_manage().moreRecord_getRecords);
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -73,11 +72,13 @@ function getRecords(recordtypessid,recordname,currPage,pageSize){
     };
     ajaxSubmitByJson(url,data,callbackgetRecords);
 }
+
 function callbackgetRecords(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             records=data.data.pagelist;
             pageshow(data);
+
             $('#recorddetail').html("");
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
@@ -146,7 +147,6 @@ function setproblems(recordssid) {
 
 
 }
-
 /**
  * 局部刷新
  */
@@ -181,18 +181,3 @@ function showpagetohtml(){
     }
 
 }
-
-
-
-
-
-
-function togetRecordById() {
-    if (!isNotEmpty(recordssid_go)){
-        layer.msg("系统异常");
-        return;
-    }
-    var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
-    window.location.href=url+"?ssid="+recordssid_go;
-}
-
