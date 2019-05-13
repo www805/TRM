@@ -43,7 +43,7 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getRecords")
+    @RequestMapping(value = "/getRecords")
     public RResult getRecords(@RequestBody ReqParam<GetRecordsParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -62,7 +62,7 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/addRecord",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/addRecord")
     public RResult addRecord(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -81,8 +81,9 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @GetMapping(value = "/getRecordById",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getRecordById(@RequestBody ReqParam param){
+    @CrossOrigin(origins = "*",maxAge = 3600)
+    @RequestMapping(value = "/getRecordById")
+    public RResult getRecordById(@RequestBody ReqParam<GetRecordByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -95,7 +96,7 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @PostMapping(value = "/uploadRecord",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/uploadRecord")
     public RResult uploadRecord(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -109,7 +110,7 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @GetMapping(value = "/recordIndex",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/recordIndex")
     public RResult recordIndex(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -196,7 +197,7 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @PostMapping(value = "/addRecordTemplate",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/addRecordTemplate")
     public RResult addRecordTemplate(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){

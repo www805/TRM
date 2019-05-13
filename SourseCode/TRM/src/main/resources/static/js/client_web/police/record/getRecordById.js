@@ -179,3 +179,121 @@ function opneModal_1() {
         }
     });
 }
+
+function getRecordById() {
+    var url=getActionURL(getactionid_manage().getRecordById_getRecordById);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid:recordssid,
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetRecordById);
+}
+
+function callbackgetRecordById(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var record=data.record;
+            var caseAndUserInfo=data.caseAndUserInfo;
+
+            if (isNotEmpty(record)){
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
+                if (isNotEmpty(record.recorddownurl)){
+                    wavesurfer.load(record.recorddownurl);
+                }
+
+                    var problems=record.problems;
+                    $("#recorddetail").html("");
+                    if (isNotEmpty(problems)) {
+                        for (var z = 0; z< problems.length;z++) {
+                            var problem = problems[z];
+                            var problemtext=problem.problem==null?"未知":problem.problem;
+                            var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
+                            var answers=problem.answers;
+                            if (isNotEmpty(answers)){
+                                for (var j = 0; j < answers.length; j++) {
+                                    var answer = answers[j];
+                                    var answertext=answer.answer==null?"未知":answer.answer;
+                                    problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
+                                }
+                            }else{
+                                problemhtml+='<tr> <td class="font_blue_color">答：... </td></tr>';
+                            }
+                            $("#recorddetail").append(problemhtml);
+                        }
+                    }
+            }
+
+            var init_casehtml="案件名称：<br>\
+                                案件人：<br>\
+                                当前案由：<br>\
+                                案件时间：<br>\
+                                案件编号：<br> ";
+            $("#caseAndUserInfo_html").html(init_casehtml);
+            if (isNotEmpty(caseAndUserInfo)){
+                init_casehtml="案件名称："+caseAndUserInfo.casename+"<br>\
+                                 案件人："+caseAndUserInfo.username+"<br>\
+                                当前案由："+caseAndUserInfo.cause+"<br>\
+                                案件时间："+caseAndUserInfo.occurrencetime+"<br>\
+                                案件编号："+caseAndUserInfo.casenum+"<br>";
+                $("#caseAndUserInfo_html").html(init_casehtml);
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+var wavesurfer;
+$(function () {
+    wavesurfer = WaveSurfer.create({
+        container: '#waveform',
+        scrollParent: true,
+        waveColor: "#368666",
+        progressColor: "#6d9e8b",
+        cursorColor: "#fff",
+        height: 160,
+        hideScrollbar: false
+    });
+
+    wavesurfer.on("ready",function () {
+        wavesurfer.play();
+        $("#recordtime").text(parseInt(wavesurfer.getDuration()));
+        $("#currenttime").text(wavesurfer.getCurrentTime());
+    });
+    wavesurfer.on("audioprocess",function () {
+        $("#currenttime").text(wavesurfer.getCurrentTime());
+    });
+
+
+    //播放按钮
+    $("#recordplay").click(function(){
+        wavesurfer.play();
+    });
+
+    //停止按钮
+    $("#recordpause").click(function(){
+        wavesurfer.pause();
+    });
+
+
+    layui.use(['form', 'slider'], function(){
+        var $ = layui.$
+            ,slider = layui.slider;
+
+        //定义初始值
+        slider.render({
+            elem: '#slideTest'
+            ,max:'1'
+            ,max:'100'
+            ,theme: '#1E9FFF' //主题色
+            ,change: function(value){
+                wavesurfer.setVolume(value/100);//设置音频音量
+            }
+        });
+    });
+
+});

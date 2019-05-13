@@ -3,7 +3,14 @@ var otheruserinfos=null;//询问人员数据
 
 
 function addCaseToArraignment() {
-    var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
+    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+        setpageAction(INIT_CLIENT,nextparam.nextPageId);
+        var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+        parent.location.href=url+"?ssid=111";
+    }
+
+   /* var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
 
     var cardnum1=$("#cardnum1").val();
     if (!isNotEmpty(cardnum1)){
@@ -60,7 +67,7 @@ function addCaseToArraignment() {
             recordtypessid:recordtypessid
         }
     };
-    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
+    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
 }
 
 function callbackaddCaseToArraignment(data) {
@@ -273,6 +280,7 @@ function callbackgetUserByCard(data){
             var userinfo=data.userinfo;
              cases=data.cases;
              otheruserinfos=data.otheruserinfos;
+             console.log(otheruserinfos)
             
             if (isNotEmpty(userinfo)){
                 /*人员信息*/

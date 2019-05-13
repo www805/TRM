@@ -142,8 +142,11 @@ public class PolicePageAction {
 
 
     @GetMapping("togetRecordById")
-    public ModelAndView togetRecordById(Model model){
+    public ModelAndView togetRecordById(Model model,String ssid){
         model.addAttribute("title","笔录详情");
+        if (StringUtils.isNotBlank(ssid)){
+            model.addAttribute("recordssid",ssid);
+        }
        return new ModelAndView("client_web/police/record/getRecordById", "getRecordByIdModel", model);
     }
 

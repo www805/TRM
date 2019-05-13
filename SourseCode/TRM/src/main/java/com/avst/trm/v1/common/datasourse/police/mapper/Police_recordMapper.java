@@ -26,6 +26,16 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
             " left join base_filesave f2 on f2.datassid=r.pdf_filesavessid where 1=1 ${ew.sqlSegment}")
     Record getRecordBySsid(@Param("ew") EntityWrapper ew);
 
+    @Select(" select r.*,f1.recorddownurl as recorddownurl ,f1.recordrealurl as recordrealurl,f2.recorddownurl as pdfdownurl,f2.recordrealurl as pdfrealurl  from police_record r " +
+            " left join base_filesave f1 on f1.datassid=r.record_filesavessid" +
+            " left join base_filesave f2 on f2.datassid=r.pdf_filesavessid where 1=1 ${ew.sqlSegment}")
+    List<Record> getRecords(Page page,@Param("ew") EntityWrapper ew);
+
+    @Select(" select count(r.id) from police_record r " +
+            " left join base_filesave f1 on f1.datassid=r.record_filesavessid" +
+            " left join base_filesave f2 on f2.datassid=r.pdf_filesavessid where 1=1 ${ew.sqlSegment}")
+    int countgetRecords(@Param("ew") EntityWrapper ew);
+
 
 
 }

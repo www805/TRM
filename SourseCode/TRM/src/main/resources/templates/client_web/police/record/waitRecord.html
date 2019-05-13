@@ -78,16 +78,15 @@
     }
 </style>
 <body>
-<div class="layui-form" style="margin: 15px;">
+<div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
     <div th:replace="header :: header">...</div>
 
-    <div class="layui-elem-quote">
+    <div class="layui-elem-quote" style=" padding: 10px;">
         <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
     </div>
 
-    <div class="layui-row " id="layui-row1">
-        <div  style="height: 650px; border:1px solid #F2F2F2;" >
-            <div class="layui-col-md3 "style="position: relative" >
+    <div class="layui-row layui-form" id="layui-row1">
+            <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <!---->
                 <div class="layui-col-md12 layui-collapse ">
                     <div class="layui-colla-item">
@@ -225,14 +224,13 @@
                 </div>
                 <!---->
             </div>
-            <div class="layui-col-md9"  style="border:1px solid #F2F2F2; ">
+            <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                 <div class="layui-card" >
                     <div class="layui-card-header" style="background-color: #FFFFFF">
                         <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
                         <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
                         <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
                     </div>
-                    <div style="height: 600px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body layui-row " style="padding: 0">
                             <div class="layui-card"  >
                                 <div class="layui-card-header">
@@ -323,11 +321,8 @@
                                 </div>
                             </div>
                         </div>
-
-                    </div>
                 </div>
             </div>
-        </div>
     </div>
 
 

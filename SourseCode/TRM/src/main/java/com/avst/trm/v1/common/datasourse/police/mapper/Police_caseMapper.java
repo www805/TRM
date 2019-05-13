@@ -25,4 +25,13 @@ public interface Police_caseMapper extends BaseMapper<Police_case> {
 
     @Select("select count(c.ssid) from police_case c left join police_userinfo u on u.ssid=c.userssid where 1=1 ${ew.sqlSegment}")
     int countgetArraignmentList( @Param("ew")EntityWrapper ew);
+
+    @Select("select c.*,u.username from police_arraignment a " +
+            "  left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
+            "  left join police_case c on c.ssid=cr.casessid" +
+            "  left join police_record r on r.ssid=a.recordssid " +
+            "  left join police_userinfo u on u.ssid=c.userssid" +
+            "  where 1=1 ${ew.sqlSegment} ")
+    CaseAndUserInfo getCaseByRecordSsid( @Param("ew")EntityWrapper ew);
+
 }

@@ -9,6 +9,10 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problem;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Recordreal;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
@@ -16,15 +20,13 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetCaseByIdVO;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetRecordsVO;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetRecordtypesVO;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetUserByCardVO;
+import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -62,8 +64,11 @@ public class RecordService extends BaseService {
     @Autowired
     private Police_casetoarraignmentMapper police_casetoarraignmentMapper;
 
+    @Autowired
+    private  Police_recordtemplatetoproblemMapper police_recordtemplatetoproblemMapper;
 
-
+    @Autowired
+    private Police_answerMapper police_answerMapper;
 
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param){
@@ -76,9 +81,56 @@ public class RecordService extends BaseService {
             return;
         }
 
+         String recordname=getRecordsParam.getRecordname();//笔录名
+         String recordtypessid=getRecordsParam.getRecordtypessid();//笔录类型
 
+        EntityWrapper recordparam=new EntityWrapper();
+        if (StringUtils.isNotBlank(recordtypessid)){
+            recordparam.eq("r.recordtypessid",recordtypessid);
+        }
+        if (StringUtils.isNotBlank(recordname)){
+            recordparam.like("r.recordname",recordname);
+        }
 
+        int count = police_recordMapper.countgetRecords(recordparam);
+        getRecordsParam.setRecordCount(count);
 
+        recordparam.orderBy("r.createtime",false);
+        Page<AdminAndWorkunit> page=new Page<AdminAndWorkunit>(getRecordsParam.getCurrPage(),getRecordsParam.getPageSize());
+        List<Record> records=police_recordMapper.getRecords(page,recordparam);
+        getRecordsVO.setPageparam(getRecordsParam);
+        if (null!=records&&records.size()>0){
+            for (Record record : records) {
+                String  recordssid=record.getSsid();
+                //查找笔录的全部题目
+                EntityWrapper probleparam=new EntityWrapper();
+                probleparam.eq("r.ssid",record.getSsid());
+                probleparam.orderBy("p.ordernum",true);
+                probleparam.orderBy("p.createtime",true);
+                List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(probleparam);
+                if (null!=problems&&problems.size()>0){
+                    //根据题目和笔录查找对应答案
+                    for (Problem problem : problems) {
+                        String problemssid=problem.getSsid();
+                        if (StringUtils.isNotBlank(problem.getSsid())){
+                            EntityWrapper answerParam=new EntityWrapper();
+                            answerParam.eq("a.problemssid",problemssid);
+                            answerParam.eq("a.recordssid",recordssid);
+                            answerParam.orderBy("a.ordernum",true);
+                            answerParam.orderBy("a.createtime",true);
+                            List<Police_answer> answers=police_answerMapper.getAnswerByProblemSsidAndRecordSsid(answerParam);
+                            if (null!=answers&&answers.size()>0){
+                                problem.setAnswers(answers);
+                            }
+                        }
+                    }
+                    record.setProblems(problems);
+                }
+            }
+        }
+        getRecordsVO.setPagelist(records);
+        result.setData(getRecordsVO);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -86,7 +138,79 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void getRecordById(RResult result, ReqParam param){
+    public void getRecordById(RResult result, ReqParam<GetRecordByIdParam> param){
+        GetRecordByIdVO getRecordByIdVO= new GetRecordByIdVO();
+        //请求参数转换
+        GetRecordByIdParam getRecordByIdParam = param.getParam();
+        if (null==getRecordByIdParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=getRecordByIdParam.getRecordssid();
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+
+        //根据笔录ssid获取录音数据
+        try {
+            EntityWrapper recordParam=new EntityWrapper();
+            recordParam.eq("r.ssid",recordssid);
+            Record record=police_recordMapper.getRecordBySsid(recordParam);
+
+            if (null!=record){
+                //获取题目
+                EntityWrapper ew=new EntityWrapper();
+                ew.eq("r.ssid",record.getSsid());
+                ew.orderBy("p.ordernum",true);
+                ew.orderBy("p.createtime",true);
+                List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(ew);
+                if (null!=problems&&problems.size()>0){
+                    //根据题目和笔录查找对应答案
+                    for (Problem problem : problems) {
+                        String problemssid=problem.getSsid();
+                        if (StringUtils.isNotBlank(problemssid)){
+                            EntityWrapper answerParam=new EntityWrapper();
+                            answerParam.eq("a.problemssid",problemssid);
+                            answerParam.eq("a.recordssid",record.getSsid());
+                            ew.orderBy("a.ordernum",true);
+                            ew.orderBy("a.createtime",true);
+                            List<Police_answer> answers=police_answerMapper.getAnswerByProblemSsidAndRecordSsid(answerParam);
+                            if (null!=answers&&answers.size()>0){
+                                problem.setAnswers(answers);
+                            }
+                        }
+                    }
+                    record.setProblems(problems);
+                }
+
+
+                getRecordByIdVO.setRecord(record);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //根据笔录ssid获取案件信息
+        try {
+            EntityWrapper caseParam=new EntityWrapper();
+            caseParam.eq("r.ssid",recordssid);
+            CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
+            if (null!=caseAndUserInfo){
+                getRecordByIdVO.setCaseAndUserInfo(caseAndUserInfo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        //获取实时数据
+
+
+        result.setData(getRecordByIdVO);
+        changeResultToSuccess(result);
         return;
     }
 
