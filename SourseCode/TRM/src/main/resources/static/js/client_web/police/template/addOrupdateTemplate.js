@@ -1,4 +1,3 @@
-var token = "4843484445444848454842464648464A424549474A4A45";
 var tableProblems = '';
 var version = "";
 var list, all;
@@ -9,7 +8,7 @@ function getProblems_init(currPage,pageSize) {
     var keyword =$("#keyword").val();
     var problemtypeid = $("#problemType").val();
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{
             keyword: keyword,
             problemtypeid: parseInt(problemtypeid),
@@ -25,7 +24,7 @@ function getProblems(keyword, problemtypeid, currPage, pageSize) {
     var url = "/cweb/police/template/getProblems";
 
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{
             keyword: keyword,
             problemtypeid: parseInt(problemtypeid),
@@ -38,22 +37,25 @@ function getProblems(keyword, problemtypeid, currPage, pageSize) {
 
 //获取问题类型
 function getProblemTypes() {
-    // var url=getActionURL(getactionid_manage().getUserList_getRoles);
-    var url = "/cweb/police/template/getProblemTypes";
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblemTypes);
+    // var url = "/cweb/police/template/getProblemTypes";
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{}
     };
-    ajaxSubmitByJson(url,data,callTmplateTypes);
+    ajaxSubmitByJson(url,data,callProblemTypes);
 }
 
 //获取模板类型
 function getTmplateTypes() {
-    // var url=getActionURL(getactionid_manage().getUserList_getRoles);
-    var url = "/cweb/police/template/getTemplateTypes";
+    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
+    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
+    setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateProblemType");
     var data={
-        token:token,
-        param:{}
+        token:INIT_CLIENTKEY,
+        param:{
+
+        }
     };
     ajaxSubmitByJson(url,data,callTmplateTypes);
 }
@@ -90,10 +92,10 @@ function callAddOrUpdate(data){
     }
 }
 
-function callTmplateTypes(data){
+function callProblemTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.problemtypes;
+            list = data.data.pagelist;
 
             if (isNotEmpty(list)) {
                 for (var i = 0; i < list.length; i++) {
@@ -136,19 +138,29 @@ function callTemplateById(data){
                     var Problem = templateToProblems[i];
 
 
-                    tableProblems += '<tr>\n' +
-                        '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
-                        '                            <p class="table_td_tt table_td_tt2">问：' + Problem.problem + '</p>\n' +
-                        '                            <p class="table_td_tt table_td_tt2 font_blue_color" >答：' + Problem.referanswer + '</p>\n' +
-                        '                        </td>\n' +
-                        '                        <td>\n' +
-                        '                            <div class="layui-btn-group">\n' +
-                        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
-                        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
-                        '                                <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\n' +
-                        '                            </div>\n' +
-                        '                        </td>\n' +
-                        '                    </tr>';
+                    tableProblems += "<tr>\n" +
+                    "      <th lay-data=\"{type:'checkbox'}\">ID</th>\n" +
+                    "      <th lay-data=\"{field:'id', width:80, sort: true}\">ID</th>\n" +
+                    "      <th lay-data=\"{field:'username', width:120, sort: true, edit: 'text'}\">用户名</th>\n" +
+                    "      <th lay-data=\"{field:'email', edit: 'text', minWidth: 150}\">邮箱</th>\n" +
+                    "      <th lay-data=\"{field:'sex', width:80, edit: 'text'}\">性别</th>\n" +
+                    "      <th lay-data=\"{field:'city', edit: 'text', minWidth: 100}\">城市</th>\n" +
+                    "      <th lay-data=\"{field:'experience', sort: true, edit: 'text'}\">积分</th>\n" +
+                    "    </tr>"
+
+                    // tableProblems += '<tr>\n' +
+                    //     '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
+                    //     '                            <p class="table_td_tt table_td_tt2">问：' + Problem.problem + '</p>\n' +
+                    //     '                            <p class="table_td_tt table_td_tt2 font_blue_color" >答：' + Problem.referanswer + '</p>\n' +
+                    //     '                        </td>\n' +
+                    //     '                        <td>\n' +
+                    //     '                            <div class="layui-btn-group">\n' +
+                    //     '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
+                    //     '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
+                    //     '                                <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\n' +
+                    //     '                            </div>\n' +
+                    //     '                        </td>\n' +
+                    //     '                    </tr>';
                 }
                 $('#dataTable').html(tableProblems);
             }
@@ -161,7 +173,7 @@ function callTemplateById(data){
 function callTmplateTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.templatetypes;
+            list = data.data.pagelist;
 
             var type = getQueryString("type");
 
@@ -184,9 +196,9 @@ function callTmplateTypes(data){
 function callAddOrUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            // window.location.reload();
-            console.log(data);
-            alert("chengg")
+            window.location.reload();
+            // console.log(data);
+            // alert("chengg")
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -234,6 +246,7 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
         ,layedit = layui.layedit
         ,laydate = layui.laydate
         ,laypage = layui.laypage;
+    var table = layui.table;
 
     //不显示首页尾页
     laypage.render({
@@ -242,70 +255,19 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
         ,first: false
         ,last: false
     });
+
+    //监听单元格编辑
+    table.on('edit(test3)', function(obj){
+        var value = obj.value //得到修改后的值
+            ,data = obj.data //得到所在行所有键值
+            ,field = obj.field; //得到字段
+        layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+    });
+
+
+
     form.render();
 });
-
-
-/**
- * 删除
- * @param ssid
- */
-function deleteUser(ssid) {
-    if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
-        return;
-    }
-
-    layer.confirm('确定要删除该用户吗', {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-        var url=getActionURL(getactionid_manage().getUserList_deleteUser);
-        var data={
-            ssid:ssid,
-            adminbool:-1
-        };
-        ajaxSubmit(url,data,callbackdeleteUser);
-        layer.close(index);
-    }, function(index){
-        layer.close(index);
-    });
-}
-
-function callbackdeleteUser(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        if (isNotEmpty(data)){
-            if (isNotEmpty(data.data)){
-                layer.msg("删除成功",{icon: 1,time:500},function () {
-                  /* var nextparam=getAction(getactionid_manage().getUserList_deleteUser);
-                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                         setpageAction(INIT_WEB,nextparam.nextPageId);
-                         var url=getActionURL(getactionid_manage().main_getUser);
-                         window.location.href=url;
-                     }*/
-                    getUserList_init(1,3);
-                });
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 2});
-    }
-}
-
-
-function callbackchangeUser(data){
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        if (isNotEmpty(data)){
-            if (isNotEmpty(data.data)){
-                layer.msg("操作成功",{icon: 1,time:500},function () {
-                    getUserList_init(1,3);
-                });
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 2});
-    }
-}
 
 function templateInit() {
     var ssid = getQueryString("ssid");
@@ -314,7 +276,7 @@ function templateInit() {
         //查询单个模板
         var url = "/cweb/police/template/getTemplateById";
         var data={
-            token:token,
+            token:INIT_CLIENTKEY,
             param:{
                 ssid: ssid
             }
@@ -339,7 +301,7 @@ function AddOrUpdateProblem(version) {
     }
 
     var data = {
-        token: token,
+        token: INIT_CLIENTKEY,
         param: {
             id: ByIdDDD,
             problem: problem,
@@ -367,7 +329,7 @@ function addUpdateinfo(ssid, type) {
     if(ssid){
         var url = "/cweb/police/template/getProblemById";
         var data={
-            token:token,
+            token:INIT_CLIENTKEY,
             param:{
                 id: ssid
             }
@@ -380,6 +342,10 @@ function addUpdateinfo(ssid, type) {
 }
 
 function modelban(problem, referanswer, id) {
+
+
+
+
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
         "            <input type='hidden' id='ByIdDDD' value='" + id + "'>\n" +
         "            <label class=\"layui-form-label\">问题类型</label>\n" +
@@ -420,7 +386,7 @@ function addTemplateProblem(obj, id) {
 
     var textHtml = '<p class="table_td_tt table_td_tt2">' + text + '</p><p class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
 
-    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" value='" + all[id].id + "''>" + textHtml + "</td><td>" + updown + "</td></tr>");
+    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" name='" + all[id].id + "''>" + textHtml + "</td><td>" + updown + "</td></tr>");
 }
 
 function DeleteProblem(obj) {
@@ -437,6 +403,7 @@ function getDataAll() {
     var title = $("#templateTitle").val();
     var ssid = getQueryString("ssid");
     var type = getQueryString("type");
+    var templateId = getQueryString("templateId");
     title = title.replace("//s/g", "");
     // alert(t01);
     if (tableLength == 0) {
@@ -471,20 +438,22 @@ function getDataAll() {
     var url = "/cweb/police/template/addTemplate";
 
     if (ssid) {
-        url = "/cweb/police/template/updateTemplateType";
+        url = "/cweb/police/template/updateTemplate";
     }
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{
             templatetoproblemids:templatetoproblemids,
             templatetypeid: templateType,
-            title:title
+            title:title,
+            ssid:ssid,
+            id:templateId
         }
     };
 
     console.log(data);
 
-    // ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
+    ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
 
 }
 

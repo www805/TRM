@@ -1,15 +1,14 @@
-var token = "4843484445444848454842464648464A424549474A4A45";
 var list;
 var editSsid;
 var templateTypeId;
+var templateId;
 
 function getTmplates_init(currPage,pageSize) {
-    // var url=getActionURL(getactionid_manage().getUserList_getUserList);
-    var url = "/cweb/police/template/getTemplates";
+    var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var keyword =$("#keyword").val();
     var templatetypeid = $("#templateType").val();
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{
             keyword: keyword,
             templatetypeid: parseInt(templatetypeid),
@@ -21,14 +20,12 @@ function getTmplates_init(currPage,pageSize) {
 }
 
 function getTmplates(keyword, templateType, currPage, pageSize) {
-    // var url=getActionURL(getactionid_manage().getUserList_getUserList);
-    var url = "/cweb/police/template/getTemplates";
-
+    var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var data = {
-        token: token,
+        token: INIT_CLIENTKEY,
         param: {
             keyword: keyword,
-            templateType: templateType,
+            templateType: parseInt(templateType),
             currPage: currPage,
             pageSize: pageSize
         }
@@ -38,10 +35,11 @@ function getTmplates(keyword, templateType, currPage, pageSize) {
 
 //获取模板类型
 function getTmplateTypes() {
-    // var url=getActionURL(getactionid_manage().getUserList_getRoles);
-    var url = "/cweb/police/template/getTemplateTypes";
+    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
+    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
+    setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
     var data={
-        token:token,
+        token:INIT_CLIENTKEY,
         param:{}
     };
     ajaxSubmitByJson(url,data,callTmplateTypes);
@@ -58,6 +56,7 @@ function callTmplates(data){
 }
 
 function callTmplates2(data){
+    console.log(data);
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
@@ -71,7 +70,7 @@ function callTmplates2(data){
 function callTmplateTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.templatetypes;
+            list = data.data.pagelist;
 
             if (isNotEmpty(list)) {
                 for (var i = 0; i < list.length; i++) {
@@ -95,7 +94,7 @@ function getTmplateTypesParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 10;//测试
+        var pageSize = 3;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);
@@ -144,6 +143,7 @@ function getTemplateById(id) {
         editSsid = pagelist[id].ssid;
         // templateTypeId = $("#templateTitle").val();
         templateTypeId = pagelist[id].templatetypessid;
+        templateId = pagelist[id].id;
 
         $('#templateTitle').html(pagelist[id].title);
         var templateToProblems = pagelist[id].templateToProblems;

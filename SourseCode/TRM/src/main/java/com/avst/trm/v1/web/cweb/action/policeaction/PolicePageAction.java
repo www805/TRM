@@ -33,7 +33,7 @@ public class PolicePageAction {
      */
     @GetMapping("toaddOrupdateTemplate")
     public ModelAndView toaddOrupdateTemplate(Model model){
-        model.addAttribute("title","题目选择");
+        model.addAttribute("title","新增 / 修改模板");
         return new ModelAndView("client_web/police/template/addOrupdateTemplate", "addOrupdateTemplate", model);
     }
 

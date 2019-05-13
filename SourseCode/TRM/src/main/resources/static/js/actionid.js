@@ -103,6 +103,16 @@ function getactionid_manage() {
         addCaseToUser_getUserByCard:"addCaseToUser_getUserByCard",
         addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
 
+        problemIndex_getProblems:"problemIndex_getProblems",
+        problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
+        problemIndex_toaddOrupdateProblem:"problemIndex_toaddOrupdateProblem",
+        addOrupdateProblem_getProblemById:"addOrupdateProblem_getProblemById",
+        addOrupdateProblemType_getProblemTypeById:"addOrupdateProblemType_getProblemTypeById",
+        addOrupdateProblem_updateProblem:"addOrupdateProblem_updateProblem",
+        addOrupdateProblemType_addProblemType:"addOrupdateProblemType_addProblemType",
+        addOrupdateProblemType_updateProblemType:"addOrupdateProblemType_updateProblemType",
+        addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
+
         recordIndex_getRecords:"recordIndex_getRecords",
         recordIndex_getRecordtypes:"recordIndex_getRecordtypes",
         recordIndex_togetRecordById:"recordIndex_togetRecordById",

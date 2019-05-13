@@ -5,7 +5,7 @@
     <title th:text="${addOrupdateTemplate.title}">Title</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
-
+    <link rel="stylesheet" href="/dist/css/layui.css"  media="all">
     <style>
         .layui-table td, .layui-table th{text-align:left;}
         .table_td_tt{padding: 7px 7px 7px 15px;}
@@ -57,9 +57,11 @@
     <div th:replace="header :: header">...</div>
 
     <div class="layui-row" id="layui-row1">
-        <div style="padding:8px;margin-bottom: 0px;background: #E5F4FD;border-left: 5px solid #1e9fff;">
-            <span style="font-size: 16px;font-weight: bold;">新增 / 修改模板</span>
+        <div class="layui-elem-quote" style=" padding: 10px;">
+            <h3 th:text="${addOrupdateTemplate.title}">新增 / 修改模板</h3>
         </div>
+
+
         <div class="layui-col-md5" style="border:1px solid #F2F2F2;padding-top: 5px;">
             <label class="layui-form-label" style="width: auto;">关键字</label>
 
@@ -112,7 +114,7 @@
         <div class="layui-form-item layui-form-text">
 
             <div style="overflow:auto;width: 100%; height: 433px;" >
-                <table class="layui-table" id="testTable" lay-skin="line" style="table-layout: fixed;">
+                <table class="layui-table" lay-data="{url:'/test/table/demo1.json', id:'test3'}" lay-filter="test3" id="testTable" lay-skin="line" style="table-layout: fixed;">
                     <colgroup>
                         <col>
                         <col width="130">
@@ -164,6 +166,7 @@
 <script type="text/javascript" th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
 <!--<script th:src="@{/js/list.js}" type="text/javascript"></script>-->
+<script src="/layui/dist/layui.js" charset="utf-8"></script>
 <script th:src="@{/js/client_web/police/template/addOrupdateTemplate.js}" type="text/javascript"></script>
 <script th:inline="javascript">
     var INIT_CLIENT;
@@ -172,7 +175,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
 
-        setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateProblemType");
+        setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateTemplate");
         templateInit();
         getProblemTypes();
         getTmplateTypes();

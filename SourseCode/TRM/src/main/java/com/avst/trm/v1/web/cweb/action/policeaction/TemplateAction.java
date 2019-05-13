@@ -1,5 +1,7 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
+import com.avst.trm.v1.common.datasourse.police.entity.Police_problemtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_templatetype;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problemtype;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -126,7 +128,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @RequestMapping(value = "/getTemplateTypes")
-    public RResult getTemplateTypes(@RequestBody ReqParam param){
+    public RResult getTemplateTypes(@RequestBody ReqParam<ProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -280,7 +282,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @PostMapping(value = "/getProblemTypes")
-    public RResult getProblemTypes(@RequestBody ReqParam<Problemtype> param){
+    public RResult getProblemTypes(@RequestBody ReqParam<ProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -317,7 +319,7 @@ public class TemplateAction extends MainAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/updateProblemType")
+    @RequestMapping(value = "/updateProblemType")
     public RResult updateProblemType(@RequestBody ReqParam<UpdateProblemtypeParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -351,7 +353,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @RequestMapping(value = "/getTemplateTypeById")
-    public RResult getTemplateTypeById(@RequestBody ReqParam<GetTemplateByIdParam> param){
+    public RResult getTemplateTypeById(@RequestBody ReqParam<Police_templatetype> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -370,7 +372,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @RequestMapping(value = "/getProblemTypeById")
-    public RResult getProblemTypeById(@RequestBody ReqParam<GetProblemTypeByIdParam> param){
+    public RResult getProblemTypeById(@RequestBody ReqParam<Police_problemtype> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
