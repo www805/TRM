@@ -107,8 +107,11 @@ function getactionid_manage() {
         recordIndex_getRecordtypes:"recordIndex_getRecordtypes",
         recordIndex_togetRecordById:"recordIndex_togetRecordById",
 
-        getRecordById_getRecordById:"getRecordById_getRecordById"
+        getRecordById_getRecordById:"getRecordById_getRecordById",
+        getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
 
+        moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
+        moreRecord_getRecords:"moreRecord_getRecords",
 
     };
 }

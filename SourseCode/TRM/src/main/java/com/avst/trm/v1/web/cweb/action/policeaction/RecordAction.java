@@ -81,7 +81,6 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @CrossOrigin(origins = "*",maxAge = 3600)
     @RequestMapping(value = "/getRecordById")
     public RResult getRecordById(@RequestBody ReqParam<GetRecordByIdParam> param){
         RResult result=this.createNewResultOfFail();
