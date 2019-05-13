@@ -264,8 +264,6 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
         layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
     });
 
-
-
     form.render();
 });
 

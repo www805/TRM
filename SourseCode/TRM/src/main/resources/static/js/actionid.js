@@ -123,5 +123,14 @@ function getactionid_manage() {
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
 
+        templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
+        addOrupdateTemplateType_addTemplateType: "addOrupdateTemplateType_addTemplateType",
+        addOrupdateTemplateType_updateTemplateType: "addOrupdateTemplateType_updateTemplateType",
+        addOrupdateTemplateType_getTemplateTypeById: "addOrupdateTemplateType_getTemplateTypeById",
+        addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
+
+        templateIndex_getTemplates: "templateIndex_getTemplates",
+
+
     };
 }
