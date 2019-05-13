@@ -32,6 +32,13 @@ public class Police_arraignment extends Model<Police_arraignment> {
     private String adminssid;
 
     /**
+     * 询问人2id
+     */
+    private String otheradminssid;
+
+
+
+    /**
      * 记录人id
      */
     private String recordadminssid;
@@ -44,7 +51,7 @@ public class Police_arraignment extends Model<Police_arraignment> {
     /**
      * 询问对象:例如：犯罪嫌疑人，被害人
      */
-    private String askobj;
+    private Integer askobj;
 
     /**
      * 询问次数:默认1
@@ -100,13 +107,23 @@ public class Police_arraignment extends Model<Police_arraignment> {
     public void setRecordplace(String recordplace) {
         this.recordplace = recordplace;
     }
-    public String getAskobj() {
+
+    public String getOtheradminssid() {
+        return otheradminssid;
+    }
+
+    public void setOtheradminssid(String otheradminssid) {
+        this.otheradminssid = otheradminssid;
+    }
+
+    public Integer getAskobj() {
         return askobj;
     }
 
-    public void setAskobj(String askobj) {
+    public void setAskobj(Integer askobj) {
         this.askobj = askobj;
     }
+
     public Integer getAsknum() {
         return asknum;
     }
@@ -172,19 +189,20 @@ public class Police_arraignment extends Model<Police_arraignment> {
     @Override
     public String toString() {
         return "Police_arraignment{" +
-        "id=" + id +
-        ", adminssid=" + adminssid +
-        ", recordadminssid=" + recordadminssid +
-        ", recordplace=" + recordplace +
-        ", askobj=" + askobj +
-        ", asknum=" + asknum +
-        ", createtime=" + createtime +
-        ", recordssid=" + recordssid +
-        ", id=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+            "id=" + id +
+            ", adminssid='" + adminssid + '\'' +
+            ", otheradminssid='" + otheradminssid + '\'' +
+            ", recordadminssid='" + recordadminssid + '\'' +
+            ", recordplace='" + recordplace + '\'' +
+            ", askobj=" + askobj +
+            ", asknum=" + asknum +
+            ", createtime=" + createtime +
+            ", recordssid='" + recordssid + '\'' +
+            ", ssid='" + ssid + '\'' +
+            ", string1='" + string1 + '\'' +
+            ", string2='" + string2 + '\'' +
+            ", integer1=" + integer1 +
+            ", integer2=" + integer2 +
+            '}';
     }
 }

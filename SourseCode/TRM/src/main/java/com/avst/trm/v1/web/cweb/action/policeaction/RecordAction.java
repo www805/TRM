@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 关于笔录
  */
@@ -208,8 +210,8 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @PostMapping(value = "/addCaseToArraignment",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult addCaseToArraignment(@RequestBody ReqParam param){
+    @RequestMapping(value = "/addCaseToArraignment")
+    public RResult addCaseToArraignment(@RequestBody ReqParam<AddCaseToArraignmentParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -228,15 +230,15 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/getUserByCard",produces = MediaType.APPLICATION_XML_VALUE)
-    public RResult getUserByCard(@RequestBody  ReqParam<GetUserByCardParam> param){
+    @RequestMapping(value = "/getUserByCard")
+    public RResult getUserByCard(@RequestBody  ReqParam<GetUserByCardParam> param, HttpSession httpSession){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getUserByCard(result,param);
+            recordService.getUserByCard(result,param,httpSession);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -247,7 +249,7 @@ public class RecordAction extends BaseAction {
      * @param param
      * @return
      */
-    @PostMapping(value = "/getCaseById",produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = "/getCaseById")
     public RResult getCaseById(@RequestBody  ReqParam<GetCaseByIdParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
@@ -262,38 +264,19 @@ public class RecordAction extends BaseAction {
     }
 
     /**
-     * 获取全部国籍
+     * 获取全部证件类型
      * @param param
      * @return
      */
-    @RequestMapping("/getNationalitys")
-    public RResult getNationalitys(@RequestBody  ReqParam param){
+    @RequestMapping("/getCards")
+    public RResult getCards(@RequestBody  ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getNationalitys(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取全部民族
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getNationals")
-    public RResult getNationals(@RequestBody  ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            recordService.getNationals(result,param);
+            recordService.getCards(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

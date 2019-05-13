@@ -8,11 +8,11 @@ import java.io.Serializable;
 
 /**
  * <p>
- * InnoDB free: 90112 kB
+ * InnoDB free: 89088 kB
  * </p>
  *
  * @author Admin
- * @since 2019-04-22
+ * @since 2019-05-10
  */
 public class Police_userto extends Model<Police_userto> {
 
@@ -35,6 +35,11 @@ public class Police_userto extends Model<Police_userto> {
      * 所属关系 例：父子，母女
      */
     private String relation;
+
+    /**
+     * 语种
+     */
+    private String language;
 
     /**
      * 人员类型:1监护人；2翻译人员；3手语人员
@@ -83,6 +88,13 @@ public class Police_userto extends Model<Police_userto> {
 
     public void setRelation(String relation) {
         this.relation = relation;
+    }
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
     public Integer getUsertype() {
         return usertype;
@@ -146,6 +158,7 @@ public class Police_userto extends Model<Police_userto> {
         ", userssid=" + userssid +
         ", otheruserssid=" + otheruserssid +
         ", relation=" + relation +
+        ", language=" + language +
         ", usertype=" + usertype +
         ", createtime=" + createtime +
         ", id=" + ssid +

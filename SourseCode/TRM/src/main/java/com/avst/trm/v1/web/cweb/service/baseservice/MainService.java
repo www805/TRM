@@ -2,14 +2,11 @@ package com.avst.trm.v1.web.cweb.service.baseservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.entity.*;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -49,6 +46,13 @@ public class MainService extends BaseService {
 
     @Autowired
     private Base_filesaveMapper base_filesaveMapper;
+
+    @Autowired
+    private Base_nationalityMapper base_nationalityMapper;
+
+    @Autowired
+    private Base_nationalMapper base_nationalMapper;
+
 
     @Value("${spring.images.filePath}")
     private String imagesfilePath;
@@ -90,10 +94,10 @@ public class MainService extends BaseService {
         //检查用户登陆
         EntityWrapper ew=new EntityWrapper();
         ew.eq("loginaccount",loginaccount1);
-        List<Base_admininfo> users= base_admininfoMapper.selectList(ew);
+        List<AdminAndWorkunit> users= base_admininfoMapper.getAdminListAndWorkunit(ew);
         if (null!=users&&users.size()>0){
             if (users.size()==1){
-                Base_admininfo user=users.get(0);
+                AdminAndWorkunit user=users.get(0);
                 String loginaccount=user.getLoginaccount().trim();//账号
                 String password=user.getPassword().trim();//密码
                 Integer adminbool=user.getAdminbool();//状态
@@ -274,6 +278,20 @@ public class MainService extends BaseService {
         }else {
             result.setMessage("系统异常");
         }
+        return;
+    }
+
+    public void getNationalitys(RResult result, ReqParam param){
+        List<Base_nationality> list=base_nationalityMapper.selectList(null);
+        result.setData(list);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getNationals(RResult result, ReqParam param){
+        List<Base_national> list=base_nationalMapper.selectList(null);
+        result.setData(list);
+        changeResultToSuccess(result);
         return;
     }
 }

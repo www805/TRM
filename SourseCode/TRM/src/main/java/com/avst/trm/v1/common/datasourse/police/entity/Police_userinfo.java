@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.io.Serializable;
 
 /**
@@ -52,6 +54,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     /**
      * 出生日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
     private Date both;
 
     /**

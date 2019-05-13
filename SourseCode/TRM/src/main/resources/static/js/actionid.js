@@ -98,7 +98,10 @@ function getactionid_manage() {
 
         addCaseToUser_getRecordtypes:"addCaseToUser_getRecordtypes",
         addCaseToUser_getNationalitys:"addCaseToUser_getNationalitys",
-        addCaseToUser_getNationals:"addCaseToUser_getNationals"
+        addCaseToUser_getNationals:"addCaseToUser_getNationals",
+        addCaseToUser_getCards:"addCaseToUser_getCards",
+        addCaseToUser_getUserByCard:"addCaseToUser_getUserByCard",
+        addCaseToUser_getCaseById:"addCaseToUser_getCaseById"
 
 
     };
