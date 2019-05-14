@@ -379,7 +379,7 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label">案件名称</label>
                             <div class="layui-input-block">
-                                <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case">
+                                <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="" >
                                     <option value=""></option>
                                 </select>
                             </div>
@@ -475,7 +475,7 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问次数</label>
                             <div class="layui-input-block">
-                                <select name="asknum" lay-verify="required" id="asknum">
+                               <!-- <select name="asknum" lay-verify="required" id="asknum">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -485,7 +485,8 @@
                                     <option value="7">7</option>
                                     <option value="8">8</option>
                                     <option value="9">9</option>
-                                </select>
+                                </select>-->
+                                <input type="number" name="asknum" id="asknum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled value="0">
                             </div>
                         </div>
                         <div class="layui-col-lg12 ">

@@ -45,7 +45,7 @@ function callTemplateById(data) {
                 if (isNotEmpty(templateToProblems)) {
                     for (var i = 0; i < templateToProblems.length; i++) {
                         var templateToProblem = templateToProblems[i];
-                        var html="<tr> <td>问：<span ondblclick='copy_problems(this);'>"+templateToProblem.problem+"</span></td></tr>";
+                        var html="<tr> <td ondblclick='copy_problems(this);'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
                         $("#templatetoproblem_html").append(html);
                     }
                 }
@@ -55,15 +55,16 @@ function callTemplateById(data) {
         layer.msg(data.message,{icon: 2});
     }
 }
-
+var td_lastindex;//td的上一个光标位置
 function copy_problems(obj) {
-    var text=$(obj).text();
+    var text=$(obj).find("span").text();
     var html=' <tr><td class="font_red_color" contenteditable="true">问：'+text+'</td></tr>\
                 <tr><td class="font_blue_color"contenteditable="true">答：</td></tr>';
     $("#recorddetail").append(html);
-    $("#recorddetail .font_blue_color").focus(function(){
-        $(this).append(copy_text_html);
-        copy_text_html="";
+   $("#recorddetail .font_blue_color").focus(function(){
+       /* $(this).append(copy_text_html);
+        copy_text_html="";*/
+       td_lastindex=$(this).parent().index();
     });
 }
 
@@ -132,7 +133,7 @@ function img_bool(obj,type){
                 translatext="我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察"
                 recordtype=1;
             }
-            var recordrealshtml='<div class="'+recordrealclass+'" style="margin-bottom: 50px" >\
+            var recordrealshtml='<div class="'+recordrealclass+'" >\
                                                         <p>【'+username+'】 2019-4-14 02:24:55</p>\
                                                         <span ondblclick="copy_text(this)">'+translatext+'</span> \
                                                   </div >';
@@ -147,11 +148,17 @@ var copy_text_html="";
 function copy_text(obj) {
     var text=$(obj).text();
     copy_text_html=text;
+
+    $("#recorddetail .font_blue_color").each(function(){
+        if (isNotEmpty(td_lastindex)){
+            var lastindex=$(this).parent().index();
+            if (lastindex==td_lastindex) {
+                $(this).append(copy_text_html);
+                copy_text_html="";
+                td_lastindex=null;
+            }
+        }
+    });
 }
 
 
-$(function () {
-    $("#recorddetail td").focus(function(){
-        $(this).text(copy_text_html);
-    });
-});

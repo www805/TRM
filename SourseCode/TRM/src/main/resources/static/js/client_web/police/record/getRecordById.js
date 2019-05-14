@@ -104,18 +104,14 @@ function callbackgetRecordById(data) {
                     }
             }
 
-            var init_casehtml="案件名称：<br>\
-                                案件人：<br>\
-                                当前案由：<br>\
-                                案件时间：<br>\
-                                案件编号：<br> ";
-            $("#caseAndUserInfo_html").html(init_casehtml);
+
+            $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
-                init_casehtml="案件名称："+caseAndUserInfo.casename+"<br>\
-                                 案件人："+caseAndUserInfo.username+"<br>\
-                                当前案由："+caseAndUserInfo.cause+"<br>\
-                                案件时间："+caseAndUserInfo.occurrencetime+"<br>\
-                                案件编号："+caseAndUserInfo.casenum+"<br>";
+                var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
+                                  <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
+                                  <tr><td>当前案由</td><td>"+caseAndUserInfo.cause+"</td></tr>\
+                                  <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
+                                  <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>";
                 $("#caseAndUserInfo_html").html(init_casehtml);
             }
 

@@ -11,8 +11,18 @@ import java.util.List;
 public class CaseAndUserInfo extends Police_case {
     private String username;
 
+    private Integer asknum;//询问次数
+
     private List<ArraignmentAndRecord> arraignments;//多次提讯数据
 
+
+    public Integer getAsknum() {
+        return asknum;
+    }
+
+    public void setAsknum(Integer asknum) {
+        this.asknum = asknum;
+    }
 
     public String getUsername() {
         return username;

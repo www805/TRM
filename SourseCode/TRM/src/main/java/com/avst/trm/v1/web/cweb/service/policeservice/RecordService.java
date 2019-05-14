@@ -9,10 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problem;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Recordreal;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
@@ -429,10 +426,21 @@ public class RecordService extends BaseService {
 
                 //根据用户userssid查询案件列表
                 EntityWrapper caseparam=new EntityWrapper();
-                caseparam.eq("userssid",police_userinfo.getSsid());
-                caseparam.orderBy("occurrencetime",false);
-                List<Police_case> cases=police_caseMapper.selectList(caseparam);
+                caseparam.eq("c.userssid",police_userinfo.getSsid());
+                caseparam.orderBy("c.occurrencetime",false);
+                List<CaseAndUserInfo> cases=police_caseMapper.getCaseByUserSsid(caseparam);//加入询问次数
                 if (null!=cases&&cases.size()>0){
+                    for (CaseAndUserInfo c: cases) {
+                        //提讯数据
+                        EntityWrapper ewarraignment=new EntityWrapper();
+                        ewarraignment.eq("cr.casessid",c.getSsid());
+                        ewarraignment.orderBy("a.createtime",false);
+                        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                        if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                            c.setArraignments(arraignmentAndRecords);
+                        }
+                        c.setAsknum(arraignmentAndRecords.size());
+                    }
                     getUserByCardVO.setCases(cases);
                 }
 

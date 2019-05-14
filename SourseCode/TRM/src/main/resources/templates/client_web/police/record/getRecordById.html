@@ -86,49 +86,86 @@
     <div class="layui-row layui-form " >
             <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <div class="layui-card">
-                    <div class="layui-card-header" style="background-color: #FFFFFF">
+                    <div class="layui-card-header" >
                         当前笔录：<span id="recordtitle">笔录标题</span>
                         <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>
                     </div>
                 </div>
                 <div >
-                    <div class="layui-card">
-                        <div class="layui-card-header">案件信息</div>
-                        <div class="layui-card-body">
-                            <blockquote class="layui-elem-quote layui-quote-nm"style="height: 50px; overflow-x: hidden; overflow-y: scroll; " id="caseAndUserInfo_html">
-                                案件名称：<br>
-                                案件人：<br>
-                                当前案由：<br>
-                                案件时间：<br>
-                                案件编号：<br>
-                            </blockquote>
-                        </div>
-                    </div>
-                    <div class="layui-card">
-                        <div class="layui-card-header">笔录实时回访</div>
-                        <div style="height: 450px; overflow-x: hidden; overflow-y: scroll;">
-                            <div class="layui-card-body">
-                                <div class="talk_show"  id="recordreals">
-                                  <!--  <div class="atalk">
-                                        <p>【检察官】 2019-4-14 02:25:08</p>
-                                        <span>吃饭了吗？</span>
+                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">案件信息</li>
+                            <li>语音识别</li>
+                            <li>录音录像</li>
+                            <li>测谎仪</li>
+                        </ul>
+                        <div class="layui-tab-content" >
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-card">
+                                 <!--   <div class="layui-card-header">案件信息</div>-->
+                                    <div style="height: 640px; overflow-x: hidden; overflow-y: scroll; " >
+                                        <div class="layui-card-body">
+                                                <table class="layui-table" lay-skin="line" >
+                                                   <tbody id="caseAndUserInfo_html">
+                                                       <tr>
+                                                           <td>案件名称</td>
+                                                           <td></td>
+                                                       </tr>
+                                                       <tr>
+                                                           <td>案件人</td>
+                                                           <td></td>
+                                                       </tr>
+                                                       <tr>
+                                                           <td>当前案由</td>
+                                                           <td></td>
+                                                       </tr>
+                                                       <tr>
+                                                           <td>案件时间</td>
+                                                           <td></td>
+                                                       </tr>
+                                                       <tr>
+                                                           <td>案件编号</td>
+                                                           <td></td>
+                                                       </tr>
+                                                   </tbody>
+                                                </table>
+                                         </div>
                                     </div>
-                                    <div class="btalk">
-                                        <p>【犯人】 2019-4-14 02:24:55</p>
-                                        <span>还没呢</span>
-                                    </div>-->
                                 </div>
                             </div>
+                            <div class="layui-tab-item">
+                                <div class="layui-card">
+                                    <!--<div class="layui-card-header">笔录实时回访</div>-->
+                                    <div style="height: 640px; overflow-x: hidden; overflow-y: scroll;">
+                                        <div class="layui-card-body" >
+                                            <div class="talk_show"  id="recordreals">
+                                                <!--  <div class="atalk">
+                                                      <p>【检察官】 2019-4-14 02:25:08</p>
+                                                      <span>吃饭了吗？</span>
+                                                  </div>
+                                                  <div class="btalk">
+                                                      <p>【犯人】 2019-4-14 02:24:55</p>
+                                                      <span>还没呢</span>
+                                                  </div>-->
+                                            </div>
+                                        </div>
 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-tab-item">录音录像区域</div>
+                            <div class="layui-tab-item">测谎仪区域</div>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <div class="layui-card">
                     <div class="layui-card-header" style="background-color: #FFFFFF">
-                        <button class=" layui-btn layui-btn-sm layui-btn-normal">打印</button>
-                        <button class=" layui-btn layui-btn-sm layui-btn-normal">导出</button>
+                        <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
+                        <button class=" layui-btn  layui-btn-normal">打印</button>
+                        <button class=" layui-btn  layui-btn-normal">导出</button>
                     </div>
                 </div>
                     <div class="layui-card">
@@ -139,10 +176,8 @@
                             <div class="layui-row" style="margin-top: 15px">
                                 <div class="layui-col-md9" >
                                     <div style="float: left;">
-
-                                        <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
-                                        <button class="layui-btn layui-btn-normal" id="recordplay">播放</button>
-                                        <button class="layui-btn layui-btn-normal" id="recordpause">停止</button>
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" id="recordplay">播放</button>
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" id="recordpause">停止</button>
                                     </div>
                                     <div style="overflow: hidden;float: left;margin-top: 3px;margin-left: 15px;height: 30px;">
                                         <i class="layui-icon layui-icon-speaker" style="font-size: 30px;color: #1E9FFF;float: left;line-height: 30px"></i>

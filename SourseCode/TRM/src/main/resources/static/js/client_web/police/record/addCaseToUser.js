@@ -1,7 +1,7 @@
 var cases=null;//案件数据
-var otheruserinfos=null;//询问人员数据
+var otheruserinfos=null;//其他询问人员数据
 
-
+//开始笔录按钮
 function addCaseToArraignment() {
     var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
@@ -50,7 +50,7 @@ function addCaseToArraignment() {
         layer.msg("询问对象不能为空");
         return;
     }
-    var asknum=$("#asknum  option:selected").val();
+    var asknum=$("#asknum").val();
 
 
 
@@ -69,7 +69,6 @@ function addCaseToArraignment() {
     };
     ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
 }
-
 function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -280,8 +279,7 @@ function callbackgetUserByCard(data){
             var userinfo=data.userinfo;
              cases=data.cases;
              otheruserinfos=data.otheruserinfos;
-             console.log(otheruserinfos)
-            
+
             if (isNotEmpty(userinfo)){
                 /*人员信息*/
                 $("#username").val(userinfo.username);
@@ -301,6 +299,7 @@ function callbackgetUserByCard(data){
                 $("#politicsstatus").find("option[value='"+userinfo.politicsstatus+"']").attr("selected",true);
             }
 
+            //案件select
             $('#casename option').not(":lt(1)").remove();
             if (isNotEmpty(cases)){
                 setcases(cases);
@@ -355,7 +354,8 @@ function setcases(cases){
     if (isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c= cases[i];
-            $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
+          //  $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
+            $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.casename+"</option>")
         }
     }
 }
@@ -398,8 +398,8 @@ $(function () {
 
         form.on('select(change_case)', function(data){
             var casessid=data.value;
-            var title=data.elem[data.elem.selectedIndex].title;
-           /* $("#casename").find("option[value='"+casessid+"']").text(title);
+            /* var title=data.elem[data.elem.selectedIndex].title;
+           $("#casename").find("option[value='"+casessid+"']").text(title);
            form.render();
 
             setcases(cases);*/
@@ -409,6 +409,7 @@ $(function () {
             $("#starttime").val("");
             $("#endtime").val("");
             $("#caseway").val("");
+            $("#asknum").val("0");
             if (isNotEmpty(cases)){
                 for (var i = 0; i < cases.length; i++) {
                     var c = cases[i];
@@ -419,6 +420,7 @@ $(function () {
                         $("#starttime").val(c.starttime);
                         $("#endtime").val(c.endtime);
                         $("#caseway").val(c.caseway);
+                        $("#asknum").val(c.asknum);
                     }
                 }
             }

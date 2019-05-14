@@ -41,7 +41,10 @@
         word-break: break-all;/*必须*/
         white-space: normal;
     }
-
+    #paging {
+        float: none;
+        margin-left: 20%;
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -78,7 +81,7 @@
                 <div class="layui-card">
                     <div class="layui-card-header">
                        当前笔录： <span id="recordtitle" style="font-weight: bold;"  recordtitle_first="false">笔录标题</span>
-                        <a class="layui-icon  layui-icon-more layuiadmin-badge" title="详情查看"  onclick="togetRecordById();"></a>
+                        <a class="layui-a-tips" title="详情查看"  onclick="togetRecordById();" >详情查看</a>
                     </div>
                     <div style="height: 700px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body">
