@@ -26,7 +26,17 @@ public class Problem {
 
     private String ssid;
 
+    private String problemtypessid;
+
     private List<Police_answer> answers;
+
+    public String getProblemtypessid() {
+        return problemtypessid;
+    }
+
+    public void setProblemtypessid(String problemtypessid) {
+        this.problemtypessid = problemtypessid;
+    }
 
     public String getSsid() {
         return ssid;

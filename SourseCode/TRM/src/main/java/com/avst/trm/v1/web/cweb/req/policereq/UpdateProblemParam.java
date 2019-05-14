@@ -6,7 +6,19 @@ public class UpdateProblemParam extends Police_problem {
 
     private String problemssid;
 
+    //修改的类型
     private String problemtypessid;
+
+    //原类型
+    private String problemtypessidV;
+
+    public String getProblemtypessidV() {
+        return problemtypessidV;
+    }
+
+    public void setProblemtypessidV(String problemtypessidV) {
+        this.problemtypessidV = problemtypessidV;
+    }
 
     public String getProblemssid() {
         return problemssid;
