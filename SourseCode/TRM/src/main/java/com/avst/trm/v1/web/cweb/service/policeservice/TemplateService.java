@@ -465,18 +465,30 @@ public class TemplateService extends BaseService {
         if (null!=updateProblemParam.getProblemtypessid()){
 
             Police_problemtotype problemtotype = new Police_problemtotype();
-            problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid() + "");
+            problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessidV());
             problemtotype.setProblemssid(updateProblemParam.getId() + "");
 
+            //problemtypessidV
             Police_problemtotype problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
-            if(null == problemtotype1){
-                problemtotype.setCreatetime(new Date());
-                problemtotype.setSsid(OpenUtil.getUUID_32());
-                policeProblemtotypeMapper.insert(problemtotype);
+            if(null != problemtotype1 && null != problemtotype1.getId()){
+                problemtotype1.setProblemtypessid(updateProblemParam.getProblemtypessid());
+
+                int updateType_bool = policeProblemtotypeMapper.updateById(problemtotype1);
+                System.out.println("updateType_bool "+updateType_bool);
+            }else{
+                //根据原版如果有就修改，没有就新增，新增的如果有了就不添加到关联表
+                problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid());
+                problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
+                if(null == problemtotype1){
+                    problemtotype.setCreatetime(new Date());
+                    problemtotype.setSsid(OpenUtil.getUUID_32());
+                    policeProblemtotypeMapper.insert(problemtotype);
+                }
             }
+
         }
 
-        System.out.println("update_bool"+update_bool);
+        System.out.println("update_bool "+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
             return;
@@ -505,8 +517,9 @@ public class TemplateService extends BaseService {
         Police_problem problem = new Police_problem();
         problem.setSsid(getProblemsByIdParam.getId());
 
-        //先查有没有该模板
+        //查询一个问题
         Police_problem ProblemById = police_problemMapper.selectOne(problem);
+
         if (null==ProblemById){
             result.setMessage("未找到该问题信息");
             return;

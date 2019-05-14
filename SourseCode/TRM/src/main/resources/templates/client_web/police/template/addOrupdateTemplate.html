@@ -80,8 +80,8 @@
             </div>
 
             <div style="float: left;">
-                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,3);" >
-                <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="addUpdateinfo('',1);" >
+                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,10);" >
+                <input type="button" class="layui-btn layui-btn-normal" value="添加问题" onclick="addUpdateinfo('',0,1);" >
             </div>
 
             <div style="overflow:auto;width: 100%; height: 510px;">
@@ -120,7 +120,7 @@
                 <table class="layui-table" id="testTable" lay-skin="line" style="table-layout: fixed;">
                     <colgroup>
                         <col>
-                        <col width="130">
+                        <col width="150">
                     </colgroup>
                     <tbody id="dataTable"></tbody>
                 </table>
@@ -147,7 +147,7 @@
             <td>
                 <div class="layui-table-cell laytable-cell-13-0-5">
 
-                    <a class="layui-btn layui-btn-normal layui-btn-sm" onclick="addUpdateinfo('{{value.ssid}}');" lay-event="edit">
+                    <a class="layui-btn layui-btn-normal layui-btn-sm" onclick="addUpdateinfo('{{value.ssid}}',{{value.problemtypessid}});" lay-event="edit">
                         <i class="layui-icon layui-icon-edit"></i>修改
                     </a>
                     <a class="layui-btn layui-btn-normal layui-btn-sm" onclick="addTemplateProblem(this,{{index}});" >

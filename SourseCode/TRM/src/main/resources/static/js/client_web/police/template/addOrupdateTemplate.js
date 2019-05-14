@@ -1,7 +1,8 @@
 var tableProblems = '';
 var version = "";
-var list, all;
+var list, all, plist;
 var arrayProblem = [];
+var problemtypessidV;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -95,7 +96,9 @@ function callAddOrUpdate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             // window.location.reload();
-            console.log(data);
+            // console.log(data);
+            layer.msg("操作成功",{icon: 1});
+            setTimeout("window.location.reload()",1800);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -105,11 +108,11 @@ function callAddOrUpdate(data){
 function callProblemTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.pagelist;
+            plist = data.data.pagelist;
 
-            if (isNotEmpty(list)) {
-                for (var i = 0; i < list.length; i++) {
-                    var problemType = list[i];
+            if (isNotEmpty(plist)) {
+                for (var i = 0; i < plist.length; i++) {
+                    var problemType = plist[i];
                     $("#problemType").append("<option value='" + problemType.id + "' >" + problemType.typename + "</option>");
                 }
             }
@@ -123,7 +126,7 @@ function callUpdateProblem(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var problem = data.data.problem;
-            modelban(problem.problem, problem.referanswer, problem.id);
+            modelban(problem);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -300,6 +303,7 @@ function AddOrUpdateProblem(version) {
             problem: problem,
             referanswer: referanswer,
             problemtypessid: parseInt(problemtypessid),
+            problemtypessidV: problemtypessidV
         }
     };
     ajaxSubmitByJson(url, data, callAddOrUpdate);
@@ -329,38 +333,49 @@ function UpdateProblemBy(va, ByIdDDD, text) {
     ajaxSubmitByJson(url, data, callAddOrUpdate);
 }
 
-function addUpdateinfo(ssid, type) {
+function addUpdateinfo(ssid, problemtypessid, type) {
     version = "修改";
     if (type) {
         version = "添加";
     }
 
-    if (!tableProblems) {
-        for (var i = 0; i < list.length; i++) {
-            var templateType = list[i];
-            tableProblems += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
+    problemtypessidV = problemtypessid;
+
+    tableProblems = ""; //清空以前的
+    for (var i = 0; i < plist.length; i++) {
+        var problemType = plist[i];
+        if (problemtypessid == problemType.id) {
+            tableProblems += "<option selected value='" + problemType.id + "' >" + problemType.typename + "</option>";
+        }else{
+            tableProblems += "<option value='" + problemType.id + "' >" + problemType.typename + "</option>";
         }
     }
 
-    if(ssid){
+    if (ssid) {
         var url = "/cweb/police/template/getProblemById";
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
+        var data = {
+            token: INIT_CLIENTKEY,
+            param: {
                 id: ssid
             }
         };
         ajaxSubmitByJson(url, data, callUpdateProblem);
 
-    }else {
-        modelban("", "", "");
+    } else {
+        modelban();
     }
 }
 
-function modelban(problem, referanswer, id) {
+function modelban(problemV) {
+    var problem = "";
+    var referanswer = "";
+    var id = "";
 
-
-
+    if (isNotEmpty(problemV)){
+        problem = problemV.problem;
+        referanswer = problemV.referanswer;
+        id = problemV.id;
+    }
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
         "            <input type='hidden' id='ByIdDDD' value='" + id + "'>\n" +
