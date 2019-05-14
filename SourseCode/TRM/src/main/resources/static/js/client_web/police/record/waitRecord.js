@@ -58,46 +58,100 @@ function callTemplateById(data) {
 
 function copy_problems(obj) {
     var text=$(obj).text();
-    $("td:focus").html(text);
+    var html=' <tr><td class="font_red_color" contenteditable="true">问：'+text+'</td></tr>\
+                <tr><td class="font_blue_color"contenteditable="true">答：</td></tr>';
+    $("#recorddetail").append(html);
+    $("#recorddetail .font_blue_color").focus(function(){
+        $(this).append(copy_text_html);
+        copy_text_html="";
+    });
 }
 
 function random(lower, upper) {
     return Math.floor(Math.random() * (upper - lower)) + lower;
 }
-function openxthtml() {
-    layer.confirm('确定要启动情绪分析吗', {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-       $("#xthtml").css("display","block");
+function openxthtml(obj) {
+    var xtbool=$(obj).attr("xtbool");
+    if (xtbool==1){
+        layer.msg("情绪分析已开启");
+        return;
+    }else{
+        layer.confirm('确定要启动情绪分析吗', {
+            btn: ['确认','取消'], //按钮
+            shade: [0.1,'#fff'], //不显示遮罩
+        }, function(index){
+            $("#xthtml").css("display","block");
+            $(obj).attr("xtbool","1");
+            var strings=["高度紧张","中度紧张","不很紧张","平平淡淡"];
+            var ran=random(1,100);
+            var t = setInterval(function (args) {
+                $("#xthtml #xt1").html('<i class="layui-icon">&#xe67a;</i>'+strings[Math.floor(Math.random()*strings.length)]+'  ');
+                $("#xthtml #xt2").html('<i class="layui-icon">&#xe6af;</i> '+random(1,100)+' ');
+                $("#xthtml #xt3").html('<i class="layui-icon">&#xe69c;</i> '+random(1,100)+' ');
+                $("#xthtml #xt4").html('<i class="layui-icon">&#xe6fc;</i> '+random(1,100)+'/分  ');
+                $("#xthtml #xt5").html('<i class="layui-icon">&#xe62c;</i>'+random(1,100)+'mmHg  ');
+            },2000);
 
-       var strings=["高度紧张","中度紧张","不很紧张","平平淡淡"];
-       var ran=random(1,100);
-       var t = setInterval(function (args) {
-           $("#xthtml #xt1").html('<i class="layui-icon">&#xe67a;</i>'+strings[Math.floor(Math.random()*strings.length)]+'');
-           $("#xthtml #xt2").html('<i class="layui-icon">&#xe6af;</i> '+random(1,100)+'');
-           $("#xthtml #xt3").html('<i class="layui-icon">&#xe69c;</i> '+random(1,100)+'');
-           $("#xthtml #xt4").html('<i class="layui-icon">&#xe6fc;</i> '+random(1,100)+'/分');
-           $("#xthtml #xt5").html('<i class="layui-icon">&#xe62c;</i>'+random(1,100)+' mmHg');
-       }, 1000);
+            layer.close(index);
+        }, function(index){
+            layer.close(index);
+        });
+    }
 
-        layer.close(index);
-    }, function(index){
-        layer.close(index);
-    });
 
     
 }
 
 //录音按钮显示隐藏
-function img_bool(obj){
-    var recordbool=$(obj).attr("recordbool");
-    if (recordbool=="true"){
-        $(obj).css("display","none").attr("recordbool","false");
+var t;
+function img_bool(obj,type){
+    var img_bool=$(obj).attr("img_bool");
+    if (img_bool=="true"){
+        $(obj).css("display","none").attr("img_bool","false");
         $(obj).siblings().css("display","block");
     }else{
-        $(obj).css("display","none").attr("recordbool","true");
+        $(obj).css("display","none").attr("img_bool","true");
         $(obj).siblings().css("display","block");
     }
+
+    if (type==1){
+        //实时会议数据
+        var recordtype=1;
+        var username="未知";
+        var translatext="未知";
+       t = setInterval(function (args) {
+          /* $("#recordreals").html("");*/
+            if (recordtype==1){
+                recordrealclass="atalk";
+                username="检察官";
+                translatext="我是检察官，现在开始考察你";
+                recordtype=2;
+            }else if (recordtype==2){
+                recordrealclass="btalk";
+                username="被询问人";
+                translatext="我是被询问人，现在开始接受考察"
+                recordtype=1;
+            }
+            var recordrealshtml='<div class="'+recordrealclass+'" style="margin-bottom: 50px" >\
+                                                        <p>【'+username+'】 2019-4-14 02:24:55</p>\
+                                                        <span ondblclick="copy_text(this)">'+translatext+'</span> \
+                                                  </div >';
+
+            $("#recordreals").append(recordrealshtml);
+        },1000);
+    }else{
+        clearInterval(t);
+    }
+}
+var copy_text_html="";
+function copy_text(obj) {
+    var text=$(obj).text();
+    copy_text_html=text;
 }
 
+
+$(function () {
+    $("#recorddetail td").focus(function(){
+        $(this).text(copy_text_html);
+    });
+});

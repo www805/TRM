@@ -31,6 +31,12 @@
     .layui-col-md7 td{
         text-align: left;
     }
+    table td {
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 </style>
 <body>
 <div class="layui-form" style="margin: 15px;">
@@ -62,7 +68,7 @@
                 </div>
                 <div style="height: 500px; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card-body">
-                        <table class="layui-table" lay-even="" lay-skin="nob">
+                        <table class="layui-table" lay-even="" lay-skin="nob"style="table-layout: fixed;">
                             <tbody id="templatedetail">
                             </tbody>
                         </table>
@@ -74,7 +80,7 @@
     </div>
 </div>
 <script id="pagelisttemplates" type="text/html">
-    <table class="layui-table" lay-skin="line">
+    <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
