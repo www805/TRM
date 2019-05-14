@@ -315,17 +315,13 @@ function UpdateProblemBy(va, ByIdDDD, text) {
         }
     };
 
-
     if (va == '1') {
         data.param.problem = text;
     } else {
         data.param.referanswer = text;
     }
 
-    // console.log(data);
-
     ajaxSubmitByJson(url, data, callAddOrUpdate);
-
 }
 
 function addUpdateinfo(ssid, type) {
