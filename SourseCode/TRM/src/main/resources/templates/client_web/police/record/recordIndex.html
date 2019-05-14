@@ -31,7 +31,16 @@
     .layui-col-md9 td{
         text-align: left;
     }
-
+    table td {
+        text-align: left;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .layui-table td{
+        word-break: break-all;/*必须*/
+        white-space: normal;
+    }
 
 </style>
 <body>

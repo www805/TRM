@@ -242,7 +242,7 @@ public class MainService extends BaseService {
 
         //修改配置数据
         EntityWrapper serverconfigparam = new EntityWrapper();
-        serverconfigparam.eq("id",updateServerconfigParam.getSsid());
+        serverconfigparam.eq("ssid",updateServerconfigParam.getSsid());
         updateServerconfigParam.setClient_filesavessid(client_filesavessid);
        int updateById_bool=base_serverconfigMapper.update(updateServerconfigParam,serverconfigparam);//没有任何需要修改值的时候会报错
         System.out.println("updateById_bool"+updateById_bool);

@@ -134,7 +134,7 @@ function callbackgetRecordById(data) {
                 }else if (recordtype==2){
                     recordrealclass="btalk";
                     username="被询问人";
-                    translatext="我是被询问人，现在开始接受考察"
+                    translatext="我是被询问人，现在开始接受考察";
                     recordtype=1;
                 }
                 var recordrealshtml='<div class="'+recordrealclass+'"  >\
