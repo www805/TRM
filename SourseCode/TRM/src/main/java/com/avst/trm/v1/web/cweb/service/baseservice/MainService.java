@@ -169,7 +169,7 @@ public class MainService extends BaseService {
 
         //old数据
         EntityWrapper ew=new EntityWrapper();
-        ew.eq("b.id",updateServerconfigParam.getSsid());
+        ew.eq("b.ssid",updateServerconfigParam.getSsid());
         List<ServerconfigAndFilesave> list=base_serverconfigMapper.getServerconfig(ew);
         ServerconfigAndFilesave serverconfig=new ServerconfigAndFilesave();
         if (null!=list&&list.size()==1){
@@ -223,7 +223,7 @@ public class MainService extends BaseService {
                     if (StringUtils.isNotBlank(oldfilepath)){
                         //修改
                         EntityWrapper filesaveparam = new EntityWrapper();
-                        filesaveparam.eq("id",client_filesavessid);
+                        filesaveparam.eq("ssid",client_filesavessid);
                         int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
                         System.out.println("filesaveupdate_bool__"+filesaveupdate_bool);
                     }else{
