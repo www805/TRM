@@ -80,7 +80,7 @@ public class TemplateService extends BaseService {
                     ew2.eq("t.id", template.getId());
                 }
 
-                ew2.orderBy("b.ordernum", true); //fasle大到小   true小到大
+                ew2.orderBy("p.ordernum", true); //fasle大到小   true小到大
 
                 List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(ew2);
                 if (null!=templateToProblems&&templateToProblems.size()>0){

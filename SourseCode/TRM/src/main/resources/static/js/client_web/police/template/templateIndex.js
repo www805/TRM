@@ -59,7 +59,6 @@ function callTmplates(data){
 }
 
 function callTmplates2(data){
-    console.log(data);
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
@@ -97,7 +96,7 @@ function getTmplateTypesParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 3;//测试
+        var pageSize = 10;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);

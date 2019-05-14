@@ -1,7 +1,9 @@
 var tableProblems = '';
 var version = "";
 var list, all;
+var arrayProblem = [];
 
+//初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
     // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
     var url = "/cweb/police/template/getProblems";
@@ -23,6 +25,7 @@ function getProblems_init(currPage,pageSize) {
     ajaxSubmitByJson(url,data,callTmplates2);
 }
 
+//分页查询模板列表
 function getProblems(keyword, problemtypeid, currPage, pageSize) {
     // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
     var url = "/cweb/police/template/getProblems";
@@ -87,6 +90,7 @@ function callTmplates2(data){
     }
 }
 
+//修改问题答案返回
 function callAddOrUpdate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -190,7 +194,8 @@ function callTmplateTypes(data){
 function callAddOrUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            window.location.reload();
+            layer.msg("操作成功！",{icon: 1});
+            // window.location.reload();
             // console.log(data);
             // alert("chengg")
         }
@@ -208,7 +213,7 @@ function getProblemTypesParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 3;//测试
+        var pageSize = 10;//测试
         getProblems_init(currPage, pageSize);
     }  else if (len == 2) {
         getProblems('', arguments[0], arguments[1]);
@@ -407,6 +412,7 @@ function DeleteProblem(obj) {
 
 //拿到所有数据
 function getDataAll() {
+    addArrProblem();
 
     var templatetoproblemids = [];
     var problem = {};
@@ -445,7 +451,7 @@ function getDataAll() {
         templatetoproblemids[i] = problem;
     })
 
-    console.log(templatetoproblemids);
+    // console.log(templatetoproblemids);
 
     var url = "/cweb/police/template/addTemplate";
 
@@ -463,10 +469,9 @@ function getDataAll() {
         }
     };
 
-    console.log(data);
+    // console.log(data);
 
     ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
-
 }
 
 function huoqu() {
@@ -479,8 +484,28 @@ function huoqu() {
         text = text.replace(/问：/g, "");
         text = text.replace(/答：/g, "");
 
-        UpdateProblemBy(id, va, text);
+        problem = {
+            id:id,
+            va:va,
+            text:text
+        }
+
+        arrayProblem.push(problem);
+
+        // console.log(arrayProblem);
+
+        // UpdateProblemBy(id, va, text);
     });
+}
+
+/**
+ * 保存后修改问题和答案
+ */
+function addArrProblem() {
+    for (var i = 0; i < arrayProblem.length; i++) {
+        var problem = arrayProblem[i];
+        UpdateProblemBy(problem.id, problem.va, problem.text);
+    }
 }
 
 function getQueryString(name) {
