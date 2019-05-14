@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface Base_roletopermissionsMapper extends BaseMapper<Base_roletopermissions> {
 
-    @Select("select * from base_permissions p where p.id in(select rp.permissionsssid from base_roletopermissions rp where 1=1 ${ew.sqlSegment})")
+    @Select("select * from base_permissions p where p.ssid in(select rp.permissionsssid from base_roletopermissions rp where 1=1 ${ew.sqlSegment})")
     List<Base_permissions> getPermissionsByRoleSsid(@Param("ew") EntityWrapper ew);
 
 }
