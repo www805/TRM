@@ -123,6 +123,13 @@ function getactionid_manage() {
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
 
+        waitRecord_tomoreTemplate:"waitRecord_tomoreTemplate",
+        waitRecord_getTemplateById:"waitRecord_getTemplateById",
+
+        moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
+        moreTemplate_getTemplates:"moreTemplate_getTemplates",
+
+
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
         addOrupdateTemplateType_addTemplateType: "addOrupdateTemplateType_addTemplateType",
         addOrupdateTemplateType_updateTemplateType: "addOrupdateTemplateType_updateTemplateType",

@@ -76,6 +76,27 @@
         /*text-align: left;*/
         margin-top: 5px;
     }
+    div>img{
+
+        　　position: absolute!important;
+
+        　　width: 100%;
+
+        　　left: 0;
+
+        　　top: 0;
+
+        　　right:0;
+
+        　　bottom:0;
+
+        　　margin:auto;
+
+        　　display: block;
+
+    }
+
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -90,72 +111,15 @@
                 <!---->
                 <div class="layui-col-md12 layui-collapse ">
                     <div class="layui-colla-item">
-                        <h2 class="layui-colla-title layui-card-header">
+                        <h2 class=" layui-card-header"><!--layui-colla-title-->
                             问答模板<span style="color: red">（双击，添加到笔录中）</span>
                             <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
                         </h2>
-                                <div class="layui-colla-content layui-show layui-card-body layui-row " style="padding: 0;" >
+                         <div class="layui-colla-content layui-show layui-card-body layui-row " style="padding: 0;" >
                                     <div class="layui-col-lg12">
                                         <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;">
                                             <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
-                                                <thead>
-                                                <th>
-                                                    当前模板：模板名称
-                                                </th>
-                                                </thead>
-                                                <tbody >
-                                                <tr>
-                                                    <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：的大方的说法</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：的大方的说法</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>笔录类型</td>
-                                                </tr><tr>
-                                                    <td>笔录类型</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>笔录类型</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复fdsssssssssssssgfgsreghjkfhdsujfsuaifyruiryuigcxvvvvvvvvvvvvv少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：的大方的说法</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：的大方的说法</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>问：将恢复少又何妨</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>笔录类型</td>
-                                                </tr><tr>
-                                                    <td>笔录类型</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>笔录类型</td>
-                                                </tr>
+                                                <tbody id="templatetoproblem_html">
                                                 </tbody>
                                             </table>
                                         </div>
@@ -165,7 +129,7 @@
                     <div class="layui-card">
                         <div class="layui-card-header">持续时间 00:00:00</div>
                     </div>
-                    <div style="height: 220px; overflow-x: hidden; overflow-y: scroll;">
+                    <div style="height: 425px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body layui-row">
                             <div class="layui-col-md12 ">
                                 <div class="talk_show" >
@@ -205,122 +169,150 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!---->
-                <div class="layui-col-md12 " style="position: absolute;bottom: 0;height: 10%;background-color: #FFFFFF;z-index:1;" >
-                    <div class="layui-col-md4 " >
-                        <button class="layui-btn layui-btn-xs layui-btn-normal">音量波动</button>
-
-                    </div>
-                    <div class="layui-col-md4 ">
-                        <button class="layui-btn layui-btn-xs layui-btn-normal">长按录音</button>
-
-                    </div>
-                    <div class="layui-col-md4 ">
-                        <button class="layui-btn layui-btn-xs layui-btn-normal">音量波动</button>
-
-                    </div>
+                <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                    <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto" recordbool="true" onclick="img_bool(this);">
+                    <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto" recordbool="false" onclick="img_bool(this);">
                 </div>
                 <!---->
             </div>
             <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+                <div style="margin-top: 5px">
+                    <button class="layui-btn layui-btn-normal ">保存</button>
+                    <button class="layui-btn layui-btn-normal ">编辑</button>
+                    <button class="layui-btn layui-btn-normal ">打印</button>
+                    <button class="layui-btn layui-btn-normal ">导出</button>
+                    <button class="layui-btn layui-btn-normal ">告知书</button>
+                </div>
                 <div class="layui-card" >
-                    <div class="layui-card-header" style="background-color: #FFFFFF">
-                        <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
-                        <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
-                        <button class="layui-btn layui-btn-normal layui-btn-sm">百搭按钮</button>
-                    </div>
                         <div class="layui-card-body layui-row " style="padding: 0">
                             <div class="layui-card"  >
                                 <div class="layui-card-header">
-                                    <button class="layui-btn layui-btn-xs layui-btn-normal">小型按钮</button>
-                                    <button class="layui-btn layui-btn-xs layui-btn-normal">小型按钮</button>
-                                    <button class="layui-btn layui-btn-xs layui-btn-normal">小型按钮</button>
-                                    <button class="layui-btn layui-btn-xs layui-btn-normal">小型按钮</button>
+                                    笔录
                                 </div>
-                                <div class="layui-card-body layui-row "  >
-                                    <div class="layui-col-lg12 ">
-                                        <table class="layui-table" lay-even lay-skin="nob">
-                                            <tbody >
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_red_color">人生就像是一场修行</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font_blue_color">人生就像是一场修行</td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
+                                <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
+                                    <div class="layui-card-body layui-row "  >
+                                        <div class="layui-col-lg12 ">
+                                            <table class="layui-table" lay-even lay-skin="nob">
+                                                <tbody >
+                                                <tr>
+                                                    <td class="font_red_color" contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_red_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="font_blue_color"contenteditable="true">人生就像是一场修行</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
+                </div>
+                <div class="layui-col-md12 " style="height: 25px;position: absolute;bottom: 40px;background-color: #E5F4FD;z-index:1;text-align: center;display: none;" id="xthtml" >
+                    <div class="layui-col-md6" style="margin-top: 5px">
+                          <div style="float: left">
+                            <span id="xt1">
+                              <i class="layui-icon">&#xe67a;</i>
+                              高度紧张
+                            </span>
+                              <span id="xt2"> <i class="layui-icon">&#xe6af;</i>
+                             78
+                             </span>
+                              <span id="xt3"> <i class="layui-icon">&#xe69c;</i>
+                             50
+                             </span>
+                              <span id="xt4"> <i class="layui-icon">&#xe6fc;</i>
+                             15/分
+                             </span>
+                              <span id="xt5"> <i class="layui-icon">&#xe62c;</i>
+                              92 mmHg
+                             </span>
+                          </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12 " style="height: 40px;line-height: 40px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                    <div class="layui-col-md6" style="margin-top: 5px">
+                        <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left">
+                            常用时间
+                        </button>
+                        <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left">
+                            常用问答
+                        </button>
+                    </div>
+                    <div class="layui-col-md6" style="margin-top: 5px" >
+                        <button class="layui-btn layui-btn-sm layui-btn-normal" style="float: right;" onclick="openxthtml()">
+                            <i class="layui-icon">&#xe67a;</i>
+                        </button>
+                    </div>
                 </div>
             </div>
     </div>
