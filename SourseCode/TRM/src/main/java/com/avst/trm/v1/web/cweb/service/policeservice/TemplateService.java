@@ -435,7 +435,13 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        if (null==updateProblemParam.getProblem() || null==updateProblemParam.getReferanswer() || null==updateProblemParam.getProblemtypessid() || null==updateProblemParam.getId()){
+        //
+
+        if (null==updateProblemParam.getId()){
+            result.setMessage("参数为空");
+            return;
+        }
+        if (null == updateProblemParam.getProblem() && null == updateProblemParam.getReferanswer()) {
             result.setMessage("参数为空");
             return;
         }
@@ -456,15 +462,18 @@ public class TemplateService extends BaseService {
             ew2.eq("problemssid",updateProblemParam.getProblemssid());
         }
 
-        Police_problemtotype problemtotype = new Police_problemtotype();
-        problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid() + "");
-        problemtotype.setProblemssid(updateProblemParam.getId() + "");
+        if (null!=updateProblemParam.getProblemtypessid()){
 
-        Police_problemtotype problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
-        if(null == problemtotype1){
-            problemtotype.setCreatetime(new Date());
-            problemtotype.setSsid(OpenUtil.getUUID_32());
-            policeProblemtotypeMapper.insert(problemtotype);
+            Police_problemtotype problemtotype = new Police_problemtotype();
+            problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid() + "");
+            problemtotype.setProblemssid(updateProblemParam.getId() + "");
+
+            Police_problemtotype problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
+            if(null == problemtotype1){
+                problemtotype.setCreatetime(new Date());
+                problemtotype.setSsid(OpenUtil.getUUID_32());
+                policeProblemtotypeMapper.insert(problemtotype);
+            }
         }
 
         System.out.println("update_bool"+update_bool);

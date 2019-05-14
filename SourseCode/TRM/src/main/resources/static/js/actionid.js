@@ -130,6 +130,8 @@ function getactionid_manage() {
         addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
 
         templateIndex_getTemplates: "templateIndex_getTemplates",
+        addOrupdateTemplate_getProblems: "addOrupdateTemplate_getProblems",
+        addOrupdateTemplate_getTemplateById: "addOrupdateTemplate_getTemplateById",
 
 
     };

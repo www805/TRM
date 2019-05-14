@@ -14,6 +14,15 @@ public class TemplateToProblem {
 
     private Integer ordernum;
 
+    private String ssid;
+
+    public String getSsid() {
+        return ssid;
+    }
+
+    public void setSsid(String ssid) {
+        this.ssid = ssid;
+    }
 
     public Integer getId() {
         return id;

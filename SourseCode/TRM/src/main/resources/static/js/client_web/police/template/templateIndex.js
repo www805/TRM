@@ -7,6 +7,9 @@ function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var keyword =$("#keyword").val();
     var templatetypeid = $("#templateType").val();
+    if(!templatetypeid){
+        templatetypeid = 8;
+    }
     var data={
         token:INIT_CLIENTKEY,
         param:{

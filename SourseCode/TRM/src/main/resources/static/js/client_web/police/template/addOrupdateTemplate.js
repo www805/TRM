@@ -3,8 +3,12 @@ var version = "";
 var list, all;
 
 function getProblems_init(currPage,pageSize) {
-    // var url=getActionURL(getactionid_manage().getUserList_getUserList);
+    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
     var url = "/cweb/police/template/getProblems";
+
+    // console.log(pageActionByPage);
+    // console.log(url);
+
     var keyword =$("#keyword").val();
     var problemtypeid = $("#problemType").val();
     var data={
@@ -20,8 +24,9 @@ function getProblems_init(currPage,pageSize) {
 }
 
 function getProblems(keyword, problemtypeid, currPage, pageSize) {
-    // var url=getActionURL(getactionid_manage().getUserList_getUserList);
+    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
     var url = "/cweb/police/template/getProblems";
+    // console.log(url);
 
     var data={
         token:INIT_CLIENTKEY,
@@ -85,7 +90,8 @@ function callTmplates2(data){
 function callAddOrUpdate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            window.location.reload();
+            // window.location.reload();
+            console.log(data);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -132,35 +138,23 @@ function callTemplateById(data){
             var tableProblems = '';
             $('#dataTable').html(tableProblems);
 
-
             if (templateToProblems.length > 1) {
                 for (var i = 0; i < templateToProblems.length; i++) {
                     var Problem = templateToProblems[i];
 
-
-                    tableProblems += "<tr>\n" +
-                    "      <th lay-data=\"{type:'checkbox'}\">ID</th>\n" +
-                    "      <th lay-data=\"{field:'id', width:80, sort: true}\">ID</th>\n" +
-                    "      <th lay-data=\"{field:'username', width:120, sort: true, edit: 'text'}\">用户名</th>\n" +
-                    "      <th lay-data=\"{field:'email', edit: 'text', minWidth: 150}\">邮箱</th>\n" +
-                    "      <th lay-data=\"{field:'sex', width:80, edit: 'text'}\">性别</th>\n" +
-                    "      <th lay-data=\"{field:'city', edit: 'text', minWidth: 100}\">城市</th>\n" +
-                    "      <th lay-data=\"{field:'experience', sort: true, edit: 'text'}\">积分</th>\n" +
-                    "    </tr>"
-
-                    // tableProblems += '<tr>\n' +
-                    //     '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
-                    //     '                            <p class="table_td_tt table_td_tt2">问：' + Problem.problem + '</p>\n' +
-                    //     '                            <p class="table_td_tt table_td_tt2 font_blue_color" >答：' + Problem.referanswer + '</p>\n' +
-                    //     '                        </td>\n' +
-                    //     '                        <td>\n' +
-                    //     '                            <div class="layui-btn-group">\n' +
-                    //     '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
-                    //     '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
-                    //     '                                <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\n' +
-                    //     '                            </div>\n' +
-                    //     '                        </td>\n' +
-                    //     '                    </tr>';
+                    tableProblems += '<tr>\n' +
+                        '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
+                        '                            <p contenteditable="true" name="1" value="' + Problem.ssid + '" class="table_td_tt table_td_tt2">问：' + Problem.problem + '</p>\n' +
+                        '                            <p contenteditable="true" name="2" value="' + Problem.ssid + '" class="table_td_tt table_td_tt2 font_blue_color" >答：' + Problem.referanswer + '</p>\n' +
+                        '                        </td>\n' +
+                        '                        <td>\n' +
+                        '                            <div class="layui-btn-group">\n' +
+                        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
+                        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
+                        '                                <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\n' +
+                        '                            </div>\n' +
+                        '                        </td>\n' +
+                        '                    </tr>';
                 }
                 $('#dataTable').html(tableProblems);
             }
@@ -239,30 +233,25 @@ function showpagetohtml(){
     }
 }
 
-layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
+layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate', 'table'], function () {
     var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
-        ,form = layui.form
-        ,layer = layui.layer
-        ,layedit = layui.layedit
-        ,laydate = layui.laydate
-        ,laypage = layui.laypage;
+        , form = layui.form
+        , layer = layui.layer
+        , layedit = layui.layedit
+        , laydate = layui.laydate
+        , laypage = layui.laypage;
     var table = layui.table;
 
     //不显示首页尾页
     laypage.render({
         elem: 'demo1'
-        ,count: 100
-        ,first: false
-        ,last: false
+        , count: 100
+        , first: false
+        , last: false
     });
 
     //监听单元格编辑
-    table.on('edit(test3)', function(obj){
-        var value = obj.value //得到修改后的值
-            ,data = obj.data //得到所在行所有键值
-            ,field = obj.field; //得到字段
-        layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
-    });
+    huoqu();
 
     form.render();
 });
@@ -271,8 +260,9 @@ function templateInit() {
     var ssid = getQueryString("ssid");
 
     if (ssid) {
-        //查询单个模板
-        var url = "/cweb/police/template/getTemplateById";
+        //查询单个模板 addOrupdateTemplate_getTemplateById
+        var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateById);
+        // var url = "/cweb/police/template/getTemplateById";
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -284,7 +274,7 @@ function templateInit() {
 }
 
 function AddOrUpdateProblem(version) {
-
+    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateById);
     var url = "/cweb/police/template/updateProblem";
     var problem = $("#problem").val();
     var referanswer = $("#referanswer").val();
@@ -307,6 +297,33 @@ function AddOrUpdateProblem(version) {
             problemtypessid: parseInt(problemtypessid),
         }
     };
+    ajaxSubmitByJson(url, data, callAddOrUpdate);
+
+}
+
+function UpdateProblemBy(va, ByIdDDD, text) {
+    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateById);
+    var url = "/cweb/police/template/updateProblem";
+    // var problem = $("#problem").val();
+    // var referanswer = $("#referanswer").val();
+    // var problemtypessid = $("#problemtypessid").val();
+
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {
+            id: ByIdDDD,
+        }
+    };
+
+
+    if (va == '1') {
+        data.param.problem = text;
+    } else {
+        data.param.referanswer = text;
+    }
+
+    // console.log(data);
+
     ajaxSubmitByJson(url, data, callAddOrUpdate);
 
 }
@@ -382,9 +399,10 @@ function addTemplateProblem(obj, id) {
         '                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>' +
         '</div>';
 
-    var textHtml = '<p class="table_td_tt table_td_tt2">' + text + '</p><p class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
+    var textHtml = '<p contenteditable="true" class="table_td_tt table_td_tt2">' + text + '</p><p contenteditable="true" class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
 
     $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" name='" + all[id].id + "''>" + textHtml + "</td><td>" + updown + "</td></tr>");
+    huoqu();
 }
 
 function DeleteProblem(obj) {
@@ -455,6 +473,19 @@ function getDataAll() {
 
 }
 
+function huoqu() {
+    $("p").blur(function(){
+        //修改问答
+        var id = $(this).attr("name");
+        var va = $(this).attr("value");
+        var text = $(this).text();
+
+        text = text.replace(/问：/g, "");
+        text = text.replace(/答：/g, "");
+
+        UpdateProblemBy(id, va, text);
+    });
+}
 
 function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
