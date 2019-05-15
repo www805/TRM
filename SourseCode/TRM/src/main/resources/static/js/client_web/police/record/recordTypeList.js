@@ -69,7 +69,6 @@ function opneModal_1(id) {
 
 
 }
-
 function callbackaddOrUpdateRecordtype(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var data = data.data;
@@ -81,7 +80,6 @@ function callbackaddOrUpdateRecordtype(data) {
         layer.msg(data.message);
     }
 }
-
 function callbackgetRecordtypeById(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var data = data.data;
@@ -105,6 +103,7 @@ function callbackgetRecordtypeById(data) {
 }
 
 
+//获取类型列表
 function getRecordtypes() {
     var url=getActionURL(getactionid_manage().recordTypeList_getRecordtypes);
     var pid=$("#pid option:selected").val();
@@ -121,25 +120,35 @@ function callbackgetRecordtypes(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log(data);
             var getRecordtypesVOParamList=data.getRecordtypesVOParamList;
             var recordtypehtml=$("#recordtypehtml").html("");
+            num=$("#recordtypehtml tr").length;
             gets(getRecordtypesVOParamList);
         }
     }
 }
 
+//随机颜色
+function getRandomColor() {
+    return '#' +
+        (function(color) {
+            return (color += '0123456789abcdef' [Math.floor(Math.random() * 16)]) && (color.length == 6) ? color : arguments.callee(color);
+        })('');
+}
 
 var len="----";
 var num=$("#recordtypehtml tr").length;
+var color=getRandomColor();
+var color1=color;
 function gets(data) {
+    var color2=getRandomColor();
     if (isNotEmpty(data)){
         for (var i = 0; i < data.length; i++) {
             var l = data[i];
             num++;
             var html='<tr>\
                                     <td>'+num+'</td>\
-                                    <td style="text-align: left;color: #000000;font-weight: bold;">|'+len+' '+l.typename+'</td>\
+                                    <td style="text-align: left;color: '+color+';font-weight: bold;">|'+len+' '+l.typename+'</td>\
                                     <td>'+l.createtime+'</td>\
                                     <td>\
                                         <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1('+l.id+');">修改</a>\
@@ -148,14 +157,16 @@ function gets(data) {
             $("#recordtypehtml").append(html);
             if (l.police_recordtypes.length>0){
                 len+=len;
+                color=color2;
                 gets(l.police_recordtypes);
-                 len="----";
+                len="----";
+                color=color1;
             }
         }
     }
 }
 
-
+//获取pid=0的
 function getPidRecordtypes() {
     var url=getActionURL(getactionid_manage().recordTypeList_getPidRecordtypes);
     var pid=$("#pid option:selected").val();

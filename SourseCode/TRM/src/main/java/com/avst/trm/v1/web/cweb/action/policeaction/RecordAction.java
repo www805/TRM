@@ -226,7 +226,7 @@ public class RecordAction extends BaseAction {
 
 
     /**
-     * 根据证件id联查
+     * 根据证件类型和证件号
      * @param param
      * @return
      */

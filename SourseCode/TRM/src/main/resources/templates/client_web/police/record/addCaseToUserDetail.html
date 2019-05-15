@@ -35,6 +35,9 @@
     .layui-col-md2 .layui-table td{
         padding-left:20px;
     }
+    .first-tab i.layui-tab-close{
+        display:none!important;
+    }
 </style>
 <body>
     <div class="layui-form layui-row" >
@@ -46,20 +49,20 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">证件类型</label>
                             <div class="layui-input-block">
-                                <select name="cards1" lay-verify="required" id="cards1"  lay-filter="change_card">
-
+                                <select name="cards" lay-verify="required" id="cards"  lay-filter="change_card">
+                                    <option value=""></option>
                                 </select>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">证件号码</label>
+                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>证件号码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="cardnum1" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum1">
+                                <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum">
                                 <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>姓名</label>
+                            <label class="layui-form-label">姓名</label>
                             <div class="layui-input-block">
                                 <input type="text" name="username" id="username" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                             </div>
@@ -80,19 +83,19 @@
                             <div class="layui-col-lg6" >
                                 <label class="layui-form-label">年龄</label>
                                 <div class="layui-input-block"  >
-                                    <input type="number" name="age" id="age" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                    <input type="number" name="age" id="age" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label" >性别</label>
-                                <div class="layui-input-block" >
-                                    <select name="sex" lay-verify="required" id="sex">
-                                        <option value=""></option>
-                                        <option value="1">男</option>
-                                        <option value="2">女</option>
-                                        <option value="-1">未知</option>
-                                    </select>
-                                </div>
+                                    <label class="layui-form-label" >性别</label>
+                                    <div class="layui-input-block" >
+                                        <select name="sex" lay-verify="required" id="sex" >
+                                            <option value=""></option>
+                                            <option value="1">男</option>
+                                            <option value="2">女</option>
+                                            <option value="-1">未知</option>
+                                        </select>
+                                    </div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -198,39 +201,39 @@
                                     <i class="layui-icon" onclick="tabAdd();" title="添加其他在场人员" style="position: absolute;right: 15px;color: #1E9FFF">&#xe654;</i>
                                 </div>
                                 <div class="layui-card-body"  style="padding: 0;">
-                                    <div class="layui-tab" lay-allowClose="true"lay-filter="tabAdd_filter">
+                                    <div class="layui-tab" lay-allowClose="true"lay-filter="tabAdd_filter" id="tab_body">
                                         <ul class="layui-tab-title"  >
-                                            <li class="layui-this">未成年人监护人</li>
-                                            <li>翻译人员</li>
-                                            <li>手势人员</li>
+                                            <li class="layui-this first-tab" usertype="1">未成年人监护人</li>
+                                            <li class="first-tab"  usertype="2">翻译人员</li>
                                         </ul>
-                                        <div class="layui-tab-content">
+                                        <div class="layui-tab-content"id="tab_content">
                                             <div class="layui-tab-item layui-show">
                                                 <div class="  layui-row layui-col-space10">
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
-                                                            <select name="cards4" lay-verify="required" id="cards4"  disabled>
-
+                                                            <select name="tab_card" lay-verify="required" disabled  lay-filter="tab_cardfilter">
+                                                                <option value=""></option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
-                                                            <input type="search" name="cardnum4"  id="cardnum4" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_cardnum"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;"  onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">姓名</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="username4" id="username4" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_username"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">性别</label>
                                                         <div class="layui-input-block">
-                                                            <select name="sex4" lay-verify="required" id="sex4">
+                                                            <select name="tab_sex" lay-verify="required" >
                                                                 <option value=""></option>
                                                                 <option value="1">男</option>
                                                                 <option value="2">女</option>
@@ -241,13 +244,13 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">联系电话</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="phone4"  id="phone4" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">关系</label>
                                                         <div class="layui-input-block">
-                                                            <select name="relation" lay-verify="required" id="relation">
+                                                            <select name="tab_relation" lay-verify="required" >
                                                                 <option value=""></option>
                                                                 <option value="1">父亲</option>
                                                                 <option value="2">母亲</option>
@@ -260,34 +263,39 @@
                                                             </select>
                                                         </div>
                                                     </div>
+                                                    <div class="layui-col-lg12">
+                                                        <input name="tab_otheruserssid" style="display: none;">
+                                                        <button  class="layui-btn layui-btn-danger  layui-btn-sm"  onclick="tab_reset(this)" style="float: right">重置</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="layui-tab-item">
-                                                <div class="  layui-row layui-col-space10">
+                                                <div class="layui-row layui-col-space10">
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
-                                                            <select name="city" lay-verify="required" id="cards2" disabled>
-
+                                                            <select name="tab_card" lay-verify="required" disabled  lay-filter="tab_cardfilter">
+                                                                <option value=""></option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="cardnum2" id="cardnum2" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_cardnum"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">姓名</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="username2"  id="username2" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_username"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">性别</label>
                                                         <div class="layui-input-block">
-                                                            <select name="sex2" lay-verify="required" id="sex2">
+                                                            <select name="tab_sex" lay-verify="required" >
                                                                 <option value=""></option>
                                                                 <option value="1">男</option>
                                                                 <option value="2">女</option>
@@ -298,13 +306,13 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">联系电话</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="phone2" id="phone2" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_phone" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">语种</label>
                                                         <div class="layui-input-block">
-                                                            <select name="language" lay-verify="required" id="language">
+                                                            <select name="tab_language" lay-verify="required" >
                                                                 <option value=""></option>
                                                                 <option value="1">英语</option>
                                                                 <option value="2">法语</option>
@@ -314,46 +322,9 @@
                                                             </select>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="layui-tab-item">
-                                                <div class="layui-row layui-col-space10">
-                                                    <div class="layui-col-lg6">
-                                                        <label class="layui-form-label">证件类型</label>
-                                                        <div class="layui-input-block">
-                                                            <select name="cards3" lay-verify="required" id="cards3" disabled>
-
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg6">
-                                                        <label class="layui-form-label">证件号码</label>
-                                                        <div class="layui-input-block">
-                                                            <input type="search" name="cardnum3" id="cardnum3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg6">
-                                                        <label class="layui-form-label">姓名</label>
-                                                        <div class="layui-input-block">
-                                                            <input type="text" name="username3"  id="username3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg6">
-                                                        <label class="layui-form-label">性别</label>
-                                                        <div class="layui-input-block">
-                                                            <select name="sex3" lay-verify="required" id="sex3">
-                                                                <option value=""></option>
-                                                                <option value="1">男</option>
-                                                                <option value="2">女</option>
-                                                                <option value="-1">未知</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg6">
-                                                        <label class="layui-form-label">联系电话</label>
-                                                        <div class="layui-input-block">
-                                                            <input type="text" name="phone3" id="phone3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
-                                                        </div>
+                                                    <div class="layui-col-lg12">
+                                                        <input name="tab_otheruserssid" style="display: none;">
+                                                        <button  class="layui-btn layui-btn-danger  layui-btn-sm"  onclick="tab_reset(this)" style="float: right">重置</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -378,7 +349,7 @@
                 <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card-body  layui-row layui-col-space10" >
                         <div class="layui-col-lg12">
-                            <label class="layui-form-label">案件名称</label>
+                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
                             <div class="layui-input-block">
                                 <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="" >
                                     <option value=""></option>
@@ -395,6 +366,12 @@
                             <label class="layui-form-label">案件编号</label>
                             <div class="layui-input-block">
                                 <input type="text" name="casenum" id="casenum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>笔录名称</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="recordname" id="recordname" lay-verify="required" placeholder="默认：《案件名》笔录类型名_当前询问次数" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -424,13 +401,13 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问人一</label>
                             <div class="layui-input-block">
-                                <input type="text" name="adminssid1"  id="adminssid1" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.username}">
+                                <input type="text" name="adminssid"  id="adminssid" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.username}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">工作单位</label>
                             <div class="layui-input-block">
-                                <input type="text" name="workname1" id="workname1" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.workname}">
+                                <input type="text" name="workname" id="workname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.workname}">
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -464,7 +441,7 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label">询问对象</label>
+                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问对象</label>
                             <div class="layui-input-block">
                                 <select name="askobj" lay-verify="required" id="askobj">
                                     <option value=""></option>
@@ -474,20 +451,9 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问次数</label>
+                            <label class="layui-form-label">询问次数</label>
                             <div class="layui-input-block">
-                               <!-- <select name="asknum" lay-verify="required" id="asknum">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                </select>-->
-                                <input type="number" name="asknum" id="asknum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled value="0">
+                                <input type="number" name="asknum" id="asknum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled >
                             </div>
                         </div>
                         <div class="layui-col-lg12 ">

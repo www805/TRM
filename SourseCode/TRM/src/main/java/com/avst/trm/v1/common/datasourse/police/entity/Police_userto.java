@@ -12,7 +12,7 @@ import java.io.Serializable;
  * </p>
  *
  * @author Admin
- * @since 2019-05-10
+ * @since 2019-05-15
  */
 public class Police_userto extends Model<Police_userto> {
 
@@ -50,6 +50,16 @@ public class Police_userto extends Model<Police_userto> {
      * 创建时间
      */
     private Date createtime;
+
+    /**
+     * 人员类型标题
+     */
+    private String usertitle;
+
+    /**
+     * 提讯ssid
+     */
+    private String arraignmentssid;
 
     private String ssid;
 
@@ -110,6 +120,20 @@ public class Police_userto extends Model<Police_userto> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+    public String getUsertitle() {
+        return usertitle;
+    }
+
+    public void setUsertitle(String usertitle) {
+        this.usertitle = usertitle;
+    }
+    public String getArraignmentssid() {
+        return arraignmentssid;
+    }
+
+    public void setArraignmentssid(String arraignmentssid) {
+        this.arraignmentssid = arraignmentssid;
+    }
     public String getSsid() {
         return ssid;
     }
@@ -161,6 +185,8 @@ public class Police_userto extends Model<Police_userto> {
         ", language=" + language +
         ", usertype=" + usertype +
         ", createtime=" + createtime +
+        ", usertitle=" + usertitle +
+        ", arraignmentssid=" + arraignmentssid +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

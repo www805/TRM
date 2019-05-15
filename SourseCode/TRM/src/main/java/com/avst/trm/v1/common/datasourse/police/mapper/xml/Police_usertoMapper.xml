@@ -11,6 +11,8 @@
         <result column="language" property="language" />
         <result column="usertype" property="usertype" />
         <result column="createtime" property="createtime" />
+        <result column="usertitle" property="usertitle" />
+        <result column="arraignmentssid" property="arraignmentssid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

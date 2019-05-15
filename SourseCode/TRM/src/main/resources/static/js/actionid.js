@@ -102,6 +102,7 @@ function getactionid_manage() {
         addCaseToUser_getCards:"addCaseToUser_getCards",
         addCaseToUser_getUserByCard:"addCaseToUser_getUserByCard",
         addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
+        addCaseToUser_toaddCaseToUserDetail:"addCaseToUser_toaddCaseToUserDetail",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -111,7 +112,6 @@ function getactionid_manage() {
         addOrupdateProblem_updateProblem:"addOrupdateProblem_updateProblem",
         addOrupdateProblemType_addProblemType:"addOrupdateProblemType_addProblemType",
         addOrupdateProblemType_updateProblemType:"addOrupdateProblemType_updateProblemType",
-        addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
 
         recordIndex_getRecords:"recordIndex_getRecords",
         recordIndex_getRecordtypes:"recordIndex_getRecordtypes",

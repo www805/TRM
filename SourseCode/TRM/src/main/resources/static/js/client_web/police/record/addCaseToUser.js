@@ -1,26 +1,24 @@
 var cases=null;//案件数据
 var otheruserinfos=null;//其他询问人员数据
+var cards=null;//全部证件类型
+
+var dqcardssid=null;//当前人员证件ssid
+var dqcardnum=null;//当前人员证件号码
+var dquserssid=null;//当前用户的ssid
 
 //开始笔录按钮
 function addCaseToArraignment() {
-    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-        setpageAction(INIT_CLIENT,nextparam.nextPageId);
-        var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-        parent.location.href=url+"?ssid=111";
-    }
+    var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
 
-   /* var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
-
-    var cardnum1=$("#cardnum1").val();
-    if (!isNotEmpty(cardnum1)){
+    var cardnum=$("#cardnum").val();
+    if (!isNotEmpty(cardnum)){
         layer.msg("证件号码不能为空");
         return;
     }
 
     var recordtypessid= $("td[recordtypebool='true']",parent.document).attr("recordtype");
     if (!isNotEmpty(recordtypessid)){
-        layer.msg("系统异常");
+        layer.msg("未找到选择的笔录类型");
         return;
     }
 
@@ -32,7 +30,7 @@ function addCaseToArraignment() {
         return;
     }
 
-    var adminssid=$("#adminssid1").val();
+    var adminssid=$("#adminssid").val();
     var otheradminssid=$("#otheruserinfos  option:selected").val();
     if (!isNotEmpty(otheradminssid)){
         layer.msg("询问人二不能为空");
@@ -50,13 +48,43 @@ function addCaseToArraignment() {
         layer.msg("询问对象不能为空");
         return;
     }
-    var asknum=$("#asknum").val();
 
+    var asknum=$("#asknum").val();
+    var recordname=$("#recordname").val();
+    if (!isNotEmpty(recordname)){
+        layer.msg("笔录名称不能为空");
+        return;
+    }
+
+
+
+
+      var arr=[];
+    $("#tab_body #tab_content .layui-tab-item").each(function(){
+        var tab_cardnum=$(this).find("input[name='tab_cardnum']").val();
+        var index=$(this).index();
+        if (isNotEmpty(tab_cardnum)){
+            var otheruserssid=$(this).find("input[name='tab_otheruserssid']").val();
+            var relation=$(this).find("select[name='tab_relation']").val();
+            var language=$(this).find("select[name='tab_language']").val();
+            var usertype=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
+            var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).text();
+            var usertos={
+                otheruserssid:otheruserssid,
+                relation:relation,
+                language:language,
+                usertype:usertype==null?3:usertype,
+                usertitle:usertitle,
+            }
+            arr.push(usertos);
+        }
+    });
 
 
     var data={
         token:INIT_CLIENTKEY,
         param:{
+            userssid:dquserssid,
             casessid:casessid,
             adminssid:adminssid,
             otheradminssid:otheradminssid,
@@ -64,21 +92,27 @@ function addCaseToArraignment() {
             recordplace:recordplace,
             askobj:askobj,
             asknum:asknum,
-            recordtypessid:recordtypessid
+            recordtypessid:recordtypessid,
+            recordname:recordname,
+            usertos:arr
         }
     };
-    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
+    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-            if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                setpageAction(INIT_CLIENT,nextparam.nextPageId);
-                var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-                parent.location.href=url+"?ssid="+data;
-            }
+        var ssid=data.data;
+        if (isNotEmpty(ssid)){
+            var index = layer.msg('开始进行笔录', {
+            },function () {
+                var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+                if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                    setpageAction(INIT_CLIENT,nextparam.nextPageId);
+                    var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+                    parent.location.href=url+"?ssid="+ssid;
+                }
+                layer.close(index);
+            });
         }
     }else{
         layer.msg(data.message);
@@ -86,7 +120,7 @@ function callbackaddCaseToArraignment(data) {
 }
 
 /**
- * 获取笔录类型列表
+ * 获取笔录类型列表左侧显示
  */
 function getRecordtypes() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getRecordtypes);
@@ -105,7 +139,7 @@ function callbackgetRecordtypes(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var list=data.getRecordtypesVOParamList;
-           gettree(list);
+            gettree(list);
         }
     }else{
         layer.msg(data.message);
@@ -134,21 +168,37 @@ function gettree(data){
 
     $('#recotdtypes td').click(function() {
         var obj=this;
-       layer.confirm('人员案件信息将会重置，确定要切换笔录类型吗', {
-            btn: ['确认','取消'], //按钮
-            shade: [0.1,'#fff'], //不显示遮罩
-        }, function(index){
+        var cardnum=$("#ifranmehtml").contents().find("#cardnum").val();
+        if (isNotEmpty(cardnum)) {
+            layer.confirm('人员案件信息将会重置，确定要切换笔录类型吗', {
+                btn: ['确认','取消'], //按钮
+                shade: [0.1,'#fff'], //不显示遮罩
+            }, function(index){
+                $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
+                $('#recotdtypes td').not(obj).attr("recordtypebool","false");
+
+                $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
+                $(obj).attr("recordtypebool","true");
+
+                var url=getActionURL(getactionid_manage().addCaseToUser_toaddCaseToUserDetail);
+
+                $("iframe").prop("src",url);
+                layer.close(index);
+            }, function(index){
+                layer.close(index);
+            });
+        }else{
             $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
-           $('#recotdtypes td').not(obj).attr("recordtypebool","false");
+            $('#recotdtypes td').not(obj).attr("recordtypebool","false");
 
-           $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
-           $(obj).attr("recordtypebool","true");
+            $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
+            $(obj).attr("recordtypebool","true");
 
-           $("iframe").prop("src","/cweb/police/policePage/toaddCaseToUserDetail");/*target="ifranmehtml"  href="/cweb/police/policePage/toaddCaseToUserDetail"*/
-            layer.close(index);
-        }, function(index){
-            layer.close(index);
-        });
+            var url=getActionURL(getactionid_manage().addCaseToUser_toaddCaseToUserDetail);
+
+            $("iframe").prop("src",url);
+        }
+
 
     });
     layui.use(['element','form'], function(){
@@ -175,10 +225,10 @@ function callbackgetNationalitys(data) {
         $('#nationality option').not(":lt(1)").remove();
         if (isNotEmpty(data)){
             if (isNotEmpty(data)) {
-                    for (var i = 0; i < data.length; i++) {
-                        var l = data[i];
-                        $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
-                    }
+                for (var i = 0; i < data.length; i++) {
+                    var l = data[i];
+                    $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
+                }
             }
         }
     }else{
@@ -232,19 +282,16 @@ function getCards(){
 function callbackgetCards(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
-        $('#cards1 option').not(":lt(1)").remove();
-        $('#cards2 option').not(":lt(1)").remove();
-        $('#cards3 option').not(":lt(1)").remove();
-        $('#cards4 option').not(":lt(1)").remove();
+        cards=data;
+        $('#cards').html("");
+        $("#tab_content select[name='tab_card']").html("");
         if (isNotEmpty(data)){
-            if (isNotEmpty(data)) {
-                for (var i = 0; i < data.length; i++) {
-                    var l = data[i];
-                    $("#cards1").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
-                    $("#cards2").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
-                    $("#cards3").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
-                    $("#cards4").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
-                }
+            for (var i = 0; i < data.length; i++) {
+                var l = data[i];
+                $("#cards").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                $("#tab_content select[name='tab_card']").each(function(){
+                    $(this).append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                });
             }
         }
     }else{
@@ -261,26 +308,37 @@ function callbackgetCards(data) {
  */
 function getUserByCard(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
-    var cards1=$("#cards1 option:selected").val();
-    var cardnum1=$("#cardnum1").val();
+    var cards=$("#cards option:selected").val();
+    var cardnum=$("#cardnum").val();
+     dqcardssid=cards;
+     dqcardnum=cardnum;
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            cardtypesssid:cards1,
-            cardnum:cardnum1
+            cardtypesssid:cards,
+            cardnum:cardnum
         }
     };
     ajaxSubmitByJson(url,data,callbackgetUserByCard);
 }
 function callbackgetUserByCard(data){
+    layui.use(['form'], function(){
+        var form=layui.form;
+        $("input:not('#adminssid'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
+        $('select').not("#cards").prop('selectedIndex', 0);
+        $('#casename option').not(":lt(1)").remove();
+        form.render('select');
+    });
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
             var userinfo=data.userinfo;
-             cases=data.cases;
-             otheruserinfos=data.otheruserinfos;
-
+            cases=data.cases;
+            otheruserinfos=data.otheruserinfos;
             if (isNotEmpty(userinfo)){
+                dquserssid=userinfo.ssid;
+
                 /*人员信息*/
                 $("#username").val(userinfo.username);
                 $("#beforename").val(userinfo.beforename);
@@ -292,11 +350,12 @@ function callbackgetUserByCard(data){
                 $("#residence").val(userinfo.residence);
                 $("#workunits").val(userinfo.workunits);
                 $("#age").val(userinfo.age);
-                $("#sex").find("option[value='"+userinfo.sex+"']").attr("selected",true);
-                $("#national").find("option[value='"+userinfo.nationalssid+"']").attr("selected",true);
-                $("#nationality").find("option[value='"+userinfo.nationalityssid+"']").attr("selected",true);
-                $("#educationlevel").find("option[value='"+userinfo.educationlevel+"']").attr("selected",true);
-                $("#politicsstatus").find("option[value='"+userinfo.politicsstatus+"']").attr("selected",true);
+
+                $("#sex").val(userinfo.sex);
+                $("#national").val(userinfo.nationalssid);
+                $("#nationality").val(userinfo.nationalityssid);
+                $("#educationlevel").val(userinfo.educationlevel);
+                $("#politicsstatus").val(userinfo.politicsstatus);
             }
 
             //案件select
@@ -314,38 +373,17 @@ function callbackgetUserByCard(data){
                     $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>")
                 }
             }
-
         }
 
         /*其他在场人员数据渲染*/
-        $("#cards2").find("option[value='2']").attr("selected",true);
-        $("#cardnum2").val("4301978784564564");
-        $("#username2").val("李四");
-        $("#phone2").val("19646852384");
-        $("#sex2").find("option[value='1']").attr("selected",true);
-        $("#language").find("option[value='2']").attr("selected",true);
-
-        $("#cards3").find("option[value='2']").attr("selected",true);
-        $("#cardnum3").val("44532456478787874");
-        $("#username3").val("李吴");
-        $("#phone3").val("1486787787");
-        $("#sex3").find("option[value='1']").attr("selected",true);
-
-        $("#cards4").find("option[value='2']").attr("selected",true);
-        $("#cardnum4").val("42454656457457458");
-        $("#username4").val("李留");
-        $("#phone4").val("79814132454");
-        $("#sex4").find("option[value='1']").attr("selected",true);
-        $("#relation").find("option[value='2']").attr("selected",true);
-
 
     }else{
         layer.msg(data.message);
     }
-    layui.use(['element','form'], function(){
-        var element = layui.element;
-        var form=layui.form;
-        element.render();
+    layui.use('form', function(){
+        var $ = layui.$;
+        var form = layui.form;
+
         form.render();
     });
 }
@@ -354,10 +392,14 @@ function setcases(cases){
     if (isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c= cases[i];
-          //  $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
+            //  $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
             $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.casename+"</option>")
         }
     }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 /**
@@ -368,26 +410,28 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">证件类型</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <select name="" lay-verify="required" id="" disabled>\
+                                                                    <select name="tab_card" lay-verify="required"  disabled  lay-filter="tab_cardfilter">\
+                                                                    <option value=""></option>\
                                                                     </select>\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">证件号码</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="search" name="" id="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_cardnum"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                      <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard_other(this);"></i>\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">姓名</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="username3"  id="username3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_username"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">性别</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <select name="sex3" lay-verify="required" id="sex3">\
+                                                                    <select name="tab_sex" lay-verify="required" >\
                                                                         <option value=""></option>\
                                                                         <option value="1">男</option>\
                                                                         <option value="2">女</option>\
@@ -398,70 +442,126 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">联系电话</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="phone3" id="phone3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_phone"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\
+                                                            </div>\
+                                                            <div class="layui-col-lg12">\
+                                                                  <input name="tab_otheruserssid" style="display: none;">\
+                                                                   <button  class="layui-btn layui-btn-danger  layui-btn-sm"  onclick="tab_reset(this)" style="float: right">重置</button>\
                                                             </div>\
                                                         </div>';
 
     layui.use(['element','form'], function(){
-        var element = layui.element;
         var form = layui.form;
+        var element=layui.element;
         //使用模块
-        layer.prompt({title: '请输入标题', formType: 0}, function(title, index){
+        layer.prompt({title: '请输入标其他在场人员标题', formType: 0}, function(title, index){
             element.tabAdd('tabAdd_filter', {
                 title:title
                 ,content:html
             });
-
+            $("#tab_content select[name='tab_card']").html("");
+            if (isNotEmpty(cards)){
+                for (var i = 0; i < cards.length; i++) {
+                    var l = cards[i];
+                    $("#tab_content select[name='tab_card']").each(function(){
+                        $(this).append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                    });
+                }
+            }
             element.render();
             form.render();
             layer.close(index);
         });
+
     });
 }
 
+//其他在场人员的查询
+function getUserByCard_other(obj){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
+    var cards=$(obj).closest(".layui-tab-item").find("select[name='tab_card']").val();
+    var cardnum=$(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
+
+    if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){ //判断主要人员信息是否搜索
+        layer.msg("请先获取人员基本信息");
+        $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+        return;
+    }
+    if (dqcardssid==cards&&dqcardnum==cardnum){
+        layer.msg("被询问人不能作为其他在场人员");
+        $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+        return;
+    }
+    //判断证件是否已经被搜索
+    var num=0;
+    $("#tab_content select[name='tab_card']").each(function(){
+       var card_val=$(this).val();
+       var card_num=$(this).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
+        if (card_val==cards&&card_num==cardnum){
+            num++;
+        }
+    });
+    if (num>1){
+        layer.msg("该在场人员已存在");
+        $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+        return;
+    }
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            cardtypesssid:cards,
+            cardnum:cardnum
+        }
+    };
+    ajaxSubmitByJson(url,data,function callbackgetUserByCard_other(data){
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var userinfo=data.userinfo;
+                if (isNotEmpty(userinfo)){
+                    /*人员信息*/
+
+                    $(obj).closest(".layui-tab-item").find("input[name='tab_username']").val(userinfo.username);
+                    $(obj).closest(".layui-tab-item").find("select[name='tab_sex']").val(userinfo.sex);
+                    $(obj).closest(".layui-tab-item").find("input[name='tab_phone']").val(userinfo.phone);
+                    $(obj).closest(".layui-tab-item").find("input[name='tab_otheruserssid']").val(userinfo.ssid);
+                }
+            }
+        }else{
+            layer.msg(data.message);
+            $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+        }
+        layui.use('form', function(){
+            var form = layui.form;
+            form.render();
+        });
+    });
+}
+
+//其他在场人员重置按钮
+function tab_reset(obj){
+    layui.use(['form'], function(){
+        var form=layui.form;
+        $(obj).closest(".layui-tab-item").find("input").val("");
+        $(obj).closest(".layui-tab-item").find('select').prop('selectedIndex', 0);
+        form.render('select');
+    });
+}
 
 $(function () {
     layui.use(['form','jquery','laydate'], function() {
         var form=layui.form;
-        var laydate = layui.laydate;
-        form.on('select(change_card)', function(data){
-            var val=data.value;
-            $("input:not('#adminssid1'):not('#workname1'):not('#recordplace')").val("");
-            $('select').not("#cards1").prop('selectedIndex', 0);
 
-            laydate.render({
-                elem: '#occurrencetime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-            laydate.render({
-                elem: '#starttime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-            laydate.render({
-                elem: '#endtime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-           $("#adminssid1").val(sessionusername);
-            $("#workname1").val(sessionusername);
-            $("#recordplace").val(sessionworkname);
-            //使用模块
+        form.on('select(change_card)', function(data){
+            $("input:not('#adminssid'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
+            $('select ').not("#cards").prop('selectedIndex', 0)
+            $('#casename option').not(":lt(1)").remove();
             form.render();
         });
 
         form.on('select(change_case)', function(data){
             var casessid=data.value;
-            /* var title=data.elem[data.elem.selectedIndex].title;
-           $("#casename").find("option[value='"+casessid+"']").text(title);
-           form.render();
-
-            setcases(cases);*/
             $("#cause").val("");
             $("#casenum").val("");
             $("#occurrencetime").val("");
@@ -469,10 +569,19 @@ $(function () {
             $("#endtime").val("");
             $("#caseway").val("");
             $("#asknum").val("0");
+            $("#recordname").val("");
+
+
+
             if (isNotEmpty(cases)){
                 for (var i = 0; i < cases.length; i++) {
                     var c = cases[i];
                     if (casessid==c.ssid){
+                        var casename=$("#casename").find("option:selected").text();
+                        var recordtypename=$("td[recordtypebool='true']",parent.document).text();
+                        var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+
+
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
                         $("#occurrencetime").val(c.occurrencetime);
@@ -480,6 +589,7 @@ $(function () {
                         $("#endtime").val(c.endtime);
                         $("#caseway").val(c.caseway);
                         $("#asknum").val(c.asknum);
+                        $("#recordname").val(recordname);
                     }
                 }
             }
