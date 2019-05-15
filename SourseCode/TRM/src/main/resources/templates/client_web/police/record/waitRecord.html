@@ -113,15 +113,7 @@
 
     <div class="layui-elem-quote layui-row" style=" padding: 10px;">
         <div class="layui-col-md12 ">
-            <div class="layui-col-md6 ">
                 <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
-            </div>
-            <div class="layui-col-md6 ">
-              <div style="float: right">
-                  <button class="layui-btn layui-btn-normal layui-btn-sm">告知书</button>
-                  <button class="layui-btn layui-btn-normal layui-btn-sm">朗读</button>
-              </div>
-            </div>
         </div>
     </div>
 
@@ -181,10 +173,17 @@
             </div>
             <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                 <div style="margin-top: 5px">
-                    <button class="layui-btn layui-btn-normal ">保存</button>
-                    <button class="layui-btn layui-btn-normal ">编辑</button>
-                    <button class="layui-btn layui-btn-normal ">打印</button>
-                    <button class="layui-btn layui-btn-normal ">导出</button>
+                    <div class="layui-col-md6 ">
+                        <button class="layui-btn layui-btn-normal ">保存</button>
+                        <button class="layui-btn layui-btn-normal ">打印</button>
+                        <button class="layui-btn layui-btn-normal ">导出</button>
+                    </div>
+                    <div class="layui-col-md6 ">
+                        <div style="float: right">
+                            <button class="layui-btn layui-btn-normal ">告知书</button>
+                            <button class="layui-btn layui-btn-normal ">朗读</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="layui-card" >
                         <div class="layui-card-body layui-row " style="padding: 0">

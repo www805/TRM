@@ -1,5 +1,6 @@
 var templatessid=null;//模板ssid
 
+
 //跳转变更模板页面
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -165,5 +166,8 @@ function copy_text(obj) {
         }
     });
 }
+
+
+//根据笔录ssid
 
 
