@@ -147,7 +147,7 @@ public class Base_pua extends Model<Base_pua> {
         ", parentcode=" + parentcode +
         ", unitname=" + unitname +
         ", unitcode=" + unitcode +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

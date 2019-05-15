@@ -139,7 +139,7 @@ public class Police_recordtype extends Model<Police_recordtype> {
                 ", ordernum=" + ordernum +
                 ", createtime=" + createtime +
                 ", pid=" + pid +
-                ", id='" + ssid + '\'' +
+                ", ssid='" + ssid + '\'' +
                 ", string1='" + string1 + '\'' +
                 ", string2='" + string2 + '\'' +
                 ", integer1=" + integer1 +

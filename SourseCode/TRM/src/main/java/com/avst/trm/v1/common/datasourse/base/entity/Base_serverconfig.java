@@ -235,7 +235,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", workstarttime=" + workstarttime +
         ", workdays=" + workdays +
         ", authorizesortnum=" + authorizesortnum +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

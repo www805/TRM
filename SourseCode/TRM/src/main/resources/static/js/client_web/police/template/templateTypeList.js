@@ -29,9 +29,7 @@ function getTemplateTypeList(keyword, currPage, pageSize) {
 }
 
 function getTemplateTypeById(ssidd) {
-    setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateTemplateType");
-    var url=getActionURL(getactionid_manage().addOrupdateTemplateType_getTemplateTypeById);
-    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
+    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypeById);
     ssid = ssidd;
     var data={
         token:INIT_CLIENTKEY,
@@ -43,15 +41,13 @@ function getTemplateTypeById(ssidd) {
 }
 
 function AddOrUpdateTemplateType(version) {
-    setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateTemplateType");
-    var url=getActionURL(getactionid_manage().addOrupdateTemplateType_updateTemplateType);
+    var url=getActionURL(getactionid_manage().templateTypeList_updateTemplateType);
     var typename=$("input[name='typename']").val();
     var ordernum=$("input[name='ordernum']").val();
-    if (!isNotEmpty(version)) {
+    if (isNotEmpty(version)) {
         //添加
-        url=getActionURL(getactionid_manage().addOrupdateTemplateType_addTemplateType);
+        url=getActionURL(getactionid_manage().templateTypeList_addTemplateType);
     }
-    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
 
     var data = {
         token: INIT_CLIENTKEY,
@@ -72,6 +68,7 @@ function callAddOrUpdate(data){
             }else{
                 layer.msg("操作失败",{icon: 2});
             }
+            setTimeout("window.location.reload()",1500);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -91,7 +88,7 @@ function callTemplateTypeList(data){
 function callTemplateTypeById(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data.data)){
-            opneModal_1(data.data.typename, data.data.ordernum);
+            opneModal_1(data.data);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -130,13 +127,14 @@ function showpagetohtml(){
     }
 }
 
-function opneModal_1(typename, ordernum) {
+function opneModal_1(problem) {
 
-    if (!isNotEmpty(typename)){
-        typename = "";
-    }
-    if (!isNotEmpty(ordernum)){
-        ordernum = "0";
+    var typename = "";
+    var ordernum = "0";
+
+    if(isNotEmpty(problem)) {
+        typename = problem.typename;
+        ordernum = problem.ordernum;
     }
 
     var html='  <form class="layui-form site-inline" style="margin-top: 20px">\

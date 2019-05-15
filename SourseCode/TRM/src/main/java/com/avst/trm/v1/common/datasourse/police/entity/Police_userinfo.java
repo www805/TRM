@@ -317,7 +317,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
         ", workunits=" + workunits +
         ", createtime=" + createtime +
         ", specialtype=" + specialtype +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

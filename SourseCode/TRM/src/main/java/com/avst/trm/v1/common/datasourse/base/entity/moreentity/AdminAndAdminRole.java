@@ -151,7 +151,7 @@ public class AdminAndAdminRole extends AdminAndAdmintorole {
         ", ordernum=" + ordernum +
         ", description=" + description +
         ", createtime=" + createtime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

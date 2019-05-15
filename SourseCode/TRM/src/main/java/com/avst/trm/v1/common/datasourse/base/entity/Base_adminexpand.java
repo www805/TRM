@@ -121,7 +121,7 @@ public class Base_adminexpand extends Model<Base_adminexpand> {
         ", expandname=" + expandname +
         ", expandvalue=" + expandvalue +
         ", adminssid=" + adminssid +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

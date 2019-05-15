@@ -164,7 +164,7 @@ public class AddDataToSynchronizeDataConf {
         String tablename=param.getDataname();
         BaseMapper mapper=(BaseMapper)SpringUtil.getBean(tablename+"Mapper");
         EntityWrapper entityWrapper=new EntityWrapper();
-        entityWrapper.eq("id",datassid);
+        entityWrapper.eq("ssid",datassid);
         param.setT(mapper.selectList(entityWrapper).get(0));//把数据用泛型的方式进去
 
 

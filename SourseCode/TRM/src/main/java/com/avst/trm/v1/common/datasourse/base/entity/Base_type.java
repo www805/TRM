@@ -137,7 +137,7 @@ public class Base_type extends Model<Base_type> {
         ", type=" + type +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

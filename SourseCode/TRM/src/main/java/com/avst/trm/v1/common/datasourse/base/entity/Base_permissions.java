@@ -203,7 +203,7 @@ public class Base_permissions extends Model<Base_permissions> {
         ", description=" + description +
         ", createtime=" + createtime +
         ", ordernum=" + ordernum +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

@@ -6,10 +6,8 @@ var problemtypessidV;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
-    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
-    var url = "/cweb/police/template/getProblems";
-
-    // console.log(pageActionByPage);
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
+    // var url = "/cweb/police/template/getProblems";
     // console.log(url);
 
     var keyword =$("#keyword").val();
@@ -28,8 +26,8 @@ function getProblems_init(currPage,pageSize) {
 
 //分页查询模板列表
 function getProblems(keyword, problemtypeid, currPage, pageSize) {
-    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
-    var url = "/cweb/police/template/getProblems";
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getProblems);
+    // var url = "/cweb/police/template/getProblems";
     // console.log(url);
 
     var data={
@@ -57,9 +55,7 @@ function getProblemTypes() {
 
 //获取模板类型
 function getTmplateTypes() {
-    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
-    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
-    setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateProblemType");
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateTypes);
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -98,7 +94,7 @@ function callAddOrUpdate(data){
             // window.location.reload();
             // console.log(data);
             layer.msg("操作成功",{icon: 1});
-            setTimeout("window.location.reload()",1800);
+            setTimeout("window.location.reload()",1500);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -198,6 +194,7 @@ function callAddOrUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             layer.msg("操作成功！",{icon: 1});
+            setTimeout("window.location.reload()",1800);
             // window.location.reload();
             // console.log(data);
             // alert("chengg")
@@ -282,18 +279,22 @@ function templateInit() {
 }
 
 function AddOrUpdateProblem(version) {
-    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateById);
-    var url = "/cweb/police/template/updateProblem";
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_updateProblem);
+    // var url = "/cweb/police/template/updateProblem";
     var problem = $("#problem").val();
     var referanswer = $("#referanswer").val();
     var problemtypessid = $("#problemtypessid").val();
     var ByIdDDD = "";
 
+    // console.log(pageActionByPage);
+    // console.log(url);
+
     if (version == "修改") {
         ByIdDDD = $("#ByIdDDD").val();
     } else {
         //添加
-        url = "/cweb/police/template/addProblem";
+        url=getActionURL(getactionid_manage().addOrupdateTemplate_addProblem);
+        // url = "/cweb/police/template/addProblem";
     }
 
     var data = {
@@ -311,8 +312,8 @@ function AddOrUpdateProblem(version) {
 }
 
 function UpdateProblemBy(va, ByIdDDD, text) {
-    // var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateById);
-    var url = "/cweb/police/template/updateProblem";
+    var url=getActionURL(getactionid_manage().addOrupdateProblem_updateProblem);
+    // var url = "/cweb/police/template/updateProblem";
     // var problem = $("#problem").val();
     // var referanswer = $("#referanswer").val();
     // var problemtypessid = $("#problemtypessid").val();
@@ -352,7 +353,8 @@ function addUpdateinfo(ssid, problemtypessid, type) {
     }
 
     if (ssid) {
-        var url = "/cweb/police/template/getProblemById";
+        // var url = "/cweb/police/template/getProblemById";
+        var url = getActionURL(getactionid_manage().addOrupdateTemplate_getProblemById);
         var data = {
             token: INIT_CLIENTKEY,
             param: {
@@ -468,10 +470,12 @@ function getDataAll() {
 
     // console.log(templatetoproblemids);
 
-    var url = "/cweb/police/template/addTemplate";
+    // var url = "/cweb/police/template/addTemplate";
+    var url = getActionURL(getactionid_manage().addOrupdateTemplate_addTemplate);
 
     if (ssid) {
-        url = "/cweb/police/template/updateTemplate";
+        var url = getActionURL(getactionid_manage().addOrupdateTemplate_updateTemplate);
+        // url = "/cweb/police/template/updateTemplate";
     }
     var data={
         token:INIT_CLIENTKEY,
@@ -484,7 +488,7 @@ function getDataAll() {
         }
     };
 
-    // console.log(data);
+    // console.log(url);
 
     ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
 }

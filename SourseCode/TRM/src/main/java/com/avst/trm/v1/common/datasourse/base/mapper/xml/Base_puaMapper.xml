@@ -10,7 +10,7 @@
         <result column="parentcode" property="parentcode" />
         <result column="unitname" property="unitname" />
         <result column="unitcode" property="unitcode" />
-        <result column="id" property="id" />
+        <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

@@ -137,7 +137,7 @@ public class Base_datainfo extends Model<Base_datainfo> {
         ", dataname_cn=" + dataname_cn +
         ", mappername=" + mappername +
         ", typessid=" + typessid +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

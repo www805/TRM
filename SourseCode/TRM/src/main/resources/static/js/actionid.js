@@ -132,14 +132,33 @@ function getactionid_manage() {
 
 
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
+        templateTypeList_getTemplateTypeById: "templateTypeList_getTemplateTypeById",
+        templateTypeList_addTemplateType: "templateTypeList_addTemplateType",
+        templateTypeList_updateTemplateType: "templateTypeList_updateTemplateType",
+        problemIndex_updateProblemType: "problemIndex_updateProblemType",
+        problemIndex_addProblemType: "problemIndex_addProblemType",
+        problemIndex_getTemplateTypeById: "problemIndex_getTemplateTypeById",
         addOrupdateTemplateType_addTemplateType: "addOrupdateTemplateType_addTemplateType",
         addOrupdateTemplateType_updateTemplateType: "addOrupdateTemplateType_updateTemplateType",
         addOrupdateTemplateType_getTemplateTypeById: "addOrupdateTemplateType_getTemplateTypeById",
-        addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
+        addOrupdateTemplateType_getTemplateTypes:"addOrupdateTemplateType_getTemplateTypes",
+        addOrupdateTemplateType_getProblemTypes:"addOrupdateTemplateType_getProblemTypes",
+        addOrupdateTemplateType_getProblemById:"addOrupdateTemplateType_getProblemById",
 
         templateIndex_getTemplates: "templateIndex_getTemplates",
+        templateIndex_getTemplateTypes: "templateIndex_getTemplateTypes",
+
+        addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
+        addOrupdateTemplate_getTemplateTypes:"addOrupdateTemplate_getTemplateTypes",
         addOrupdateTemplate_getProblems: "addOrupdateTemplate_getProblems",
         addOrupdateTemplate_getTemplateById: "addOrupdateTemplate_getTemplateById",
+        addOrupdateTemplate_addTemplate: "addOrupdateTemplate_addTemplate",
+
+        addOrupdateProblem_addProblem: "addOrupdateProblem_addProblem",
+        addOrupdateTemplate_updateProblem: "addOrupdateTemplate_updateProblem",
+        addOrupdateTemplate_addProblem: "addOrupdateTemplate_addProblem",
+        addOrupdateTemplate_getProblemById: "addOrupdateTemplate_getProblemById",
+        addOrupdateTemplate_updateTemplate: "addOrupdateTemplate_updateTemplate",
 
 
     };

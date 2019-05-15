@@ -263,7 +263,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
 
                 //删除已同步的数据表
                 EntityWrapper entityWrapper=new EntityWrapper();
-                entityWrapper.eq("id",datassid);
+                entityWrapper.eq("ssid",datassid);
                 int delete=baseMapper.delete(entityWrapper);
                 System.out.println(delete+":delete--baseMapper.delete");
                 result.setMessage("数据同步失败已删除这条同步数据");

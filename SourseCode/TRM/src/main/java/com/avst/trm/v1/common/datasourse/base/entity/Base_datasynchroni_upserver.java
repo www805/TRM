@@ -125,7 +125,7 @@ public class Base_datasynchroni_upserver extends Model<Base_datasynchroni_upserv
         ", lastuploadtime=" + lastuploadtime +
         ", uploadcount=" + uploadcount +
         ", unitsort=" + unitsort +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

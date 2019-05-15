@@ -221,7 +221,7 @@ public class Police_case extends Model<Police_case> {
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", userssid=" + userssid +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

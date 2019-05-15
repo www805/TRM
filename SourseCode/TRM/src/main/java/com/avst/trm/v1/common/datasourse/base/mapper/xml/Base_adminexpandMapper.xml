@@ -8,7 +8,7 @@
         <result column="expandname" property="expandname" />
         <result column="expandvalue" property="expandvalue" />
         <result column="adminssid" property="adminssid" />
-        <result column="id" property="id" />
+        <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

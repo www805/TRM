@@ -125,7 +125,7 @@ public class Base_roletopermissions extends Model<Base_roletopermissions> {
         ", permissionsssid=" + permissionsssid +
         ", rolessid=" + rolessid +
         ", createtime=" + createtime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

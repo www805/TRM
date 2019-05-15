@@ -151,7 +151,7 @@ public class Police_problem extends Model<Police_problem> {
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", updatetime=" + updatetime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

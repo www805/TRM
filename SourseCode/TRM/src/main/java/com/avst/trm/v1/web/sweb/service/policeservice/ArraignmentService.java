@@ -144,7 +144,7 @@ public class ArraignmentService extends BaseService {
         //根据笔录ssid中的笔录模板获取全部问题
         try {
             EntityWrapper ew=new EntityWrapper();
-            ew.eq("r.id",recordssid);
+            ew.eq("r.ssid",recordssid);
             ew.orderBy("p.ordernum",true);
             ew.orderBy("p.createtime",true);
             List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(ew);
@@ -173,7 +173,7 @@ public class ArraignmentService extends BaseService {
         //根据笔录ssid获取录音数据
         try {
             EntityWrapper recordParam=new EntityWrapper();
-            recordParam.eq("r.id",recordssid);
+            recordParam.eq("r.ssid",recordssid);
             Record record=police_recordMapper.getRecordBySsid(recordParam);
 
             if (null!=record){

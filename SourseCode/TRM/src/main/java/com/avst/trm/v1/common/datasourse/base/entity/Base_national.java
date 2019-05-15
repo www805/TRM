@@ -135,7 +135,7 @@ public class Base_national extends Model<Base_national> {
         ", nationname=" + nationname +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

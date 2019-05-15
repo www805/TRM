@@ -168,7 +168,7 @@ public class Police_answer extends Model<Police_answer> {
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", updatetime=" + updatetime +
-        ", id=" + ssid +
+        ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +
         ", integer1=" + integer1 +

@@ -21,18 +21,18 @@ import java.util.List;
 public interface Base_datasheet_downserverMapper extends BaseMapper<Base_datasheet_downserver> {
 
         @Select(" select dd.*, " +
-                " dsd.lastuploadtime,dsd.uploadcount,dsd.upserverip,dsd.id as dsdssid, " +
-                " d.dataname_cn,d.mappername,d.id as dssid," +
+                " dsd.lastuploadtime,dsd.uploadcount,dsd.upserverip,dsd.ssid as dsdssid, " +
+                " d.dataname_cn,d.mappername,d.ssid as dssid," +
                 " t.typename from base_datasheet_downserver dd " +
-                " left join base_datasynchroni_downserver dsd on dsd.id=dd.downserverssid " +
+                " left join base_datasynchroni_downserver dsd on dsd.ssid=dd.downserverssid " +
                 " left join base_datainfo d on dd.dataname=d.dataname " +
-                " left join base_type t on t.id=d.typessid where 1=1 ${ew.sqlSegment} ")
+                " left join base_type t on t.ssid=d.typessid where 1=1 ${ew.sqlSegment} ")
         List<DownserverAndDatainfo> getdownServers(Page page, @Param("ew") EntityWrapper ew);
 
         @Select(" select COUNT(dd.id) from base_datasheet_downserver dd " +
-                " left join base_datasynchroni_downserver dsd on dsd.id=dd.downserverssid " +
+                " left join base_datasynchroni_downserver dsd on dsd.ssid=dd.downserverssid " +
                 " left join base_datainfo d on dd.dataname=d.dataname " +
-                " left join base_type t on t.id=d.typessid where 1=1 ${ew.sqlSegment} ")
+                " left join base_type t on t.ssid=d.typessid where 1=1 ${ew.sqlSegment} ")
         int countgetdownServers(@Param("ew") EntityWrapper ew);
 
 }

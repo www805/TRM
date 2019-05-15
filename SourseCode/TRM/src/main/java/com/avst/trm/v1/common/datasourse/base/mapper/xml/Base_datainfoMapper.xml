@@ -9,7 +9,7 @@
         <result column="dataname_cn" property="dataname_cn" />
         <result column="mappername" property="mappername" />
         <result column="typessid" property="typessid" />
-        <result column="id" property="id" />
+        <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

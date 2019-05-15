@@ -8,7 +8,7 @@ function getTmplates_init(currPage,pageSize) {
     var keyword =$("#keyword").val();
     var templatetypeid = $("#templateType").val();
     if(!templatetypeid){
-        templatetypeid = 8;
+        templatetypeid = 1;
     }
     var data={
         token:INIT_CLIENTKEY,
@@ -24,11 +24,12 @@ function getTmplates_init(currPage,pageSize) {
 
 function getTmplates(keyword, templateType, currPage, pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
+
     var data = {
         token: INIT_CLIENTKEY,
         param: {
             keyword: keyword,
-            templateType: parseInt(templateType),
+            templatetypeid: parseInt(templateType),
             currPage: currPage,
             pageSize: pageSize
         }
@@ -38,9 +39,7 @@ function getTmplates(keyword, templateType, currPage, pageSize) {
 
 //获取模板类型
 function getTmplateTypes() {
-    setpageAction(INIT_CLIENT, "client_web/police/template/templateTypeList");
-    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
-    setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
+    var url=getActionURL(getactionid_manage().templateIndex_getTemplateTypes);
     var data={
         token:INIT_CLIENTKEY,
         param:{}
