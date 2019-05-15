@@ -21,7 +21,7 @@
         <h3 th:text="${configModel.title}"></h3>
     </div>
 
-    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" th:object="${configModel.RResult.data}">
+    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" th:object="${configModel.RResult.data.serverconfig}">
         <input type="hidden" name="id" th:value="*{id}">
         <div class="layui-form-item">
             <label class="layui-form-label">系统名称</label>
@@ -32,7 +32,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">系统logo</label>
             <div class="layui-input-inline">
-                <!--<input type="text" name="syslogo_filesavessid" lay-verify="required" th:value="${configModel?.RResult?.data?.syslogo_filesavessid}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >-->
+                <!--<input type="text" name="syslogo_filesavessid" lay-verify="required" th:value="${configModel?.RResult?.data?.syslogoimage}" placeholder="系统Logo地址" autocomplete="off" class="layui-input" >-->
             </div>
 
             <button type="button" class="layui-btn layui-btn-normal" id="test1"><i class="layui-icon"></i>上传图片</button>
@@ -40,7 +40,7 @@
                 这里以限制 512kB
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
-                <img class="layui-upload-img" id="demo1" style="width: 300px;">
+                <img class="layui-upload-img" th:src="${configModel?.RResult?.data?.syslogoimage}" th:title="客户端logo" id="demo1" style="width: 300px;">
                 <p id="demoText"></p>
             </div>
 
@@ -55,7 +55,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">客户端logo</label>
             <div class="layui-input-inline">
-                <!--<input type="text" name="client_filesavessid" lay-verify="required" th:value="${configModel.RResult.data.client_filesavessid}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >-->
+                <!--<input type="text" name="client_filesavessid" lay-verify="required" th:value="${configModel.RResult.data.clientimage}" placeholder="客户端Logo地址" autocomplete="off" class="layui-input" >-->
             </div>
 
             <button type="button" class="layui-btn layui-btn-normal" id="test2"><i class="layui-icon"></i>上传图片</button>
@@ -63,7 +63,7 @@
                 这里以限制 512kB
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
-                <img class="layui-upload-img" id="demo2" style="width: 300px;">
+                <img th:src="${configModel?.RResult?.data?.clientimage}" th:title="客户端logo" class="layui-upload-img" id="demo2" style="width: 300px;">
                 <p id="demoText2"></p>
             </div>
 
@@ -101,7 +101,7 @@
             <label class="layui-form-label">工作开始时间</label>
             <div class="layui-input-block">
 
-                <input type="text" name="workstarttime" disabled th:value="${#dates.format(configModel.RResult.data.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
+                <input type="text" name="workstarttime" disabled th:value="${#dates.format(configModel.RResult.data.serverconfig.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
             </div>
         </div>
 

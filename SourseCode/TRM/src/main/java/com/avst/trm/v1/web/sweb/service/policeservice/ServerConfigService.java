@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.sweb.req.policereq.ServerconfigParam;
+import com.avst.trm.v1.web.sweb.vo.basevo.GetServerConfigByIdVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,16 +40,35 @@ public class ServerConfigService extends BaseService {
      * 通过id查询配置项
      * @param result
      */
-    public void getServerConfigById(RResult<Base_serverconfig> result){
+    public void getServerConfigById(RResult<GetServerConfigByIdVO> result){
+
+        GetServerConfigByIdVO serverConfigByIdVO = new GetServerConfigByIdVO();
+
+        if(null==result){
+            result=new RResult<GetServerConfigByIdVO>();
+        }
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
-        if(null==result){
-            result=new RResult<Base_serverconfig>();
+        if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
+            Base_filesave filesaveSyslogo = new Base_filesave();
+            filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
+            Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
+            serverConfigByIdVO.setSyslogoimage(syslogo.getRecorddownurl());
         }
 
+        if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
+            Base_filesave filesaveClientlogo = new Base_filesave();
+            filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
+            Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
+            serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
+        }
+
+
+        serverConfigByIdVO.setServerconfig(serverconfig);
+
         if(serverconfig != null){
-            result.setData(serverconfig);
+            result.setData(serverConfigByIdVO);
             this.changeResultToSuccess(result);
         }
     }
@@ -141,16 +161,17 @@ public class ServerConfigService extends BaseService {
             filesave.setRecordrealurl(realpath);//真实存储地址
             filesave.setRecorddownurl(uploadpath);//下载地址
 
+            String ssid = "";
             if("syslogo_filesavessid".equals(datassid)){
-                datassid = serverconfig.getSyslogo_filesavessid();
+                ssid = serverconfig.getSyslogo_filesavessid();
             }else{
-                datassid = serverconfig.getClient_filesavessid();
+                ssid = serverconfig.getClient_filesavessid();
             }
 
-            filesave.setDatassid(datassid);//从属表的ssid
+//            filesave.setDatassid(ssid);//从属表的ssid
 
             EntityWrapper ew=new EntityWrapper();
-            ew.eq("datassid", datassid);
+            ew.eq("ssid", ssid);
 
             Integer update = filesaveMapper.update(filesave, ew);
             if (update == 0) {
@@ -158,6 +179,15 @@ public class ServerConfigService extends BaseService {
                 update = filesaveMapper.insert(filesave);
                 this.changeResultToSuccess(rResult);
                 rResult.setMessage("上传成功");
+
+                //同时把字段更新到系统配置表里
+                if ("syslogo_filesavessid".equals(datassid)) {
+                    serverconfig.setSyslogo_filesavessid(filesave.getSsid());
+                } else {
+                    serverconfig.setClient_filesavessid(filesave.getSsid());
+                }
+                Integer integer = serverconfigMapper.updateById(serverconfig);
+                System.out.println("同步系统配置： " + integer);
             }
 
         } catch (IOException e) {

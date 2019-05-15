@@ -104,7 +104,7 @@ function getTemplateTypeListParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 3;//测试
+        var pageSize = 10;//测试
         getTemplateTypeList_init(currPage, pageSize);
     }  else if (len == 2) {
         getTemplateTypeList('', arguments[0], arguments[1]);
