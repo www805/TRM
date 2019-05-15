@@ -360,6 +360,65 @@ function setcases(cases){
     }
 }
 
+/**
+ * 其他在场人员的添加
+ */
+function tabAdd(){
+    var html='<div class="layui-row layui-col-space10">\
+                                                            <div class="layui-col-lg6">\
+                                                                <label class="layui-form-label">证件类型</label>\
+                                                                <div class="layui-input-block">\
+                                                                    <select name="" lay-verify="required" id="" disabled>\
+                                                                    </select>\
+                                                                </div>\
+                                                            </div>\
+                                                            <div class="layui-col-lg6">\
+                                                                <label class="layui-form-label">证件号码</label>\
+                                                                <div class="layui-input-block">\
+                                                                    <input type="search" name="" id="" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                </div>\
+                                                            </div>\
+                                                            <div class="layui-col-lg6">\
+                                                                <label class="layui-form-label">姓名</label>\
+                                                                <div class="layui-input-block">\
+                                                                    <input type="text" name="username3"  id="username3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                </div>\
+                                                            </div>\
+                                                            <div class="layui-col-lg6">\
+                                                                <label class="layui-form-label">性别</label>\
+                                                                <div class="layui-input-block">\
+                                                                    <select name="sex3" lay-verify="required" id="sex3">\
+                                                                        <option value=""></option>\
+                                                                        <option value="1">男</option>\
+                                                                        <option value="2">女</option>\
+                                                                        <option value="-1">未知</option>\
+                                                                    </select>\
+                                                                </div>\
+                                                            </div>\
+                                                            <div class="layui-col-lg6">\
+                                                                <label class="layui-form-label">联系电话</label>\
+                                                                <div class="layui-input-block">\
+                                                                    <input type="text" name="phone3" id="phone3" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                </div>\
+                                                            </div>\
+                                                        </div>';
+
+    layui.use(['element','form'], function(){
+        var element = layui.element;
+        var form = layui.form;
+        //使用模块
+        layer.prompt({title: '请输入标题', formType: 0}, function(title, index){
+            element.tabAdd('tabAdd_filter', {
+                title:title
+                ,content:html
+            });
+
+            element.render();
+            form.render();
+            layer.close(index);
+        });
+    });
+}
 
 
 $(function () {

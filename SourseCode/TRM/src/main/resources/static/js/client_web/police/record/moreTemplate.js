@@ -3,6 +3,9 @@ var editSsid;
 var templateTypeId;
 var templateId;
 
+/**
+ * 笔录类型
+ */
 function getTmplateTypes() {
     var url=getActionURL(getactionid_manage().moreTemplate_getTemplateTypes);
     var data={
@@ -34,6 +37,9 @@ function callTmplateTypes(data){
     });
 }
 
+/*
+笔录数据
+ */
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().moreTemplate_getTemplates);
     var keyword =$("#templatename").val();
@@ -82,7 +88,6 @@ function callTmplates2(data){
     }
 }
 
-
 /**
  * 局部刷新
  */
@@ -100,7 +105,6 @@ function getTmplateTypesParam() {
         getTmplates(arguments[0], arguments[1], arguments[2], arguments[3]);
     }
 }
-
 function showpagetohtml(){
 
     if(isNotEmpty(pageparam)){
@@ -117,24 +121,6 @@ function showpagetohtml(){
         showpage("paging",arrparam,'getTmplateTypesParam',currPage,pageCount,pageSize);
     }
 }
-
-layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
-    var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
-        ,form = layui.form
-        ,layer = layui.layer
-        ,layedit = layui.layedit
-        ,laydate = layui.laydate
-        ,laypage = layui.laypage;
-
-    //不显示首页尾页
-    laypage.render({
-        elem: 'demo1'
-        ,count: 100
-        ,first: false
-        ,last: false
-    });
-    form.render();
-});
 
 function getTemplateById(id) {
     if (pagelist[id]) {

@@ -195,10 +195,11 @@
                             <div class="layui-card" >
                                 <div class="layui-card-header">
                                     其他在场人员
+                                    <i class="layui-icon" onclick="tabAdd();" title="添加其他在场人员" style="position: absolute;right: 15px;color: #1E9FFF">&#xe654;</i>
                                 </div>
                                 <div class="layui-card-body"  style="padding: 0;">
-                                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                                        <ul class="layui-tab-title"  lay-filter="test1">
+                                    <div class="layui-tab" lay-allowClose="true"lay-filter="tabAdd_filter">
+                                        <ul class="layui-tab-title"  >
                                             <li class="layui-this">未成年人监护人</li>
                                             <li>翻译人员</li>
                                             <li>手势人员</li>
@@ -316,7 +317,7 @@
                                                 </div>
                                             </div>
                                             <div class="layui-tab-item">
-                                                <div class="  layui-row layui-col-space10">
+                                                <div class="layui-row layui-col-space10">
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件类型</label>
                                                         <div class="layui-input-block">
@@ -528,6 +529,8 @@
         var form = layui.form;
         var laydate = layui.laydate;
         //使用模块
+
+        element.render();
         laydate.render({
             elem: '#both' //指定元素
         });

@@ -125,6 +125,7 @@ function getactionid_manage() {
 
         waitRecord_tomoreTemplate:"waitRecord_tomoreTemplate",
         waitRecord_getTemplateById:"waitRecord_getTemplateById",
+        waitRecord_setDefaultTemplate:"waitRecord_setDefaultTemplate",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

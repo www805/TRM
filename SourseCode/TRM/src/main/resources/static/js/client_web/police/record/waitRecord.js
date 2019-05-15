@@ -1,4 +1,5 @@
 var templatessid=null;//模板ssid
+//跳转变更模板页面
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
 
@@ -7,7 +8,7 @@ function opneModal_1() {
         title:'变更模板',
         content:url,
         area: ['1000px', '680px'],
-        btn: ['应用模板', '设置为默认模板'],
+        btn: ['应用模板'],
         yes:function(index, layero){
            var editSsid = $(window.frames["layui-layer-iframe"+index])[0].editSsid;
             templatessid=editSsid;
@@ -20,6 +21,7 @@ function opneModal_1() {
     });
 }
 
+//变更模板题目
 function getTemplateById() {
     if (isNotEmpty(templatessid)){
         var url=getActionURL(getactionid_manage().waitRecord_getTemplateById);
@@ -55,6 +57,8 @@ function callTemplateById(data) {
         layer.msg(data.message,{icon: 2});
     }
 }
+
+
 var td_lastindex;//td的上一个光标位置
 function copy_problems(obj) {
     var text=$(obj).find("span").text();
