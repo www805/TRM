@@ -68,7 +68,7 @@
                            <option value="">全部</option>
                        </select>
                    </div>
-                   <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,3);">
+                   <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,15);">
                </div>
                 <div class="layui-card">
                     <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
@@ -132,7 +132,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/recordIndex");
         getRecordtypesindex();
-        getRecords_init(1,3);
+        getRecords_init(1,15);
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

@@ -1,6 +1,5 @@
 var templatessid=null;//模板ssid
 
-
 //跳转变更模板页面
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -10,7 +9,7 @@ function opneModal_1() {
         title:'变更模板',
         content:url,
         area: ['1000px', '680px'],
-        btn: ['应用模板'],
+        btn: ['应用模板','导入该模板全部题目'],
         yes:function(index, layero){
            var editSsid = $(window.frames["layui-layer-iframe"+index])[0].editSsid;
             templatessid=editSsid;
@@ -18,6 +17,9 @@ function opneModal_1() {
             layer.close(index);
         },
         btn2:function(index, layero){
+            var editSsid = $(window.frames["layui-layer-iframe"+index])[0].editSsid;
+            templatessid=editSsid;
+              setAllproblem();
             layer.close(index);
         }
     });
@@ -59,6 +61,65 @@ function callTemplateById(data) {
     }
 }
 
+//导出全部题目
+function setAllproblem() {
+    if (isNotEmpty(templatessid)){
+        var url=getActionURL(getactionid_manage().waitRecord_getTemplateById);
+
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                ssid: templatessid
+            }
+        };
+        ajaxSubmitByJson(url, data, callsetAllproblem);
+    }
+}
+function callsetAllproblem(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var template=data.template;
+            if (isNotEmpty(template)){
+                var templateToProblems=template.templateToProblems;
+                $("#templatetoproblem_html").html("");
+                if (isNotEmpty(templateToProblems)) {
+                    for (var i = 0; i < templateToProblems.length; i++) {
+                        var templateToProblem = templateToProblems[i];
+                        var html="<tr> <td ondblclick='copy_problems(this);'referanswer='"+templateToProblem.referanswer+"'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
+                        $("#templatetoproblem_html").append(html);
+
+                        var html='<tr>\
+                                <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+                                    <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：'+templateToProblem.problem+'</p>\
+                                    <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：'+templateToProblem.referanswer+'</p>\
+                                </td>\
+                                <td style="float: right;">\
+                                    <div class="layui-btn-group">\
+                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                                    </div>\
+                                </td>\
+                                </tr>';
+                        $("#recorddetail").append(html);
+                    }
+
+                    $("#recorddetail .font_blue_color").focus(function(){
+                        td_lastindex=$(this).parent().parent().index();
+                    });
+                }
+
+
+
+
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+
+}
 
 //保存按钮
 function addRecord() {
@@ -124,27 +185,27 @@ function calladdRecord(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             layer.msg('保存成功', {
-                btn: ['去查看', '取消']
-            }, function(index){
+                btn: ['去查看', '继续编辑'],
+                yes:function(index){
                 parent.document.getElementById("record_select").click();
                 layer.close(index);
-            }, function(index){
-                window.history.go(-1);
+            }, btn2:function(index){
                 layer.close(index);
                 return false;
-            });
+            }});
         }
     }else{
         layer.msg(data.message,{icon: 2});
     }
 }
 
+
 var td_lastindex;//td的上一个光标位置
 function copy_problems(obj) {
     var text=$(obj).find("span").text();
     var w=$(obj).attr("referanswer");
     var html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+        <td style="padding: 0;width: 90%;" class="onetd font_red_color">\
             <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：'+text+'</p>\
             <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：'+w+'</p>\
         </td>\
@@ -156,14 +217,13 @@ function copy_problems(obj) {
             </div>\
         </td>\
         </tr>';
-    /*var html=' <tr name="q"><td class="font_red_color" contenteditable="true" >问：'+text+'</td></tr>\
-                <tr name="w"><td class="font_blue_color"contenteditable="true" >答：</td></tr>';*/
     $("#recorddetail").append(html);
    $("#recorddetail .font_blue_color").focus(function(){
        td_lastindex=$(this).parent().parent().index();
     });
 }
 
+//情绪分析
 function random(lower, upper) {
     return Math.floor(Math.random() * (upper - lower)) + lower;
 }
@@ -241,7 +301,7 @@ function img_bool(obj,type){
     }
 }
 
-
+//粘贴语音翻译文本
 var copy_text_html="";
 function copy_text(obj) {
     var text=$(obj).text();

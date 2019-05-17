@@ -8,7 +8,13 @@ var dquserssid=null;//当前用户的ssid
 
 //开始笔录按钮
 function addCaseToArraignment() {
-   var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
+    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+        setpageAction(INIT_CLIENT,nextparam.nextPageId);
+        var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+        parent.location.href=url+"?ssid=80d914a33e094e1daa07d7740b4fed28";
+    }
+  /* var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
 
     var cardnum=$("#cardnum").val();
     if (!isNotEmpty(cardnum)){
@@ -93,7 +99,7 @@ function addCaseToArraignment() {
             usertos:arr
         }
     };
-    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
+    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
 }
 function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
