@@ -41,7 +41,6 @@ function callTemplateById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log(data);
             var template=data.template;
             if (isNotEmpty(template)){
                 var templateToProblems=template.templateToProblems;
@@ -49,7 +48,7 @@ function callTemplateById(data) {
                 if (isNotEmpty(templateToProblems)) {
                     for (var i = 0; i < templateToProblems.length; i++) {
                         var templateToProblem = templateToProblems[i];
-                        var html="<tr> <td ondblclick='copy_problems(this);'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
+                        var html="<tr> <td ondblclick='copy_problems(this);'referanswer='"+templateToProblem.referanswer+"'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
                         $("#templatetoproblem_html").append(html);
                     }
                 }
@@ -61,16 +60,107 @@ function callTemplateById(data) {
 }
 
 
+//保存按钮
+function addRecord() {
+    if (isNotEmpty(recordssid)){
+        var url=getActionURL(getactionid_manage().waitRecord_addRecord);
+
+        //需要收拾数据
+        var recordToProblems=[];//题目集合
+        $("#recorddetail td.onetd").each(function (i) {
+            var arr={};
+            var answers=[];//答案集合
+           var q=$(this).find("p[name='q']").text();
+               q=q.replace(/\s/g,'');
+           if (q.length>2){
+              var str = q.substring(0,2);
+              if (str=="问："||str=="问:") {
+                  q = q.substring(2);
+                  //经过筛选的q
+                  var ws=$(this).find("p[name='w']");
+                  if (isNotEmpty(q)){
+                      if (null!=ws&&ws.length>0){
+                          for (var j = 0; j < ws.length; j++) {
+                              var w =ws.eq(j).text();
+                              w=w.replace(/\s/g,'');
+                              if (w.length>2){
+                                  var str1 = w.substring(0,2);
+                                  if (str1=="答："||str1=="答:") {
+                                      w = w.substring(2);
+                                      //经过筛选的w
+                                      answers.push({
+                                          answer:w
+                                      });
+                                  }
+                              }
+
+
+                          }
+                      }
+                      recordToProblems.push({
+                          problem:q,
+                          answers:answers
+                      });
+                  }
+              }
+           }
+        })
+
+
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                recordToProblems:recordToProblems
+            }
+        };
+       ajaxSubmitByJson(url, data, calladdRecord);
+    }else{
+        layer.msg("系统异常");
+    }
+}
+function calladdRecord(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            layer.msg('保存成功', {
+                btn: ['去查看', '取消']
+            }, function(index){
+                parent.document.getElementById("record_select").click();
+                layer.close(index);
+            }, function(index){
+                window.history.go(-1);
+                layer.close(index);
+                return false;
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
 var td_lastindex;//td的上一个光标位置
 function copy_problems(obj) {
     var text=$(obj).find("span").text();
-    var html=' <tr><td class="font_red_color" contenteditable="true">问：'+text+'</td></tr>\
-                <tr><td class="font_blue_color"contenteditable="true">答：</td></tr>';
+    var w=$(obj).attr("referanswer");
+    var html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+            <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：'+text+'</p>\
+            <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：'+w+'</p>\
+        </td>\
+        <td style="float: right;">\
+            <div class="layui-btn-group">\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+            </div>\
+        </td>\
+        </tr>';
+    /*var html=' <tr name="q"><td class="font_red_color" contenteditable="true" >问：'+text+'</td></tr>\
+                <tr name="w"><td class="font_blue_color"contenteditable="true" >答：</td></tr>';*/
     $("#recorddetail").append(html);
    $("#recorddetail .font_blue_color").focus(function(){
-       /* $(this).append(copy_text_html);
-        copy_text_html="";*/
-       td_lastindex=$(this).parent().index();
+       td_lastindex=$(this).parent().parent().index();
     });
 }
 
@@ -150,6 +240,8 @@ function img_bool(obj,type){
         clearInterval(t);
     }
 }
+
+
 var copy_text_html="";
 function copy_text(obj) {
     var text=$(obj).text();
@@ -157,17 +249,28 @@ function copy_text(obj) {
 
     $("#recorddetail .font_blue_color").each(function(){
         if (isNotEmpty(td_lastindex)){
-            var lastindex=$(this).parent().index();
+            var lastindex=$(this).parent().parent().index();
             if (lastindex==td_lastindex) {
                 $(this).append(copy_text_html);
                 copy_text_html="";
-                td_lastindex=null;
             }
         }
     });
 }
 
 
-//根据笔录ssid
+//tr移动删除事件
+function tr_remove(obj) {
+    $(obj).parents("tr").remove();
+}
 
+function tr_up(obj) {
+    var $tr = $(obj).parents("tr");
+    $tr.prev().before($tr);
+}
+
+function tr_downn(obj) {
+    var $tr = $(obj).parents("tr");
+    $tr.next().after($tr);
+}
 

@@ -172,7 +172,8 @@ public class RecordService extends BaseService {
                 RecordToProblem problem=recordToProblems1.get(i);
                 problem.setCreatetime(new Date());
                 problem.setSsid(OpenUtil.getUUID_32());
-                problem.setOrdernum(Integer.valueOf(1+1));
+                problem.setOrdernum(Integer.valueOf(i+1));
+                problem.setRecordssid(recordssid);
                 int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
                 System.out.println("recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
                 if (recordtoprobleminsert_bool>0){
@@ -182,7 +183,7 @@ public class RecordService extends BaseService {
                             Police_answer answer  = answers.get(j);
                             answer.setSsid(OpenUtil.getUUID_32());
                             answer.setCreatetime(new Date());
-                            answer.setOrdernum(Integer.valueOf(1+1));
+                            answer.setOrdernum(Integer.valueOf(j+1));
                             answer.setRecordtoproblemssid(problem.getSsid());
                           int answerinsert_bool =  police_answerMapper.insert(answer);
                             System.out.println("answerinsert_bool__"+answerinsert_bool);
@@ -193,7 +194,7 @@ public class RecordService extends BaseService {
         }else{
             System.out.println("该笔录没有任何题目答案__2");
         }
-        result.setData(1);
+        result.setData(recordssid);
         changeResultToSuccess(result);
         return;
     }

@@ -16,6 +16,7 @@
     .layui-card-header{
         background-color: #E5F4FD;
         border: 2px solid #FFFFFF;
+        font-weight: bold;
     }
     ::-webkit-scrollbar{
         width: 0px;
@@ -105,7 +106,7 @@
         word-break: break-all;/*必须*/
         white-space: normal;
     }
-
+    .table_td_tt{padding: 7px 7px 7px 15px;white-space: normal;border-bottom: 1px solid #CCCCCC;outline: none}
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -118,135 +119,131 @@
     </div>
 
     <div class="layui-row layui-form" id="layui-row1">
-            <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
-                <!---->
-                <div class="layui-col-md12 layui-collapse " style="border: 0">
-                    <div class="layui-colla-item">
-                        <h2 class=" layui-card-header"><!--layui-colla-title-->
-                            问答模板<span style="color: red">（双击，添加到笔录中）</span>
-                            <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
-                        </h2>
-                         <div class="layui-colla-content layui-show layui-card-body layui-row " style="padding: 0;" >
-                                    <div class="layui-col-lg12">
-                                        <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;">
-                                            <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
-                                                <tbody id="templatetoproblem_html">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                    </div>
-
-                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
-                        <ul class="layui-tab-title">
-                            <li class="layui-this">语音识别</li>
-                            <li>录音录像</li>
-                            <li>测谎仪</li>
-                        </ul>
-                        <div class="layui-tab-content" >
-                            <div class="layui-tab-item layui-show">
-                                    <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px"  >
-                                        <div class="talk_show" id="recordreals">
-
-                                        </div>
-                                    </div>
-                                <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" >
-                                    <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;" img_bool="true" onclick="img_bool(this,1);">
-                                    <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto" img_bool="false" onclick="img_bool(this,0);">
-                                </div>
+        <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <!---->
+            <div class="layui-col-md12 layui-collapse " style="border: 0">
+                <div class="layui-colla-item">
+                    <h2 class=" layui-card-header"><!--layui-colla-title-->
+                        问答模板<span style="color: red">（双击，添加到笔录中）</span>
+                        <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
+                    </h2>
+                    <div class="layui-colla-content layui-show layui-card-body layui-row " style="padding: 0;" >
+                        <div class="layui-col-lg12">
+                            <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;">
+                                <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
+                                    <tbody id="templatetoproblem_html">
+                                    </tbody>
+                                </table>
                             </div>
-                            <div class="layui-tab-item">
-                                录音录像区域
-                            </div>
-                            <div class="layui-tab-item">
-                                 测谎仪区域
-                        </div>
                         </div>
                     </div>
-
-
                 </div>
-                <!---->
 
-                <!---->
+                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">语音识别</li>
+                        <li>录音录像</li>
+                        <li>测谎仪</li>
+                    </ul>
+                    <div class="layui-tab-content" >
+                        <div class="layui-tab-item layui-show">
+                            <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px"  >
+                                <div class="talk_show" id="recordreals">
+
+                                </div>
+                            </div>
+                            <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                                <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;" img_bool="true" onclick="img_bool(this,1);">
+                                <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto" img_bool="false" onclick="img_bool(this,0);">
+                            </div>
+                        </div>
+                        <div class="layui-tab-item">
+                            录音录像区域
+                        </div>
+                        <div class="layui-tab-item">
+                            测谎仪区域
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-            <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
-                <div style="margin-top: 5px">
-                    <div class="layui-col-md6 ">
-                        <button class="layui-btn layui-btn-normal ">保存</button>
-                        <button class="layui-btn layui-btn-normal ">打印</button>
-                        <button class="layui-btn layui-btn-normal ">导出</button>
+            <!---->
+
+            <!---->
+        </div>
+        <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+            <div style="margin-top: 5px">
+                <button class="layui-btn layui-btn-normal " onclick="addRecord();">保存</button>
+                <button class="layui-btn layui-btn-normal ">打印</button>
+                <button class="layui-btn layui-btn-normal ">导出</button>
+                    <div style="float: right">
+                        <button class="layui-btn layui-btn-normal ">告知书</button>
+                        <button class="layui-btn layui-btn-normal ">朗读</button>
                     </div>
-                    <div class="layui-col-md6 ">
-                        <div style="float: right">
-                            <button class="layui-btn layui-btn-normal ">告知书</button>
-                            <button class="layui-btn layui-btn-normal ">朗读</button>
+            </div>
+            <div class="layui-card" >
+                <div class="layui-card-body layui-row " style="padding: 0">
+                    <div class="layui-card"  >
+                        <div class="layui-card-header">
+                            笔录<span style="color: red">（回车添加自定义问答）</span>
                         </div>
-                    </div>
-                </div>
-                <div class="layui-card" >
-                        <div class="layui-card-body layui-row " style="padding: 0">
-                            <div class="layui-card"  >
-                                <div class="layui-card-header">
-                                    笔录
-                                </div>
-                                <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
-                                    <div class="layui-card-body layui-row "  >
-                                        <div class="layui-col-lg12 ">
-                                            <table class="layui-table" lay-even lay-skin="nob"style="table-layout: fixed;">
-                                                <tbody id="recorddetail">
+                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;" >
+                            <div class="layui-card-body layui-row "  >
+                                <div class="layui-col-lg12 ">
+                                    <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;">
+                                        <tbody id="recorddetail">
 
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
+
                         </div>
+                    </div>
                 </div>
-                <div class="layui-col-md12 " style="height: 25px;position: absolute;bottom: 45px;background-color: #E5F4FD;z-index:1;text-align: center;display: none;" id="xthtml" >
-                    <div class="layui-col-md6" style="margin-top: 5px">
-                          <div style="float: left">
+            </div>
+            <div class="layui-col-md12 " style="height: 25px;position: absolute;bottom: 45px;background-color: #E5F4FD;z-index:1;text-align: center;display: none;" id="xthtml" >
+                <div class="layui-col-md6" style="margin-top: 5px">
+                    <div style="float: left">
                             <span id="xt1">
                               <i class="layui-icon">&#xe67a;</i>
                               高度紧张
                             </span>
-                              <span id="xt2"> <i class="layui-icon">&#xe6af;</i>
+                        <span id="xt2"> <i class="layui-icon">&#xe6af;</i>
                              78
                              </span>
-                              <span id="xt3"> <i class="layui-icon">&#xe69c;</i>
+                        <span id="xt3"> <i class="layui-icon">&#xe69c;</i>
                              50
                              </span>
-                              <span id="xt4"> <i class="layui-icon">&#xe6fc;</i>
+                        <span id="xt4"> <i class="layui-icon">&#xe6fc;</i>
                              15/分
                              </span>
-                              <span id="xt5"> <i class="layui-icon">&#xe62c;</i>
+                        <span id="xt5"> <i class="layui-icon">&#xe62c;</i>
                               92 mmHg
                              </span>
-                          </div>
-                    </div>
-                </div>
-                <div class="layui-col-md12 " style="height: 45px;line-height: 45px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
-                    <div class="layui-col-md6" style="margin-top: 5px">
-                        <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left" title="选择常用时间">
-                            常用时间
-                        </button>
-                        <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left" title="选择常用问答">
-                            常用问答
-                        </button>
-                        <button class="layui-btn layui-btn-sm layui-btn-normal" style="float: left;" onclick="openxthtml(this)" xtbool="0" title="启动情绪分析">
-                            <i class="layui-icon">&#xe67a;</i>
-                        </button>
-                    </div>
-                    <div class="layui-col-md6" style="margin-top: 5px" >
-                        <div class="layui-input-block">
-                            <button class=" layui-btn layui-btn-warm " style="float: right" onclick="javascript:window.history.go(-1);return false;">结束笔录</button>
-                        </div>
                     </div>
                 </div>
             </div>
+            <div class="layui-col-md12 " style="height: 45px;line-height: 45px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                <div class="layui-col-md6" style="margin-top: 5px">
+                    <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left" title="选择常用时间">
+                        常用时间
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-normal " style="float: left" title="选择常用问答">
+                        常用问答
+                    </button>
+                    <button class="layui-btn layui-btn-sm layui-btn-normal" style="float: left;" onclick="openxthtml(this)" xtbool="0" title="启动情绪分析">
+                        <i class="layui-icon">&#xe67a;</i>
+                    </button>
+                </div>
+                <div class="layui-col-md6" style="margin-top: 5px" >
+                    <div class="layui-input-block">
+                        <button class=" layui-btn layui-btn-warm " style="float: right" onclick="javascript:window.history.go(-1);return false;">结束笔录</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -268,12 +265,34 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
         recordssid=[[${waitRecordModel.recordssid}]];
+        var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+            <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：</p>\
+            <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：</p>\
+        </td>\
+        <td style="float: right;">\
+            <div class="layui-btn-group">\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+            </div>\
+        </td>\
+        </tr>';
+        document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) { //回车键的键值为13
+                $("#recorddetail").append(trtd_html);
+            }
+        };
+
+
     });
     layui.use(['layer','element'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         //使用模块
     });
+    
 </script>
 </body>
 </html>

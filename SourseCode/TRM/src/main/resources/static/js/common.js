@@ -347,7 +347,7 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 function ajaxSubmitByJson(url, data, success_fun,error_fun) {
     $.ajax({
         url : url,
-        type : "post",
+        type : "POST",
         async : true,
         dataType : "json",
         contentType: "application/json",
