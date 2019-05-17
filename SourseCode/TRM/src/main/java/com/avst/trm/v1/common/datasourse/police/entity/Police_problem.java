@@ -49,6 +49,7 @@ public class Police_problem extends Model<Police_problem> {
      */
     private Date updatetime;
 
+
     private String ssid;
 
     private String string1;
@@ -145,17 +146,17 @@ public class Police_problem extends Model<Police_problem> {
     @Override
     public String toString() {
         return "Police_problem{" +
-        "id=" + id +
-        ", problem=" + problem +
-        ", referanswer=" + referanswer +
-        ", ordernum=" + ordernum +
-        ", createtime=" + createtime +
-        ", updatetime=" + updatetime +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", problem='" + problem + '\'' +
+                ", referanswer='" + referanswer + '\'' +
+                ", ordernum=" + ordernum +
+                ", createtime=" + createtime +
+                ", updatetime=" + updatetime +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 }

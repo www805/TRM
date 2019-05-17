@@ -1,12 +1,8 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtemplate;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -31,28 +27,16 @@ public class ArraignmentService extends BaseService {
     private Police_casetoarraignmentMapper police_casetoarraignmentMapper;
 
     @Autowired
-    private Police_recordtemplateMapper police_recordtemplateMapper;
-
-    @Autowired
-    private Police_recordtemplatetoproblemMapper police_recordtemplatetoproblemMapper;
-
-    @Autowired
     private Police_answerMapper police_answerMapper;
 
     @Autowired
     private Police_recordMapper police_recordMapper;
 
     @Autowired
-    private Police_recordrealMapper police_recordrealMapper;
-
-    @Autowired
     private Base_keywordMapper base_keywordMapper;
 
     @Autowired
-    private Base_admininfoMapper base_admininfoMapper;
-
-    @Autowired
-    private Police_userinfoMapper police_userinfoMapper;
+    private Police_recordtoproblemMapper police_recordtoproblemMapper;
 
   public void  getArraignmentList(RResult result, GetArraignmentListParam param){
         GetArraignmentListVO getArraignmentListVO=new GetArraignmentListVO();
@@ -118,20 +102,6 @@ public class ArraignmentService extends BaseService {
         String recordssid=ssid;
 
 
-        //全部模板
-        try {
-            EntityWrapper recordtemplateParam=new EntityWrapper();
-            recordtemplateParam.orderBy("ordernum",true);
-            recordtemplateParam.orderBy("createtime",false);
-            List<Police_recordtemplate>  recordtemplates=police_recordtemplateMapper.selectList(recordtemplateParam);
-            if (null!=recordtemplates&&recordtemplates.size()>0){
-                getArraignmentBySsidVO.setRecordtemplates(recordtemplates);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         //全部关键字
         EntityWrapper keywordParam=new EntityWrapper();
         keywordParam.orderBy("createtime",false);
@@ -147,18 +117,17 @@ public class ArraignmentService extends BaseService {
             ew.eq("r.ssid",recordssid);
             ew.orderBy("p.ordernum",true);
             ew.orderBy("p.createtime",true);
-            List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(ew);
+            List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
             if (null!=problems&&problems.size()>0){
                 //根据题目和笔录查找对应答案
-                for (Problem problem : problems) {
+                for (RecordToProblem problem : problems) {
                     String problemssid=problem.getSsid();
                     if (StringUtils.isNotBlank(problemssid)){
                         EntityWrapper answerParam=new EntityWrapper();
-                        answerParam.eq("a.problemssid",problemssid);
-                        answerParam.eq("a.recordssid",recordssid);
-                        ew.orderBy("a.ordernum",true);
-                        ew.orderBy("a.createtime",true);
-                        List<Police_answer> answers=police_answerMapper.getAnswerByProblemSsidAndRecordSsid(answerParam);
+                        answerParam.eq("recordtoproblemssid",problemssid);
+                        answerParam.orderBy("ordernum",true);
+                        answerParam.orderBy("createtime",true);
+                        List<Police_answer> answers=police_answerMapper.selectList(answerParam);
                         if (null!=answers&&answers.size()>0){
                             problem.setAnswers(answers);
                         }
@@ -178,35 +147,6 @@ public class ArraignmentService extends BaseService {
 
             if (null!=record){
                 //获取实时文件
-                EntityWrapper recordrealsParam=new EntityWrapper();
-                recordrealsParam.eq("rr.recordssid",recordssid);
-                recordrealsParam.orderBy("rr.ordernum",true);
-                recordrealsParam.orderBy("rr.createtime",true);
-                List<Recordreal> recordreals=police_recordrealMapper.getRecordrealByRecordSsid(recordrealsParam);
-                if (null!=recordreals&&recordreals.size()>0){
-                    //获取询问人或被询问人的名称
-                    for (Recordreal recordreal : recordreals) {
-
-                        Integer recordtype=recordreal.getRecordtype();//类型;1询问人（系统用户）2被询问人
-                        String userssid=recordreal.getUserssid();
-                        if (null!=recordtype&&recordtype==1){
-                            Base_admininfo admininfo=new Base_admininfo();
-                            admininfo.setSsid(userssid);
-                            admininfo = base_admininfoMapper.selectOne(admininfo);
-                            if (null!=admininfo){
-                                recordreal.setAskusername(admininfo.getUsername());//询问人名称
-                            }
-                        }else if (null!=recordtype&&recordtype==2){
-                            Police_userinfo userinfo=new Police_userinfo();
-                            userinfo.setSsid(userssid);
-                            userinfo= police_userinfoMapper.selectOne(userinfo);
-                            if (null!=userinfo){
-                                recordreal.setAskedusername(userinfo.getUsername());//被询问人名称
-                            }
-                        }
-                    }
-                    record.setRecordreals(recordreals);
-                }
                 getArraignmentBySsidVO.setRecord(record);
             }
         } catch (Exception e) {

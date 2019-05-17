@@ -28,7 +28,6 @@ public class Problem {
 
     private String problemtypessid;
 
-    private List<Police_answer> answers;
 
     public String getProblemtypessid() {
         return problemtypessid;
@@ -44,14 +43,6 @@ public class Problem {
 
     public void setSsid(String ssid) {
         this.ssid = ssid;
-    }
-
-    public List<Police_answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Police_answer> answers) {
-        this.answers = answers;
     }
 
     public Integer getId() {
@@ -102,17 +93,5 @@ public class Problem {
         this.updatetime = updatetime;
     }
 
-    @Override
-    public String toString() {
-        return "Problem{" +
-                "id=" + id +
-                ", problem='" + problem + '\'' +
-                ", referanswer='" + referanswer + '\'' +
-                ", ordernum=" + ordernum +
-                ", createtime=" + createtime +
-                ", updatetime=" + updatetime +
-                ", ssid='" + ssid + '\'' +
-                ", answers=" + answers +
-                '}';
-    }
+
 }

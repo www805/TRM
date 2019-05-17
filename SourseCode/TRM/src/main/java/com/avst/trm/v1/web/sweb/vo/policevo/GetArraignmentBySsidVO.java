@@ -1,16 +1,13 @@
 package com.avst.trm.v1.web.sweb.vo.policevo;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtemplate;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problem;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
 
 import java.util.List;
 
 public class GetArraignmentBySsidVO {
-    private List<Police_recordtemplate> recordtemplates;//全部模板
-
-    private  List<Problem> problems;//笔录模板：问题和答案
+    private  List<RecordToProblem> problems;//笔录模板：问题和答案
 
     private Record record;//笔录数据
 
@@ -32,19 +29,11 @@ public class GetArraignmentBySsidVO {
         this.record = record;
     }
 
-    public List<Problem> getProblems() {
+    public List<RecordToProblem> getProblems() {
         return problems;
     }
 
-    public void setProblems(List<Problem> problems) {
+    public void setProblems(List<RecordToProblem> problems) {
         this.problems = problems;
-    }
-
-    public List<Police_recordtemplate> getRecordtemplates() {
-        return recordtemplates;
-    }
-
-    public void setRecordtemplates(List<Police_recordtemplate> recordtemplates) {
-        this.recordtemplates = recordtemplates;
     }
 }

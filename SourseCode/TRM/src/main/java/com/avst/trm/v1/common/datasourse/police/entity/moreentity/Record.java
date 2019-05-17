@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_recordreal;
 
 import java.util.List;
 
@@ -17,15 +16,14 @@ public class Record extends Police_record {
 
     private String pdfrealurl;//pdf真实地址
 
-    private List<Recordreal> recordreals;//笔录实时文件s
+    private List<RecordToProblem> problems;//笔录问题
 
-    private List<Problem> problems;//笔录的问题模板
 
-    public List<Problem> getProblems() {
+    public List<RecordToProblem> getProblems() {
         return problems;
     }
 
-    public void setProblems(List<Problem> problems) {
+    public void setProblems(List<RecordToProblem> problems) {
         this.problems = problems;
     }
 
@@ -61,11 +59,4 @@ public class Record extends Police_record {
         this.pdfrealurl = pdfrealurl;
     }
 
-    public List<Recordreal> getRecordreals() {
-        return recordreals;
-    }
-
-    public void setRecordreals(List<Recordreal> recordreals) {
-        this.recordreals = recordreals;
-    }
 }

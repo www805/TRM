@@ -18,7 +18,4 @@ import java.util.List;
  */
 public interface Police_answerMapper extends BaseMapper<Police_answer> {
 
-    @Select("select * from police_answer a where 1=1 ${ew.sqlSegment}")
-    List<Police_answer> getAnswerByProblemSsidAndRecordSsid(@Param("ew") EntityWrapper ew);
-
 }

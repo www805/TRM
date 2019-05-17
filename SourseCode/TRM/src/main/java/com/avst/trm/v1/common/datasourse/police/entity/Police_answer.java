@@ -27,14 +27,9 @@ public class Police_answer extends Model<Police_answer> {
     private Integer id;
 
     /**
-     * 笔录id
+     * 笔录题目表ssid
      */
-    private String recordssid;
-
-    /**
-     * 题目id
-     */
-    private String problemssid;
+    private String recordtoproblemssid;
 
     /**
      * 答案
@@ -68,6 +63,14 @@ public class Police_answer extends Model<Police_answer> {
 
     private Integer integer2;
 
+    public String getRecordtoproblemssid() {
+        return recordtoproblemssid;
+    }
+
+    public void setRecordtoproblemssid(String recordtoproblemssid) {
+        this.recordtoproblemssid = recordtoproblemssid;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -75,20 +78,7 @@ public class Police_answer extends Model<Police_answer> {
     public void setId(Integer id) {
         this.id = id;
     }
-    public String getRecordssid() {
-        return recordssid;
-    }
 
-    public void setRecordssid(String recordssid) {
-        this.recordssid = recordssid;
-    }
-    public String getProblemssid() {
-        return problemssid;
-    }
-
-    public void setProblemssid(String problemssid) {
-        this.problemssid = problemssid;
-    }
     public String getAnswer() {
         return answer;
     }
@@ -161,18 +151,17 @@ public class Police_answer extends Model<Police_answer> {
     @Override
     public String toString() {
         return "Police_answer{" +
-        "id=" + id +
-        ", recordssid=" + recordssid +
-        ", problemssid=" + problemssid +
-        ", answer=" + answer +
-        ", ordernum=" + ordernum +
-        ", createtime=" + createtime +
-        ", updatetime=" + updatetime +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", recordtoproblemssid='" + recordtoproblemssid + '\'' +
+                ", answer='" + answer + '\'' +
+                ", ordernum=" + ordernum +
+                ", createtime=" + createtime +
+                ", updatetime=" + updatetime +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 }

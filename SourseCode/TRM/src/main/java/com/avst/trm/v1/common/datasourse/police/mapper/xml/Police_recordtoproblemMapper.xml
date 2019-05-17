@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtemplatetoproblemMapper">
+<mapper namespace="com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtoproblemMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_recordtemplatetoproblem">
+    <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_recordtoproblem">
         <id column="id" property="id" />
-        <result column="recordtemplatessid" property="recordtemplatessid" />
-        <result column="problemssid" property="problemssid" />
+        <result column="recordssid" property="recordssid" />
+        <result column="problem" property="problem" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />

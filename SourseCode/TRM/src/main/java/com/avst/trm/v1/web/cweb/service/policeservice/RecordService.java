@@ -62,13 +62,13 @@ public class RecordService extends BaseService {
     private Police_casetoarraignmentMapper police_casetoarraignmentMapper;
 
     @Autowired
-    private  Police_recordtemplatetoproblemMapper police_recordtemplatetoproblemMapper;
-
-    @Autowired
     private Police_answerMapper police_answerMapper;
 
     @Autowired
     private Police_usertoMapper police_usertoMapper;
+
+    @Autowired
+    private Police_recordtoproblemMapper police_recordtoproblemMapper;
 
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param){
@@ -107,18 +107,17 @@ public class RecordService extends BaseService {
                 probleparam.eq("r.ssid",record.getSsid());
                 probleparam.orderBy("p.ordernum",true);
                 probleparam.orderBy("p.createtime",true);
-                List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(probleparam);
+                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
                 if (null!=problems&&problems.size()>0){
                     //根据题目和笔录查找对应答案
-                    for (Problem problem : problems) {
+                    for (RecordToProblem problem : problems) {
                         String problemssid=problem.getSsid();
                         if (StringUtils.isNotBlank(problem.getSsid())){
                             EntityWrapper answerParam=new EntityWrapper();
-                            answerParam.eq("a.problemssid",problemssid);
-                            answerParam.eq("a.recordssid",recordssid);
-                            answerParam.orderBy("a.ordernum",true);
-                            answerParam.orderBy("a.createtime",true);
-                            List<Police_answer> answers=police_answerMapper.getAnswerByProblemSsidAndRecordSsid(answerParam);
+                            answerParam.eq("recordtoproblemssid",problemssid);
+                            answerParam.orderBy("ordernum",true);
+                            answerParam.orderBy("createtime",true);
+                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
                             if (null!=answers&&answers.size()>0){
                                 problem.setAnswers(answers);
                             }
@@ -134,7 +133,68 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void addRecord(RResult result, ReqParam param){
+    public void addRecord(RResult result, ReqParam<AddRecordParam> param){
+        //请求参数转换
+        AddRecordParam addRecordParam = param.getParam();
+        if (null==addRecordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=addRecordParam.getRecordssid();//笔录ssid
+        List<RecordToProblem> recordToProblems1=addRecordParam.getRecordToProblems();//笔录携带的题目答案集合
+
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //获取该笔录下的全部题目答案
+        EntityWrapper recordToProblemsParam=new EntityWrapper();
+        recordToProblemsParam.eq("recordssid",recordssid);
+        List<Police_recordtoproblem> recordToProblems=police_recordtoproblemMapper.selectList(recordToProblemsParam);
+        if (null!=recordToProblems&&recordToProblems.size()>0){
+            for (Police_recordtoproblem recordToProblem : recordToProblems) {
+                //删除所有题目
+                EntityWrapper answersParam=new EntityWrapper();
+                answersParam.eq("recordtoproblemssid",recordToProblem.getSsid());
+                int answerdelete_bool=police_answerMapper.delete(answersParam);
+                System.out.println("answerdelete_bool__"+answerdelete_bool);
+            }
+             int recordtoproblemdelete_bool=police_recordtoproblemMapper.delete(recordToProblemsParam);
+             System.out.println("recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
+        }else{
+            System.out.println("该笔录没有任何题目答案__1");
+        }
+
+        //根据参数笔录题目包括答案，新增笔录题目答案
+        if (null!=recordToProblems1&&recordToProblems1.size()>0){
+            for (int i = 0; i < recordToProblems1.size(); i++) {
+                RecordToProblem problem=recordToProblems1.get(i);
+                problem.setCreatetime(new Date());
+                problem.setSsid(OpenUtil.getUUID_32());
+                problem.setOrdernum(Integer.valueOf(1+1));
+                int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
+                System.out.println("recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
+                if (recordtoprobleminsert_bool>0){
+                    List<Police_answer> answers=problem.getAnswers();
+                    if (null!=answers&&answers.size()>0){
+                        for (int j = 0; j < answers.size(); j++) {
+                            Police_answer answer  = answers.get(j);
+                            answer.setSsid(OpenUtil.getUUID_32());
+                            answer.setCreatetime(new Date());
+                            answer.setOrdernum(Integer.valueOf(1+1));
+                            answer.setRecordtoproblemssid(problem.getSsid());
+                          int answerinsert_bool =  police_answerMapper.insert(answer);
+                            System.out.println("answerinsert_bool__"+answerinsert_bool);
+                        }
+                    }
+                }
+            }
+        }else{
+            System.out.println("该笔录没有任何题目答案__2");
+        }
+        result.setData(1);
+        changeResultToSuccess(result);
         return;
     }
 
@@ -166,18 +226,17 @@ public class RecordService extends BaseService {
                 ew.eq("r.ssid",record.getSsid());
                 ew.orderBy("p.ordernum",true);
                 ew.orderBy("p.createtime",true);
-                List<Problem> problems = police_recordtemplatetoproblemMapper.getProblemByRecordSsid(ew);
+                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
                 if (null!=problems&&problems.size()>0){
                     //根据题目和笔录查找对应答案
-                    for (Problem problem : problems) {
+                    for (RecordToProblem problem : problems) {
                         String problemssid=problem.getSsid();
                         if (StringUtils.isNotBlank(problemssid)){
                             EntityWrapper answerParam=new EntityWrapper();
-                            answerParam.eq("a.problemssid",problemssid);
-                            answerParam.eq("a.recordssid",record.getSsid());
-                            ew.orderBy("a.ordernum",true);
-                            ew.orderBy("a.createtime",true);
-                            List<Police_answer> answers=police_answerMapper.getAnswerByProblemSsidAndRecordSsid(answerParam);
+                            answerParam.eq("recordtoproblemssid",problemssid);
+                            answerParam.orderBy("ordernum",true);
+                            answerParam.orderBy("createtime",true);
+                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
                             if (null!=answers&&answers.size()>0){
                                 problem.setAnswers(answers);
                             }

@@ -18,7 +18,7 @@ function callbackgetArraignmentBySsid(data) {
             var data=data.data;
             if (isNotEmpty(data)){
                 //全部模板
-                var recordtemplates=data.recordtemplates;
+                /*var recordtemplates=data.recordtemplates;
                 $("#recordtemplates").html("");
                 if (isNotEmpty(recordtemplates)){
                     for (var i = 0; i < recordtemplates.length; i++) {
@@ -26,7 +26,7 @@ function callbackgetArraignmentBySsid(data) {
                         var recordtemplatetext=recordtemplate.title==null?"未知":recordtemplate.title;
                         $("#recordtemplates").append("<option value='"+recordtemplate.ssid+"' disabled='disabled' >"+recordtemplatetext+"</option>");
                     }
-                }
+                }*/
 
                 //全部关键字
                 var keywords=data.keywords;
@@ -88,7 +88,8 @@ function callbackgetArraignmentBySsid(data) {
                     }
 
 
-                    var recordreals=record.recordreals;
+                   /*后期改成会议记录
+                   var recordreals=record.recordreals;
                     $("#recordreals").html("");
                     if (isNotEmpty(recordreals)){
 
@@ -112,7 +113,7 @@ function callbackgetArraignmentBySsid(data) {
                             $("#recordreals").append(recordrealshtml);
                         }
 
-                    }
+                    }*/
                 }
 
 

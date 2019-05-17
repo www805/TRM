@@ -26,7 +26,7 @@ public class Exceptions {
     @ResponseBody
     public RResult UnauthorizedException(NativeWebRequest request, UnauthorizedException e) {
         RResult result = new RResult();
-        result.setMessage("权限不足"+e.getMessage());
+        result.setMessage("权限不足");
         result.setEndtime(DateUtil.getDateAndMinute());
         result.setData(null);
         System.out.println("异常信息:"+e.getMessage());
@@ -37,14 +37,14 @@ public class Exceptions {
     @ResponseBody
     public RResult UnauthenticatedException(UnauthorizedException e) {
         RResult result = new RResult();
-        result.setMessage("未认证"+e.getMessage());
+        result.setMessage("未认证");
         result.setEndtime(DateUtil.getDateAndMinute());
         result.setData(null);
         System.out.println("异常信息:"+e.getMessage());
         return result;
     }
 
-    // 其它异常异常捕捉
+   /* // 其它异常异常捕捉
     @ResponseBody
     @ExceptionHandler(value =Exception.class)
     public RResult errorHandler(java.lang.Exception e) {
@@ -54,7 +54,7 @@ public class Exceptions {
         result.setData(null);
         System.out.println("异常信息:"+e.getMessage());
         return result;
-    }
+    }*/
 
 
 }

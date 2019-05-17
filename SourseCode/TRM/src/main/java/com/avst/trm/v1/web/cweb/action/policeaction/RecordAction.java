@@ -63,7 +63,7 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping(value = "/addRecord")
-    public RResult addRecord(@RequestBody ReqParam param){
+    public RResult addRecord(@RequestBody ReqParam<AddRecordParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");

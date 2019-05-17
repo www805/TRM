@@ -4,63 +4,35 @@ import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.io.Serializable;
 
 /**
  * <p>
- * InnoDB free: 90112 kB
+ * InnoDB free: 89088 kB
  * </p>
  *
  * @author Admin
- * @since 2019-04-23
+ * @since 2019-05-17
  */
-public class Police_recordreal extends Model<Police_recordreal> {
+public class Police_recordtoproblem extends Model<Police_recordtoproblem> {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 笔录实时表
+     * 笔录题目表
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
-     * 笔录id
+     * 笔录ssid
      */
     private String recordssid;
 
     /**
-     * 翻译文字
+     * 题目
      */
-    private String translatext;
-
-    /**
-     * 实时录音地址
-     */
-    private String recordreal_filesavessid;
-
-    /**
-     * 录音时长ms
-     */
-    private Long time;
-
-    /**
-     * 录音人id
-     */
-    private String userssid;
-
-    /**
-     * 录音人类型：1询问人（系统用户admin）
-2被询问人user
-     */
-    private Integer recordtype;
-
-    /**
-     * 录音开始时间 ms
-     */
-    private Long starttime;
+    private String problem;
 
     /**
      * 排序
@@ -70,7 +42,6 @@ public class Police_recordreal extends Model<Police_recordreal> {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createtime;
 
     private String ssid;
@@ -97,47 +68,12 @@ public class Police_recordreal extends Model<Police_recordreal> {
     public void setRecordssid(String recordssid) {
         this.recordssid = recordssid;
     }
-    public String getTranslatext() {
-        return translatext;
+    public String getProblem() {
+        return problem;
     }
 
-    public void setTranslatext(String translatext) {
-        this.translatext = translatext;
-    }
-    public String getRecordreal_filesavessid() {
-        return recordreal_filesavessid;
-    }
-
-    public void setRecordreal_filesavessid(String recordreal_filesavessid) {
-        this.recordreal_filesavessid = recordreal_filesavessid;
-    }
-    public Long getTime() {
-        return time;
-    }
-
-    public void setTime(Long time) {
-        this.time = time;
-    }
-    public String getUserssid() {
-        return userssid;
-    }
-
-    public void setUserssid(String userssid) {
-        this.userssid = userssid;
-    }
-    public Integer getRecordtype() {
-        return recordtype;
-    }
-
-    public void setRecordtype(Integer recordtype) {
-        this.recordtype = recordtype;
-    }
-    public Long getStarttime() {
-        return starttime;
-    }
-
-    public void setStarttime(Long starttime) {
-        this.starttime = starttime;
+    public void setProblem(String problem) {
+        this.problem = problem;
     }
     public Integer getOrdernum() {
         return ordernum;
@@ -196,15 +132,10 @@ public class Police_recordreal extends Model<Police_recordreal> {
 
     @Override
     public String toString() {
-        return "Police_recordreal{" +
+        return "Police_recordtoproblem{" +
         "id=" + id +
         ", recordssid=" + recordssid +
-        ", translatext=" + translatext +
-        ", recordreal_filesavessid=" + recordreal_filesavessid +
-        ", time=" + time +
-        ", userssid=" + userssid +
-        ", recordtype=" + recordtype +
-        ", starttime=" + starttime +
+        ", problem=" + problem +
         ", ordernum=" + ordernum +
         ", createtime=" + createtime +
         ", ssid=" + ssid +
