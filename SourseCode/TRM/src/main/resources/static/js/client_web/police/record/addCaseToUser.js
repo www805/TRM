@@ -14,7 +14,7 @@ function addCaseToArraignment() {
         var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
         parent.location.href=url+"?ssid=80d914a33e094e1daa07d7740b4fed28";
     }
-  /* var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
+   /*var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
 
     var cardnum=$("#cardnum").val();
     if (!isNotEmpty(cardnum)){
@@ -36,7 +36,7 @@ function addCaseToArraignment() {
         return;
     }
 
-    var adminssid=$("#adminssid").val();
+
     var otheradminssid=$("#otheruserinfos  option:selected").val();
     if (!isNotEmpty(otheradminssid)){
         layer.msg("询问人二不能为空");
@@ -88,7 +88,7 @@ function addCaseToArraignment() {
         param:{
             userssid:dquserssid,
             casessid:casessid,
-            adminssid:adminssid,
+            adminssid:sessionadminssid,
             otheradminssid:otheradminssid,
             recordadminssid:recordadminssid,
             recordplace:recordplace,
@@ -99,13 +99,13 @@ function addCaseToArraignment() {
             usertos:arr
         }
     };
-    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
+  ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);*/
 }
 function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var ssid=data.data;
         if (isNotEmpty(ssid)){
-            var index = layer.msg('开始进行笔录', {
+            var index = layer.msg('开始进行笔录', {shade:0.1
             },function () {
                 var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
                 if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
@@ -327,7 +327,7 @@ function getUserByCard(){
 function callbackgetUserByCard(data){
     layui.use(['form'], function(){
         var form=layui.form;
-        $("input:not('#adminssid'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
+        $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
         $('select').not("#cards").prop('selectedIndex', 0);
         $('#casename option').not(":lt(1)").remove();
         form.render('select');
@@ -556,7 +556,7 @@ $(function () {
         var form=layui.form;
 
         form.on('select(change_card)', function(data){
-            $("input:not('#adminssid'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
+            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
             $('select ').not("#cards").prop('selectedIndex', 0)
             $('#casename option').not(":lt(1)").remove();
             form.render();

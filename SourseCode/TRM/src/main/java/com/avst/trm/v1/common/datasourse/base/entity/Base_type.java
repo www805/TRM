@@ -39,6 +39,16 @@ public class Base_type extends Model<Base_type> {
      */
     private Date createtime;
 
+    /**
+     * 会议模板ssid
+     */
+    private String mtmodelssid;
+
+    /**
+     * 类型的中文名称
+     */
+    private String typename;
+
     private String ssid;
 
     private String string1;
@@ -49,10 +59,15 @@ public class Base_type extends Model<Base_type> {
 
     private Integer integer2;
 
-    /**
-     * 类型的中文名称
-     */
-    private String typename;
+
+
+    public String getMtmodelssid() {
+        return mtmodelssid;
+    }
+
+    public void setMtmodelssid(String mtmodelssid) {
+        this.mtmodelssid = mtmodelssid;
+    }
 
     public Integer getId() {
         return id;

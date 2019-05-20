@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
@@ -16,6 +17,10 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.feignclient.MeetingControl;
+import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
+import com.avst.trm.v1.feignclient.req.OverMCParam_out;
+import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -29,6 +34,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +79,9 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Police_recordtoproblemMapper police_recordtoproblemMapper;
+
+    @Autowired
+    private MeetingControl meetingControl;
 
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param){
@@ -247,6 +260,14 @@ public class RecordService extends BaseService {
                 }
 
 
+                //获取提讯人被询问人等信息
+                EntityWrapper recorduserinfosParam=new EntityWrapper();
+                recorduserinfosParam.eq("a.recordssid",record.getSsid());
+                RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+                if (null!=recordUserInfos){
+                    record.setRecordUserInfos(recordUserInfos);
+                }
+
                 getRecordByIdVO.setRecord(record);
             }
         } catch (Exception e) {
@@ -259,6 +280,7 @@ public class RecordService extends BaseService {
             caseParam.eq("r.ssid",recordssid);
             CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
             if (null!=caseAndUserInfo){
+                caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
                 getRecordByIdVO.setCaseAndUserInfo(caseAndUserInfo);
             }
 
@@ -580,13 +602,19 @@ public class RecordService extends BaseService {
     }
 
 
-    public static void main(String[] args) {
+  public void startMC(RResult result, ReqParam<StartMCParam_out> param){
+       meetingControl.startMC(param);
+
+      return;
+  }
+
+  public void overMC(RResult result, ReqParam<OverMCParam_out> param){
 
 
-
-    }
-
-
-
+    return;
+  }
+  public void getMCAsrTxtBack(RResult result, ReqParam<GetMCAsrTxtBackParam_out> param){
+    return;
+  }
 
 }

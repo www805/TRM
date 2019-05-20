@@ -18,6 +18,15 @@ public class Record extends Police_record {
 
     private List<RecordToProblem> problems;//笔录问题
 
+    private RecordUserInfos recordUserInfos;//笔录询问 和被询问人信息
+
+    public RecordUserInfos getRecordUserInfos() {
+        return recordUserInfos;
+    }
+
+    public void setRecordUserInfos(RecordUserInfos recordUserInfos) {
+        this.recordUserInfos = recordUserInfos;
+    }
 
     public List<RecordToProblem> getProblems() {
         return problems;

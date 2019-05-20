@@ -401,7 +401,8 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问人一</label>
                             <div class="layui-input-block">
-                                <input type="text" name="adminssid"  id="adminssid" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.username}">
+
+                                <input type="text" name="adminname"  id="adminname" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.username}" >
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -481,6 +482,7 @@
     var INIT_CLIENTKEY;
     var sessionworkname=[[${session.MANAGE_CLIENT.workname}]];
     var sessionusername=[[${session.MANAGE_CLIENT.username}]];
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

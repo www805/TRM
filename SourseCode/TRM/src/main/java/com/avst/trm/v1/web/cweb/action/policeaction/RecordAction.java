@@ -6,6 +6,9 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
+import com.avst.trm.v1.feignclient.req.OverMCParam_out;
+import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
@@ -299,6 +302,57 @@ public class RecordAction extends BaseAction {
         return  true;
     }
 
+    /**
+     * 开始会议
+     */
+    @RequestMapping("/startMC")
+    public  RResult startMC(@RequestBody ReqParam<StartMCParam_out> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.startMC(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 结束会议
+     */
+    @RequestMapping("/overMC")
+    public  RResult overMC(@RequestBody ReqParam<OverMCParam_out> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.overMC(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取会议返回结果
+     */
+    @RequestMapping("/getMCAsrTxtBack")
+    public  RResult getMCAsrTxtBack(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getMCAsrTxtBack(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

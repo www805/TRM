@@ -1,4 +1,8 @@
 var templatessid=null;//模板ssid
+var recordUserInfos;//询问人和被询问人数据
+
+var occurrencetime_format;//案发时间
+
 
 //跳转变更模板页面
 function opneModal_1() {
@@ -106,7 +110,7 @@ function callsetAllproblem(data) {
                     }
 
                     $("#recorddetail .font_blue_color").focus(function(){
-                        td_lastindex=$(this).parent().parent().index();
+                        td_lastindex=$(this).closest("tr").index();
                     });
                 }
 
@@ -121,86 +125,7 @@ function callsetAllproblem(data) {
 
 }
 
-//保存按钮
-function addRecord() {
-    if (isNotEmpty(recordssid)){
-        var url=getActionURL(getactionid_manage().waitRecord_addRecord);
-
-        //需要收拾数据
-        var recordToProblems=[];//题目集合
-        $("#recorddetail td.onetd").each(function (i) {
-            var arr={};
-            var answers=[];//答案集合
-           var q=$(this).find("p[name='q']").text();
-               q=q.replace(/\s/g,'');
-           if (q.length>2){
-              var str = q.substring(0,2);
-              if (str=="问："||str=="问:") {
-                  q = q.substring(2);
-                  //经过筛选的q
-                  var ws=$(this).find("p[name='w']");
-                  if (isNotEmpty(q)){
-                      if (null!=ws&&ws.length>0){
-                          for (var j = 0; j < ws.length; j++) {
-                              var w =ws.eq(j).text();
-                              w=w.replace(/\s/g,'');
-                              if (w.length>2){
-                                  var str1 = w.substring(0,2);
-                                  if (str1=="答："||str1=="答:") {
-                                      w = w.substring(2);
-                                      //经过筛选的w
-                                      answers.push({
-                                          answer:w
-                                      });
-                                  }
-                              }
-
-
-                          }
-                      }
-                      recordToProblems.push({
-                          problem:q,
-                          answers:answers
-                      });
-                  }
-              }
-           }
-        })
-
-
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                recordToProblems:recordToProblems
-            }
-        };
-       ajaxSubmitByJson(url, data, calladdRecord);
-    }else{
-        layer.msg("系统异常");
-    }
-}
-function calladdRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            layer.msg('保存成功', {
-                btn: ['去查看', '继续编辑'],
-                yes:function(index){
-                parent.document.getElementById("record_select").click();
-                layer.close(index);
-            }, btn2:function(index){
-                layer.close(index);
-                return false;
-            }});
-        }
-    }else{
-        layer.msg(data.message,{icon: 2});
-    }
-}
-
-
-var td_lastindex;//td的上一个光标位置
+var td_lastindex;//td的上一个光标位置  为0需要处理一下
 function copy_problems(obj) {
     var text=$(obj).find("span").text();
     var w=$(obj).attr("referanswer");
@@ -219,7 +144,7 @@ function copy_problems(obj) {
         </tr>';
     $("#recorddetail").append(html);
    $("#recorddetail .font_blue_color").focus(function(){
-       td_lastindex=$(this).parent().parent().index();
+       td_lastindex=$(this).closest("tr").index();
     });
 }
 
@@ -259,46 +184,51 @@ function openxthtml(obj) {
     
 }
 
-//录音按钮显示隐藏
+//录音按钮显示隐藏 type:1开始录音 2结束录音
 var t;
 function img_bool(obj,type){
-    var img_bool=$(obj).attr("img_bool");
-    if (img_bool=="true"){
-        $(obj).css("display","none").attr("img_bool","false");
-        $(obj).siblings().css("display","block");
-    }else{
-        $(obj).css("display","none").attr("img_bool","true");
-        $(obj).siblings().css("display","block");
-    }
+        if (type==1){
+            console.log("录音中__");
+            $(obj).css("display","none");
+            $(obj).siblings().css("display","block");
 
-    if (type==1){
-        //实时会议数据
-        var recordtype=1;
-        var username="未知";
-        var translatext="未知";
-       t = setInterval(function (args) {
-          /* $("#recordreals").html("");*/
-            if (recordtype==1){
-                recordrealclass="atalk";
-                username="检察官";
-                translatext="我是检察官，现在开始考察你";
-                recordtype=2;
-            }else if (recordtype==2){
-                recordrealclass="btalk";
-                username="被询问人";
-                translatext="我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察"
-                recordtype=1;
-            }
-            var recordrealshtml='<div class="'+recordrealclass+'" >\
+            //开始会议
+            startMC();
+
+
+            //实时会议数据
+            var recordtype=1;
+            var username="未知";
+            var translatext="未知";
+            t = setInterval(function (args) {
+                /* $("#recordreals").html("");*/
+                if (recordtype==1){
+                    recordrealclass="atalk";
+                    username="检察官";
+                    translatext="我是检察官，现在开始考察你";
+                    recordtype=2;
+                }else if (recordtype==2){
+                    recordrealclass="btalk";
+                    username="被询问人";
+                    translatext="我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察"
+                    recordtype=1;
+                }
+                var recordrealshtml='<div class="'+recordrealclass+'" >\
                                                         <p>【'+username+'】 2019-4-14 02:24:55</p>\
                                                         <span ondblclick="copy_text(this)">'+translatext+'</span> \
                                                   </div >';
 
-            $("#recordreals").append(recordrealshtml);
-        },1000);
-    }else{
-        clearInterval(t);
-    }
+                $("#recordreals").append(recordrealshtml);
+            },1000);
+        }else{
+            console.log("录音关闭__");
+            //结束会议
+            overMC();
+
+            $(obj).css("display","none");
+            $(obj).siblings().css("display","block");
+            clearInterval(t);
+        }
 }
 
 //粘贴语音翻译文本
@@ -308,13 +238,11 @@ function copy_text(obj) {
     copy_text_html=text;
 
     $("#recorddetail .font_blue_color").each(function(){
-        if (isNotEmpty(td_lastindex)){
-            var lastindex=$(this).parent().parent().index();
+            var lastindex=$(this).closest("tr").index();
             if (lastindex==td_lastindex) {
                 $(this).append(copy_text_html);
                 copy_text_html="";
             }
-        }
     });
 }
 
@@ -323,14 +251,288 @@ function copy_text(obj) {
 function tr_remove(obj) {
     $(obj).parents("tr").remove();
 }
-
 function tr_up(obj) {
     var $tr = $(obj).parents("tr");
     $tr.prev().before($tr);
 }
-
 function tr_downn(obj) {
     var $tr = $(obj).parents("tr");
     $tr.next().after($tr);
 }
 
+//编辑框下面按钮事件
+function btn(obj) {
+    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
+        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
+        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
+function get_case_time(obj) {
+    if (isNotEmpty(occurrencetime_format)){
+        $("#recorddetail .font_blue_color").each(function(){
+                var lastindex=$(this).closest("tr").index();
+                if (lastindex==td_lastindex) {
+                    $(this).append(occurrencetime_format);
+                }
+        });
+        btn(obj);
+    }
+}
+function get_current_time(obj) {
+  var current_time="2019年05月20日16时23分54秒";
+    if (isNotEmpty(current_time)){
+        $("#recorddetail .font_blue_color").each(function(){
+                var lastindex=$(this).closest("tr").index();
+                if (lastindex==td_lastindex) {
+                    $(this).append(current_time);
+                }
+        });
+        btn(obj);
+    }
+}
+
+
+
+//获取笔录信息
+function getRecordById() {
+    var url=getActionURL(getactionid_manage().waitRecord_getRecordById);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid:recordssid,
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetRecordById);
+}
+function callbackgetRecordById(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var record=data.record;
+            var caseAndUserInfo=data.caseAndUserInfo;
+            if (isNotEmpty(record)){
+                var recordUserInfosdata=record.recordUserInfos;
+                if (isNotEmpty(recordUserInfosdata)){
+                    recordUserInfos=recordUserInfosdata;
+                }
+            }
+            if (isNotEmpty(caseAndUserInfo)){
+                var occurrencetime_formatdata=caseAndUserInfo.occurrencetime_format;
+                if (isNotEmpty(occurrencetime_formatdata)){
+                    occurrencetime_format=occurrencetime_formatdata;
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+
+//开始会议
+function startMC() {
+    if (isNotEmpty(recordUserInfos)){
+        var tdList=[];
+        var user1={
+            username:recordUserInfos.username
+            ,userssid:recordUserInfos.userssid
+            ,grade:2 //1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
+            ,asrtype:"AVST"
+        };
+        var user2={
+            username:recordUserInfos.adminname
+            ,userssid:recordUserInfos.adminssid
+            ,grade:1
+            ,asrtype:"AVST"
+        };
+       /*   询问人二暂不参与
+        var user3={
+            username:recordUserInfos.otheradminname
+            ,userssid:recordUserInfos.otheradminssid
+            ,grade:2
+        };*/
+        tdList.push(user1);
+        tdList.push(user2);
+        // tdList.push(user3);
+
+        var url=getActionURL(getactionid_manage().waitRecord_startMC);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                meetingtype: 2       //会议类型，1视频/2音频
+                ,mcType:"AVST"       //会议采用版本,现阶段只有AVST
+                ,modelbool:-1         //是否需要会议模板，1需要/-1不需要
+                ,mtmodelssid:'' //会议模板ssid
+                ,tdList:tdList
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackstartMC);
+    }else {
+        layer.msg("参数为空");
+    }
+}
+function callbackstartMC(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+//结束会议
+function overMC() {
+    var url=getActionURL(getactionid_manage().waitRecord_overMC);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            mtssid:''
+            ,mcType:"AVST"
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackoverMC);
+}
+function callbackoverMC(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+//获取会议返回
+function getMCAsrTxtBack() {
+    var url=getActionURL(getactionid_manage().waitRecord_getMCAsrTxtBack);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            mtssid:''
+            ,mcType:"AVST"
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetMCAsrTxtBack);
+}
+function callbackgetMCAsrTxtBack(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+
+//保存按钮
+function addRecord() {
+    if (isNotEmpty(recordssid)){
+        var url=getActionURL(getactionid_manage().waitRecord_addRecord);
+
+        //需要收拾数据
+        var recordToProblems=[];//题目集合
+        $("#recorddetail td.onetd").each(function (i) {
+            var arr={};
+            var answers=[];//答案集合
+            var q=$(this).find("p[name='q']").text();
+            q=q.replace(/\s/g,'');
+            if (q.length>2){
+                var str = q.substring(0,2);
+                if (str=="问："||str=="问:") {
+                    q = q.substring(2);
+                    //经过筛选的q
+                    var ws=$(this).find("p[name='w']");
+                    if (isNotEmpty(q)){
+                        if (null!=ws&&ws.length>0){
+                            for (var j = 0; j < ws.length; j++) {
+                                var w =ws.eq(j).text();
+                                w=w.replace(/\s/g,'');
+                                if (w.length>2){
+                                    var str1 = w.substring(0,2);
+                                    if (str1=="答："||str1=="答:") {
+                                        w = w.substring(2);
+                                        //经过筛选的w
+                                        answers.push({
+                                            answer:w
+                                        });
+                                    }
+                                }
+
+
+                            }
+                        }
+                        recordToProblems.push({
+                            problem:q,
+                            answers:answers
+                        });
+                    }
+                }
+            }
+        })
+
+
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                recordToProblems:recordToProblems
+            }
+        };
+        ajaxSubmitByJson(url, data, calladdRecord);
+    }else{
+        layer.msg("系统异常");
+    }
+}
+function calladdRecord(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            layer.msg('保存成功', {
+                btn: ['去查看', '继续编辑'],
+                yes:function(index){
+                    parent.document.getElementById("record_select").click();
+                    layer.close(index);
+                }, btn2:function(index){
+                    layer.close(index);
+                    return false;
+                }});
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+$(function () {
+    $("#recorddetail .font_blue_color").focus(function(){
+        td_lastindex=$(this).closest("tr").index();
+    });
+
+    $("#dl_dd dd").click(function () {
+        var text=$(this).attr('lay-value');
+        //文本
+        $("#recorddetail .font_blue_color").each(function(){
+                var lastindex=$(this).closest("tr").index();
+                if (lastindex==td_lastindex) {
+                    $(this).append(text);
+                }
+        });
+        btn(this);
+    })
+
+    $("#recorddetail .font_blue_color").focus(function(){
+        td_lastindex=$(this).closest("tr").index();
+    });
+
+});
