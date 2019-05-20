@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * 管理员拦截器
+ * 客户端管理员拦截器
  */
 public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
@@ -78,6 +78,5 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         System.out.println("执行afterCompletion方法-->03");
         super.afterCompletion(request, response, handler, ex);
     }
-
 
 }

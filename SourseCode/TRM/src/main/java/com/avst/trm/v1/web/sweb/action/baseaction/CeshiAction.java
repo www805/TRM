@@ -12,6 +12,7 @@ import com.avst.trm.v1.web.sweb.req.basereq.GotolistParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.ActionService;
 import com.avst.trm.v1.web.sweb.service.baseservice.CeshiService;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.netflix.discovery.DiscoveryClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,10 @@ public class CeshiAction extends BaseAction {
 
     @Autowired
     private ActionService actionService;
+
+    //注册的客户端获取
+//    @Autowired
+//    private DiscoveryClient discoveryClient;
 
     @RequestMapping(value = "/ceshi")
     @ResponseBody
@@ -58,6 +63,8 @@ public class CeshiAction extends BaseAction {
         String msg="";
         String code="";
         CheckSQParam checkSQParam=CommonCache.checkSQ();
+
+
 
         return checkSQParam.getMsg();
     }
