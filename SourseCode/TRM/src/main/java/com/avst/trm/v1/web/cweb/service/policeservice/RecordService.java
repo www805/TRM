@@ -15,12 +15,14 @@ import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
+import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
+import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -32,6 +34,7 @@ import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;
@@ -39,7 +42,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -602,19 +607,71 @@ public class RecordService extends BaseService {
     }
 
 
-  public void startMC(RResult result, ReqParam<StartMCParam_out> param){
-       meetingControl.startMC(param);
-
-      return;
+  public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
+      try {
+          if (null != param) {
+              RResult rr = meetingControl.startMC(param);
+              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                  result = rr;
+              }else{
+                  System.out.println("startMC开启失败__");
+              }
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return result;
   }
 
-  public void overMC(RResult result, ReqParam<OverMCParam_out> param){
-
-
-    return;
+  public RResult overRercord(RResult result, ReqParam<OverMCParam_out> param) {
+      try {
+          if (null != param) {
+              RResult rr = meetingControl.overMC(param);
+              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                  result = rr;
+              }else{
+                  System.out.println("overMC关闭失败__");
+              }
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return result;
   }
-  public void getMCAsrTxtBack(RResult result, ReqParam<GetMCAsrTxtBackParam_out> param){
-    return;
+
+  public RResult getRercordAsrTxtBack(RResult<AsrTxtParam_toout> result, ReqParam<GetMCAsrTxtBackParam_out> param){
+      try {
+          if (null!=param){
+              RResult<AsrTxtParam_toout> rr=meetingControl.getMCAsrTxtBack(param);
+              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                  result = rr;
+              }else{
+                  System.out.println("getMCAsrTxtBack获取失败__");
+              }
+          }
+      } catch (Exception e) {
+          e.printStackTrace();
+      }
+      return result;
   }
+
+    public void getTime(RResult result, ReqParam param){
+        GetTimeVO getTimeVO=new GetTimeVO();
+        String currenttime;//当前时间
+        String yesterdaytime;//昨日时间
+
+        currenttime = new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒").format(new Date());//设置日期格式
+
+        Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.DATE,-1);
+        Date time=cal.getTime();
+        yesterdaytime= new SimpleDateFormat("yyyy年MM月dd日HH时mm分ss秒").format(time);
+        getTimeVO.setCurrenttime(currenttime);
+        getTimeVO.setYesterdaytime(yesterdaytime);
+        result.setData(getTimeVO);
+        changeResultToSuccess(result);
+        return;
+    }
+
 
 }

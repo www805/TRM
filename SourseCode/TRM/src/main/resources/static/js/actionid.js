@@ -127,9 +127,10 @@ function getactionid_manage() {
         waitRecord_getTemplateById:"waitRecord_getTemplateById",
         waitRecord_addRecord:"waitRecord_addRecord",
         waitRecord_getRecordById:"waitRecord_getRecordById",
-        waitRecord_startMC:"waitRecord_startMC",
-        waitRecord_overMC:"waitRecord_overMC",
-        waitRecord_getMCAsrTxtBack:"waitRecord_getMCAsrTxtBack",
+        waitRecord_startRercord:"waitRecord_startRercord",
+        waitRecord_overRercord:"waitRecord_overRercord",
+        waitRecord_getRercordAsrTxtBack:"waitRecord_getRercordAsrTxtBack",
+        waitRecord_getTime:"waitRecord_getTime",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

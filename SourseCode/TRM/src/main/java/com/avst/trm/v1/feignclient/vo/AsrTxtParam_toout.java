@@ -15,6 +15,20 @@ public class AsrTxtParam_toout {
 
     private int asrsort;//本次语音识别，这一句是第几句
 
+    private String userssid;//会议用户ssid
+
+    public void setAsrnum(int asrnum) {
+        this.asrnum = asrnum;
+    }
+
+    public String getUserssid() {
+        return userssid;
+    }
+
+    public void setUserssid(String userssid) {
+        this.userssid = userssid;
+    }
+
     public int getAsrsort() {
         return asrsort;
     }

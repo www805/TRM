@@ -1,7 +1,6 @@
 var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
 
-var occurrencetime_format;//案发时间
 
 
 //跳转变更模板页面
@@ -195,13 +194,12 @@ function img_bool(obj,type){
             //开始会议
             startMC();
 
-
             //实时会议数据
-            var recordtype=1;
+        /*    var recordtype=1;
             var username="未知";
             var translatext="未知";
             t = setInterval(function (args) {
-                /* $("#recordreals").html("");*/
+                /!* $("#recordreals").html("");*!/
                 if (recordtype==1){
                     recordrealclass="atalk";
                     username="检察官";
@@ -219,15 +217,15 @@ function img_bool(obj,type){
                                                   </div >';
 
                 $("#recordreals").append(recordrealshtml);
-            },1000);
+            },1000);*/
         }else{
             console.log("录音关闭__");
-            //结束会议
-            overMC();
-
             $(obj).css("display","none");
             $(obj).siblings().css("display","block");
-            clearInterval(t);
+           // clearInterval(t);
+
+            //结束会议
+            overMC();
         }
 }
 
@@ -260,7 +258,12 @@ function tr_downn(obj) {
     $tr.next().after($tr);
 }
 
-//编辑框下面按钮事件
+
+
+//编辑框下面按钮事件-------------------------------start
+var currenttime;//当前时间
+var yesterdaytime;//昨日时间
+var occurrencetime_format;//案发时间
 function btn(obj) {
     var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
     if (isNotEmpty(selected)&&selected=="false"){
@@ -274,6 +277,7 @@ function btn(obj) {
     }
 }
 function get_case_time(obj) {
+
     if (isNotEmpty(occurrencetime_format)){
         $("#recorddetail .font_blue_color").each(function(){
                 var lastindex=$(this).closest("tr").index();
@@ -285,18 +289,50 @@ function get_case_time(obj) {
     }
 }
 function get_current_time(obj) {
-  var current_time="2019年05月20日16时23分54秒";
-    if (isNotEmpty(current_time)){
+    getTime();
+    if (isNotEmpty(currenttime)){
         $("#recorddetail .font_blue_color").each(function(){
                 var lastindex=$(this).closest("tr").index();
                 if (lastindex==td_lastindex) {
-                    $(this).append(current_time);
+                    $(this).append(currenttime);
                 }
         });
         btn(obj);
     }
 }
+function get_yesterday_time(obj) {
+    getTime();
+    if (isNotEmpty(yesterdaytime)){
+        $("#recorddetail .font_blue_color").each(function(){
+            var lastindex=$(this).closest("tr").index();
+            if (lastindex==td_lastindex) {
+                $(this).append(yesterdaytime);
+            }
+        });
+        btn(obj);
+    }
+}
+//获取当期时间
+function getTime() {
+    var url=getActionURL(getactionid_manage().waitRecord_getTime);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetTime);
+}
+function callbackgetTime(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            currenttime=data.currenttime;
+            yesterdaytime=data.yesterdaytime;
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
 
+//编辑框下面按钮事件-------------------------------end
 
 
 //获取笔录信息
@@ -362,14 +398,14 @@ function startMC() {
         tdList.push(user2);
         // tdList.push(user3);
 
-        var url=getActionURL(getactionid_manage().waitRecord_startMC);
+        var url=getActionURL(getactionid_manage().waitRecord_startRercord);
         var data={
             token:INIT_CLIENTKEY,
             param:{
                 meetingtype: 2       //会议类型，1视频/2音频
                 ,mcType:"AVST"       //会议采用版本,现阶段只有AVST
-                ,modelbool:-1         //是否需要会议模板，1需要/-1不需要
-                ,mtmodelssid:'' //会议模板ssid
+                ,modelbool:1         //是否需要会议模板，1需要/-1不需要
+                ,mtmodelssid:'asgfjry521784h67' //会议模板ssid
                 ,tdList:tdList
             }
         };
@@ -378,24 +414,27 @@ function startMC() {
         layer.msg("参数为空");
     }
 }
+var mtssid=null;
 function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-
+            console.log("startMC返回结果_"+data)
+            mtssid=data;
+            getMCAsrTxtBack();
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
 //结束会议
 function overMC() {
-    var url=getActionURL(getactionid_manage().waitRecord_overMC);
+    var url=getActionURL(getactionid_manage().waitRecord_overRercord);
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            mtssid:''
+            mtssid:mtssid
             ,mcType:"AVST"
         }
     };
@@ -405,20 +444,20 @@ function callbackoverMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-
+            console.log("overMC(返回结果_"+data)
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
 //获取会议返回
 function getMCAsrTxtBack() {
-    var url=getActionURL(getactionid_manage().waitRecord_getMCAsrTxtBack);
+    var url=getActionURL(getactionid_manage().waitRecord_getRercordAsrTxtBack);
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            mtssid:''
+            mtssid:mtssid
             ,mcType:"AVST"
         }
     };
@@ -428,10 +467,10 @@ function callbackgetMCAsrTxtBack(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-
+            console.log(" getMCAsrTxtBack返回结果_"+data)
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 

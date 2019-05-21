@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
+import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
@@ -305,15 +306,15 @@ public class RecordAction extends BaseAction {
     /**
      * 开始会议
      */
-    @RequestMapping("/startMC")
-    public  RResult startMC(@RequestBody ReqParam<StartMCParam_out> param){
+    @RequestMapping("/startRercord")
+    public  RResult startRercord(@RequestBody ReqParam<StartMCParam_out> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.startMC(result,param);
+            result=  recordService.startRercord(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -323,15 +324,15 @@ public class RecordAction extends BaseAction {
     /**
      * 结束会议
      */
-    @RequestMapping("/overMC")
-    public  RResult overMC(@RequestBody ReqParam<OverMCParam_out> param){
+    @RequestMapping("/overRercord")
+    public  RResult overRercord(@RequestBody ReqParam<OverMCParam_out> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.overMC(result,param);
+            result= recordService.overRercord(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -340,20 +341,35 @@ public class RecordAction extends BaseAction {
     /**
      * 获取会议返回结果
      */
-    @RequestMapping("/getMCAsrTxtBack")
-    public  RResult getMCAsrTxtBack(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
+    @RequestMapping("/getRercordAsrTxtBack")
+    public  RResult getRercordAsrTxtBack(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
+        RResult<AsrTxtParam_toout> result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            result=recordService.getRercordAsrTxtBack(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+    @RequestMapping("/getTime")
+    public  RResult getTime(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getMCAsrTxtBack(result,param);
+            recordService.getTime(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
-
 
 
 
