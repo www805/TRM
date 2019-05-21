@@ -184,9 +184,10 @@ function openxthtml(obj) {
 }
 
 //录音按钮显示隐藏 type:1开始录音 2结束录音
-var t;
 function img_bool(obj,type){
         if (type==1){
+
+
             console.log("录音中__");
             $(obj).css("display","none");
             $(obj).siblings().css("display","block");
@@ -219,6 +220,10 @@ function img_bool(obj,type){
                 $("#recordreals").append(recordrealshtml);
             },1000);*/
         }else{
+            if (null==mtssid){
+                layer.msg("会议正在开启中，请稍等");
+                return;
+            }
             console.log("录音关闭__");
             $(obj).css("display","none");
             $(obj).siblings().css("display","block");
@@ -415,13 +420,18 @@ function startMC() {
     }
 }
 var mtssid=null;
+var t;//定时器
 function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log("startMC返回结果_"+data)
-            mtssid=data;
-            getMCAsrTxtBack();
+            console.log("startMC返回结果_"+data);
+            layer.msg("会议已开启",{time:500},function () {
+                mtssid=data;
+                t = window.setInterval(function (args) {
+                    getMCAsrTxtBack();
+                },3000);
+            });
         }
     }else{
         layer.msg(data.message);
@@ -444,7 +454,12 @@ function callbackoverMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log("overMC(返回结果_"+data)
+            console.log("overMC(返回结果_"+data);
+            mtssid=null;
+            if (data){
+                clearInterval(t);
+                layer.msg("会议已关闭");
+            }
         }
     }else{
         layer.msg(data.message);
@@ -468,9 +483,30 @@ function callbackgetMCAsrTxtBack(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             console.log(" getMCAsrTxtBack返回结果_"+data)
+
+            var username=data.username==null?"未知":data.username;//用户名称
+            var translatext=data.txt==null?"...":data.txt;//翻译文本
+            var asrtime=data.asrtime;//时间
+            var usertype=data.usertype;//1、询问人2被询问人
+            //实时会议数据
+                    if (usertype==1){
+                        recordrealclass="atalk";
+
+                    }else if (usertype==2){
+                        recordrealclass="btalk";
+
+                    }
+                    var recordrealshtml='<div class="'+recordrealclass+'" >\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span ondblclick="copy_text(this)">'+translatext+'</span> \
+                                                      </div >';
+
+                    $("#recordreals").append(recordrealshtml);
+                    var div = document.getElementById('recordreals');
+                    div.scrollTop = div.scrollHeight;
         }
     }else{
-        layer.msg(data.message);
+        //layer.msg(data.message);
     }
 }
 

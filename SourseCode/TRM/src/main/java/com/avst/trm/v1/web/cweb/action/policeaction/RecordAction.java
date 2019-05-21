@@ -13,6 +13,7 @@ import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.cweb.vo.policevo.GetRercordAsrTxtBackVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -307,7 +308,7 @@ public class RecordAction extends BaseAction {
      * 开始会议
      */
     @RequestMapping("/startRercord")
-    public  RResult startRercord(@RequestBody ReqParam<StartMCParam_out> param){
+    public  RResult startRercord(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -325,7 +326,7 @@ public class RecordAction extends BaseAction {
      * 结束会议
      */
     @RequestMapping("/overRercord")
-    public  RResult overRercord(@RequestBody ReqParam<OverMCParam_out> param){
+    public  RResult overRercord(@RequestBody ReqParam param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -343,20 +344,24 @@ public class RecordAction extends BaseAction {
      */
     @RequestMapping("/getRercordAsrTxtBack")
     public  RResult getRercordAsrTxtBack(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
-        RResult<AsrTxtParam_toout> result=this.createNewResultOfFail();
+        RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            result=recordService.getRercordAsrTxtBack(result,param);
+            recordService.getRercordAsrTxtBack(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
 
 
-
+    /**
+     * 获取当前系统时间
+     * @param param
+     * @return
+     */
     @RequestMapping("/getTime")
     public  RResult getTime(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
         RResult result=this.createNewResultOfFail();

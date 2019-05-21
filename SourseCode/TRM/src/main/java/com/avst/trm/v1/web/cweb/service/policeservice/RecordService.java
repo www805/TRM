@@ -608,51 +608,110 @@ public class RecordService extends BaseService {
 
 
   public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
+      if (null == param) {
+          System.out.println("参数为空__");
+          result.setMessage("参数为空");
+          return result;
+      }
       try {
-          if (null != param) {
-              RResult rr = meetingControl.startMC(param);
-              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                  result = rr;
+              result = meetingControl.startMC(param);
+              if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
+                  System.out.println("startMC开启成功__");
               }else{
                   System.out.println("startMC开启失败__");
               }
-          }
       } catch (Exception e) {
           e.printStackTrace();
       }
       return result;
   }
 
-  public RResult overRercord(RResult result, ReqParam<OverMCParam_out> param) {
+  public RResult overRercord(RResult result, ReqParam param) {
+      if (null == param) {
+          System.out.println("参数为空__");
+          result.setMessage("参数为空");
+          return result;
+      }
       try {
-          if (null != param) {
-              RResult rr = meetingControl.overMC(param);
-              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                  result = rr;
+           result = meetingControl.overMC(param);
+          if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
+              System.out.println("overMC关闭成功__");
               }else{
                   System.out.println("overMC关闭失败__");
               }
-          }
       } catch (Exception e) {
           e.printStackTrace();
       }
       return result;
   }
 
-  public RResult getRercordAsrTxtBack(RResult<AsrTxtParam_toout> result, ReqParam<GetMCAsrTxtBackParam_out> param){
+  public void getRercordAsrTxtBack(RResult result, ReqParam<GetMCAsrTxtBackParam_out> param){
+      GetRercordAsrTxtBackVO getRercordAsrTxtBackVO=new GetRercordAsrTxtBackVO();
+
+      if (null == param) {
+          System.out.println("参数为空__");
+          result.setMessage("参数为空");
+          return;
+      }
       try {
-          if (null!=param){
               RResult<AsrTxtParam_toout> rr=meetingControl.getMCAsrTxtBack(param);
               if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                  result = rr;
-              }else{
+                  System.out.println("getMCAsrTxtBack获取成功__");
+                  //返回数据转换
+                  try {
+                      getRercordAsrTxtBackVO = gson.fromJson(gson.toJson(rr.getData()), GetRercordAsrTxtBackVO.class);
+                  } catch (Exception e) {
+                      e.printStackTrace();
+                  }
+                  if(null!=getRercordAsrTxtBackVO){
+                      //开始处理返回数据
+                      //时间毫秒级处理显示
+                      String asrtime = getRercordAsrTxtBackVO.getAsrtime();
+
+                      SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                      Date date = new Date(Long.valueOf(asrtime));
+                      asrtime = df.format(date);
+
+
+
+                      System.out.println("毫秒级时间——"+asrtime+"__");
+                      if (StringUtils.isNotBlank(asrtime)){
+                            getRercordAsrTxtBackVO.setAsrtime(asrtime);
+                      }
+
+                      //判断会议人员类型
+                      Police_userinfo userinfo=new Police_userinfo();//被询问人
+                      Base_admininfo admininfo=new Base_admininfo();//询问人
+                      String userssid=getRercordAsrTxtBackVO.getUserssid();
+
+                      userinfo.setSsid(userssid);
+                      admininfo.setSsid(userssid);
+                      userinfo=police_userinfoMapper.selectOne(userinfo);
+                      admininfo=base_admininfoMapper.selectOne(admininfo);
+
+                      if (null!=userinfo&&userinfo.getId()!=null){
+                          getRercordAsrTxtBackVO.setUsername(userinfo.getUsername());
+                          getRercordAsrTxtBackVO.setUsertype(2);
+                      }else if(null!=admininfo&&admininfo.getId()!=null){
+                          getRercordAsrTxtBackVO.setUsername(admininfo.getUsername());
+                          getRercordAsrTxtBackVO.setUsertype(1);
+                      }else{
+                          System.out.println("未找到会议用户__");
+                          result.setMessage("系统异常");
+                          return ;
+                      }
+
+                      result.setData(getRercordAsrTxtBackVO);
+                      changeResultToSuccess(result);
+                  }
+                  }else{
                   System.out.println("getMCAsrTxtBack获取失败__");
               }
-          }
       } catch (Exception e) {
           e.printStackTrace();
       }
-      return result;
+      System.out.println(getRercordAsrTxtBackVO.toString());
+      return;
   }
 
     public void getTime(RResult result, ReqParam param){
@@ -672,6 +731,5 @@ public class RecordService extends BaseService {
         changeResultToSuccess(result);
         return;
     }
-
 
 }

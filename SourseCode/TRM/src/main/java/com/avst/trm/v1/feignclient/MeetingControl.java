@@ -27,6 +27,6 @@ public interface MeetingControl {
 
     @RequestMapping("/mt/v1/overMC")
     @ResponseBody
-    public RResult<AsrTxtParam_toout> overMC(@RequestBody ReqParam<OverMCParam_out> param);
+    public RResult overMC(@RequestBody ReqParam<OverMCParam_out> param);
 
 }
