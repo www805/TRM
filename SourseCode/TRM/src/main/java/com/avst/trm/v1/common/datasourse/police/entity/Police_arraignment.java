@@ -69,6 +69,11 @@ public class Police_arraignment extends Model<Police_arraignment> {
      */
     private String recordssid;
 
+    /**
+     * 会议ssid
+     */
+    private String mtssid;
+
     private String ssid;
 
     private String string1;
@@ -186,23 +191,33 @@ public class Police_arraignment extends Model<Police_arraignment> {
         return this.id;
     }
 
+    public String getMtssid() {
+        return mtssid;
+    }
+
+    public void setMtssid(String mtssid) {
+        this.mtssid = mtssid;
+    }
+
+
     @Override
     public String toString() {
         return "Police_arraignment{" +
-            "id=" + id +
-            ", adminssid='" + adminssid + '\'' +
-            ", otheradminssid='" + otheradminssid + '\'' +
-            ", recordadminssid='" + recordadminssid + '\'' +
-            ", recordplace='" + recordplace + '\'' +
-            ", askobj=" + askobj +
-            ", asknum=" + asknum +
-            ", createtime=" + createtime +
-            ", recordssid='" + recordssid + '\'' +
-            ", ssid='" + ssid + '\'' +
-            ", string1='" + string1 + '\'' +
-            ", string2='" + string2 + '\'' +
-            ", integer1=" + integer1 +
-            ", integer2=" + integer2 +
-            '}';
+                "id=" + id +
+                ", adminssid='" + adminssid + '\'' +
+                ", otheradminssid='" + otheradminssid + '\'' +
+                ", recordadminssid='" + recordadminssid + '\'' +
+                ", recordplace='" + recordplace + '\'' +
+                ", askobj=" + askobj +
+                ", asknum=" + asknum +
+                ", createtime=" + createtime +
+                ", recordssid='" + recordssid + '\'' +
+                ", mtssid='" + mtssid + '\'' +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 }

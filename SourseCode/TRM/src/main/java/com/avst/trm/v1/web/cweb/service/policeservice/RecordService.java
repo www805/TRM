@@ -667,14 +667,11 @@ public class RecordService extends BaseService {
                       //开始处理返回数据
                       //时间毫秒级处理显示
                       String asrtime = getRercordAsrTxtBackVO.getAsrtime();
-
                       SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                       Date date = new Date(Long.valueOf(asrtime));
                       asrtime = df.format(date);
 
 
-
-                      System.out.println("毫秒级时间——"+asrtime+"__");
                       if (StringUtils.isNotBlank(asrtime)){
                             getRercordAsrTxtBackVO.setAsrtime(asrtime);
                       }
@@ -729,6 +726,16 @@ public class RecordService extends BaseService {
         getTimeVO.setYesterdaytime(yesterdaytime);
         result.setData(getTimeVO);
         changeResultToSuccess(result);
+        return;
+    }
+
+    public void exportPdf(RResult result, ReqParam param){
+
+
+        return;
+    }
+
+    public void exportWord(RResult result, ReqParam param){
         return;
     }
 

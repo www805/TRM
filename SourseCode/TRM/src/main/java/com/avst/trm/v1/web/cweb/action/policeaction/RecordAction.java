@@ -376,6 +376,45 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 导出pdf
+     * @param param
+     * @return
+     */
+    @RequestMapping("/exportPdf")
+    public  RResult exportPdf(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.exportPdf(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 导出word
+     * @param param
+     * @return
+     */
+    @RequestMapping("/exportWord")
+    public  RResult exportWord(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.exportWord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 

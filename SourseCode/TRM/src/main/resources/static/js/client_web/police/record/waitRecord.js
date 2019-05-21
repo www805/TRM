@@ -1,6 +1,7 @@
 var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
-
+var td_lastindex={};//td的上一个光标位置  为0需要处理一下
+var copy_text_html="";
 
 
 //跳转变更模板页面
@@ -64,7 +65,7 @@ function callTemplateById(data) {
     }
 }
 
-//导出全部题目
+//导入全部题目
 function setAllproblem() {
     if (isNotEmpty(templatessid)){
         var url=getActionURL(getactionid_manage().waitRecord_getTemplateById);
@@ -107,15 +108,11 @@ function callsetAllproblem(data) {
                                 </tr>';
                         $("#recorddetail").append(html);
                     }
-
-                    $("#recorddetail .font_blue_color").focus(function(){
-                        td_lastindex=$(this).closest("tr").index();
+                    $("#recorddetail p").focus(function(){
+                        td_lastindex["key"]=$(this).closest("tr").index();
+                        td_lastindex["value"]=$(this).attr("name");
                     });
                 }
-
-
-
-
             }
         }
     }else{
@@ -124,7 +121,7 @@ function callsetAllproblem(data) {
 
 }
 
-var td_lastindex;//td的上一个光标位置  为0需要处理一下
+//导入单个题目
 function copy_problems(obj) {
     var text=$(obj).find("span").text();
     var w=$(obj).attr("referanswer");
@@ -142,12 +139,142 @@ function copy_problems(obj) {
         </td>\
         </tr>';
     $("#recorddetail").append(html);
-   $("#recorddetail .font_blue_color").focus(function(){
-       td_lastindex=$(this).closest("tr").index();
+    $("#recorddetail p").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
     });
 }
 
-//情绪分析
+//tr移动删除事件
+function tr_remove(obj) {
+    $(obj).parents("tr").remove();
+}
+function tr_up(obj) {
+    var $tr = $(obj).parents("tr");
+    $tr.prev().before($tr);
+}
+function tr_downn(obj) {
+    var $tr = $(obj).parents("tr");
+    $tr.next().after($tr);
+}
+
+//录音按钮显示隐藏 type:1开始录音
+function img_bool(obj,type){
+    if (type==1){
+        //开始会议
+        startMC();
+
+        console.log("录音中__");
+        $(obj).css("display","none");
+        $(obj).siblings().css("display","block");
+    }else{
+        if (null==mtssid){
+            layer.msg("会议正在开启中，请稍等");
+            return;
+        }
+
+        //结束会议
+        overMC();
+
+        console.log("录音关闭__");
+        $(obj).css("display","none");
+        $(obj).siblings().css("display","block");
+    }
+}
+
+//粘贴语音翻译文本
+function copy_text(obj) {
+    var text=$(obj).text();
+    copy_text_html=text;
+
+    $("#recorddetail p").each(function(){
+        var lastindex=$(this).closest("tr").index();
+        var value=$(this).attr("name");
+        if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+            $(this).append(copy_text_html);
+            copy_text_html="";
+        }
+    });
+}
+
+
+
+//编辑框下面按钮事件-------------------------------start
+var currenttime;//当前时间
+var yesterdaytime;//昨日时间
+var occurrencetime_format;//案发时间
+function btn(obj) {
+    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
+        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
+        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
+function get_case_time(obj) {
+
+    if (isNotEmpty(occurrencetime_format)){
+        $("#recorddetail p").each(function(){
+            var lastindex=$(this).closest("tr").index();
+            var value=$(this).attr("name");
+            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                $(this).append(occurrencetime_format);
+            }
+        });
+        btn(obj);
+    }
+}
+function get_current_time(obj) {
+    getTime();
+    if (isNotEmpty(currenttime)){
+        $("#recorddetail p").each(function(){
+            var lastindex=$(this).closest("tr").index();
+            var value=$(this).attr("name");
+            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                $(this).append(currenttime);
+            }
+        });
+        btn(obj);
+    }
+}
+function get_yesterday_time(obj) {
+    getTime();
+    if (isNotEmpty(yesterdaytime)){
+        $("#recorddetail p").each(function(){
+            var lastindex=$(this).closest("tr").index();
+            var value=$(this).attr("name");
+            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                $(this).append(yesterdaytime);
+            }
+        });
+        btn(obj);
+    }
+}
+//获取当期时间
+function getTime() {
+    var url=getActionURL(getactionid_manage().waitRecord_getTime);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetTime);
+}
+function callbackgetTime(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            currenttime=data.currenttime;
+            yesterdaytime=data.yesterdaytime;
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+//开启情绪分析
 function random(lower, upper) {
     return Math.floor(Math.random() * (upper - lower)) + lower;
 }
@@ -180,163 +307,8 @@ function openxthtml(obj) {
     }
 
 
-    
+
 }
-
-//录音按钮显示隐藏 type:1开始录音 2结束录音
-function img_bool(obj,type){
-        if (type==1){
-
-
-            console.log("录音中__");
-            $(obj).css("display","none");
-            $(obj).siblings().css("display","block");
-
-            //开始会议
-            startMC();
-
-            //实时会议数据
-        /*    var recordtype=1;
-            var username="未知";
-            var translatext="未知";
-            t = setInterval(function (args) {
-                /!* $("#recordreals").html("");*!/
-                if (recordtype==1){
-                    recordrealclass="atalk";
-                    username="检察官";
-                    translatext="我是检察官，现在开始考察你";
-                    recordtype=2;
-                }else if (recordtype==2){
-                    recordrealclass="btalk";
-                    username="被询问人";
-                    translatext="我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察我是被询问人，现在开始接受考察"
-                    recordtype=1;
-                }
-                var recordrealshtml='<div class="'+recordrealclass+'" >\
-                                                        <p>【'+username+'】 2019-4-14 02:24:55</p>\
-                                                        <span ondblclick="copy_text(this)">'+translatext+'</span> \
-                                                  </div >';
-
-                $("#recordreals").append(recordrealshtml);
-            },1000);*/
-        }else{
-            if (null==mtssid){
-                layer.msg("会议正在开启中，请稍等");
-                return;
-            }
-            console.log("录音关闭__");
-            $(obj).css("display","none");
-            $(obj).siblings().css("display","block");
-           // clearInterval(t);
-
-            //结束会议
-            overMC();
-        }
-}
-
-//粘贴语音翻译文本
-var copy_text_html="";
-function copy_text(obj) {
-    var text=$(obj).text();
-    copy_text_html=text;
-
-    $("#recorddetail .font_blue_color").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            if (lastindex==td_lastindex) {
-                $(this).append(copy_text_html);
-                copy_text_html="";
-            }
-    });
-}
-
-
-//tr移动删除事件
-function tr_remove(obj) {
-    $(obj).parents("tr").remove();
-}
-function tr_up(obj) {
-    var $tr = $(obj).parents("tr");
-    $tr.prev().before($tr);
-}
-function tr_downn(obj) {
-    var $tr = $(obj).parents("tr");
-    $tr.next().after($tr);
-}
-
-
-
-//编辑框下面按钮事件-------------------------------start
-var currenttime;//当前时间
-var yesterdaytime;//昨日时间
-var occurrencetime_format;//案发时间
-function btn(obj) {
-    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
-    if (isNotEmpty(selected)&&selected=="false"){
-        $("div[name='btn_div']").attr("showorhide","false");
-        $("div[name='btn_div']").removeClass("layui-form-selected");
-        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
-        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
-    }else if (isNotEmpty(selected)&&selected=="true") {
-        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
-        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
-    }
-}
-function get_case_time(obj) {
-
-    if (isNotEmpty(occurrencetime_format)){
-        $("#recorddetail .font_blue_color").each(function(){
-                var lastindex=$(this).closest("tr").index();
-                if (lastindex==td_lastindex) {
-                    $(this).append(occurrencetime_format);
-                }
-        });
-        btn(obj);
-    }
-}
-function get_current_time(obj) {
-    getTime();
-    if (isNotEmpty(currenttime)){
-        $("#recorddetail .font_blue_color").each(function(){
-                var lastindex=$(this).closest("tr").index();
-                if (lastindex==td_lastindex) {
-                    $(this).append(currenttime);
-                }
-        });
-        btn(obj);
-    }
-}
-function get_yesterday_time(obj) {
-    getTime();
-    if (isNotEmpty(yesterdaytime)){
-        $("#recorddetail .font_blue_color").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            if (lastindex==td_lastindex) {
-                $(this).append(yesterdaytime);
-            }
-        });
-        btn(obj);
-    }
-}
-//获取当期时间
-function getTime() {
-    var url=getActionURL(getactionid_manage().waitRecord_getTime);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetTime);
-}
-function callbackgetTime(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            currenttime=data.currenttime;
-            yesterdaytime=data.yesterdaytime;
-        }
-    }else{
-        layer.msg(data.message);
-    }
-}
-
 //编辑框下面按钮事件-------------------------------end
 
 
@@ -376,8 +348,9 @@ function callbackgetRecordById(data) {
 }
 
 
-
 //开始会议
+var mtssid=null;//会议ssid
+var mctimer;//定时器
 function startMC() {
     if (isNotEmpty(recordUserInfos)){
         var tdList=[];
@@ -419,8 +392,6 @@ function startMC() {
         layer.msg("参数为空");
     }
 }
-var mtssid=null;
-var t;//定时器
 function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -428,9 +399,9 @@ function callbackstartMC(data) {
             console.log("startMC返回结果_"+data);
             layer.msg("会议已开启",{time:500},function () {
                 mtssid=data;
-                t = window.setInterval(function (args) {
+                mctimer = window.setInterval(function (args) {
                     getMCAsrTxtBack();
-                },3000);
+                },150);
             });
         }
     }else{
@@ -440,24 +411,26 @@ function callbackstartMC(data) {
 
 //结束会议
 function overMC() {
-    var url=getActionURL(getactionid_manage().waitRecord_overRercord);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            mtssid:mtssid
-            ,mcType:"AVST"
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackoverMC);
+    if (isNotEmpty(mtssid)){
+        var url=getActionURL(getactionid_manage().waitRecord_overRercord);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid:mtssid
+                ,mcType:"AVST"
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackoverMC);
+    }
 }
 function callbackoverMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
             console.log("overMC(返回结果_"+data);
-            mtssid=null;
             if (data){
-                clearInterval(t);
+                mtssid=null;//会议ssid
+                clearInterval(mctimer);
                 layer.msg("会议已关闭");
             }
         }
@@ -468,15 +441,17 @@ function callbackoverMC(data) {
 
 //获取会议返回
 function getMCAsrTxtBack() {
-    var url=getActionURL(getactionid_manage().waitRecord_getRercordAsrTxtBack);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            mtssid:mtssid
-            ,mcType:"AVST"
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgetMCAsrTxtBack);
+    if (isNotEmpty(mtssid)){
+        var url=getActionURL(getactionid_manage().waitRecord_getRercordAsrTxtBack);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid:mtssid
+                ,mcType:"AVST"
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetMCAsrTxtBack);
+    }
 }
 function callbackgetMCAsrTxtBack(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -590,24 +565,45 @@ function calladdRecord(data) {
 }
 
 $(function () {
-    $("#recorddetail .font_blue_color").focus(function(){
-        td_lastindex=$(this).closest("tr").index();
-    });
+    //回车加trtd
+    var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+            <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：</p>\
+            <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：</p>\
+        </td>\
+        <td style="float: right;">\
+            <div class="layui-btn-group">\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+            </div>\
+        </td>\
+        </tr>';
+    document.onkeydown = function (event) {
+        var e = event || window.event;
+        if (e && e.keyCode == 13) { //回车键的键值为13
+            $("#recorddetail").append(trtd_html);
+            $("#recorddetail p").focus(function(){
+                td_lastindex["key"]=$(this).closest("tr").index();
+                td_lastindex["value"]=$(this).attr("name");
+            });
+        }
+    };
+
 
     $("#dl_dd dd").click(function () {
         var text=$(this).attr('lay-value');
         //文本
-        $("#recorddetail .font_blue_color").each(function(){
+        $("#recorddetail p").each(function(){
                 var lastindex=$(this).closest("tr").index();
-                if (lastindex==td_lastindex) {
+                var value=$(this).attr("name");
+                if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                     $(this).append(text);
                 }
         });
         btn(this);
     })
 
-    $("#recorddetail .font_blue_color").focus(function(){
-        td_lastindex=$(this).closest("tr").index();
-    });
+
 
 });
