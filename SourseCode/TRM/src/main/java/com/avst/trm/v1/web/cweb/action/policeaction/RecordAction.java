@@ -304,58 +304,7 @@ public class RecordAction extends BaseAction {
         return  true;
     }
 
-    /**
-     * 开始会议
-     */
-    @RequestMapping("/startRercord")
-    public  RResult startRercord(@RequestBody ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            result=  recordService.startRercord(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-
-    /**
-     * 结束会议
-     */
-    @RequestMapping("/overRercord")
-    public  RResult overRercord(@RequestBody ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            result= recordService.overRercord(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取会议返回结果
-     */
-    @RequestMapping("/getRercordAsrTxtBack")
-    public  RResult getRercordAsrTxtBack(@RequestBody ReqParam<GetMCAsrTxtBackParam_out> param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            recordService.getRercordAsrTxtBack(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
+   
 
     /**
      * 获取当前系统时间

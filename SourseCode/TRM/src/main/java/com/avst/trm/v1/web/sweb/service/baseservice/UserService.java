@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.sweb.service.baseservice;
 
-import com.avst.trm.v1.common.conf.ShiroRealm;
+import com.avst.trm.v1.common.conf.shiro.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admintorole;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
