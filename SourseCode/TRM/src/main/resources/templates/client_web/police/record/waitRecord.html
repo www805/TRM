@@ -343,7 +343,7 @@
         getTime();
 
         // 建立连接
-        socket = io.connect('http://192.168.17.178:8888');
+        socket = io.connect('http://192.168.17.178:8888?userssid='+[[${session.MANAGE_CLIENT.ssid}]]);
 
         socket.on('connect', function (data) {
             console.log("连接成功__");
@@ -352,10 +352,48 @@
             console.log("断开连接__");
         });
         socket.on('getback', function (data) {
-           console.log(data.username+":"+data.text)
+            if (isNotEmpty(recorduser)){
+                for (var i = 0; i < recorduser.length; i++) {
+                    var user = recorduser[i];
+                    var userssid=user.userssid;
+                    if (data.userssid==userssid){
+                        var username=user.username==null?"未知":user.username;//用户名称
+                        var usertype=user.grade;//1、询问人2被询问人
+                        var translatext=data.txt==null?"...":data.txt;//翻译文本
+                        var asrtime=data.asrtime;//时间
+                        var starttime=data.starttime;
+                        //实时会议数据
+                        if (usertype==1){
+                            recordrealclass="atalk";
+
+                        }else if (usertype==2){
+                            recordrealclass="btalk";
+
+                        }
+
+                        var lastuserssid = $("#recordreals span").last().attr("userssid");
+                        var laststarttime = $("#recordreals span").last().attr("starttime");
+                        console.log(lastuserssid+"_______"+laststarttime);
+                        console.log(userssid+"_______"+starttime);
+                        if (isNotEmpty(lastuserssid)&&isNotEmpty(laststarttime)){
+                            if (lastuserssid==userssid&&laststarttime==starttime){
+                                $("#recordreals div").last().remove();
+                            }
+                        }
+                        var recordrealshtml='<div class="'+recordrealclass+'" >\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span ondblclick="copy_text(this)" userssid='+userssid+' starttime='+starttime+'>'+translatext+'</span> \
+                                                      </div >';
+
+                        $("#recordreals").append(recordrealshtml);
+                        var div = document.getElementById('recordreals');
+                        div.scrollTop = div.scrollHeight;
+                    }
+                }
+            }
         });
-        
-        
+
+
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

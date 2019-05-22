@@ -2,7 +2,7 @@ var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
 var td_lastindex={};//td的上一个光标位置  为0需要处理一下
 var copy_text_html="";
-var mts;//会议集合
+var recorduser=[];//会议用户集合
 
 
 //跳转变更模板页面
@@ -350,8 +350,8 @@ function callbackgetRecordById(data) {
 
 //开始会议
 var mtssid=null;//会议ssid
-var mctimer;//定时器
 function startMC() {
+
     if (isNotEmpty(recordUserInfos)){
         var tdList=[];
         var user1={
@@ -366,6 +366,7 @@ function startMC() {
             ,grade:1
             ,asrtype:"AVST"
         };
+        recorduser=tdList;
        /*   询问人二暂不参与
         var user3={
             username:recordUserInfos.otheradminname
@@ -376,7 +377,7 @@ function startMC() {
         tdList.push(user2);
         // tdList.push(user3);
 
-        var url=getActionURL(getactionid_manage().waitRecord_startRercord);
+        var url="/v1/police/out/startRercord";
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -384,7 +385,8 @@ function startMC() {
                 ,mcType:"AVST"       //会议采用版本,现阶段只有AVST
                 ,modelbool:1         //是否需要会议模板，1需要/-1不需要
                 ,mtmodelssid:'asgfjry521784h67' //会议模板ssid
-                ,tdList:tdList
+                ,tdList:tdList,
+                ywSystemType:"TRM_AVST"
             }
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
@@ -398,11 +400,9 @@ function callbackstartMC(data) {
         if (isNotEmpty(data)){
             console.log("startMC返回结果_"+data);
             mtssid=data;
-           /* layer.msg("会议已开启",{time:500},function () {
-               mctimer = window.setInterval(function (args) {
-                    getMCAsrTxtBack();
-                },150);
-            });*/
+           layer.msg("会议已开启",{time:500},function () {
+
+            });
         }
     }else{
         layer.msg(data.message);
@@ -412,7 +412,7 @@ function callbackstartMC(data) {
 //结束会议
 function overMC() {
     if (isNotEmpty(mtssid)){
-        var url=getActionURL(getactionid_manage().waitRecord_overRercord);
+        var url="/v1/police/out/overRercord";
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -430,70 +430,15 @@ function callbackoverMC(data) {
             console.log("overMC(返回结果_"+data);
             if (data){
                 mtssid=null;//会议ssid
-                window.history.go(-1);
-                return false;
-                /*   clearInterval(mctimer);
                  layer.msg("会议已关闭",{time:500},function () {
-                     window.history.go(-1);
-                     return false;
-                  });*/
+
+                  });
             }
         }
     }else{
         layer.msg(data.message);
     }
 }
-
-//获取会议返回
-function getMCAsrTxtBack() {
-    if (isNotEmpty(mtssid)){
-        var url=getActionURL(getactionid_manage().waitRecord_getRercordAsrTxtBack);
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid:mtssid
-                ,mcType:"AVST"
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetMCAsrTxtBack);
-    }
-}
-function callbackgetMCAsrTxtBack(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            console.log(" getMCAsrTxtBack返回结果_"+data);
-
-
-            var username=data.username==null?"未知":data.username;//用户名称
-            var translatext=data.txt==null?"...":data.txt;//翻译文本
-            var asrtime=data.asrtime;//时间
-            var usertype=data.usertype;//1、询问人2被询问人
-            //实时会议数据
-            if (usertype==1){
-                recordrealclass="atalk";
-
-            }else if (usertype==2){
-                recordrealclass="btalk";
-
-            }
-            var recordrealshtml='<div class="'+recordrealclass+'" >\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)">'+translatext+'</span> \
-                                                      </div >';
-
-            $("#recordreals").append(recordrealshtml);
-
-
-
-            var div = document.getElementById('recordreals');
-            div.scrollTop = div.scrollHeight;
-        }
-    }else{
-        //layer.msg(data.message);
-    }
-}
-
 
 //保存按钮
 function addRecord() {
@@ -613,13 +558,47 @@ $(function () {
         btn(this);
     })
 
-    var time =0;
-    setInterval(function () {
-        var minute = ~~(time / 60), second = time % 60;
-        var hour= ~~(minute/60);
-        var getlabel = function (i) { return i < 10 ? '0' + i : i; }
-        $('#jishi').html(getlabel(hour)+':'+getlabel(minute) + ':' + getlabel(second));
-        time ++;
-    }, 10);
+    var defaults = {}
+        , one_second = 1000
+        , one_minute = one_second * 60
+        , one_hour = one_minute * 60
+        , one_day = one_hour * 24
+        , startDate = new Date()
+        , face = document.getElementById('jishi');
+
+    var requestAnimationFrame = (function() {
+        return window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+            };
+    }());
+
+    tick();
+    function tick() {
+
+        var now = new Date()
+            , elapsed = now - startDate
+            , parts = [];
+
+        parts[0] = '' + Math.floor( elapsed / one_hour );
+        parts[1] = '' + Math.floor( (elapsed % one_hour) / one_minute );
+        parts[2] = '' + Math.floor( ( (elapsed % one_hour) % one_minute ) / one_second );
+
+        parts[0] = (parts[0].length == 1) ? '0' + parts[0] : parts[0];
+        parts[1] = (parts[1].length == 1) ? '0' + parts[1] : parts[1];
+        parts[2] = (parts[2].length == 1) ? '0' + parts[2] : parts[2];
+
+        face.innerText = parts.join(':');
+
+        requestAnimationFrame(tick);
+
+    }
+
 });
+
+
 

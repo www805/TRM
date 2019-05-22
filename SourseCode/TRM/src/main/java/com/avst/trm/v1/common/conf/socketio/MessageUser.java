@@ -3,7 +3,27 @@ package com.avst.trm.v1.common.conf.socketio;
 public class MessageUser {
     private String userssid;
     private String username;
+    //源客户端id
+    private String sourceClientId;
+    //目标客户端id
+    private String targetClientId;
     private String text;
+
+    public String getSourceClientId() {
+        return sourceClientId;
+    }
+
+    public void setSourceClientId(String sourceClientId) {
+        this.sourceClientId = sourceClientId;
+    }
+
+    public String getTargetClientId() {
+        return targetClientId;
+    }
+
+    public void setTargetClientId(String targetClientId) {
+        this.targetClientId = targetClientId;
+    }
 
     public String getUserssid() {
         return userssid;

@@ -64,4 +64,16 @@ public class AsrTxtParam_toout {
     public void setAsrtime(String asrtime) {
         this.asrtime = asrtime;
     }
+
+    @Override
+    public String toString() {
+        return "AsrTxtParam_toout{" +
+                "txt='" + txt + '\'' +
+                ", starttime='" + starttime + '\'' +
+                ", asrnum=" + asrnum +
+                ", asrtime='" + asrtime + '\'' +
+                ", asrsort=" + asrsort +
+                ", userssid='" + userssid + '\'' +
+                '}';
+    }
 }

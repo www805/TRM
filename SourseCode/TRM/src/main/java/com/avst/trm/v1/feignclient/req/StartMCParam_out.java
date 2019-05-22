@@ -12,7 +12,17 @@ public class StartMCParam_out extends BaseReqParam{
 
     private String mtmodelssid;//会议模板ssid
 
+    private String ywSystemType;
+
     private List<TdAndUserAndOtherParam> tdList;
+
+    public String getYwSystemType() {
+        return ywSystemType;
+    }
+
+    public void setYwSystemType(String ywSystemType) {
+        this.ywSystemType = ywSystemType;
+    }
 
     public String getMcType() {
         return mcType;

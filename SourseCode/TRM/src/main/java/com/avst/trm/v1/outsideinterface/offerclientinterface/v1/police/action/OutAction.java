@@ -7,10 +7,14 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
+import com.corundumstudio.socketio.AckRequest;
+import com.corundumstudio.socketio.SocketIOClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/police/out")
@@ -45,15 +49,13 @@ public class OutAction extends BaseAction {
     }
 
 
-    @RequestMapping("/setRercordAsrTxtBack")
-    public  RResult setRercordAsrTxtBack(@RequestBody ReqParam<AsrTxtParam_toout> param){
-        RResult result=this.createNewResultOfFail();
+    @RequestMapping("/outtRercordAsrTxtBack")
+    public  boolean setRercordAsrTxtBack(@RequestBody ReqParam<AsrTxtParam_toout> param, HttpSession session){
         if (null==param){
-            result.setMessage("参数为空");
+            System.out.println("参数为空");
         }else{
-            outService.setRercordAsrTxtBack(result,param);
+            return outService.setRercordAsrTxtBack(param,session);
         }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
+        return false;
     }
 }

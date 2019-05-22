@@ -9,9 +9,7 @@ import com.corundumstudio.socketio.annotation.OnEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * MessageEventHandler消息处理类实现
@@ -19,8 +17,7 @@ import java.util.UUID;
 @Component
 public class MessageEventHandler {
     public static SocketIOServer socketIoServer;
-    static ArrayList<UUID> listClient = new ArrayList<>();
-    static final int limitSeconds = 60;
+    public static List<SocketIOClient> clients = new ArrayList<SocketIOClient>();//用于保存所有客户端
 
     @Autowired
     public MessageEventHandler(SocketIOServer server) {
@@ -29,18 +26,20 @@ public class MessageEventHandler {
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
-        listClient.add(client.getSessionId());
-        System.out.println("客户端:" + client.getSessionId() + "_____已连接");
+        String userssid = client.getHandshakeData().getSingleUrlParam("userssid");
+        clients.add(client);
+        System.out.println("客户端:" + client.getSessionId() + "_____已连接___"+userssid);
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
+        clients.remove(client);
         System.out.println("客户端:" + client.getSessionId() + "_____断开连接");
     }
 
     @OnEvent(value = "getmsg")
     public void onEvent(SocketIOClient client, AckRequest request, MessageUser  data) {
-        System.out.println(data.getUsername()+"发来消息：" + data.getText());
+        System.out.println(client.getSessionId()+"______"+data.getUsername()+"发来消息：" + data.getText());
 
         //返回消息
         MessageUser messageUser=new MessageUser();

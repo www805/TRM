@@ -1,5 +1,6 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
+import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
@@ -13,13 +14,19 @@ import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.web.cweb.vo.policevo.GetRercordAsrTxtBackVO;
+import com.corundumstudio.socketio.AckRequest;
+import com.corundumstudio.socketio.SocketIOClient;
+import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OutService  extends BaseService {
@@ -33,6 +40,9 @@ public class OutService  extends BaseService {
     private Base_admininfoMapper base_admininfoMapper;
 
     private Gson gson = new Gson();
+
+    public static SocketIOServer socketIoServer;
+
 
 
     public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
@@ -73,61 +83,43 @@ public class OutService  extends BaseService {
         return result;
     }
 
-    public void setRercordAsrTxtBack(RResult result, ReqParam<AsrTxtParam_toout> param){
-        GetRercordAsrTxtBackVO getRercordAsrTxtBackVO=new GetRercordAsrTxtBackVO();
+    public boolean setRercordAsrTxtBack(ReqParam<AsrTxtParam_toout> param, HttpSession session){
+      //  GetRercordAsrTxtBackVO getRercordAsrTxtBackVO=new GetRercordAsrTxtBackVO();
 
         //请求参数转换
         AsrTxtParam_toout asrTxtParam_toout = param.getParam();
         if (null==asrTxtParam_toout){
-            result.setMessage("参数为空");
-            return;
+            System.out.println("参数为空");
+            return false;
         }
 
         try {
-            getRercordAsrTxtBackVO = gson.fromJson(gson.toJson(asrTxtParam_toout), GetRercordAsrTxtBackVO.class);
-            if(null!=getRercordAsrTxtBackVO){
+        //    getRercordAsrTxtBackVO = gson.fromJson(gson.toJson(asrTxtParam_toout), GetRercordAsrTxtBackVO.class);
+            if(null!=asrTxtParam_toout){
                 //开始处理返回数据
                 //时间毫秒级处理显示
-                String asrtime = getRercordAsrTxtBackVO.getAsrtime();
+                String asrtime = asrTxtParam_toout.getAsrtime();
                 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(Long.valueOf(asrtime));
                 asrtime = df.format(date);
 
-
                 if (StringUtils.isNotBlank(asrtime)){
-                    getRercordAsrTxtBackVO.setAsrtime(asrtime);
+                    asrTxtParam_toout.setAsrtime(asrtime);
                 }
 
-                //判断会议人员类型
-                Police_userinfo userinfo=new Police_userinfo();//被询问人
-                Base_admininfo admininfo=new Base_admininfo();//询问人
-                String userssid=getRercordAsrTxtBackVO.getUserssid();
-
-                userinfo.setSsid(userssid);
-                admininfo.setSsid(userssid);
-                userinfo=police_userinfoMapper.selectOne(userinfo);
-                admininfo=base_admininfoMapper.selectOne(admininfo);
-
-                if (null!=userinfo&&userinfo.getId()!=null){
-                    getRercordAsrTxtBackVO.setUsername(userinfo.getUsername());
-                    getRercordAsrTxtBackVO.setUsertype(2);
-                }else if(null!=admininfo&&admininfo.getId()!=null){
-                    getRercordAsrTxtBackVO.setUsername(admininfo.getUsername());
-                    getRercordAsrTxtBackVO.setUsertype(1);
-                }else{
-                    System.out.println("未找到会议用户__");
-                    result.setMessage("系统异常");
-                    return ;
+                List<SocketIOClient> clients = MessageEventHandler.clients;
+                if (null!=clients&&clients.size()>0){
+                    for (SocketIOClient client : clients) {
+                        client.sendEvent("getback", asrTxtParam_toout);
+                    }
                 }
-
-                result.setData(true);
-                changeResultToSuccess(result);
+                System.out.println(asrTxtParam_toout.toString());
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(getRercordAsrTxtBackVO.toString());
-        return;
+        return false;
     }
 
 }
