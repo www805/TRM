@@ -31,22 +31,20 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.org.apache.bcel.internal.generic.NEW;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service("recordService")
 public class RecordService extends BaseService {
@@ -234,68 +232,92 @@ public class RecordService extends BaseService {
 
 
         //根据笔录ssid获取录音数据
-        try {
             EntityWrapper recordParam=new EntityWrapper();
             recordParam.eq("r.ssid",recordssid);
             Record record=police_recordMapper.getRecordBySsid(recordParam);
 
             if (null!=record){
-                //获取题目
-                EntityWrapper ew=new EntityWrapper();
-                ew.eq("r.ssid",record.getSsid());
-                ew.orderBy("p.ordernum",true);
-                ew.orderBy("p.createtime",true);
-                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-                if (null!=problems&&problems.size()>0){
-                    //根据题目和笔录查找对应答案
-                    for (RecordToProblem problem : problems) {
-                        String problemssid=problem.getSsid();
-                        if (StringUtils.isNotBlank(problemssid)){
-                            EntityWrapper answerParam=new EntityWrapper();
-                            answerParam.eq("recordtoproblemssid",problemssid);
-                            answerParam.orderBy("ordernum",true);
-                            answerParam.orderBy("createtime",true);
-                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                            if (null!=answers&&answers.size()>0){
-                                problem.setAnswers(answers);
+
+
+                try {
+                    /**
+                     *  获取题目答案
+                     */
+                    EntityWrapper ew=new EntityWrapper();
+                    ew.eq("r.ssid",record.getSsid());
+                    ew.orderBy("p.ordernum",true);
+                    ew.orderBy("p.createtime",true);
+                    List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+                    if (null!=problems&&problems.size()>0){
+                        //根据题目和笔录查找对应答案
+                        for (RecordToProblem problem : problems) {
+                            String problemssid=problem.getSsid();
+                            if (StringUtils.isNotBlank(problemssid)){
+                                EntityWrapper answerParam=new EntityWrapper();
+                                answerParam.eq("recordtoproblemssid",problemssid);
+                                answerParam.orderBy("ordernum",true);
+                                answerParam.orderBy("createtime",true);
+                                List<Police_answer> answers=police_answerMapper.selectList(answerParam);
+                                if (null!=answers&&answers.size()>0){
+                                    problem.setAnswers(answers);
+                                }
                             }
                         }
+                        record.setProblems(problems);
                     }
-                    record.setProblems(problems);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    /**
+                     *   获取提讯人和被询问人
+                     */
+                    EntityWrapper recorduserinfosParam=new EntityWrapper();
+                    recorduserinfosParam.eq("a.recordssid",record.getSsid());
+                    RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+                    if (null!=recordUserInfos){
+                        record.setRecordUserInfos(recordUserInfos);
+                    }
+
+                    getRecordByIdVO.setRecord(record);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
 
-                //获取提讯人被询问人等信息
-                EntityWrapper recorduserinfosParam=new EntityWrapper();
-                recorduserinfosParam.eq("a.recordssid",record.getSsid());
-                RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
-                if (null!=recordUserInfos){
-                    record.setRecordUserInfos(recordUserInfos);
+                //根据笔录ssid获取案件信息
+                try {
+                    EntityWrapper caseParam=new EntityWrapper();
+                    caseParam.eq("r.ssid",recordssid);
+                    CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
+                    if (null!=caseAndUserInfo){
+                        caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
+                        record.setCaseAndUserInfo(caseAndUserInfo);
+                        getRecordByIdVO.setCaseAndUserInfo(caseAndUserInfo);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
-                getRecordByIdVO.setRecord(record);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                //根据笔录ssid获取提讯数据
+                try {
+                    Police_arraignment police_arraignment=new Police_arraignment();
+                    police_arraignment.setRecordssid(recordssid);
+                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
 
-        //根据笔录ssid获取案件信息
-        try {
-            EntityWrapper caseParam=new EntityWrapper();
-            caseParam.eq("r.ssid",recordssid);
-            CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
-            if (null!=caseAndUserInfo){
-                caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
-                getRecordByIdVO.setCaseAndUserInfo(caseAndUserInfo);
+                    if (null!=police_arraignment){
+                        record.setPolice_arraignment(police_arraignment);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         //获取实时数据
-
-
         result.setData(getRecordByIdVO);
         changeResultToSuccess(result);
         return;
@@ -598,118 +620,12 @@ public class RecordService extends BaseService {
         return;
     }
 
-
     public void getCards(RResult result, ReqParam param){
         List<Police_cardtype> list=police_cardtypeMapper.selectList(null);
         result.setData(list);
         changeResultToSuccess(result);
         return;
     }
-
-
-  public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
-      if (null == param) {
-          System.out.println("参数为空__");
-          result.setMessage("参数为空");
-          return result;
-      }
-      try {
-              result = meetingControl.startMC(param);
-              if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                  System.out.println("startMC开启成功__");
-              }else{
-                  System.out.println("startMC开启失败__");
-              }
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      return result;
-  }
-
-  public RResult overRercord(RResult result, ReqParam param) {
-      if (null == param) {
-          System.out.println("参数为空__");
-          result.setMessage("参数为空");
-          return result;
-      }
-      try {
-           result = meetingControl.overMC(param);
-          if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-              System.out.println("overMC关闭成功__");
-              }else{
-                  System.out.println("overMC关闭失败__");
-              }
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      return result;
-  }
-
-  public void getRercordAsrTxtBack(RResult result, ReqParam<GetMCAsrTxtBackParam_out> param){
-      GetRercordAsrTxtBackVO getRercordAsrTxtBackVO=new GetRercordAsrTxtBackVO();
-
-      if (null == param) {
-          System.out.println("参数为空__");
-          result.setMessage("参数为空");
-          return;
-      }
-      try {
-              RResult<AsrTxtParam_toout> rr=meetingControl.getMCAsrTxtBack(param);
-              if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                  System.out.println("getMCAsrTxtBack获取成功__");
-                  //返回数据转换
-                  try {
-                      getRercordAsrTxtBackVO = gson.fromJson(gson.toJson(rr.getData()), GetRercordAsrTxtBackVO.class);
-                  } catch (Exception e) {
-                      e.printStackTrace();
-                  }
-                  if(null!=getRercordAsrTxtBackVO){
-                      //开始处理返回数据
-                      //时间毫秒级处理显示
-                      String asrtime = getRercordAsrTxtBackVO.getAsrtime();
-                      SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                      Date date = new Date(Long.valueOf(asrtime));
-                      asrtime = df.format(date);
-
-
-                      if (StringUtils.isNotBlank(asrtime)){
-                            getRercordAsrTxtBackVO.setAsrtime(asrtime);
-                      }
-
-                      //判断会议人员类型
-                      Police_userinfo userinfo=new Police_userinfo();//被询问人
-                      Base_admininfo admininfo=new Base_admininfo();//询问人
-                      String userssid=getRercordAsrTxtBackVO.getUserssid();
-
-                      userinfo.setSsid(userssid);
-                      admininfo.setSsid(userssid);
-                      userinfo=police_userinfoMapper.selectOne(userinfo);
-                      admininfo=base_admininfoMapper.selectOne(admininfo);
-
-                      if (null!=userinfo&&userinfo.getId()!=null){
-                          getRercordAsrTxtBackVO.setUsername(userinfo.getUsername());
-                          getRercordAsrTxtBackVO.setUsertype(2);
-                      }else if(null!=admininfo&&admininfo.getId()!=null){
-                          getRercordAsrTxtBackVO.setUsername(admininfo.getUsername());
-                          getRercordAsrTxtBackVO.setUsertype(1);
-                      }else{
-                          System.out.println("未找到会议用户__");
-                          result.setMessage("系统异常");
-                          return ;
-                      }
-
-                      result.setData(getRercordAsrTxtBackVO);
-                      changeResultToSuccess(result);
-                  }
-                  }else{
-                  System.out.println("getMCAsrTxtBack获取失败__");
-              }
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-      System.out.println(getRercordAsrTxtBackVO.toString());
-      return;
-  }
 
     public void getTime(RResult result, ReqParam param){
         GetTimeVO getTimeVO=new GetTimeVO();
@@ -735,8 +651,91 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void exportWord(RResult result, ReqParam param){
+    public void exportWord(RResult result, ReqParam<ExportWordParam> param){
+        ExportWordParam exportWordParam=param.getParam();
+        if (null==exportWordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=exportWordParam.getRecordssid();
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //根据笔录ssid获取信息
+        Map<String,String> dataMap = new HashMap<String,String>();
+        dataMap.put("recordstarttime", "2019年05月22日");
+        dataMap.put("recordplace", "深圳石岩");
+        dataMap.put("workname1", "公安部");
+        dataMap.put("workname2", "研发部");
+        dataMap.put("workname3", "市场部");
+        dataMap.put("username", "哈哈");
+        dataMap.put("sex", "男");
+        dataMap.put("age", "18");
+        dataMap.put("cardnum", "1234567895454444444546");
+        dataMap.put("politicsstatus", "党员");
+        dataMap.put("workunits", "制作业");
+        dataMap.put("residence", "深圳");
+        dataMap.put("phone", "19735880381");
+        dataMap.put("domicile", "台湾");
+
+        try {
+            Configuration configuration = new Configuration(new Version("2.3.23"));
+            configuration.setDefaultEncoding("utf-8");
+            configuration.setDirectoryForTemplateLoading(new File("C:/Users/Administrator/Desktop"));
+
+            File outFile = new File("C:/Users/Administrator/Desktop/导出的word.doc");
+            //以utf-8的编码读取ftl文件
+            Template template = configuration.getTemplate("ceshiword.xml","UTF-8");
+
+
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"), 10240);
+            template.process(dataMap, out);
+            out.close();
+
+            changeResultToSuccess(result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TemplateException e) {
+            e.printStackTrace();
+        }
         return;
     }
+
+    public void updateArraignment(RResult result, ReqParam<UpdateArraignmentParam> param){
+        UpdateArraignmentParam updateArraignmentParam=param.getParam();
+        if (null==updateArraignmentParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=updateArraignmentParam.getRecordssid();
+        String mtssid=updateArraignmentParam.getMtssid();
+        if (StringUtils.isBlank(recordssid)||StringUtils.isBlank(mtssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        try {
+            //根据recordssid获取提讯
+            Police_arraignment police_arraignment=new Police_arraignment();
+            police_arraignment.setRecordssid(recordssid);
+            police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+            if (null!=police_arraignment){
+                police_arraignment.setMtssid(mtssid);
+               int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
+                System.out.println("arraignmentupdateById_bool__"+arraignmentupdateById_bool);
+                if (arraignmentupdateById_bool>0){
+                    result.setData(true);
+                    changeResultToSuccess(result);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 }

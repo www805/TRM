@@ -7,16 +7,10 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
-import com.avst.trm.v1.feignclient.req.OverMCParam_out;
-import com.avst.trm.v1.feignclient.req.StartMCParam_out;
-import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetRercordAsrTxtBackVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -31,7 +25,7 @@ public class RecordAction extends BaseAction {
     private RecordService recordService;
 
 /*
- ①  获取笔录列表：/v1/police/record/getRecords
+ ① 获取笔录列表：/v1/police/record/getRecords
 ②  添加笔录：/v1/police/record/addRecord
 ③  查看单个笔录：/v1/police/record/getRecordById
 ④  实时录音文件上传：/v1/police/record/uploadRecord
@@ -350,7 +344,7 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/exportWord")
-    public  RResult exportWord(@RequestBody ReqParam param){
+    public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -358,6 +352,25 @@ public class RecordAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
             recordService.exportWord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /***
+     * 修改提讯数据
+     * @param param
+     * @return
+     */
+    @RequestMapping("/updateArraignment")
+    public  RResult updateArraignment(@RequestBody ReqParam<UpdateArraignmentParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.updateArraignment(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

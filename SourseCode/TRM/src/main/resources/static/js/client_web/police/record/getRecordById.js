@@ -1,3 +1,7 @@
+var recorduser=[];//会议用户集合
+var mtssid=null;//当前会议的ssid
+
+
 
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
@@ -19,7 +23,6 @@ function opneModal_1() {
         }
     });
 }
-
 
 /**
  * 局部刷新
@@ -76,7 +79,6 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             var record=data.record;
             var caseAndUserInfo=data.caseAndUserInfo;
-
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
                 if (isNotEmpty(record.recorddownurl)){
@@ -102,6 +104,30 @@ function callbackgetRecordById(data) {
                             $("#recorddetail").append(problemhtml);
                         }
                     }
+
+                    //会议人员
+                    var recordUserInfosdata=record.recordUserInfos;
+                    if (isNotEmpty(recordUserInfosdata)){
+                        var user1={
+                            username:recordUserInfosdata.username
+                            ,userssid:recordUserInfosdata.userssid
+                            ,grade:2
+                        };
+                        var user2={
+                            username:recordUserInfosdata.adminname
+                            ,userssid:recordUserInfosdata.adminssid
+                            ,grade:1
+                        };
+                        recorduser.push(user1);
+                        recorduser.push(user2);
+                    }
+
+                    //提讯数据
+                var police_arraignment=record.police_arraignment;
+                if (isNotEmpty(police_arraignment)){
+                    mtssid=police_arraignment.mtssid;
+                }
+                getRecord();
             }
 
 
@@ -115,31 +141,6 @@ function callbackgetRecordById(data) {
                 $("#caseAndUserInfo_html").html(init_casehtml);
             }
 
-
-            //实时会议数据
-            var recordtype=1;
-            var username="未知";
-            var translatext="未知";
-            $("#recordreals").html("");
-            for (var i = 0; i < 10; i++) {
-                if (recordtype==1){
-                    recordrealclass="atalk";
-                    username="检察官";
-                    translatext="我是检察官，现在开始考察你";
-                    recordtype=2;
-                }else if (recordtype==2){
-                    recordrealclass="btalk";
-                    username="被询问人";
-                    translatext="我是被询问人，现在开始接受考察";
-                    recordtype=1;
-                }
-                var recordrealshtml='<div class="'+recordrealclass+'"  >\
-                                                        <p>【'+username+'】 2019-4-14 02:24:55</p>\
-                                                        <span>'+translatext+'</span> \
-                                                  </div>';
-
-                $("#recordreals").append(recordrealshtml);
-            }
         }
     }else{
         layer.msg(data.message);
@@ -197,3 +198,67 @@ $(function () {
     });
 
 });
+
+
+function getRecord() {
+    if (isNotEmpty(mtssid)) {
+        var url="/v1/police/out/getRecord";
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+                ,mcType:"AVST"
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetRecord);
+    }
+}
+
+function callbackgetRecord(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        var datas = data.data;
+        if (isNotEmpty(datas)) {
+            console.log(datas);
+            $("#recordreals").html("");
+            for (var i = 0; i < datas.length; i++) {
+                var data=datas[i];
+                if (isNotEmpty(recorduser)){
+                    for (var j = 0; j < recorduser.length; j++) {
+                        var user = recorduser[j];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//1、询问人2被询问人
+                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var asrtime=data.asrtime;//时间
+                            var starttime=data.starttime;
+                            //实时会议数据
+                            if (usertype==1){
+                                recordrealclass="atalk";
+
+                            }else if (usertype==2){
+                                recordrealclass="btalk";
+
+                            }
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                            }
+                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
+                                                      </div >';
+
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals');
+                            div.scrollTop = div.scrollHeight;
+                        }
+                    }
+                }
+            }
+
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}

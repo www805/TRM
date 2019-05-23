@@ -333,6 +333,18 @@ function callbackgetRecordById(data) {
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recordUserInfos=recordUserInfosdata;
+                    var user1={
+                        username:recordUserInfosdata.username
+                        ,userssid:recordUserInfosdata.userssid
+                        ,grade:2
+                    };
+                    var user2={
+                        username:recordUserInfosdata.adminname
+                        ,userssid:recordUserInfosdata.adminssid
+                        ,grade:1
+                    };
+                    recorduser.push(user1);
+                    recorduser.push(user2);
                 }
             }
             if (isNotEmpty(caseAndUserInfo)){
@@ -366,7 +378,7 @@ function startMC() {
             ,grade:1
             ,asrtype:"AVST"
         };
-        recorduser=tdList;
+
        /*   询问人二暂不参与
         var user3={
             username:recordUserInfos.otheradminname
@@ -382,11 +394,7 @@ function startMC() {
             token:INIT_CLIENTKEY,
             param:{
                 meetingtype: 2       //会议类型，1视频/2音频
-                ,mcType:"AVST"       //会议采用版本,现阶段只有AVST
-                ,modelbool:1         //是否需要会议模板，1需要/-1不需要
-                ,mtmodelssid:'asgfjry521784h67' //会议模板ssid
                 ,tdList:tdList,
-                ywSystemType:"TRM_AVST"
             }
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
@@ -400,9 +408,7 @@ function callbackstartMC(data) {
         if (isNotEmpty(data)){
             console.log("startMC返回结果_"+data);
             mtssid=data;
-           layer.msg("会议已开启",{time:500},function () {
-
-            });
+            updateArraignment();
         }
     }else{
         layer.msg(data.message);
@@ -512,6 +518,76 @@ function calladdRecord(data) {
                     layer.close(index);
                     return false;
                 }});
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+//结束笔录按钮
+function overRecord() {
+    layer.confirm('是否退出笔录录制', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        //保存
+        addRecord();
+        overMC();//结束笔录
+        window.history.go(-1);
+        layer.close(index);
+    }, function(index){
+
+        layer.close(index);
+    });
+    
+}
+
+
+//导出word
+function exportWord(){
+    var url=getActionURL(getactionid_manage().waitRecord_exportWord);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackexportWord);
+}
+
+//修改提讯数据
+function updateArraignment() {
+    if (isNotEmpty(mtssid)){
+        var url=getActionURL(getactionid_manage().waitRecord_updateArraignment);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                mtssid:mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackupdateArraignment);
+    } 
+}
+
+function callbackupdateArraignment(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            layer.msg("会议已开启",{time:500},function () {
+
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function callbackexportWord(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+
         }
     }else{
         layer.msg(data.message,{icon: 2});

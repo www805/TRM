@@ -131,6 +131,8 @@ function getactionid_manage() {
         waitRecord_overRercord:"waitRecord_overRercord",
         waitRecord_getRercordAsrTxtBack:"waitRecord_getRercordAsrTxtBack",
         waitRecord_getTime:"waitRecord_getTime",
+        waitRecord_exportWord:"waitRecord_exportWord",
+        waitRecord_updateArraignment:"waitRecord_updateArraignment",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

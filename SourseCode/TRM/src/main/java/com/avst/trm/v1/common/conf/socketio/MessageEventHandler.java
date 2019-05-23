@@ -26,26 +26,14 @@ public class MessageEventHandler {
 
     @OnConnect
     public void onConnect(SocketIOClient client) {
-        String userssid = client.getHandshakeData().getSingleUrlParam("userssid");
         clients.add(client);
-        System.out.println("客户端:" + client.getSessionId() + "_____已连接___"+userssid);
+        System.out.println("客户端_____" + client.getSessionId() + "_____已连接");
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         clients.remove(client);
-        System.out.println("客户端:" + client.getSessionId() + "_____断开连接");
-    }
-
-    @OnEvent(value = "getmsg")
-    public void onEvent(SocketIOClient client, AckRequest request, MessageUser  data) {
-        System.out.println(client.getSessionId()+"______"+data.getUsername()+"发来消息：" + data.getText());
-
-        //返回消息
-        MessageUser messageUser=new MessageUser();
-        messageUser.setText("已收到消息");
-        messageUser.setUsername("后台");
-        socketIoServer.getClient(client.getSessionId()).sendEvent("getback", messageUser);
+        System.out.println("客户端_____" + client.getSessionId() + "_____断开连接");
     }
 
 }

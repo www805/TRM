@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
+import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 
 import java.util.List;
@@ -19,6 +20,26 @@ public class Record extends Police_record {
     private List<RecordToProblem> problems;//笔录问题
 
     private RecordUserInfos recordUserInfos;//笔录询问 和被询问人信息
+
+    private Police_arraignment police_arraignment;//提讯信息
+
+    private  CaseAndUserInfo caseAndUserInfo;//案件信息
+
+    public CaseAndUserInfo getCaseAndUserInfo() {
+        return caseAndUserInfo;
+    }
+
+    public void setCaseAndUserInfo(CaseAndUserInfo caseAndUserInfo) {
+        this.caseAndUserInfo = caseAndUserInfo;
+    }
+
+    public Police_arraignment getPolice_arraignment() {
+        return police_arraignment;
+    }
+
+    public void setPolice_arraignment(Police_arraignment police_arraignment) {
+        this.police_arraignment = police_arraignment;
+    }
 
     public RecordUserInfos getRecordUserInfos() {
         return recordUserInfos;

@@ -1,32 +1,31 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
-import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.web.cweb.vo.policevo.GetRercordAsrTxtBackVO;
-import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class OutService  extends BaseService {
@@ -34,10 +33,8 @@ public class OutService  extends BaseService {
     private MeetingControl meetingControl;
 
     @Autowired
-    private Police_userinfoMapper police_userinfoMapper;
+    private Base_typeMapper base_typeMapper;
 
-    @Autowired
-    private Base_admininfoMapper base_admininfoMapper;
 
     private Gson gson = new Gson();
 
@@ -46,11 +43,22 @@ public class OutService  extends BaseService {
 
 
     public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
-        if (null == param) {
+        StartMCParam_out startMCParam_out=gson.fromJson(gson.toJson(param.getParam()), StartMCParam_out.class);
+
+        if (null == startMCParam_out) {
             System.out.println("参数为空__");
             result.setMessage("参数为空");
             return result;
         }
+        //获取
+        Base_type base_type=new Base_type();
+        base_type.setType(CommonCache.getCurrentServerType());
+        base_type=base_typeMapper.selectOne(base_type);
+        startMCParam_out.setMcType("AVST");
+        startMCParam_out.setModelbool(1);
+        startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
+        startMCParam_out.setYwSystemType("TRM_AVST");
+        param.setParam(startMCParam_out);
         try {
             result = meetingControl.startMC(param);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
@@ -84,8 +92,6 @@ public class OutService  extends BaseService {
     }
 
     public boolean setRercordAsrTxtBack(ReqParam<AsrTxtParam_toout> param, HttpSession session){
-      //  GetRercordAsrTxtBackVO getRercordAsrTxtBackVO=new GetRercordAsrTxtBackVO();
-
         //请求参数转换
         AsrTxtParam_toout asrTxtParam_toout = param.getParam();
         if (null==asrTxtParam_toout){
@@ -94,7 +100,6 @@ public class OutService  extends BaseService {
         }
 
         try {
-        //    getRercordAsrTxtBackVO = gson.fromJson(gson.toJson(asrTxtParam_toout), GetRercordAsrTxtBackVO.class);
             if(null!=asrTxtParam_toout){
                 //开始处理返回数据
                 //时间毫秒级处理显示
@@ -122,4 +127,32 @@ public class OutService  extends BaseService {
         return false;
     }
 
+    public RResult getRecord(RResult result, ReqParam param){
+        List<AsrTxtParam_toout> asrTxtParam_toouts=new ArrayList<AsrTxtParam_toout>();
+        try {
+            result = meetingControl.getMC(param);
+            if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
+                asrTxtParam_toouts=gson.fromJson(gson.toJson(result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
+                if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                    for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
+                        //时间转换
+                        String asrtime = asrTxtParam_toout.getAsrtime();
+                        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = new Date(Long.valueOf(asrtime));
+                        asrtime = df.format(date);
+                        if (StringUtils.isNotBlank(asrtime)){
+                            asrTxtParam_toout.setAsrtime(asrtime);
+                        }
+                    }
+                    result.setData(asrTxtParam_toouts);
+                }
+                changeResultToSuccess(result);
+            }else{
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  result;
+    }
 }

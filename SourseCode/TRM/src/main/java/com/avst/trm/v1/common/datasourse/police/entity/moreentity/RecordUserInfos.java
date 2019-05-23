@@ -13,6 +13,26 @@ public class RecordUserInfos {
 
     private String otheradminname;
 
+    private String recordadminssid;//记录人ssid
+
+    private String recordadminname;//记录人
+
+    public String getRecordadminssid() {
+        return recordadminssid;
+    }
+
+    public void setRecordadminssid(String recordadminssid) {
+        this.recordadminssid = recordadminssid;
+    }
+
+    public String getRecordadminname() {
+        return recordadminname;
+    }
+
+    public void setRecordadminname(String recordadminname) {
+        this.recordadminname = recordadminname;
+    }
+
     public String getUsername() {
         return username;
     }

@@ -220,8 +220,21 @@
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
             <div style="margin-top: 5px">
                 <button class="layui-btn layui-btn-normal " onclick="addRecord();">保存</button>
-                <button class="layui-btn layui-btn-normal " ><i class="iconfont icon-dayin" title="打印"></i> 打印</button>
-                <button class="layui-btn layui-btn-normal "><i class="iconfont icon-daochu" title="导出"></i> 导出</button>
+                <!--<button class="layui-btn layui-btn-normal " ><i class="iconfont icon-dayin" title="打印"></i> 打印</button>-->
+                <div class="layui-inline" style="margin-bottom:0">
+                    <div class="layui-unselect layui-form-select   "  name="btn_div"   showorhide="false" >
+                        <div class="layui-select-title">
+                            <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
+
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit" >
+                            <dd lay-value="" class="" onclick="exportWord();">导出word</dd>
+                            <dd lay-value="" class="" onclick="exportWord();">导出pdf</dd>
+                        </dl>
+                    </div>
+                </div>
+
+
                     <div style="float: right">
                         <button class="layui-btn layui-btn-normal "><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
                         <button class="layui-btn layui-btn-normal "><i class="iconfont icon-langdu" title="朗读"></i> 朗读</button>
@@ -309,7 +322,7 @@
                 </div>
                 <div class="layui-col-md4" >
                     <div class="layui-inline" style="margin-bottom:0;float: right">
-                        <button class=" layui-btn layui-btn-warm "  onclick="overMC();">结束笔录</button>
+                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord();">结束笔录</button>
                     </div>
                 </div>
             </div>
@@ -343,7 +356,7 @@
         getTime();
 
         // 建立连接
-        socket = io.connect('http://192.168.17.178:8888?userssid='+[[${session.MANAGE_CLIENT.ssid}]]);
+        socket = io.connect('http://192.168.17.178:8888');
 
         socket.on('connect', function (data) {
             console.log("连接成功__");
@@ -371,18 +384,13 @@
 
                         }
 
-                        var lastuserssid = $("#recordreals span").last().attr("userssid");
-                        var laststarttime = $("#recordreals span").last().attr("starttime");
-                        console.log(lastuserssid+"_______"+laststarttime);
-                        console.log(userssid+"_______"+starttime);
-                        if (isNotEmpty(lastuserssid)&&isNotEmpty(laststarttime)){
-                            if (lastuserssid==userssid&&laststarttime==starttime){
-                                $("#recordreals div").last().remove();
-                            }
-                        }
-                        var recordrealshtml='<div class="'+recordrealclass+'" >\
+                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                         }
+                        var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)" userssid='+userssid+' starttime='+starttime+'>'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
                                                       </div >';
 
                         $("#recordreals").append(recordrealshtml);
@@ -392,6 +400,24 @@
                 }
             }
         });
+
+        //页面关闭时调用
+        $(window).on("unload", function(event){
+            console.log("会议将会自动结束"+event)
+            overMC();
+        });
+      //页面刷新时调用
+        $(window).on('beforeunload', function(event) {
+            console.log("会议将会自动结束"+event)
+            overMC();
+
+        });
+        //用户离开当前网页跳转到另外一个页面时触发
+        $(window).on('pagehide', function(event) {
+            console.log("会议将会自动结束"+event)
+            overMC();
+        });
+
 
 
     });

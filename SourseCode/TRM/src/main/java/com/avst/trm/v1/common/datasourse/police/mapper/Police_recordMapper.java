@@ -37,12 +37,13 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
             " left join base_filesave f2 on f2.datassid=r.pdf_filesavessid where 1=1 ${ew.sqlSegment}")
     int countgetRecords(@Param("ew") EntityWrapper ew);
 
-    @Select(" select a.adminssid,a1.username as adminname,a.otheradminssid,a2.username as otheradminname,c.userssid,u.username as username from police_arraignment a " +
+    @Select(" select a.adminssid,a1.username as adminname,a.otheradminssid,a2.username as otheradminname,a.recordadminssid,a3.username as recordadminname,c.userssid,u.username as username from police_arraignment a " +
             " left join police_casetoarraignment ca on a.ssid=ca.arraignmentssid " +
             " left join police_case c on c.ssid=ca.casessid " +
             " LEFT JOIN police_userinfo u on u.ssid=c.userssid " +
             " left JOIN base_admininfo a1 on a1.ssid=a.adminssid " +
             " LEFT JOIN base_admininfo a2 on a2.ssid=a.otheradminssid " +
+            " LEFT JOIN base_admininfo a3 on a3.ssid=a.recordadminssid " +
             " where 1=1 ${ew.sqlSegment} ")
     RecordUserInfos getRecordUserInfosByRecordSsid(@Param("ew") EntityWrapper ew);
 

@@ -46,7 +46,7 @@ public class NettySocketConfig {
             }
         });
         server.start();
-         return server;
+        return server;
     }
 
     @Bean
