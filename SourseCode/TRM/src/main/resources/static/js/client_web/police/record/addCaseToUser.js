@@ -8,23 +8,18 @@ var dquserssid=null;//当前用户的ssid
 
 //开始笔录按钮
 function addCaseToArraignment() {
-   /* var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-        setpageAction(INIT_CLIENT,nextparam.nextPageId);
-        var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-        parent.location.href=url+"?ssid=80d914a33e094e1daa07d7740b4fed28";
-    }*/
+
   var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
 
     var cardnum=$("#cardnum").val();
     if (!isNotEmpty(cardnum)){
-        layer.msg("证件号码不能为空");
+        parent.layer.msg("证件号码不能为空");
         return;
     }
 
     var recordtypessid= $("td[recordtypebool='true']",parent.document).attr("recordtype");
     if (!isNotEmpty(recordtypessid)){
-        layer.msg("未找到选择的笔录类型");
+        parent.layer.msg("未找到选择的笔录类型");
         return;
     }
 
@@ -32,33 +27,33 @@ function addCaseToArraignment() {
 
     var casessid=$("#casename  option:selected").val();
     if (!isNotEmpty(casessid)){
-        layer.msg("案件不能为空");
+        parent.layer.msg("案件不能为空");
         return;
     }
 
 
     var otheradminssid=$("#otheruserinfos  option:selected").val();
     if (!isNotEmpty(otheradminssid)){
-        layer.msg("询问人二不能为空");
+        parent.layer.msg("询问人二不能为空");
         return;
     }
 
     var recordadminssid=$("#recordadmin  option:selected").val();
     if (!isNotEmpty(recordadminssid)){
-        layer.msg("记录人不能为空");
+        parent.layer.msg("记录人不能为空");
         return;
     }
     var recordplace=$("#recordplace").val();
     var askobj=$("#askobj  option:selected").val();
     if (!isNotEmpty(askobj)){
-        layer.msg("询问对象不能为空");
+        parent.layer.msg("询问对象不能为空");
         return;
     }
 
     var asknum=$("#asknum").val();
     var recordname=$("#recordname").val();
     if (!isNotEmpty(recordname)){
-        layer.msg("笔录名称不能为空");
+        parent.layer.msg("笔录名称不能为空");
         return;
     }
       var arr=[];
@@ -105,7 +100,7 @@ function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var ssid=data.data;
         if (isNotEmpty(ssid)){
-            var index = layer.msg('开始进行笔录', {shade:0.1
+            var index = parent.layer.msg('开始进行笔录', {shade:0.1
             },function () {
                 var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
                 if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
@@ -113,11 +108,11 @@ function callbackaddCaseToArraignment(data) {
                     var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
                     parent.location.href=url+"?ssid="+ssid;
                 }
-                layer.close(index);
+                parent.layer.close(index);
             });
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
 }
 
@@ -234,7 +229,7 @@ function callbackgetNationalitys(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -263,7 +258,7 @@ function callbackgetNationals(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -297,7 +292,7 @@ function callbackgetCards(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -380,7 +375,7 @@ function callbackgetUserByCard(data){
         /*其他在场人员数据渲染*/
 
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -457,7 +452,7 @@ function tabAdd(){
         var form = layui.form;
         var element=layui.element;
         //使用模块
-        layer.prompt({title: '请输入标其他在场人员标题', formType: 0}, function(title, index){
+        parent.layer.prompt({title: '请输入标其他在场人员标题', formType: 0}, function(title, index){
             element.tabAdd('tabAdd_filter', {
                 title:title
                 ,content:html
@@ -473,7 +468,7 @@ function tabAdd(){
             }
             element.render();
             form.render();
-            layer.close(index);
+            parent.layer.close(index);
         });
 
     });
@@ -486,12 +481,12 @@ function getUserByCard_other(obj){
     var cardnum=$(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
 
     if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){ //判断主要人员信息是否搜索
-        layer.msg("请先获取人员基本信息");
+        parent.layer.msg("请先获取人员基本信息");
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
     if (dqcardssid==cards&&dqcardnum==cardnum){
-        layer.msg("被询问人不能作为其他在场人员");
+        parent.layer.msg("被询问人不能作为其他在场人员");
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
@@ -505,7 +500,7 @@ function getUserByCard_other(obj){
         }
     });
     if (num>1){
-        layer.msg("该在场人员已存在");
+        parent.layer.msg("该在场人员已存在");
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
@@ -531,7 +526,7 @@ function getUserByCard_other(obj){
                 }
             }
         }else{
-            layer.msg(data.message);
+            parent.layer.msg(data.message);
             $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         }
         layui.use('form', function(){

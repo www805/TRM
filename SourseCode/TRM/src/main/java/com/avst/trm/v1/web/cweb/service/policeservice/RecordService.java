@@ -86,6 +86,7 @@ public class RecordService extends BaseService {
     @Autowired
     private MeetingControl meetingControl;
 
+    private boolean addRecordbool=false;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -150,6 +151,15 @@ public class RecordService extends BaseService {
     }
 
     public void addRecord(RResult result, ReqParam<AddRecordParam> param){
+
+        if (addRecordbool){
+            System.out.println("---addRecordbool---Start---");
+            result.setMessage("保存中,请稍等...");
+            return;
+        }
+        addRecordbool=true;
+
+
         //请求参数转换
         AddRecordParam addRecordParam = param.getParam();
         if (null==addRecordParam){
@@ -210,6 +220,8 @@ public class RecordService extends BaseService {
         }else{
             System.out.println("该笔录没有任何题目答案__2");
         }
+
+        addRecordbool=false;
         result.setData(recordssid);
         changeResultToSuccess(result);
         return;

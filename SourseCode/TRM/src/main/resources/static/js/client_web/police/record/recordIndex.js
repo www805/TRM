@@ -189,7 +189,7 @@ function showpagetohtml(){
 
 function togetRecordById() {
     if (!isNotEmpty(recordssid_go)){
-        layer.msg("系统异常");
+        layer.msg("请先获取笔录");
         return;
     }
     var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);

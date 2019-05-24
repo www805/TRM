@@ -4,19 +4,15 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
+import com.avst.trm.v1.feignclient.req.GetMCParam_out;
+import com.avst.trm.v1.feignclient.req.OverMCParam_out;
+import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetRecordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
-import com.corundumstudio.socketio.AckRequest;
-import com.corundumstudio.socketio.SocketIOClient;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import freemarker.template.Version;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +30,7 @@ public class OutAction extends BaseAction {
     private OutService outService;
 
     @RequestMapping("/startRercord")
-    public RResult startRercord(@RequestBody ReqParam param) {
+    public RResult startRercord(@RequestBody ReqParam<StartMCParam_out> param) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");
@@ -47,7 +43,7 @@ public class OutAction extends BaseAction {
 
 
     @RequestMapping("/overRercord")
-    public RResult overRercord(@RequestBody ReqParam param) {
+    public RResult overRercord(@RequestBody ReqParam<OverMCParam_out> param) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");
@@ -71,7 +67,7 @@ public class OutAction extends BaseAction {
 
 
     @RequestMapping("/getRecord")
-    public RResult getRecord(@RequestBody ReqParam<GetRecordParam> param) {
+    public RResult getRecord(@RequestBody ReqParam<GetMCParam_out> param) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");

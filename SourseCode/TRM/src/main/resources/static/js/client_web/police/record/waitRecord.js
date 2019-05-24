@@ -1,7 +1,6 @@
 var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
 var td_lastindex={};//td的上一个光标位置  为0需要处理一下
-var copy_text_html="";
 var recorduser=[];//会议用户集合
 
 
@@ -62,7 +61,7 @@ function callTemplateById(data) {
               }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
@@ -117,7 +116,7 @@ function callsetAllproblem(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 
 }
@@ -164,25 +163,19 @@ function img_bool(obj,type){
     if (type==1){
         //开始会议
         startMC();
-        console.log("录音中__");
-        $(obj).css("display","none");
-        $(obj).siblings().css("display","block");
-    }else{
-       if (null==mtssid){
-            layer.msg("会议正在开启中，请稍等");
-            return;
+        if (isNotEmpty(mtssid)){
+            $(obj).css("display","none");
+            $(obj).siblings().css("display","block");
         }
-
-        //结束会议
-        overMC();
-
-        console.log("录音关闭__");
-        $(obj).css("display","none");
-        $(obj).siblings().css("display","block");
+    }else{
+       //暂停录音
+      /*  $(obj).css("display","none");
+        $(obj).siblings().css("display","block");*/
     }
 }
 
 //粘贴语音翻译文本
+var copy_text_html="";
 function copy_text(obj) {
     var text=$(obj).text();
     copy_text_html=text;
@@ -327,8 +320,10 @@ function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
+            console.log(data)
             var record=data.record;
-            var caseAndUserInfo=data.caseAndUserInfo;
+
+            //询问人和被询问人信息
             if (isNotEmpty(record)){
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
@@ -347,11 +342,22 @@ function callbackgetRecordById(data) {
                     recorduser.push(user2);
                 }
             }
+            //案件信息
+            var caseAndUserInfo=data.caseAndUserInfo;
             if (isNotEmpty(caseAndUserInfo)){
                 var occurrencetime_formatdata=caseAndUserInfo.occurrencetime_format;
                 if (isNotEmpty(occurrencetime_formatdata)){
                     occurrencetime_format=occurrencetime_formatdata;
                 }
+            }
+
+            //获取提讯会议ssid
+            var police_arraignment=record.police_arraignment;
+            if (isNotEmpty(police_arraignment)){
+                 var mtssiddata=police_arraignment.mtssid;
+                 if (isNotEmpty(mtssiddata)){
+                     mtssid=mtssiddata;
+                 }
             }
         }
     }else{
@@ -370,24 +376,15 @@ function startMC() {
             username:recordUserInfos.username
             ,userssid:recordUserInfos.userssid
             ,grade:2 //1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
-            ,asrtype:"AVST"
         };
         var user2={
             username:recordUserInfos.adminname
             ,userssid:recordUserInfos.adminssid
             ,grade:1
-            ,asrtype:"AVST"
         };
 
-       /*   询问人二暂不参与
-        var user3={
-            username:recordUserInfos.otheradminname
-            ,userssid:recordUserInfos.otheradminssid
-            ,grade:2
-        };*/
         tdList.push(user1);
         tdList.push(user2);
-        // tdList.push(user3);
 
         var url="/v1/police/out/startRercord";
         var data={
@@ -417,13 +414,12 @@ function callbackstartMC(data) {
 
 //结束会议
 function overMC() {
-    if (isNotEmpty(mtssid)){
+    if (isNotEmpty(recordssid)){
         var url="/v1/police/out/overRercord";
         var data={
             token:INIT_CLIENTKEY,
             param:{
                 mtssid:mtssid
-                ,mcType:"AVST"
             }
         };
         ajaxSubmitByJson(url, data, callbackoverMC);
@@ -436,9 +432,7 @@ function callbackoverMC(data) {
             console.log("overMC(返回结果_"+data);
             if (data){
                 mtssid=null;//会议ssid
-                 layer.msg("会议已关闭",{time:500},function () {
-
-                  });
+                 layer.msg("会议已关闭");
             }
         }
     }else{
@@ -520,7 +514,7 @@ function calladdRecord(data) {
                 }});
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
@@ -530,9 +524,8 @@ function overRecord() {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
-        //保存
-        addRecord();
-        overMC();//结束笔录
+        addRecord();//保存问答信息
+        overMC();//结束会议
         window.history.go(-1);
         layer.close(index);
     }, function(index){
@@ -574,12 +567,10 @@ function callbackupdateArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg("会议已开启",{time:500},function () {
-
-            });
+            layer.msg("会议已开启");
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
@@ -590,7 +581,7 @@ function callbackexportWord(data){
 
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message);
     }
 }
 
@@ -674,6 +665,62 @@ $(function () {
 
     }
 
+
+    // 建立连接
+    socket = io.connect('http://192.168.17.178:8888');
+
+    socket.on('connect', function (data) {
+        console.log("连接成功__");
+    });
+    socket.on('disconnect', function (data) {
+        console.log("断开连接__");
+    });
+    socket.on('getback', function (data) {
+        if (isNotEmpty(recorduser)){
+            for (var i = 0; i < recorduser.length; i++) {
+                var user = recorduser[i];
+                var userssid=user.userssid;
+                if (data.userssid==userssid){
+                    var username=user.username==null?"未知":user.username;//用户名称
+                    var usertype=user.grade;//1、询问人2被询问人
+                    var translatext=data.txt==null?"...":data.txt;//翻译文本
+                    var asrtime=data.asrtime;//时间
+                    var starttime=data.starttime;
+                    //实时会议数据
+                    if (usertype==1){
+                        recordrealclass="atalk";
+
+                    }else if (usertype==2){
+                        recordrealclass="btalk";
+
+                    }
+
+                    var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                    if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                        $("#recordreals div[userssid="+userssid+"]:last").remove();
+                    }
+                    var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
+                                                      </div >';
+
+                    $("#recordreals").append(recordrealshtml);
+                    var div = document.getElementById('recordreals');
+                    div.scrollTop = div.scrollHeight;
+                }
+            }
+        }
+    });
+
+    $(window).on("unload", function(event){
+        addRecord();
+    });
+    $(window).on('beforeunload', function(event) {
+        addRecord();
+    });
+    $(window).on('pagehide', function(event) {
+        addRecord();
+    });
 });
 
 

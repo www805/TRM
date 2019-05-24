@@ -3,9 +3,9 @@ package com.avst.trm.v1.feignclient;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
+import com.avst.trm.v1.feignclient.req.GetMCParam_out;
 import com.avst.trm.v1.feignclient.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
-import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +31,6 @@ public interface MeetingControl {
 
     @RequestMapping("/mt/v1/getMC")
     @ResponseBody
-    public RResult getMC(@RequestBody ReqParam<OverMCParam_out> param);
+    public RResult getMC(@RequestBody ReqParam<GetMCParam_out> param);
 
 }

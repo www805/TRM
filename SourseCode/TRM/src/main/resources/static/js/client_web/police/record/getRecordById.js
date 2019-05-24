@@ -127,9 +127,8 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(police_arraignment)){
                     mtssid=police_arraignment.mtssid;
                 }
-                getRecord();
+                getRecord();//实时数据获取
             }
-
 
             $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
@@ -137,7 +136,10 @@ function callbackgetRecordById(data) {
                                   <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
                                   <tr><td>当前案由</td><td>"+caseAndUserInfo.cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>";
+                                  <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>\
+                                  <tr><td>询问人一</td><td>"+recordUserInfosdata.adminname+"</td></tr>\
+                                  <tr><td>询问人二</td> <td>"+recordUserInfosdata.otheradminname+"</td> </tr>\
+                                  <tr><td>记录人</td><td>"+recordUserInfosdata.recordadminname+"</td> </tr>";
                 $("#caseAndUserInfo_html").html(init_casehtml);
             }
 
@@ -200,6 +202,9 @@ $(function () {
 });
 
 
+/**
+ * 获取会议实时数据
+ */
 function getRecord() {
     if (isNotEmpty(mtssid)) {
         var url="/v1/police/out/getRecord";
@@ -207,19 +212,21 @@ function getRecord() {
             token:INIT_CLIENTKEY,
             param:{
                 mtssid: mtssid
-                ,mcType:"AVST"
             }
         };
         ajaxSubmitByJson(url, data, callbackgetRecord);
     }
 }
-
 function callbackgetRecord(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
+        $("#recordreals").html("");
+        var loadindex = layer.msg("加载中，请稍等...", {
+            icon: 16,
+            time:1000
+        });
         if (isNotEmpty(datas)) {
-            console.log(datas);
-            $("#recordreals").html("");
+            layer.close(loadindex);
             for (var i = 0; i < datas.length; i++) {
                 var data=datas[i];
                 if (isNotEmpty(recorduser)){
@@ -256,7 +263,6 @@ function callbackgetRecord(data) {
                     }
                 }
             }
-
         }
     }else{
         layer.msg(data.message);

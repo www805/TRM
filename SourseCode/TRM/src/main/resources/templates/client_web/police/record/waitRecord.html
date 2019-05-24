@@ -201,9 +201,6 @@
                         </div>
                         <div class="layui-tab-item">
                             录音录像区域
-
-                            <input placeholder="用户名称" id="ceshiusername"><input placeholder="发送的文本" id="ceshitext">
-                            <button onclick="ceshi();">发送</button>
                         </div>
                         <div class="layui-tab-item">
                             测谎仪区域
@@ -219,7 +216,7 @@
         </div>
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
             <div style="margin-top: 5px">
-                <button class="layui-btn layui-btn-normal " onclick="addRecord();">保存</button>
+                <button class="layui-btn layui-btn-normal " onclick="addRecord();" id="baocun"  >保存</button>
                 <!--<button class="layui-btn layui-btn-normal " ><i class="iconfont icon-dayin" title="打印"></i> 打印</button>-->
                 <div class="layui-inline" style="margin-bottom:0">
                     <div class="layui-unselect layui-form-select   "  name="btn_div"   showorhide="false" >
@@ -251,7 +248,19 @@
                                 <div class="layui-col-lg12 ">
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 30px">
                                         <tbody id="recorddetail">
-
+                                      <!--  <tr>
+                                            <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">
+                                                <p contenteditable="true" name="q" class="table_td_tt font_red_color">问：我们是<span th:text="${session.MANAGE_CLIENT.workname}"></span>的民警(出示人民警察证)，现依法向你询问有关问题。根据刑事诉讼法的有关规定，你应当如实提供证据、证言，如果有意作伪证或者隐匿罪证的，要负法律责任。你明白吗？</p>
+                                                <p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：我明白了。</p>
+                                            </td>
+                                            <td style="float: right;">
+                                                <div class="layui-btn-group">
+                                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>
+                                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>
+                                                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                                                </div>
+                                            </td>
+                                        </tr>-->
                                         </tbody>
                                     </table>
                                 </div>
@@ -355,69 +364,6 @@
         getRecordById();
         getTime();
 
-        // 建立连接
-        socket = io.connect('http://192.168.17.178:8888');
-
-        socket.on('connect', function (data) {
-            console.log("连接成功__");
-        });
-        socket.on('disconnect', function (data) {
-            console.log("断开连接__");
-        });
-        socket.on('getback', function (data) {
-            if (isNotEmpty(recorduser)){
-                for (var i = 0; i < recorduser.length; i++) {
-                    var user = recorduser[i];
-                    var userssid=user.userssid;
-                    if (data.userssid==userssid){
-                        var username=user.username==null?"未知":user.username;//用户名称
-                        var usertype=user.grade;//1、询问人2被询问人
-                        var translatext=data.txt==null?"...":data.txt;//翻译文本
-                        var asrtime=data.asrtime;//时间
-                        var starttime=data.starttime;
-                        //实时会议数据
-                        if (usertype==1){
-                            recordrealclass="atalk";
-
-                        }else if (usertype==2){
-                            recordrealclass="btalk";
-
-                        }
-
-                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"]:last").remove();
-                         }
-                        var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
-                                                      </div >';
-
-                        $("#recordreals").append(recordrealshtml);
-                        var div = document.getElementById('recordreals');
-                        div.scrollTop = div.scrollHeight;
-                    }
-                }
-            }
-        });
-
-        //页面关闭时调用
-        $(window).on("unload", function(event){
-            console.log("会议将会自动结束"+event)
-            overMC();
-        });
-      //页面刷新时调用
-        $(window).on('beforeunload', function(event) {
-            console.log("会议将会自动结束"+event)
-            overMC();
-
-        });
-        //用户离开当前网页跳转到另外一个页面时触发
-        $(window).on('pagehide', function(event) {
-            console.log("会议将会自动结束"+event)
-            overMC();
-        });
-
 
 
     });
@@ -427,21 +373,6 @@
         var form=layui.form;
         //使用模块
     });
-    
-    function ceshi() {
-        var username=$("#ceshiusername").val();
-        var text=$("#ceshitext").val();
-
-        var jsonObject = {
-            username: username,
-            text: text
-        };
-        socket.emit('getmsg', jsonObject);
-    }
-
-
-
-    
 </script>
 </body>
 </html>

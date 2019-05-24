@@ -1,7 +1,8 @@
-package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req;
+package com.avst.trm.v1.feignclient.req;
 
-public class GetRecordParam {
-    private  String mtssid;//会议的ssid
+public class GetMCParam_out {
+
+    private String mtssid;
 
     private String mcType;
 

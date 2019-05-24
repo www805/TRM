@@ -1,17 +1,20 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.conf.ASRType;
+import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
+import com.avst.trm.v1.feignclient.req.GetMCParam_out;
+import com.avst.trm.v1.feignclient.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
+import com.avst.trm.v1.feignclient.req.TdAndUserAndOtherParam;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -54,10 +57,17 @@ public class OutService  extends BaseService {
         Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
         base_type=base_typeMapper.selectOne(base_type);
-        startMCParam_out.setMcType("AVST");
+        startMCParam_out.setMcType(MCType.AVST);
         startMCParam_out.setModelbool(1);
         startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
         startMCParam_out.setYwSystemType("TRM_AVST");
+        List<TdAndUserAndOtherParam> tdList=startMCParam_out.getTdList();
+        if (null!=tdList&&tdList.size()>0){
+            for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
+                tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
+            }
+            startMCParam_out.setTdList(tdList);
+        }
         param.setParam(startMCParam_out);
         try {
             result = meetingControl.startMC(param);
@@ -72,13 +82,17 @@ public class OutService  extends BaseService {
         return result;
     }
 
-    public RResult overRercord(RResult result, ReqParam param) {
-        if (null == param) {
+    public RResult overRercord(RResult result, ReqParam<OverMCParam_out> param) {
+        OverMCParam_out overMCParam_out=gson.fromJson(gson.toJson(param.getParam()), OverMCParam_out.class);
+
+        if (null == overMCParam_out) {
             System.out.println("参数为空__");
             result.setMessage("参数为空");
             return result;
         }
+        overMCParam_out.setMcType(MCType.AVST);
         try {
+            param.setParam(overMCParam_out);
             result = meetingControl.overMC(param);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
                 System.out.println("overMC关闭成功__");
@@ -127,7 +141,15 @@ public class OutService  extends BaseService {
         return false;
     }
 
-    public RResult getRecord(RResult result, ReqParam param){
+    public RResult getRecord(RResult result, ReqParam<GetMCParam_out> param){
+        //请求参数转换
+        GetMCParam_out getMCParam_out = param.getParam();
+        if (null==getMCParam_out){
+            System.out.println("参数为空");
+            result.setMessage("参数为空");
+            return  result;
+        }
+        getMCParam_out.setMcType(MCType.AVST);
         List<AsrTxtParam_toout> asrTxtParam_toouts=new ArrayList<AsrTxtParam_toout>();
         try {
             result = meetingControl.getMC(param);
