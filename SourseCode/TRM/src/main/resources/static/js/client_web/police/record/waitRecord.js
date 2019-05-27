@@ -163,9 +163,9 @@ function tr_downn(obj) {
 function img_bool(obj,type){
     if (type==1){
         //开始会议
+        if (isNotEmpty(mtssid)){
             startMC();
-            $(obj).css("display","none");
-            $(obj).siblings().css("display","block");
+        }
     }else{
        //暂停录音
       /*  $(obj).css("display","none");
@@ -478,6 +478,9 @@ function callbackstartMC(data) {
 
             mtssid=mtssiddata;
           /*  updateArraignment();*/
+            $("#endrecord").css("display","none");
+            $("#endrecord").siblings().css("display","block");
+            layer.msg("会议已开启");
         }
     }else{
         layer.msg(data.message);
@@ -845,37 +848,40 @@ $(function () {
         console.log("断开连接__");
     });
     socket.on('getback', function (data) {
-        if (isNotEmpty(recorduser)){
-            for (var i = 0; i < recorduser.length; i++) {
-                var user = recorduser[i];
-                var userssid=user.userssid;
-                if (data.userssid==userssid){
-                    var username=user.username==null?"未知":user.username;//用户名称
-                    var usertype=user.grade;//1、询问人2被询问人
-                    var translatext=data.txt==null?"...":data.txt;//翻译文本
-                    var asrtime=data.asrtime;//时间
-                    var starttime=data.starttime;
-                    //实时会议数据
-                    if (usertype==1){
-                        recordrealclass="atalk";
+        var mtssiddata=data.mtssid;
+        if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
+            if (isNotEmpty(recorduser)){
+                for (var i = 0; i < recorduser.length; i++) {
+                    var user = recorduser[i];
+                    var userssid=user.userssid;
+                    if (data.userssid==userssid){
+                        var username=user.username==null?"未知":user.username;//用户名称
+                        var usertype=user.grade;//1、询问人2被询问人
+                        var translatext=data.txt==null?"...":data.txt;//翻译文本
+                        var asrtime=data.asrtime;//时间
+                        var starttime=data.starttime;
+                        //实时会议数据
+                        if (usertype==1){
+                            recordrealclass="atalk";
 
-                    }else if (usertype==2){
-                        recordrealclass="btalk";
+                        }else if (usertype==2){
+                            recordrealclass="btalk";
 
-                    }
+                        }
 
-                    var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                    if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                        $("#recordreals div[userssid="+userssid+"]:last").remove();
-                    }
-                    var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                            $("#recordreals div[userssid="+userssid+"]:last").remove();
+                        }
+                        var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrtime+'</p>\
                                                             <span ondblclick="copy_text(this)" >'+translatext+'</span> \
                                                       </div >';
 
-                    $("#recordreals").append(recordrealshtml);
-                    var div = document.getElementById('recordreals');
-                    div.scrollTop = div.scrollHeight;
+                        $("#recordreals").append(recordrealshtml);
+                        var div = document.getElementById('recordreals');
+                        div.scrollTop = div.scrollHeight;
+                    }
                 }
             }
         }

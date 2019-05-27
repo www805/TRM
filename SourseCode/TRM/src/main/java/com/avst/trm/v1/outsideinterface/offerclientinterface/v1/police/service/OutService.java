@@ -16,6 +16,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -131,34 +132,35 @@ public class OutService  extends BaseService {
         return result;
     }
 
-    public boolean setRercordAsrTxtBack(ReqParam<AsrTxtParam_toout> param, HttpSession session){
+    public boolean setRercordAsrTxtBack(ReqParam<SetMCAsrTxtBackVO> param, HttpSession session){
         //请求参数转换
-        AsrTxtParam_toout asrTxtParam_toout = param.getParam();
-        if (null==asrTxtParam_toout){
+      //  AsrTxtParam_toout asrTxtParam_toout = param.getParam();
+        SetMCAsrTxtBackVO setMCAsrTxtBackVO=param.getParam();
+        if (null==setMCAsrTxtBackVO){
             System.out.println("参数为空");
             return false;
         }
 
         try {
-            if(null!=asrTxtParam_toout){
+            if(null!=setMCAsrTxtBackVO){
                 //开始处理返回数据
                 //时间毫秒级处理显示
-                String asrtime = asrTxtParam_toout.getAsrtime();
+                String asrtime = setMCAsrTxtBackVO.getAsrtime();
                 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = new Date(Long.valueOf(asrtime));
                 asrtime = df.format(date);
 
                 if (StringUtils.isNotBlank(asrtime)){
-                    asrTxtParam_toout.setAsrtime(asrtime);
+                    setMCAsrTxtBackVO.setAsrtime(asrtime);
                 }
 
                 List<SocketIOClient> clients = MessageEventHandler.clients;
                 if (null!=clients&&clients.size()>0){
                     for (SocketIOClient client : clients) {
-                        client.sendEvent("getback", asrTxtParam_toout);
+                        client.sendEvent("getback", setMCAsrTxtBackVO);
                     }
                 }
-                System.out.println(asrTxtParam_toout.toString());
+                System.out.println(setMCAsrTxtBackVO.toString());
                 return true;
             }
         } catch (Exception e) {

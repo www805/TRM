@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.itextpdf.text.Document;
@@ -55,7 +56,7 @@ public class OutAction extends BaseAction {
 
 
     @RequestMapping("/outtRercordAsrTxtBack")
-    public boolean setRercordAsrTxtBack(@RequestBody ReqParam<AsrTxtParam_toout> param, HttpSession session) {
+    public boolean setRercordAsrTxtBack(@RequestBody ReqParam<SetMCAsrTxtBackVO> param, HttpSession session) {
         if (null == param) {
             System.out.println("参数为空");
         } else {
