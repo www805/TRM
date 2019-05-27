@@ -186,7 +186,7 @@
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                     <ul class="layui-tab-title">
                         <li class="layui-this">语音识别</li>
-                        <li>录音录像</li>
+                        <li onclick="initplayer()">录音录像</li>
                         <li>测谎仪</li>
                     </ul>
                     <div class="layui-tab-content" >
@@ -200,7 +200,13 @@
                             </div>
                         </div>
                         <div class="layui-tab-item">
-                            录音录像区域
+                            <!--视频直播区域-->
+                            <div th:replace="living3 :: living">...</div>
+
+
+
+                            <input placeholder="用户名称" id="ceshiusername"><input placeholder="发送的文本" id="ceshitext">
+                            <button onclick="ceshi();">发送</button>
                         </div>
                         <div class="layui-tab-item">
                             测谎仪区域
@@ -374,6 +380,12 @@
         var form=layui.form;
         //使用模块
     });
+
+    //获取语音识别界面的宽度
+    var asrwh=$("#recordreals").width();
+    var asrht=asrwh*3/4;
+    var liveurl="rtmp://192.168.17.154:1935/live/hd";
+
 </script>
 </body>
 </html>

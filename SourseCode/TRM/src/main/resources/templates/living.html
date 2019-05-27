@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备直播</title>
+</head>
+<body>
+<div  data-th-fragment="living">
+
+    <link href="/videojs/css/video-js.css" rel="stylesheet">
+
+    <script src="/videojs/js/video.js"></script>
+    <div id="content">
+        <video id="rtmpVideo" class="video-js vjs-default-skin vjs-big-play-centered" width="280" height="230"  data-setup='{ "loop": true }'>
+            <!-- source放rtmp流地址 -->
+            <source src="rtmp://192.168.17.154:1935/live/hd" type="rtmp/flv">
+            <p class="vjs-no-js">
+                您的浏览器不支持HTML5，请升级浏览器。
+            </p>
+        </video>
+    </div>
+
+<script>
+    //设置本地flash插件地址
+    videojs.options.flash.swf = "/videojs/dist/video-js.swf";
+    // 初始化视频，设为全局变量
+    var myPlayer = videojs('rtmpVideo', {
+        autoplay: true,
+        controls: true,//控制条
+        //poster: "/images/camera/playStop.png",
+        techOrder: ["flash"],//设置flash播放
+        muted: true,// 静音
+        preload: "auto",// 预加载
+        language: "zh-CN",// 初始化语言
+        playbackRates: [1, 2, 3, 4, 5, 8, 10, 20]// 播放速度
+    }, function () {
+        console.log("--------------成功初始化视频--------------");
+        myPlayer.one("playing", function () {         // 监听播放
+            console.log("开始播放");
+        });
+        myPlayer.one("error", function (error) {      // 监听错误
+            console.error("监听到异常，错误信息：%o",error);
+        });
+    });
+
+</script>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备直播</title>
+</head>
+<body>
+<div  data-th-fragment="living">
+
+    <div id="content">
+        <div class="video" id="CuPlayer" style="width:960px;margin:0 auto;"><img src="/flashplayer/Images/loadings.gif" /><b>视频播放器加载中，请稍后...</b></div>
+    </div>
+
+    <!--播放器/代码开始-->
+    <script type="text/javascript" src="/flashplayer/Images/swfobject.js"></script>
+    <script language=javascript src="/flashplayer/Images/action.js" type=text/javascript></script>
+    <script type="text/javascript">
+        var so = new SWFObject("/flashplayer/player.swf","ply","960","550","9","#000000");
+
+        var arr = new Array();
+        arr[0]="rtmp://192.168.17.173:1935/live";
+        arr[1]="test";
+
+        so.addParam("allowfullscreen","true");
+        so.addParam("allowscriptaccess","always");
+        so.addParam("wmode","Window");
+        so.addParam("quality","high");
+        so.addParam("salign","lt");
+        so.addVariable("JcScpFile","/flashplayer/CuSunV2set.xml");
+        so.addVariable("JcScpServer",arr[0]); //直播服务器地址
+        so.addVariable("JcScpVideoPath",arr[1]);
+        so.addVariable("JcScpSharetitle","测试rtmp直播");
+        so.write("CuPlayer");
+
+
+
+    </script>
+
+    <!--播放器/代码结束-->
+
+
+</div>
+</body>
+</html>
