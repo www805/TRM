@@ -9,6 +9,16 @@ public class AddRecordParam {
 
     private List<RecordToProblem> recordToProblems;
 
+    private Integer recordbool;//笔录状态  1进行中 2已结束
+
+    public Integer getRecordbool() {
+        return recordbool;
+    }
+
+    public void setRecordbool(Integer recordbool) {
+        this.recordbool = recordbool;
+    }
+
     public String getRecordssid() {
         return recordssid;
     }

@@ -4,9 +4,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.req.GetMCParam_out;
-import com.avst.trm.v1.feignclient.req.OverMCParam_out;
-import com.avst.trm.v1.feignclient.req.StartMCParam_out;
+import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.itextpdf.text.Document;
@@ -66,6 +64,11 @@ public class OutAction extends BaseAction {
     }
 
 
+    /**
+     * 会议实时回放，
+     * @param param
+     * @return
+     */
     @RequestMapping("/getRecord")
     public RResult getRecord(@RequestBody ReqParam<GetMCParam_out> param) {
         RResult result = this.createNewResultOfFail();
@@ -78,6 +81,40 @@ public class OutAction extends BaseAction {
         return result;
     }
 
+    /**
+     *会议实时回放进行中
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getRecordrealing")
+    public RResult getRecordrealing(@RequestBody ReqParam<GetMCaLLUserAsrTxtListParam_out> param) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            result = outService.getRecordrealing(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 获取会议状态
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getRecordState")
+    public RResult getRecordState(@RequestBody ReqParam<GetMCStateParam_out> param) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            result = outService.getRecordState(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
     public static void main(String[] args) throws IOException, TemplateException {

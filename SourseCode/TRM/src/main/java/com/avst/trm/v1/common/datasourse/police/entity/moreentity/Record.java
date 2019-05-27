@@ -25,6 +25,16 @@ public class Record extends Police_record {
 
     private  CaseAndUserInfo caseAndUserInfo;//案件信息
 
+    private Integer mcbool;//会议状态
+
+    public Integer getMcbool() {
+        return mcbool;
+    }
+
+    public void setMcbool(Integer mcbool) {
+        this.mcbool = mcbool;
+    }
+
     public CaseAndUserInfo getCaseAndUserInfo() {
         return caseAndUserInfo;
     }

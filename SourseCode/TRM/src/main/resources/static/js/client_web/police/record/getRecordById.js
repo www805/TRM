@@ -206,6 +206,7 @@ $(function () {
  * 获取会议实时数据
  */
 function getRecord() {
+    $("#recordreals").html("");
     if (isNotEmpty(mtssid)) {
         var url="/v1/police/out/getRecord";
         var data={
@@ -220,7 +221,6 @@ function getRecord() {
 function callbackgetRecord(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
-        $("#recordreals").html("");
         var loadindex = layer.msg("加载中，请稍等...", {
             icon: 16,
             time:1000

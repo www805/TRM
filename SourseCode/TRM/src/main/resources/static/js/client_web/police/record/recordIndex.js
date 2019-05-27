@@ -3,6 +3,7 @@ var recordssid_go=null;//选择的笔录ssid
 
 
 
+//笔录类型
 function getRecordtypesindex() {
     var url=getActionURL(getactionid_manage().recordIndex_getRecordtypes);
 
@@ -45,28 +46,34 @@ function gets(data) {
     });
 }
 
+
+
+//笔录列表渲染
 function getRecords_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().recordIndex_getRecords);
     var recordtypessid=$("#recordtypessid option:selected").val();
     var recordname=$("#recordname").val();
+    var recordbool=$("#recordbool option:selected").val();
     var data={
         token:INIT_CLIENTKEY,
         param:{
             recordtypessid:recordtypessid,
             recordname:recordname,
+            recordbool:recordbool,
             currPage:currPage,
             pageSize:pageSize
         }
     };
     ajaxSubmitByJson(url,data,callbackgetRecords);
 }
-function getRecords(recordtypessid,recordname,currPage,pageSize){
+function getRecords(recordtypessid,recordname,recordbool,currPage,pageSize){
     var url=getActionURL(getactionid_manage().recordIndex_getRecords);
     var data={
         token:INIT_CLIENTKEY,
         param:{
             recordtypessid:recordtypessid,
             recordname:recordname,
+            recordbool:recordbool,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -78,6 +85,7 @@ function callbackgetRecords(data) {
         if (isNotEmpty(data)){
             records=data.data.pagelist;
             pageshow(data);
+
             $('#recorddetail').html("");
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
@@ -146,10 +154,6 @@ function setproblems(recordssid) {
 
 
 }
-
-/**
- * 局部刷新
- */
 function ggetRecordsByParam(){
     var len=arguments.length;
     if(len==0){
@@ -159,11 +163,10 @@ function ggetRecordsByParam(){
     }else if (len==2){
         getRecords('',arguments[0],arguments[1]);
     }else if(len>2){
-        getRecords(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
+        getRecords(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6],arguments[7]);
     }
 
 }
-
 function showpagetohtml(){
     if(isNotEmpty(pageparam)){
         var pageSize=pageparam.pageSize;
@@ -177,6 +180,7 @@ function showpagetohtml(){
         var arrparam=new Array();
         arrparam[0]=recordtypessid;
         arrparam[1]=recordname;
+        arrparam[2]=recordbool;
         showpage("paging",arrparam,'ggetRecordsByParam',currPage,pageCount,pageSize);
     }
 
@@ -187,6 +191,8 @@ function showpagetohtml(){
 
 
 
+
+//跳转笔录详情页
 function togetRecordById() {
     if (!isNotEmpty(recordssid_go)){
         layer.msg("请先获取笔录");
@@ -194,5 +200,20 @@ function togetRecordById() {
     }
     var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
     window.location.href=url+"?ssid="+recordssid_go;
+}
+//跳转笔录编辑页
+function towaitRecord(recordssid,recordbool) {
+    if (!isNotEmpty(recordssid)){
+        return false;
+    }
+
+    if (recordbool==1){
+        var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
+        window.location.href=url+"?ssid="+recordssid;
+    } else{
+        var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
+        window.location.href=url+"?ssid="+recordssid;
+    }
+
 }
 

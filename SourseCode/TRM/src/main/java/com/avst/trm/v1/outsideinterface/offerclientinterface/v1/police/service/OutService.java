@@ -11,10 +11,7 @@ import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
-import com.avst.trm.v1.feignclient.req.GetMCParam_out;
-import com.avst.trm.v1.feignclient.req.OverMCParam_out;
-import com.avst.trm.v1.feignclient.req.StartMCParam_out;
-import com.avst.trm.v1.feignclient.req.TdAndUserAndOtherParam;
+import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -177,4 +174,70 @@ public class OutService  extends BaseService {
         }
         return  result;
     }
+
+    public RResult getRecordrealing(RResult result, ReqParam<GetMCaLLUserAsrTxtListParam_out> param){
+        //请求参数转换
+        GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out = param.getParam();
+        if (null==getMCaLLUserAsrTxtListParam_out){
+            System.out.println("参数为空");
+            result.setMessage("参数为空");
+            return  result;
+        }
+        getMCaLLUserAsrTxtListParam_out.setMcType(MCType.AVST);
+        List<AsrTxtParam_toout> asrTxtParam_toouts=new ArrayList<AsrTxtParam_toout>();
+        try {
+            result = meetingControl.getMCaLLUserAsrTxtList(param);
+            if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
+                asrTxtParam_toouts=gson.fromJson(gson.toJson(result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
+                if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                    for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
+                        //时间转换
+                        String asrtime = asrTxtParam_toout.getAsrtime();
+                        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = new Date(Long.valueOf(asrtime));
+                        asrtime = df.format(date);
+                        if (StringUtils.isNotBlank(asrtime)){
+                            asrTxtParam_toout.setAsrtime(asrtime);
+                        }
+                    }
+                    result.setData(asrTxtParam_toouts);
+                }
+                changeResultToSuccess(result);
+            }else{
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  result;
+    }
+
+    public RResult getRecordState(RResult result, ReqParam<GetMCStateParam_out> param){
+        //请求参数转换
+        GetMCStateParam_out getMCStateParam_out = param.getParam();
+        if (null==getMCStateParam_out){
+            System.out.println("参数为空");
+            result.setMessage("参数为空");
+            return  result;
+        }
+        getMCStateParam_out.setMcType(MCType.AVST);
+        Integer mtstate=null;
+        try {
+            result = meetingControl.getMCState(param);
+            if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
+                mtstate= (Integer) result.getData();
+                result.setData(mtstate);
+                changeResultToSuccess(result);
+            }else{
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  result;
+    }
+
+
+
+
 }

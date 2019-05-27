@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpSession;
 public class RecordAction extends BaseAction {
     @Autowired
     private RecordService recordService;
+
 
 /*
  ① 获取笔录列表：/v1/police/record/getRecords

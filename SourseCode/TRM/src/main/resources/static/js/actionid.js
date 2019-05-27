@@ -116,6 +116,7 @@ function getactionid_manage() {
         recordIndex_getRecords:"recordIndex_getRecords",
         recordIndex_getRecordtypes:"recordIndex_getRecordtypes",
         recordIndex_togetRecordById:"recordIndex_togetRecordById",
+        recordIndex_towaitRecord:"recordIndex_towaitRecord",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",

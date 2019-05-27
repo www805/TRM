@@ -7,6 +7,16 @@ public class GetRecordsParam extends Page {
 
     private String recordtypessid;//笔录类型
 
+    private Integer recordbool;//笔录状态
+
+    public Integer getRecordbool() {
+        return recordbool;
+    }
+
+    public void setRecordbool(Integer recordbool) {
+        this.recordbool = recordbool;
+    }
+
     public String getRecordname() {
         return recordname;
     }

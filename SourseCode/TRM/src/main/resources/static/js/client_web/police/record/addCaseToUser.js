@@ -100,7 +100,7 @@ function callbackaddCaseToArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var ssid=data.data;
         if (isNotEmpty(ssid)){
-            var index = parent.layer.msg('开始进行笔录', {shade:0.1
+            var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
             },function () {
                 var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
                 if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){

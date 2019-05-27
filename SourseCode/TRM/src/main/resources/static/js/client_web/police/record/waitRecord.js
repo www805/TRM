@@ -2,6 +2,7 @@ var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
 var td_lastindex={};//td的上一个光标位置  为0需要处理一下
 var recorduser=[];//会议用户集合
+var mcbool=null;//会议状态
 
 
 //跳转变更模板页面
@@ -162,11 +163,9 @@ function tr_downn(obj) {
 function img_bool(obj,type){
     if (type==1){
         //开始会议
-        startMC();
-        if (isNotEmpty(mtssid)){
+            startMC();
             $(obj).css("display","none");
             $(obj).siblings().css("display","block");
-        }
     }else{
        //暂停录音
       /*  $(obj).css("display","none");
@@ -298,9 +297,6 @@ function openxthtml(obj) {
             layer.close(index);
         });
     }
-
-
-
 }
 //编辑框下面按钮事件-------------------------------end
 
@@ -320,11 +316,17 @@ function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log(data)
             var record=data.record;
-
-            //询问人和被询问人信息
             if (isNotEmpty(record)){
+
+                mcbool=record.mcbool;
+                
+                if (null!=mcbool&&mcbool==1){
+                    $("#endrecord").css("display","none");
+                    $("#endrecord").siblings().css("display","block");
+                }
+
+                //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recordUserInfos=recordUserInfosdata;
@@ -341,6 +343,50 @@ function callbackgetRecordById(data) {
                     recorduser.push(user1);
                     recorduser.push(user2);
                 }
+
+                //问答
+                var problems=record.problems;
+                $("#recorddetail").html("");
+                if (isNotEmpty(problems)) {
+                    for (var z = 0; z< problems.length;z++) {
+                        var problem = problems[z];
+                        var problemtext=problem.problem==null?"未知":problem.problem;
+                        var problemhtml= '<tr>\
+                        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
+                            <p contenteditable="true" name="q" class="table_td_tt font_red_color">问：'+problemtext+'</p>';
+                        var answers=problem.answers;
+                        if (isNotEmpty(answers)){
+                            for (var j = 0; j < answers.length; j++) {
+                                var answer = answers[j];
+                                var answertext=answer.answer==null?"未知":answer.answer;
+                                problemhtml+='<p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：'+answertext+'</p>';
+                            }
+                        }else{
+                            problemhtml+='<p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：...</p>';
+                        }
+                        problemhtml+=' </td>\
+                        <td style="float: right;">\
+                            <div class="layui-btn-group">\
+                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                        </div>\
+                        </td>\
+                        </tr>';
+                        $("#recorddetail").append(problemhtml);
+                    }
+                }
+
+                //获取提讯会议ssid
+                var police_arraignment=record.police_arraignment;
+                if (isNotEmpty(police_arraignment)){
+                    var mtssiddata=police_arraignment.mtssid;
+                    if (isNotEmpty(mtssiddata)){
+                        mtssid=mtssiddata;
+                        getRecordrealing();
+                    }
+                }
+
             }
             //案件信息
             var caseAndUserInfo=data.caseAndUserInfo;
@@ -351,14 +397,7 @@ function callbackgetRecordById(data) {
                 }
             }
 
-            //获取提讯会议ssid
-            var police_arraignment=record.police_arraignment;
-            if (isNotEmpty(police_arraignment)){
-                 var mtssiddata=police_arraignment.mtssid;
-                 if (isNotEmpty(mtssiddata)){
-                     mtssid=mtssiddata;
-                 }
-            }
+
         }
     }else{
         layer.msg(data.message);
@@ -441,7 +480,8 @@ function callbackoverMC(data) {
 }
 
 //保存按钮
-function addRecord() {
+//recordbool 1进行中 2已结束
+function addRecord(recordbool) {
     if (isNotEmpty(recordssid)){
         var url=getActionURL(getactionid_manage().waitRecord_addRecord);
 
@@ -473,8 +513,6 @@ function addRecord() {
                                         });
                                     }
                                 }
-
-
                             }
                         }
                         recordToProblems.push({
@@ -485,12 +523,11 @@ function addRecord() {
                 }
             }
         })
-
-
         var data={
             token:INIT_CLIENTKEY,
             param:{
                 recordssid: recordssid,
+                recordbool:recordbool,
                 recordToProblems:recordToProblems
             }
         };
@@ -520,11 +557,11 @@ function calladdRecord(data) {
 
 //结束笔录按钮
 function overRecord() {
-    layer.confirm('是否退出笔录录制', {
+    layer.confirm('是否结束笔录', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
-        addRecord();//保存问答信息
+        addRecord(2);//保存问答信息
         overMC();//结束会议
         window.history.go(-1);
         layer.close(index);
@@ -532,7 +569,6 @@ function overRecord() {
 
         layer.close(index);
     });
-    
 }
 
 
@@ -547,8 +583,19 @@ function exportWord(){
     };
     ajaxSubmitByJson(url, data, callbackexportWord);
 }
+function callbackexportWord(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
 
-//修改提讯数据
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+//修改提讯数据（注入会议ssid）
 function updateArraignment() {
     if (isNotEmpty(mtssid)){
         var url=getActionURL(getactionid_manage().waitRecord_updateArraignment);
@@ -562,7 +609,6 @@ function updateArraignment() {
         ajaxSubmitByJson(url, data, callbackupdateArraignment);
     } 
 }
-
 function callbackupdateArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -574,11 +620,68 @@ function callbackupdateArraignment(data) {
     }
 }
 
-function callbackexportWord(data){
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
 
+
+/**
+ * 获取会议实时数据
+ */
+function getRecordrealing() {
+    if (isNotEmpty(mtssid)) {
+        var url="/v1/police/out/getRecordrealing";
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetgetRecordrealing);
+    }
+}
+function callbackgetgetRecordrealing(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        var datas = data.data;
+        var loadindex = layer.msg("加载中，请稍等...", {
+            icon: 16,
+            time:1000
+        });
+        if (isNotEmpty(datas)) {
+            layer.close(loadindex);
+            for (var i = 0; i < datas.length; i++) {
+                var data=datas[i];
+                if (isNotEmpty(recorduser)){
+                    for (var j = 0; j < recorduser.length; j++) {
+                        var user = recorduser[j];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//1、询问人2被询问人
+                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var asrtime=data.asrtime;//时间
+                            var starttime=data.starttime;
+                            //实时会议数据
+                            if (usertype==1){
+                                recordrealclass="atalk";
+
+                            }else if (usertype==2){
+                                recordrealclass="btalk";
+
+                            }
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                            }
+                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
+                                                      </div >';
+
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals');
+                            div.scrollTop = div.scrollHeight;
+                        }
+                    }
+                }
+            }
         }
     }else{
         layer.msg(data.message);
@@ -713,13 +816,13 @@ $(function () {
     });
 
     $(window).on("unload", function(event){
-        addRecord();
+        addRecord(1);
     });
     $(window).on('beforeunload', function(event) {
-        addRecord();
+        addRecord(1);
     });
     $(window).on('pagehide', function(event) {
-        addRecord();
+        addRecord(1);
     });
 });
 

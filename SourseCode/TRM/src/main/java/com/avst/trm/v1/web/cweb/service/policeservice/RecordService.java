@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
@@ -20,6 +21,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
+import com.avst.trm.v1.feignclient.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
@@ -97,7 +99,7 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
-
+         Integer recordbool=getRecordsParam.getRecordbool();//状态
          String recordname=getRecordsParam.getRecordname();//笔录名
          String recordtypessid=getRecordsParam.getRecordtypessid();//笔录类型
 
@@ -107,6 +109,9 @@ public class RecordService extends BaseService {
         }
         if (StringUtils.isNotBlank(recordname)){
             recordparam.like("r.recordname",recordname);
+        }
+        if (null!=recordbool){
+            recordparam.eq("r.recordbool",recordbool);
         }
 
         int count = police_recordMapper.countgetRecords(recordparam);
@@ -142,6 +147,7 @@ public class RecordService extends BaseService {
                     }
                     record.setProblems(problems);
                 }
+
             }
         }
         getRecordsVO.setPagelist(records);
@@ -220,6 +226,20 @@ public class RecordService extends BaseService {
         }else{
             System.out.println("该笔录没有任何题目答案__2");
         }
+
+        //修改笔录状态
+        Integer recordbool=addRecordParam.getRecordbool();
+        if (null==recordbool){
+            recordbool=1;
+        }
+        EntityWrapper updaterecordParam=new EntityWrapper();
+        updaterecordParam.eq("ssid",recordssid);
+        Police_record record=new Police_record();
+        record.setSsid(recordssid);
+        record.setRecordbool(recordbool);
+        int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+        System.out.println("updaterecord_bool__"+updaterecord_bool);
+
 
         addRecordbool=false;
         result.setData(recordssid);
@@ -318,8 +338,20 @@ public class RecordService extends BaseService {
                     Police_arraignment police_arraignment=new Police_arraignment();
                     police_arraignment.setRecordssid(recordssid);
                     police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
-
+                    Integer mtstate=null;
                     if (null!=police_arraignment){
+                        if (StringUtils.isNotBlank(police_arraignment.getMtssid())){
+                            ReqParam<GetMCStateParam_out> getMCStateParam_outReqParam=new ReqParam<>();
+                            GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
+                            getMCStateParam_out.setMcType(MCType.AVST);
+                            getMCStateParam_out.setMtssid(police_arraignment.getMtssid());
+                            getMCStateParam_outReqParam.setParam(getMCStateParam_out);
+                            RResult rr = meetingControl.getMCState(getMCStateParam_outReqParam);
+                            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                mtstate= (Integer) rr.getData();
+                                record.setMcbool(mtstate);
+                            }
+                        }
                         record.setPolice_arraignment(police_arraignment);
                     }
                 } catch (Exception e) {
