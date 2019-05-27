@@ -2,6 +2,7 @@ package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.ASRType;
+import com.avst.trm.v1.common.conf.FDType;
 import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
@@ -62,6 +63,9 @@ public class OutService  extends BaseService {
         if (null!=tdList&&tdList.size()>0){
             for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
                 tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
+                tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
+                tdAndUserAndOtherParam.setUserecord(1);
+                tdAndUserAndOtherParam.setUseasr(1);
             }
             startMCParam_out.setTdList(tdList);
         }

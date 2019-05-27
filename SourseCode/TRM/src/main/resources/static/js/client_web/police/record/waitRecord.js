@@ -443,7 +443,12 @@ function callbackstartMC(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             console.log("startMC返回结果_"+data);
-            mtssid=data;
+            var asrnum=data.asrnum;
+            var mtssiddata=data.mtssid;
+            var polygraphnum=data.polygraphnum;
+            var recordnum=data.recordnum;
+
+            mtssid=mtssiddata;
             updateArraignment();
         }
     }else{
