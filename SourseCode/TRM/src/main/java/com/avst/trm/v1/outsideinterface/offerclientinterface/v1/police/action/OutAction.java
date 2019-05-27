@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -28,7 +29,7 @@ public class OutAction extends BaseAction {
     private OutService outService;
 
     @RequestMapping("/startRercord")
-    public RResult startRercord(@RequestBody ReqParam<StartMCParam_out> param) {
+    public RResult startRercord(@RequestBody ReqParam<StartRercordParam> param) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");

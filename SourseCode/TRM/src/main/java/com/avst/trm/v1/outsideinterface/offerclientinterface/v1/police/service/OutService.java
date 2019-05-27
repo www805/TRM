@@ -7,6 +7,8 @@ import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -14,6 +16,8 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.*;
 import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
@@ -36,6 +40,11 @@ public class OutService  extends BaseService {
     @Autowired
     private Base_typeMapper base_typeMapper;
 
+    @Autowired
+    private Police_arraignmentMapper police_arraignmentMapper;
+
+
+
 
     private Gson gson = new Gson();
 
@@ -43,10 +52,10 @@ public class OutService  extends BaseService {
 
 
 
-    public RResult startRercord(RResult result, ReqParam<StartMCParam_out> param) {
-        StartMCParam_out startMCParam_out=gson.fromJson(gson.toJson(param.getParam()), StartMCParam_out.class);
-
-        if (null == startMCParam_out) {
+    public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
+       // StartMCParam_out startMCParam_out=gson.fromJson(gson.toJson(param.getParam()), StartMCParam_out.class);
+        StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
+        if (null == startRercordParam) {
             System.out.println("参数为空__");
             result.setMessage("参数为空");
             return result;
@@ -55,11 +64,12 @@ public class OutService  extends BaseService {
         Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
         base_type=base_typeMapper.selectOne(base_type);
+        StartMCParam_out startMCParam_out=new StartRercordParam();
         startMCParam_out.setMcType(MCType.AVST);
         startMCParam_out.setModelbool(1);
         startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
         startMCParam_out.setYwSystemType("TRM_AVST");
-        List<TdAndUserAndOtherParam> tdList=startMCParam_out.getTdList();
+        List<TdAndUserAndOtherParam> tdList=startRercordParam.getTdList();
         if (null!=tdList&&tdList.size()>0){
             for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
                 tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
@@ -69,11 +79,26 @@ public class OutService  extends BaseService {
             }
             startMCParam_out.setTdList(tdList);
         }
-        param.setParam(startMCParam_out);
+        ReqParam<StartMCParam_out> param1=new ReqParam<>();
+        param1.setParam(startMCParam_out);
         try {
-            result = meetingControl.startMC(param);
+            result = meetingControl.startMC(param1);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                System.out.println("startMC开启成功__");
+                StartMCVO startMCVO=gson.fromJson(gson.toJson(result.getData()), StartMCVO.class);
+                String mtssid=startMCVO.getMtssid();
+
+                //根据recordssid获取提讯
+                Police_arraignment police_arraignment=new Police_arraignment();
+                if (StringUtils.isNotBlank(startRercordParam.getRecordssid())){
+                    police_arraignment.setRecordssid(startRercordParam.getRecordssid());
+                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+                    if (null!=police_arraignment){
+                        police_arraignment.setMtssid(mtssid);
+                        int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
+                        System.out.println("arraignmentupdateById_bool__"+arraignmentupdateById_bool);
+                    }
+                    System.out.println("startMC开启成功__");
+                }
             }else{
                 System.out.println("startMC开启失败__");
             }
@@ -96,9 +121,9 @@ public class OutService  extends BaseService {
             param.setParam(overMCParam_out);
             result = meetingControl.overMC(param);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                System.out.println("overMC关闭成功__");
+                System.out.println("overMC关闭成功__"+overMCParam_out.getMtssid());
             }else{
-                System.out.println("overMC关闭失败__");
+                System.out.println("overMC关闭失败__"+overMCParam_out.getMtssid());
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -185,9 +185,10 @@
 
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                     <ul class="layui-tab-title">
-                        <li class="layui-this">语音识别</li>
+                        <li  class="layui-this" >语音识别</li>
                         <li onclick="initplayer()">录音录像</li>
                         <li>测谎仪</li>
+                        <li>案件信息</li>
                     </ul>
                     <div class="layui-tab-content" >
                         <div class="layui-tab-item layui-show">
@@ -200,16 +201,49 @@
                             </div>
                         </div>
                         <div class="layui-tab-item">
+                            <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>
+                            <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">副麦</span>
+
                             <!--视频直播区域-->
                             <div th:replace="living3 :: living">...</div>
 
-
-
-                            <input placeholder="用户名称" id="ceshiusername"><input placeholder="发送的文本" id="ceshitext">
-                            <button onclick="ceshi();">发送</button>
                         </div>
                         <div class="layui-tab-item">
                             测谎仪区域
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-card">
+                                <!--   <div class="layui-card-header">案件信息</div>-->
+                                <div style="height: 640px; overflow-x: hidden; overflow-y: scroll; " >
+                                    <div class="layui-card-body">
+                                        <table class="layui-table" lay-skin="line" >
+                                            <tbody id="caseAndUserInfo_html">
+                                            <tr>
+                                                <td>案件名称</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>案件人</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>当前案由</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>案件时间</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>案件编号</td>
+                                                <td></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -232,7 +266,6 @@
                         </div>
                         <dl class="layui-anim layui-anim-upbit" >
                             <dd lay-value="" class="" onclick="exportWord();">导出word</dd>
-                            <dd lay-value="" class="" onclick="exportWord();">导出pdf</dd>
                         </dl>
                     </div>
                 </div>

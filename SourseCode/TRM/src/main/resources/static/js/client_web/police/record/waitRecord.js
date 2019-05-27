@@ -390,14 +390,22 @@ function callbackgetRecordById(data) {
             }
             //案件信息
             var caseAndUserInfo=data.caseAndUserInfo;
+            $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
                 var occurrencetime_formatdata=caseAndUserInfo.occurrencetime_format;
                 if (isNotEmpty(occurrencetime_formatdata)){
                     occurrencetime_format=occurrencetime_formatdata;
                 }
+                var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
+                                  <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
+                                  <tr><td>当前案由</td><td>"+caseAndUserInfo.cause+"</td></tr>\
+                                  <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
+                                  <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>\
+                                  <tr><td>询问人一</td><td>"+recordUserInfosdata.adminname+"</td></tr>\
+                                  <tr><td>询问人二</td> <td>"+recordUserInfosdata.otheradminname+"</td> </tr>\
+                                  <tr><td>记录人</td><td>"+recordUserInfosdata.recordadminname+"</td> </tr>";
+                $("#caseAndUserInfo_html").html(init_casehtml);
             }
-
-
         }
     }else{
         layer.msg(data.message);
@@ -407,6 +415,7 @@ function callbackgetRecordById(data) {
 
 //开始会议
 var mtssid=null;//会议ssid
+var useretlist=null;
 function startMC() {
 
     if (isNotEmpty(recordUserInfos)){
@@ -430,7 +439,8 @@ function startMC() {
             token:INIT_CLIENTKEY,
             param:{
                 meetingtype: 2       //会议类型，1视频/2音频
-                ,tdList:tdList,
+                ,tdList:tdList
+                ,recordssid:recordssid
             }
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
@@ -442,14 +452,32 @@ function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log("startMC返回结果_"+data);
             var asrnum=data.asrnum;
             var mtssiddata=data.mtssid;
             var polygraphnum=data.polygraphnum;
             var recordnum=data.recordnum;
+            useretlist=data.useretlist;
+            if (isNotEmpty(useretlist)){
+                for (var i = 0; i < useretlist.length; i++) {
+                    var useret = useretlist[i];
+                    var userssid1=useret.userssid;
+                    for (var j = 0; j < recorduser.length; j++) {
+                        var u = recorduser[j];
+                        var userssid2=u.userssid;
+                        if (userssid1==userssid2) {
+                            var grade=u.grade;
+                            if (1==grade){
+                                liveurl=useret.livingurl;
+                                console.log("liveurl_____"+liveurl)
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
             mtssid=mtssiddata;
-            updateArraignment();
+          /*  updateArraignment();*/
         }
     }else{
         layer.msg(data.message);
@@ -527,7 +555,7 @@ function addRecord(recordbool) {
                     }
                 }
             }
-        })
+        });
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -537,6 +565,10 @@ function addRecord(recordbool) {
             }
         };
         ajaxSubmitByJson(url, data, calladdRecord);
+        if (recordbool==2) {
+            overMC();//结束会议
+            window.history.go(-1);
+        }
     }else{
         layer.msg("系统异常");
     }
@@ -567,8 +599,7 @@ function overRecord() {
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
         addRecord(2);//保存问答信息
-        overMC();//结束会议
-        window.history.go(-1);
+
         layer.close(index);
     }, function(index){
 
@@ -592,7 +623,8 @@ function callbackexportWord(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-
+            var host = "http://localhost";
+            window.location.href = host + data;
         }
     }else{
         layer.msg(data.message);
@@ -601,6 +633,7 @@ function callbackexportWord(data){
 
 
 //修改提讯数据（注入会议ssid）
+/*
 function updateArraignment() {
     if (isNotEmpty(mtssid)){
         var url=getActionURL(getactionid_manage().waitRecord_updateArraignment);
@@ -624,7 +657,7 @@ function callbackupdateArraignment(data) {
         layer.msg(data.message);
     }
 }
-
+*/
 
 
 /**
@@ -693,6 +726,34 @@ function callbackgetgetRecordrealing(data) {
     }
 }
 
+
+/**
+ * 视频地址切换 type 1主麦 type 2副麦
+ */
+
+function select_liveurl(obj,type){
+    $(obj).removeClass("layui-bg-gray");
+    $(obj).siblings().addClass("layui-bg-gray");
+    if (isNotEmpty(useretlist)){
+        for (var i = 0; i < useretlist.length; i++) {
+            var useret = useretlist[i];
+            var userssid1=useret.userssid;
+            for (var j = 0; j < recorduser.length; j++) {
+                var u = recorduser[j];
+                var userssid2=u.userssid;
+                if (userssid1==userssid2) {
+                    var grade=u.grade;
+                    if (type==grade){
+                        liveurl=useret.livingurl;
+                        console.log("liveurl_____"+liveurl)
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    initplayer();
+}
 $(function () {
     //回车加trtd
     var trtd_html='<tr>\
@@ -820,15 +881,18 @@ $(function () {
         }
     });
 
-    $(window).on("unload", function(event){
+  /*  $(window).on("unload", function(event){
+        console.log("1")
         addRecord(1);
     });
     $(window).on('beforeunload', function(event) {
+        console.log("2")
         addRecord(1);
     });
     $(window).on('pagehide', function(event) {
+        console.log("3")
         addRecord(1);
-    });
+    });*/
 });
 
 

@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -346,14 +347,14 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/exportWord")
-    public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param){
+    public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param, HttpServletRequest request){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.exportWord(result,param);
+            recordService.exportWord(result,param,request);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

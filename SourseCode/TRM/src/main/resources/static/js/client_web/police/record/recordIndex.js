@@ -175,7 +175,7 @@ function showpagetohtml(){
 
         var recordtypessid=pageparam.recordtypessid;
         var recordname=pageparam.recordname;
-
+        var recordbool=pageparam.recordbool;
 
         var arrparam=new Array();
         arrparam[0]=recordtypessid;
@@ -193,14 +193,14 @@ function showpagetohtml(){
 
 
 //跳转笔录详情页
-function togetRecordById() {
+/*function togetRecordById() {
     if (!isNotEmpty(recordssid_go)){
         layer.msg("请先获取笔录");
         return;
     }
     var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
     window.location.href=url+"?ssid="+recordssid_go;
-}
+}*/
 //跳转笔录编辑页
 function towaitRecord(recordssid,recordbool) {
     if (!isNotEmpty(recordssid)){

@@ -19,6 +19,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.MeetingControl;
 import com.avst.trm.v1.feignclient.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.feignclient.req.GetMCStateParam_out;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URL;
@@ -180,6 +182,17 @@ public class RecordService extends BaseService {
             return;
         }
 
+        //修改笔录状态
+        Integer recordbool=addRecordParam.getRecordbool();
+        System.out.println("recordbool__"+recordbool);
+        EntityWrapper updaterecordParam=new EntityWrapper();
+        updaterecordParam.eq("ssid",recordssid);
+        Police_record record=new Police_record();
+        record.setSsid(recordssid);
+        record.setRecordbool(recordbool);
+        int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+        System.out.println("updaterecord_bool__"+updaterecord_bool);
+
         //获取该笔录下的全部题目答案
         EntityWrapper recordToProblemsParam=new EntityWrapper();
         recordToProblemsParam.eq("recordssid",recordssid);
@@ -226,19 +239,6 @@ public class RecordService extends BaseService {
         }else{
             System.out.println("该笔录没有任何题目答案__2");
         }
-
-        //修改笔录状态
-        Integer recordbool=addRecordParam.getRecordbool();
-        if (null==recordbool){
-            recordbool=1;
-        }
-        EntityWrapper updaterecordParam=new EntityWrapper();
-        updaterecordParam.eq("ssid",recordssid);
-        Police_record record=new Police_record();
-        record.setSsid(recordssid);
-        record.setRecordbool(recordbool);
-        int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-        System.out.println("updaterecord_bool__"+updaterecord_bool);
 
 
         addRecordbool=false;
@@ -695,7 +695,7 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void exportWord(RResult result, ReqParam<ExportWordParam> param){
+    public void exportWord(RResult result, ReqParam<ExportWordParam> param, HttpServletRequest request){
         ExportWordParam exportWordParam=param.getParam();
         if (null==exportWordParam){
             result.setMessage("参数为空");
@@ -710,6 +710,7 @@ public class RecordService extends BaseService {
         //根据笔录ssid获取信息
         Map<String,String> dataMap = new HashMap<String,String>();
         dataMap.put("recordstarttime", "2019年05月22日");
+        dataMap.put("recordendtime", "2019年05月22日");
         dataMap.put("recordplace", "深圳石岩");
         dataMap.put("workname1", "公安部");
         dataMap.put("workname2", "研发部");
@@ -725,19 +726,29 @@ public class RecordService extends BaseService {
         dataMap.put("domicile", "台湾");
 
         try {
+
+            /*template*/
             Configuration configuration = new Configuration(new Version("2.3.23"));
             configuration.setDefaultEncoding("utf-8");
-            configuration.setDirectoryForTemplateLoading(new File("C:/Users/Administrator/Desktop"));
+            configuration.setDirectoryForTemplateLoading(new File("D:\\trmfile\\upload\\template"));
 
-            File outFile = new File("C:/Users/Administrator/Desktop/导出的word.doc");
             //以utf-8的编码读取ftl文件
-            Template template = configuration.getTemplate("ceshiword.xml","UTF-8");
+            Template template = configuration.getTemplate("word.ftl","UTF-8");
 
 
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), "utf-8"), 10240);
+            String filePathNew = "D:/trmfile/upload/zips";
+            File fileMkdir = new File(filePathNew);
+            if (!fileMkdir.exists()) {
+                //如果不存在，就创建该目录
+                fileMkdir.mkdirs();
+            }
+            String path = filePathNew + "/笔录类型.doc";
+
+            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             template.process(dataMap, out);
             out.close();
-
+            String uploadpath= OpenUtil.strMinusBasePath("upload",path);
+            result.setData(uploadpath);
             changeResultToSuccess(result);
         } catch (IOException e) {
             e.printStackTrace();
