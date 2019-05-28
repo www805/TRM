@@ -74,7 +74,7 @@ function callbackaddOrUpdateCase(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var data=data.data;
-            if (data>0){
+            if (isNotEmpty(data)){
                 layer.msg("保存成功",{icon: 1,time:500},function () {
                     var nextparam=getAction(getactionid_manage().addOrUpdateCase_updateCase);
                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){

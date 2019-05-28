@@ -351,9 +351,10 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
                             <div class="layui-input-block">
-                                <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="" >
+                                <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="">
                                     <option value=""></option>
                                 </select>
+                                <button class="layui-btn layui-btn-normal  layui-btn-xs" onclick="open_addCase();">添加新案件</button>
                             </div>
                         </div>
                         <div class="layui-col-lg12">
@@ -372,6 +373,7 @@
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>笔录名称</label>
                             <div class="layui-input-block">
                                 <input style="color: red;" type="text" name="recordname" id="recordname" lay-verify="required" placeholder="默认：《案件名》笔录类型名_第n版本" autocomplete="off" class="layui-input">
+
                             </div>
                         </div>
                         <div class="layui-col-lg6">

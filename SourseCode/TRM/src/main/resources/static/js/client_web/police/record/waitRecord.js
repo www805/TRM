@@ -163,8 +163,11 @@ function tr_downn(obj) {
 function img_bool(obj,type){
     if (type==1){
         //开始会议
-        if (isNotEmpty(mtssid)){
+        if (!isNotEmpty(mtssid)){
             startMC();
+        }else{
+            layer.msg("会议已关闭");
+            return;
         }
     }else{
        //暂停录音
@@ -417,7 +420,8 @@ function callbackgetRecordById(data) {
 var mtssid=null;//会议ssid
 var useretlist=null;
 function startMC() {
-
+    $("#endrecord").css("display","none");
+    $("#endrecord").siblings().css("display","block");
     if (isNotEmpty(recordUserInfos)){
         var tdList=[];
         var user1={
@@ -478,8 +482,6 @@ function callbackstartMC(data) {
 
             mtssid=mtssiddata;
           /*  updateArraignment();*/
-            $("#endrecord").css("display","none");
-            $("#endrecord").siblings().css("display","block");
             layer.msg("会议已开启");
         }
     }else{
@@ -648,7 +650,7 @@ function updateArraignment() {
             }
         };
         ajaxSubmitByJson(url, data, callbackupdateArraignment);
-    } 
+    }
 }
 function callbackupdateArraignment(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -887,18 +889,10 @@ $(function () {
         }
     });
 
-  /*  $(window).on("unload", function(event){
-        console.log("1")
-        addRecord(1);
-    });
-    $(window).on('beforeunload', function(event) {
-        console.log("2")
-        addRecord(1);
-    });
     $(window).on('pagehide', function(event) {
         console.log("3")
         addRecord(1);
-    });*/
+    });
 });
 
 

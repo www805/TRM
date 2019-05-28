@@ -654,11 +654,32 @@ public class RecordService extends BaseService {
             return;
         }
 
-        String casessid=getCaseByIdParam.getCasessid();
-        if (StringUtils.isBlank(casessid)){
+        String userssid=getCaseByIdParam.getUserssid();
+        if (StringUtils.isBlank(userssid)){
             result.setMessage("参数为空");
             return;
         }
+
+        //根据用户userssid查询案件列表
+        EntityWrapper caseparam=new EntityWrapper();
+        caseparam.eq("c.userssid",userssid);
+        caseparam.orderBy("c.occurrencetime",false);
+        List<CaseAndUserInfo> cases=police_caseMapper.getCaseByUserSsid(caseparam);//加入询问次数
+        if (null!=cases&&cases.size()>0){
+            for (CaseAndUserInfo c: cases) {
+                //提讯数据
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",c.getSsid());
+                ewarraignment.orderBy("a.createtime",false);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    c.setArraignments(arraignmentAndRecords);
+                }
+                c.setAsknum(arraignmentAndRecords.size());
+            }
+            getCaseByIdVO.setCases(cases);
+        }
+        result.setData(getCaseByIdVO);
         //根据案件ssid查询该案件信息
         changeResultToSuccess(result);
         return;
@@ -724,6 +745,8 @@ public class RecordService extends BaseService {
         dataMap.put("residence", "深圳");
         dataMap.put("phone", "19735880381");
         dataMap.put("domicile", "台湾");
+        dataMap.put("both", "2019年05月22日");
+
 
         try {
 
@@ -849,7 +872,7 @@ public class RecordService extends BaseService {
        int caseinsert_bool = police_caseMapper.insert(addCaseParam);
        System.out.println("caseinsert_bool__"+caseinsert_bool);
         if (caseinsert_bool>0){
-            result.setData(caseinsert_bool);
+            result.setData(addCaseParam.getSsid());
             changeResultToSuccess(result);
         }
         return;

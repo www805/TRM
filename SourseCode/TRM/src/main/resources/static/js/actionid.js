@@ -104,6 +104,7 @@ function getactionid_manage() {
         addCaseToUser_getUserByCard:"addCaseToUser_getUserByCard",
         addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
         addCaseToUser_toaddCaseToUserDetail:"addCaseToUser_toaddCaseToUserDetail",
+        addCaseToUser_addCase:"addCaseToUser_addCase",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

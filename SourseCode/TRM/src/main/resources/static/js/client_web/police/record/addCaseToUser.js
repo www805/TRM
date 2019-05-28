@@ -6,6 +6,8 @@ var dqcardssid=null;//当前人员证件ssid
 var dqcardnum=null;//当前人员证件号码
 var dquserssid=null;//当前用户的ssid
 
+var dqcasessid=null;//当前证件ssid
+
 //开始笔录按钮
 function addCaseToArraignment() {
 
@@ -392,6 +394,41 @@ function setcases(cases){
             //  $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
             $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.casename+"</option>")
         }
+        
+        if (isNotEmpty(dqcasessid)){
+            $("#casename").val(dqcasessid);
+            $("#cause").val("");
+            $("#casenum").val("");
+            $("#occurrencetime").val("");
+            $("#starttime").val("");
+            $("#endtime").val("");
+            $("#caseway").val("");
+            $("#asknum").val("0");
+            $("#recordname").val("");
+
+
+
+            if (isNotEmpty(cases)){
+                for (var i = 0; i < cases.length; i++) {
+                    var c = cases[i];
+                    if (dqcasessid==c.ssid){
+                        var casename=$("#casename").find("option:selected").text();
+                        var recordtypename=$("td[recordtypebool='true']",parent.document).text();
+                        var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+
+
+                        $("#cause").val(c.cause);
+                        $("#casenum").val(c.casenum);
+                        $("#occurrencetime").val(c.occurrencetime);
+                        $("#starttime").val(c.starttime);
+                        $("#endtime").val(c.endtime);
+                        $("#caseway").val(c.caseway);
+                        $("#asknum").val(c.asknum);
+                        $("#recordname").val(recordname);
+                    }
+                }
+            }
+        }
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -608,3 +645,131 @@ $(function () {
 
     });
 });
+
+
+function open_addCase() {
+        if (!isNotEmpty(dqcardssid)){ //判断主要人员信息是否搜索
+            parent.layer.msg("请先获取人员基本信息");
+            return;
+         }
+    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">案件名称</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="casenamem" id="casenamem"   lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">案件编号</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="casenumm" id="casenumm" required  lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">当前案由</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="causem" id="causem" required  lay-verify="required" placeholder="请输入当前案由" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">案发时间</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="occurrencetimem" id="occurrencetimem" required  placeholder="请输入案发时间" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">到案方式</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="casewaym" id="casewaym" required  lay-verify="required" placeholder="请输入到案方式" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+            </form>';
+
+    var index = parent.layer.open({
+        title:'添加案件',
+        content:html,
+        area: ['700px', '500px'],
+        btn: ['确定', '取消'],
+        yes:function(index, layero){
+            var url= url=getActionURL(getactionid_manage().addCaseToUser_addCase);
+            var casename=$("#casenamem",parent.document).val();
+            var cause=$("#causem",parent.document).val();
+            var casenum=$("#casenumm",parent.document).val();
+            var occurrencetime=$("#occurrencetimem",parent.document).val();
+            var caseway=$("#casewaym",parent.document).val();
+            var userssid=dquserssid;
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    casename:casename,
+                    cause:cause,
+                    casenum:casenum,
+                    occurrencetime:occurrencetime,
+                    caseway:caseway,
+                    userssid:userssid
+                }
+            };
+            ajaxSubmitByJson(url,data,function (data) {
+                if(null!=data&&data.actioncode=='SUCCESS'){
+                    if (isNotEmpty(data)){
+                        var data=data.data;
+                        if (isNotEmpty(data)){
+                            dqcasessid=data;
+                            getCaseById();
+                        }
+                    }
+                }else{
+                    parent.layer.msg(data.message);
+                }
+            });
+            parent.layer.close(index);
+        },
+        btn2:function(index, layero){
+            parent.layer.close(index);
+        }
+    });
+
+    parent.layui.use(['form', 'layedit', 'laydate','laypage', 'layer'], function(){
+        var form = parent.layui.form
+            ,layer = parent.layui.layer
+            ,layedit = parent.layui.layedit
+            ,laydate = parent.layui.laydate;
+
+        var laypage = parent.layui.laypage
+            ,layer = parent.layui.layer;
+
+        laydate.render({
+            elem: '#occurrencetimem'
+            ,type: 'datetime'
+        });
+        form.render();
+    });
+}
+
+function getCaseById() {
+    var url=getActionURL(getactionid_manage().addCaseToUser_getCaseById);
+    var userssid=dquserssid;
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            userssid:userssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callbakegetCaseById) ;
+}
+function callbakegetCaseById(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var casesdata=data.cases;
+                cases=casesdata;
+                if (isNotEmpty(cases)){
+                    setcases(cases);
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}

@@ -247,7 +247,7 @@ public class RecordAction extends BaseAction {
     }
 
     /**
-     * 根据案件id联查
+     * 根据人员ssid联查
      * @param param
      * @return
      */
