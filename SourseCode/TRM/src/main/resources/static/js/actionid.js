@@ -8,6 +8,7 @@ function getactionid_manage() {
         main_getRole:"main_getRole",
         main_logout:"main_logout",
         main_getUser:"main_getUser",
+        main_tocaseIndex:"main_tocaseIndex",
         main_getPermissionsByMenu:"main_getPermissionsByMenu",
         login_login:"login_login",
         login_main:"login_main",
@@ -167,6 +168,15 @@ function getactionid_manage() {
         addOrupdateTemplate_addProblem: "addOrupdateTemplate_addProblem",
         addOrupdateTemplate_getProblemById: "addOrupdateTemplate_getProblemById",
         addOrupdateTemplate_updateTemplate: "addOrupdateTemplate_updateTemplate",
+
+        caseIndex_getCases:"caseIndex_getCases",
+        caseIndex_toaddOrUpdateCase:"caseIndex_toaddOrUpdateCase",
+
+        addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
+        addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",
+        addOrUpdateCase_addCase:"addOrUpdateCase_addCase",
+        addOrUpdateCase_getUserinfoList:"addOrUpdateCase_getUserinfoList",
+
 
 
     };

@@ -11,6 +11,7 @@ import java.util.List;
  * 案件笔录数据
  */
 public class CaseAndUserInfo extends Police_case {
+    private String userssid;//用户ssid
     private String username;
 
     private Integer asknum;//询问次数
@@ -19,6 +20,16 @@ public class CaseAndUserInfo extends Police_case {
     private Date occurrencetime_format;//案发时间换格式
 
     private List<ArraignmentAndRecord> arraignments;//多次提讯数据
+
+    @Override
+    public String getUserssid() {
+        return userssid;
+    }
+
+    @Override
+    public void setUserssid(String userssid) {
+        this.userssid = userssid;
+    }
 
     public Date getOccurrencetime_format() {
         return occurrencetime_format;

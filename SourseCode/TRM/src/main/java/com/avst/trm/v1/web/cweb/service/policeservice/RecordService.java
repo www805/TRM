@@ -791,6 +791,140 @@ public class RecordService extends BaseService {
         }
     }
 
+    public void getCases(RResult result,ReqParam<GetCasesParam> param){
+        GetCasesParam getCasesParam=param.getParam();
+        if (null==getCasesParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        GetCasesVO getCasesVO=new GetCasesVO();
+        //请求参数组合
+        EntityWrapper ew=new EntityWrapper();
+        if (StringUtils.isNotBlank(getCasesParam.getCasename())){
+            ew.like(true,"c.casename",getCasesParam.getCasename().trim());
+        }
+        if (StringUtils.isNotBlank(getCasesParam.getCasenum())){
+            ew.like(true,"c.casenum",getCasesParam.getCasenum().trim());
+        }
+        if (StringUtils.isNotBlank(getCasesParam.getUsername())){
+            ew.like(true,"u.username",getCasesParam.getUsername().trim());
+        }
+
+        int count = police_caseMapper.countgetArraignmentList(ew);
+        getCasesParam.setRecordCount(count);
+
+        ew.orderBy("c.ordernum",true);
+        ew.orderBy("c.createtime",false);
+        Page<CaseAndUserInfo> page=new Page<CaseAndUserInfo>(getCasesParam.getCurrPage(),getCasesParam.getPageSize());
+        List<CaseAndUserInfo> list=police_caseMapper.getArraignmentList(page,ew);
+        getCasesVO.setPageparam(getCasesParam);
+
+        if (null!=list&&list.size()>0){
+            //绑定多次提讯数据
+            for (CaseAndUserInfo recordAndCase : list) {
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",recordAndCase.getSsid());
+                ewarraignment.orderBy("a.createtime",false);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    recordAndCase.setArraignments(arraignmentAndRecords);
+                }
+            }
+            getCasesVO.setPagelist(list);
+        }
+        result.setData(getCasesVO);
+        changeResultToSuccess(result);
+    }
+
+    public void addCase(RResult result,ReqParam<AddCaseParam> param){
+        AddCaseParam addCaseParam=param.getParam();
+        if (null==addCaseParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        addCaseParam.setSsid(OpenUtil.getUUID_32());
+        addCaseParam.setCreatetime(new Date());
+        addCaseParam.setStarttime(new Date());
+       int caseinsert_bool = police_caseMapper.insert(addCaseParam);
+       System.out.println("caseinsert_bool__"+caseinsert_bool);
+        if (caseinsert_bool>0){
+            result.setData(caseinsert_bool);
+            changeResultToSuccess(result);
+        }
+        return;
+
+    }
+
+    public void updateCase(RResult result,ReqParam<UpdateCaseParam> param){
+        UpdateCaseParam updateCaseParam=param.getParam();
+        if (null==updateCaseParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String casessid=updateCaseParam.getSsid();
+        if (StringUtils.isBlank(casessid)){
+            result.setMessage("参数为空");
+            System.out.println("getCaseBySsid__ssid:"+casessid);
+            return;
+        }
+
+        EntityWrapper updateParam=new EntityWrapper();
+        updateParam.eq("ssid",casessid);
+        int caseupdate_bool = police_caseMapper.update(updateCaseParam,updateParam);
+        System.out.println("caseupdate_bool__"+caseupdate_bool);
+        if (caseupdate_bool>0){
+            result.setData(caseupdate_bool);
+            changeResultToSuccess(result);
+        }
+        return;
+    }
+
+    public void getCaseBySsid(RResult result,ReqParam<GetCaseBySsidParam> param){
+        GetCaseBySsidVO getCaseBySsidVO=new GetCaseBySsidVO();
+        GetCaseBySsidParam getCaseBySsidParam=param.getParam();
+        if (null==getCaseBySsidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String casessid=getCaseBySsidParam.getCasessid();
+        if (StringUtils.isBlank(casessid)){
+            result.setMessage("参数为空");
+            System.out.println("getCaseBySsid__ssid:"+casessid);
+            return;
+        }
+        EntityWrapper caseParam=new EntityWrapper();
+        caseParam.eq("c.ssid",casessid);
+        List<CaseAndUserInfo> caseAndUserInfos =  police_caseMapper.getCaseByUserSsid(caseParam);
+        if (null!=caseAndUserInfos&&caseAndUserInfos.size()==1){
+            CaseAndUserInfo caseAndUserInfo=caseAndUserInfos.get(0);
+            getCaseBySsidVO.setCaseAndUserInfo(caseAndUserInfo);
+            result.setData(getCaseBySsidVO);
+            changeResultToSuccess(result);
+        }else{
+            System.out.println("查找到案件数__"+caseAndUserInfos.size());
+            result.setMessage("系统异常");
+            return;
+        }
+        return;
+    }
+
+    public void getUserinfoList(RResult result,ReqParam param){
+        GetUserinfoListVO getUserinfoListVO=new GetUserinfoListVO();
+
+        //根据证件类型和证件号查询用户信息
+        EntityWrapper userparam=new EntityWrapper();
+        List<Police_userinfo> userinfos=police_userinfoMapper.selectList(userparam);
+        if (null==userinfos||userinfos.size()<1){
+            result.setMessage("未找到人员信息");
+            return;
+        }
+        getUserinfoListVO.setUserinfos(userinfos);
+        result.setData(getUserinfoListVO);
+        changeResultToSuccess(result);
+        return;
+    }
 
 
 }

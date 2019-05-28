@@ -379,6 +379,90 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 获取案件列表
+     */
+    @RequestMapping("/getCases")
+    public  RResult getCases(@RequestBody ReqParam<GetCasesParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getCases(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 添加案件
+     */
+    @RequestMapping("/addCase")
+    public  RResult addCase(@RequestBody ReqParam<AddCaseParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.addCase(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 修改案件
+     */
+    @RequestMapping("/updateCase")
+    public  RResult updateCase(@RequestBody ReqParam<UpdateCaseParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.updateCase(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取单个案件
+     */
+    @RequestMapping("/getCaseBySsid")
+    public  RResult getCaseBySsid(@RequestBody ReqParam<GetCaseBySsidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getCaseBySsid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取全部用户
+     */
+    @RequestMapping("/getUserinfoList")
+    public  RResult getUserinfoList(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getUserinfoList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

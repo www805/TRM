@@ -166,6 +166,23 @@ public class PolicePageAction {
 
 
 
+    /*********************************关于案件 start*********************************/
+    @GetMapping("tocaseIndex")
+    public ModelAndView tocaseIndex(Model model){
+        model.addAttribute("title","案件管理");
+        return new ModelAndView("client_web/police/record/caseIndex", "caseIndexModel", model);
+    }
+
+    @GetMapping("toaddOrUpdateCase")
+    public ModelAndView toCaseIndex(Model model,String ssid){
+        model.addAttribute("title","案件编辑");
+        model.addAttribute("ssid",ssid);
+        return new ModelAndView("client_web/police/record/addOrUpdateCase", "addOrUpdateCaseModel", model);
+    }
+
+    /*********************************关于案件 end*********************************/
+
+
 
 
 
