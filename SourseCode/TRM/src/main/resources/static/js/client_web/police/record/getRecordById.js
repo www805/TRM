@@ -134,7 +134,7 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(caseAndUserInfo)){
                 var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
                                   <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
-                                  <tr><td>当前案由</td><td>"+caseAndUserInfo.cause+"</td></tr>\
+                                  <tr><td>当前案由</td><td title='"+caseAndUserInfo.cause+"'>"+caseAndUserInfo.cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>\
                                   <tr><td>询问人一</td><td>"+recordUserInfosdata.adminname+"</td></tr>\
@@ -267,4 +267,39 @@ function callbackgetRecord(data) {
     }else{
         layer.msg(data.message);
     }
+}
+
+function btn(obj) {
+    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
+        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
+        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
+function exportWord(obj){
+    var url=getActionURL(getactionid_manage().getRecordById_exportWord);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var host = "http://localhost";
+                window.location.href = host + data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        btn(obj);
+    });
 }

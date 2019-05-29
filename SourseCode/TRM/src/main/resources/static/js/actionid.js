@@ -124,6 +124,7 @@ function getactionid_manage() {
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
+        getRecordById_exportWord:"getRecordById_exportWord",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",

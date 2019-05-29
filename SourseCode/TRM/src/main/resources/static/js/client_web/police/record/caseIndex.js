@@ -45,7 +45,7 @@ function getCasesByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;
         getCases_init(currPage,pageSize);
     }else if (len==2){
         getCases('',arguments[0],arguments[1]);

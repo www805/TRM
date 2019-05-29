@@ -11,12 +11,17 @@
     html{
         background-color: #FFFFFF;
     }
+    table td {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
 </style>
 <body>
-<div class="layui-form" style="margin: 15px;">
+<div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
     <div th:replace="header :: header">...</div>
 
-    <div class="layui-elem-quote">
+    <div class="layui-elem-quote"style=" padding: 10px;">
         <h3 th:text="${caseIndexModel.title}">智能提讯系统</h3>
     </div>
 
@@ -37,7 +42,7 @@
                 <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入案件人名称" autocomplete="off" class="layui-input">
             </div>
 
-            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,3);" >
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,10);" >
             <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加案件</a>
         </div>
     </form>
@@ -46,7 +51,7 @@
 </div>
 <script id="pagelisttemplates" type="text/html">
 
-    <table class="layui-table">
+    <table class="layui-table" style="table-layout: fixed">
         <thead>
         <tr>
             <th>序号</th>
@@ -68,7 +73,7 @@
             <td>{{index+1}}</td>
             <td>{{value.casename==null?"":value.casename}}</td>
             <td>{{value.casenum==null?"":value.casenum}}</td>
-            <td>{{value.cause==null?"":value.cause}}</td>
+            <td title="{{value.cause}}">{{value.cause==null?"":value.cause}}</td>
             <td>{{value.username==null?"":value.username}}</td>
             <td>{{value.caseway==null?"":value.caseway}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
