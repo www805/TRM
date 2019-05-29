@@ -40,6 +40,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,6 +90,12 @@ public class RecordService extends BaseService {
 
     @Autowired
     private MeetingControl meetingControl;
+
+    @Autowired
+    private Police_workunitMapper police_workunitMapper;
+
+    @Value("${file.basepath}")
+    private String filePath;
 
     private boolean addRecordbool=false;
 
@@ -588,7 +595,7 @@ public class RecordService extends BaseService {
         EntityWrapper userparam=new EntityWrapper();
         userparam.eq("ut.cardtypessid",cardtypesssid);
         userparam.eq("ut.cardnum",cardnum);
-        List<Police_userinfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+        List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
         if (null==userinfos||userinfos.size()<1){
             result.setMessage("未找到该人员信息");
             return;
@@ -596,7 +603,7 @@ public class RecordService extends BaseService {
 
         if (null!=userinfos&&userinfos.size()>0){
             if (userinfos.size()==1){
-                Police_userinfo police_userinfo=userinfos.get(0);
+                UserInfo police_userinfo=userinfos.get(0);
                 getUserByCardVO.setUserinfo(police_userinfo);
 
 
@@ -728,55 +735,150 @@ public class RecordService extends BaseService {
             return;
         }
 
-        //根据笔录ssid获取信息
-        Map<String,String> dataMap = new HashMap<String,String>();
-        dataMap.put("recordstarttime", "2019年05月22日");
-        dataMap.put("recordendtime", "2019年05月22日");
-        dataMap.put("recordplace", "深圳石岩");
-        dataMap.put("workname1", "公安部");
-        dataMap.put("workname2", "研发部");
-        dataMap.put("workname3", "市场部");
-        dataMap.put("username", "哈哈");
-        dataMap.put("sex", "男");
-        dataMap.put("age", "18");
-        dataMap.put("cardnum", "1234567895454444444546");
-        dataMap.put("politicsstatus", "党员");
-        dataMap.put("workunits", "制作业");
-        dataMap.put("residence", "深圳");
-        dataMap.put("phone", "19735880381");
-        dataMap.put("domicile", "台湾");
-        dataMap.put("both", "2019年05月22日");
+        //根据笔录ssid获取录音数据
+        EntityWrapper recordParam=new EntityWrapper();
+        recordParam.eq("r.ssid",recordssid);
+        Record record=police_recordMapper.getRecordBySsid(recordParam);
 
+        if (null!=record){
+                String questionandanswer="";//题目答案
+                EntityWrapper ew=new EntityWrapper();
+                ew.eq("r.ssid",record.getSsid());
+                ew.orderBy("p.ordernum",true);
+                ew.orderBy("p.createtime",true);
+                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+                if (null!=problems&&problems.size()>0){
+                    for (RecordToProblem problem : problems) {
+                        questionandanswer+="问："+problem.getProblem()+"<w:br/>";
+                        String problemssid=problem.getSsid();
+                        if (StringUtils.isNotBlank(problemssid)){
+                            EntityWrapper answerParam=new EntityWrapper();
+                            answerParam.eq("recordtoproblemssid",problemssid);
+                            answerParam.orderBy("ordernum",true);
+                            answerParam.orderBy("createtime",true);
+                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
+                            if (null!=answers&&answers.size()>0){
+                                for (Police_answer answer : answers) {
+                                    questionandanswer+="答："+answer.getAnswer()+"<w:br/>";
+                                }
+                            }
+                        }
+                    }
+                }
+
+                /**
+                 *   获取提讯人和被询问人
+                 */
+                EntityWrapper recorduserinfosParam=new EntityWrapper();
+                recorduserinfosParam.eq("a.recordssid",record.getSsid());
+                RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+
+                String userssid=recordUserInfos.getUserssid();
+                Police_userinfo police_userinfo=new Police_userinfo();
+                police_userinfo.setSsid(userssid);
+                police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+
+
+                Police_arraignment police_arraignment=new Police_arraignment();
+                police_arraignment.setRecordssid(recordssid);
+                police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+
+
+        Police_recordtype police_recordtype=new Police_recordtype();
+        police_recordtype.setSsid(record.getRecordtypessid());
+        police_recordtype=police_recordtypeMapper.selectOne(police_recordtype);
+
+        String recordtypename=police_recordtype.getTypename();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+        String recordstarttime=sdf.format(record.getCreatetime());
+        String recordendtime=sdf.format(new Date());
+        String recordplace=police_arraignment.getRecordplace();
+
+        //工作单位
+        Police_workunit police_workunit1=new Police_workunit();
+        police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
+        police_workunit1=police_workunitMapper.selectOne(police_workunit1);
+        Police_workunit police_workunit2=new Police_workunit();
+        police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
+        police_workunit2=police_workunitMapper.selectOne(police_workunit2);
+        Police_workunit police_workunit3=new Police_workunit();
+        police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
+        police_workunit3=police_workunitMapper.selectOne(police_workunit3);
+
+        String workname1=police_workunit1.getWorkname();
+        String workname2=police_workunit2.getWorkname();
+        String workname3=police_workunit3.getWorkname();
+        String username=police_userinfo.getUsername();
+        String sex=police_userinfo.getSex()==1?"男":"女";
+        String age=police_userinfo.getAge().toString();
+        String politicsstatus=police_userinfo.getPoliticsstatus();
+        String workunits=police_userinfo.getWorkunits();
+        String residence=police_userinfo.getResidence();
+        String phone=police_userinfo.getPhone();
+        String domicile=police_userinfo.getDomicile();
+         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+        String both=sdf2.format(police_userinfo.getBoth());
+
+        EntityWrapper userinfoparam=new EntityWrapper();
+        userinfoparam.eq("u.ssid",userssid);
+        List<UserInfo> userInfos=police_userinfoMapper.getUserByCard(userinfoparam);
+         String cardnum=null;
+        if (null!=userInfos&&userInfos.size()>0){
+            cardnum=userInfos.get(0).getCardtypename()+userInfos.get(0).getCardnum();
+        }
+
+        Map<String,Object> dataMap = new HashMap<String,Object>();
+        dataMap.put("recordtypename", recordtypename==null?"":recordtypename);
+        dataMap.put("recordstarttime", recordstarttime==null?"":recordstarttime);
+        dataMap.put("recordendtime", recordendtime==null?"":recordendtime);
+        dataMap.put("recordplace",recordplace==null?"":recordplace);
+        dataMap.put("workname1", workname1==null?"":workname1);
+        dataMap.put("workname2", workname2==null?"":workname2);
+        dataMap.put("workname3", workname3==null?"":workname3);
+        dataMap.put("username", username==null?"":username);
+        dataMap.put("sex",sex==null?"":sex);
+        dataMap.put("age", age==null?"":age);
+        dataMap.put("cardnum",cardnum==null?"":cardnum);
+        dataMap.put("politicsstatus", politicsstatus==null?"":politicsstatus);
+        dataMap.put("workunits",workunits==null?"":workunits);
+        dataMap.put("residence", residence==null?"":residence);
+        dataMap.put("phone", phone==null?"":phone);
+        dataMap.put("domicile",domicile==null?"":domicile);
+        dataMap.put("both", both==null?"":both);
+        dataMap.put("questionandanswer",questionandanswer==null?"":questionandanswer);
 
         try {
 
             /*template*/
             Configuration configuration = new Configuration(new Version("2.3.23"));
             configuration.setDefaultEncoding("utf-8");
-            configuration.setDirectoryForTemplateLoading(new File("D:\\trmfile\\upload\\template"));
+            configuration.setClassForTemplateLoading(RecordService.class, "/config");
 
             //以utf-8的编码读取ftl文件
-            Template template = configuration.getTemplate("word.ftl","UTF-8");
+            Template template = configuration.getTemplate("askTo_wordtemplate.ftl","UTF-8");
 
-
-            String filePathNew = "D:/trmfile/upload/zips";
+            String filePathNew = filePath + "/zips";
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
                 //如果不存在，就创建该目录
                 fileMkdir.mkdirs();
             }
-            String path = filePathNew + "/笔录类型.doc";
+            String filename=record.getRecordname();
+            String path = filePathNew + "/"+filename+".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             template.process(dataMap, out);
             out.close();
-            String uploadpath= OpenUtil.strMinusBasePath("upload",path);
+
+            String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
             result.setData(uploadpath);
+
             changeResultToSuccess(result);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TemplateException e) {
             e.printStackTrace();
+        }
         }
         return;
     }

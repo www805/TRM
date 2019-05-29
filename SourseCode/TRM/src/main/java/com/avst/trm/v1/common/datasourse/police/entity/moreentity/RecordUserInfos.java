@@ -17,6 +17,36 @@ public class RecordUserInfos {
 
     private String recordadminname;//记录人
 
+    private String workunitssid1;
+
+    private String workunitssid2;
+
+    private String workunitssid3;
+
+    public String getWorkunitssid1() {
+        return workunitssid1;
+    }
+
+    public void setWorkunitssid1(String workunitssid1) {
+        this.workunitssid1 = workunitssid1;
+    }
+
+    public String getWorkunitssid2() {
+        return workunitssid2;
+    }
+
+    public void setWorkunitssid2(String workunitssid2) {
+        this.workunitssid2 = workunitssid2;
+    }
+
+    public String getWorkunitssid3() {
+        return workunitssid3;
+    }
+
+    public void setWorkunitssid3(String workunitssid3) {
+        this.workunitssid3 = workunitssid3;
+    }
+
     public String getRecordadminssid() {
         return recordadminssid;
     }

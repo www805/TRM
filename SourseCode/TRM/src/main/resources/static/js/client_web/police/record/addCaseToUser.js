@@ -6,7 +6,7 @@ var dqcardssid=null;//当前人员证件ssid
 var dqcardnum=null;//当前人员证件号码
 var dquserssid=null;//当前用户的ssid
 
-var dqcasessid=null;//当前证件ssid
+var dqcasessid=null;//当前案件ssid
 
 //开始笔录按钮
 function addCaseToArraignment() {

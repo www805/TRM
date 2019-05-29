@@ -37,4 +37,27 @@ public interface Police_caseMapper extends BaseMapper<Police_case> {
     @Select("select c.*,u.username,u.ssid as userssid from police_case c left join police_userinfo u on u.ssid=c.userssid where 1=1 ${ew.sqlSegment}")
     List<CaseAndUserInfo> getCaseByUserSsid(@Param("ew") EntityWrapper ew);
 
+
+    @Select(" select case_monthnum_y as 'case_monthnum_y' from (" +
+            "    select count(ssid) as case_monthnum_y  from police_case  where date_format(occurrencetime,'%m')='01' and date_format(occurrencetime,'%Y')=#{years} union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='02' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='03' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='04' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='05' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='06' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='07' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='08' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='09'  and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='10' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='11' and date_format(occurrencetime,'%Y')=#{years}  union all  " +
+            "    select count(ssid)  from police_case  where date_format(occurrencetime,'%m')='12' and date_format(occurrencetime,'%Y')=#{years}  " +
+            ") u1" )
+    List<Integer> getCase_monthnum_y(@Param("years") String years);
+
+    @Select(" select count(c.ssid) from police_case c where  date_format(c.occurrencetime,'%Y')=#{years} and c.ssid in(select cta.casessid from police_casetoarraignment cta) ")
+    Integer getCase_startnum(@Param("years") String years);
+
+    @Select(" select count(c.ssid) from police_case c where  date_format(c.occurrencetime,'%Y')=#{years} and  c.ssid not in(select cta.casessid from police_casetoarraignment cta) ")
+    Integer  Getcase_endnum(@Param("years") String years);
+
 }

@@ -7,6 +7,12 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_template;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_templateMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -14,8 +20,10 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UserloginParam;
+import com.avst.trm.v1.web.cweb.vo.basevo.GetHomeVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.GetServerconfigVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.UpdateServerconfigVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.UserloginVO;
@@ -30,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -52,6 +62,19 @@ public class MainService extends BaseService {
 
     @Autowired
     private Base_nationalMapper base_nationalMapper;
+
+    @Autowired
+    private Police_recordMapper police_recordMapper;
+
+    @Autowired
+    private Police_templateMapper police_templateMapper;
+
+    @Autowired
+    private Police_caseMapper police_caseMapper;
+
+    @Autowired
+    private Police_userinfoMapper police_userinfoMapper;
+
 
 
     @Value("${spring.images.filePath}")
@@ -291,6 +314,101 @@ public class MainService extends BaseService {
     public void getNationals(RResult result, ReqParam param){
         List<Base_national> list=base_nationalMapper.selectList(null);
         result.setData(list);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void  getHome(RResult result, ReqParam<GetHomeParam> param){
+        GetHomeVO getHomeVO=new GetHomeVO();
+
+        GetHomeParam getHomeParam=param.getParam();
+        if (null==getHomeParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy");//设置日期格式
+        Calendar c = Calendar.getInstance();
+
+        String years=null;
+        Integer yearstype=getHomeParam.getYearstype();
+        if (null==yearstype){
+            yearstype=1;
+        }
+        if (yearstype==1){
+            years=df.format(new Date());
+        }else if (yearstype==2){
+            c.setTime(new Date());
+            c.add(Calendar.YEAR, -1);
+            Date y = c.getTime();
+            years=df.format(y);
+        }
+
+        Integer record_num=police_recordMapper.selectCount(null);
+        Integer case_num= police_caseMapper.selectCount(null);
+        Integer template_num=police_templateMapper.selectCount(null);//模板数量
+        Integer userinfo_num=police_userinfoMapper.selectCount(null);
+
+
+
+
+        EntityWrapper recordparam1=new EntityWrapper();
+        recordparam1.where(" date_format(createtime,'%Y')={0}",years);
+        recordparam1.eq("recordbool",1);//进行中
+        Integer record_finishnum_y = police_recordMapper.selectCount(recordparam1);
+
+        EntityWrapper recordparam2=new EntityWrapper();
+        recordparam2.eq("recordbool",2);//已完成的
+        recordparam2.where(" date_format(createtime,'%Y')={0}",years);
+        Integer record_unfinishnum_y=police_recordMapper.selectCount(recordparam2);
+
+        Integer case_startnum_y=police_caseMapper.getCase_startnum(years);//案件开始提讯数量
+        Integer case_endnum_y=police_caseMapper.Getcase_endnum(years);//案件未开始提讯数量
+
+
+        EntityWrapper recordparam3=new EntityWrapper();
+        recordparam3.where(" date_format(createtime,'%Y')={0}",years);
+        Integer record_num_y=police_recordMapper.selectCount(recordparam3);//笔录总数
+
+        EntityWrapper caseparam=new EntityWrapper();
+        caseparam.where(" date_format(occurrencetime,'%Y')={0}",years);
+        Integer case_num_y=police_caseMapper.selectCount(caseparam);//案件总数
+
+        EntityWrapper templateparam=new EntityWrapper();
+        templateparam.where(" date_format(createtime,'%Y')={0}",years);
+        Integer template_num_y=police_templateMapper.selectCount(templateparam);//模板总数
+
+        EntityWrapper userinfoparam=new EntityWrapper();
+        userinfoparam.where(" date_format(createtime,'%Y')={0}",years);
+        Integer userinfo_num_y=police_userinfoMapper.selectCount(userinfoparam);//人员总数
+
+
+        List<Integer> case_monthnum_y=police_caseMapper.getCase_monthnum_y(years);//12月案件
+        List<Integer> record_monthnum_y=police_recordMapper.getRecord_monthnum_y(years);//12月笔录
+
+
+
+        getHomeVO.setTemplate_num(template_num==null?0:template_num);//
+        getHomeVO.setCase_num(case_num==null?0:case_num);//
+        getHomeVO.setUserinfo_num(userinfo_num==null?0:userinfo_num);//
+        getHomeVO.setRecord_num(record_num==null?0:record_num);//
+
+
+        getHomeVO.setTemplate_num_y(template_num_y==null?0:template_num_y);
+        getHomeVO.setCase_num_y(case_num_y==null?0:case_num_y);
+        getHomeVO.setUserinfo_num_y(userinfo_num_y==null?0:userinfo_num_y);
+        getHomeVO.setRecord_num_y(record_num_y==null?0:record_num_y);
+
+
+        getHomeVO.setRecord_finishnum_y(record_finishnum_y==null?0:record_finishnum_y);
+        getHomeVO.setRecord_unfinishnum_y(record_unfinishnum_y==null?0:record_unfinishnum_y);
+        getHomeVO.setCase_startnum_y(case_startnum_y==null?0:case_startnum_y);
+        getHomeVO.setCase_endnum_y(case_endnum_y==null?0:case_endnum_y);
+
+
+        getHomeVO.setRecord_monthnum_y(record_monthnum_y);//
+        getHomeVO.setCase_monthnum_y(case_monthnum_y);//
+
+        result.setData(getHomeVO);
         changeResultToSuccess(result);
         return;
     }

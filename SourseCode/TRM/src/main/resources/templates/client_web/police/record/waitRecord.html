@@ -259,13 +259,12 @@
                 <button class="layui-btn layui-btn-normal " onclick="addRecord(1);" id="baocun"  >保存</button>
                 <!--<button class="layui-btn layui-btn-normal " ><i class="iconfont icon-dayin" title="打印"></i> 打印</button>-->
                 <div class="layui-inline" style="margin-bottom:0">
-                    <div class="layui-unselect layui-form-select   "  name="btn_div"   showorhide="false" >
+                    <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                         <div class="layui-select-title">
                             <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
-
                         </div>
                         <dl class="layui-anim layui-anim-upbit" >
-                            <dd lay-value="" class="" onclick="exportWord();">导出word</dd>
+                            <dd lay-value="" class="" onclick="exportWord(this);">导出word</dd>
                         </dl>
                     </div>
                 </div>
@@ -400,10 +399,34 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
         recordssid=[[${waitRecordModel.recordssid}]];
-
         getRecordById();
         getTime();
+        var msg = new window.SpeechSynthesisUtterance();
+        msg.rate = 4;// 播放语速
+        msg.pitch = 10; //音调高低
+        msg.text = '你好，世界！';
+        msg.lang = 'zh-CN'
+        msg.volume = 0.5; //播放音量
+        msg.onstart = function(event) {
+            console.log('11111111111111')
+        };
+        msg.onpause = function(event) {
+            console.log('22222222222222')
+        };
+        msg.onresume = function(event) {
+            console.log('333333333333333')
+        };
+        msg.onend = function(event) {
+            console.log('444444444444444')
+        };
 
+        window.speechSynthesis.speak(msg);
+
+        var synUtterance = new window.SpeechSynthesisUtterance();
+        synUtterance.text = "What's your name? My name's Sara.";
+        synUtterance.lang = "zh-cn";
+        synUtterance.pitch = 2; //音调高低0～2，默认1
+        window.speechSynthesis.speak(synUtterance);
 
 
     });
@@ -419,6 +442,9 @@
     var asrht=asrwh*3/4;
     var liveurl="rtmp://192.168.17.154:1935/live/hd";
 
+
+
 </script>
+
 </body>
 </html>

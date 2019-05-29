@@ -4,12 +4,14 @@ function getactionid_manage() {
     return {
         /*sweb*/
         main_getKeyword:"main_getKeyword",
-
         main_getRole:"main_getRole",
         main_logout:"main_logout",
         main_getUser:"main_getUser",
         main_tocaseIndex:"main_tocaseIndex",
         main_getPermissionsByMenu:"main_getPermissionsByMenu",
+
+        home_getHome:"home_getHome",
+
         login_login:"login_login",
         login_main:"login_main",
 

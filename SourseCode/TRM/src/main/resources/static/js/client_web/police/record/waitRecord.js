@@ -377,6 +377,11 @@ function callbackgetRecordById(data) {
                         </td>\
                         </tr>';
                         $("#recorddetail").append(problemhtml);
+
+                        $("#recorddetail p").focus(function(){
+                            td_lastindex["key"]=$(this).closest("tr").index();
+                            td_lastindex["value"]=$(this).attr("name");
+                        });
                     }
                 }
 
@@ -614,28 +619,28 @@ function overRecord() {
 
 
 //导出word
-function exportWord(){
+function exportWord(obj){
     var url=getActionURL(getactionid_manage().waitRecord_exportWord);
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            recordssid: recordssid
+            recordssid: recordssid,
         }
     };
-    ajaxSubmitByJson(url, data, callbackexportWord);
-}
-function callbackexportWord(data){
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var host = "http://localhost";
-            window.location.href = host + data;
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var host = "http://localhost";
+                window.location.href = host + data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
         }
-    }else{
-        layer.msg(data.message);
-    }
+        btn(obj);
+    });
 }
-
 
 //修改提讯数据（注入会议ssid）
 /*

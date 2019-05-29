@@ -50,7 +50,7 @@ public class Police_record extends Model<Police_record> {
     private Long recordstarttime;
 
     /**
-     * 笔录状态：1进行中2未开始
+     * 笔录状态：1进行中2已完成
      */
     private Integer recordbool;
 
