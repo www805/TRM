@@ -31,6 +31,16 @@ public class GetHomeVO {
 
     private List<Integer> record_monthnum_y;//12月笔录
 
+    private String dq_y;//当前年份
+
+    public String getDq_y() {
+        return dq_y;
+    }
+
+    public void setDq_y(String dq_y) {
+        this.dq_y = dq_y;
+    }
+
     public Integer getRecord_num() {
         return record_num;
     }

@@ -408,6 +408,7 @@ public class MainService extends BaseService {
         getHomeVO.setRecord_monthnum_y(record_monthnum_y);//
         getHomeVO.setCase_monthnum_y(case_monthnum_y);//
 
+        getHomeVO.setDq_y(years);
         result.setData(getHomeVO);
         changeResultToSuccess(result);
         return;

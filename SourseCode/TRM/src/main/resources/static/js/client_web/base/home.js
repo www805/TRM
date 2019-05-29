@@ -30,6 +30,9 @@ function callbackgetHome(data) {
             myChart.hideLoading();
             myChart2.hideLoading();
             myChart.setOption({
+                title: {
+                    text: data.dq_y+'年智能提讯系统案件笔录统计',
+                },
                 series: [{
                     name: '笔录数',
                     data: data.record_monthnum_y
@@ -68,7 +71,7 @@ $(function () {
     myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {
-            text: '2019智能提讯系统案件笔录统计',
+            text: 'xxxx年智能提讯系统案件笔录统计',
             subtext: '数据来源深圳顺泰伟成科技有限公司'
         },
         tooltip: {
