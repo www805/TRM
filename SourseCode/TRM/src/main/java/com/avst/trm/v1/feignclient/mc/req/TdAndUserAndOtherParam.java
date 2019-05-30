@@ -1,4 +1,4 @@
-package com.avst.trm.v1.feignclient.req;
+package com.avst.trm.v1.feignclient.mc.req;
 
 /**
  * 用户通道关联其他的参数的集合，用于开启会议时用的

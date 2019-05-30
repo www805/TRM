@@ -4,9 +4,13 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.req.*;
-import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.feignclient.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
+import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.mc.req.GetMCParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
+import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
+import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.itextpdf.text.Document;
@@ -29,6 +33,13 @@ public class OutAction extends BaseAction {
     @Autowired
     private OutService outService;
 
+//-----------------------------------------------mc start 分割线----------------------------------------
+
+    /**
+     * 开始会议
+     * @param param
+     * @return
+     */
     @RequestMapping("/startRercord")
     public RResult startRercord(@RequestBody ReqParam<StartRercordParam> param) {
         RResult result = this.createNewResultOfFail();
@@ -41,7 +52,11 @@ public class OutAction extends BaseAction {
         return result;
     }
 
-
+    /**
+     * 结束会议
+     * @param param
+     * @return
+     */
     @RequestMapping("/overRercord")
     public RResult overRercord(@RequestBody ReqParam<OverMCParam_out> param) {
         RResult result = this.createNewResultOfFail();
@@ -54,7 +69,12 @@ public class OutAction extends BaseAction {
         return result;
     }
 
-
+    /**
+     * 会议语音识别返回
+     * @param param
+     * @param session
+     * @return
+     */
     @RequestMapping("/outtRercordAsrTxtBack")
     public boolean setRercordAsrTxtBack(@RequestBody ReqParam<SetMCAsrTxtBackVO> param, HttpSession session) {
         if (null == param) {
@@ -67,7 +87,7 @@ public class OutAction extends BaseAction {
 
 
     /**
-     * 会议实时回放，
+     * 会议实时回放sql，
      * @param param
      * @return
      */
@@ -118,12 +138,61 @@ public class OutAction extends BaseAction {
         return result;
     }
 
+    //-----------------------------------------------mc end 分割线----------------------------------------
 
+
+
+    //-----------------------------------------------ec start 分割线--------------------------------------
+
+    /**
+     * 检测播放状态 ：暂不使用
+     * @param
+     * @return
+     */
+    @RequestMapping("/checkPlayFileState")
+    public RResult checkPlayFileState(@RequestBody CheckRecordFileStateParam param) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+             outService.checkPlayFileState(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取播放地址
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getPlayUrl")
+    public RResult getPlayUrl(@RequestBody GetURLToPlayParam param) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getPlayUrl(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+    //-----------------------------------------------ec end 分割线----------------------------------------
+
+
+
+
+    /*
+    * 暂时废弃*/
     public static void main(String[] args) throws IOException, TemplateException {
         // 模板路径
-        String templatePath = "C:/Users/Administrator/Desktop/ceshi_word.pdf";
+        String templatePath = "C:/Users/Administrator/Desktop/AskToTemplate.pdf";
         // 生成的新文件路径
-        String newPDFPath = "C:/Users/Administrator/Desktop/ceshiword.pdf";
+        String newPDFPath = "C:/Users/Administrator/Desktop/AskToTemplate1.pdf";
         PdfReader reader;
         FileOutputStream out;
         ByteArrayOutputStream bos;
@@ -135,8 +204,13 @@ public class OutAction extends BaseAction {
             stamper = new PdfStamper(reader, bos);
             AcroFields form = stamper.getAcroFields();
 
+            BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+            form.addSubstitutionFont(bfChinese);
+
             Map<String,String> dataMap = new HashMap();
+            dataMap.put("recordtypename","询问笔录");
             dataMap.put("recordstarttime", "2019年05月22日");
+            dataMap.put("recordendtime", "2019年05月23日");
             dataMap.put("recordplace", "深圳石岩");
             dataMap.put("workname1", "公安部");
             dataMap.put("workname2", "研发部");
@@ -150,18 +224,15 @@ public class OutAction extends BaseAction {
             dataMap.put("residence", "深圳");
             dataMap.put("phone", "19735880381");
             dataMap.put("domicile", "台湾");
+            dataMap.put("both","2019年05月22日");
+            dataMap.put("questionandanswer","问:saffffffff\n答:fffffffffffffffffff问:saffffffda房顶上放空间将建军节建军节建军节建军节建军节建军节建军节建军节ffffffffffffff\n答:fffffffffffffffffff");
 
-            Map<String,Object> o=new HashMap();
-            o.put("datemap",dataMap);
-
-            //文字类的内容处理
-            Map<String,String> datemap = (Map<String,String>)o.get("datemap");
-            for(String key : datemap.keySet()){
-                String value = datemap.get(key);
+            for(String key : dataMap.keySet()){
+                String value = dataMap.get(key);
                 form.setField(key,value);
             }
 
-            stamper.setFormFlattening(true);// 如果为false那么生成的PDF文件还能编辑，一定要设为true
+            stamper.setFormFlattening(true);
             stamper.close();
 
             Document doc = new Document();

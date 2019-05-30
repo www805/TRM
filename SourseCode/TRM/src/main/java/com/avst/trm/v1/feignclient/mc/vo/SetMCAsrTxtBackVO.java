@@ -1,4 +1,4 @@
-package com.avst.trm.v1.feignclient.vo;
+package com.avst.trm.v1.feignclient.mc.vo;
 
 
 public class SetMCAsrTxtBackVO extends AsrTxtParam_toout {

@@ -1,4 +1,4 @@
-package com.avst.trm.v1.feignclient.req;
+package com.avst.trm.v1.feignclient.mc.req;
 
 public class GetMCAsrTxtBackParam_out extends BaseReqParam {
 

@@ -1,8 +1,8 @@
-package com.avst.trm.v1.feignclient;
+package com.avst.trm.v1.feignclient.mc;
 
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.req.*;
+import com.avst.trm.v1.feignclient.mc.req.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

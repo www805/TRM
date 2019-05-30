@@ -1,4 +1,4 @@
-package com.avst.trm.v1.feignclient.req;
+package com.avst.trm.v1.feignclient.mc.req;
 
 /**
  * 一般放的都是权限验证的东西

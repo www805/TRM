@@ -354,12 +354,12 @@ public class MainService extends BaseService {
         EntityWrapper recordparam1=new EntityWrapper();
         recordparam1.where(" date_format(createtime,'%Y')={0}",years);
         recordparam1.eq("recordbool",1);//进行中
-        Integer record_finishnum_y = police_recordMapper.selectCount(recordparam1);
+        Integer record_unfinishnum_y= police_recordMapper.selectCount(recordparam1);
 
         EntityWrapper recordparam2=new EntityWrapper();
         recordparam2.eq("recordbool",2);//已完成的
         recordparam2.where(" date_format(createtime,'%Y')={0}",years);
-        Integer record_unfinishnum_y=police_recordMapper.selectCount(recordparam2);
+        Integer record_finishnum_y =police_recordMapper.selectCount(recordparam2);
 
         Integer case_startnum_y=police_caseMapper.getCase_startnum(years);//案件开始提讯数量
         Integer case_endnum_y=police_caseMapper.Getcase_endnum(years);//案件未开始提讯数量

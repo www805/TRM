@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.ASRType;
 import com.avst.trm.v1.common.conf.FDType;
 import com.avst.trm.v1.common.conf.MCType;
+import com.avst.trm.v1.common.conf.SSType;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
@@ -13,11 +14,19 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.MeetingControl;
-import com.avst.trm.v1.feignclient.req.*;
-import com.avst.trm.v1.feignclient.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.feignclient.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
+import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
+import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
+import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
+import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
+import com.avst.trm.v1.feignclient.mc.MeetingControl;
+import com.avst.trm.v1.feignclient.mc.req.*;
+import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -44,6 +53,9 @@ public class OutService  extends BaseService {
     @Autowired
     private Police_arraignmentMapper police_arraignmentMapper;
 
+    @Autowired
+    private EquipmentControl equipmentControl;
+
 
 
 
@@ -54,7 +66,6 @@ public class OutService  extends BaseService {
 
 
     public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
-       // StartMCParam_out startMCParam_out=gson.fromJson(gson.toJson(param.getParam()), StartMCParam_out.class);
         StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
         if (null == startRercordParam) {
             System.out.println("参数为空__");
@@ -134,7 +145,6 @@ public class OutService  extends BaseService {
 
     public boolean setRercordAsrTxtBack(ReqParam<SetMCAsrTxtBackVO> param, HttpSession session){
         //请求参数转换
-      //  AsrTxtParam_toout asrTxtParam_toout = param.getParam();
         SetMCAsrTxtBackVO setMCAsrTxtBackVO=param.getParam();
         if (null==setMCAsrTxtBackVO){
             System.out.println("参数为空");
@@ -178,27 +188,30 @@ public class OutService  extends BaseService {
             return  result;
         }
         getMCParam_out.setMcType(MCType.AVST);
-        List<AsrTxtParam_toout> asrTxtParam_toouts=new ArrayList<AsrTxtParam_toout>();
+        GetMCVO getMCVO=new GetMCVO();
         try {
             result = meetingControl.getMC(param);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                asrTxtParam_toouts=gson.fromJson(gson.toJson(result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
-                if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
-                    for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
-                        //时间转换
-                        String asrtime = asrTxtParam_toout.getAsrtime();
-                        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date date = new Date(Long.valueOf(asrtime));
-                        asrtime = df.format(date);
-                        if (StringUtils.isNotBlank(asrtime)){
-                            asrTxtParam_toout.setAsrtime(asrtime);
+                 getMCVO=gson.fromJson(gson.toJson(result.getData()),GetMCVO.class);
+                if (null!=getMCVO){
+                    List<AsrTxtParam_toout>  asrTxtParam_toouts=getMCVO.getList();
+                    if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                        for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
+                            //时间转换
+                            String asrtime = asrTxtParam_toout.getAsrtime();
+                            SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = new Date(Long.valueOf(asrtime));
+                            asrtime = df.format(date);
+                            if (StringUtils.isNotBlank(asrtime)){
+                                asrTxtParam_toout.setAsrtime(asrtime);
+                            }
                         }
+                        result.setData(getMCVO);
                     }
-                    result.setData(asrTxtParam_toouts);
                 }
                 changeResultToSuccess(result);
             }else{
-
+                System.out.println("请求getMC__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -235,7 +248,7 @@ public class OutService  extends BaseService {
                 }
                 changeResultToSuccess(result);
             }else{
-
+                System.out.println("请求getMCaLLUserAsrTxtList__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -260,7 +273,7 @@ public class OutService  extends BaseService {
                 result.setData(mtstate);
                 changeResultToSuccess(result);
             }else{
-
+                System.out.println("请求getMCState__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -269,6 +282,82 @@ public class OutService  extends BaseService {
     }
 
 
+
+    //-------------------------------------------------------------------------------------------------------------------
+
+
+    public void checkPlayFileState(RResult result, CheckRecordFileStateParam param){
+        param.setSsType(SSType.AVST);
+
+        return;
+    }
+
+
+    public void getPlayUrl(RResult result,GetURLToPlayParam  param){
+
+        //先判断数据存储状态2
+        String iid=param.getIid();
+
+        if (StringUtils.isBlank(iid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        RResult rr=new RResult();
+        CheckRecordFileStateParam checkRecordFileStateParam=new CheckRecordFileStateParam();
+        checkRecordFileStateParam.setSsType(SSType.AVST);
+        checkRecordFileStateParam.setIid(iid);
+        rr= equipmentControl.checkRecordFileState(checkRecordFileStateParam);
+
+        CheckRecordFileStateVO checkRecordFileStateVO=new CheckRecordFileStateVO();
+        Integer state=null;
+        if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            System.out.println(result.getData());
+            checkRecordFileStateVO=gson.fromJson(gson.toJson(result.getData()),CheckRecordFileStateVO.class );
+            List<RecordFileParam> recordFileParams=checkRecordFileStateVO.getRecordList();
+            if (null!=recordFileParams&&recordFileParams.size()>0){
+                for (RecordFileParam recordFileParam : recordFileParams) {
+                    state=recordFileParam.getState();
+                }
+            }
+           if (null!=state&&state==2){
+               System.out.println("数据存储正常开始获取地址__"+state);
+
+               RResult rr2=new RResult();
+               GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
+               getURLToPlayParam.setSsType(SSType.AVST);
+               getURLToPlayParam.setIid(iid);
+               rr2=equipmentControl.getURLToPlay(getURLToPlayParam);
+
+               GetURLToPlayVO getURLToPlayVO=new GetURLToPlayVO();
+               if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
+                   System.out.println(rr2);
+                   getURLToPlayVO=gson.fromJson(gson.toJson(result.getData()),GetURLToPlayVO.class);
+                   List<RecordPlayParam> recordPlayParams =getURLToPlayVO.getRecordList();
+                   if (null!=recordPlayParams&&recordPlayParams.size()>0){
+                       for (RecordPlayParam recordPlayParam : recordPlayParams) {
+                           System.out.println("直播地址__"+recordPlayParam.getPlayUrl());
+                       }
+                   }
+
+               }else{
+                   System.out.println("请求getURLToPlay__出错");
+               }
+               result.setData(checkRecordFileStateVO);
+               changeResultToSuccess(result);
+           }else{
+               System.out.println("数据存储状态异常__"+state);
+               result.setMessage("获取直播中...请等待");
+               return;
+           }
+
+        }else{
+            System.out.println("请求checkRecordFileState__出错");
+        }
+
+       /* */
+        return;
+    }
 
 
 }

@@ -1,9 +1,11 @@
-package com.avst.trm.v1.feignclient.req;
+package com.avst.trm.v1.feignclient.mc.req;
 
-public class GetMCaLLUserAsrTxtListParam_out {
-    private  String mtssid;//会议ssid
+public class OverMCParam_out extends BaseReqParam{
+    
 
-    private String mcType;//会议采用版本，现阶段只有AVST
+    private String mtssid;
+
+    private String mcType;
 
     public String getMcType() {
         return mcType;

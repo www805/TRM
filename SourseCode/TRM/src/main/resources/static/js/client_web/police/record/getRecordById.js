@@ -1,5 +1,6 @@
 var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
+var iid=null;
 
 
 
@@ -227,8 +228,14 @@ function callbackgetRecord(data) {
         });
         if (isNotEmpty(datas)) {
             layer.close(loadindex);
-            for (var i = 0; i < datas.length; i++) {
-                var data=datas[i];
+            var list=datas.list;
+
+             iid=datas.iid;
+            getPlayUrl();//直播地址获取
+             console.log("iid______"+iid);
+
+            for (var i = 0; i < list.length; i++) {
+                var data=list[i];
                 if (isNotEmpty(recorduser)){
                     for (var j = 0; j < recorduser.length; j++) {
                         var user = recorduser[j];
@@ -302,4 +309,27 @@ function exportWord(obj){
         }
         btn(obj);
     });
+}
+
+
+
+function getPlayUrl() {
+    if (isNotEmpty(iid)) {
+        var url="/v1/police/out/getPlayUrl";
+        var data={
+            iid: iid
+        };
+        ajaxSubmitByJson(url, data, callbackgetPlayUrl);
+    }
+}
+
+function callbackgetPlayUrl(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+    var data=data.data;
+        if (isNotEmpty(data)){
+            console.log(data)
+        }
+    }else{
+        layer.msg(data.message);
+    }
 }

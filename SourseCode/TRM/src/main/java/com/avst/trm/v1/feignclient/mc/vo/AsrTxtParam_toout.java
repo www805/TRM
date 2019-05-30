@@ -1,4 +1,4 @@
-package com.avst.trm.v1.feignclient.vo;
+package com.avst.trm.v1.feignclient.mc.vo;
 
 /**
  * 服务返回文本的集合
