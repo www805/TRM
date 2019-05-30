@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
+import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -350,7 +351,7 @@ public class OutService  extends BaseService {
            if (null!=state&&state==2){
                System.out.println("数据存储正常开始获取地址__"+state);
 
-               RResult rr2=new RResult();
+               RResult<GetURLToPlayVO> rr2=new RResult<GetURLToPlayVO>();
                GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
                getURLToPlayParam.setSsType(SSType.AVST);
                getURLToPlayParam.setIid(iid);
@@ -358,12 +359,13 @@ public class OutService  extends BaseService {
 
                GetURLToPlayVO getURLToPlayVO=new GetURLToPlayVO();
                if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
-                   System.out.println(rr2);
-                   getURLToPlayVO=gson.fromJson(gson.toJson(result.getData()),GetURLToPlayVO.class);
-                   List<RecordPlayParam> recordPlayParams =getURLToPlayVO.getRecordList();
-                   if (null!=recordPlayParams&&recordPlayParams.size()>0){
-                       for (RecordPlayParam recordPlayParam : recordPlayParams) {
-                           System.out.println("直播地址__"+recordPlayParam.getPlayUrl());
+                   getURLToPlayVO=rr2.getData();
+                   if(null!=getURLToPlayVO&&null!=getURLToPlayVO.getRecordList()){
+                       List<RecordPlayParam> recordPlayParams =getURLToPlayVO.getRecordList();
+                       if (null!=recordPlayParams&&recordPlayParams.size()>0){
+                           for (RecordPlayParam recordPlayParam : recordPlayParams) {
+                               System.out.println("直播地址__"+recordPlayParam.getPlayUrl());
+                           }
                        }
                    }
 

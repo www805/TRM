@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ public interface EquipmentControl {
 
     @RequestMapping("/ss/v1/getURLToPlay")
     @ResponseBody
-    public RResult getURLToPlay(@RequestBody GetURLToPlayParam param);
+    public RResult<GetURLToPlayVO> getURLToPlay(@RequestBody GetURLToPlayParam param);
 
     @RequestMapping("/flushbonading/v1/getFDListByFdid")
     @ResponseBody

@@ -34,14 +34,15 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
         }
-        session.setAttribute(Constant.INIT_CLIENTKEY,CommonCache.getClientKey());
-
+        String clientkey=CommonCache.getClientKey();
+        if(null!=clientkey){
+            session.setAttribute(Constant.INIT_CLIENTKEY,clientkey);
+        }
 
         String url=request.getRequestURI();
         if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
             return true;
         }
-
 
         if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
