@@ -16,9 +16,11 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
+import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
+import com.avst.trm.v1.feignclient.ec.vo.param.FDCacheParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
@@ -27,10 +29,12 @@ import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -220,6 +224,7 @@ public class OutService  extends BaseService {
     }
 
     public RResult getRecordrealing(RResult result, ReqParam<GetMCaLLUserAsrTxtListParam_out> param){
+        GetRecordrealingVO getRecordrealingVO=new GetRecordrealingVO();
         //请求参数转换
         GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out = param.getParam();
         if (null==getMCaLLUserAsrTxtListParam_out){
@@ -227,12 +232,15 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return  result;
         }
+
+        //获取会议直播实时数据
         getMCaLLUserAsrTxtListParam_out.setMcType(MCType.AVST);
         List<AsrTxtParam_toout> asrTxtParam_toouts=new ArrayList<AsrTxtParam_toout>();
         try {
-            result = meetingControl.getMCaLLUserAsrTxtList(param);
-            if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                asrTxtParam_toouts=gson.fromJson(gson.toJson(result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
+            RResult rr=new RResult<>();
+            rr = meetingControl.getMCaLLUserAsrTxtList(param);
+            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                asrTxtParam_toouts=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
                 if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
                     for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
                         //时间转换
@@ -244,15 +252,35 @@ public class OutService  extends BaseService {
                             asrTxtParam_toout.setAsrtime(asrtime);
                         }
                     }
-                    result.setData(asrTxtParam_toouts);
+                    getRecordrealingVO.setList(asrTxtParam_toouts);
                 }
-                changeResultToSuccess(result);
             }else{
                 System.out.println("请求getMCaLLUserAsrTxtList__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //获取会议直播地址
+        List<FDCacheParam> fdCacheParams=new ArrayList<>();
+        try {
+            RResult rr2=new RResult<>();
+            GetFDListByFdidParam getFDListByFdidParam=new GetFDListByFdidParam();
+            getFDListByFdidParam.setFdType(FDType.FD_AVST);
+            getFDListByFdidParam.setFdid(getMCaLLUserAsrTxtListParam_out.getMtssid());
+            rr2 = equipmentControl.getFDListByFdid(getFDListByFdidParam);
+            if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
+                fdCacheParams=gson.fromJson(gson.toJson(rr2.getData()), new TypeToken<List<FDCacheParam>>(){}.getType());
+                getRecordrealingVO.setFdCacheParams(fdCacheParams);
+            }else{
+                System.out.println("请求getMCaLLUserAsrTxtList__出错");
+            }
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+        }
+
+        result.setData(getRecordrealingVO);
+        changeResultToSuccess(result);
         return  result;
     }
 
@@ -312,8 +340,7 @@ public class OutService  extends BaseService {
         CheckRecordFileStateVO checkRecordFileStateVO=new CheckRecordFileStateVO();
         Integer state=null;
         if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-            System.out.println(result.getData());
-            checkRecordFileStateVO=gson.fromJson(gson.toJson(result.getData()),CheckRecordFileStateVO.class );
+            checkRecordFileStateVO=gson.fromJson(gson.toJson(rr.getData()),CheckRecordFileStateVO.class );
             List<RecordFileParam> recordFileParams=checkRecordFileStateVO.getRecordList();
             if (null!=recordFileParams&&recordFileParams.size()>0){
                 for (RecordFileParam recordFileParam : recordFileParams) {

@@ -692,10 +692,21 @@ function callbackgetgetRecordrealing(data) {
             icon: 16,
             time:1000
         });
-        if (isNotEmpty(datas)) {
+
+        var list= datas.list;
+        var fdCacheParams= datas.fdCacheParams;
+        if (isNotEmpty(fdCacheParams)){
+            for (var i = 0; i < fdCacheParams.length; i++) {
+                var fdCacheParam = fdCacheParams[i];
+                liveurl=fdCacheParam.livingUrl;
+            }
+        }
+
+
+        if (isNotEmpty(list)) {
             layer.close(loadindex);
-            for (var i = 0; i < datas.length; i++) {
-                var data=datas[i];
+            for (var i = 0; i < list.length; i++) {
+                var data=list[i];
                 if (isNotEmpty(recorduser)){
                     for (var j = 0; j < recorduser.length; j++) {
                         var user = recorduser[j];
