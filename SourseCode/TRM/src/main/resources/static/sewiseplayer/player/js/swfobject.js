@@ -247,7 +247,7 @@ var swfobject = function() {
 							att.height = obj.getAttribute("height") || "0";
 							if (obj.getAttribute("class")) { att.styleclass = obj.getAttribute("class"); }
 							if (obj.getAttribute("align")) { att.align = obj.getAttribute("align"); }
-							// parse HTML object param element's name-value pairs
+							// parse HTML object cmparam element's name-value pairs
 							var par = {};
 							var p = obj.getElementsByTagName("param");
 							var pl = p.length;
@@ -258,7 +258,7 @@ var swfobject = function() {
 							}
 							showExpressInstall(att, par, id, cb);
 						}
-						else { // Flash Player and SWF version mismatch or an older Webkit engine that ignores the HTML object element's nested param elements: display alternative content instead of SWF
+						else { // Flash Player and SWF version mismatch or an older Webkit engine that ignores the HTML object element's nested cmparam elements: display alternative content instead of SWF
 							displayAltContent(obj);
 							if (cb) { cb(cbObj); }
 						}
@@ -429,7 +429,7 @@ var swfobject = function() {
 				var par = "";
 				for (var j in parObj) {
 					if (parObj[j] != Object.prototype[j]) { // filter out prototype additions from other potential libraries
-						par += '<param name="' + j + '" value="' + parObj[j] + '" />';
+						par += '<cmparam name="' + j + '" value="' + parObj[j] + '" />';
 					}
 				}
 				el.outerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"' + att + '>' + par + '</object>';
@@ -450,7 +450,7 @@ var swfobject = function() {
 					}
 				}
 				for (var n in parObj) {
-					if (parObj[n] != Object.prototype[n] && n.toLowerCase() != "movie") { // filter out prototype additions from other potential libraries and IE specific param element
+					if (parObj[n] != Object.prototype[n] && n.toLowerCase() != "movie") { // filter out prototype additions from other potential libraries and IE specific cmparam element
 						createObjParam(o, n, parObj[n]);
 					}
 				}

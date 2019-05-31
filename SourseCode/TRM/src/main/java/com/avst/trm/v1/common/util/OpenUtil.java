@@ -71,7 +71,7 @@ public class OpenUtil {
 		}
 	 /** 
 	     * 验证输入的邮箱格式是否符合 
-	     * @param email 
+	     * @cmparam email
 	     * @return 是否合法 
 	     */ 
 	public static boolean checkEmail(String email) {

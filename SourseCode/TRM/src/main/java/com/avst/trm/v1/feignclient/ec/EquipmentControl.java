@@ -2,10 +2,15 @@ package com.avst.trm.v1.feignclient.ec;
 
 
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
+import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +32,34 @@ public interface EquipmentControl {
     @RequestMapping("/flushbonading/v1/getFDListByFdid")
     @ResponseBody
     public RResult getFDListByFdid(@RequestBody GetFDListByFdidParam param);
+
+
+//ph测谎仪
+    /**
+     * 检测测谎仪状态
+     * @param param
+     * @return
+     */
+    @RequestMapping("/ph/v1/checkPolygraphState")
+    @ResponseBody
+    public RResult checkPolygraphState(@RequestBody ReqParam<CheckPolygraphStateParam> param);
+
+    /**
+     * //获取测谎心里分析数据
+     * @param param
+     * @return
+     */
+    @RequestMapping("/ph/v1/getPolygraphAnalysis")
+    @ResponseBody
+    public RResult<GetPolygraphAnalysisVO> getPolygraphAnalysis(@RequestBody  ReqParam<GetPolygraphAnalysisParam> param);
+
+    /**
+     * //获取测谎仪心理分析的实时图像
+     * @param param
+     * @return
+     */
+    @RequestMapping("/ph/v1/getPolygraphRealTimeImage")
+    @ResponseBody
+    public RResult getPolygraphRealTimeImage(@RequestBody  ReqParam<GetPolygraphRealTimeImageParam> param);
 
 }

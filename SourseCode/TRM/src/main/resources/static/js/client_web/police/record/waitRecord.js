@@ -649,7 +649,7 @@ function updateArraignment() {
         var url=getActionURL(getactionid_manage().waitRecord_updateArraignment);
         var data={
             token:INIT_CLIENTKEY,
-            param:{
+            cmparam:{
                 recordssid: recordssid,
                 mtssid:mtssid
             }

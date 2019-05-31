@@ -175,64 +175,64 @@ public class AddDataToSynchronizeDataConf {
 //        switch (tablename){
 //            case SynDataTableConstant.tablepolice_answer:
 //
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_arraignment:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_case:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_casetoarraignment:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_problem:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_problemtotype:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_problemtype:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_record:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_workunit:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_StartSynchronizedata_2_Paramto:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_StartSynchronizedata_2_Paraminfo:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_templatetype:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_templatetotype:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_templatetoproblem:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_template:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_recordtype:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_recordtemplatetoproblem:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_recordtemplate:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablepolice_recordreal:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //            case SynDataTableConstant.tablebase_filesave:
-//                param.setT(null);
+//                cmparam.setT(null);
 //                break;
 //
 //            default:;

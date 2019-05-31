@@ -71,9 +71,9 @@ function getKeywordList(){
 
 /**
  * 带参数的
- * @param text
- * @param currPage
- * @param pageSize
+ * @cmparam text
+ * @cmparam currPage
+ * @cmparam pageSize
  */
 function getKeyWordPage(text,currPage,pageSize){
 

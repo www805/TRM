@@ -74,18 +74,18 @@ public class Arraignment_countService extends BaseService {
 //            EntityWrapper ew=new EntityWrapper();
 ////            ew.setEntity(new Admininfo());
 ////            ew.between("id",2,5);
-//            if(null!=param){
-//                if(StringUtils.isNotEmpty(param.getText())){
-//                    ew.like("text",param.getText());
+//            if(null!=cmparam){
+//                if(StringUtils.isNotEmpty(cmparam.getText())){
+//                    ew.like("text",cmparam.getText());
 //                }
 //            }
 //
 //            int count=keywordMapper.selectCount(ew);
-//            param.setRecordCount(count);
-//            getlist3VO.setPageparam(param);
+//            cmparam.setRecordCount(count);
+//            getlist3VO.setPageparam(cmparam);
 //
 ////current 第多少页，size 每页多少条
-//            Page<Base_role> page=new Page<Base_role>(param.getCurrPage(),param.getPageSize());
+//            Page<Base_role> page=new Page<Base_role>(cmparam.getCurrPage(),cmparam.getPageSize());
 //            page.setTotal(count);
 //
 //

@@ -1,11 +1,16 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
 import com.avst.trm.v1.feignclient.mc.req.GetMCParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
@@ -33,7 +38,48 @@ public class OutAction extends BaseAction {
     @Autowired
     private OutService outService;
 
+    @Autowired
+    private EquipmentControl equipmentControl;
+
 //-----------------------------------------------mc start 分割线----------------------------------------
+
+    /**
+     * 开始会议
+     * @return
+     */
+    @RequestMapping("/ceshi")
+    public RResult ceshi(int type) {
+        RResult result = this.createNewResultOfFail();
+
+        if(type==1){
+            ReqParam<CheckPolygraphStateParam> param=new ReqParam<CheckPolygraphStateParam>();
+            CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
+            checkPolygraphStateParam.setPhType("PH_CMCROSS");
+            checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
+            param.setParam(checkPolygraphStateParam);
+            System.out.println(JacksonUtil.objebtToString(equipmentControl.checkPolygraphState(param)));
+        }else if(type==2){
+            ReqParam<GetPolygraphAnalysisParam> param=new ReqParam<GetPolygraphAnalysisParam>();
+            GetPolygraphAnalysisParam checkPolygraphStateParam=new GetPolygraphAnalysisParam();
+            checkPolygraphStateParam.setPhType("PH_CMCROSS");
+            checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
+            param.setParam(checkPolygraphStateParam);
+            System.out.println(JacksonUtil.objebtToString(equipmentControl.getPolygraphAnalysis(param)));
+
+        }else if (type==3){
+            ReqParam<GetPolygraphRealTimeImageParam> param=new ReqParam<GetPolygraphRealTimeImageParam>();
+            GetPolygraphRealTimeImageParam checkPolygraphStateParam=new GetPolygraphRealTimeImageParam();
+            checkPolygraphStateParam.setPhType("PH_CMCROSS");
+            checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
+            param.setParam(checkPolygraphStateParam);
+            System.out.println(JacksonUtil.objebtToString(equipmentControl.getPolygraphRealTimeImage(param)));
+
+        }
+
+
+        return result;
+    }
+
 
     /**
      * 开始会议

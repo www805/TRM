@@ -1,6 +1,6 @@
 /**
  * 获取案件信息
- * @param ssid
+ * @cmparam ssid
  */
 function getCaseBySsid(ssid) {
     if (!isNotEmpty(ssid)){

@@ -97,7 +97,7 @@ function toThousands(num) {
 }
 /**
  * 
- * @param obj
+ * @cmparam obj
  *            obj为一个html元素对象（只能是input的类型的对象） 验证只能为整数
  */
 function checkInputTonum(obj) {
@@ -109,7 +109,7 @@ function checkInputTonum(obj) {
 
 /**
  * 
- * @param obj
+ * @cmparam obj
  *            obj为一个html元素对象（只能是input的类型的对象） 验证只能为数字或小数，
  */
 function checkInputTodecimal(obj) {
@@ -300,13 +300,13 @@ function ajaxSubmit(url, data, func) {
 /**
  * ajax请求
  * 
- * @param url
- * @param data
- * @param success_fun
+ * @cmparam url
+ * @cmparam data
+ * @cmparam success_fun
  *            请求成功回调
- * @param error_fun
+ * @cmparam error_fun
  *            请求失败的回调
- * @param haveloading
+ * @cmparam haveloading
  *            是否含有loading页面
  */
 function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
@@ -340,9 +340,9 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
 
 /**
  * json格式ajax提交 pp
- * @param url
- * @param data
- * @param success_fun
+ * @cmparam url
+ * @cmparam data
+ * @cmparam success_fun
  */
 function ajaxSubmitByJson(url, data, success_fun,error_fun) {
     $.ajax({
@@ -370,7 +370,7 @@ function ajaxErrDialog() {
 
 /**
  * 
- * @param str
+ * @cmparam str
  * @returns {Boolean}
  */
 function isNotEmpty(str) {
@@ -385,7 +385,7 @@ function isNotEmpty(str) {
 /**
  * 校验只要是数字（包含正负整数，0以及正负浮点数）就返回true
  * 
- * @param val
+ * @cmparam val
  * @returns {Boolean}
  */
 function isNumber(val) {
@@ -408,7 +408,7 @@ function checkRate(s){//是否为正整数
 /**
  * 格式化时间戳成YYYY-MM-DD hh:mm:ss
  * 
- * @param timestr
+ * @cmparam timestr
  * @returns {String}
  */
 function getFomatTimez(str) {
@@ -605,22 +605,22 @@ function addinput(value, classname, name, id, style, type, other) {
 }
 
 /**
- * @param 一般a标签的封装
- * @param data
+ * @cmparam 一般a标签的封装
+ * @cmparam data
  *            数据,
- * @param href
+ * @cmparam href
  *            链接地址,
- * @param classname
+ * @cmparam classname
  *            class的名字,
- * @param name
+ * @cmparam name
  *            name的名字,
- * @param id
+ * @cmparam id
  *            id的名字,
- * @param style
+ * @cmparam style
  *            样式
- * @param title
+ * @cmparam title
  *            title说明
- * @param other
+ * @cmparam other
  *            其他元素，一般都是框架带的,直接把全部复制过来，包括名称
  */
 function addanine(data, href, onclick, classname, name, id, style, title, other) {
@@ -659,9 +659,9 @@ function addanine(data, href, onclick, classname, name, id, style, title, other)
 }
 
 /**
- * @param 一般a标签的封装
+ * @cmparam 一般a标签的封装
  *            精简
- * @param data
+ * @cmparam data
  *            数据,
  * 
  */
@@ -681,9 +681,9 @@ function addatwo(data, href) {
 }
 
 /**
- * @param 一般a标签的封装
+ * @cmparam 一般a标签的封装
  *            精简
- * @param data
+ * @cmparam data
  *            数据,
  * 
  */
@@ -706,9 +706,9 @@ function addathree(data, href, onclick) {
 }
 
 /**
- * @param 一般a标签的封装
+ * @cmparam 一般a标签的封装
  *            精简
- * @param onclick
+ * @cmparam onclick
  * 
  */
 function adda4(data, onclick) {
@@ -728,22 +728,22 @@ function adda4(data, onclick) {
 }
 
 /**
- * @param 一般button标签的封装
- * @param data
+ * @cmparam 一般button标签的封装
+ * @cmparam data
  *            数据,
- * @param onclick
+ * @cmparam onclick
  *            事件名带参数 getfun('123');
- * @param classname
+ * @cmparam classname
  *            class的名字,
- * @param name
+ * @cmparam name
  *            name的名字,
- * @param id
+ * @cmparam id
  *            id的名字,
- * @param style
+ * @cmparam style
  *            样式
- * @param title
+ * @cmparam title
  *            title说明
- * @param other
+ * @cmparam other
  *            其他元素，一般都是框架带的,直接把全部复制过来，包括名称
  */
 function addbutton(data, onclick, classname, name, id, style, title, other) {
@@ -779,11 +779,11 @@ function addbutton(data, onclick, classname, name, id, style, title, other) {
 }
 
 /**
- * @param 一般button标签的封装
+ * @cmparam 一般button标签的封装
  *            精简
- * @param data
+ * @cmparam data
  *            数据,
- * @param onclick
+ * @cmparam onclick
  *            事件名带参数 getfun('123');
  */
 function addbutton_s(data, onclick) {
@@ -803,13 +803,13 @@ function addbutton_s(data, onclick) {
 /**
  * 提示框弹出层 封装(暂时不能用这个)
  * 
- * @param message
+ * @cmparam message
  *            弹框信息
- * @param sucfun
+ * @cmparam sucfun
  *            成功的处理方法
- * @param failfun
+ * @cmparam failfun
  *            失败的处理方法
- * @param otherparam
+ * @cmparam otherparam
  *            方法带的参数
  */
 function confirm_h(message) {
@@ -835,17 +835,17 @@ function confirm_h(message) {
 /**
  * 提示框弹出层 封装（完整版）(暂时不能用这个)
  * 
- * @param message
+ * @cmparam message
  *            弹框信息
- * @param otherparam
+ * @cmparam otherparam
  *            方法带的参数
- * @param truebtn
+ * @cmparam truebtn
  *            成功按钮的文字
- * @param falsebtn
+ * @cmparam falsebtn
  *            失败按钮的文字
- * @param skin
+ * @cmparam skin
  *            弹框的样式
- * @param shade
+ * @cmparam shade
  *            是否显示遮罩
  */
 function confirm_h(message, truebtn, falsebtn, skin, shade) {
@@ -886,13 +886,13 @@ function confirm_h(message, truebtn, falsebtn, skin, shade) {
 /**
  * 可编辑页面弹出层 封装
  * 
- * @param htmldata
+ * @cmparam htmldata
  *            弹出框的页面信息（html格式）
- * @param width
+ * @cmparam width
  *            弹出层的宽 一定是一个字符串
- * @param height
+ * @cmparam height
  *            弹出层的高 一定是一个字符串
- * @param skin
+ * @cmparam skin
  *            弹框的样式
  */
 function htmlopen(htmldata, width, height, skin) {
@@ -929,17 +929,17 @@ function htmlopen(htmldata, width, height, skin) {
 // -----------------------------
 // 分页
 /**
- * @param pageid
+ * @cmparam pageid
  *            分页存放的div
- * @param arrparam
+ * @cmparam arrparam
  *            请求获取数据的几个查询条件的Array集合，要按请求方法中顺序排，不然会出错
- * @param getdatafun
+ * @cmparam getdatafun
  *            请求获取数据的方法
- * @param currPage
+ * @cmparam currPage
  *            当前页
- * @param pageCount
+ * @cmparam pageCount
  *            总页数
- * @param pageSize
+ * @cmparam pageSize
  *            每页大小
  */
 function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
@@ -1058,10 +1058,10 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 /**
  * 下一个10页
  * 
- * @param getdatafun
- * @param arrparam
- * @param currPage
- * @param pageSize
+ * @cmparam getdatafun
+ * @cmparam arrparam
+ * @cmparam currPage
+ * @cmparam pageSize
  */
 function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
@@ -1134,10 +1134,10 @@ function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 /**
  * 上一个10页
  * 
- * @param getdatafun
- * @param arrparam
- * @param currPage
- * @param pageSize
+ * @cmparam getdatafun
+ * @cmparam arrparam
+ * @cmparam currPage
+ * @cmparam pageSize
  */
 function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
@@ -1244,8 +1244,8 @@ var pageActionByPage;
 
 /**
  * 给当前页面更新动作集合
- * @param InitVO
- * @param pageid
+ * @cmparam InitVO
+ * @cmparam pageid
  */
 function setpageAction(InitVO,pageid){
 
@@ -1265,7 +1265,7 @@ function setpageAction(InitVO,pageid){
 
 /**
  * 通过动作actionid获取需要使用的动作对象
- * @param actionid
+ * @cmparam actionid
  * @returns {*}
  */
 function getAction(actionid){
@@ -1287,7 +1287,7 @@ function getAction(actionid){
 
 /**
  * 通过动作actionid获取需要使用的动作的URL
- * @param actionid
+ * @cmparam actionid
  * @returns {*}
  */
 function getActionURL(actionid){
