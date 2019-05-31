@@ -30,6 +30,7 @@ import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -323,7 +324,7 @@ public class OutService  extends BaseService {
 
 
     public void getPlayUrl(RResult result,GetURLToPlayParam  param){
-
+        GetPlayUrlVO getPlayUrlVO =new GetPlayUrlVO();
         //先判断数据存储状态2
         String iid=param.getIid();
 
@@ -332,6 +333,9 @@ public class OutService  extends BaseService {
             return;
         }
 
+        getPlayUrlVO.setIid(iid);
+
+        //1.获取文件状态
         RResult rr=new RResult();
         CheckRecordFileStateParam checkRecordFileStateParam=new CheckRecordFileStateParam();
         checkRecordFileStateParam.setSsType(SSType.AVST);
@@ -348,9 +352,12 @@ public class OutService  extends BaseService {
                     state=recordFileParam.getState();
                 }
             }
+            System.out.println("数据存储状态__"+state);
+            getPlayUrlVO.setRecordFileParams(recordFileParams);
            if (null!=state&&state==2){
                System.out.println("数据存储正常开始获取地址__"+state);
 
+               //2.说去文件地址
                RResult<GetURLToPlayVO> rr2=new RResult<GetURLToPlayVO>();
                GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
                getURLToPlayParam.setSsType(SSType.AVST);
@@ -367,12 +374,12 @@ public class OutService  extends BaseService {
                                System.out.println("直播地址__"+recordPlayParam.getPlayUrl());
                            }
                        }
+                       getPlayUrlVO.setRecordPlayParams(recordPlayParams);
                    }
-
                }else{
                    System.out.println("请求getURLToPlay__出错");
                }
-               result.setData(checkRecordFileStateVO);
+               result.setData(getPlayUrlVO);
                changeResultToSuccess(result);
            }else{
                System.out.println("数据存储状态异常__"+state);

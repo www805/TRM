@@ -2,8 +2,9 @@ var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
 var iid=null;
 
+var recordnameshow="";
 
-
+/*弹出框数据*/
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
 
@@ -59,11 +60,8 @@ function showpagetohtml(){
 
 }
 
-/*弹出框数据*/
 
-
-
-
+//获取案件信息
 function getRecordById() {
     var url=getActionURL(getactionid_manage().getRecordById_getRecordById);
     var data={
@@ -77,14 +75,13 @@ function getRecordById() {
 function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
+        liveurl=null;
         if (isNotEmpty(data)){
             var record=data.record;
             var caseAndUserInfo=data.caseAndUserInfo;
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
-                if (isNotEmpty(record.recorddownurl)){
-                    wavesurfer.load(record.recorddownurl);
-                }
+
                     var problems=record.problems;
                     $("#recorddetail").html("");
                     if (isNotEmpty(problems)) {
@@ -128,7 +125,10 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(police_arraignment)){
                     mtssid=police_arraignment.mtssid;
                 }
+
+                recordnameshow=record.recordname;
                 getRecord();//实时数据获取
+
             }
 
             $("#caseAndUserInfo_html").html("");
@@ -151,38 +151,7 @@ function callbackgetRecordById(data) {
 }
 
 
-var wavesurfer;
 $(function () {
-    wavesurfer = WaveSurfer.create({
-        container: '#waveform',
-        scrollParent: true,
-        waveColor: "#368666",
-        progressColor: "#6d9e8b",
-        cursorColor: "#fff",
-        height: 160,
-        hideScrollbar: false
-    });
-
-    wavesurfer.on("ready",function () {
-        wavesurfer.play();
-        $("#recordtime").text(parseInt(wavesurfer.getDuration()));
-        $("#currenttime").text(wavesurfer.getCurrentTime());
-    });
-    wavesurfer.on("audioprocess",function () {
-        $("#currenttime").text(wavesurfer.getCurrentTime());
-    });
-
-
-    //播放按钮
-    $("#recordplay").click(function(){
-        wavesurfer.play();
-    });
-
-    //停止按钮
-    $("#recordpause").click(function(){
-        wavesurfer.pause();
-    });
-
 
     layui.use(['form', 'slider'], function(){
         var $ = layui.$
@@ -195,13 +164,12 @@ $(function () {
             ,max:'100'
             ,theme: '#1E9FFF' //主题色
             ,change: function(value){
-                wavesurfer.setVolume(value/100);//设置音频音量
+                SewisePlayer.setVolume(value/100);
             }
         });
     });
 
 });
-
 
 /**
  * 获取会议实时数据
@@ -220,6 +188,7 @@ function getRecord() {
     }
 }
 function callbackgetRecord(data) {
+    iid=null;
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
         var loadindex = layer.msg("加载中，请稍等...", {
@@ -231,8 +200,7 @@ function callbackgetRecord(data) {
             var list=datas.list;
 
              iid=datas.iid;
-            getPlayUrl();//直播地址获取
-             console.log("iid______"+iid);
+             getPlayUrl();//直播地址获取
 
             for (var i = 0; i < list.length; i++) {
                 var data=list[i];
@@ -258,9 +226,9 @@ function callbackgetRecord(data) {
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").remove();
                             }
-                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
                                                             <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
+                                                            <span>'+translatext+'</span> \
                                                       </div >';
 
                             $("#recordreals").append(recordrealshtml);
@@ -312,7 +280,7 @@ function exportWord(obj){
 }
 
 
-
+var isno=0;
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
         var url="/v1/police/out/getPlayUrl";
@@ -322,14 +290,44 @@ function getPlayUrl() {
         ajaxSubmitByJson(url, data, callbackgetPlayUrl);
     }
 }
-
 function callbackgetPlayUrl(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
     var data=data.data;
         if (isNotEmpty(data)){
             console.log(data)
+            var iiddata=data.iid;
+            var recordFileParams=data.recordFileParams;
+            var recordPlayParams=data.recordPlayParams;
+            var state;
+            if (isNotEmpty(recordFileParams)){
+                for (var i = 0; i < recordFileParams.length; i++) {
+                    var recordFile = recordFileParams[i];
+                    state=recordFile.state;
+                }
+                if (isNotEmpty(recordPlayParams)&&state==2){
+                    for (var i = 0; i < recordPlayParams.length; i++) {
+                        var recordPlay = recordPlayParams[i];
+                        liveurl=recordPlay.playUrl;
+                    }
+                }
+            }
+            if (isno==0){
+                initplayer();
+                isno=1;
+            }
+
         }
     }else{
         layer.msg(data.message);
+    }
+}
+
+
+function showrecord(times) {
+    console.log("times__"+times)
+    if (isNotEmpty(times)){
+        var locationtime=times;
+        locationtime=locationtime/1000<0?0:locationtime/1000;
+        SewisePlayer.doSeek(locationtime);
     }
 }

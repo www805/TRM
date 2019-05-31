@@ -401,32 +401,6 @@
         recordssid=[[${waitRecordModel.recordssid}]];
         getRecordById();
         getTime();
-        var msg = new window.SpeechSynthesisUtterance();
-        msg.rate = 4;// 播放语速
-        msg.pitch = 10; //音调高低
-        msg.text = '你好，世界！';
-        msg.lang = 'zh-CN'
-        msg.volume = 0.5; //播放音量
-        msg.onstart = function(event) {
-            console.log('11111111111111')
-        };
-        msg.onpause = function(event) {
-            console.log('22222222222222')
-        };
-        msg.onresume = function(event) {
-            console.log('333333333333333')
-        };
-        msg.onend = function(event) {
-            console.log('444444444444444')
-        };
-
-        window.speechSynthesis.speak(msg);
-
-        var synUtterance = new window.SpeechSynthesisUtterance();
-        synUtterance.text = "What's your name? My name's Sara.";
-        synUtterance.lang = "zh-cn";
-        synUtterance.pitch = 2; //音调高低0～2，默认1
-        window.speechSynthesis.speak(synUtterance);
 
 
     });
@@ -441,7 +415,6 @@
     var asrwh=$("#recordreals").width();
     var asrht=asrwh*3/4;
     var liveurl="rtmp://192.168.17.154:1935/live/hd";
-
 
 
 </script>
