@@ -147,8 +147,8 @@ function callTemplateById(data){
 
                     tableProblems += '<tr>\n' +
                         '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
-                        '                            <p contenteditable="true" name="1" value="' + Problem.ssid + '" class="table_td_tt table_td_tt2">问：' + Problem.problem + '</p>\n' +
-                        '                            <p contenteditable="true" name="2" value="' + Problem.ssid + '" class="table_td_tt table_td_tt2 font_blue_color" >答：' + Problem.referanswer + '</p>\n' +
+                        '                            <div name="1" class="table_td_tt2" value="' + Problem.ssid + '" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + Problem.problem + '</p></div>\n' +
+                        '                            <div name="2" class="table_td_tt2 font_blue_color" value="' + Problem.ssid + '" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + Problem.referanswer + '</p></div>\n' +
                         '                        </td>\n' +
                         '                        <td>\n' +
                         '                            <div class="layui-btn-group">\n' +
@@ -275,6 +275,9 @@ function templateInit() {
             }
         };
         ajaxSubmitByJson(url, data, callTemplateById);
+    }else{
+        $("#editState").html("新增模板中....");
+        addTr("","","");//新增一条空白的问答
     }
 }
 
@@ -410,16 +413,9 @@ function modelban(problemV) {
 
 function addTemplateProblem(obj, id) {
     var text = $(obj).parents('tr').find("td").eq(0).text();
+    text = text.replace('问：','');
 
-    var updown = '<div class="layui-btn-group">\n' +
-        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
-        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
-        '                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>' +
-        '</div>';
-
-    var textHtml = '<p contenteditable="true" class="table_td_tt table_td_tt2">' + text + '</p><p contenteditable="true" class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
-
-    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" name='" + all[id].id + "''>" + textHtml + "</td><td>" + updown + "</td></tr>");
+    addTr(text, all[id].referanswer, all[id].id);
     huoqu();
 }
 
@@ -429,7 +425,7 @@ function DeleteProblem(obj) {
 
 //拿到所有数据
 function getDataAll() {
-    addArrProblem();
+    // addArrProblem();
 
     var templatetoproblemids = [];
     var problem = {};
@@ -447,6 +443,8 @@ function getDataAll() {
     }
     if(!title){
         layer.msg("模板标题不能为空", {icon: 2});
+        // $("#templateTitle").css("border","1px solid red");
+        $("#templateTitle").focus();
         return;
     }
 
@@ -460,15 +458,22 @@ function getDataAll() {
         //上传更新模板
         // var title =$("input[name='title']").val();
 
+        if(arr[0] == ""){
+            layer.msg("新增的问题不能为空", {icon: 2});
+            return;
+        }
+
         problem = {
             id:parseInt($(this).attr("name")),
+            problem:arr[0],
+            referanswer:arr[1],
             ordernum:i
         }
 
         templatetoproblemids[i] = problem;
     })
 
-    // console.log(templatetoproblemids);
+    console.log(templatetoproblemids);
 
     // var url = "/cweb/police/template/addTemplate";
     var url = getActionURL(getactionid_manage().addOrupdateTemplate_addTemplate);
@@ -488,7 +493,7 @@ function getDataAll() {
         }
     };
 
-    // console.log(url);
+    console.log(url);
 
     ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
 }
@@ -517,6 +522,19 @@ function huoqu() {
     });
 }
 
+function addTr(text, referanswer, id) {
+    var updown = '<div class="layui-btn-group">\n' +
+        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="upp(this);"><i class="layui-icon layui-icon-up"></i></button>\n' +
+        '                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="downn(this);"><i class="layui-icon layui-icon-down"></i></button>\n' +
+        '                                <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del" onclick="DeleteProblem(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>' +
+        '</div>';
+    // var textHtml = '<p contenteditable="true" class="table_td_tt table_td_tt2">' + text + '</p><p contenteditable="true" class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
+
+    var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + referanswer + '</p></div>'
+
+    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>");
+}
+
 /**
  * 保存后修改问题和答案
  */
@@ -524,6 +542,15 @@ function addArrProblem() {
     for (var i = 0; i < arrayProblem.length; i++) {
         var problem = arrayProblem[i];
         UpdateProblemBy(problem.id, problem.va, problem.text);
+    }
+}
+
+function btn(obj) {
+    var selected = $(obj).closest("div[name='btn_div']").attr("class");
+    if (selected.indexOf("layui-form-selected") == -1) {
+        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    }else{
+        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
     }
 }
 

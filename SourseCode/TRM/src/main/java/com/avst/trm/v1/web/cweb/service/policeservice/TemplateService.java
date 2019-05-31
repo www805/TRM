@@ -127,9 +127,53 @@ public class TemplateService extends BaseService {
                 templatetoproblem.setProblemssid(problem.getId() + "");//题目id
                 templatetoproblem.setOrdernum(problem.getOrdernum());
 
-                templatetoproblem.setSsid(OpenUtil.getUUID_32());
-                int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
-                System.out.println("insert_bool__"+insert_bool);
+                //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
+                if(StringUtils.isNotEmpty(problem.getProblem())){
+
+                    Police_problem selectOne = police_problemMapper.selectOne(problem);
+
+                    if(null == problem.getId() || null == selectOne){
+                        //看自定义类型是否存在，如果不存在就新增自定义问题类型 && !problem.getProblem().equals(selectOne.getProblem())
+                        Police_problemtype problemtype = new Police_problemtype();
+                        problemtype.setTypename("自定义");
+                        Police_problemtype police_problemtype = police_problemtypeMapper.selectOne(problemtype);
+                        if(null == police_problemtype){
+                            problemtype.setOrdernum(0);
+                            problemtype.setCreatetime(new Date());
+                            problemtype.setSsid(OpenUtil.getUUID_32());
+                            int insert_bool2 = police_problemtypeMapper.insert(problemtype);
+                            //新增完自定义问题类型，获取问题类型id
+                            police_problemtype = police_problemtypeMapper.selectOne(problemtype);
+                        }
+                        problem.setSsid(OpenUtil.getUUID_32());
+                        problem.setCreatetime(new Date());
+                        problem.setId(null);
+
+                        Integer insert = police_problemMapper.insert(problem);
+
+                        Police_problem one = police_problemMapper.selectOne(problem);
+                        templatetoproblem.setProblemssid(one.getId() + "");
+
+                        problem.setId(one.getId());
+
+                        Police_problemtotype problemtotype = new Police_problemtotype();
+                        problemtotype.setProblemssid(problem.getId()+"");
+                        problemtotype.setProblemtypessid(police_problemtype.getId()+"");
+                        problemtotype.setSsid(OpenUtil.getUUID_32());
+                        problemtotype.setCreatetime(new Date());
+                        policeProblemtotypeMapper.insert(problemtotype);//问题类型中间表
+
+                    }else{
+                        EntityWrapper ewProblem=new EntityWrapper();
+                        ewProblem.eq("id",problem.getId());
+                        Integer update = police_problemMapper.update(problem, ewProblem);//新增问题
+                    }
+
+                    templatetoproblem.setSsid(OpenUtil.getUUID_32());
+                    int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
+                    System.out.println("insert_bool__"+insert_bool);
+
+                }
 
             }
         }
@@ -154,6 +198,10 @@ public class TemplateService extends BaseService {
             result.setMessage("系统异常");
             return;
         }
+
+        //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
+//        template.getTemplatetoproblemids()
+
         result.setNextpageid("updateTemplate_index");
         changeResultToSuccess(result);
         return;

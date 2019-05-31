@@ -138,6 +138,15 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
     form.render();
 });
 
+function btn(obj) {
+    var selected = $(obj).closest("div[name='btn_div']").attr("class");
+    if (selected.indexOf("layui-form-selected") == -1) {
+        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    }else{
+        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
+
 function getTemplateById(id) {
 
     if (pagelist[id]) {
