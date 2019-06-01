@@ -17,6 +17,7 @@ function opneModal_1() {
         yes:function(index, layero){
             var recordssid_go = $(window.frames["layui-layer-iframe"+index])[0].recordssid_go;
             recordssid=recordssid_go;
+            isno=0;
             getRecordById();
             layer.close(index);
         },
@@ -63,25 +64,31 @@ function showpagetohtml(){
 
 //获取案件信息
 function getRecordById() {
-    var url=getActionURL(getactionid_manage().getRecordById_getRecordById);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid:recordssid,
-        }
-    };
-    ajaxSubmitByJson(url,data,callbackgetRecordById);
+    if (isNotEmpty(recordssid)){
+        var url=getActionURL(getactionid_manage().getRecordById_getRecordById);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid:recordssid,
+            }
+        };
+        ajaxSubmitByJson(url,data,callbackgetRecordById);
+    }else{
+        console.log("笔录信息未找到__"+recordssid);
+        layer.msg("笔录信息未找到,请刷新重试...");
+    }
+
 }
 function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
-        liveurl=null;
         if (isNotEmpty(data)){
             var record=data.record;
             var caseAndUserInfo=data.caseAndUserInfo;
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
 
+                    //问题答案
                     var problems=record.problems;
                     $("#recorddetail").html("");
                     if (isNotEmpty(problems)) {
@@ -97,7 +104,7 @@ function callbackgetRecordById(data) {
                                     problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
                                 }
                             }else{
-                                problemhtml+='<tr> <td class="font_blue_color">答：... </td></tr>';
+                                problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
                             }
                             $("#recorddetail").append(problemhtml);
                         }
@@ -123,14 +130,15 @@ function callbackgetRecordById(data) {
                     //提讯数据
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
-                    mtssid=police_arraignment.mtssid;
+                    mtssid=police_arraignment.mtssid;//获取会议mtssid
                 }
 
-                recordnameshow=record.recordname;
+                recordnameshow=record.recordname;//当前笔录名称
                 getRecord();//实时数据获取
 
             }
 
+            //案件信息
             $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
                 var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
@@ -143,33 +151,12 @@ function callbackgetRecordById(data) {
                                   <tr><td>记录人</td><td>"+recordUserInfosdata.recordadminname+"</td> </tr>";
                 $("#caseAndUserInfo_html").html(init_casehtml);
             }
-
         }
     }else{
         layer.msg(data.message);
     }
 }
 
-
-$(function () {
-
-    layui.use(['form', 'slider'], function(){
-        var $ = layui.$
-            ,slider = layui.slider;
-
-        //定义初始值
-        slider.render({
-            elem: '#slideTest'
-            ,max:'1'
-            ,max:'100'
-            ,theme: '#1E9FFF' //主题色
-            ,change: function(value){
-                SewisePlayer.setVolume(value/100);
-            }
-        });
-    });
-
-});
 
 /**
  * 获取会议实时数据
@@ -185,10 +172,14 @@ function getRecord() {
             }
         };
         ajaxSubmitByJson(url, data, callbackgetRecord);
+    }else{
+       console.log("会议未找到__"+mtssid);
     }
 }
+var isno=0;
 function callbackgetRecord(data) {
     iid=null;
+    liveurl=null;
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
         var loadindex = layer.msg("加载中，请稍等...", {
@@ -200,7 +191,11 @@ function callbackgetRecord(data) {
             var list=datas.list;
 
              iid=datas.iid;
-             getPlayUrl();//直播地址获取
+             if (isno==0){
+                 getPlayUrl();//直播地址获取
+                 isno=1;
+             }
+
 
             for (var i = 0; i < list.length; i++) {
                 var data=list[i];
@@ -279,8 +274,6 @@ function exportWord(obj){
     });
 }
 
-
-var isno=0;
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
         var url="/v1/police/out/getPlayUrl";
@@ -288,13 +281,15 @@ function getPlayUrl() {
             iid: iid
         };
         ajaxSubmitByJson(url, data, callbackgetPlayUrl);
+    }else{
+        console.log("直播信息未找到__"+iid);
     }
 }
 function callbackgetPlayUrl(data) {
+    liveurl=null;
     if(null!=data&&data.actioncode=='SUCCESS') {
     var data=data.data;
         if (isNotEmpty(data)){
-            console.log(data)
             var iiddata=data.iid;
             var recordFileParams=data.recordFileParams;
             var recordPlayParams=data.recordPlayParams;
@@ -311,15 +306,11 @@ function callbackgetPlayUrl(data) {
                     }
                 }
             }
-            if (isno==0){
-                initplayer();
-                isno=1;
-            }
-
         }
     }else{
         layer.msg(data.message);
     }
+    initplayer();
 }
 
 

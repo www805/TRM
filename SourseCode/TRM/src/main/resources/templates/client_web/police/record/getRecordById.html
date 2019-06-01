@@ -217,13 +217,12 @@
                         <div class="layui-card-body">
                             <!--视频直播区域-->
                             <div class="layui-row" style="margin-top: 15px">
-                                    <div class="layui-col-md7" >
-                                        <div th:replace="living4 :: living">...</div>
-                                        <div style="width:95%;text-align:center;" id="div_liveurl" >
-                                        </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="initplayer();">重新加载</i></button>
-                                    </div>
                                     <div class="layui-col-md5" >
+                                        <div th:replace="living4 :: living">...</div>
+                                        </div>
+                                        <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="getPlayUrl();">重新加载</i></button>
+                                    </div>
+                                    <div class="layui-col-md7" >
 
                                     </div>
                             </div>
@@ -277,12 +276,13 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var recordssid;
+    var liveurl=null;//音频地址
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/getRecordById");
         recordssid=[[${getRecordByIdModel.recordssid}]];
-        getRecordById();
+        getRecordById();//获取笔录案件等信息
     });
     layui.use(['layer','element','slider','form'], function(){
         var layer = layui.layer; //获得layer模块
@@ -291,8 +291,6 @@
         var form = layui.form;
         //使用模块
     });
-
-    var liveurl=null;
 </script>
 </body>
 </html>
