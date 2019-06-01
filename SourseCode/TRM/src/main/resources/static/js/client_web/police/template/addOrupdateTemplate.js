@@ -476,7 +476,7 @@ function getDataAll() {
         templatetoproblemids[i] = problem;
     })
 
-    console.log(templatetoproblemids);
+    // console.log(templatetoproblemids);
 
     // var url = "/cweb/police/template/addTemplate";
     var url = getActionURL(getactionid_manage().addOrupdateTemplate_addTemplate);
@@ -496,9 +496,9 @@ function getDataAll() {
         }
     };
 
-    console.log(url);
+    // console.log(url);
 
-    // ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
+    ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
 }
 
 function huoqu() {
