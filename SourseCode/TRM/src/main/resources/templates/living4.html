@@ -15,6 +15,16 @@
     <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js"></script>
     <script type="text/javascript">
 
+        SewisePlayer.setup({
+            server: "vod",
+            type: "mp4",
+            autostart:'true',
+            lang: 'zh_CN',
+            logo:'/sewiseplayer/logo.png',
+            title: "AVST",
+            buffer:'5',
+            skin: "vodWhite"
+        });
         function initplayer(){
             SewisePlayer.doStop();
             SewisePlayer.toPlay(liveurl, recordnameshow, 0, true);
