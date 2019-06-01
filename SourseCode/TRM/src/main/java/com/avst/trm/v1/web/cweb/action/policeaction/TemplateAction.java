@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 关于模板
@@ -399,7 +400,24 @@ public class TemplateAction extends MainAction {
         return  result;
     }
 
-
+    /**
+     * 导出word
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/exportWord")
+    public RResult exportWord(@RequestBody ReqParam<ExportWordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.templateWord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
 
 
 

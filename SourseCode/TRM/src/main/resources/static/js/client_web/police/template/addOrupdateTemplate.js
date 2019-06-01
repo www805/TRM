@@ -3,6 +3,7 @@ var version = "";
 var list, all, plist;
 var arrayProblem = [];
 var problemtypessidV;
+var trObj;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -145,7 +146,7 @@ function callTemplateById(data){
                 for (var i = 0; i < templateToProblems.length; i++) {
                     var Problem = templateToProblems[i];
 
-                    tableProblems += '<tr>\n' +
+                    tableProblems += '<tr onclick=\'trObj = this;\'>\n' +
                         '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
                         '                            <div name="1" class="table_td_tt2" value="' + Problem.ssid + '" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + Problem.problem + '</p></div>\n' +
                         '                            <div name="2" class="table_td_tt2 font_blue_color" value="' + Problem.ssid + '" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + Problem.referanswer + '</p></div>\n' +
@@ -160,6 +161,8 @@ function callTemplateById(data){
                         '                    </tr>';
                 }
                 $('#dataTable').html(tableProblems);
+
+
             }
         }
     }else{
@@ -495,7 +498,7 @@ function getDataAll() {
 
     console.log(url);
 
-    ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
+    // ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
 }
 
 function huoqu() {
@@ -532,7 +535,16 @@ function addTr(text, referanswer, id) {
 
     var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + referanswer + '</p></div>'
 
-    $("#testTable tbody").append("<tr class=\"onetd font_red_color\"><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>");
+    var trHtml = "<tr class=\"onetd font_red_color\" onclick='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
+    // $("#testTable tbody").after(trHtml);
+
+    if(isNotEmpty(trObj)){
+        $(trObj).after(trHtml);
+        // trObj = null;
+    }else{
+        $("#testTable tbody").after(trHtml);
+    }
+
 }
 
 /**
@@ -552,6 +564,30 @@ function btn(obj) {
     }else{
         $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
     }
+}
+
+//导出word
+function exportWord(obj){
+    var url=getActionURL(getactionid_manage().waitRecord_exportWord);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: "123",
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var host = "http://localhost";
+                window.location.href = host + data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        btn(obj);
+    });
 }
 
 function getQueryString(name) {

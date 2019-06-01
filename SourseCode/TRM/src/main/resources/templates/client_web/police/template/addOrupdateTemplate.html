@@ -136,7 +136,7 @@
             <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;"><i class="layui-icon layui-icon-left"></i></button>
             <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" onclick="getDataAll();">保存</button>
             <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
-            <button class="layui-btn layui-btn-normal" style="margin-left: 0px;">导入</button>
+            <button class="layui-btn layui-btn-normal" onclick="alert(trObj)" style="margin-left: 0px;">导入</button>
 
             <div class="layui-inline" style="margin-bottom:0">
                 <div class="layui-unselect layui-form-select" name="btn_div">
@@ -145,7 +145,7 @@
                     </div>
                     <dl class="layui-anim layui-anim-upbit" >
                         <dd onclick="exportWord(this);">导出word</dd>
-                        <dd onclick="exportEcxcel(this);">导出Ecxcel</dd>
+                        <!--<dd onclick="exportEcxcel(this);">导出Ecxcel</dd>-->
                     </dl>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                         <col>
                         <col width="150">
                     </colgroup>
-                    <tbody id="dataTable"></tbody>
+                    <tbody id="dataTable" onblur="trObj = null;"></tbody>
                 </table>
             </div>
 
@@ -236,6 +236,7 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -253,9 +254,18 @@
             $("#templateTitle").css("background-color","#FFFFFF");
         });
 
+        // console.log($("[contenteditable=true]").html());
+        //
+        // $("p[contenteditable='true']").click(function(){
+        //     alert(26666);
+        //     trObj = null;
+        // });
+
+
         document.onkeydown = function (event) {
             var e = event || window.event;
             if (e && e.keyCode == 13) { //回车键的键值为13
+
                 addTr("","","");//新增一条空白的问答
             }
         };
