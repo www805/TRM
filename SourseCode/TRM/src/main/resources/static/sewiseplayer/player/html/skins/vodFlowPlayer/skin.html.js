@@ -38,7 +38,7 @@ window.SewisePlayerSkin.localSkin =
 			'</ul>' + 
 		'</div>' + 
 		'<div class="logo">' + 
-			'<a href="http://www.sewise.com/" target="_blank" class="logo-icon" tabindex="1">logo</a>' + 
+			'<a href="#" target="_blank" class="logo-icon" tabindex="1">logo</a>' +
 		'</div>' + 
 		'<div class="topbar">' + 
 			'<div class="topbar-program">' + 

@@ -484,7 +484,7 @@ public class CommonCache {
             for(Base_page page:pageList){
                 try {
                     Integer pageid=page.getId();
-                        if((null!=pageid&&pageid.intValue()==action.getPage_id_c())
+                        if((null!=pageid&&null!=action.getPage_id_c()&&pageid.intValue()==action.getPage_id_c().intValue())
                                 ||(null!=page.getPageid()&&page.getPageid().equals(action.getPageid()))){//这里的判断要注意
                             bool=false;
                             break;

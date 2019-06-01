@@ -238,6 +238,7 @@ public class AnalysisSQ {
             sqEntity.setSortNum(Integer.parseInt(sortNum));
             sqEntity.setSqDay(Integer.parseInt(sqDay));
             sqEntity.setUnitCode(unitCode);
+            sqEntity.setStartTime(startTime);
             return sqEntity;
         }catch (Exception e){
             e.printStackTrace();
@@ -338,11 +339,8 @@ public class AnalysisSQ {
 
     public static void main(String[] args) {
 
-//        System.out.println(CommonCache.getClientKey());
-
-//        updateClientini();
-
-        System.out.println(checkUseTime());
+        SQEntity sqEntity=AnalysisSQ.getSQEntity();
+        System.out.println(sqEntity.getStartTime());
 
     }
 

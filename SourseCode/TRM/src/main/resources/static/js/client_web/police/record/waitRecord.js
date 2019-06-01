@@ -857,7 +857,7 @@ $(function () {
 
 
     // 建立连接
-    socket = io.connect('http://192.168.17.178:8888');
+    socket = io.connect('http://192.168.17.175:8888');
 
     socket.on('connect', function (data) {
         console.log("连接成功__");
