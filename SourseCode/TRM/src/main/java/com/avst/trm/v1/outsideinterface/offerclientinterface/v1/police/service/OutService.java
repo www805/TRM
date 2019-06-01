@@ -44,9 +44,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class OutService  extends BaseService {
@@ -212,6 +210,10 @@ public class OutService  extends BaseService {
                                 asrTxtParam_toout.setAsrtime(asrtime);
                             }
                         }
+                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+                        Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getAsrtime().toString().compareTo(s2.getAsrtime().toString()));
+                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+                        getMCVO.setList(asrTxtParam_toouts);
                         result.setData(getMCVO);
                     }
                 }
@@ -244,6 +246,7 @@ public class OutService  extends BaseService {
             if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
                 asrTxtParam_toouts=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
                 if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                    //时间排序
                     for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
                         //时间转换
                         String asrtime = asrTxtParam_toout.getAsrtime();
@@ -254,6 +257,10 @@ public class OutService  extends BaseService {
                             asrTxtParam_toout.setAsrtime(asrtime);
                         }
                     }
+                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+                    Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getAsrtime().toString().compareTo(s2.getAsrtime().toString()));
+                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+
                     getRecordrealingVO.setList(asrTxtParam_toouts);
                 }
             }else{

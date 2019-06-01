@@ -324,10 +324,10 @@ function callbackgetPlayUrl(data) {
 
 
 function showrecord(times) {
-    console.log("times__"+times)
     if (isNotEmpty(times)){
         var locationtime=times;
         locationtime=locationtime/1000<0?0:locationtime/1000;
+        console.log("locationtime__"+locationtime)
         SewisePlayer.doSeek(locationtime);
     }
 }
