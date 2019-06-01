@@ -12,10 +12,13 @@
 
     <!--播放器/代码开始-->
     <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
-    <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js?server=vod&type=mp4&autostart=true&lang=zh_CN&logo=/sewiseplayer/logo.png&title=Vod Video&buffer=5&skin=vodWhite"></script>
+    <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js"></script>
     <script type="text/javascript">
+
         function initplayer(){
-           SewisePlayer.toPlay(liveurl, recordnameshow, 0, true);
+            SewisePlayer.doStop();
+            SewisePlayer.toPlay(liveurl, recordnameshow, 0, true);
+
         }
     </script>
     <!--播放器/代码结束-->

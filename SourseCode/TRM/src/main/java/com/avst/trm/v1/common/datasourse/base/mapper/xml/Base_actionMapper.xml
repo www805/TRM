@@ -14,6 +14,7 @@
         <result column="createtime" property="createtime" />
         <result column="description" property="description" />
         <result column="typessid" property="typessid" />
+        <result column="firstaction" property="firstaction" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

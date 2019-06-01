@@ -174,6 +174,7 @@ function getRecord() {
         ajaxSubmitByJson(url, data, callbackgetRecord);
     }else{
        console.log("会议未找到__"+mtssid);
+       initplayer();
     }
 }
 var isno=0;
@@ -283,6 +284,7 @@ function getPlayUrl() {
         ajaxSubmitByJson(url, data, callbackgetPlayUrl);
     }else{
         console.log("直播信息未找到__"+iid);
+        initplayer();//初始化录音
     }
 }
 function callbackgetPlayUrl(data) {
@@ -322,3 +324,4 @@ function showrecord(times) {
         SewisePlayer.doSeek(locationtime);
     }
 }
+

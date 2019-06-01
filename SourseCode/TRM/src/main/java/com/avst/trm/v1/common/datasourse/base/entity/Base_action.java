@@ -69,6 +69,11 @@ public class Base_action extends Model<Base_action> {
      */
     private String typessid;
 
+    /**
+     * 是否Wie第一个action
+     */
+    private Integer firstaction;
+
     private String ssid;
 
     private String string1;
@@ -78,6 +83,14 @@ public class Base_action extends Model<Base_action> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public Integer getFirstaction() {
+        return firstaction;
+    }
+
+    public void setFirstaction(Integer firstaction) {
+        this.firstaction = firstaction;
+    }
 
     public Integer getId() {
         return id;
