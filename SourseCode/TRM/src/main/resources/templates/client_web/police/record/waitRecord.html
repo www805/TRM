@@ -394,6 +394,8 @@
     var INIT_CLIENTKEY;
     var recordssid;
     var socket;
+    var SOCKETIO_HOST=[[${session.SOCKETIO_HOST}]];
+    var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -401,8 +403,6 @@
         recordssid=[[${waitRecordModel.recordssid}]];
         getRecordById();
         getTime();
-
-
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
@@ -414,7 +414,7 @@
     //获取语音识别界面的宽度
     var asrwh=$("#recordreals").width();
     var asrht=asrwh*3/4;
-    var liveurl="rtmp://192.168.17.154:1935/live/hd";
+    var liveurl=null;
 
 
 </script>

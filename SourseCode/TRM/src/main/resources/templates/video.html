@@ -5,7 +5,7 @@
     <title>设备直播</title>
 </head>
 <body>
-<div  data-th-fragment="living">
+<div  data-th-fragment="video">
     <div id="view" >
         <div id="player" class="player"></div>
     </div>
@@ -14,7 +14,6 @@
     <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
     <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js"></script>
     <script type="text/javascript">
-
         SewisePlayer.setup({
             server: "vod",
             type: "mp4",
@@ -26,9 +25,11 @@
             skin: "vodWhite"
         });
         function initplayer(){
-            SewisePlayer.doStop();
-            SewisePlayer.toPlay(liveurl, recordnameshow, 0, true);
-
+            var initstate=true;
+            if (null==videourl) {
+                initstate=false;
+            }
+            SewisePlayer.toPlay(videourl, recordnameshow, 0, initstate);
         }
     </script>
     <!--播放器/代码结束-->

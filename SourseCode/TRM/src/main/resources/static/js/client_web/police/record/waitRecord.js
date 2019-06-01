@@ -857,58 +857,62 @@ $(function () {
 
 
     // 建立连接
-    socket = io.connect('http://192.168.17.175:8888');
+    if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
+        socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
+        socket.on('connect', function (data) {
+            console.log("连接成功__");
+        });
+        socket.on('disconnect', function (data) {
+            console.log("断开连接__");
+        });
+        socket.on('getback', function (data) {
+            var mtssiddata=data.mtssid;
+            if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
+                if (isNotEmpty(recorduser)){
+                    for (var i = 0; i < recorduser.length; i++) {
+                        var user = recorduser[i];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//1、询问人2被询问人
+                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var asrtime=data.asrtime;//时间
+                            var starttime=data.starttime;
+                            //实时会议数据
+                            if (usertype==1){
+                                recordrealclass="atalk";
 
-    socket.on('connect', function (data) {
-        console.log("连接成功__");
-    });
-    socket.on('disconnect', function (data) {
-        console.log("断开连接__");
-    });
-    socket.on('getback', function (data) {
-        var mtssiddata=data.mtssid;
-        if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
-            if (isNotEmpty(recorduser)){
-                for (var i = 0; i < recorduser.length; i++) {
-                    var user = recorduser[i];
-                    var userssid=user.userssid;
-                    if (data.userssid==userssid){
-                        var username=user.username==null?"未知":user.username;//用户名称
-                        var usertype=user.grade;//1、询问人2被询问人
-                        var translatext=data.txt==null?"...":data.txt;//翻译文本
-                        var asrtime=data.asrtime;//时间
-                        var starttime=data.starttime;
-                        //实时会议数据
-                        if (usertype==1){
-                            recordrealclass="atalk";
+                            }else if (usertype==2){
+                                recordrealclass="btalk";
 
-                        }else if (usertype==2){
-                            recordrealclass="btalk";
+                            }
 
-                        }
-
-                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                            $("#recordreals div[userssid="+userssid+"]:last").remove();
-                        }
-                        var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                            }
+                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrtime+'</p>\
                                                             <span ondblclick="copy_text(this)" >'+translatext+'</span> \
                                                       </div >';
 
-                        $("#recordreals").append(recordrealshtml);
-                        var div = document.getElementById('recordreals');
-                        div.scrollTop = div.scrollHeight;
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals');
+                            div.scrollTop = div.scrollHeight;
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }else{
+        console.log("socket连接失败")
+    }
+
 
     $(window).on('pagehide', function(event) {
-        console.log("3")
         addRecord(1);
     });
+
 });
 
 

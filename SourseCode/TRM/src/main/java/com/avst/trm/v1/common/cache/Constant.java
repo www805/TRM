@@ -27,9 +27,12 @@ public class Constant {
     public static final String MANAGE_WEB="MANAGE_WEB";
 
     /**
-     * web客户端当前管理员信息的保存名
+     * web客户端SOCKETIO_HOST  IP
      */
     public static final String MANAGE_CLIENT="MANAGE_CLIENT";
+
+    public static final String SOCKETIO_HOST="SOCKETIO_HOST";
+    public static final String SOCKETIO_PORT="SOCKETIO_PORT";
 
 
 }

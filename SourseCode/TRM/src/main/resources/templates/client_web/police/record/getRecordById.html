@@ -211,6 +211,9 @@
                             </dl>
                         </div>
                     </div>
+                    <button class="layui-btn layui-btn-normal " onclick="getPlayUrl();" title="重新加载视频">
+                        <i class="layui-icon">&#xe669;</i>
+                    </button>
                 </div>
                     <div class="layui-card">
                         <div class="layui-card-header">当前笔录录音</div>
@@ -218,48 +221,25 @@
                             <!--视频直播区域-->
                             <div class="layui-row" style="margin-top: 15px">
                                     <div class="layui-col-md5" >
-                                        <div th:replace="living4 :: living">...</div>
+                                        <div th:replace="video :: video">...</div>
                                         </div>
-                                        <button class="layui-btn layui-btn-normal layui-btn-sm" onclick="getPlayUrl();">重新加载</i></button>
-                                    </div>
-                                    <div class="layui-col-md7" >
+                                <div class="layui-col-md7" >
+                                    <div class="layui-card">
+                                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
+                                            <div class="layui-card-body">
+                                                <table class="layui-table" lay-even lay-skin="nob"style="table-layout: fixed;">
+                                                    <tbody id="recorddetail">
 
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
+                                </div>
                             </div>
-
-                           <!-- <div class="layui-row" style="margin-top: 15px">
-                                <div class="layui-col-md12" >
-                                </div>
-                                <div style="position: absolute; bottom: 10px;" class="layui-col-md12">
-                                    <div class="layui-col-md9" >
-                                        <div style="float: left;">
-                                            <button class="layui-btn layui-btn-normal layui-btn-sm" id="recordplay">  <i class="layui-icon layui-icon-play"  ></i></button>
-                                            <button class="layui-btn layui-btn-normal layui-btn-sm" id="recordpause"> <i class="layui-icon layui-icon-pause"></i></button>
-                                        </div>
-                                        <div style="overflow: hidden;float: left;margin-top: 3px;margin-left: 15px;height: 30px;">
-                                            <i class="layui-icon layui-icon-speaker" style="font-size: 30px;color: #1E9FFF;float: left;line-height: 30px"></i>
-                                            <div id="slideTest" class="demo-slider" style="width: 250px;float: left;padding: 10px 10px 0 8px;line-height: 30px"></div>
-                                        </div>
-                                    </div>
-                                    <div class="layui-col-md3" >
-                                        <div class="layui-col-md7" style="color: #1E9FFF">时间：<span id="currenttime">0</span>秒</div>
-                                        <div class="layui-col-md5" style="color: #1E9FFF">时长：<span id="recordtime">0</span>秒</div>
-                                    </div>
-                                </div>
-                            </div>-->
                         </div>
                     </div>
-                    <div class="layui-card">
-                        <div style="height: 400px; overflow-x: hidden; overflow-y: scroll;">
-                            <div class="layui-card-body">
-                            <table class="layui-table" lay-even lay-skin="nob"style="table-layout: fixed;">
-                                <tbody id="recorddetail">
 
-                                </tbody>
-                            </table>
-                        </div>
-                        </div>
-                    </div>
             </div>
     </div>
     <div th:replace="footer :: footer">...</div>
@@ -276,7 +256,6 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var recordssid;
-    var liveurl=null;//音频地址
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -291,6 +270,8 @@
         var form = layui.form;
         //使用模块
     });
+
+
 </script>
 </body>
 </html>

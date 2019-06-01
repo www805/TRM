@@ -1,6 +1,8 @@
 var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
 var iid=null;
+var videourl=null;//视频地址
+var iidno=0;//是否第一次获取iid
 
 var recordnameshow="";
 
@@ -17,7 +19,9 @@ function opneModal_1() {
         yes:function(index, layero){
             var recordssid_go = $(window.frames["layui-layer-iframe"+index])[0].recordssid_go;
             recordssid=recordssid_go;
-            isno=0;
+            iid=null;
+            videourl=null;
+            iidno=0;
             getRecordById();
             layer.close(index);
         },
@@ -75,7 +79,6 @@ function getRecordById() {
         ajaxSubmitByJson(url,data,callbackgetRecordById);
     }else{
         console.log("笔录信息未找到__"+recordssid);
-        layer.msg("笔录信息未找到,请刷新重试...");
     }
 
 }
@@ -135,7 +138,6 @@ function callbackgetRecordById(data) {
 
                 recordnameshow=record.recordname;//当前笔录名称
                 getRecord();//实时数据获取
-
             }
 
             //案件信息
@@ -174,13 +176,9 @@ function getRecord() {
         ajaxSubmitByJson(url, data, callbackgetRecord);
     }else{
        console.log("会议未找到__"+mtssid);
-       initplayer();
     }
 }
-var isno=0;
 function callbackgetRecord(data) {
-    iid=null;
-    liveurl=null;
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
         var loadindex = layer.msg("加载中，请稍等...", {
@@ -191,13 +189,11 @@ function callbackgetRecord(data) {
             layer.close(loadindex);
             var list=datas.list;
 
-             iid=datas.iid;
-             if (isno==0){
-                 getPlayUrl();//直播地址获取
-                 isno=1;
-             }
-
-
+            iid=datas.iid;
+            if (iidno==0){
+                getPlayUrl();
+                iidno=1;
+            }
             for (var i = 0; i < list.length; i++) {
                 var data=list[i];
                 if (isNotEmpty(recorduser)){
@@ -284,11 +280,9 @@ function getPlayUrl() {
         ajaxSubmitByJson(url, data, callbackgetPlayUrl);
     }else{
         console.log("直播信息未找到__"+iid);
-        initplayer();//初始化录音
     }
 }
 function callbackgetPlayUrl(data) {
-    liveurl=null;
     if(null!=data&&data.actioncode=='SUCCESS') {
     var data=data.data;
         if (isNotEmpty(data)){
@@ -304,23 +298,22 @@ function callbackgetPlayUrl(data) {
                 if (isNotEmpty(recordPlayParams)&&state==2){
                     for (var i = 0; i < recordPlayParams.length; i++) {
                         var recordPlay = recordPlayParams[i];
-                        liveurl=recordPlay.playUrl;
+                        videourl=recordPlay.playUrl;
                     }
+                    initplayer();
                 }
             }
         }
     }else{
         layer.msg(data.message);
     }
-    initplayer();
 }
 
-
+//视频进度
 function showrecord(times) {
     if (isNotEmpty(times)){
         var locationtime=times;
         locationtime=locationtime/1000<0?0:locationtime/1000;
-        console.log("locationtime__"+locationtime)
         SewisePlayer.doSeek(locationtime);
     }
 }

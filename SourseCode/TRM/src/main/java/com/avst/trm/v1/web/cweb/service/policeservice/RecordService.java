@@ -358,7 +358,6 @@ public class RecordService extends BaseService {
 
             }
 
-
         //获取实时数据
         result.setData(getRecordByIdVO);
         changeResultToSuccess(result);
@@ -502,7 +501,7 @@ public class RecordService extends BaseService {
         record.setCreatetime(new Date());
         record.setRecordbool(1);//1进行中2未开始
         record.setRecordtypessid(addCaseToArraignmentParam.getRecordtypessid());
-        record.setRecordname(addCaseToArraignmentParam.getRecordname());
+        record.setRecordname(addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", ""));
         int insertrecord_bool=police_recordMapper.insert(record);
         System.out.println("insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
@@ -625,12 +624,9 @@ public class RecordService extends BaseService {
                 otheruserinfosparam.ne("a.ssid",admininfo.getSsid());
                 otheruserinfosparam.eq("a.adminbool",1);//正常人
                 List<AdminAndWorkunit> otheruserinfos=base_admininfoMapper.getAdminListAndWorkunit(otheruserinfosparam);
-                if (null!=cases&&cases.size()>0){
+                if (null!=otheruserinfos&&otheruserinfos.size()>0){
                     getUserByCardVO.setOtheruserinfos(otheruserinfos);
                 }
-
-                //其他在场人员信息关联：疑问？其他在场人员应该是关联案件和人员ssid 的：数据库需要修改。。。
-
 
                 result.setData(getUserByCardVO);
                 changeResultToSuccess(result);
@@ -854,7 +850,7 @@ public class RecordService extends BaseService {
                 //如果不存在，就创建该目录
                 fileMkdir.mkdirs();
             }
-            String filename=record.getRecordname();
+            String filename=record.getRecordname().replace(" ", "").replace("\"", "");
             String path = filePathNew + "/"+filename+".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);

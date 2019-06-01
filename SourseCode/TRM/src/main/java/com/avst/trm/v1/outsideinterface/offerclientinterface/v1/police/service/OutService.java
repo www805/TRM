@@ -393,7 +393,6 @@ public class OutService  extends BaseService {
                result.setMessage("获取直播中...请等待");
                return;
            }
-
         }else{
             System.out.println("请求checkRecordFileState__出错");
         }
