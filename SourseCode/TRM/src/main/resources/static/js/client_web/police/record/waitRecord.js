@@ -768,17 +768,63 @@ function callbackgetPolygraphdata(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log(data)
-            addData(true);
-            myChart.setOption({
-                xAxis: {
-                    data: date1
-                },
-                series: [{
-                    name:'审讯监测',
-                    data: data1
-                }]
-            });
+            var obj=data.t;
+            if (isNotEmpty(obj)) {
+                var hr=obj.hr==null?0:obj.hr;//心率
+                var br=obj.br==null?0:obj.br;//呼吸次数
+                var  status=obj.status;
+                var status_text="未知";
+                if (status==0){
+                    status_text="正常";
+                }else if (status==1){
+                    status_text="紧张";
+                }else if (status==2){
+                    status_text="生理疲劳";
+                }else if (status==3){
+                    status_text="昏昏欲睡";
+                }
+                var relax=obj.relax==null?0:obj.relax;
+                var stress=obj.stress==null?0:obj.stress;
+                var bp=obj.bp==null?0:obj.bp;
+                var spo2=obj.spo2==null?0:obj.spo2;
+
+                $("#xthtml #xt1").html('<i class="layui-icon" title="状态">&#xe67a;</i>'+status_text+'  ');
+                $("#xthtml #xt2").html('<i class="layui-icon" title="放松值">&#xe6af;</i> '+relax.toFixed(1)+' ');
+                $("#xthtml #xt3").html('<i class="layui-icon" title="紧张值">&#xe69c;</i> '+stress.toFixed(1)+' ');
+                $("#xthtml #xt4").html('<i class="layui-icon" title="血压变化">&#xe6fc;</i> '+bp.toFixed(1)+'  ');
+                $("#xthtml #xt5").html('<i class="layui-icon" title="血氧">&#xe62c;</i>'+spo2.toFixed(1)+'  ');
+
+                var hr_snr=obj.hr_snr;
+                if (isNotEmpty(hr_snr)&&hr_snr>0.1){
+                    $("#showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
+                    $("#showmsg strong").text("心率准确监测中");
+                }else{
+                    $("#showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
+                    $("#showmsg strong").text("心率监测不准确");
+                }
+
+                addData(true,hr.toFixed(1));
+                addData2(true,br.toFixed(1));
+                myChart.setOption({
+                    xAxis: {
+                        data: date1
+                    },
+                    series: [{
+                        name:'心率',
+                        data: data1
+                    }]
+                });
+                myChart2.setOption({
+                    xAxis: {
+                        data: date2
+                    },
+                    series: [{
+                        name:'呼吸次数',
+                        data: data2
+                    }]
+                });
+            }
+
         }
     }else{
         layer.msg(data.message);
@@ -961,33 +1007,53 @@ $(function () {
 
 });
 
-var myChart;
 var init = 1;
+var myChart;
 var date1 = [];
-var data1 = [Math.random() * 150];
-function addData(shift) {
+var data1 = [];
+function addData(shift,data) {
     init++;
     date1.push(init);
-    data1.push(Math.random());
+    data1.push(data);
 
     if (shift) {
         date1.shift();
         data1.shift();
     }
 }
+var init2=1;
+var myChart2;
+var date2 = [];
+var data2 = [];
+function addData2(shift,data) {
+    init2++;
+    date2.push(init2);
+    data2.push(data);
 
-
-
-for (var i = 1; i < 200; i++) {
-    addData();
+    if (shift) {
+        date2.shift();
+        data2.shift();
+    }
 }
 
+for (var i = 1; i < 50; i++) {
+    addData(false,0);
+    addData2(false,0);
+}
 function main1() {
+    $("#main1").css( 'width',$(".layui-tab-title").width() );
     $(window).resize(function() {
         myChart.resize();
     });
     myChart = echarts.init(document.getElementById('main1'),'dark');
     var option = {
+        title: {
+            text: '心率',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: '{a}: {c}'
+        },
         xAxis: {
             type: 'category',
             splitLine: {
@@ -1002,10 +1068,16 @@ function main1() {
             splitLine: {
                 show: false
             },
-            show: false
+            show: true
+        },
+        grid: {
+            x:30,
+            y:45,
+            x2:30,
+            y2:10,
         },
         series: [{
-            name: '审讯监测',
+            name: '心率',
             type: 'line',
             showSymbol: false,
             hoverAnimation: false,
@@ -1021,21 +1093,30 @@ function main1() {
         }]
     };
     myChart.setOption(option);
-
 }
 
+
 function main2() {
-   /* $(window).resize(function() {
+    $("#main2").css( 'width',$(".layui-tab-title").width() );
+   $(window).resize(function() {
         myChart2.resize();
     });
     myChart2 = echarts.init(document.getElementById('main2'),'dark');
     var option = {
+        title: {
+            text: '呼吸次数',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: '{a}: {c}'
+        },
         xAxis: {
-            type: 'time',
+            type: 'category',
             splitLine: {
                 show: false
             },
-            show: true
+            show: false,
+            data: date2
         },
         yAxis: {
             type: 'value',
@@ -1045,8 +1126,14 @@ function main2() {
             },
             show: true
         },
+        grid: {
+            x:30,
+            y:45,
+            x2:30,
+            y2:10,
+        },
         series: [{
-            name: '模拟数据',
+            name: '呼吸次数',
             type: 'line',
             showSymbol: false,
             hoverAnimation: false,
@@ -1058,23 +1145,10 @@ function main2() {
                     }
                 }
             },
-            data: data
+            data: data2
         }]
     };
     myChart2.setOption(option);
-
-    setInterval(function () {
-        addData(true);
-        myChart.setOption({
-            xAxis: {
-                data: date
-            },
-            series: [{
-                name:'成交',
-                data: data
-            }]
-        });
-    }, 1000);*/
 }
 
 
