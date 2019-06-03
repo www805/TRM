@@ -1041,6 +1041,7 @@ for (var i = 1; i < 50; i++) {
     addData2(false,0);
 }
 function main1() {
+    $("#main1").css( 'width',$(".layui-tab-title").width() );
     $(window).resize(function() {
         myChart.resize();
     });
@@ -1069,6 +1070,12 @@ function main1() {
             },
             show: true
         },
+        grid: {
+            x:30,
+            y:45,
+            x2:30,
+            y2:10,
+        },
         series: [{
             name: '心率',
             type: 'line',
@@ -1090,6 +1097,7 @@ function main1() {
 
 
 function main2() {
+    $("#main2").css( 'width',$(".layui-tab-title").width() );
    $(window).resize(function() {
         myChart2.resize();
     });
@@ -1117,6 +1125,12 @@ function main2() {
                 show: false
             },
             show: true
+        },
+        grid: {
+            x:30,
+            y:45,
+            x2:30,
+            y2:10,
         },
         series: [{
             name: '呼吸次数',
