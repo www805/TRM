@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * 设备控制的代理
  */
-@FeignClient(value="mc",url="192.168.17.178:8082/")
+@FeignClient(value="mc",url="localhost:8082/")
 public interface MeetingControl {
 
     @RequestMapping( value = "/mt/v1/getMCAsrTxtBack")
@@ -38,6 +38,11 @@ public interface MeetingControl {
     @RequestMapping("/mt/v1/getMCState")
     @ResponseBody
     public RResult getMCState(@RequestBody ReqParam<GetMCStateParam_out> param);
+
+
+    @RequestMapping("/mt/v1/getMCdata")
+    @ResponseBody
+    public RResult getMCdata(@RequestBody ReqParam<GetMCdataParam_out> param);
 
 
 }

@@ -1,16 +1,19 @@
-package com.avst.trm.v1.feignclient.mc.req;
+package com.avst.trm.v1.feignclient.mc.vo.param;
+
 
 /**
  * 用户通道关联其他的参数的集合，用于开启会议时用的
  * 暂时只有asr和测谎仪，有其他的也写在这里，这里是对每一个会议人员的处理的参数集合
  */
-public class TdAndUserAndOtherParam {
+public class TdAndUserAndOtherCacheParam {
+
+    private String mttduserssid;//会议用户设备通道ssid,联通人员通道和通道asr
 
     private String tdssid;//设备通道ssid
 
     private String fdssid;//设备ssid
 
-    private int userecord;//是否需要录像，1使用，-1 不使用
+    private int fdrecord;//是否需要录像，1使用，-1 不使用
 
     private String fdtype;////用的是哪一家的设备，avst公司自制的嵌入式设备fd_avst
 
@@ -20,17 +23,28 @@ public class TdAndUserAndOtherParam {
 
     private int grade;//1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
 
-    private int usepolygraph;//是否使用测谎仪,1使用，-1 不使用
+    private int usepolygraph;//是否使用测谎仪
 
-    private String polygraphtype;//测谎仪服务类型，
+    private int useasr;//是否使用语言识别，1使用，-1 不使用
 
     private String polygraphssid;//测谎仪ssid
 
-    private int useasr;//是否使用语言识别，1使用，-1 不使用
+    private String polygraphtype;//测谎仪服务类型，
 
     private String asrssid;//语言识别ssid
 
     private String asrtype;//语音服务类型，AVST
+
+    /*private MC_AsrThread mcAsrThread;//会议关于语音识别的线程，一个通道一个用户一个asr线程*/
+
+    private String asrid;//本次语音识别的唯一值，用于获取asr识别返回的TXT的标识
+
+    private long asrStartTime;//语音识别开始的时间
+
+    private boolean asrRun;//语音识别服务是否启动
+
+    //测谎仪有线程就写在这
+
 
     public String getPolygraphtype() {
         return polygraphtype;
@@ -40,12 +54,12 @@ public class TdAndUserAndOtherParam {
         this.polygraphtype = polygraphtype;
     }
 
-    public int getUserecord() {
-        return userecord;
+    public int getFdrecord() {
+        return fdrecord;
     }
 
-    public void setUserecord(int userecord) {
-        this.userecord = userecord;
+    public void setFdrecord(int fdrecord) {
+        this.fdrecord = fdrecord;
     }
 
     public String getFdssid() {
@@ -64,6 +78,22 @@ public class TdAndUserAndOtherParam {
         this.fdtype = fdtype;
     }
 
+    public boolean isAsrRun() {
+        return asrRun;
+    }
+
+    public void setAsrRun(boolean asrRun) {
+        this.asrRun = asrRun;
+    }
+
+    public long getAsrStartTime() {
+        return asrStartTime;
+    }
+
+    public void setAsrStartTime(long asrStartTime) {
+        this.asrStartTime = asrStartTime;
+    }
+
     public String getAsrtype() {
         return asrtype;
     }
@@ -71,6 +101,30 @@ public class TdAndUserAndOtherParam {
     public void setAsrtype(String asrtype) {
         this.asrtype = asrtype;
     }
+
+    public String getAsrid() {
+        return asrid;
+    }
+
+    public void setAsrid(String asrid) {
+        this.asrid = asrid;
+    }
+
+    public String getMttduserssid() {
+        return mttduserssid;
+    }
+
+    public void setMttduserssid(String mttduserssid) {
+        this.mttduserssid = mttduserssid;
+    }
+
+  /*  public MC_AsrThread getMcAsrThread() {
+        return mcAsrThread;
+    }
+
+    public void setMcAsrThread(MC_AsrThread mcAsrThread) {
+        this.mcAsrThread = mcAsrThread;
+    }*/
 
     public String getTdssid() {
         return tdssid;

@@ -68,6 +68,11 @@ function callbackgetHome(data) {
 var myChart;
 var myChart2;
 $(function () {
+    $(window).resize(function() {
+        myChart.resize();
+        myChart2.resize();
+    });
+
     myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {

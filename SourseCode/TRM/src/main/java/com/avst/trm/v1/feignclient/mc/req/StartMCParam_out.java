@@ -12,9 +12,9 @@ public class StartMCParam_out extends BaseReqParam{
 
     private String mtmodelssid;//会议模板ssid
 
-    private String ywSystemType;
-
     private List<TdAndUserAndOtherParam> tdList;
+
+    private String ywSystemType;//业务系统类型，TRM_AVST AVst版本的笔录系统
 
     public String getYwSystemType() {
         return ywSystemType;

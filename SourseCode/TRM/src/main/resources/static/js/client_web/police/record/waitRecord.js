@@ -270,7 +270,7 @@ function callbackgetTime(data) {
 }
 
 //开启情绪分析
-function random(lower, upper) {
+/*function random(lower, upper) {
     return Math.floor(Math.random() * (upper - lower)) + lower;
 }
 function openxthtml(obj) {
@@ -300,7 +300,7 @@ function openxthtml(obj) {
             layer.close(index);
         });
     }
-}
+}*/
 //编辑框下面按钮事件-------------------------------end
 
 
@@ -747,6 +747,45 @@ function callbackgetgetRecordrealing(data) {
     }
 }
 
+/**
+ * 监测数据
+ */
+function getPolygraphdata() {
+    if (isNotEmpty(mtssid)) {
+        var url="/v1/police/out/getPolygraphdata";
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetPolygraphdata);
+    }else{
+        console.log("身心监测信息未找到__"+mtssid);
+    }
+}
+function callbackgetPolygraphdata(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log(data)
+            addData(true);
+            myChart.setOption({
+                xAxis: {
+                    data: date1
+                },
+                series: [{
+                    name:'审讯监测',
+                    data: data1
+                }]
+            });
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
 
 /**
  * 视频地址切换 type 1主麦 type 2副麦
@@ -912,8 +951,130 @@ $(function () {
     $(window).on('pagehide', function(event) {
         addRecord(1);
     });
+    
+    window.setInterval(function (args) {
+        if (isNotEmpty(mtssid)) {
+            getPolygraphdata();
+        }
+    },1000);
+
 
 });
 
+var myChart;
+var init = 1;
+var date1 = [];
+var data1 = [Math.random() * 150];
+function addData(shift) {
+    init++;
+    date1.push(init);
+    data1.push(Math.random());
+
+    if (shift) {
+        date1.shift();
+        data1.shift();
+    }
+}
+
+
+
+for (var i = 1; i < 200; i++) {
+    addData();
+}
+
+function main1() {
+    $(window).resize(function() {
+        myChart.resize();
+    });
+    myChart = echarts.init(document.getElementById('main1'),'dark');
+    var option = {
+        xAxis: {
+            type: 'category',
+            splitLine: {
+                show: false
+            },
+            show: false,
+            data: date1
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            },
+            show: false
+        },
+        series: [{
+            name: '审讯监测',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            itemStyle : {
+                normal : {
+                    color:'#00FF00',
+                    lineStyle:{
+                        color:'#00FF00'
+                    }
+                }
+            },
+            data: data1
+        }]
+    };
+    myChart.setOption(option);
+
+}
+
+function main2() {
+   /* $(window).resize(function() {
+        myChart2.resize();
+    });
+    myChart2 = echarts.init(document.getElementById('main2'),'dark');
+    var option = {
+        xAxis: {
+            type: 'time',
+            splitLine: {
+                show: false
+            },
+            show: true
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            },
+            show: true
+        },
+        series: [{
+            name: '模拟数据',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            itemStyle : {
+                normal : {
+                    color:'#e60000',
+                    lineStyle:{
+                        color:'#e60000'
+                    }
+                }
+            },
+            data: data
+        }]
+    };
+    myChart2.setOption(option);
+
+    setInterval(function () {
+        addData(true);
+        myChart.setOption({
+            xAxis: {
+                data: date
+            },
+            series: [{
+                name:'成交',
+                data: data
+            }]
+        });
+    }, 1000);*/
+}
 
 

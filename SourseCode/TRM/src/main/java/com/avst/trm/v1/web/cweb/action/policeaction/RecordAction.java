@@ -290,13 +290,13 @@ public class RecordAction extends BaseAction {
      */
     public boolean checkToken( String token){
         String clientkey= CommonCache.getClientKey();
-        System.out.println("token:"+token+"------clientkey:"+clientkey);
+       /* System.out.println("token:"+token+"------clientkey:"+clientkey);
         if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
             return  false;
         }
         if (!token.trim().equals(clientkey.trim())){
             return  false;
-        }
+        }*/
         return  true;
     }
 

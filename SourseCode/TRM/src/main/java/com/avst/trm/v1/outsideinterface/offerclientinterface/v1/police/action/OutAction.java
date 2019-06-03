@@ -16,6 +16,7 @@ import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.itextpdf.text.Document;
@@ -223,6 +224,25 @@ public class OutAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+    /**
+     * //获取测谎心里分析数据
+     * @param param
+     * @return
+     */
+    @RequestMapping("getPolygraphdata")
+    public RResult getPolygraphdata(@RequestBody  ReqParam<GetPolygraphdataParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getPolygraphdata(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 

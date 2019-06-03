@@ -220,13 +220,13 @@ public class MainAction extends BaseAction {
      */
     public boolean checkToken( String token){
         String clientkey=CommonCache.getClientKey();
-        System.out.println("token:"+token+"------clientkey:"+clientkey);
-        if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
+       /* System.out.println("token:"+token+"------clientkey:"+clientkey);
+      if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
             return  false;
         }
         if (!token.trim().equals(clientkey.trim())){
             return  false;
-        }
+        }*/
         return  true;
     }
 

@@ -1,10 +1,7 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.conf.ASRType;
-import com.avst.trm.v1.common.conf.FDType;
-import com.avst.trm.v1.common.conf.MCType;
-import com.avst.trm.v1.common.conf.SSType;
+import com.avst.trm.v1.common.conf.*;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
@@ -19,15 +16,22 @@ import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
+import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import com.avst.trm.v1.feignclient.ec.vo.param.FDCacheParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
+import com.avst.trm.v1.feignclient.ec.vo.ph.CheckPolygraphStateVO;
+import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.feignclient.mc.vo.param.MCCacheParam;
+import com.avst.trm.v1.feignclient.mc.vo.param.TdAndUserAndOtherCacheParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
@@ -80,18 +84,25 @@ public class OutService  extends BaseService {
         Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
         base_type=base_typeMapper.selectOne(base_type);
+
         StartMCParam_out startMCParam_out=new StartRercordParam();
         startMCParam_out.setMcType(MCType.AVST);
         startMCParam_out.setModelbool(1);
         startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
         startMCParam_out.setYwSystemType("TRM_AVST");
+
+
+
+
         List<TdAndUserAndOtherParam> tdList=startRercordParam.getTdList();
         if (null!=tdList&&tdList.size()>0){
             for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
                 tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
                 tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
-                tdAndUserAndOtherParam.setUserecord(1);
-                tdAndUserAndOtherParam.setUseasr(1);
+                tdAndUserAndOtherParam.setPolygraphtype(PHType.CMCROSS);
+                tdAndUserAndOtherParam.setUserecord(1);//使用录像
+                tdAndUserAndOtherParam.setUsepolygraph(1);//使用测谎仪
+                tdAndUserAndOtherParam.setUseasr(1);//使用语音识别
             }
             startMCParam_out.setTdList(tdList);
         }
@@ -318,7 +329,93 @@ public class OutService  extends BaseService {
         return  result;
     }
 
+    public void getPolygraphdata(RResult result, ReqParam<GetPolygraphdataParam> param){
+        //请求参数转换
+        GetPolygraphdataParam getPolygraphdataParam = param.getParam();
+        if (null==getPolygraphdataParam){
+            System.out.println("参数为空");
+            result.setMessage("参数为空");
+            return ;
+        }
+        String mtssid=getPolygraphdataParam.getMtssid();
+        if (StringUtils.isBlank(mtssid)){
+            System.out.println("参数为空");
+            result.setMessage("参数为空");
+            return ;
+        }
 
+        //查询会议数据获取检测仪的ssid
+        String polygraphssid=null;
+        ReqParam<GetMCdataParam_out> param3=new ReqParam<>();
+        GetMCdataParam_out getMCStateParam_out=new GetMCdataParam_out();
+        getMCStateParam_out.setMcType(MCType.AVST);
+        getMCStateParam_out.setMtssid(mtssid);
+        param3.setParam(getMCStateParam_out);
+        RResult rr3=new RResult();
+        rr3=meetingControl.getMCdata(param3);
+        if (null != rr3 && rr3.getActioncode().equals(Code.SUCCESS.toString())) {
+            MCCacheParam mcCacheParam = gson.fromJson(gson.toJson(rr3.getData()),MCCacheParam.class);
+            if (null!=mcCacheParam&&null!=mcCacheParam.getTdList()&&mcCacheParam.getTdList().size()>0){
+                polygraphssid=mcCacheParam.getTdList().get(0).getPolygraphssid();
+            }
+        }else{
+            System.out.println("请求getMCdata__出错");
+        }
+
+        if (null==polygraphssid){
+            System.out.println("监测仪ssid为空__"+polygraphssid);
+            result.setMessage("系统异常");
+            return ;
+        }
+
+
+        //检查心跳仪器状态
+        ReqParam<CheckPolygraphStateParam> param1=new ReqParam<>();
+        CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
+        checkPolygraphStateParam.setPhType(PHType.CMCROSS);
+        checkPolygraphStateParam.setPolygraphssid(polygraphssid);
+        param1.setParam(checkPolygraphStateParam);
+
+        RResult<CheckPolygraphStateVO> rr1=new RResult();
+        rr1=equipmentControl.checkPolygraphState(param1);
+        Integer workstate=null;//约定一套状态指令，1成功，0初始化中，其他都为错误
+        if (null != rr1 && rr1.getActioncode().equals(Code.SUCCESS.toString())) {
+            CheckPolygraphStateVO checkPolygraphStateVO=gson.fromJson(gson.toJson(rr1.getData()),CheckPolygraphStateVO.class);
+            if (null!=checkPolygraphStateVO){
+                workstate=checkPolygraphStateVO.getWorkstate();
+                System.out.println("身心监测状态__"+workstate);
+                if (null!=workstate&&workstate==1){
+                    System.out.println("身心监测状态正常开始获取数据__"+workstate);
+
+                    //状态正常开始获取仪器数据
+                    ReqParam<GetPolygraphAnalysisParam> param2=new ReqParam<>();
+                    GetPolygraphAnalysisParam getPolygraphAnalysisParam=new GetPolygraphAnalysisParam();
+                    getPolygraphAnalysisParam.setPhType(PHType.CMCROSS);
+                    getPolygraphAnalysisParam.setPolygraphssid(polygraphssid);
+                    param2.setParam(getPolygraphAnalysisParam);
+                    RResult<GetPolygraphAnalysisVO> rr2=new RResult();
+                    rr2=equipmentControl.getPolygraphAnalysis(param2);
+                    if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
+                        GetPolygraphAnalysisVO getPolygraphAnalysisVO=gson.fromJson(gson.toJson(rr2.getData()),GetPolygraphAnalysisVO.class);
+                        System.out.println("成功获取到数据"+getPolygraphAnalysisVO.getT());
+                        result.setData(getPolygraphAnalysisVO);
+                        changeResultToSuccess(result);
+                        return;
+                    }else{
+                        System.out.println("请求getPolygraphAnalysise__出错");
+                    }
+
+                }else {
+                    System.out.println("身心监测状态__"+workstate);
+                    result.setMessage("获取监测数据中...请等待");
+                    return;
+                }
+            }
+        }else{
+            System.out.println("请求checkPolygraphState__出错");
+        }
+        return;
+    }
 
     //-------------------------------------------------------------------------------------------------------------------
 
