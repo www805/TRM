@@ -117,7 +117,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
             "from base_admininfo a " +
             "left join police_arraignment arr on a.ssid = arr.adminssid " +
             "left join police_record r on r.ssid = arr.recordssid " +
-            "where 1=1 ${ew.sqlSegment} " )
+            "where 1=1 ${ew.sqlSegment}" )
     public Base_arraignmentCount getArraignmentCount(@Param("ew") EntityWrapper ew);
 
 }
