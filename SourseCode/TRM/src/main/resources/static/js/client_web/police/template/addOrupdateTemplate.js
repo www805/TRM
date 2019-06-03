@@ -162,7 +162,11 @@ function callTemplateById(data){
                 }
                 $('#dataTable').html(tableProblems);
 
+                // console.log($("p[contenteditable=true]").html());
 
+                $("p[contenteditable='true']").on("blur",function(){
+                        trObj = null;
+                });
             }
         }
     }else{
@@ -476,6 +480,10 @@ function getDataAll() {
         templatetoproblemids[i] = problem;
     })
 
+    if(arr[0] == ""){
+        return;
+    }
+
     // console.log(templatetoproblemids);
 
     // var url = "/cweb/police/template/addTemplate";
@@ -538,13 +546,33 @@ function addTr(text, referanswer, id) {
     var trHtml = "<tr class=\"onetd font_red_color\" onclick='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
     // $("#testTable tbody").after(trHtml);
 
-    if(isNotEmpty(trObj)){
+    var htmlOBJ;
+
+    if(isNotEmpty(trObj) && null != trObj ){
         $(trObj).after(trHtml);
         // trObj = null;
+
+        htmlOBJ = $(trObj).next();
+        // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
     }else{
-        $("#testTable tbody").after(trHtml);
+        $("#dataTable").append(trHtml);
+        htmlOBJ = $("#dataTable tr").last();
+
+        // $("#dataTable tr").last().find("p").eq(1).focus().select();//下一行获取焦点
+        // $("#dataTable tr").last().find("p").eq(1).html("<div><br/></div>");
+        // $("#dataTable tr").last().find("p").eq(1).focus(function () {
+        //     $(this).html("<div><br/></div>");
+        // });
     }
 
+    htmlOBJ.find("p").eq(1).focus().select();//下一行获取焦点
+    // htmlOBJ.find("p").eq(1).focus(function () {
+    //     $(this).html("<div><br/></div>");
+    // });
+
+    $("p[contenteditable='true']").blur(function(){
+        trObj = null;
+    });
 }
 
 /**
@@ -564,30 +592,6 @@ function btn(obj) {
     }else{
         $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
     }
-}
-
-//导出word
-function exportWord(obj){
-    var url=getActionURL(getactionid_manage().waitRecord_exportWord);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: "123",
-        }
-    };
-    ajaxSubmitByJson(url, data, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var host = "http://localhost";
-                window.location.href = host + data;
-                layer.msg("导出成功,等待下载中...");
-            }
-        }else{
-            layer.msg("导出失败");
-        }
-        btn(obj);
-    });
 }
 
 function getQueryString(name) {

@@ -136,19 +136,19 @@
             <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;"><i class="layui-icon layui-icon-left"></i></button>
             <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" onclick="getDataAll();">保存</button>
             <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
-            <button class="layui-btn layui-btn-normal" onclick="alert(trObj)" style="margin-left: 0px;">导入</button>
+            <!--<button class="layui-btn layui-btn-normal" onclick="alert(trObj)" style="margin-left: 0px;">导入</button>-->
 
-            <div class="layui-inline" style="margin-bottom:0">
-                <div class="layui-unselect layui-form-select" name="btn_div">
-                    <div class="layui-select-title">
-                        <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
-                    </div>
-                    <dl class="layui-anim layui-anim-upbit" >
-                        <dd onclick="exportWord(this);">导出word</dd>
-                        <!--<dd onclick="exportEcxcel(this);">导出Ecxcel</dd>-->
-                    </dl>
-                </div>
-            </div>
+            <!--<div class="layui-inline" style="margin-bottom:0">-->
+                <!--<div class="layui-unselect layui-form-select" name="btn_div">-->
+                    <!--<div class="layui-select-title">-->
+                        <!--<button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>-->
+                    <!--</div>-->
+                    <!--<dl class="layui-anim layui-anim-upbit" >-->
+                        <!--<dd onclick="exportWord(this);">导出word</dd>-->
+                        <!--&lt;!&ndash;<dd onclick="exportEcxcel(this);">导出Ecxcel</dd>&ndash;&gt;-->
+                    <!--</dl>-->
+                <!--</div>-->
+            <!--</div>-->
 
             <!--<button class="layui-btn layui-btn-normal " style="margin-left: 0px;"><i class="layui-icon layui-icon-up" ></i>上移</button>-->
             <!--<button class="layui-btn layui-btn-normal " style="margin-left: 0px;"><i class="layui-icon layui-icon-down"></i>下移</button>-->
@@ -186,7 +186,7 @@
                         <col>
                         <col width="150">
                     </colgroup>
-                    <tbody id="dataTable" onblur="trObj = null;"></tbody>
+                    <tbody id="dataTable"></tbody>
                 </table>
             </div>
 
@@ -254,12 +254,17 @@
             $("#templateTitle").css("background-color","#FFFFFF");
         });
 
-        console.log($("p[contenteditable=true]").html());
+        // console.log($("p[contenteditable=true]").html());
         //
         // $("p[contenteditable='true']").click(function(){
         //     alert(26666);
         //     trObj = null;
         // });
+
+        // $("p").on('keyup',function () {
+        //     alert(26666);
+        // });
+
 
 
         document.onkeydown = function (event) {

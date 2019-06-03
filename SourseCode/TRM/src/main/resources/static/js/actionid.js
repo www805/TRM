@@ -160,12 +160,15 @@ function getactionid_manage() {
 
         templateIndex_getTemplates: "templateIndex_getTemplates",
         templateIndex_getTemplateTypes: "templateIndex_getTemplateTypes",
+        templateIndex_exportWord: "templateIndex_exportWord",
+        templateIndex_exportExcel: "templateIndex_exportExcel",
 
         addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
         addOrupdateTemplate_getTemplateTypes:"addOrupdateTemplate_getTemplateTypes",
         addOrupdateTemplate_getProblems: "addOrupdateTemplate_getProblems",
         addOrupdateTemplate_getTemplateById: "addOrupdateTemplate_getTemplateById",
         addOrupdateTemplate_addTemplate: "addOrupdateTemplate_addTemplate",
+
 
         addOrupdateProblem_addProblem: "addOrupdateProblem_addProblem",
         addOrupdateTemplate_updateProblem: "addOrupdateTemplate_updateProblem",

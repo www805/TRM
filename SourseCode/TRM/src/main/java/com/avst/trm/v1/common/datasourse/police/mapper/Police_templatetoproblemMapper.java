@@ -24,4 +24,6 @@ public interface Police_templatetoproblemMapper extends BaseMapper<Police_templa
             " left join police_problem b on p.problemssid = b.id where 1=1 ${ew.sqlSegment} ")
     List<TemplateToProblem> getTemplateToProblems(@Param("ew") EntityWrapper ew);
 
+
+
 }

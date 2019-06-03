@@ -406,7 +406,7 @@ public class TemplateAction extends MainAction {
      * @return
      */
     @RequestMapping(value = "/exportWord")
-    public RResult exportWord(@RequestBody ReqParam<ExportWordParam> param){
+    public RResult exportWord(@RequestBody ReqParam<TemplateWordParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -419,7 +419,24 @@ public class TemplateAction extends MainAction {
         return  result;
     }
 
-
+    /**
+     * 导出Ecxcel
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/exportExcel")
+    public RResult exportExcel(@RequestBody ReqParam<TemplateWordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.templateExcel(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
 
 
 

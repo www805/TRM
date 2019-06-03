@@ -147,6 +147,63 @@ function btn(obj) {
     }
 }
 
+
+//导出word
+function exportWord(obj){
+    var url=getActionURL(getactionid_manage().templateIndex_exportWord);
+    // var url = "/cweb/police/template/exportWord";
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            templatessid: editSsid,
+        }
+    };
+
+    // console.log(url);
+    ajaxSubmitByJson(url, data, function (data) {
+        console.log(data);
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var host = "http://localhost";
+                window.location.href = host + data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        // btn(obj);
+    });
+}
+
+//导出Excel
+function exportEcxcel(obj){
+    var url=getActionURL(getactionid_manage().templateIndex_exportExcel);
+    // var url = "/cweb/police/template/exportWord";
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            templatessid: editSsid,
+        }
+    };
+
+    // console.log(url);
+    ajaxSubmitByJson(url, data, function (data) {
+        console.log(data);
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var host = "http://localhost";
+                window.location.href = host + data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        // btn(obj);
+    });
+}
+
 function getTemplateById(id) {
 
     if (pagelist[id]) {

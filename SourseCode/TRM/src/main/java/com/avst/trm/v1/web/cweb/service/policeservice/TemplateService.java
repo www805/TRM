@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -18,6 +19,9 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -813,14 +817,48 @@ public class TemplateService extends BaseService {
      * @param result
      * @param param
      */
-    public void templateWord(RResult result, ReqParam<ExportWordParam> param) {
+    public void templateWord(RResult result, ReqParam<TemplateWordParam> param) {
 
+        TemplateWordParam wordParam = param.getParam();
+
+        //查出数据放这里
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("ssid", wordParam.getTemplatessid());
+
+        Template template = police_templateMapper.getTemplateById(ew);
+
+        if (null==template){
+            result.setMessage("未找到该模板信息");
+            return;
+        }
+
+        //添加题目列表
+        GetTemplateToProblemsParam getTemplateToProblemsParam=new GetTemplateToProblemsParam();
+        getTemplateToProblemsParam.setTemplateid(template.getId());
+
+        EntityWrapper ew2 = new EntityWrapper();
+        if (null != getTemplateToProblemsParam.getTemplateid()) {
+            ew2.eq("t.id", getTemplateToProblemsParam.getTemplateid());
+        }
+
+        List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(ew2);
+        if (null!=templateToProblems&&templateToProblems.size()>0){
+            template.setTemplateToProblems(templateToProblems);
+        }
 
         Map<String,Object> dataMap = new HashMap<String,Object>();
-//        dataMap.put("title", recordtypename==null?"":recordtypename);
-        dataMap.put("title", "模板一");
-        dataMap.put("wen", "你是哪里人？");
-        dataMap.put("da", "中国人");
+        dataMap.put("title",template.getTitle()==null?"":template.getTitle());
+
+        List<ProblemVO> arrayList = new ArrayList<>();
+
+        for (TemplateToProblem templateToProblem : templateToProblems) {
+            ProblemVO vo = new ProblemVO();
+            vo.setWen("问：" + templateToProblem.getProblem());
+            vo.setDa("答：" + templateToProblem.getReferanswer());
+            arrayList.add(vo);
+        }
+
+        dataMap.put("arrayList",arrayList);
 
         try {
 
@@ -830,7 +868,7 @@ public class TemplateService extends BaseService {
             configuration.setClassForTemplateLoading(RecordService.class, "/config");
 
             //以utf-8的编码读取ftl文件
-            freemarker.template.Template template = configuration.getTemplate("template_word.xml","UTF-8");
+            freemarker.template.Template templateDamo = configuration.getTemplate("template_word.xml","UTF-8");
 
             String filePathNew = filePath + "/zips";
             File fileMkdir = new File(filePathNew);
@@ -839,11 +877,11 @@ public class TemplateService extends BaseService {
                 fileMkdir.mkdirs();
             }
 //            String filename=record.getRecordname();
-            String filename="模板一";
+            String filename=template.getTitle()==null?"笔录模板":template.getTitle();
             String path = filePathNew + "/"+filename+".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
-            template.process(dataMap, out);
+            templateDamo.process(dataMap, out);
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
@@ -854,6 +892,110 @@ public class TemplateService extends BaseService {
             e.printStackTrace();
         } catch (TemplateException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 生成Ecxcel文件
+     * @param result
+     * @param param
+     */
+    public void templateExcel(RResult result, ReqParam<TemplateWordParam> param) {
+
+        TemplateWordParam wordParam = param.getParam();
+
+        //查出数据放这里
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("ssid", wordParam.getTemplatessid());
+
+        Template template = police_templateMapper.getTemplateById(ew);
+
+        if (null==template){
+            result.setMessage("未找到该模板信息");
+            return;
+        }
+
+        //添加题目列表
+        GetTemplateToProblemsParam getTemplateToProblemsParam=new GetTemplateToProblemsParam();
+        getTemplateToProblemsParam.setTemplateid(template.getId());
+
+        EntityWrapper ew2 = new EntityWrapper();
+        if (null != getTemplateToProblemsParam.getTemplateid()) {
+            ew2.eq("t.id", getTemplateToProblemsParam.getTemplateid());
+        }
+
+        List<TemplateToProblem> templateToProblems=police_templatetoproblemMapper.getTemplateToProblems(ew2);
+        if (null!=templateToProblems&&templateToProblems.size()>0){
+            template.setTemplateToProblems(templateToProblems);
+        }
+
+        Map<String,Object> dataMap = new HashMap<String,Object>();
+        dataMap.put("title",template.getTitle()==null?"":template.getTitle());
+
+        List<ProblemVO> arrayList = new ArrayList<>();
+
+        // 第一步，创建一个webbook，对应一个Excel文件
+        HSSFWorkbook wb = new HSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        HSSFSheet sheet = wb.createSheet(template.getTitle() == null ? "笔录模板" : template.getTitle());
+        sheet.setColumnWidth(0, 50000);
+        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+        HSSFRow row = sheet.createRow((int) 0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HorizontalAlignment.CENTER); // 创建一个居中格式
+
+        HSSFCell cell = row.createCell((short) 0);
+        cell.setCellValue(template.getTitle() == null ? "笔录模板" : template.getTitle());
+        cell.setCellStyle(style);
+
+        HSSFCellStyle style2 = wb.createCellStyle();
+        HSSFFont font=wb.createFont();
+        font.setColor(HSSFColor.RED.index);
+        style2.setFont(font);
+
+        HSSFCellStyle style3 = wb.createCellStyle();
+        HSSFFont font2=wb.createFont();
+        font2.setColor(HSSFColor.BLUE.index);
+        style3.setFont(font2);
+
+        int i = 1;
+        for (TemplateToProblem templateToProblem : templateToProblems) {
+            row = sheet.createRow(i++);
+            HSSFCell cell2 = row.createCell((short) 0);
+            cell2.setCellValue("问：" + templateToProblem.getProblem()); // 问题
+            cell2.setCellStyle(style2);
+            row = sheet.createRow(i++);
+            HSSFCell cell3 = row.createCell((short) 0);
+            cell3.setCellValue("答：" + templateToProblem.getReferanswer()); // 参考答案
+            cell3.setCellStyle(style3);
+        }
+
+        try {
+            //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
+            // 创建目录
+            String filePathNew = filePath + "/zips/";
+            File fileMkdir = new File(filePathNew);
+            if (!fileMkdir.exists()) {
+                //如果不存在，就创建该目录
+                fileMkdir.mkdirs();
+            }
+
+            String path = filePathNew + (template.getTitle() == null ? "模板" : template.getTitle() + ".xls");
+            FileOutputStream fout = new FileOutputStream(path);
+            wb.write(fout);
+            fout.close();
+
+            String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            result.setData(uploadpath);
+
+            this.changeResultToSuccess(result);
+            result.setMessage("Excel导出成功，请稍后...");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.setMessage("获取下载案件失败");
         }
 
     }
