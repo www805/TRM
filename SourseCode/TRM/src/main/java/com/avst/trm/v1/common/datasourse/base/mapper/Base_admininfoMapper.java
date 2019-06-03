@@ -84,7 +84,8 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
     List<AdminAndWorkunit> getAdminListAndWorkunit(@Param("ew") EntityWrapper ew);
 
     /******************笔录统计******************/
-    @Select("select count(distinct a.id) from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+//    @Select("select count(distinct a.id) from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+    @Select("select count(distinct a.id) from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
             "where 1=1 ${ew.sqlSegment} " )
     public int getArraignmentCountCount(@Param("ew") EntityWrapper ew);
 
@@ -92,7 +93,8 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      * 笔录统计
      * @return
      */
-    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+//    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
+    @Select("select * from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
             "where 1=1 ${ew.sqlSegment} GROUP BY a.id " )
     public List<Base_arraignmentCount> getArraignmentCountList(Page page, @Param("ew") EntityWrapper ew);
 
@@ -106,10 +108,15 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
     public List<Base_arraignmentCount> getArraignmentCountListNoPage(@Param("ew") EntityWrapper ew);
 
 
-    @Select("select count(re.id) recordCount,count(re.id) recordrealCount ,ifnull(sum(re.recordtime),0) recordtimeCount,ifnull(sum(r.time),0) timeCount, ifnull(sum(CHAR_LENGTH(r.translatext)),0) translatextCount " +
+//    @Select("select count(re.id) recordCount,count(re.id) recordrealCount ,ifnull(sum(re.recordtime),0) recordtimeCount,ifnull(sum(r.time),0) timeCount, ifnull(sum(CHAR_LENGTH(r.translatext)),0) translatextCount " +
+//            "from base_admininfo a " +
+//            "left join police_recordreal r on a.ssid = r.userssid " +
+//            "left join police_record re on re.id = r.recordssid " +
+//            "where 1=1 ${ew.sqlSegment} " )
+    @Select("select count(arr.id) recordCount, count(arr.id) recordrealCount,ifnull(sum(r.recordtime),0) recordtimeCount " +
             "from base_admininfo a " +
-            "left join police_recordreal r on a.ssid = r.userssid " +
-            "left join police_record re on re.id = r.recordssid " +
+            "left join police_arraignment arr on a.ssid = arr.adminssid " +
+            "left join police_record r on r.ssid = arr.recordssid " +
             "where 1=1 ${ew.sqlSegment} " )
     public Base_arraignmentCount getArraignmentCount(@Param("ew") EntityWrapper ew);
 

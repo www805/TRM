@@ -126,10 +126,10 @@ public class Arraignment_countService extends BaseService {
             if(null!=param){
 
                 if(StringUtils.isNotEmpty(param.getTimes())){
-                    ew.ge("r.time",param.getTimes());
+                    ew.ge("r.recordtime",param.getTimes());
                 }
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
-                    ew.between("r.createtime", param.getStarttime(), param.getEndtime());
+                    ew.between("arr.createtime", param.getStarttime(), param.getEndtime());
                 }
 
             }
@@ -151,11 +151,11 @@ public class Arraignment_countService extends BaseService {
 
                     arraignmentCount = arraignmentCountMapper.getArraignmentCount(ew2);
 
-                    list.get(i).setRecordCount(arraignmentCount.getRecordCount());
-                    list.get(i).setRecordrealCount(arraignmentCount.getRecordrealCount());
-                    list.get(i).setRecordtimeCount(arraignmentCount.getRecordtimeCount());
-                    list.get(i).setTimeCount(arraignmentCount.getTimeCount());
-                    list.get(i).setTranslatextCount(arraignmentCount.getTranslatextCount());
+                    list.get(i).setRecordCount(arraignmentCount.getRecordCount()); //笔录总量
+                    list.get(i).setRecordrealCount(arraignmentCount.getRecordrealCount());  //语音笔录总量
+                    list.get(i).setRecordtimeCount(arraignmentCount.getRecordtimeCount());  //笔录总时长
+//                    list.get(i).setTimeCount(arraignmentCount.getTimeCount());
+//                    list.get(i).setTranslatextCount(arraignmentCount.getTranslatextCount());
                 }
 
             }
