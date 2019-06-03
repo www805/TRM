@@ -7,7 +7,6 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
-import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -29,14 +28,13 @@ import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.feignclient.mc.vo.StartMCVO;
 import com.avst.trm.v1.feignclient.mc.vo.param.MCCacheParam;
-import com.avst.trm.v1.feignclient.mc.vo.param.TdAndUserAndOtherCacheParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.StartMCVO;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
@@ -109,9 +107,9 @@ public class OutService  extends BaseService {
         ReqParam<StartMCParam_out> param1=new ReqParam<>();
         param1.setParam(startMCParam_out);
         try {
-            result = meetingControl.startMC(param1);
-            if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                StartMCVO startMCVO=gson.fromJson(gson.toJson(result.getData()), StartMCVO.class);
+           RResult rr = meetingControl.startMC(param1);
+            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                StartMCVO startMCVO=gson.fromJson(gson.toJson(rr.getData()), StartMCVO.class);
                 String mtssid=startMCVO.getMtssid();
 
                 //根据recordssid获取提讯
@@ -126,6 +124,9 @@ public class OutService  extends BaseService {
                     }
                     System.out.println("startMC开启成功__");
                 }
+
+                result.setData(startMCVO);
+                changeResultToSuccess(result);
             }else{
                 System.out.println("startMC开启失败__");
             }
