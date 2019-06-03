@@ -365,8 +365,8 @@ public class OutService  extends BaseService {
 
         if (null==polygraphssid){
             System.out.println("监测仪ssid为空__"+polygraphssid);
-            result.setMessage("系统异常");
-            return ;
+            changeResultToSuccess(result);
+            return;
         }
 
 
@@ -408,7 +408,7 @@ public class OutService  extends BaseService {
 
                 }else {
                     System.out.println("身心监测状态__"+workstate);
-                    result.setMessage("获取监测数据中...请等待");
+                    changeResultToSuccess(result);
                     return;
                 }
             }
@@ -488,7 +488,7 @@ public class OutService  extends BaseService {
                changeResultToSuccess(result);
            }else{
                System.out.println("数据存储状态异常__"+state);
-               result.setMessage("获取直播中...请等待");
+               result.setMessage("获取点播中...请等待");
                return;
            }
         }else{
