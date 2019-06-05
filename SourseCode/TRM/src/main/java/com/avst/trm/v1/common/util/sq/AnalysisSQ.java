@@ -181,11 +181,11 @@ public class AnalysisSQ {
             String foreverBool=sqcodearr[1];
             String cpuCode=sqcodearr[3];
             String localcpuCode=NetTool.getLocalMac();
-            if(!localcpuCode.equals(cpuCode)){
-                System.out.println(localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
-                System.out.println("授权机器码不一致");
-                return -1;
-            }
+//            if(!localcpuCode.equals(cpuCode)){
+//                System.out.println(localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
+//                System.out.println("授权机器码不一致");
+//                return -1;
+//            }
 
             if(foreverBool.equals("true")){
                 return 1001;

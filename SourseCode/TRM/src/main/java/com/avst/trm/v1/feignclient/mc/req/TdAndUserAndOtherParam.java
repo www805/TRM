@@ -22,9 +22,9 @@ public class TdAndUserAndOtherParam {
 
     private int usepolygraph;//是否使用测谎仪,1使用，-1 不使用
 
-    private String polygraphtype;//测谎仪服务类型，
-
     private String polygraphssid;//测谎仪ssid
+
+    private String polygraphtype;//测谎仪服务类型，
 
     private int useasr;//是否使用语言识别，1使用，-1 不使用
 

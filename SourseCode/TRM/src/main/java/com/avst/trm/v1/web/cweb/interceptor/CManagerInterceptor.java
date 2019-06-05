@@ -58,20 +58,21 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             disbool=false;
         }
         String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
-        String forstpageid=basepath+"/gotologin";
+        String firstinterface=basepath+"/gotologin";
         //判断session中的用户信息是否可以通过
         if(null==session.getAttribute(Constant.MANAGE_CLIENT)){
             disbool=false;
         }else{
-            String pageid=initVO.getFirstpageid();
-            forstpageid=basepath+ ( pageid.startsWith("/") ? pageid : ("/"+pageid) );
+            String interfaceurl=initVO.getFirstinterface();
+            firstinterface= ( interfaceurl.startsWith("/") ? interfaceurl : ("/"+interfaceurl) );
         }
 
 //        disbool = true;  //暂时让他成功
-        if (disbool) {
+        if (disbool&&!url.equals("/cweb/")) {
             return true;  //通过拦截器，继续执行请求
         } else {//跳转登录界面
-            request.getRequestDispatcher(forstpageid).forward(request, response);
+            System.out.println(firstinterface+":firstinterface");
+            request.getRequestDispatcher(firstinterface).forward(request, response);
             return false;  //没有通过拦截器，返回登录页面
         }
     }

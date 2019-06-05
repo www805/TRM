@@ -64,7 +64,7 @@ private static String getLocalMac_win() throws SocketException {
 
 			if(i!=0) {
 
-				sb.append("-");
+				sb.append("");
 
 			}
 

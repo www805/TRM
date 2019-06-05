@@ -21,10 +21,29 @@ public class InitVO {
 
     private String firstpageid;//客户端显示的第一个页面
 
+    private String firstactionid;//客户端显示的第一个页面的第一个动作
+
+    private String firstinterface;//客户端显示的第一个页面的第一个动作对应的接口
+
     private List<PageVO> pageList;//客户端需要显示的页面以及对应请求的处理
 
     //还有一个类用于显示客户端系统配置，客户端名称、logo地址、配色方案等
 
+    public String getFirstinterface() {
+        return firstinterface;
+    }
+
+    public void setFirstinterface(String firstinterface) {
+        this.firstinterface = firstinterface;
+    }
+
+    public String getFirstactionid() {
+        return firstactionid;
+    }
+
+    public void setFirstactionid(String firstactionid) {
+        this.firstactionid = firstactionid;
+    }
 
     public String getServiceType() {
         return serviceType;

@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,9 @@ public class Scheduler {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     //每隔2秒执行一次
-    @Scheduled(fixedRate = 200000)
+    @Scheduled(fixedRate = 20000)
     public void testTasks() {
+
         System.out.println("定时任务执行时间：" + dateFormat.format(new Date()));
     }
 

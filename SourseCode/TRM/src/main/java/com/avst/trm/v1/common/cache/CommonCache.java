@@ -282,6 +282,10 @@ public class CommonCache {
                             actionVO.setNextPageId(ap.getNextpageid());
                             actionVO.setGotopageOrRefresh(ap.getTopagebool());
                             actionVO.setActionId(ap.getActionid());
+                            if(null!=ap.getFirstaction()&&ap.getFirstaction()==1){
+                                initvo.setFirstactionid(ap.getActionid());
+                                initvo.setFirstinterface(ap.getInterfaceurl());
+                            }
                             actionList.add(actionVO);
                         }
                         pageVO.setActionList(actionList);

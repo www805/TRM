@@ -39,8 +39,7 @@ public class TrmApplication {
 
         //注册监听器
         SpringApplication application = new SpringApplication(TrmApplication.class);
-        application.addListeners(new PropertiesListener("application.properties"));
-
+        application.addListeners(new PropertiesListener("application.properties","trm.properties"));
         application.run( args);
 
     }

@@ -49,13 +49,14 @@ public class CreateSQ {
         // 当前的节点服务器和该节点的下级服务器（客户端服务器）UnitCode一致，只是SortNum不同，节点是0，其他自动在上一个数值上加1
         sqEntity.setUnitCode("avst");
         sqEntity.setSqDay(10000);
-        sqEntity.setSortNum(4);
+        sqEntity.setSortNum(6);
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(true);
-        sqEntity.setClientName("测试客户端服务器");
-        String address="BC-EE-7B-E2-68-D8";
+        sqEntity.setClientName("销售测试客户端服务器160");
+        String address="00E14C68051C";
         address=AnalysisSQ.encode_uid(address);
         sqEntity.setCpuCode(address);
+        System.out.println();
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
         System.out.println(deSQ(sqEntity,"E:\\trmshouquan"));
