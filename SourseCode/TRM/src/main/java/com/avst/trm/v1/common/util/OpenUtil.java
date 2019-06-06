@@ -1049,8 +1049,12 @@ public static String numtoStr(int digit,Integer num){
 		try {
 			String filePath = System.getProperty("user.dir");
 
-			if(filePath.endsWith("trm")||filePath.endsWith("TRM")){//这种情况只会在编辑器下才会有
-				filePath=filePath.substring(0,filePath.lastIndexOf("\\"));//win的截取方式
+			if(filePath.endsWith("trm")||filePath.endsWith("TRM")){
+				if(filePath.indexOf("/") > -1){//Linux截取
+					filePath=filePath.substring(0,filePath.lastIndexOf("/"));//win的截取方式
+				}else{
+					filePath=filePath.substring(0,filePath.lastIndexOf("\\"));//win的截取方式
+				}
 			}
 
 			System.out.println(filePath);
