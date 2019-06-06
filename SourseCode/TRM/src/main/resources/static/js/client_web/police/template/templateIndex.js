@@ -161,7 +161,7 @@ function exportWord(obj){
 
     // console.log(url);
     ajaxSubmitByJson(url, data, function (data) {
-        console.log(data);
+        // console.log(data);
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
@@ -172,7 +172,7 @@ function exportWord(obj){
         }else{
             layer.msg("导出失败");
         }
-        // btn(obj);
+        btn(obj);
     });
 }
 
@@ -200,7 +200,7 @@ function exportEcxcel(obj){
         }else{
             layer.msg("导出失败");
         }
-        // btn(obj);
+        btn(obj);
     });
 }
 
@@ -213,6 +213,7 @@ function getTemplateById(id) {
         templateId = pagelist[id].id;
 
         $('#templateTitle').html(pagelist[id].title);
+        // $('#leixing').html("类型：" + pagelist[id].templatetype);
         var templateToProblems = pagelist[id].templateToProblems;
         var tableProblems = '';
         $('#tableProblems').html(tableProblems);

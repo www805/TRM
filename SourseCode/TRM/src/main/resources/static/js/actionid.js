@@ -162,6 +162,7 @@ function getactionid_manage() {
         templateIndex_getTemplateTypes: "templateIndex_getTemplateTypes",
         templateIndex_exportWord: "templateIndex_exportWord",
         templateIndex_exportExcel: "templateIndex_exportExcel",
+        templateIndex_uploadFile: "templateIndex_uploadFile",
 
         addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
         addOrupdateTemplate_getTemplateTypes:"addOrupdateTemplate_getTemplateTypes",

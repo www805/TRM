@@ -36,6 +36,8 @@ public class Template {
      */
     private String ssid;
 
+    private String templatetype;
+
     private String templatetypessid;
 
     public String getTemplatetypessid() {
@@ -52,6 +54,14 @@ public class Template {
 
     public void setSsid(String ssid) {
         this.ssid = ssid;
+    }
+
+    public String getTemplatetype() {
+        return templatetype;
+    }
+
+    public void setTemplatetype(String templatetype) {
+        this.templatetype = templatetype;
     }
 
     /**

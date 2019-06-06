@@ -12,6 +12,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,19 +20,37 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.spring5.context.SpringContextUtils;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 @Service("templateService2")
 public class TemplateService extends BaseService {
     private Gson gson = new Gson();
+
+    // 缓存文件头信息-文件头信息
+    private static final HashMap<String, String> mFileTypes = new HashMap<String, String>();
+    static {
+        mFileTypes.put("D0CF11E0", "doc");//3C3F786D
+        mFileTypes.put("D0CF11E0", "xls");//excel2003版本文件
+        mFileTypes.put("504B0304", "docx");
+        mFileTypes.put("504B0304", "xlsx");//excel2007以上版本文件
+    }
 
     @Autowired
     private Police_templateMapper police_templateMapper;
@@ -97,6 +116,15 @@ public class TemplateService extends BaseService {
                 if (null!=templateToProblems&&templateToProblems.size()>0){
                     template.setTemplateToProblems(templateToProblems);
                 }
+
+                //获取模板类型
+                EntityWrapper ew3 = new EntityWrapper();
+                ew3.eq("t.id", template.getId());
+                ew3.eq("p.id", getTemplatesParam.getTemplatetypeid());
+
+                String templatetype = police_templateMapper.getTemplatetype(ew3);
+                template.setTemplatetype(templatetype);
+
             }
         }
         getTemplatesVO.setPagelist(templates);
@@ -295,7 +323,6 @@ public class TemplateService extends BaseService {
                 templatetoproblem.setCreatetime(new Date());
 
                 templatetoproblem.setTemplatessid(addTemplateParam.getId() + "");//模板id
-                templatetoproblem.setProblemssid(problem.getId() + "");//题目id
                 templatetoproblem.setOrdernum(problem.getOrdernum());
 
                 //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
@@ -325,9 +352,10 @@ public class TemplateService extends BaseService {
                     }else{
                         EntityWrapper ewProblem=new EntityWrapper();
                         ewProblem.eq("id",problem.getId());
-                        Integer update = police_problemMapper.update(problem, ewProblem);//新增问题
+                        Integer update = police_problemMapper.update(problem, ewProblem);//修改问题
                     }
 
+                    templatetoproblem.setProblemssid(problem.getId() + "");//题目id
                     templatetoproblem.setSsid(OpenUtil.getUUID_32());
                     int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
                     System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
@@ -868,7 +896,7 @@ public class TemplateService extends BaseService {
             configuration.setClassForTemplateLoading(RecordService.class, "/config");
 
             //以utf-8的编码读取ftl文件
-            freemarker.template.Template templateDamo = configuration.getTemplate("template_word.xml","UTF-8");
+            freemarker.template.Template templateDamo = configuration.getTemplate("template_word.ftl","UTF-8");
 
             String filePathNew = filePath + "/zips";
             File fileMkdir = new File(filePathNew);
@@ -882,6 +910,7 @@ public class TemplateService extends BaseService {
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             templateDamo.process(dataMap, out);
+            out.flush();
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
@@ -966,10 +995,10 @@ public class TemplateService extends BaseService {
             HSSFCell cell2 = row.createCell((short) 0);
             cell2.setCellValue("问：" + templateToProblem.getProblem()); // 问题
             cell2.setCellStyle(style2);
-            row = sheet.createRow(i++);
-            HSSFCell cell3 = row.createCell((short) 0);
-            cell3.setCellValue("答：" + templateToProblem.getReferanswer()); // 参考答案
-            cell3.setCellStyle(style3);
+//            row = sheet.createRow(i++);
+//            HSSFCell cell3 = row.createCell((short) 0);
+//            cell3.setCellValue("答：" + templateToProblem.getReferanswer()); // 参考答案
+//            cell3.setCellStyle(style3);
         }
 
         try {
@@ -1000,13 +1029,235 @@ public class TemplateService extends BaseService {
 
     }
 
+    /**
+     * 导入模板
+     * @param result
+     * @param file
+     */
+    public void uploadFile(RResult result, MultipartFile file) {
+        if (file.isEmpty()) {
+            result.setMessage("上传失败，请选择文件");
+        }
+        List<String> list = new ArrayList<>();
+        InputStream fis = null;
+        try {
+            fis = file.getInputStream();
+
+//            String fileHeader = getFileHeader(fis);
+//            System.out.println("fileHeader : " + fileHeader);
+
+            String textFileName=file.getOriginalFilename();
+            if(textFileName.endsWith(".doc")) { //判断文件格式
+                System.out.println(".doc");
+                result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+                return;
+//                WordExtractor wordExtractor = new WordExtractor(fis);//使用HWPF组件中WordExtractor类从Word文档中提取文本或段落
+//                for(String words : wordExtractor.getParagraphText()){//获取段落内容
+//                    words = words.trim();
+//                    if (!"".equals(words.trim())) {
+//                        list.add(words);
+//                    }
+////                    System.out.println(words);
+//                }
+
+            }else if(textFileName.endsWith(".docx")){
+                System.out.println(".docx");
+                System.out.println(".docx");
+                result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+                return;
+
+//                XWPFDocument xwpfDocument = new XWPFDocument(fis);
+//                Iterator<XWPFParagraph> iterator = xwpfDocument.getParagraphsIterator();
+//                XWPFParagraph next;
+//                while (iterator.hasNext()){
+//                    next = iterator.next();
+//                    String text = next.getText().trim();
+//                    if (!"".equals(text)) {
+//                        list.add(text);
+//                    }
+////                    System.out.println(next.getText());
+//                }
+
+            }else if(textFileName.endsWith(".xlsx") || textFileName.endsWith(".xls")){
+                System.out.println(".xlsx  .xls");
+
+                Workbook workbook = new HSSFWorkbook(file.getInputStream());
+                //获取所有的工作表的的数量
+                int numOfSheet = workbook.getNumberOfSheets();
+
+                //遍历这个这些表
+                for (int i = 0; i < numOfSheet; i++) {
+                    //获取一个sheet也就是一个工作簿
+                    Sheet sheet = workbook.getSheetAt(i);
+                    int lastRowNum = sheet.getLastRowNum();
+                    //从第一行开始第一行一般是标题
+                    for (int j = 0; j <= lastRowNum; j++) {
+                        Row row = sheet.getRow(j);
+                        //获取电话单元格
+                        if (row.getCell(0) != null) {
+                            row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                            String longName = row.getCell(0).getStringCellValue();
+
+                            String text = longName.trim();
+                            if (!"".equals(text)) {
+                                list.add(text);
+                            }
+//                            System.out.println(longName);
+                        }
+                    }
+                }
+
+            }else{
+                result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+                return;
+            }
+        } catch (IOException e) {
+            result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+            e.printStackTrace();
+            return;
+        }finally {
+            if (null != fis) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        System.out.println(list);
+        //插入模板表
+        if(null != list && list.size() > 0){
+            String title = "";
+            String problem = "";
+            int templateID = 0; //模板id
+            for(int i=0;i<list.size();i++){
+                if(i==0){
+                    title = list.get(0);
+                    Police_template police_template = new Police_template();
+                    police_template.setTitle(title);
+                    Police_template selectOne = police_templateMapper.selectOne(police_template);
+
+                    if(null == selectOne){
+                        police_template.setCreatetime(new Date());
+                        police_template.setSsid(OpenUtil.getUUID_32());
+                        police_template.setOrdernum(0);
+                        police_templateMapper.insert(police_template);
+                        selectOne = police_template;
+
+                        //添加模板类型
+                        Police_templatetotype templatetotype = new Police_templatetotype();
+                        templatetotype.setTemplatessid(police_template.getId() + "");
+                        templatetotype.setTemplatebool(-1);
+                        templatetotype.setTemplatetypessid("1");
+                        templatetotype.setCreatetime(new Date());
+                        police_templatetotypeMapper.insert(templatetotype);
+                    }
+                    templateID = selectOne.getId();
+
+                    EntityWrapper ew = new EntityWrapper();
+                    if(templateID != 0){
+                        ew.eq("templatessid", templateID);
+                        police_templatetoproblemMapper.delete(ew);
+                    }
+                    continue;
+                }else{
+                    problem = list.get(i);
+                }
+                //如果判断模板是否存在，如果存在，就修改题目
+                //不存在就添加模板，然后添加关联题目
+
+                if(!"".equals(problem)){
+                    Police_problem police_problem = new Police_problem();
+                    police_problem.setProblem(problem);
+                    Police_problem addProblemParam = police_problemMapper.selectOne(police_problem);
+                    if(null == addProblemParam){
+                        //添加问题类型
+                        police_problem.setCreatetime(new Date());
+                        police_problem.setSsid(OpenUtil.getUUID_32());
+                        police_problem.setOrdernum(0);
+                        police_problem.setReferanswer("");
+                        Integer insert = police_problemMapper.insert(police_problem);
+                        addProblemParam = police_problem;
+//                        addProblemParam = police_problemMapper.selectOne(police_problem);
+                    }
+
+                    //添加进关联表里
+                    Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
+                    templatetoproblem.setCreatetime(new Date());
+
+                    templatetoproblem.setTemplatessid(templateID + "");//模板id
+                    templatetoproblem.setProblemssid(addProblemParam.getId() + "");//题目id
+                    templatetoproblem.setOrdernum(0);
+                    templatetoproblem.setSsid(OpenUtil.getUUID_32());
+                    police_templatetoproblemMapper.insert(templatetoproblem);
+                }
+            }
+        }
+        //插入问题表
+        //请求成功，展示出来
+        this.changeResultToSuccess(result);
+        result.setMessage("Excel导入成功，请稍后...");
+    }
+
+
 
 /***/
 
 
+    public static String getFileHeader(InputStream filePath) {
+        InputStream is = null;
+        String value = null;
+        try {
+//            is = new FileInputStream(filePath);
+            is = filePath;
 
+            byte[] b = new byte[4];
+            /*
+             * int read() 从此输入流中读取一个数据字节。int read(byte[] b) 从此输入流中将最多 b.length
+             * 个字节的数据读入一个 byte 数组中。 int read(byte[] b, int off, int len)
+             * 从此输入流中将最多 len 个字节的数据读入一个 byte 数组中。
+             */
+            is.read(b, 0, b.length);
+            value = bytesToHexString(b);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return value;
+    }
 
-
+    /**
+     * @param src 要读取文件头信息的文件的byte数组
+     * @return 文件头信息
+     * @author wlx
+     * <p>
+     * 方法描述：将要读取文件头信息的文件的byte数组转换成string类型表示
+     */
+    private static String bytesToHexString(byte[] src) {
+        StringBuilder builder = new StringBuilder();
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        String hv;
+        for (byte aSrc : src) {
+            // 以十六进制（基数 16）无符号整数形式返回一个整数参数的字符串表示形式，并转换为大写
+            hv = Integer.toHexString(aSrc & 0xFF).toUpperCase();
+            if (hv.length() < 2) {
+                builder.append(0);
+            }
+            builder.append(hv);
+        }
+//		System.out.println(builder.toString());
+        return builder.toString();
+    }
 
 
 

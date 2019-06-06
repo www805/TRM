@@ -9,9 +9,11 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.TemplateService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -438,7 +440,17 @@ public class TemplateAction extends MainAction {
         return  result;
     }
 
-
+    /***
+     * 导入上传接口uploadFile
+     * @return
+     */
+    @PostMapping(value = "/uploadFile")
+    @ResponseBody
+    public RResult uploadFile(@RequestParam("file") MultipartFile file) {
+        RResult rResult = createNewResultOfFail();
+        templateService.uploadFile(rResult, file);
+        return rResult;
+    }
 
 
 

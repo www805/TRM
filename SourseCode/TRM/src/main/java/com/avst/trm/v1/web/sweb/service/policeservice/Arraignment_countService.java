@@ -129,7 +129,9 @@ public class Arraignment_countService extends BaseService {
                     ew.ge("r.recordtime",param.getTimes());
                 }
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
-                    ew.between("arr.createtime", param.getStarttime(), param.getEndtime());
+                    ew.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
+//                    ew.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
+//                    ew.le("DATE(arr.createtime)",param.getEndtime()); //<=
                 }
 
             }
@@ -148,6 +150,18 @@ public class Arraignment_countService extends BaseService {
                     EntityWrapper ew2=new EntityWrapper();
 
                     ew2.eq("a.id", list.get(i).getId());
+
+                    if(null!=param){
+
+                        if(StringUtils.isNotEmpty(param.getTimes())){
+                            ew2.ge("r.recordtime",param.getTimes());
+                        }
+                        if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
+                            ew2.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
+//                            ew2.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
+//                            ew2.le("DATE(arr.createtime)",param.getEndtime()); //<=
+                        }
+                    }
 
                     arraignmentCount = arraignmentCountMapper.getArraignmentCount(ew2);
 

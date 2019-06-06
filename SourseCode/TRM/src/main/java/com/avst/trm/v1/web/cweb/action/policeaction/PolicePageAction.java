@@ -60,6 +60,17 @@ public class PolicePageAction {
     }
 
     /**
+     * 告知书列表
+     * @param model
+     * @return
+     */
+    @GetMapping("notificationList")
+    public ModelAndView notificationList(Model model){
+        model.addAttribute("title", "告知书列表");
+        return new ModelAndView("client_web/police/template/notificationListList", "notificationListModel", model);
+    }
+
+    /**
      * 变更模板
      * @param model
      * @return

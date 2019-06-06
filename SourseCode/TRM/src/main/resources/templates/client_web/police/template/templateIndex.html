@@ -142,8 +142,7 @@
         <div class="">
             <button class="layui-btn layui-btn-normal" onclick="window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId" >编辑</button>
             <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
-            <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">导入</button>-->
-
+            <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
             <div class="layui-inline" style="margin-bottom:0">
                 <div class="layui-unselect layui-form-select" name="btn_div">
                     <div class="layui-select-title">
@@ -161,6 +160,7 @@
 
         <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
             <b style="padding-right: 20px;" id="templateTitle">抢劫笔录第一版</b>
+            <span style="margin-right: 10px;" id="leixing"></span>
             <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
             <span>查看中....</span>
         </div>
@@ -210,11 +210,89 @@
         getTmplateTypesParam();
     });
 
-    layui.use('element', function(){
+    layui.use(['element','upload'], function(){
         var element = layui.element;
+        var upload = layui.upload;
 
-        //…
+        var url=getActionURL(getactionid_manage().templateIndex_uploadFile);
+
+        //执行实例
+        var uploadInst = upload.render({
+            elem: '#uploadFile' //绑定元素
+            ,url: url //上传接口
+            ,accept: 'file' //只允许上传图片文件
+            // ,exts: 'doc|docx|xls|xlsx' //只允许上传压缩文件
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    // console.log(file);
+
+                    var filevalue = file.name;
+                    var fileType = getFileType(filevalue)
+                    if(fileType !== 'xls' && fileType !== 'xlsx'){
+                        layer.msg("请导入xls/xlsx类型的文件！",{icon: 2});
+                    }
+                });
+                return false;
+            }
+            ,done: function(res){
+                //上传完毕回调doc|docx|
+                console.log(res);
+
+                if("SUCCESS" == res.actioncode){
+                    layer.msg(res.message,{icon: 1});
+                }
+            }
+            ,error: function(res){
+                //请求异常回调
+                console.log("请求异常回调");
+                // layer.msg(res.message,{icon: 2});
+            }
+        });
+
+        layer.closeAll();
+
+        // var uploading = false;
+        //
+        // $("#client_url").on("change", function(){
+        //     if(uploading){
+        //         alert("文件正在上传中，请稍候");
+        //         return false;
+        //     }
+        //
+        //     console.log($("#infoLogoForm")[0]);
+        //     console.log(new FormData($('#infoLogoForm')[0]));
+        //     $.ajax({
+        //         url: url,
+        //         type: 'POST',
+        //         cache: false,
+        //         data: new FormData($('#infoLogoForm')[0]),
+        //         processData: false,
+        //         contentType: false,
+        //         dataType:"json",
+        //         beforeSend: function(){
+        //             uploading = true;
+        //         },
+        //         success : function(data) {
+        //             if (data.code == 1) {
+        //                 // $("#logo").attr("src", data.msg);
+        //
+        //                 layer.msg("导出成功,等待下载中...");
+        //             } else {
+        //                 layer.msg(data.msg);
+        //             }
+        //             uploading = false;
+        //         }
+        //     });
+        // });
+
     });
 
+    function getFileType(filePath){
+        var startIndex = filePath.lastIndexOf(".");
+        if(startIndex != -1)
+            return filePath.substring(startIndex+1, filePath.length).toLowerCase();
+        else return "";
+    }
 </script>
 </html>
