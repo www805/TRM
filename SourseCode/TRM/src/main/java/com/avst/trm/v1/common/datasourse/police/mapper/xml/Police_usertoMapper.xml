@@ -10,7 +10,7 @@
         <result column="relation" property="relation" />
         <result column="language" property="language" />
         <result column="usertype" property="usertype" />
-        <result column="createtime" property="createtime" />
+        <result column="updatetime" property="updatetime" />
         <result column="usertitle" property="usertitle" />
         <result column="arraignmentssid" property="arraignmentssid" />
         <result column="ssid" property="ssid" />

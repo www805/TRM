@@ -4,6 +4,7 @@ var list, all, plist;
 var arrayProblem = [];
 var problemtypessidV;
 var trObj;
+var NoDelele;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -427,6 +428,7 @@ function addTemplateProblem(obj, id) {
 }
 
 function DeleteProblem(obj) {
+    NoDelele = true;
     $(obj).parents('tr').remove();
 }
 
@@ -543,27 +545,28 @@ function addTr(text, referanswer, id) {
 
     var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + referanswer + '</p></div>'
 
-    var trHtml = "<tr class=\"onetd font_red_color\" onclick='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
+    var trHtml = "<tr class=\"onetd font_red_color\" onmousedown='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
     // $("#testTable tbody").after(trHtml);
 
     var htmlOBJ;
 
-    if(isNotEmpty(trObj) && null != trObj ){
-        $(trObj).after(trHtml);
-        // trObj = null;
-
-        htmlOBJ = $(trObj).next();
-        // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
-    }else{
+     if(!isNotEmpty(trObj) && null == trObj || NoDelele == true){
         $("#dataTable").append(trHtml);
         htmlOBJ = $("#dataTable tr").last();
+        NoDelele = false;
 
         // $("#dataTable tr").last().find("p").eq(1).focus().select();//下一行获取焦点
         // $("#dataTable tr").last().find("p").eq(1).html("<div><br/></div>");
         // $("#dataTable tr").last().find("p").eq(1).focus(function () {
         //     $(this).html("<div><br/></div>");
         // });
-    }
+    }else if(isNotEmpty(trObj) && null != trObj ){
+         $(trObj).after(trHtml);
+         // trObj = null;
+
+         htmlOBJ = $(trObj).next();
+         // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
+     }
 
     htmlOBJ.find("p").eq(1).focus().select();//下一行获取焦点
     // htmlOBJ.find("p").eq(1).focus(function () {

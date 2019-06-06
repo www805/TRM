@@ -100,6 +100,7 @@ public class ServerConfigService extends BaseService {
 
         if (file.isEmpty()) {
             rResult.setMessage("上传失败，请选择文件");
+            return;
         }
 
 

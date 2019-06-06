@@ -146,7 +146,7 @@
             <div class="layui-inline" style="margin-bottom:0">
                 <div class="layui-unselect layui-form-select" name="btn_div">
                     <div class="layui-select-title">
-                        <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
+                        <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i> 导出</button>
                     </div>
                     <dl class="layui-anim layui-anim-upbit" >
                         <dd onclick="exportWord(this);">导出word</dd>
@@ -230,7 +230,7 @@
                     var filevalue = file.name;
                     var fileType = getFileType(filevalue)
                     if(fileType !== 'xls' && fileType !== 'xlsx'){
-                        layer.msg("请导入xls/xlsx类型的文件！",{icon: 2});
+                        layer.msg("请选择xls/xlsx类型的文件导入！",{icon: 2});
                     }
                 });
                 return false;
@@ -249,7 +249,6 @@
                 // layer.msg(res.message,{icon: 2});
             }
         });
-
         layer.closeAll();
 
         // var uploading = false;

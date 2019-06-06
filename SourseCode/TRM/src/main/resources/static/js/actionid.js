@@ -171,6 +171,11 @@ function getactionid_manage() {
         addOrupdateTemplate_addTemplate: "addOrupdateTemplate_addTemplate",
 
 
+        notification_getNotifications: "notification_getNotifications",
+        notification_uploadNotification: "notification_uploadNotification",
+        notification_downloadNotification: "notification_downloadNotification",
+        notification_deleteNotificationById: "notification_deleteNotificationById",
+
         addOrupdateProblem_addProblem: "addOrupdateProblem_addProblem",
         addOrupdateTemplate_updateProblem: "addOrupdateTemplate_updateProblem",
         addOrupdateTemplate_addProblem: "addOrupdateTemplate_addProblem",

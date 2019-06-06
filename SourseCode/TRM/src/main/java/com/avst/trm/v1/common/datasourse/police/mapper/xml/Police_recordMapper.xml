@@ -13,7 +13,7 @@
         <result column="recordbool" property="recordbool" />
         <result column="pdf_filesavessid" property="pdf_filesavessid" />
         <result column="recordtypessid" property="recordtypessid" />
-        <result column="createtime" property="createtime" />
+        <result column="updatetime" property="updatetime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

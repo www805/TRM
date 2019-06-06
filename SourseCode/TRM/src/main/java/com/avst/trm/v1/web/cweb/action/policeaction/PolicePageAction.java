@@ -67,7 +67,7 @@ public class PolicePageAction {
     @GetMapping("notificationList")
     public ModelAndView notificationList(Model model){
         model.addAttribute("title", "告知书列表");
-        return new ModelAndView("client_web/police/template/notificationListList", "notificationListModel", model);
+        return new ModelAndView("client_web/police/notification/notificationList", "notificationListModel", model);
     }
 
     /**

@@ -11,7 +11,7 @@
         <result column="recordplace" property="recordplace" />
         <result column="askobj" property="askobj" />
         <result column="asknum" property="asknum" />
-        <result column="createtime" property="createtime" />
+        <result column="updatetime" property="updatetime" />
         <result column="recordssid" property="recordssid" />
         <result column="mtssid" property="mtssid" />
         <result column="ssid" property="ssid" />

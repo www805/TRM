@@ -1,81 +1,100 @@
-var ssid;
-
-function getTemplateTypeList_init(currPage,pageSize) {
-    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
-    var keyword=$("input[name='keyword']").val();
+//获取告知书
+function getNotificationList_init(currPage,pageSize) {
+    var url=getActionURL(getactionid_manage().notification_getNotifications);
+    var notificationname=$("input[name='notificationname']").val();
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            typename: keyword,
+            notificationname: notificationname,
             currPage:currPage,
             pageSize:pageSize
         }
     };
 
-    ajaxSubmitByJson(url,data,callTemplateTypeList);
+    ajaxSubmitByJson(url,data,callNotificationList);
 }
-
-function getTemplateTypeList(keyword, currPage, pageSize) {
-    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypes);
+//查询告知书
+function getNotificationList(notificationname, currPage, pageSize) {
+    var url=getActionURL(getactionid_manage().notification_getNotifications);
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            typename: keyword,
+            notificationname: notificationname,
             currPage:currPage,
             pageSize:pageSize
         }
     };
-    ajaxSubmitByJson(url, data, callTemplateTypeList);
+    ajaxSubmitByJson(url, data, callNotificationList);
 }
 
-function getTemplateTypeById(ssidd) {
-    var url=getActionURL(getactionid_manage().templateTypeList_getTemplateTypeById);
-    ssid = ssidd;
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            ssid: ssid
-        }
-    };
-    ajaxSubmitByJson(url,data,callTemplateTypeById);
-}
-
-function AddOrUpdateTemplateType(version) {
-    var url=getActionURL(getactionid_manage().templateTypeList_updateTemplateType);
-    var typename=$("input[name='typename']").val();
-    var ordernum=$("input[name='ordernum']").val();
-    if (isNotEmpty(version)) {
-        //添加
-        url=getActionURL(getactionid_manage().templateTypeList_addTemplateType);
+//删除告知书
+function deleteNotificationById(ssid) {
+    if (!isNotEmpty(ssid)){
+        layer.msg("系统异常",{icon: 2});
+        return;
     }
+
+    layer.confirm('确定要删除该告知书吗', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().notification_deleteNotificationById);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                ssid: ssid
+            }
+        };
+
+        ajaxSubmitByJson(url,data,callDeleteNotificationById);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+
+
+}
+
+//上传告知书
+// function uploadNotification() {
+//     var url=getActionURL(getactionid_manage().notification_uploadNotification);
+//
+//     var data = {
+//         token: INIT_CLIENTKEY,
+//         param: {
+//             ssid: ssid
+//         }
+//     };
+//     ajaxSubmitByJson(url, data, calluploadNotification);
+// }
+
+//下载告知书
+function downloadNotification(ssid) {
+    var url=getActionURL(getactionid_manage().notification_downloadNotification);
 
     var data = {
         token: INIT_CLIENTKEY,
         param: {
-            ssid: ssid,
-            typename: typename,
-            ordernum: parseInt(ordernum)
+            ssid: ssid
         }
     };
-    ajaxSubmitByJson(url, data, callAddOrUpdate);
+    ajaxSubmitByJson(url, data, calldownloadNotification);
 }
 
-function callAddOrUpdate(data){
+function calldownloadNotification(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        if (isNotEmpty(data)){
-            if (data.data.bool) {
-                layer.msg("操作成功",{icon: 1});
-            }else{
-                layer.msg("操作失败",{icon: 2});
-            }
-            setTimeout("window.location.reload()",1500);
+        var filesave=data.data;
+        if (isNotEmpty(filesave)){
+            layer.msg("下载中，请稍后...");
+            window.location.href = filesave.recorddownurl;
+            // setTimeout("window.location.reload()",1500);
         }
     }else{
         layer.msg(data.message,{icon: 2});
     }
 }
 
-function callTemplateTypeList(data){
+function callNotificationList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
@@ -85,10 +104,11 @@ function callTemplateTypeList(data){
     }
 }
 
-function callTemplateTypeById(data){
+function callDeleteNotificationById(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data.data)){
-            opneModal_1(data.data);
+            layer.msg(data.data,{icon: 1});
+            setTimeout("window.location.reload()",1500);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -98,18 +118,18 @@ function callTemplateTypeById(data){
 /**
  * 局部刷新
  */
-function getTemplateTypeListParam() {
+function getNotificationListParam() {
 
     var len = arguments.length;
 
     if (len == 0) {
         var currPage = 1;
         var pageSize = 10;//测试
-        getTemplateTypeList_init(currPage, pageSize);
+        getNotificationList_init(currPage, pageSize);
     }  else if (len == 2) {
-        getTemplateTypeList('', arguments[0], arguments[1]);
+        getNotificationList('', arguments[0], arguments[1]);
     } else if (len > 2) {
-        getTemplateTypeList(arguments[0], arguments[1], arguments[2]);
+        getNotificationList(arguments[0], arguments[1], arguments[2]);
     }
 }
 
@@ -120,10 +140,10 @@ function showpagetohtml(){
         var pageCount=pageparam.pageCount;
         var currPage=pageparam.currPage;
 
-        var keyword=$("input[name='keyword']").val();
+        var notificationname=$("input[name='notificationname']").val();
         var arrparam=new Array();
-        arrparam[0]=keyword;
-        showpage("paging",arrparam,'getTemplateTypeListParam',currPage,pageCount,pageSize);
+        arrparam[0]=notificationname;
+        showpage("paging",arrparam,'getNotificationListParam',currPage,pageCount,pageSize);
     }
 }
 

@@ -43,15 +43,6 @@ import java.util.regex.Pattern;
 public class TemplateService extends BaseService {
     private Gson gson = new Gson();
 
-    // 缓存文件头信息-文件头信息
-    private static final HashMap<String, String> mFileTypes = new HashMap<String, String>();
-    static {
-        mFileTypes.put("D0CF11E0", "doc");//3C3F786D
-        mFileTypes.put("D0CF11E0", "xls");//excel2003版本文件
-        mFileTypes.put("504B0304", "docx");
-        mFileTypes.put("504B0304", "xlsx");//excel2007以上版本文件
-    }
-
     @Autowired
     private Police_templateMapper police_templateMapper;
 
@@ -73,7 +64,7 @@ public class TemplateService extends BaseService {
     @Autowired
     private Police_problemtotypeMapper policeProblemtotypeMapper;
 
-    @Value("${file.basepath}")
+    @Value("${file.template}")
     private String filePath;
 
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
@@ -177,7 +168,7 @@ public class TemplateService extends BaseService {
 //                        Police_problemtype police_problemtype = police_problemtypeMapper.selectOne(problemtype);
 //                        if(null == police_problemtype){
 //                            problemtype.setOrdernum(0);
-//                            problemtype.setCreatetime(new Date());
+//                            problemtype.setUpdatetime(new Date());
 //                            problemtype.setSsid(OpenUtil.getUUID_32());
 //                            int insert_bool2 = police_problemtypeMapper.insert(problemtype);
 //                            //新增完自定义问题类型，获取问题类型id
@@ -222,7 +213,7 @@ public class TemplateService extends BaseService {
 //        templatetotype.setTemplatessid(addTemplateParam.getId() + "");
 //        templatetotype.setTemplatebool(-1);
 //        templatetotype.setTemplatetypessid(addTemplateParam.getTemplatetypeid() + "");
-//        templatetotype.setCreatetime(new Date());
+//        templatetotype.setUpdatetime(new Date());
 
 //        int insert_type = police_templatetotypeMapper.insert(templatetotype);
 //        System.out.println("insert_type "+insert_type);
@@ -898,7 +889,8 @@ public class TemplateService extends BaseService {
             //以utf-8的编码读取ftl文件
             freemarker.template.Template templateDamo = configuration.getTemplate("template_word.ftl","UTF-8");
 
-            String filePathNew = filePath + "/zips";
+            String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
+
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
                 //如果不存在，就创建该目录
@@ -906,7 +898,7 @@ public class TemplateService extends BaseService {
             }
 //            String filename=record.getRecordname();
             String filename=template.getTitle()==null?"笔录模板":template.getTitle();
-            String path = filePathNew + "/"+filename+".doc";
+            String path = filePathNew +filename+".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             templateDamo.process(dataMap, out);
@@ -1004,7 +996,7 @@ public class TemplateService extends BaseService {
         try {
             //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
             // 创建目录
-            String filePathNew = filePath + "/zips/";
+            String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
                 //如果不存在，就创建该目录
@@ -1093,7 +1085,7 @@ public class TemplateService extends BaseService {
                     //从第一行开始第一行一般是标题
                     for (int j = 0; j <= lastRowNum; j++) {
                         Row row = sheet.getRow(j);
-                        //获取电话单元格
+                        //获取第一条单元格
                         if (row.getCell(0) != null) {
                             row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
                             String longName = row.getCell(0).getStringCellValue();
@@ -1203,61 +1195,6 @@ public class TemplateService extends BaseService {
 
 
 /***/
-
-
-    public static String getFileHeader(InputStream filePath) {
-        InputStream is = null;
-        String value = null;
-        try {
-//            is = new FileInputStream(filePath);
-            is = filePath;
-
-            byte[] b = new byte[4];
-            /*
-             * int read() 从此输入流中读取一个数据字节。int read(byte[] b) 从此输入流中将最多 b.length
-             * 个字节的数据读入一个 byte 数组中。 int read(byte[] b, int off, int len)
-             * 从此输入流中将最多 len 个字节的数据读入一个 byte 数组中。
-             */
-            is.read(b, 0, b.length);
-            value = bytesToHexString(b);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (null != is) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return value;
-    }
-
-    /**
-     * @param src 要读取文件头信息的文件的byte数组
-     * @return 文件头信息
-     * @author wlx
-     * <p>
-     * 方法描述：将要读取文件头信息的文件的byte数组转换成string类型表示
-     */
-    private static String bytesToHexString(byte[] src) {
-        StringBuilder builder = new StringBuilder();
-        if (src == null || src.length <= 0) {
-            return null;
-        }
-        String hv;
-        for (byte aSrc : src) {
-            // 以十六进制（基数 16）无符号整数形式返回一个整数参数的字符串表示形式，并转换为大写
-            hv = Integer.toHexString(aSrc & 0xFF).toUpperCase();
-            if (hv.length() < 2) {
-                builder.append(0);
-            }
-            builder.append(hv);
-        }
-//		System.out.println(builder.toString());
-        return builder.toString();
-    }
 
 
 
