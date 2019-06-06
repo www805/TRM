@@ -210,16 +210,19 @@ function callbackgetRecord(data) {
                             var recordrealshtml="";
                             //实时会议数据
                             if (usertype==1){
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
                                                             <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span>'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrtime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
+                                                           <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <span>'+translatext+'</span> \
                                                       </div >';
                             }
+
+
+
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").remove();
