@@ -207,22 +207,23 @@ function callbackgetRecord(data) {
                             var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
                             //实时会议数据
+                            var recordrealshtml="";
+                            //实时会议数据
                             if (usertype==1){
-                                recordrealclass="atalk";
-
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
                             }else if (usertype==2){
-                                recordrealclass="btalk";
-
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").remove();
                             }
-                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span>'+translatext+'</span> \
-                                                      </div >';
-
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals');
                             div.scrollTop = div.scrollHeight;

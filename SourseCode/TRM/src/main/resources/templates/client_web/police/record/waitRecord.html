@@ -106,7 +106,18 @@
         word-break: break-all;/*必须*/
         white-space: normal;
     }
-    .table_td_tt{padding: 7px 7px 7px 15px;white-space: normal;border-bottom: 1px solid #CCCCCC;outline: none}
+    .table_td_tt{padding: 7px 7px 7px 15px;white-space: normal;border-bottom: 1px solid #CCCCCC;outline: none;}
+    .table_td_tt label{padding: 0px;white-space: normal;outline: none;}
+
+
+    label[name='w']:empty:before{
+        content: attr(placeholder);
+        color:#CCCCCC;
+    }
+    label[name='w']:focus:before{
+        content:none;
+    }
+
     @font-face {font-family: "iconfont";
         src: url('iconfont.eot?t=1558432184553'); /* IE9 */
         src: url('iconfont.eot?t=1558432184553#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -147,18 +158,49 @@
         content: "\eb4d";
     }
 
-
-
-
-
+    .clock ul{margin:0 auto;padding:0px;list-style:none;text-align:center;font-size: 18px;float: right}
+    .clock ul li{display:inline;text-align:center;}
+    #point{position:relative;-moz-animation:mymove 1s ease infinite;-webkit-animation:mymove 1s ease infinite;padding-left:2px;padding-right:2px;}
+    @-webkit-keyframes mymove{
+        0%{opacity:1.0;}
+        50%{opacity:0;text-shadow:none;}
+        100%{opacity:1.0;}
+    }
+    @-moz-keyframes mymove{
+        0%{opacity:1.0;}
+        50%{opacity:0;text-shadow:none;}
+        100%{opacity:1.0;}
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
     <div th:replace="header :: header">...</div>
 
     <div class="layui-elem-quote layui-row" style=" padding: 10px;">
-        <div class="layui-col-md12 ">
+        <div class="layui-col-md3 ">
                 <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
+        </div>
+        <div class="layui-col-md6 " style="font-size: 16px;text-align: center;text-shadow: 0 0 0.2em #1E9FFF;" id="xthtml" >
+            <div style="float: left">
+                生理状态：<span id="xt1"> 加载中 | </span>
+                心率：<span id="xt6"> 0.0 | </span>
+                心率变异：<span id="xt7"> 0.0 | </span>
+                呼吸次数：<span id="xt8"> 0.0 | </span>
+                放松值：<span id="xt2"> 0.0 | </span>
+                紧张值：<span id="xt3"> 0.0 | </span>
+                血压变化：<span id="xt4"> 0.0 | </span>
+                血氧：<span id="xt5"> 0.0</span>
+            </div>
+        </div>
+        <div class="layui-col-md3 clock ">
+            <ul>
+                <li id="Date">0000年00月00日</li>
+                <li id="hours">00</li>
+                <li id="point">:</li>
+                <li id="min">00 </li>
+                <li id="point">:</li>
+                <li id="sec"> 00</li>
+            </ul>
         </div>
     </div>
 
@@ -211,32 +253,27 @@
                         <div class="layui-tab-item">
                             <div style="height: 450px; overflow-x: hidden; overflow-y: scroll;"  >
                                 <div class="layui-col-md12" style="height:55px;" >
-                                    <div id="showmsg" style="margin-bottom: 2px; border-radius: 4px;border: 1px solid transparent;height:50px;line-height: 50px;color: #3c763d;background-color: #dff0d8;border-color: #d6e9c6;text-align: center" ><strong>监测加载中...</strong></div>
+                                    <div id="showmsg" style="margin-bottom: 2px; border-radius: 4px;border: 1px solid transparent;height:50px;line-height: 50px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>监测加载中...</strong></div>
                                 </div>
                                 <div class="layui-col-md12" >
-                                    <div id="main1" style="height:180px;width:100%;border-radius: 4px;"></div>
+                                    <div id="main1" style="height:250px;width:100%;"></div>
                                 </div>
-                                <div class="layui-col-md12" style="margin-top: 12px"  >
-                                    <div id="main2" style="height:180px;width:100%;border-radius: 4px;"></div>
+                                <div class="layui-col-md12 layui-form-item" style="margin-top: 12px" id="monitor_btn" >
+                                                <span class="layui-badge" isn="1" type='hr' onclick="select_monitor(this);">心率</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
+                                                <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
                                 </div>
-                                <div class="layui-col-md12 " style="height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
-                                    <div style="float: left">
-                                    <span id="xt1">
-                                      <i class="layui-icon">&#xe67a;</i>
-                                      高度紧张
-                                    </span>
-                                        <span id="xt2"> <i class="layui-icon">&#xe6af;</i>
-                             0
-                             </span>
-                                        <span id="xt3"> <i class="layui-icon">&#xe69c;</i>
-                             0
-                             </span>
-                                        <span id="xt4"> <i class="layui-icon">&#xe6fc;</i>
-                             0
-                             </span>
-                                        <span id="xt5"> <i class="layui-icon">&#xe62c;</i>
-                              0
-                             </span>
+                                <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
+                                    <div style="float: left;width: 100%">
+                                        生理状态：<span id="xt1"> 加载中 | </span>
+                                        放松值：<span id="xt2"> 0.0 | </span>
+                                        紧张值：<span id="xt3"> 0.0 | </span>
+                                        血压变化：<span id="xt4"> 0.0 | </span>
+                                        血氧：<span id="xt5"> 0.0</span>
                                     </div>
                                 </div>
                             </div>
@@ -311,9 +348,16 @@
                 <div class="layui-card-body layui-row " style="padding: 0">
                     <div class="layui-card"  >
                         <div class="layui-card-header">
+                            <div class="layui-input-inline layui-col-md6" >
                             笔录<span style="color: red">（空白处回车添加自定义问答）</span>用时：<span id="jishi">00:00:00</span>
+                            </div>
+                            <div class="layui-input-inline layui-col-md6">
+                                <div  style="float: right">
+                                   <!-- <input type="checkbox"  id="record_switch_bool"  name="record_switch_bool"lay-skin="switch" lay-text="开启|关闭"  lay-filter="automatic_record"> 自动上墙-->
+                                </div>
+                            </div>
                         </div>
-                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;" >
+                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
                             <div class="layui-card-body layui-row "  >
                                 <div class="layui-col-lg12 ">
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 30px">
@@ -437,9 +481,12 @@
         getRecordById();
         getTime();
 
-
         main1();
-        main2();
+
+
+
+
+
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

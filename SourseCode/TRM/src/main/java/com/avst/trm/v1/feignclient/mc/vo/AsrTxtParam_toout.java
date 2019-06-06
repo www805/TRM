@@ -5,6 +5,8 @@ package com.avst.trm.v1.feignclient.mc.vo;
  */
 public class AsrTxtParam_toout {
 
+    private String userssid;//会议用户ssid
+
     private String txt;
 
     private String starttime;//本句话的开始时间，基于本次语音识别开始的ms数值
@@ -15,10 +17,14 @@ public class AsrTxtParam_toout {
 
     private int asrsort;//本次语音识别，这一句是第几句
 
-    private String userssid;//会议用户ssid
+    private String asrstartime;//asr开始识别开始时间
 
-    public void setAsrnum(int asrnum) {
-        this.asrnum = asrnum;
+    public String getAsrstartime() {
+        return asrstartime;
+    }
+
+    public void setAsrstartime(String asrstartime) {
+        this.asrstartime = asrstartime;
     }
 
     public String getUserssid() {
@@ -27,6 +33,10 @@ public class AsrTxtParam_toout {
 
     public void setUserssid(String userssid) {
         this.userssid = userssid;
+    }
+
+    public void setAsrnum(int asrnum) {
+        this.asrnum = asrnum;
     }
 
     public int getAsrsort() {
@@ -65,15 +75,4 @@ public class AsrTxtParam_toout {
         this.asrtime = asrtime;
     }
 
-    @Override
-    public String toString() {
-        return "AsrTxtParam_toout{" +
-                "txt='" + txt + '\'' +
-                ", starttime='" + starttime + '\'' +
-                ", asrnum=" + asrnum +
-                ", asrtime='" + asrtime + '\'' +
-                ", asrsort=" + asrsort +
-                ", userssid='" + userssid + '\'' +
-                '}';
-    }
 }

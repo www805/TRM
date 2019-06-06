@@ -95,21 +95,21 @@ function callsetAllproblem(data) {
                         $("#templatetoproblem_html").append(html);
 
                         var html='<tr>\
-                                <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
-                                    <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：'+templateToProblem.problem+'</p>\
-                                    <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：'+templateToProblem.referanswer+'</p>\
+                                <td style="padding: 0;width: 90%;" class="onetd" >\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);" >'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.referanswer+'"></label></div>\
                                 </td>\
                                 <td style="float: right;">\
-                                    <div class="layui-btn-group">\
-                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                                    </div>\
-                                </td>\
-                                </tr>';
+                                                                <div class="layui-btn-group">\
+                                                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                                                                <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                                                                <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                                                                </div>\
+                                                            </td>\
+                                                            </tr>';
                         $("#recorddetail").append(html);
                     }
-                    $("#recorddetail p").focus(function(){
+                    $("#recorddetail label").focus(function(){
                         td_lastindex["key"]=$(this).closest("tr").index();
                         td_lastindex["value"]=$(this).attr("name");
                     });
@@ -127,9 +127,9 @@ function copy_problems(obj) {
     var text=$(obj).find("span").text();
     var w=$(obj).attr("referanswer");
     var html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd font_red_color">\
-            <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：'+text+'</p>\
-            <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：'+w+'</p>\
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  >'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  class="" placeholder="'+w+'"></label></div>\
         </td>\
         <td style="float: right;">\
             <div class="layui-btn-group">\
@@ -140,7 +140,7 @@ function copy_problems(obj) {
         </td>\
         </tr>';
     $("#recorddetail").append(html);
-    $("#recorddetail p").focus(function(){
+    $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
     });
@@ -178,19 +178,45 @@ function img_bool(obj,type){
 
 //粘贴语音翻译文本
 var copy_text_html="";
-function copy_text(obj) {
+var touchtime = new Date().getTime();
+function copy_text(obj,event) {
     var text=$(obj).text();
     copy_text_html=text;
+    var classc=$(obj).closest("div").attr("class");
 
-    $("#recorddetail p").each(function(){
-        var lastindex=$(this).closest("tr").index();
-        var value=$(this).attr("name");
-        if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-            $(this).append(copy_text_html);
-            copy_text_html="";
+
+    //鼠标左击右击
+    if( new Date().getTime() - touchtime < 500 ){
+        if(3 == event.which){
+            $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
+        }else if(1 == event.which){
+            $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
         }
-    });
+    }
+    touchtime = new Date().getTime();
+
+
+    //字典定位问答
+    /* if (classc=="btalk") {
+         $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
+     }else if(classc=="atalk"){
+         $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
+     }*/
+    //当前下标问答
+    /* $("#recorddetail label").each(function(){
+         var lastindex=$(this).closest("tr").index();
+         var value=$(this).attr("name");
+         //当前下标问答
+         if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+             $(this).append(copy_text_html);
+         }
+    });*/
+    copy_text_html="";
+    return false;
+
 }
+
+
 
 
 
@@ -213,7 +239,7 @@ function btn(obj) {
 function get_case_time(obj) {
 
     if (isNotEmpty(occurrencetime_format)){
-        $("#recorddetail p").each(function(){
+        $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
@@ -226,7 +252,7 @@ function get_case_time(obj) {
 function get_current_time(obj) {
     getTime();
     if (isNotEmpty(currenttime)){
-        $("#recorddetail p").each(function(){
+        $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
@@ -239,7 +265,7 @@ function get_current_time(obj) {
 function get_yesterday_time(obj) {
     getTime();
     if (isNotEmpty(yesterdaytime)){
-        $("#recorddetail p").each(function(){
+        $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
@@ -355,17 +381,17 @@ function callbackgetRecordById(data) {
                         var problem = problems[z];
                         var problemtext=problem.problem==null?"未知":problem.problem;
                         var problemhtml= '<tr>\
-                        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
-                            <p contenteditable="true" name="q" class="table_td_tt font_red_color">问：'+problemtext+'</p>';
+                        <td style="padding: 0;width: 90%;" class="onetd">\
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" >'+problemtext+'</label></div>';
                         var answers=problem.answers;
                         if (isNotEmpty(answers)){
                             for (var j = 0; j < answers.length; j++) {
                                 var answer = answers[j];
                                 var answertext=answer.answer==null?"未知":answer.answer;
-                                problemhtml+='<p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：'+answertext+'</p>';
+                                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="'+answertext+'">'+answertext+'</label></div>';
                             }
                         }else{
-                            problemhtml+='<p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：...</p>';
+                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""></label></div>';
                         }
                         problemhtml+=' </td>\
                         <td style="float: right;">\
@@ -378,7 +404,7 @@ function callbackgetRecordById(data) {
                         </tr>';
                         $("#recorddetail").append(problemhtml);
 
-                        $("#recorddetail p").focus(function(){
+                        $("#recorddetail label").focus(function(){
                             td_lastindex["key"]=$(this).closest("tr").index();
                             td_lastindex["value"]=$(this).attr("name");
                         });
@@ -533,29 +559,19 @@ function addRecord(recordbool) {
         $("#recorddetail td.onetd").each(function (i) {
             var arr={};
             var answers=[];//答案集合
-            var q=$(this).find("p[name='q']").text();
+            var q=$(this).find("label[name='q']").text();
             q=q.replace(/\s/g,'');
-            if (q.length>2){
-                var str = q.substring(0,2);
-                if (str=="问："||str=="问:") {
-                    q = q.substring(2);
                     //经过筛选的q
-                    var ws=$(this).find("p[name='w']");
+                    var ws=$(this).find("label[name='w']");
                     if (isNotEmpty(q)){
                         if (null!=ws&&ws.length>0){
                             for (var j = 0; j < ws.length; j++) {
                                 var w =ws.eq(j).text();
                                 w=w.replace(/\s/g,'');
-                                if (w.length>2){
-                                    var str1 = w.substring(0,2);
-                                    if (str1=="答："||str1=="答:") {
-                                        w = w.substring(2);
                                         //经过筛选的w
                                         answers.push({
                                             answer:w
                                         });
-                                    }
-                                }
                             }
                         }
                         recordToProblems.push({
@@ -563,8 +579,6 @@ function addRecord(recordbool) {
                             answers:answers
                         });
                     }
-                }
-            }
         });
         var data={
             token:INIT_CLIENTKEY,
@@ -717,22 +731,24 @@ function callbackgetgetRecordrealing(data) {
                             var translatext=data.txt==null?"...":data.txt;//翻译文本
                             var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
+
+                            var recordrealshtml="";
                             //实时会议数据
                             if (usertype==1){
-                                recordrealclass="atalk";
-
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
                             }else if (usertype==2){
-                                recordrealclass="btalk";
-
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").remove();
                             }
-                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
-                                                      </div >';
 
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals');
@@ -770,8 +786,9 @@ function callbackgetPolygraphdata(data) {
         if (isNotEmpty(data)){
             var obj=data.t;
             if (isNotEmpty(obj)) {
-                var hr=obj.hr==null?0:obj.hr;//心率
-                var br=obj.br==null?0:obj.br;//呼吸次数
+                myChart.hideLoading();
+                var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
+                var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
                 var  status=obj.status;
                 var status_text="未知";
                 if (status==0){
@@ -783,18 +800,22 @@ function callbackgetPolygraphdata(data) {
                 }else if (status==3){
                     status_text="昏昏欲睡";
                 }
-                var relax=obj.relax==null?0:obj.relax;
-                var stress=obj.stress==null?0:obj.stress;
-                var bp=obj.bp==null?0:obj.bp;
-                var spo2=obj.spo2==null?0:obj.spo2;
+                var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
+                var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
+                var spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
+                var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
 
-                $("#xthtml #xt1").html('<i class="layui-icon" title="状态">&#xe67a;</i>'+status_text+'  ');
-                $("#xthtml #xt2").html('<i class="layui-icon" title="放松值">&#xe6af;</i> '+relax.toFixed(1)+' ');
-                $("#xthtml #xt3").html('<i class="layui-icon" title="紧张值">&#xe69c;</i> '+stress.toFixed(1)+' ');
-                $("#xthtml #xt4").html('<i class="layui-icon" title="血压变化">&#xe6fc;</i> '+bp.toFixed(1)+'  ');
-                $("#xthtml #xt5").html('<i class="layui-icon" title="血氧">&#xe62c;</i>'+spo2.toFixed(1)+'  ');
+                $("#xthtml #xt1").html(' '+status_text+'  | ');
+                $("#xthtml #xt2").html(' '+relax+' | ');
+                $("#xthtml #xt3").html(' '+stress+' | ');
+                $("#xthtml #xt4").html(' '+bp+' | ');
+                $("#xthtml #xt5").html(' '+spo2+'  ');
+               $("#xthtml #xt6").html(' '+hr+' | ');
+                $("#xthtml #xt7").html(' '+hrv+' | ');
+                $("#xthtml #xt8").html(' '+br+' | ');
 
-                var hr_snr=obj.hr_snr;
+                var hr_snr=obj.hr_snr.toFixed(0)==null?0:obj.hr_snr.toFixed(0);;
                 if (isNotEmpty(hr_snr)&&hr_snr>0.1){
                     $("#showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
                     $("#showmsg strong").text("心率准确监测中");
@@ -803,28 +824,53 @@ function callbackgetPolygraphdata(data) {
                     $("#showmsg strong").text("心率监测不准确");
                 }
 
-                addData(true,hr.toFixed(1));
-                addData2(true,br.toFixed(1));
+                addData_hr(true,hr);
+                addData_hrv(true,hrv);
+                addData_br(true,br);
+                addData_relax(true,relax);
+                addData_stress(true,stress);
+                addData_bp(true,bp);
+                addData_spo2(true,spo2);
+
+
+                $("#monitor_btn span").each(function (e) {
+                    var type=$(this).attr("type");
+                    var name=$(this).text();
+                    var isn=$(this).attr("isn");
+                    if (isn==1){
+                        if (type=="hr") {
+                            date1=date_hr;
+                            data1=data_hr;
+                        }else if (type=="hrv") {
+                            date1=date_hrv;
+                            data1=data_hrv;
+                        }else if (type=="br") {
+                            date1=date_br;
+                            data1=data_br;
+                        }else if (type=="relax") {
+                            date1=date_relax;
+                            data1=data_relax;
+                        }else if (type=="stress") {
+                            date1=date_stress;
+                            data1=data_stress;
+                        }else if (type=="bp") {
+                            date1=date_bp;
+                            data1=data_bp;
+                        }else if (type=="spo2") {
+                            date1=date_spo2;
+                            data1=data_spo2;
+                        }
+                    }
+                });
                 myChart.setOption({
                     xAxis: {
                         data: date1
                     },
                     series: [{
-                        name:'心率',
                         data: data1
                     }]
                 });
-                myChart2.setOption({
-                    xAxis: {
-                        data: date2
-                    },
-                    series: [{
-                        name:'呼吸次数',
-                        data: data2
-                    }]
-                });
             }
-
         }
     }else{
         layer.msg(data.message);
@@ -860,26 +906,57 @@ function select_liveurl(obj,type){
     }
     initplayer();
 }
+
+/**
+ * 身心监测按钮组
+ */
+function select_monitor(obj) {
+    $(obj).attr("isn","1");
+    $(obj).siblings().attr("isn","-1");
+
+    $(obj).removeClass("layui-bg-gray");
+    $(obj).siblings().addClass("layui-bg-gray");
+    myChart.showLoading();
+    var name=$(obj).text();
+    myChart.setOption({
+        title: {
+            text: name,
+        },
+        series: [{
+            name:name,
+        }]
+    });
+}
+
+function qw_keydown(event) {
+    var e = event || window.event;
+    if (e && e.keyCode == 13) { //回车键的键值为13
+        event.preventDefault();
+    }
+}
+
+
+var datadata={};
 $(function () {
     //回车加trtd
     var trtd_html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">\
-            <p contenteditable="true" name="q"  class="table_td_tt font_red_color">问：</p>\
-            <p contenteditable="true" name="w"  class="table_td_tt font_blue_color">答：</p>\
-        </td>\
-        <td style="float: right;">\
-            <div class="layui-btn-group">\
-            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-            </div>\
-        </td>\
-        </tr>';
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" ></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""></label></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                    </div>\
+                </td>\
+                </tr>';
     document.onkeydown = function (event) {
         var e = event || window.event;
         if (e && e.keyCode == 13) { //回车键的键值为13
             $("#recorddetail").append(trtd_html);
-            $("#recorddetail p").focus(function(){
+            $("#recorddetail label").focus(function(){
                 td_lastindex["key"]=$(this).closest("tr").index();
                 td_lastindex["value"]=$(this).attr("name");
             });
@@ -887,10 +964,11 @@ $(function () {
     };
 
 
+
     $("#dl_dd dd").click(function () {
         var text=$(this).attr('lay-value');
         //文本
-        $("#recorddetail p").each(function(){
+        $("#recorddetail label").each(function(){
                 var lastindex=$(this).closest("tr").index();
                 var value=$(this).attr("name");
                 if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
@@ -939,10 +1017,30 @@ $(function () {
         requestAnimationFrame(tick);
 
     }
+    nowdate();
+    function nowdate() {
+        var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
+        var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+        var newDate = new Date();
+        newDate.setDate(newDate.getDate());
+        $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
+
+        setInterval( function() {
+            var seconds = new Date().getSeconds();
+            $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+
+            var minutes = new Date().getMinutes();
+            $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+
+            var hours = new Date().getHours();
+            $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+        },1000);
+    }
 
 
     // 建立连接
     if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
+
         socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
         socket.on('connect', function (data) {
             console.log("连接成功__");
@@ -950,6 +1048,9 @@ $(function () {
         socket.on('disconnect', function (data) {
             console.log("断开连接__");
         });
+        var last_t=0;
+        var qq="";
+        var ww="";
         socket.on('getback', function (data) {
             var mtssiddata=data.mtssid;
             if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
@@ -963,27 +1064,63 @@ $(function () {
                             var translatext=data.txt==null?"...":data.txt;//翻译文本
                             var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
-                            //实时会议数据
-                            if (usertype==1){
-                                recordrealclass="atalk";
 
-                            }else if (usertype==2){
-                                recordrealclass="btalk";
+                            var recordrealshtml="";
 
+
+
+
+                            //检测自动上墙是否开启
+                            var record_switch_bool=$("#record_switch_bool").prop("checked");
+                            if (record_switch_bool){
+                                console.log("自动上墙开始")
+                                if (last_t==0){
+                                    //问题
+                                    if (usertype==1){
+                                        qq+=translatext;
+                                        console.log("qq__________"+qq)
+                                        last_t=1;
+                                    }else if (usertype==2){
+                                        console.log("只有答案没有问题不累加__"+translatext);
+                                    }
+                                } else  {
+                                    //问题
+                                    if (usertype==1){
+                                        datadata["q"]=qq;
+                                        datadata["w"]=ww;
+                                        console.log("data__________"+datadata)
+                                        setrecord_html();
+                                        last_t=0;
+                                    }else if (usertype==2){
+                                        ww+=translatext;
+                                        console.log("ww1__________"+ww)
+                                        last_t=2;
+                                    }
+                                }
                             }
 
+
+                            //实时会议数据
+                            if (usertype==1){
+
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                            }else if (usertype==2){
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                            }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").remove();
                             }
-                            var recordrealshtml='<div class="'+recordrealclass+'" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
-                                                            <span ondblclick="copy_text(this)" >'+translatext+'</span> \
-                                                      </div >';
-
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals');
                             div.scrollTop = div.scrollHeight;
+
                         }
                     }
                 }
@@ -1005,41 +1142,194 @@ $(function () {
     },1000);
 
 
+    layui.use(['layer','form'], function(){
+        var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
+            ,form = layui.form;
+
+        form.on('switch(automatic_record)', function(switchdata){
+            var obj=switchdata.elem.checked;
+
+
+            var con;
+            var switch_bool;
+            if (obj) {
+                con="确定要开启自动上墙吗";
+                switch_bool=1;
+            }else{
+                con="确定要关闭自动上墙吗";
+                switch_bool=-1;
+            }
+            layer.open({
+                content:con
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                    switchdata.elem.checked=obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,cancel: function(){
+                    //右上角关闭回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                }
+            });
+        });
+    });
+
 });
 
-var init = 1;
+//自动上墙
+function setrecord_html() {
+    var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" >'+datadata["q"]+'</label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="">'+datadata["w"]+'</label></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                    </div>\
+                </td>\
+                </tr>';
+    $("#recorddetail").append(trtd_html);
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
+}
+
+/*******************************图表区域*************************/
 var myChart;
 var date1 = [];
 var data1 = [];
-function addData(shift,data) {
-    init++;
-    date1.push(init);
-    data1.push(data);
 
+var init_br = 1;
+var date_br = [];
+var data_br = [];
+function addData_br(shift,data) {
+    init_br++;
+    date_br.push(init_br);
+    data_br.push(data);
     if (shift) {
-        date1.shift();
-        data1.shift();
+        date_br.shift();
+        data_br.shift();
     }
 }
-var init2=1;
-var myChart2;
-var date2 = [];
-var data2 = [];
-function addData2(shift,data) {
-    init2++;
-    date2.push(init2);
-    data2.push(data);
-
-    if (shift) {
-        date2.shift();
-        data2.shift();
-    }
-}
-
 for (var i = 1; i < 50; i++) {
-    addData(false,0);
-    addData2(false,0);
+    addData_br(false,0);
 }
+
+var init_bp = 1;
+var date_bp = [];
+var data_bp = [];
+function addData_bp(shift,data) {
+    init_bp++;
+    date_bp.push(init_bp);
+    data_bp.push(data);
+    if (shift) {
+        date_bp.shift();
+        data_bp.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_bp(false,0);
+}
+
+var init_hr = 1;
+var date_hr = [];
+var data_hr = [];
+function addData_hr(shift,data) {
+    init_hr++;
+    date_hr.push(init_hr);
+    data_hr.push(data);
+    if (shift) {
+        date_hr.shift();
+        data_hr.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_hr(false,0);
+}
+
+date1=date_hr;
+data1=data_hr;
+var init_hrv = 1;
+var date_hrv = [];
+var data_hrv = [];
+function addData_hrv(shift,data) {
+    init_hrv++;
+    date_hrv.push(init_hrv);
+    data_hrv.push(data);
+    if (shift) {
+        date_hrv.shift();
+        data_hrv.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_hrv(false,0);
+}
+
+var init_relax = 1;
+var date_relax = [];
+var data_relax = [];
+function addData_relax(shift,data) {
+    init_relax++;
+    date_relax.push(init_relax);
+    data_relax.push(data);
+    if (shift) {
+        date_relax.shift();
+        data_relax.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_relax(false,0);
+}
+
+var init_spo2 = 1;
+var date_spo2 = [];
+var data_spo2 = [];
+function addData_spo2(shift,data) {
+    init_spo2++;
+    date_spo2.push(init_spo2);
+    data_spo2.push(data);
+    if (shift) {
+        date_spo2.shift();
+        data_spo2.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_spo2(false,0);
+}
+
+var init_stress = 1;
+var date_stress = [];
+var data_stress = [];
+function addData_stress(shift,data) {
+    init_stress++;
+    date_stress.push(init_stress);
+    data_stress.push(data);
+    if (shift) {
+        date_stress.shift();
+        data_stress.shift();
+    }
+}
+for (var i = 1; i < 50; i++) {
+    addData_stress(false,0);
+}
+
+
+
+
+
+
+
 function main1() {
     $("#main1").css( 'width',$(".layui-tab-title").width() );
     $(window).resize(function() {
@@ -1095,60 +1385,5 @@ function main1() {
     myChart.setOption(option);
 }
 
-
-function main2() {
-    $("#main2").css( 'width',$(".layui-tab-title").width() );
-   $(window).resize(function() {
-        myChart2.resize();
-    });
-    myChart2 = echarts.init(document.getElementById('main2'),'dark');
-    var option = {
-        title: {
-            text: '呼吸次数',
-        },
-        tooltip: {
-            trigger: 'axis',
-            formatter: '{a}: {c}'
-        },
-        xAxis: {
-            type: 'category',
-            splitLine: {
-                show: false
-            },
-            show: false,
-            data: date2
-        },
-        yAxis: {
-            type: 'value',
-            boundaryGap: [0, '100%'],
-            splitLine: {
-                show: false
-            },
-            show: true
-        },
-        grid: {
-            x:30,
-            y:45,
-            x2:30,
-            y2:10,
-        },
-        series: [{
-            name: '呼吸次数',
-            type: 'line',
-            showSymbol: false,
-            hoverAnimation: false,
-            itemStyle : {
-                normal : {
-                    color:'#e60000',
-                    lineStyle:{
-                        color:'#e60000'
-                    }
-                }
-            },
-            data: data2
-        }]
-    };
-    myChart2.setOption(option);
-}
 
 

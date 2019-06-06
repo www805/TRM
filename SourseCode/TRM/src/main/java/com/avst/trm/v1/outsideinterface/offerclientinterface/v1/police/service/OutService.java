@@ -87,9 +87,7 @@ public class OutService  extends BaseService {
         startMCParam_out.setMcType(MCType.AVST);
         startMCParam_out.setModelbool(1);
         startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
-        startMCParam_out.setYwSystemType("TRM_AVST");
-
-
+        startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
 
 
         List<TdAndUserAndOtherParam> tdList=startRercordParam.getTdList();

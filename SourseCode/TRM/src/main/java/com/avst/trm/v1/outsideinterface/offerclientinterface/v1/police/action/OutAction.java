@@ -19,8 +19,7 @@ import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -248,13 +248,9 @@ public class OutAction extends BaseAction {
 
 
     //-----------------------------------------------ec end 分割线----------------------------------------
-
-
-
-
     /*
     * 暂时废弃*/
-    public static void main(String[] args) throws IOException, TemplateException {
+/*    public static void main(String[] args) throws IOException, TemplateException {
         // 模板路径
         String templatePath = "C:/Users/Administrator/Desktop/AskToTemplate.pdf";
         // 生成的新文件路径
@@ -271,7 +267,14 @@ public class OutAction extends BaseAction {
             AcroFields form = stamper.getAcroFields();
 
             BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+            Font fontChinese = new Font(bfChinese, 18F, Font.NORMAL);// 五号
+
             form.addSubstitutionFont(bfChinese);
+
+            Rectangle pageSize = reader.getPageSize(1);
+            float height = pageSize.getHeight();
+            float width = pageSize.getWidth();
+            System.out.println("width = "+width+", height = "+height);
 
             Map<String,String> dataMap = new HashMap();
             dataMap.put("recordtypename","询问笔录");
@@ -291,7 +294,7 @@ public class OutAction extends BaseAction {
             dataMap.put("phone", "19735880381");
             dataMap.put("domicile", "台湾");
             dataMap.put("both","2019年05月22日");
-            dataMap.put("questionandanswer","问:saffffffff\n答:fffffffffffffffffff问:saffffffda房顶上放空间将建军节建军节建军节建军节建军节建军节建军节建军节ffffffffffffff\n答:fffffffffffffffffff");
+           *//* dataMap.put("questionandanswer","问:sa发生地方发生地方ffffffff\n答:fffffffffffffffffff问:saffffffda房顶上放空间将建军节建军节建军节建军节建军节建军节建军节建军节ffffffffffffff\n答:fffffffffffffffffff");*//*
 
             for(String key : dataMap.keySet()){
                 String value = dataMap.get(key);
@@ -299,17 +302,91 @@ public class OutAction extends BaseAction {
             }
 
             stamper.setFormFlattening(true);
+            PdfContentByte over = stamper.getOverContent(1);
+
+          *//*  ColumnText columnText = new ColumnText(over);
+            // llx 和 urx  最小的值决定离左边的距离. lly 和 ury 最大的值决定离下边的距离
+            columnText.setSimpleColumn(272, 760, 350, 300);
+            Paragraph elements = new Paragraph(0, new Chunk("我是甲方"));
+            // 设置字体，如果不设置添加的中文将无法显示
+            elements.setFont(fontChinese);
+            columnText.addElement(elements);
+            columnText.go();*//*
             stamper.close();
 
             Document doc = new Document();
             PdfCopy copy = new PdfCopy(doc, out);
             doc.open();
+
+
             PdfImportedPage importPage = copy.getImportedPage(new PdfReader(bos.toByteArray()), 1);
             copy.addPage(importPage);
             doc.close();
+
+            String finalPath = "C:/Users/Administrator/Desktop/111.pdf";
+
+            java.util.List<String> ss=new ArrayList<>();
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶f");
+            ss.add("答：djsakhfkjdsgfjsgfysgdf");
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶f");
+            ss.add("答：djsakhfkjdsgfjsgfysgdf");
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("答：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("答：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("答：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
+            ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶f");
+
+            try {
+                FileOutputStream outputStream = new FileOutputStream(finalPath);
+                PdfReader reader2 = new PdfReader(newPDFPath);// 读取pdf模板
+                Rectangle pageSize2 = reader2.getPageSize(1);
+                Document document = new Document(pageSize2);
+
+                PdfWriter writer = PdfWriter.getInstance(document, outputStream);
+                document.open();
+                PdfContentByte cbUnder = writer.getDirectContentUnder();
+                PdfImportedPage pageTemplate = writer.getImportedPage(reader2, 1);
+                cbUnder.addTemplate(pageTemplate,0,0);
+
+                document.newPage();//新创建一页来存放后面生成的表格
+                Paragraph paragraph = new Paragraph("",fontChinese);
+                PdfPTable tableBox = new PdfPTable(1);
+                tableBox.setWidthPercentage(90F); // 宽度100%填充
+                tableBox.setSpacingBefore(15f); // 前间距
+                tableBox.setSpacingAfter(15f); // 后间距
+
+                // 遍历查询出的结果
+                for (String pw : ss) {
+                    tableBox.addCell(getCell(new Phrase(String.valueOf(pw), fontChinese), false, 1, 1));
+                }
+                paragraph.add(tableBox);
+                document.add(paragraph);
+                document.close();
+                reader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 
         } catch (DocumentException e) {
             e.printStackTrace();
         }
     }
+
+    private static PdfPCell getCell(Phrase phrase, boolean yellowFlag, int colSpan, int rowSpan) {
+        PdfPCell cells = new PdfPCell(phrase);
+        cells.setUseAscender(true);
+        cells.setHorizontalAlignment(0);
+        cells.setVerticalAlignment(5);
+        cells.setColspan(colSpan);
+        cells.setRowspan(rowSpan);
+        cells.setNoWrap(false);
+        cells.disableBorderSide(15);
+        cells.setLeading(1.5F,1.5F);
+        cells.setPaddingTop(10F);
+        return cells;
+    }*/
+
 }

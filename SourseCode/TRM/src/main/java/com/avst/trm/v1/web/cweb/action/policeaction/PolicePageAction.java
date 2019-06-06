@@ -133,7 +133,7 @@ public class PolicePageAction {
         if (StringUtils.isNotBlank(ssid)){
             model.addAttribute("recordssid",ssid);
         }
-        model.addAttribute("title","等待笔录");
+        model.addAttribute("title","笔录制作中");
        return new ModelAndView("client_web/police/record/waitRecord", "waitRecordModel", model);
     }
 
