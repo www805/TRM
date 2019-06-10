@@ -4,7 +4,7 @@ var list, all, plist;
 var arrayProblem = [];
 var problemtypessidV;
 var trObj;
-var NoDelele;
+var NoDelele = false;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -150,7 +150,7 @@ function callTemplateById(data){
                     tableProblems += '<tr onclick=\'trObj = this;\'>\n' +
                         '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
                         '                            <div name="1" class="table_td_tt2" value="' + Problem.ssid + '" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + Problem.problem + '</p></div>\n' +
-                        '                            <div name="2" class="table_td_tt2 font_blue_color" value="' + Problem.ssid + '" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + Problem.referanswer + '</p></div>\n' +
+                        '                            <div name="2" class="table_td_tt2 font_blue_color" value="' + Problem.ssid + '" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt content text" placeholder="' + Problem.referanswer + '"></p></div>\n' +
                         '                        </td>\n' +
                         '                        <td>\n' +
                         '                            <div class="layui-btn-group">\n' +
@@ -165,7 +165,7 @@ function callTemplateById(data){
 
                 // console.log($("p[contenteditable=true]").html());
 
-                $("p[contenteditable='true']").on("blur",function(){
+                $(trObj).on("blur",function(){
                         trObj = null;
                 });
             }
@@ -202,7 +202,7 @@ function callAddOrUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             layer.msg("操作成功！",{icon: 1});
-            setTimeout("window.location.reload()",1800);
+            setTimeout("window.location.reload()",1600);
             // window.location.reload();
             // console.log(data);
             // alert("chengg")
@@ -299,6 +299,11 @@ function AddOrUpdateProblem(version) {
 
     // console.log(pageActionByPage);
     // console.log(url);
+
+    if("" == problem){
+        layer.msg("问题不能为空",{icon: 2});
+        return;
+    }
 
     if (version == "修改") {
         ByIdDDD = $("#ByIdDDD").val();
@@ -420,7 +425,10 @@ function modelban(problemV) {
 }
 
 function addTemplateProblem(obj, id) {
-    var text = $(obj).parents('tr').find("td").eq(0).text();
+    var text = $(obj).find("td").eq(0).text();
+    if (text == "") {
+        text = $(obj).parents('tr').find("td").eq(0).text();
+    }
     text = text.replace('问：','');
 
     addTr(text, all[id].referanswer, all[id].id);
@@ -545,15 +553,17 @@ function addTr(text, referanswer, id) {
 
     var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + referanswer + '</p></div>'
 
-    var trHtml = "<tr class=\"onetd font_red_color\" onmousedown='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
+    var trHtml = "<tr class=\"onetd font_red_color\" onclick='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
     // $("#testTable tbody").after(trHtml);
 
     var htmlOBJ;
-
-     if(!isNotEmpty(trObj) && null == trObj || NoDelele == true){
+    console.log(isNotEmpty(trObj));
+    console.log(trObj);
+    console.log(NoDelele);
+    if(!isNotEmpty(trObj) && null == trObj || NoDelele == true){
         $("#dataTable").append(trHtml);
         htmlOBJ = $("#dataTable tr").last();
-        NoDelele = false;
+        // NoDelele = false;
 
         // $("#dataTable tr").last().find("p").eq(1).focus().select();//下一行获取焦点
         // $("#dataTable tr").last().find("p").eq(1).html("<div><br/></div>");
@@ -563,9 +573,10 @@ function addTr(text, referanswer, id) {
     }else if(isNotEmpty(trObj) && null != trObj ){
          $(trObj).after(trHtml);
          // trObj = null;
-
+        NoDelele = false;
          htmlOBJ = $(trObj).next();
-         // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
+        trObj = htmlOBJ;
+        // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
      }
 
     htmlOBJ.find("p").eq(1).focus().select();//下一行获取焦点
@@ -573,9 +584,12 @@ function addTr(text, referanswer, id) {
     //     $(this).html("<div><br/></div>");
     // });
 
-    $("p[contenteditable='true']").blur(function(){
-        trObj = null;
-    });
+    // $(trObj).find("p").blur(function(){
+    //     alert(1111);
+    // });
+
+
+
 }
 
 /**
@@ -589,10 +603,21 @@ function addArrProblem() {
 }
 
 function btn(obj) {
-    var selected = $(obj).closest("div[name='btn_div']").attr("class");
-    if (selected.indexOf("layui-form-selected") == -1) {
+    // var selected = $(obj).closest("div[name='btn_div']").attr("class");
+    // if (selected.indexOf("layui-form-selected") == -1) {
+    //     $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
+    // }else{
+    //     $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
+    // }
+
+    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
         $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
-    }else{
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
         $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
     }
 }

@@ -2,14 +2,16 @@ var list;
 var editSsid;
 var templateTypeId;
 var templateId;
+var templatetypeidSSID;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var keyword =$("#keyword").val();
     var templatetypeid = $("#templateType").val();
     if(!templatetypeid){
-        templatetypeid = 1;
+        templatetypeid = templatetypeidSSID;
     }
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -76,6 +78,11 @@ function callTmplateTypes(data){
             if (isNotEmpty(list)) {
                 for (var i = 0; i < list.length; i++) {
                     var templateType = list[i];
+
+                    if(i == 0){
+                        templatetypeidSSID = templateType.id;
+                        getTmplateTypesParam();
+                    }
                     $("#templateType").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
                 }
             }
@@ -165,8 +172,11 @@ function exportWord(obj){
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                var host = "http://localhost";
+                // var host = "http://localhost";
+                var host = "http://" + window.location.host;
+                host = host.replace(":8080","");
                 window.location.href = host + data;
+                // window.open(host + data);
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -189,12 +199,15 @@ function exportEcxcel(obj){
 
     // console.log(url);
     ajaxSubmitByJson(url, data, function (data) {
-        console.log(data);
+        // console.log(data);
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                var host = "http://localhost";
+                // var host = "http://localhost";
+                var host = "http://" + window.location.host;
+                host = host.replace(":8080","");
                 window.location.href = host + data;
+                // window.open(host + data);
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -213,7 +226,7 @@ function getTemplateById(id) {
         templateId = pagelist[id].id;
 
         $('#templateTitle').html(pagelist[id].title);
-        // $('#leixing').html("类型：" + pagelist[id].templatetype);
+        $('#leixing').html("类型：" + pagelist[id].templatetype);
         var templateToProblems = pagelist[id].templateToProblems;
         var tableProblems = '';
         $('#tableProblems').html(tableProblems);

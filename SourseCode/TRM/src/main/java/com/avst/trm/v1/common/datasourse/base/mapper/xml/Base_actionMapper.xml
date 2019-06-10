@@ -11,7 +11,7 @@
         <result column="interfacessid" property="interfacessid" />
         <result column="topagebool" property="topagebool" />
         <result column="nextpageid" property="nextpageid" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="description" property="description" />
         <result column="typessid" property="typessid" />
         <result column="firstaction" property="firstaction" />

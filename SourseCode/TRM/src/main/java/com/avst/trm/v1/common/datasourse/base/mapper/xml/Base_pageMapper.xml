@@ -7,7 +7,7 @@
         <id column="id" property="id" />
         <result column="pageid" property="pageid" />
         <result column="pagename" property="pagename" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="description" property="description" />
         <result column="typessid" property="typessid" />
         <result column="firstpage" property="firstpage" />

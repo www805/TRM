@@ -8,7 +8,7 @@
         <result column="nationcode" property="nationcode" />
         <result column="nationname" property="nationname" />
         <result column="ordernum" property="ordernum" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

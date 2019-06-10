@@ -119,7 +119,7 @@
                     <input type="text" name="keyword" id="keyword" style="width: 120px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
                 </div>
 
-                <label class="layui-form-label" style="width: auto;">类型</label>
+                <label class="layui-form-label" style="width: auto;">模板类型</label>
                 <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
                     <select name="templatetypeid" lay-verify="" id="templateType">
                     </select>
@@ -132,6 +132,9 @@
             </div>
 
             <div style="overflow:auto;width: 100%; height: 725px; min-height:725px;" >
+                <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;">
+                    【模板列表】点击模板，右边将显示模板的问题详情<i class="layui-icon">&#xe623;</i>
+                </div>
                 <div th:replace="page :: page">...</div>
             </div>
         </div>
@@ -144,7 +147,7 @@
             <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
             <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
             <div class="layui-inline" style="margin-bottom:0">
-                <div class="layui-unselect layui-form-select" name="btn_div">
+                <div class="layui-unselect layui-form-select" name="btn_div" showorhide="false">
                     <div class="layui-select-title">
                         <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i> 导出</button>
                     </div>
@@ -159,8 +162,8 @@
         </div>
 
         <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
-            <b style="padding-right: 20px;" id="templateTitle">抢劫笔录第一版</b>
-            <span style="margin-right: 10px;" id="leixing"></span>
+            <b style="padding-right: 20px; color: #113c11;" id="templateTitle">抢劫笔录第一版</b>
+            <b style="margin-right: 10px;color: #3023d2;" id="leixing"></b>
             <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
             <span>查看中....</span>
         </div>
@@ -178,12 +181,12 @@
 </body>
 <script id="pagelisttemplates" type="text/html">
 
-    <table class="layui-table" lay-skin="line" style="table-layout: fixed;margin-top: 7px;">
+    <table class="layui-table" lay-skin="line" style="table-layout: fixed;margin-top: 0px;">
 
         <tbody id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
-            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}</td>
+            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}<span class="layui-badge layui-bg-green" style="float: right;">{{value.templatetype}}模板</span></td>
         </tr>
         {{#  }); }}
         </tbody>
@@ -207,7 +210,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
         getTmplateTypes();
-        getTmplateTypesParam();
+        // getTmplateTypesParam();
     });
 
     layui.use(['element','upload'], function(){
@@ -241,6 +244,7 @@
 
                 if("SUCCESS" == res.actioncode){
                     layer.msg(res.message,{icon: 1});
+                    setTimeout("window.location.reload()",1600);
                 }
             }
             ,error: function(res){

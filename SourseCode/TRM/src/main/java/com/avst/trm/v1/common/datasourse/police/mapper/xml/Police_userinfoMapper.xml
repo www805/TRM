@@ -20,7 +20,7 @@
         <result column="domicile" property="domicile" />
         <result column="residence" property="residence" />
         <result column="workunits" property="workunits" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="specialtype" property="specialtype" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />

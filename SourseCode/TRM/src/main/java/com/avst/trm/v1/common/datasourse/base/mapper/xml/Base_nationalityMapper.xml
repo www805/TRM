@@ -9,7 +9,7 @@
         <result column="zhname" property="zhname" />
         <result column="enname" property="enname" />
         <result column="ordernum" property="ordernum" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

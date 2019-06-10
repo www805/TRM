@@ -21,13 +21,15 @@ import java.util.List;
  */
 public interface Police_templateMapper extends BaseMapper<Police_template> {
 
-    @Select("select DISTINCT(t.id) idssa,t.*,l.templatetypessid from police_template t " +
+    @Select("select DISTINCT(t.id) idssa,t.*,l.templatetypessid,e.typename from police_template t " +
             " left join police_templatetotype l on t.id = l.templatessid " +
+            " left join police_templatetype e on l.templatetypessid = e.id " +
             " where 1=1 ${ew.sqlSegment} ")
     List<Template> getTemplateList(Page page,@Param("ew") EntityWrapper ew);
 
     @Select("select count(DISTINCT(t.id)) idssa from police_template t " +
             " left join police_templatetotype l on t.id = l.templatessid " +
+            " left join police_templatetype e on l.templatetypessid = e.id " +
             " where 1=1 ${ew.sqlSegment} ")
     int countgetTemplateList(@Param("ew") EntityWrapper ew);
 

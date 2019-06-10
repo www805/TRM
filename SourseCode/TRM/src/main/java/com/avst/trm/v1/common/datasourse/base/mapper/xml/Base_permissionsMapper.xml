@@ -12,7 +12,7 @@
         <result column="icon" property="icon" />
         <result column="type" property="type" />
         <result column="description" property="description" />
-        <result column="updatetime" property="updatetime" />
+        <result column="createtime" property="createtime" />
         <result column="ordernum" property="ordernum" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
