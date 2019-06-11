@@ -832,7 +832,7 @@ public class RecordService extends BaseService {
                 fileMkdir.mkdirs();
             }
             String filename=record.getRecordname().replace(" ", "").replace("\"", "");
-            String path = filePathNew + "/"+filename+".pdf";
+            String path = filePathNew +filename+".pdf";
 
             try {
                 Document document = new Document();
@@ -1129,7 +1129,7 @@ public class RecordService extends BaseService {
                 fileMkdir.mkdirs();
             }
             String filename=record.getRecordname().replace(" ", "").replace("\"", "");
-            String path = filePathNew + "/"+filename+".docx";
+            String path = filePathNew +filename+".docx";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             template.process(dataMap, out);
