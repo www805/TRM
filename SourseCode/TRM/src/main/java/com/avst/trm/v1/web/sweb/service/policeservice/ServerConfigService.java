@@ -169,7 +169,7 @@ public class ServerConfigService extends BaseService {
                 ssid = serverconfig.getClient_filesavessid();
             }
 
-//            filesave.setDatassid(ssid);//从属表的ssid
+            filesave.setDatassid(serverconfig.getSsid());//从属表的ssid
 
             EntityWrapper ew=new EntityWrapper();
             ew.eq("ssid", ssid);

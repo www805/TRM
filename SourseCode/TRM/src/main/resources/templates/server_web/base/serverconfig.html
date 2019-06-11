@@ -21,7 +21,7 @@
         <h3 th:text="${configModel.title}"></h3>
     </div>
 
-    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" th:object="${configModel.RResult.data.serverconfig}">
+    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" onsubmit="return false" th:object="${configModel.RResult.data.serverconfig}">
         <input type="hidden" name="id" th:value="*{id}">
         <div class="layui-form-item">
             <label class="layui-form-label">系统名称</label>

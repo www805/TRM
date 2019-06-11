@@ -30,18 +30,16 @@ function getUpdateServerConfig(){
         workdays:workdays,
         authorizesortnum:authorizesortnum
     };
-
     ajaxSubmit(url,data,callServerConfig);
 }
 
 function callServerConfig(data){
-
     if(null!=data&&data.actioncode=='SUCCESS'){
         layer.msg(data.message, {icon:1});
-
+        setTimeout("window.location.reload()",1500);
     }else{
         // alert(data.message);
-        layer.msg(data.message, {time: 5000, icon:5});
+        layer.msg(data.message, {icon:5});
     }
 }
 

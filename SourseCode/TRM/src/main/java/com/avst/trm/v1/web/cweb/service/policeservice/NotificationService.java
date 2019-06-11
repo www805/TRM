@@ -119,7 +119,6 @@ public class NotificationService extends BaseService {
             notification.setNotificationname(fileName);
             notification.setSsid(OpenUtil.getUUID_32());
             notification.setUpdatetime(new Date());
-            policeNotificationMapper.insert(notification);
 
             //上传的文件保存到数据库表里
             Base_filesave filesave = new Base_filesave();
@@ -128,11 +127,11 @@ public class NotificationService extends BaseService {
             filesave.setRecordrealurl(realpath);//真实存储地址
             filesave.setRecorddownurl(uploadpath);//下载地址
 
-            String ssid = notification.getSsid();
-
-            filesave.setDatassid(ssid);//从属表的ssid
-
+            filesave.setDatassid(notification.getSsid());//从属表的ssid
             filesave.setSsid(OpenUtil.getUUID_32());
+
+            notification.setNotification_filesavessid(filesave.getSsid());
+            policeNotificationMapper.insert(notification);
             Integer insert = filesaveMapper.insert(filesave);
             this.changeResultToSuccess(rResult);
             rResult.setMessage("上传成功");
