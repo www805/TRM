@@ -206,17 +206,18 @@ function callbackgetRecord(data) {
                             var translatext=data.txt==null?"...":data.txt;//翻译文本
                             var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
+                            var asrstartime=data.asrstartime;
                             //实时会议数据
                             var recordrealshtml="";
                             //实时会议数据
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
-                                                           <p>'+asrtime+' 【'+username+'】 </p>\
+                                                           <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                             }
@@ -254,18 +255,17 @@ function btn(obj) {
 }
 function exportWord(obj){
     var url=getActionURL(getactionid_manage().getRecordById_exportWord);
-    var data={
+    var paramdata={
         token:INIT_CLIENTKEY,
         param:{
             recordssid: recordssid,
         }
     };
-    ajaxSubmitByJson(url, data, function (data) {
+    ajaxSubmitByJson(url, paramdata, function (data) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                var host = "http://localhost";
-                window.location.href = host + data;
+                window.location.href = data;
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -275,6 +275,27 @@ function exportWord(obj){
     });
 }
 
+function exportPdf(obj) {
+    var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                window.location.href = data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        btn(obj);
+    });
+}
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
         var url="/v1/police/out/getPlayUrl";

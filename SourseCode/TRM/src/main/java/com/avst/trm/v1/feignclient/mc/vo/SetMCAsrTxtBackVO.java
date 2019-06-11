@@ -11,4 +11,6 @@ public class SetMCAsrTxtBackVO extends AsrTxtParam_toout {
     public void setMtssid(String mtssid) {
         this.mtssid = mtssid;
     }
+
+
 }

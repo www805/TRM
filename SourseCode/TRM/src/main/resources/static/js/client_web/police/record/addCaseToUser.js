@@ -594,6 +594,8 @@ $(function () {
             form.render();
         });
 
+
+
         form.on('select(change_case)', function(data){
             var casessid=data.value;
             $("#cause").val("");
@@ -772,4 +774,74 @@ function callbakegetCaseById(data) {
     }else{
         layer.msg(data.message);
     }
+}
+
+
+/*
+用户
+ */
+function getUserinfoList() {
+    var url=getActionURL(getactionid_manage().addCaseToUser_getUserinfoList);
+
+    var cards=$("#cards option:selected").val();
+    var cardnum=$("#cardnum").val();
+
+    if (!isNotEmpty(cardnum)) {
+        $("#cardnum_ssid").html("");
+        $("#cardnum_ssid").append('<p class="layui-select-none">无匹配项</p>');
+        return;
+    }
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            cardtypesssid:cards,
+            cardnum:cardnum
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetUserinfoList);
+}
+
+function callbackgetUserinfoList(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+
+            $("#cardnum_ssid").html("");
+            if (isNotEmpty(data)){
+                var userinfos=data.userinfos;
+                if (isNotEmpty(userinfos)){
+                    for (var i = 0; i < userinfos.length; i++) {
+                        var userinfo = userinfos[i];
+                        $("#cardnum_ssid").append("<dd lay-value='"+userinfo.cardnum+"' onmousedown='select_cardnum(this);'>"+userinfo.cardnum+"</dd>");
+                    }
+                }else{
+                    $("#cardnum_ssid").append('<p class="layui-select-none">无匹配项</p>');
+                }
+                $("#cardnum_ssid").css("display","block");
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+    layui.use('form', function(){
+        var form =  layui.form;
+
+        form.render();
+    });
+}
+
+
+
+function select_cardnum(obj) {
+    $("#cardnum_ssid").css("display","none");
+   var cardnum=$(obj).attr("lay-value");
+   $("#cardnum").val(cardnum);
+    getUserByCard();
+    $("#cardnum_ssid").html("");
+}
+
+function blblur() {
+    $("#cardnum_ssid").css("display","none");
+    getUserByCard();
 }

@@ -27,6 +27,11 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -41,6 +46,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 @Service("recordService")
 public class RecordService extends BaseService {
@@ -87,6 +93,10 @@ public class RecordService extends BaseService {
 
     @Value("${file.basepath}")
     private String filePath;
+
+    @Value("${upload.basepath}")
+    private String uploadbasepath;
+
 
     private boolean addRecordbool=false;
 
@@ -639,6 +649,7 @@ public class RecordService extends BaseService {
         return;
     }
 
+
     public void getCaseById(RResult result, ReqParam<GetCaseByIdParam> param){
         GetCaseByIdVO getCaseByIdVO=new GetCaseByIdVO();
 
@@ -704,10 +715,276 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void exportPdf(RResult result, ReqParam param){
+    public void exportPdf(RResult result, ReqParam<ExportPdfParam> param){
+        ExportPdfParam exportPdfParam=param.getParam();
+        if (null==exportPdfParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=exportPdfParam.getRecordssid();
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        //根据笔录ssid获取录音数据
+        EntityWrapper recordParam=new EntityWrapper();
+        recordParam.eq("r.ssid",recordssid);
+        Record record=police_recordMapper.getRecordBySsid(recordParam);
 
 
+        List<String> qw=new ArrayList<>();
+
+
+        if (null!=record) {
+            String questionandanswer = "";//题目答案
+            EntityWrapper ew = new EntityWrapper();
+            ew.eq("r.ssid", record.getSsid());
+            ew.orderBy("p.ordernum", true);
+            ew.orderBy("p.createtime", true);
+            List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+            if (null != problems && problems.size() > 0) {
+                for (RecordToProblem problem : problems) {
+                    qw.add("问：" + problem.getProblem());
+                    String problemssid = problem.getSsid();
+                    if (StringUtils.isNotBlank(problemssid)) {
+                        EntityWrapper answerParam = new EntityWrapper();
+                        answerParam.eq("recordtoproblemssid", problemssid);
+                        answerParam.orderBy("ordernum", true);
+                        answerParam.orderBy("createtime", true);
+                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
+                        if (null != answers && answers.size() > 0) {
+                            for (Police_answer answer : answers) {
+                                qw.add("答：" + answer.getAnswer());
+                            }
+                        }
+                    }
+                }
+            }
+
+            /**
+             *   获取提讯人和被询问人
+             */
+            EntityWrapper recorduserinfosParam = new EntityWrapper();
+            recorduserinfosParam.eq("a.recordssid", record.getSsid());
+            RecordUserInfos recordUserInfos = police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+
+            String userssid = recordUserInfos.getUserssid();
+            Police_userinfo police_userinfo = new Police_userinfo();
+            police_userinfo.setSsid(userssid);
+            police_userinfo = police_userinfoMapper.selectOne(police_userinfo);
+
+
+            Police_arraignment police_arraignment = new Police_arraignment();
+            police_arraignment.setRecordssid(recordssid);
+            police_arraignment = police_arraignmentMapper.selectOne(police_arraignment);
+
+
+            Police_recordtype police_recordtype = new Police_recordtype();
+            police_recordtype.setSsid(record.getRecordtypessid());
+            police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
+
+            String recordtypename = police_recordtype.getTypename();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+            String recordstarttime = sdf.format(record.getCreatetime());
+            String recordendtime = sdf.format(new Date());
+            String recordplace = police_arraignment.getRecordplace();
+
+            //工作单位
+            Police_workunit police_workunit1 = new Police_workunit();
+            police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
+            police_workunit1 = police_workunitMapper.selectOne(police_workunit1);
+            Police_workunit police_workunit2 = new Police_workunit();
+            police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
+            police_workunit2 = police_workunitMapper.selectOne(police_workunit2);
+            Police_workunit police_workunit3 = new Police_workunit();
+            police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
+            police_workunit3 = police_workunitMapper.selectOne(police_workunit3);
+
+            String workname1 = police_workunit1.getWorkname();
+            String workname2 = police_workunit2.getWorkname();
+            String workname3 = police_workunit3.getWorkname();
+            String username = police_userinfo.getUsername();
+            String sex = police_userinfo.getSex() == 1 ? "男" : "女";
+            String age = police_userinfo.getAge().toString();
+            String politicsstatus = police_userinfo.getPoliticsstatus();
+            String workunits = police_userinfo.getWorkunits();
+            String residence = police_userinfo.getResidence();
+            String phone = police_userinfo.getPhone();
+            String domicile = police_userinfo.getDomicile();
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
+            String both = sdf2.format(police_userinfo.getBoth());
+
+            EntityWrapper userinfoparam = new EntityWrapper();
+            userinfoparam.eq("u.ssid", userssid);
+            List<UserInfo> userInfos = police_userinfoMapper.getUserByCard(userinfoparam);
+            String cardnum = null;
+            if (null != userInfos && userInfos.size() > 0) {
+                cardnum = userInfos.get(0).getCardtypename() + userInfos.get(0).getCardnum();
+            }
+
+
+            String filePathNew1 = filePath + "/zips/record/";
+            String filePathNew = OpenUtil.createpath_fileByBasepath(filePathNew1);
+            File fileMkdir = new File(filePathNew);
+            if (!fileMkdir.exists()) {
+                //如果不存在，就创建该目录
+                fileMkdir.mkdirs();
+            }
+            String filename=record.getRecordname().replace(" ", "").replace("\"", "");
+            String path = filePathNew + "/"+filename+".pdf";
+
+            try {
+                Document document = new Document();
+                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
+                BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
+                Font fontChinese = new Font(bfChinese, 16F, Font.NORMAL);// 五号
+
+                document.open();
+
+                Paragraph paragraph2 = new Paragraph("",fontChinese);
+                PdfPTable tableBox2 = new PdfPTable(8);
+                tableBox2.setWidthPercentage(90f); // 宽度100%填充
+                tableBox2.setSpacingBefore(15f); // 前间距
+                tableBox2.setSpacingAfter(10f); // 后间距
+
+
+                Font firsetTitleFont = new Font(bfChinese, 26F, Font.NORMAL);// 五号
+                PdfPCell cells = new PdfPCell(new Phrase(String.valueOf(recordtypename), firsetTitleFont));
+                cells.setColspan(8);
+                cells.setRowspan(1);
+                cells.setPaddingTop(10F);
+                cells.setPaddingBottom(10F);
+                cells.disableBorderSide(15);
+                cells.setHorizontalAlignment(cells.ALIGN_CENTER); // 设置水平居中
+                cells.setVerticalAlignment(cells.ALIGN_MIDDLE); // 设置垂直居中
+                tableBox2.addCell(cells);
+
+
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("时间"), fontChinese), false, 1, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordstarttime), fontChinese), false, 3, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("至"), fontChinese), false, 1, 1,15,1));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordendtime), fontChinese), false, 3, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("地点"), fontChinese), false, 1, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordplace), fontChinese), false, 7, 1,13,0));
+
+
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("询问人（签名）"), fontChinese), false, 2, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname1), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("询问人（签名）"), fontChinese), false, 2, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname2), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("记录人（签名）"), fontChinese), false, 2, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname3), fontChinese), false, 2, 1,13,0));
+
+                PdfPTable tableBox3 = new PdfPTable(8);
+                tableBox3.setWidthPercentage(100F); // 宽度100%填充
+                tableBox3.setWidths(new float[]{16,15,8,5,8,5,16,27});
+                tableBox3.addCell(getCell(new Phrase(String.valueOf("被询问人"), fontChinese), false, 1, 1,15,0));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf(username), fontChinese), false, 1, 1,13,0));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf("性别"), fontChinese), false, 1, 1,15,1));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf(sex), fontChinese), false, 1, 1,13,0));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf("年龄"), fontChinese), false, 1, 1,15,1));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf(age), fontChinese), false, 1, 1,13,0));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf("出生日期"), fontChinese), false, 1, 1,15,1));
+                tableBox3.addCell(getCell(new Phrase(String.valueOf(both), fontChinese), false, 1, 1,13,0));
+                PdfPCell cells3 = new PdfPCell(tableBox3);
+                cells3.setColspan(8);
+                cells3.setRowspan(1);
+                cells3.disableBorderSide(15);
+                tableBox2.addCell(cells3);
+
+                PdfPTable tableBox5 = new PdfPTable(8);
+                tableBox5.setWidthPercentage(100F); // 宽度100%填充
+                tableBox5.setWidths(new float[]{16,10,6,8,10,10,10,30});
+                tableBox5.addCell(getCell(new Phrase(String.valueOf("身份证件种类及号码"), fontChinese), false, 3, 1,15,0));
+                tableBox5.addCell(getCell(new Phrase(String.valueOf(cardnum), fontChinese), false, 5, 1,13,0));
+                PdfPCell cells5 = new PdfPCell(tableBox5);
+                cells5.setColspan(8);
+                cells5.setRowspan(1);
+                cells5.disableBorderSide(15);
+                tableBox2.addCell(cells5);
+
+
+                PdfPTable tableBox4 = new PdfPTable(8);
+                tableBox4.setWidthPercentage(100F); // 宽度100%填充
+                tableBox4.setWidths(new float[]{16,10,8,8,8,10,10,30});
+                tableBox4.addCell(getCell(new Phrase(String.valueOf("政治面貌"), fontChinese), false, 1, 1,15,0));
+                tableBox4.addCell(getCell(new Phrase(String.valueOf(politicsstatus), fontChinese), false, 2, 1,13,0));
+                tableBox4.addCell(getCell(new Phrase(String.valueOf("工作单位及职务"), fontChinese), false, 3, 1,15,0));
+                tableBox4.addCell(getCell(new Phrase(String.valueOf(workunits), fontChinese), false, 2, 1,13,0));
+                PdfPCell cells4 = new PdfPCell(tableBox4);
+                cells4.setColspan(8);
+                cells4.setRowspan(1);
+                cells4.disableBorderSide(15);
+                tableBox2.addCell(cells4);
+
+
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("现住址"), fontChinese), false, 1, 1,15,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(residence), fontChinese), false, 2, 1,13,0));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf("联系方式"), fontChinese), false, 2, 1,15,1));
+                tableBox2.addCell(getCell(new Phrase(String.valueOf(phone), fontChinese), false, 3, 1,13,0));
+
+                PdfPTable tableBox6 = new PdfPTable(8);
+                tableBox6.setWidthPercentage(100F); // 宽度100%填充
+                tableBox6.setWidths(new float[]{20,8,10,10,10,10,10,34});
+                tableBox6.addCell(getCell(new Phrase(String.valueOf("户籍所在地"), fontChinese), false, 1, 1,15,0));
+                tableBox6.addCell(getCell(new Phrase(String.valueOf(domicile), fontChinese), false, 7, 1,13,0));
+                PdfPCell cells6 = new PdfPCell(tableBox6);
+                cells6.setColspan(8);
+                cells6.setRowspan(1);
+                cells6.disableBorderSide(15);
+                tableBox2.addCell(cells6);
+
+
+                Paragraph paragraph = new Paragraph("",fontChinese);
+                PdfPTable tableBox = new PdfPTable(1);
+                tableBox.setWidthPercentage(90f); // 宽度100%填充
+                tableBox.setSpacingAfter(15f); // 后间距
+
+                // 遍历查询出的结果
+                for (String qqww : qw) {
+                    tableBox.addCell(getCell(new Phrase(String.valueOf(qqww), fontChinese), false, 2, 1,15,0));
+                }
+                paragraph2.add(tableBox2);
+                document.add(paragraph2);
+                paragraph.add(tableBox);
+                document.add(paragraph);
+                document.close();
+                writer.close();
+
+                String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+                result.setData(uploadbasepath+uploadpath);
+                changeResultToSuccess(result);
+                return;
+            } catch (DocumentException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return;
+    }
+
+
+    private static PdfPCell getCell(Phrase phrase, boolean yellowFlag, int colSpan, int rowSpan,int disableborderside,int horizontalalignment) {
+        PdfPCell cells = new PdfPCell(phrase);
+        cells.setUseAscender(true);
+        cells.setHorizontalAlignment(horizontalalignment); // 设置水平居中
+        cells.setVerticalAlignment(cells.ALIGN_MIDDLE); // 设置垂直居中
+        cells.setColspan(colSpan);
+        cells.setRowspan(rowSpan);
+        cells.setNoWrap(false);
+        cells.disableBorderSide(disableborderside);//只剩下
+        cells.setLeading(1.5F,1.5F);
+        cells.setPaddingTop(8F);
+        cells.setPaddingBottom(8F);
+        return cells;
     }
 
     public void exportWord(RResult result, ReqParam<ExportWordParam> param, HttpServletRequest request){
@@ -844,7 +1121,8 @@ public class RecordService extends BaseService {
             //以utf-8的编码读取ftl文件
             Template template = configuration.getTemplate("askTo_wordtemplate.ftl","UTF-8");
 
-            String filePathNew = filePath + "/zips";
+            String filePathNew1 = filePath + "/zips/record/";
+            String filePathNew = OpenUtil.createpath_fileByBasepath(filePathNew1);
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
                 //如果不存在，就创建该目录
@@ -858,7 +1136,7 @@ public class RecordService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            result.setData(uploadpath);
+            result.setData(uploadbasepath+uploadpath);
 
             changeResultToSuccess(result);
         } catch (IOException e) {
@@ -1022,17 +1300,29 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void getUserinfoList(RResult result,ReqParam param){
+    public void getUserinfoList(RResult result,ReqParam<GetUserinfoListParam> param){
         GetUserinfoListVO getUserinfoListVO=new GetUserinfoListVO();
+        GetUserinfoListParam getUserinfoListParam=param.getParam();
+        if (null==getUserinfoListParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String cardtypesssid=getUserinfoListParam.getCardtypesssid();//证件类型ssid
+        String cardnum=getUserinfoListParam.getCardnum();//证件号
 
         //根据证件类型和证件号查询用户信息
         EntityWrapper userparam=new EntityWrapper();
-        List<Police_userinfo> userinfos=police_userinfoMapper.selectList(userparam);
-        if (null==userinfos||userinfos.size()<1){
-            result.setMessage("未找到人员信息");
-            return;
+        if (StringUtils.isNotBlank(cardtypesssid)){
+            userparam.eq("ut.cardtypessid",cardtypesssid);
         }
-        getUserinfoListVO.setUserinfos(userinfos);
+        if (StringUtils.isNotBlank(cardnum)){
+            userparam.like("ut.cardnum",cardnum);
+        }
+
+        List<UserInfo> userInfos=police_userinfoMapper.getUserByCard(userparam);
+
+        getUserinfoListVO.setUserinfos(userInfos);
         result.setData(getUserinfoListVO);
         changeResultToSuccess(result);
         return;

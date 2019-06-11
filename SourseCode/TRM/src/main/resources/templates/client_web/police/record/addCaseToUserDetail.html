@@ -57,8 +57,20 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>证件号码</label>
                             <div class="layui-input-block">
-                                <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum">
-                                <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>
+                               <!-- <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()">
+                                <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>-->
+                               <!-- <select name="cardnum" lay-verify="required"  id="cardnum"  lay-filter="change_cardnum_ssid" lay-search="" >
+                                    <option value=""></option>
+                                </select>-->
+                                <div class="layui-form-select">
+                                    <div class="layui-select-title">
+                                        <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="blblur();" onfocus="getUserinfoList()">
+                                        <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>
+                                    </div>
+                                    <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >
+
+                                    </dl>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">

@@ -245,6 +245,7 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+
     /**
      * 根据人员ssid联查
      * @param param
@@ -327,7 +328,7 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/exportPdf")
-    public  RResult exportPdf(@RequestBody ReqParam param){
+    public  RResult exportPdf(@RequestBody ReqParam<ExportPdfParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -450,7 +451,7 @@ public class RecordAction extends BaseAction {
      * 获取全部用户
      */
     @RequestMapping("/getUserinfoList")
-    public  RResult getUserinfoList(@RequestBody ReqParam param){
+    public  RResult getUserinfoList(@RequestBody ReqParam<GetUserinfoListParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
@@ -462,6 +463,13 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+
+
+
+
+
 
 
 

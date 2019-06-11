@@ -107,6 +107,7 @@ function getactionid_manage() {
         addCaseToUser_getCaseById:"addCaseToUser_getCaseById",
         addCaseToUser_toaddCaseToUserDetail:"addCaseToUser_toaddCaseToUserDetail",
         addCaseToUser_addCase:"addCaseToUser_addCase",
+        addCaseToUser_getUserinfoList:"addCaseToUser_getUserinfoList",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -125,6 +126,7 @@ function getactionid_manage() {
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
         getRecordById_exportWord:"getRecordById_exportWord",
+        getRecordById_exportPdf:"getRecordById_exportPdf",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -138,6 +140,7 @@ function getactionid_manage() {
         waitRecord_getRercordAsrTxtBack:"waitRecord_getRercordAsrTxtBack",
         waitRecord_getTime:"waitRecord_getTime",
         waitRecord_exportWord:"waitRecord_exportWord",
+        waitRecord_exportPdf:"waitRecord_exportPdf",
         waitRecord_updateArraignment:"waitRecord_updateArraignment",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",

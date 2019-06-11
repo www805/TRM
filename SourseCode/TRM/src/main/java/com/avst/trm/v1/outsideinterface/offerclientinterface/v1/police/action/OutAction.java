@@ -248,9 +248,12 @@ public class OutAction extends BaseAction {
 
 
     //-----------------------------------------------ec end 分割线----------------------------------------
+
+
+
     /*
     * 暂时废弃*/
-/*    public static void main(String[] args) throws IOException, TemplateException {
+   public static void main(String[] args) throws IOException, TemplateException {
         // 模板路径
         String templatePath = "C:/Users/Administrator/Desktop/AskToTemplate.pdf";
         // 生成的新文件路径
@@ -294,7 +297,7 @@ public class OutAction extends BaseAction {
             dataMap.put("phone", "19735880381");
             dataMap.put("domicile", "台湾");
             dataMap.put("both","2019年05月22日");
-           *//* dataMap.put("questionandanswer","问:sa发生地方发生地方ffffffff\n答:fffffffffffffffffff问:saffffffda房顶上放空间将建军节建军节建军节建军节建军节建军节建军节建军节ffffffffffffff\n答:fffffffffffffffffff");*//*
+            dataMap.put("empList","");
 
             for(String key : dataMap.keySet()){
                 String value = dataMap.get(key);
@@ -304,14 +307,14 @@ public class OutAction extends BaseAction {
             stamper.setFormFlattening(true);
             PdfContentByte over = stamper.getOverContent(1);
 
-          *//*  ColumnText columnText = new ColumnText(over);
+        ColumnText columnText = new ColumnText(over);
             // llx 和 urx  最小的值决定离左边的距离. lly 和 ury 最大的值决定离下边的距离
             columnText.setSimpleColumn(272, 760, 350, 300);
             Paragraph elements = new Paragraph(0, new Chunk("我是甲方"));
             // 设置字体，如果不设置添加的中文将无法显示
             elements.setFont(fontChinese);
             columnText.addElement(elements);
-            columnText.go();*//*
+            columnText.go();
             stamper.close();
 
             Document doc = new Document();
@@ -322,6 +325,8 @@ public class OutAction extends BaseAction {
             PdfImportedPage importPage = copy.getImportedPage(new PdfReader(bos.toByteArray()), 1);
             copy.addPage(importPage);
             doc.close();
+
+          /*  try {
 
             String finalPath = "C:/Users/Administrator/Desktop/111.pdf";
 
@@ -338,7 +343,7 @@ public class OutAction extends BaseAction {
             ss.add("答：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶");
             ss.add("问：djsakhfkjdsgfjsgfysgd范德萨发货看建军节建军节建军节建军节建军节建军节建军节建军节建军节建军节房顶上开奖号高风格的顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶f");
 
-            try {
+
                 FileOutputStream outputStream = new FileOutputStream(finalPath);
                 PdfReader reader2 = new PdfReader(newPDFPath);// 读取pdf模板
                 Rectangle pageSize2 = reader2.getPageSize(1);
@@ -367,7 +372,7 @@ public class OutAction extends BaseAction {
                 reader.close();
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+            }*/
 
 
         } catch (DocumentException e) {
@@ -387,6 +392,6 @@ public class OutAction extends BaseAction {
         cells.setLeading(1.5F,1.5F);
         cells.setPaddingTop(10F);
         return cells;
-    }*/
+    }
 
 }

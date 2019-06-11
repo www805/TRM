@@ -94,9 +94,9 @@ function callsetAllproblem(data) {
                         var html="<tr> <td ondblclick='copy_problems(this);'referanswer='"+templateToProblem.referanswer+"'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
                         $("#templatetoproblem_html").append(html);
 
-                        var html='<tr>\
+                        var html='<tr >\
                                 <td style="padding: 0;width: 90%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);" >'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.problem+'" >'+templateToProblem.problem+'</label></div>\
                                     <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.referanswer+'"></label></div>\
                                 </td>\
                                 <td style="float: right;">\
@@ -128,14 +128,14 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  >'+text+'</label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  placeholder="'+text+'" >'+text+'</label></div>\
             <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  class="" placeholder="'+w+'"></label></div>\
         </td>\
         <td style="float: right;">\
             <div class="layui-btn-group">\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+            <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete" ></i>删除</a>\
             </div>\
         </td>\
         </tr>';
@@ -148,6 +148,15 @@ function copy_problems(obj) {
 
 //tr移动删除事件
 function tr_remove(obj) {
+     var bool=$(obj).parents("tr").attr("automaticbool");
+     if (isNotEmpty(bool)&&bool==1){
+         laststarttime_qq=-1;
+         laststarttime_ww=-1;
+         last_type=-1;//1问题 2是答案
+         qq="";
+         ww="";
+         www="";
+     }
     $(obj).parents("tr").remove();
 }
 function tr_up(obj) {
@@ -179,6 +188,8 @@ function img_bool(obj,type){
 //粘贴语音翻译文本
 var copy_text_html="";
 var touchtime = new Date().getTime();
+
+
 function copy_text(obj,event) {
     var text=$(obj).text();
     copy_text_html=text;
@@ -186,14 +197,19 @@ function copy_text(obj,event) {
 
 
     //鼠标左击右击
-    if( new Date().getTime() - touchtime < 500 ){
+   if( new Date().getTime() - touchtime < 250 ){
         if(3 == event.which){
             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
         }else if(1 == event.which){
             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
         }
+    }else{
+        touchtime = new Date().getTime();
     }
-    touchtime = new Date().getTime();
+
+
+
+
 
 
     //字典定位问答
@@ -382,7 +398,7 @@ function callbackgetRecordById(data) {
                         var problemtext=problem.problem==null?"未知":problem.problem;
                         var problemhtml= '<tr>\
                         <td style="padding: 0;width: 90%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" >'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" placeholder="'+problemtext+'">'+problemtext+'</label></div>';
                         var answers=problem.answers;
                         if (isNotEmpty(answers)){
                             for (var j = 0; j < answers.length; j++) {
@@ -635,18 +651,39 @@ function overRecord() {
 //导出word
 function exportWord(obj){
     var url=getActionURL(getactionid_manage().waitRecord_exportWord);
-    var data={
+    var paramdata={
         token:INIT_CLIENTKEY,
         param:{
             recordssid: recordssid,
         }
     };
-    ajaxSubmitByJson(url, data, function (data) {
+    ajaxSubmitByJson(url, paramdata, function (data) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                var host = "http://localhost";
-                window.location.href = host + data;
+                window.location.href = data;
+                layer.msg("导出成功,等待下载中...");
+            }
+        }else{
+            layer.msg("导出失败");
+        }
+        btn(obj);
+    });
+}
+
+function exportPdf(obj) {
+    var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                window.location.href = data;
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -729,19 +766,18 @@ function callbackgetgetRecordrealing(data) {
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
                             var translatext=data.txt==null?"...":data.txt;//翻译文本
-                            var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
-
+                            var asrstartime=data.asrstartime;
                             var recordrealshtml="";
                             //实时会议数据
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <p>【'+username+'】 '+asrstartime+' </p>\
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
@@ -937,6 +973,13 @@ function qw_keydown(event) {
 
 
 var datadata={};
+
+var laststarttime_qq=-1;
+var laststarttime_ww=-1;
+var last_type=-1;//1问题 2是答案
+var qq="";
+var ww="";
+var www="";
 $(function () {
     //回车加trtd
     var trtd_html='<tr>\
@@ -1048,9 +1091,9 @@ $(function () {
         socket.on('disconnect', function (data) {
             console.log("断开连接__");
         });
-        var last_t=0;
-        var qq="";
-        var ww="";
+
+
+
         socket.on('getback', function (data) {
             var mtssiddata=data.mtssid;
             if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
@@ -1062,54 +1105,20 @@ $(function () {
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
                             var translatext=data.txt==null?"...":data.txt;//翻译文本
-                            var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
-
+                            var asrstartime=data.asrstartime;
                             var recordrealshtml="";
-
-
-
-
-                            //检测自动上墙是否开启
-                            var record_switch_bool=$("#record_switch_bool").prop("checked");
-                            if (record_switch_bool){
-                                console.log("自动上墙开始")
-                                if (last_t==0){
-                                    //问题
-                                    if (usertype==1){
-                                        qq+=translatext;
-                                        console.log("qq__________"+qq)
-                                        last_t=1;
-                                    }else if (usertype==2){
-                                        console.log("只有答案没有问题不累加__"+translatext);
-                                    }
-                                } else  {
-                                    //问题
-                                    if (usertype==1){
-                                        datadata["q"]=qq;
-                                        datadata["w"]=ww;
-                                        console.log("data__________"+datadata)
-                                        setrecord_html();
-                                        last_t=0;
-                                    }else if (usertype==2){
-                                        ww+=translatext;
-                                        console.log("ww1__________"+ww)
-                                        last_t=2;
-                                    }
-                                }
-                            }
 
 
                             //实时会议数据
                             if (usertype==1){
-
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrtime+'</p>\
+                                                            <p>【'+username+'】 '+asrstartime+' </p>\
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrtime+' 【'+username+'】 </p>\
+                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
@@ -1121,6 +1130,83 @@ $(function () {
                             var div = document.getElementById('recordreals');
                             div.scrollTop = div.scrollHeight;
 
+
+
+                            //检测自动上墙是否开启
+                            var record_switch_bool=$("#record_switch_bool").prop("checked");
+                            if (record_switch_bool){
+                                if (last_type==-1){
+                                    if (usertype==1){
+                                        qq+=translatext;
+                                        last_type=usertype;
+                                        laststarttime_qq=starttime;
+                                        datadata["q"]=qq;
+                                        datadata["w"]=ww;
+                                        setrecord_html();
+                                    }
+                                }else  if (last_type==1){//最后是问
+                                    last_type=usertype;
+                                    if (usertype==1){//最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
+                                        if (laststarttime_qq==starttime||laststarttime_qq==-1){
+                                            qq="";//清空q
+                                            qq+=translatext;
+                                            laststarttime_qq=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                        }else{
+
+                                            //2.初始化问答
+                                            laststarttime_qq=-1;
+                                            laststarttime_ww=-1;
+                                            last_type=-1;//1问题 2是答案
+                                            qq="";
+                                            ww="";
+                                            www="";
+                                            qq+=translatext;
+                                            last_type=usertype;
+                                            laststarttime_qq=starttime;
+                                            datadata["q"]=qq;
+                                            datadata["w"]=ww;
+                                            setrecord_html();
+                                        }
+                                    }else if (usertype==2){//最后是问，本次是答，开始拼接答案
+                                        ww+=translatext;
+                                        laststarttime_ww=starttime;
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                    }
+                                }else  if (last_type==2){//最后是答
+                                    last_type=usertype;
+                                    if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
+                                        if (laststarttime_ww==starttime||laststarttime_ww==-1){
+                                            ww="";
+                                            ww+=translatext;
+                                            laststarttime_ww=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
+                                         }else{
+                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text();
+                                            www=labletext;
+                                            ww=www+translatext;
+                                            laststarttime_ww=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                         }
+
+                                    }else if (usertype==1){//最后是答，本次为问
+
+                                        //2.初始化问答
+                                        laststarttime_qq=-1;
+                                        laststarttime_ww=-1;
+                                        last_type=-1;//1问题 2是答案
+                                        qq="";
+                                        ww="";
+                                        www="";
+                                        qq+=translatext;
+                                        last_type=usertype;
+                                        laststarttime_qq=starttime;
+                                        datadata["q"]=qq;
+                                        datadata["w"]=ww;
+                                        setrecord_html();
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -1153,10 +1239,10 @@ $(function () {
             var con;
             var switch_bool;
             if (obj) {
-                con="确定要开启自动上墙吗";
+                con="确定要开启自动甄别吗";
                 switch_bool=1;
             }else{
-                con="确定要关闭自动上墙吗";
+                con="确定要关闭自动甄别吗";
                 switch_bool=-1;
             }
             layer.open({
@@ -1165,10 +1251,16 @@ $(function () {
                 ,yes: function(index, layero){
                     switchdata.elem.checked=obj;
                     form.render();
+                    if (switch_bool==1) {
+                        layer.msg("自动甄别已开启")
+                    }else{
+                        layer.msg("自动甄别已关闭")
+                    }
                     layer.close(index);
                 }
                 ,btn2: function(index, layero){
                     switchdata.elem.checked=!obj;
+
                     form.render();
                     layer.close(index);
                 }
@@ -1185,8 +1277,9 @@ $(function () {
 
 //自动上墙
 function setrecord_html() {
-    var trtd_html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd">\
+    $("#recorddetail tr").attr("automaticbool","");
+    var trtd_html='<tr automaticbool="1">\
+        <td style="padding: 0;width: 90%;" class="onetd" >\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" >'+datadata["q"]+'</label></div>\
               <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="">'+datadata["w"]+'</label></div>\
                 </td>\

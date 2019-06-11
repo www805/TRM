@@ -169,13 +169,20 @@ public class OutService  extends BaseService {
             if(null!=setMCAsrTxtBackVO){
                 //开始处理返回数据
                 //时间毫秒级处理显示
+
                 String asrtime = setMCAsrTxtBackVO.getAsrtime();
+                String starttime = setMCAsrTxtBackVO.getStarttime();
+                String asrstartime = setMCAsrTxtBackVO.getAsrstartime();
                 SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date date = new Date(Long.valueOf(asrtime));
-                asrtime = df.format(date);
 
                 if (StringUtils.isNotBlank(asrtime)){
+                    asrtime = df.format(new Date(Long.valueOf(asrtime)));
                     setMCAsrTxtBackVO.setAsrtime(asrtime);
+                }
+
+                if (StringUtils.isNotBlank(asrstartime)&&StringUtils.isNotBlank(starttime)){
+                    asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
+                    setMCAsrTxtBackVO.setAsrstartime(asrstartime);
                 }
 
                 List<SocketIOClient> clients = MessageEventHandler.clients;
@@ -184,7 +191,6 @@ public class OutService  extends BaseService {
                         client.sendEvent("getback", setMCAsrTxtBackVO);
                     }
                 }
-                System.out.println(setMCAsrTxtBackVO.toString());
                 return true;
             }
         } catch (Exception e) {
@@ -211,18 +217,26 @@ public class OutService  extends BaseService {
                     List<AsrTxtParam_toout>  asrTxtParam_toouts=getMCVO.getList();
                     if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
                         for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
-                            //时间转换
                             String asrtime = asrTxtParam_toout.getAsrtime();
+                            String starttime = asrTxtParam_toout.getStarttime();
+                            String asrstartime = asrTxtParam_toout.getAsrstartime();
                             SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                            Date date = new Date(Long.valueOf(asrtime));
-                            asrtime = df.format(date);
+
                             if (StringUtils.isNotBlank(asrtime)){
+                                asrtime = df.format(new Date(Long.valueOf(asrtime)));
                                 asrTxtParam_toout.setAsrtime(asrtime);
                             }
+
+                            if (StringUtils.isNotBlank(asrstartime)&&StringUtils.isNotBlank(starttime)){
+                                asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
+                                asrTxtParam_toout.setAsrstartime(asrstartime);
+                            }
+
                         }
-                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getAsrtime());
-                        Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getAsrtime().toString().compareTo(s2.getAsrtime().toString()));
-                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
+                      /*  Collections.sort(asrTxtParam_toouts, (s1, s2) -> s2.getStarttime().toString().compareTo(s1.getStarttime().toString()));*/
+                        asrTxtParam_toouts.sort((o1, o2) -> o1.getAsrstartime().compareTo(o2.getAsrstartime()));
+                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
                         getMCVO.setList(asrTxtParam_toouts);
                         result.setData(getMCVO);
                     }
@@ -258,18 +272,28 @@ public class OutService  extends BaseService {
                 if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
                     //时间排序
                     for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
-                        //时间转换
+
                         String asrtime = asrTxtParam_toout.getAsrtime();
+                        String starttime = asrTxtParam_toout.getStarttime();
+                        String asrstartime = asrTxtParam_toout.getAsrstartime();
                         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date date = new Date(Long.valueOf(asrtime));
-                        asrtime = df.format(date);
+
                         if (StringUtils.isNotBlank(asrtime)){
+                            asrtime = df.format(new Date(Long.valueOf(asrtime)));
                             asrTxtParam_toout.setAsrtime(asrtime);
                         }
+
+                        if (StringUtils.isNotBlank(asrstartime)&&StringUtils.isNotBlank(starttime)){
+                            asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
+                            asrTxtParam_toout.setAsrstartime(asrstartime);
+                        }
+
+
                     }
-                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrtime());
-                    Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getAsrtime().toString().compareTo(s2.getAsrtime().toString()));
-                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrtime());
+                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
+                   /* Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getStarttime().toString().compareTo(s2.getStarttime().toString()));*/
+                    asrTxtParam_toouts.sort((o1, o2) -> o1.getAsrstartime().compareTo(o2.getAsrstartime()));
+                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
 
                     getRecordrealingVO.setList(asrTxtParam_toouts);
                 }
@@ -396,7 +420,6 @@ public class OutService  extends BaseService {
                     rr2=equipmentControl.getPolygraphAnalysis(param2);
                     if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
                         GetPolygraphAnalysisVO getPolygraphAnalysisVO=gson.fromJson(gson.toJson(rr2.getData()),GetPolygraphAnalysisVO.class);
-                        System.out.println("成功获取到数据"+getPolygraphAnalysisVO.getT());
                         result.setData(getPolygraphAnalysisVO);
                         changeResultToSuccess(result);
                         return;
@@ -496,6 +519,7 @@ public class OutService  extends BaseService {
        /* */
         return;
     }
+
 
 
 }
