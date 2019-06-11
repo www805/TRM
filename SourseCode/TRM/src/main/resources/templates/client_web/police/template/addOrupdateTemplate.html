@@ -186,7 +186,7 @@
         </div>
 
 
-        <div class="layui-form-item layui-form-text">
+        <div class="layui-form-item layui-form-text" >
 
             <div style="overflow:auto;width: 100%; height: 648px; min-height:648px;" >
                 <table class="layui-table" id="testTable" lay-skin="nob" style="table-layout: fixed;">
@@ -262,13 +262,12 @@
             $("#templateTitle").css("background-color","#FFFFFF");
         });
 
-        // $("p[contenteditable='true']").blur(function(){
-        //     trObj = null;
-        // });
-        //
-        // $("p[contenteditable='true']").on("blur",function(){
-        //     trObj = null;
-        // });
+        $("#mainleft .menu li").click(function(){
+            $("#mainleft .menu li.current").removeClass("current");
+            $(this).addClass("current");
+            var index = $("#mainleft .menu li").index(this);
+            alert(index);
+        });
 
         // console.log($("p[contenteditable=true]").html());
         //
@@ -280,8 +279,6 @@
         // $("p").on('keyup',function () {
         //     alert(26666);
         // });
-
-
 
         document.onkeydown = function (event) {
             var e = event || window.event;

@@ -232,8 +232,8 @@
 
                     var filevalue = file.name;
                     var fileType = getFileType(filevalue)
-                    if(fileType !== 'xls' && fileType !== 'xlsx'){
-                        layer.msg("请选择xls/xlsx类型的文件导入！",{icon: 2});
+                    if(fileType !== 'xls'){
+                        layer.msg("请选择xls类型的文件导入！",{icon: 2});
                     }
                 });
                 return false;

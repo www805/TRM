@@ -231,7 +231,7 @@ function getTemplateById(id) {
         var tableProblems = '';
         $('#tableProblems').html(tableProblems);
 
-        if (templateToProblems.length > 1) {
+        if (templateToProblems.length >= 1) {
             for (var i = 0; i < templateToProblems.length; i++) {
                 var Problem = templateToProblems[i];
 

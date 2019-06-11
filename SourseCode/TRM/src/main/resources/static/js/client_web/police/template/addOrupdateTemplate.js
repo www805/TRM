@@ -143,13 +143,13 @@ function callTemplateById(data){
             var tableProblems = '';
             $('#dataTable').html(tableProblems);
 
-            if (templateToProblems.length > 1) {
+            if (templateToProblems.length >= 1) {
                 for (var i = 0; i < templateToProblems.length; i++) {
                     var Problem = templateToProblems[i];
 
                     tableProblems += '<tr onclick=\'trObj = this;\'>\n' +
                         '                        <td style="padding: 0;" class="onetd font_red_color" name="' + Problem.id + '">\n' +
-                        '                            <div name="1" class="table_td_tt2" value="' + Problem.ssid + '" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + Problem.problem + '</p></div>\n' +
+                        '                            <div name="1" class="table_td_tt2" value="' + Problem.ssid + '" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt " >' + Problem.problem + '</p></div>\n' +
                         '                            <div name="2" class="table_td_tt2 font_blue_color" value="' + Problem.ssid + '" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt content text" placeholder="' + Problem.referanswer + '"></p></div>\n' +
                         '                        </td>\n' +
                         '                        <td>\n' +
@@ -166,7 +166,7 @@ function callTemplateById(data){
                 // console.log($("p[contenteditable=true]").html());
 
                 $(trObj).on("blur",function(){
-                        trObj = null;
+                    trObj = null;
                 });
             }
         }
@@ -202,7 +202,8 @@ function callAddOrUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             layer.msg("操作成功！",{icon: 1});
-            setTimeout("window.location.reload()",1600);
+
+            setTimeout("var templateTypeId = $(\"#templateType\").val();var editSsid = getQueryString(\"ssid\");var templateId = getQueryString(\"templateId\");window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId;",1500);
             // window.location.reload();
             // console.log(data);
             // alert("chengg")
@@ -551,19 +552,18 @@ function addTr(text, referanswer, id) {
         '</div>';
     // var textHtml = '<p contenteditable="true" class="table_td_tt table_td_tt2">' + text + '</p><p contenteditable="true" class="table_td_tt table_td_tt2 font_blue_color">答：' + all[id].referanswer + '</p>';
 
-    var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt ">' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt">' + referanswer + '</p></div>'
+    var textHtml = '<div name="1" class="table_td_tt2" ><p class="table_td_tt_p">问：</p><p contenteditable="true" class="table_td_tt " >' + text + '</p></div><div name="2" class="table_td_tt2 font_blue_color" ><p class="table_td_tt_p">答：</p><p contenteditable="true" class="table_td_tt content text" placeholder="' + referanswer + '"></p></div>'
 
     var trHtml = "<tr class=\"onetd font_red_color\" onclick='trObj = this;'><td style=\"padding: 0;\" class=\"onetd\" name='" + id + "'>" + textHtml + "</td><td>" + updown + "</td></tr>";
     // $("#testTable tbody").after(trHtml);
 
     var htmlOBJ;
-    console.log(isNotEmpty(trObj));
-    console.log(trObj);
-    console.log(NoDelele);
+    // console.log(isNotEmpty(trObj));
+    // console.log(trObj);
+    // console.log(NoDelele);
     if(!isNotEmpty(trObj) && null == trObj || NoDelele == true){
         $("#dataTable").append(trHtml);
         htmlOBJ = $("#dataTable tr").last();
-        // NoDelele = false;
 
         // $("#dataTable tr").last().find("p").eq(1).focus().select();//下一行获取焦点
         // $("#dataTable tr").last().find("p").eq(1).html("<div><br/></div>");
@@ -571,20 +571,29 @@ function addTr(text, referanswer, id) {
         //     $(this).html("<div><br/></div>");
         // });
     }else if(isNotEmpty(trObj) && null != trObj ){
-         $(trObj).after(trHtml);
-         // trObj = null;
-        NoDelele = false;
-         htmlOBJ = $(trObj).next();
-        trObj = htmlOBJ;
+        $(trObj).after(trHtml);
+        htmlOBJ = $(trObj).next();
+        // trObj = null;
         // $(trObj).next().find("p").eq(1).html("<div><br/></div>");
-     }
+    }
+    NoDelele = false;
+    trObj = htmlOBJ;
 
     htmlOBJ.find("p").eq(1).focus().select();//下一行获取焦点
     // htmlOBJ.find("p").eq(1).focus(function () {
     //     $(this).html("<div><br/></div>");
     // });
 
-    // $(trObj).find("p").blur(function(){
+    // htmlOBJ.blur(function(){
+    //     trObj = null;
+    // });
+    //
+    // $("p[contenteditable='true']").focus(function(){
+    //     alert(1111);
+    // });
+
+    // htmlOBJ.find("p").blur(function(){
+    //
     //     alert(1111);
     // });
 

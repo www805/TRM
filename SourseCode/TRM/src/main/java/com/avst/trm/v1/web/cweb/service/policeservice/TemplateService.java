@@ -161,7 +161,13 @@ public class TemplateService extends BaseService {
                 //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
                 if(StringUtils.isNotEmpty(problem.getProblem())){
 
-                    Police_problem selectOne = police_problemMapper.selectOne(problem);
+                    EntityWrapper<Police_problem> eww = new EntityWrapper<>();
+                    if(null != problem.getId()){
+                        eww.eq("id", problem.getId());
+                    }
+                    eww.eq("problem", problem.getProblem());
+
+                    Problem selectOne = police_problemMapper.getProblemByEw(eww);
 
                     if(null == problem.getId() || null == selectOne){
                         //看自定义类型是否存在，如果不存在就新增自定义问题类型 && !problem.getProblem().equals(selectOne.getProblem())
@@ -182,22 +188,29 @@ public class TemplateService extends BaseService {
 
                         Integer insert = police_problemMapper.insert(problem);
 
-                        Police_problem one = police_problemMapper.selectOne(problem);
-                        templatetoproblem.setProblemssid(one.getId() + "");
+//                        Police_problem one = police_problemMapper.selectOne(problem);
+                        if (insert > 0 && null != problem.getId()) {
 
-                        problem.setId(one.getId());
+                            templatetoproblem.setProblemssid(problem.getId() + "");
 
-                        Police_problemtotype problemtotype = new Police_problemtotype();
-                        problemtotype.setProblemssid(problem.getId()+"");
+                            problem.setId(problem.getId());
+
+                            Police_problemtotype problemtotype = new Police_problemtotype();
+                            problemtotype.setProblemssid(problem.getId()+"");
 //                        problemtotype.setProblemtypessid(police_problemtype.getId()+"");
-                        problemtotype.setProblemtypessid("1");
-                        problemtotype.setSsid(OpenUtil.getUUID_32());
-                        problemtotype.setCreatetime(new Date());
-                        policeProblemtotypeMapper.insert(problemtotype);//问题类型中间表
+                            problemtotype.setProblemtypessid("1");
+                            problemtotype.setSsid(OpenUtil.getUUID_32());
+                            problemtotype.setCreatetime(new Date());
+                            policeProblemtotypeMapper.insert(problemtotype);//问题类型中间表
+                        }
 
                     }else{
                         EntityWrapper ewProblem=new EntityWrapper();
                         ewProblem.eq("id",problem.getId());
+                        if(StringUtils.isEmpty(problem.getReferanswer())){
+                            problem.setReferanswer(selectOne.getReferanswer());
+                        }
+                        problem.setOrdernum(selectOne.getOrdernum());
                         Integer update = police_problemMapper.update(problem, ewProblem);//新增问题
                     }
 
@@ -210,14 +223,17 @@ public class TemplateService extends BaseService {
             }
         }
 
-//        Police_templatetotype templatetotype = new Police_templatetotype();
+        EntityWrapper ewbao = new EntityWrapper();
+        ewbao.eq("templatessid", template.getId());
+
+        Police_templatetotype templatetotype = new Police_templatetotype();
 //        templatetotype.setId(template.getId());
 //        templatetotype.setTemplatessid(addTemplateParam.getId() + "");
 //        templatetotype.setTemplatebool(-1);
-//        templatetotype.setTemplatetypessid(addTemplateParam.getTemplatetypeid() + "");
-//        templatetotype.setUpdatetime(new Date());
+        templatetotype.setTemplatetypessid(template.getTemplatetypeid() + "");
+//        templatetotype.setCreatetime(new Date());
 
-//        int insert_type = police_templatetotypeMapper.insert(templatetotype);
+        int insert_type = police_templatetotypeMapper.update(templatetotype, ewbao);
 //        System.out.println("insert_type "+insert_type);
 
         //修改模板数据
@@ -1075,16 +1091,10 @@ public class TemplateService extends BaseService {
 ////                    System.out.println(next.getText());
 //                }
 
-            }else if(textFileName.endsWith(".xlsx") || textFileName.endsWith(".xls")){
+            }else if(textFileName.endsWith(".xls")){
                 System.out.println(".xlsx  .xls");
 
-                Workbook workbook = null;
-                if(textFileName.endsWith(".xls")){
-                    workbook = new HSSFWorkbook(file.getInputStream());
-                }else{
-                    new XSSFWorkbook(file.getInputStream());
-//                    workbook = new XSSFWorkbook(file.getInputStream());
-                }
+                Workbook workbook = new HSSFWorkbook(file.getInputStream());
                 //获取所有的工作表的的数量
                 int numOfSheet = workbook.getNumberOfSheets();
 
@@ -1098,7 +1108,7 @@ public class TemplateService extends BaseService {
                         Row row = sheet.getRow(j);
                         //获取第一条单元格
                         if (null != row && null != row.getCell(0)) {
-//                            row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+                            row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
                             String longName = row.getCell(0).getStringCellValue();
 
                             String text = longName.trim();
@@ -1111,11 +1121,11 @@ public class TemplateService extends BaseService {
                 }
 
             }else{
-                result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+                result.setMessage("文件格式错误，请使用xls格式上传");//doc，docx，
                 return;
             }
         } catch (IOException e) {
-            result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
+            result.setMessage("文件格式错误，请使用xls格式上传");//doc，docx，
             e.printStackTrace();
             return;
         } finally {
@@ -1131,85 +1141,97 @@ public class TemplateService extends BaseService {
         System.out.println(list);
 
         //插入模板表
-//        if(null != list && list.size() > 0){
-//            String title = "";
-//            String problem = "";
-//            int templateID = 0; //模板id
-//            for(int i=0;i<list.size();i++){
-//                if(i==0){
-//                    title = list.get(0);
-//                    Police_template police_template = new Police_template();
-//                    police_template.setTitle(title);
-//                    Police_template selectOne = police_templateMapper.selectOne(police_template);
-//
-//                    if(null == selectOne){
-//                        police_template.setCreatetime(new Date());
-//                        police_template.setSsid(OpenUtil.getUUID_32());
-//                        police_template.setOrdernum(0);
-//                        police_templateMapper.insert(police_template);
-//                        selectOne = police_template;
-//
-//                        //添加模板类型
-//                        Police_templatetotype templatetotype = new Police_templatetotype();
-//                        templatetotype.setTemplatessid(police_template.getId() + "");
-//                        templatetotype.setTemplatebool(-1);
-//                        templatetotype.setTemplatetypessid("1");
-//                        templatetotype.setCreatetime(new Date());
-//                        police_templatetotypeMapper.insert(templatetotype);
-//                    }
-//                    templateID = selectOne.getId();
-//
-//                    EntityWrapper ew = new EntityWrapper();
-//                    if(templateID != 0){
-//                        ew.eq("templatessid", templateID);
-//                        police_templatetoproblemMapper.delete(ew);
-//                    }
-//                    continue;
-//                }else{
-//                    problem = list.get(i);
-//                    problem = problem.replace("问：", "");
-//                }
-//                //如果判断模板是否存在，如果存在，就修改题目
-//                //不存在就添加模板，然后添加关联题目
-//
-//                if(!"".equals(problem)){
-//
-//                    EntityWrapper ewp = new EntityWrapper();
-//                    ewp.eq("problem", problem);
-//                    //问题可能有多个同样的，所以要获取全部，然后获取第一个问题
-//                    List<Police_problem> problemList = police_problemMapper.selectList(ewp);
-//                    Police_problem addProblemParam = null;
-//
-//                    if(null == problemList || problemList.size()==0){
-//                        //添加问题类型
-//                        Police_problem police_problem = new Police_problem();
-//                        police_problem.setCreatetime(new Date());
-//                        police_problem.setSsid(OpenUtil.getUUID_32());
-//                        police_problem.setOrdernum(0);
-//                        police_problem.setReferanswer("");
-//                        Integer insert = police_problemMapper.insert(police_problem);
-//                        addProblemParam = police_problem;
-////                        addProblemParam = police_problemMapper.selectOne(police_problem);
-//                    }else{
-//                        addProblemParam = problemList.get(0);
-//                    }
-//
-//                    //添加进关联表里
-//                    Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
-//                    templatetoproblem.setCreatetime(new Date());
-//
-//                    templatetoproblem.setTemplatessid(templateID + "");//模板id
-//                    templatetoproblem.setProblemssid(addProblemParam.getId() + "");//题目id
-//                    templatetoproblem.setOrdernum(0);
-//                    templatetoproblem.setSsid(OpenUtil.getUUID_32());
-//                    police_templatetoproblemMapper.insert(templatetoproblem);
-//                }
-//            }
-//        }
+        if(null != list && list.size() > 0){
+            String title = "";
+            String problem = "";
+            int templateID = 0; //模板id
+            for(int i=0;i<list.size();i++){
+                if(i==0){
+                    title = list.get(0);
+                    Police_template police_template = new Police_template();
+                    police_template.setTitle(title);
+                    Police_template selectOne = police_templateMapper.selectOne(police_template);
+
+                    if(null == selectOne){
+                        police_template.setCreatetime(new Date());
+                        police_template.setSsid(OpenUtil.getUUID_32());
+                        police_template.setOrdernum(0);
+                        police_templateMapper.insert(police_template);
+                        selectOne = police_template;
+
+                        //添加模板类型
+                        Police_templatetotype templatetotype = new Police_templatetotype();
+                        templatetotype.setTemplatessid(police_template.getId() + "");
+                        templatetotype.setTemplatebool(-1);
+                        //获取排序第一的id
+                        String topId = police_templatetypeMapper.getTemplateTypeTopId();
+                        templatetotype.setTemplatetypessid(topId);
+                        templatetotype.setCreatetime(new Date());
+                        police_templatetotypeMapper.insert(templatetotype);
+                    }
+                    templateID = selectOne.getId();
+
+                    EntityWrapper ew = new EntityWrapper();
+                    if(templateID != 0){
+                        ew.eq("templatessid", templateID);
+                        police_templatetoproblemMapper.delete(ew);
+                    }
+                    continue;
+                }else{
+                    problem = list.get(i);
+                    String wen = "";
+                    if(problem.indexOf("问：") != -1){
+                        wen = "问：";
+                    }else if(problem.indexOf("问:") != -1){
+                        wen = "问:";
+                    }
+                    String replace = problem.replace(wen, "");
+                    if(StringUtils.isNotEmpty(replace)){
+                        problem = replace;
+                    }
+
+                }
+                //如果判断模板是否存在，如果存在，就修改题目
+                //不存在就添加模板，然后添加关联题目
+
+                if(StringUtils.isNotEmpty(problem)){
+                    EntityWrapper ewp = new EntityWrapper();
+                    ewp.eq("problem", problem);
+                    //问题可能有多个同样的，所以要获取全部，然后获取第一个问题
+                    List<Police_problem> problemList = police_problemMapper.selectList(ewp);
+                    Police_problem addProblemParam = null;
+
+                    if(null == problemList || problemList.size()==0){
+                        //添加问题类型
+                        Police_problem police_problem = new Police_problem();
+                        police_problem.setProblem(problem);
+                        police_problem.setCreatetime(new Date());
+                        police_problem.setSsid(OpenUtil.getUUID_32());
+                        police_problem.setOrdernum(0);
+                        police_problem.setReferanswer("");
+                        Integer insert = police_problemMapper.insert(police_problem);
+                        addProblemParam = police_problem;
+//                        addProblemParam = police_problemMapper.selectOne(police_problem);
+                    }else{
+                        addProblemParam = problemList.get(0);
+                    }
+
+                    //添加进关联表里
+                    Police_templatetoproblem templatetoproblem=new Police_templatetoproblem();
+                    templatetoproblem.setCreatetime(new Date());
+
+                    templatetoproblem.setTemplatessid(templateID + "");//模板id
+                    templatetoproblem.setProblemssid(addProblemParam.getId() + "");//题目id
+                    templatetoproblem.setOrdernum(0);
+                    templatetoproblem.setSsid(OpenUtil.getUUID_32());
+                    police_templatetoproblemMapper.insert(templatetoproblem);
+                }
+            }
+        }
         //插入问题表
         //请求成功，展示出来
         this.changeResultToSuccess(result);
-        result.setMessage("Excel导入成功，请稍后...");
+        result.setMessage("模板导入成功，请稍后...");
     }
 
 
