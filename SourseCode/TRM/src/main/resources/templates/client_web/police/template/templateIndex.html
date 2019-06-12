@@ -121,7 +121,7 @@
 
                 <label class="layui-form-label" style="width: auto;">模板类型</label>
                 <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-                    <select name="templatetypeid" lay-verify="" id="templateType">
+                    <select name="templatetypeid" lay-verify="" id="templateTypes">
                     </select>
                 </div>
 
@@ -143,7 +143,7 @@
 
     <div class="layui-col-md7" style="border:1px solid #F2F2F2; padding-top: 5px;">
         <div class="">
-            <button class="layui-btn layui-btn-normal" onclick="window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId" >编辑</button>
+            <button class="layui-btn layui-btn-normal" onclick="eitdTemplateYe();" >编辑</button>
             <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
             <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
             <div class="layui-inline" style="margin-bottom:0">
@@ -186,7 +186,7 @@
         <tbody id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
-            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}<span class="layui-badge layui-bg-green" style="float: right;">{{value.templatetype}}模板</span></td>
+            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}<span class="layui-badge layui-bg-green" style="float: right;">{{value.typename}}模板</span></td>
         </tr>
         {{#  }); }}
         </tbody>
@@ -209,8 +209,8 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
-        getTmplateTypes();
-        // getTmplateTypesParam();
+        getTmplateTypess();
+        getTmplateTypesParams();
     });
 
     layui.use(['element','upload'], function(){

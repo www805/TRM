@@ -106,11 +106,12 @@ function callAddOrUpdate(data){
 function callProblemTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            plist = data.data.pagelist;
+            var plistAll = data.data.pagelist;
 
-            if (isNotEmpty(plist)) {
-                for (var i = 0; i < plist.length; i++) {
-                    var problemType = plist[i];
+            plist = plistAll;
+            if (isNotEmpty(plistAll)) {
+                for (var i = 0; i < plistAll.length; i++) {
+                    var problemType = plistAll[i];
                     $("#problemType").append("<option value='" + problemType.id + "' >" + problemType.typename + "</option>");
                 }
             }
@@ -178,13 +179,14 @@ function callTemplateById(data){
 function callTmplateTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.pagelist;
+            var listAll = data.data.pagelist;
 
+            list = listAll;
             var type = getQueryString("type");
 
-            if (isNotEmpty(list)) {
-                for (var i = 0; i < list.length; i++) {
-                    var templateType = list[i];
+            if (isNotEmpty(listAll)) {
+                for (var i = 0; i < listAll.length; i++) {
+                    var templateType = listAll[i];
                     if(type == templateType.id){
                         $("#templateType").append("<option selected value='" + templateType.id + "' >" + templateType.typename + "</option>");
                     }else{
@@ -466,6 +468,8 @@ function getDataAll() {
         return;
     }
 
+    var tiaochu = true;
+
     $("#testTable").find("td.onetd").each(function(i) {
 
         var str = $(this).text();
@@ -477,6 +481,7 @@ function getDataAll() {
         // var title =$("input[name='title']").val();
 
         if(arr[0] == ""){
+            tiaochu = false;
             layer.msg("新增的问题不能为空", {icon: 2});
             return;
         }
@@ -491,7 +496,7 @@ function getDataAll() {
         templatetoproblemids[i] = problem;
     })
 
-    if(arr[0] == ""){
+    if(arr[0] == "" || tiaochu == false){
         return;
     }
 

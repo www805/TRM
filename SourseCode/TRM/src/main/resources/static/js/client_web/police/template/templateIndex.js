@@ -7,9 +7,9 @@ var templatetypeidSSID;
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var keyword =$("#keyword").val();
-    var templatetypeid = $("#templateType").val();
+    var templatetypeid = $("#templateTypes").val();
     if(!templatetypeid){
-        templatetypeid = templatetypeidSSID;
+        templatetypeid = -1;
     }
 
     var data={
@@ -39,8 +39,18 @@ function getTmplates(keyword, templateType, currPage, pageSize) {
     ajaxSubmitByJson(url, data, callTmplates);
 }
 
+function eitdTemplateYe() {
+
+    if(editSsid){
+        window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId
+    }else{
+        layer.msg("当前没有模板，不能编辑",{icon: 2});
+    }
+
+}
+
 //获取模板类型
-function getTmplateTypes() {
+function getTmplateTypess() {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplateTypes);
     var data={
         token:INIT_CLIENTKEY,
@@ -73,18 +83,16 @@ function callTmplates2(data){
 function callTmplateTypes(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            list = data.data.pagelist;
+            var listAll = data.data.pagelist;
 
-            if (isNotEmpty(list)) {
-                for (var i = 0; i < list.length; i++) {
-                    var templateType = list[i];
+            list = listAll;
+            for (var i = 0; i < listAll.length; i++) {
+                var templateType = listAll[i];
 
-                    if(i == 0){
-                        templatetypeidSSID = templateType.id;
-                        getTmplateTypesParam();
-                    }
-                    $("#templateType").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
+                if(i == 0){
+                    templatetypeidSSID = templateType.id;
                 }
+                $("#templateTypes").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
             }
         }
     }else{
@@ -96,7 +104,7 @@ function callTmplateTypes(data){
 /**
  * 局部刷新
  */
-function getTmplateTypesParam() {
+function getTmplateTypesParams() {
 
     var len = arguments.length;
 
@@ -119,11 +127,11 @@ function showpagetohtml(){
         var currPage=pageparam.currPage;
 
         var keyword=$("input[name='keyword']").val();
-        var templateType = $("#templateType").val();
+        var templateType = $("#templateTypes").val();
         var arrparam=new Array();
         arrparam[0]=keyword;
         arrparam[1]=templateType;
-        showpage("paging",arrparam,'getTmplateTypesParam',currPage,pageCount,pageSize);
+        showpage("paging",arrparam,'getTmplateTypesParams',currPage,pageCount,pageSize);
     }
 }
 
@@ -226,7 +234,7 @@ function getTemplateById(id) {
         templateId = pagelist[id].id;
 
         $('#templateTitle').html(pagelist[id].title);
-        $('#leixing').html("类型：" + pagelist[id].templatetype);
+        $('#leixing').html("类型：" + pagelist[id].typename);
         var templateToProblems = pagelist[id].templateToProblems;
         var tableProblems = '';
         $('#tableProblems').html(tableProblems);
