@@ -311,6 +311,7 @@ function getUserByCard(){
     var cardnum=$("#cardnum").val();
      dqcardssid=cards;
      dqcardnum=cardnum;
+     dquserssid=null;
 
     var data={
         token:INIT_CLIENTKEY,
@@ -657,7 +658,8 @@ $(function () {
 
 
 function open_addCase() {
-        if (!isNotEmpty(dqcardssid)){ //判断主要人员信息是否搜索
+    var cardnum=$("#cardnum").val();
+        if (!isNotEmpty(dquserssid)||!isNotEmpty(cardnum)){ //判断主要人员信息是否搜索
             parent.layer.msg("请先获取人员基本信息");
             return;
          }
