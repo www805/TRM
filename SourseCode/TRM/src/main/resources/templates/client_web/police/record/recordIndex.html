@@ -56,7 +56,7 @@
     </div>
 
     <div class="layui-row layui-form" >
-            <div class="layui-col-md4 "style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <div class="layui-col-md4 "style="height: 780px;border:1px  solid #F2F2F2; " >
                <div style="margin-top: 5px">
                    <label class="layui-form-label" style="width: auto;">关键字</label>
                    <div class="layui-input-inline" style="float: left; ">
@@ -79,8 +79,11 @@
 
                    <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,15);">
                </div>
+                <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
+                    提示:【笔录列表】（双击可对<span style="color: red">*进行中</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
+                </div>
                 <div class="layui-card">
-                    <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
+                    <div style="height: 630px; overflow-x: hidden; overflow-y: scroll;">
                           <div class="layui-card-body" style="padding: 0;" >
                                     <div th:include ="page :: page"></div>
                         </div>
@@ -90,7 +93,7 @@
             <div class="layui-col-md8" style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                 <div class="layui-card">
                     <div class="layui-card-header">
-                       当前笔录： <span id="recordtitle"  recordtitle_first="false">笔录标题</span> <span style="color: red">（双击可对进行中的笔录进行编辑,对完成的会议进行查看）</span>
+                       当前笔录： <span id="recordtitle"  recordtitle_first="false">笔录标题</span>
                     </div>
                     <div style="height: 700px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body">

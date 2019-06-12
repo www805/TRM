@@ -68,6 +68,33 @@ function updateServerconfig() {
     var serverip=$("#serverip").val();
     var serverport= $("#serverport").val();
     var workdays=$("#workdays").val();
+
+    if (!isNotEmpty(clientname)) {
+        layer.msg("请输入系统名称");
+        $("#clientname").focus();
+        return;
+    }
+
+    if (!isNotEmpty(serverip)) {
+        layer.msg("请输入服务器IP");
+        $("#serverip").focus();
+        return;
+    }
+
+    if (!isNotEmpty(serverport)) {
+        layer.msg("请输入服务器端口");
+        $("#serverport").focus();
+        return;
+    }
+
+    if (!isNotEmpty(workdays)) {
+        layer.msg("请输入同步时间(天");
+        $("#workdays").focus();
+        return;
+    }
+
+
+
     var data={
             clientname:clientname,
             serverip:serverip,
@@ -91,7 +118,6 @@ function updateServerconfig() {
         $("#saveapkbtn").attr('disabled', false);
         $("#saveapkbtn").val("保存修改");
         $("[lay-filter='progress_demo']").css("visibility","hidden");
-
         callbackupdateServerconfig(xhr.responseText);
     };
     xhr.upload.addEventListener("progress", progressFunction, false);
@@ -116,7 +142,6 @@ function callbackupdateServerconfig(str) {
             layer.msg("保存成功",{time:500},function () {
                 getServerconfig();
             });
-
         }
     }else{
         layer.msg(data.message);

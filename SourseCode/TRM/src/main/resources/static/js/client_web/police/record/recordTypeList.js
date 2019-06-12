@@ -1,6 +1,6 @@
 function opneModal_1(id) {
     getPidRecordtypes();
-    var html='  <form class="layui-form site-inline" style="margin-top: 20px">\
+    var html='  <form class="layui-form layui-form-pane site-inline"  style="margin: 30px;">\
                <div class="layui-form-item">\
                    <label class="layui-form-label">所属类型</label>\
                     <div class="layui-input-block">\
@@ -12,21 +12,27 @@ function opneModal_1(id) {
                 <div class="layui-form-item">\
                     <label class="layui-form-label">类型名称</label>\
                     <div class="layui-input-block">\
-                    <input type="text" name="typenamem" id="typenamem" lay-verify="title" autocomplete="off" placeholder="请输入类型名称" class="layui-input">\
+                    <input type="text" name="typenamem" id="typenamem" lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">\
                     </div>\
                 </div>\
             </form>';
 
     var index = layer.open({
+        type:1,
         title:'笔录类型编辑',
         content: html,
         area: ['500px', '300px'],
         btn: ['确定', '取消'],
         yes:function(index, layero){
+            var pidm=$("#pidm option:selected").val();
+            var typenamem=$("#typenamem").val();
+            if(!isNotEmpty(typenamem)){
+                layer.msg("请输入类型名称");
+                $("#typenamem").focus();
+                return;
+            }
             if (isNotEmpty(id)) {
                 var url=getActionURL(getactionid_manage().recordTypeList_updateRecordtype);
-                var pidm=$("#pidm option:selected").val();
-                var typenamem=$("#typenamem").val();
                 var data={
                    token:INIT_CLIENTKEY,
                    param:{
@@ -36,10 +42,9 @@ function opneModal_1(id) {
                    }
                 };
                 ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
+                layer.close(index);
             } else {
                 var url=getActionURL(getactionid_manage().recordTypeList_addRecordtype);
-                var pidm=$("#pidm option:selected").val();
-                var typenamem=$("#typenamem").val();
                 var data={
                     token:INIT_CLIENTKEY,
                     param: {
@@ -48,8 +53,8 @@ function opneModal_1(id) {
                     }
                 };
                 ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
+                layer.close(index);
             }
-            layer.close(index);
         },
         btn2:function(index, layero){
             layer.close(index);

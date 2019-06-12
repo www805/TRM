@@ -143,7 +143,7 @@ function callbackgetRecordById(data) {
             //案件信息
             $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
-                var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
+                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
                                   <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+caseAndUserInfo.cause+"'>"+caseAndUserInfo.cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\

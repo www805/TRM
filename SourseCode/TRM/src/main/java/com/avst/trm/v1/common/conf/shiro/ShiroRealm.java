@@ -47,30 +47,30 @@ public class ShiroRealm extends AuthorizingRealm {
           roleew.eq("ar.adminssid",user.getSsid());
           List<Base_role> rolelist=base_admintoroleMapper.getRolesByAdminSsid(roleew);
           if (null!=rolelist&&rolelist.size()>0){
-              for(Base_role role:rolelist){
-                  simpleAuthorizationInfo.addRole(role.getRolename());
-                  EntityWrapper funew=new EntityWrapper();
-                  funew.eq("rp.rolessid",role.getSsid());
-                  List<Base_permissions> funlist=base_roletopermissionsMapper.getPermissionsByRoleSsid(funew);
-                  if (null!=funlist&&funlist.size()>0){
-                      menus=new ArrayList<Base_permissions>();
-                      for(Base_permissions fun:funlist){
-                          String urls=fun.getUrl();
-                          if (StringUtils.isNotBlank(urls)){
-                              String[] result = urls.split(";");
-                              for (int i = 0; i < result.length; i++) {
-                                  if (StringUtils.isNotBlank(result[i])&&!result[i].equals("#")){
-                                      simpleAuthorizationInfo.addStringPermission(result[i]);
-                                  }
-                              }
-                          }
-                          if (null!=fun.getType()&&fun.getType().intValue()==1){
-                              menus.add(fun);
-                          }
-                      }
-                  }
-              }
-          }
+                for(Base_role role:rolelist){
+                    simpleAuthorizationInfo.addRole(role.getRolename());
+                    EntityWrapper funew=new EntityWrapper();
+                    funew.eq("rp.rolessid",role.getSsid());
+                    List<Base_permissions> funlist=base_roletopermissionsMapper.getPermissionsByRoleSsid(funew);
+                    if (null!=funlist&&funlist.size()>0){
+                        menus=new ArrayList<Base_permissions>();
+                        for(Base_permissions fun:funlist){
+                            String urls=fun.getUrl();
+                            if (StringUtils.isNotBlank(urls)){
+                                String[] result = urls.split(";");
+                                for (int i = 0; i < result.length; i++) {
+                                    if (StringUtils.isNotBlank(result[i])&&!result[i].equals("#")){
+                                        simpleAuthorizationInfo.addStringPermission(result[i]);
+                                    }
+                                }
+                            }
+                            if (null!=fun.getType()&&fun.getType().intValue()==1){
+                                menus.add(fun);
+                            }
+                        }
+                    }
+                }
+            }
         }
         return simpleAuthorizationInfo;
     }

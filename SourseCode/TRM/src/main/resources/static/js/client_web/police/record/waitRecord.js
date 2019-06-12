@@ -107,8 +107,15 @@ function callsetAllproblem(data) {
                                                                 </div>\
                                                             </td>\
                                                             </tr>';
-                        $("#recorddetail").append(html);
+                        if (null!=td_lastindex["key"]){
+                            $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+                            $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+                        } else{
+                            $("#recorddetail").append(html);
+                            $('#recorddetail tr:last label[name="q"]').focus().select();
+                        }
                     }
+
                     $("#recorddetail label").focus(function(){
                         td_lastindex["key"]=$(this).closest("tr").index();
                         td_lastindex["value"]=$(this).attr("name");
@@ -139,7 +146,13 @@ function copy_problems(obj) {
             </div>\
         </td>\
         </tr>';
-    $("#recorddetail").append(html);
+    if (null!=td_lastindex["key"]){
+        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+    } else{
+        $("#recorddetail").append(html);
+        $('#recorddetail tr:last label[name="q"]').focus().select();
+    }
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
@@ -157,6 +170,7 @@ function tr_remove(obj) {
          ww="";
          www="";
      }
+    td_lastindex={};
     $(obj).parents("tr").remove();
 }
 function tr_up(obj) {
@@ -446,7 +460,7 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(occurrencetime_formatdata)){
                     occurrencetime_format=occurrencetime_formatdata;
                 }
-                var  init_casehtml="<tr><td>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
+                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
                                   <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
                                   <tr><td>当前案由</td><td>"+caseAndUserInfo.cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
@@ -998,11 +1012,18 @@ $(function () {
     document.onkeydown = function (event) {
         var e = event || window.event;
         if (e && e.keyCode == 13) { //回车键的键值为13
-            $("#recorddetail").append(trtd_html);
+            if (null!=td_lastindex["key"]){
+                $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
+                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+            } else{
+                $("#recorddetail").append(trtd_html);
+                $('#recorddetail tr:last label[name="q"]').focus().select();
+            }
             $("#recorddetail label").focus(function(){
                 td_lastindex["key"]=$(this).closest("tr").index();
                 td_lastindex["value"]=$(this).attr("name");
             });
+            event.preventDefault();
         }
     };
 
@@ -1291,7 +1312,13 @@ function setrecord_html() {
                     </div>\
                 </td>\
                 </tr>';
-    $("#recorddetail").append(trtd_html);
+    if (null!=td_lastindex["key"]){
+        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
+        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+    } else{
+        $("#recorddetail").append(trtd_html);
+        $('#recorddetail tr:last label[name="q"]').focus().select();
+    }
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
@@ -1478,5 +1505,42 @@ function main1() {
     myChart.setOption(option);
 }
 
+
+function initheart() {
+    $("#initheart_click").removeClass("layui-show");
+    $(".layui-tab-content").css("height","650px");
+
+    if (isNotEmpty($("#living3_2").html())) {
+        $("#living3_1").html($("#living3_2").html());
+        $("#living3_2").html("");
+    }
+
+    layui.use(['element'], function(){
+        var element = layui.element;
+        //使用模块
+        element.render();
+    });
+    initplayer();
+}
+
+
+function initasr() {
+    $("#initheart_click").addClass("layui-show");
+    $(".layui-tab-content").css("height","450px");
+}
+function initcase() {
+    $("#initheart_click").addClass("layui-show");
+    $(".layui-tab-content").css("height","450px");
+}
+function initliving() {
+    $("#initheart_click").addClass("layui-show");
+    $(".layui-tab-content").css("height","450px");
+    var html=$("#living3_2").html();
+   if (!isNotEmpty(html)){
+        $("#living3_2").html($("#living3_1").html());
+        $("#living3_1").html("");
+    }
+    initplayer();
+}
 
 

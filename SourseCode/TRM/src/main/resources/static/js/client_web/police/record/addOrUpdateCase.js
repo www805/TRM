@@ -56,6 +56,39 @@ function addOrUpdateCase() {
     var occurrencetime=$("#occurrencetime").val();
     var caseway=$("#caseway").val();
     var userssid=$("#userssid").val();
+
+    if (!isNotEmpty(userssid)) {
+        layer.msg("请选择案件人");
+        $("#userssid").focus();
+        return;
+    }
+    if (!isNotEmpty(casename)) {
+        layer.msg("请输入案件名称");
+        $("#casename").focus();
+        return;
+    }
+    if (!isNotEmpty(cause)) {
+        layer.msg("请输入当前案由");
+        $("#cause").focus();
+        return;
+    }
+    if (!isNotEmpty(casenum)) {
+        layer.msg("请输入案件编号");
+        $("#casenum").focus();
+        return;
+    }
+    if (!isNotEmpty(occurrencetime)) {
+        layer.msg("请输入案发时间");
+        $("#occurrencetime").focus();
+        return;
+    }
+    if (!isNotEmpty(caseway)) {
+        layer.msg("请输入到案方式");
+        $("#caseway").focus();
+        return;
+    }
+
+
     var data={
         token:INIT_CLIENTKEY,
         param:{

@@ -688,6 +688,7 @@ function open_addCase() {
             </form>';
 
     var index = parent.layer.open({
+        type:1,
         title:'添加案件',
         content:html,
         area: ['700px', '500px'],
@@ -700,6 +701,35 @@ function open_addCase() {
             var occurrencetime=$("#occurrencetimem",parent.document).val();
             var caseway=$("#casewaym",parent.document).val();
             var userssid=dquserssid;
+
+
+            if (!isNotEmpty(casename)) {
+                parent.layer.msg("请输入案件名称");
+                $("#casename").focus();
+                return;
+            }
+            if (!isNotEmpty(cause)) {
+                parent.layer.msg("请输入当前案由");
+                $("#cause").focus();
+                return;
+            }
+            if (!isNotEmpty(casenum)) {
+                parent.layer.msg("请输入案件编号");
+                $("#casenum").focus();
+                return;
+            }
+            if (!isNotEmpty(occurrencetime)) {
+                parent.layer.msg("请输入案发时间");
+                $("#occurrencetime").focus();
+                return;
+            }
+            if (!isNotEmpty(caseway)) {
+                parent.layer.msg("请输入到案方式");
+                $("#caseway").focus();
+                return;
+            }
+
+
             var data={
                 token:INIT_CLIENTKEY,
                 param:{

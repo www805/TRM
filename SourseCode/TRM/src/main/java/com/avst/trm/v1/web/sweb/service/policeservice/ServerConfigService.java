@@ -61,7 +61,9 @@ public class ServerConfigService extends BaseService {
             Base_filesave filesaveClientlogo = new Base_filesave();
             filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
             Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
-            serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
+            if (null!=clientlogo){
+                serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
+            }
         }
 
 
