@@ -600,12 +600,13 @@ $(function () {
             var casessid=data.value;
             $("#cause").val("");
             $("#casenum").val("");
-            $("#occurrencetime").val("");
-            $("#starttime").val("");
-            $("#endtime").val("");
             $("#caseway").val("");
             $("#asknum").val("0");
             $("#recordname").val("");
+         /*
+          $("#occurrencetime").val("");
+            $("#starttime").val("");
+            $("#endtime").val("");*/
 
 
 
@@ -620,9 +621,15 @@ $(function () {
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
-                        $("#occurrencetime").val(c.occurrencetime);
-                        $("#starttime").val(c.starttime);
-                        $("#endtime").val(c.endtime);
+                        if (isNotEmpty(c.starttime)){
+                            $("#starttime").val(c.starttime);
+                        }
+                        if (isNotEmpty(c.endtime)){
+                            $("#endtime").val(c.endtime);
+                        }
+                        if (isNotEmpty(c.occurrencetime)){
+                            $("#occurrencetime").val(c.occurrencetime);
+                        }
                         $("#caseway").val(c.caseway);
                         $("#asknum").val(c.asknum);
                         $("#recordname").val(recordname);
@@ -873,5 +880,5 @@ function select_cardnum(obj) {
 
 function blblur() {
     $("#cardnum_ssid").css("display","none");
-    getUserByCard();
+    /*getUserByCard();*/
 }
