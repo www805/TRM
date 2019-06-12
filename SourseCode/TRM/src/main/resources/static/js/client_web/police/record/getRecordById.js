@@ -287,7 +287,16 @@ function exportPdf(obj) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                window.location.href = data;
+                //window.location.href = data;
+                layer.open({
+                    type: 2,
+                    title: '导出PDF笔录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                    content: data
+                });
                 layer.msg("导出成功,等待下载中...");
             }
         }else{

@@ -676,6 +676,15 @@ function exportWord(obj){
             var data=data.data;
             if (isNotEmpty(data)){
                 window.location.href = data;
+              /*  layer.open({
+                    type: 2,
+                    title: '导出WORD笔录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                    content: data
+                });*/
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -697,7 +706,16 @@ function exportPdf(obj) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                window.location.href = data;
+                //window.location.href = data;
+                layer.open({
+                    type: 2,
+                    title: '导出PDF笔录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                    content: data
+                });
                 layer.msg("导出成功,等待下载中...");
             }
         }else{
@@ -1312,13 +1330,8 @@ function setrecord_html() {
                     </div>\
                 </td>\
                 </tr>';
-    if (null!=td_lastindex["key"]){
-        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
-        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
-    } else{
-        $("#recorddetail").append(trtd_html);
-        $('#recorddetail tr:last label[name="q"]').focus().select();
-    }
+    $("#recorddetail").append(trtd_html);
+    $('#recorddetail tr:last label[name="q"]').focus().select();
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
