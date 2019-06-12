@@ -109,10 +109,10 @@ function callsetAllproblem(data) {
                                                             </tr>';
                         if (null!=td_lastindex["key"]){
                             $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-                            $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+                            $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
                         } else{
                             $("#recorddetail").append(html);
-                            $('#recorddetail tr:last label[name="q"]').focus().select();
+                            $('#recorddetail tr:last label[name="w"]').focus();
                         }
                     }
 
@@ -148,10 +148,10 @@ function copy_problems(obj) {
         </tr>';
     if (null!=td_lastindex["key"]){
         $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
     } else{
         $("#recorddetail").append(html);
-        $('#recorddetail tr:last label[name="q"]').focus().select();
+        $('#recorddetail tr:last label[name="w"]').focus();
     }
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
@@ -379,7 +379,7 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(record)){
 
                 mcbool=record.mcbool;
-                
+
                 if (null!=mcbool&&mcbool==1){
                     $("#endrecord").css("display","none");
                     $("#endrecord").siblings().css("display","block");
@@ -815,7 +815,7 @@ function callbackgetgetRecordrealing(data) {
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
                             }
 
                             $("#recordreals").append(recordrealshtml);
@@ -1032,10 +1032,10 @@ $(function () {
         if (e && e.keyCode == 13) { //回车键的键值为13
             if (null!=td_lastindex["key"]){
                 $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
-                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="q"]').focus().select();
+                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
             } else{
                 $("#recorddetail").append(trtd_html);
-                $('#recorddetail tr:last label[name="q"]').focus().select();
+                $('#recorddetail tr:last label[name="w"]').focus();
             }
             $("#recorddetail label").focus(function(){
                 td_lastindex["key"]=$(this).closest("tr").index();
@@ -1161,9 +1161,10 @@ $(function () {
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
+
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"]:last").remove();
+                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
                             }
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals');
@@ -1259,7 +1260,7 @@ $(function () {
     $(window).on('pagehide', function(event) {
         addRecord(1);
     });
-    
+
     window.setInterval(function (args) {
         if (isNotEmpty(mtssid)) {
             getPolygraphdata();
@@ -1331,7 +1332,7 @@ function setrecord_html() {
                 </td>\
                 </tr>';
     $("#recorddetail").append(trtd_html);
-    $('#recorddetail tr:last label[name="q"]').focus().select();
+    $('#recorddetail tr:last label[name="w"]').focus();
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
@@ -1556,4 +1557,17 @@ function initliving() {
     initplayer();
 }
 
+function clearRecord() {
+    $("#recorddetail").html("");
+    var bool=$(obj).parents("tr").attr("automaticbool");
+    if (isNotEmpty(bool)&&bool==1){
+        laststarttime_qq=-1;
+        laststarttime_ww=-1;
+        last_type=-1;//1问题 2是答案
+        qq="";
+        ww="";
+        www="";
+    }
+    td_lastindex={};
+}
 
