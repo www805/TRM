@@ -37,6 +37,11 @@ public class Police_notification extends Model<Police_notification> {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updatetime;
 
+    /**
+     * 从属表关联ssid
+     */
+    private String notification_filesavessid;
+
     private String ssid;
 
     private String string1;
@@ -46,6 +51,14 @@ public class Police_notification extends Model<Police_notification> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public String getNotification_filesavessid() {
+        return notification_filesavessid;
+    }
+
+    public void setNotification_filesavessid(String notification_filesavessid) {
+        this.notification_filesavessid = notification_filesavessid;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

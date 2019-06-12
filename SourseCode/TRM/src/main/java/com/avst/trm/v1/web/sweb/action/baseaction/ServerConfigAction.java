@@ -26,7 +26,7 @@ public class ServerConfigAction extends BaseAction{
      * @return
      */
     @RequiresPermissions("getServerConfig")
-    @RequestMapping(value = "/getServerConfig")
+    @GetMapping(value = "/getServerConfig")
     public ModelAndView getServerConfig(Model model) {
 
         RResult rResult = createNewResultOfFail();
