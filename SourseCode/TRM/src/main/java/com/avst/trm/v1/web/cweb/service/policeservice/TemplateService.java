@@ -85,7 +85,12 @@ public class TemplateService extends BaseService {
             ew.like("t.title", getTemplatesParam.getKeyword().trim());
         }
         if (null != getTemplatesParam.getTemplatetypeid()) {
-            ew.eq("l.templatetypessid", getTemplatesParam.getTemplatetypeid());
+            if(getTemplatesParam.getTemplatetypeid() == -1){
+                String topF = police_templatetypeMapper.getTemplateTypeTopId();
+                ew.eq("l.templatetypessid", topF);
+            }else{
+                ew.eq("l.templatetypessid", getTemplatesParam.getTemplatetypeid());
+            }
         }
 
         //分页处理
@@ -111,12 +116,14 @@ public class TemplateService extends BaseService {
                 }
 
                 //获取模板类型
-                EntityWrapper ew3 = new EntityWrapper();
-                ew3.eq("t.id", template.getId());
-                ew3.eq("p.id", getTemplatesParam.getTemplatetypeid());
-
-                String templatetype = police_templateMapper.getTemplatetype(ew3);
-                template.setTemplatetype(templatetype);
+//                EntityWrapper ew3 = new EntityWrapper();
+//                ew3.eq("t.id", template.getId());
+//                ew3.eq("p.id", getTemplatesParam.getTemplatetypeid());
+//
+//                String templatetype = police_templateMapper.getTemplatetype(ew3);
+//                if(null != templatetype){
+//                    template.setTemplatetype(templatetype);
+//                }
 
             }
         }
