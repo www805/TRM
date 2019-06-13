@@ -972,9 +972,9 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		noLastClass = "layui-disabled";
 	}
 
-	var page10_d = Math.ceil(currPage / 10);
-	var startsize = page10_d * 10 - 9;
-	var stopsize = page10_d * 10;
+	var page10_d = Math.ceil(currPage /  5);
+	var startsize = page10_d * 5 - 4;
+	var stopsize = page10_d * 5;
 	var buttonnum = 0;
 	if (startsize <= 0) {
 		startsize = 1;
@@ -1065,8 +1065,8 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
  */
 function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
-	var page10_d = Math.ceil(currPage / 10);
-	currPage = page10_d * 10 + 1;
+	var page10_d = Math.ceil(currPage / 5);
+	currPage = page10_d * 5 + 1;
 
 	// 处理请求参数集合
 	if (isNotEmpty(arrparam) && arrparam.length > 0) {
@@ -1082,7 +1082,7 @@ function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
 				reqparamdata[i] = param;
 			} else {
-				reqparamdata[i] = "null";
+				reqparamdata[i] = null;
 			}
 		}
 		// 最多10个参数
@@ -1141,8 +1141,8 @@ function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
  */
 function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
-	var page10_d = Math.ceil(currPage / 10);
-	currPage = (page10_d - 1) * 10;
+	var page10_d = Math.ceil(currPage / 5);
+	currPage = (page10_d - 1) * 5;
 
 	// 处理请求参数集合
 	if (isNotEmpty(arrparam)) {
@@ -1158,7 +1158,7 @@ function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 
 				reqparamdata[i] = param;
 			} else {
-				reqparamdata[i] = "null";
+				reqparamdata[i] = null;
 			}
 		}
 		// 最多10个参数
