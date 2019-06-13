@@ -1,5 +1,7 @@
 package com.avst.trm.v1.common.util.sq;
 
+import com.avst.trm.v1.common.util.LogUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,7 +15,7 @@ public static void main( String[] args){
  
 	try {
 
-		System.out.println(getLocalMac());
+		LogUtil.intoLog(NetTool.class,getLocalMac());
 	} catch (Exception e) {
 		
 		e.printStackTrace();
@@ -57,7 +59,7 @@ private static String getLocalMac_win() throws SocketException {
 
 		byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
 
-		System.out.println("mac数组长度："+mac.length);
+		LogUtil.intoLog(NetTool.class,"mac数组长度："+mac.length);
 
 
 		for(int i=0; i<mac.length; i++) {
@@ -74,7 +76,7 @@ private static String getLocalMac_win() throws SocketException {
 
 			String str = Integer.toHexString(temp);
 
-			System.out.println("每8位:"+str);
+			LogUtil.intoLog(NetTool.class,"每8位:"+str);
 
 			if(str.length()==1) {
 
@@ -87,7 +89,7 @@ private static String getLocalMac_win() throws SocketException {
 			}
 
 		}
-		System.out.println("本机MAC地址:"+sb.toString().toUpperCase());
+		LogUtil.intoLog(NetTool.class,"本机MAC地址:"+sb.toString().toUpperCase());
 	} catch (UnknownHostException e) {
 		e.printStackTrace();
 	}

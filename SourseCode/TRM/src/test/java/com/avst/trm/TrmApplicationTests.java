@@ -1,5 +1,6 @@
 package com.avst.trm;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,7 +13,7 @@ public class TrmApplicationTests {
     @Test
     public void contextLoads() {
 
-        System.out.println(12356);
+        LogUtil.intoLog(this.getClass(),12356);
 
 
     }

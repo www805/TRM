@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.conf.socketio;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.corundumstudio.socketio.AckRequest;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
@@ -27,13 +28,13 @@ public class MessageEventHandler {
     @OnConnect
     public void onConnect(SocketIOClient client) {
         clients.add(client);
-        System.out.println("客户端_____" + client.getSessionId() + "_____已连接");
+        LogUtil.intoLog(this.getClass(),"客户端_____" + client.getSessionId() + "_____已连接");
     }
 
     @OnDisconnect
     public void onDisconnect(SocketIOClient client) {
         clients.remove(client);
-        System.out.println("客户端_____" + client.getSessionId() + "_____断开连接");
+        LogUtil.intoLog(this.getClass(),"客户端_____" + client.getSessionId() + "_____断开连接");
     }
 
 }

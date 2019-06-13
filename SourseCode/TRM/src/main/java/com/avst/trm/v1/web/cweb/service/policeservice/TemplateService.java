@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -153,7 +154,7 @@ public class TemplateService extends BaseService {
         EntityWrapper ew=new EntityWrapper();
         ew.eq("templatessid",template.getId());
         int delete_bool = police_templatetoproblemMapper.delete(ew);
-        System.out.println("delete_bool__"+delete_bool);
+        LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
 
         //添加关联题目
         List<Police_problem> ids=template.getTemplatetoproblemids();
@@ -223,7 +224,7 @@ public class TemplateService extends BaseService {
 
                     templatetoproblem.setSsid(OpenUtil.getUUID_32());
                     int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
-                    System.out.println("insert_bool__"+insert_bool);
+                    LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
 
                 }
 
@@ -241,12 +242,12 @@ public class TemplateService extends BaseService {
 //        templatetotype.setCreatetime(new Date());
 
         int insert_type = police_templatetotypeMapper.update(templatetotype, ewbao);
-//        System.out.println("insert_type "+insert_type);
+//        LogUtil.intoLog(this.getClass(),"insert_type "+insert_type);
 
         //修改模板数据
         template.setUpdatetime(new Date());
         int updateById_bool=police_templateMapper.updateById(template);
-        System.out.println("updateById_bool__"+updateById_bool);
+        LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
         updateTemplateVO.setBool(updateById_bool);
         result.setData(updateTemplateVO);
         if (updateById_bool<1){
@@ -325,7 +326,7 @@ public class TemplateService extends BaseService {
         addTemplateParam.setSsid(OpenUtil.getUUID_32());
 //        addTemplateParam.setOrdernum(1);
         int insert_bool = police_templateMapper.insert(addTemplateParam);
-        System.out.println("insert_bool__"+insert_bool);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");
             return;
@@ -374,7 +375,7 @@ public class TemplateService extends BaseService {
                     templatetoproblem.setProblemssid(problem.getId() + "");//题目id
                     templatetoproblem.setSsid(OpenUtil.getUUID_32());
                     int police_templatetoprobleminsert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
-                    System.out.println("police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
+                    LogUtil.intoLog(this.getClass(),"police_templatetoprobleminsert_bool"+police_templatetoprobleminsert_bool);
 
                 }
             }
@@ -387,7 +388,7 @@ public class TemplateService extends BaseService {
         templatetotype.setCreatetime(new Date());
 
         int insert_type = police_templatetotypeMapper.insert(templatetotype);
-        System.out.println("insert_type "+insert_type);
+        LogUtil.intoLog(this.getClass(),"insert_type "+insert_type);
 
         addTemplateVO.setBool(insert_bool);
         result.setData(addTemplateVO);
@@ -445,7 +446,7 @@ public class TemplateService extends BaseService {
         addTemplatetypeParam.setCreatetime(new Date());
         addTemplatetypeParam.setSsid(OpenUtil.getUUID_32());
         int insert_bool = police_templatetypeMapper.insert(addTemplatetypeParam);
-        System.out.println("insert_bool__"+insert_bool);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");
             return;
@@ -478,7 +479,7 @@ public class TemplateService extends BaseService {
 
         Integer update_bool = police_templatetypeMapper.update(updateTemplateTypeParam, ew);
 
-        System.out.println("update_bool__"+update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
             return;
@@ -514,7 +515,7 @@ public class TemplateService extends BaseService {
 
         //修改模板为默认模板
         int update_bool = police_templatetotypeMapper.update(defaultTemplateParam, ew);
-        System.out.println("update_bool__"+update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
             return;
@@ -615,7 +616,7 @@ public class TemplateService extends BaseService {
                 problemtotype1.setProblemtypessid(updateProblemParam.getProblemtypessid());
 
                 int updateType_bool = policeProblemtotypeMapper.updateById(problemtotype1);
-                System.out.println("updateType_bool "+updateType_bool);
+                LogUtil.intoLog(this.getClass(),"updateType_bool "+updateType_bool);
             }else{
                 //根据原版如果有就修改，没有就新增，新增的如果有了就不添加到关联表
                 problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid());
@@ -629,7 +630,7 @@ public class TemplateService extends BaseService {
 
         }
 
-        System.out.println("update_bool "+update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool "+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
             return;
@@ -700,7 +701,7 @@ public class TemplateService extends BaseService {
         problemtotype.setCreatetime(new Date());
 
         int insert_totype = policeProblemtotypeMapper.insert(problemtotype);
-        System.out.println("insert_bool__"+insert_bool);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");
             return;
@@ -766,7 +767,7 @@ public class TemplateService extends BaseService {
         addProblemtypeParam.setCreatetime(new Date());
         addProblemtypeParam.setSsid(OpenUtil.getUUID_32());
         int insert_bool = police_problemtypeMapper.insert(addProblemtypeParam);
-        System.out.println("insert_bool__"+insert_bool);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");
             return;
@@ -800,7 +801,7 @@ public class TemplateService extends BaseService {
 
         //添加问题类型
         int update_bool = police_problemtypeMapper.update(updateProblemtypeParam, ew);
-        System.out.println("update_bool__"+update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
             return;
@@ -1065,11 +1066,11 @@ public class TemplateService extends BaseService {
             fis = file.getInputStream();
 
 //            String fileHeader = getFileHeader(fis);
-//            System.out.println("fileHeader : " + fileHeader);
+//            LogUtil.intoLog(this.getClass(),"fileHeader : " + fileHeader);
 
             String textFileName=file.getOriginalFilename();
             if(textFileName.endsWith(".doc")) { //判断文件格式
-                System.out.println(".doc");
+                LogUtil.intoLog(this.getClass(),".doc");
                 result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
                 return;
 //                WordExtractor wordExtractor = new WordExtractor(fis);//使用HWPF组件中WordExtractor类从Word文档中提取文本或段落
@@ -1078,11 +1079,11 @@ public class TemplateService extends BaseService {
 //                    if (!"".equals(words.trim())) {
 //                        list.add(words);
 //                    }
-////                    System.out.println(words);
+////                    LogUtil.intoLog(this.getClass(),words);
 //                }
 
             }else if(textFileName.endsWith(".docx")){
-                System.out.println(".docx");
+                LogUtil.intoLog(this.getClass(),".docx");
                 result.setMessage("文件格式错误，请使用xls，xlsx格式上传");//doc，docx，
                 return;
 
@@ -1095,11 +1096,11 @@ public class TemplateService extends BaseService {
 //                    if (!"".equals(text)) {
 //                        list.add(text);
 //                    }
-////                    System.out.println(next.getText());
+////                    LogUtil.intoLog(this.getClass(),next.getText());
 //                }
 
             }else if(textFileName.endsWith(".xls")){
-                System.out.println(".xlsx  .xls");
+                LogUtil.intoLog(this.getClass(),".xlsx  .xls");
 
                 Workbook workbook = new HSSFWorkbook(file.getInputStream());
                 //获取所有的工作表的的数量
@@ -1122,7 +1123,7 @@ public class TemplateService extends BaseService {
                             if (!"".equals(text)) {
                                 list.add(text);
                             }
-//                            System.out.println(longName);
+//                            LogUtil.intoLog(this.getClass(),longName);
                         }
                     }
                 }
@@ -1145,7 +1146,7 @@ public class TemplateService extends BaseService {
             }
         }
 
-        System.out.println(list);
+        LogUtil.intoLog(this.getClass(),list);
 
         //插入模板表
         if(null != list && list.size() > 0){

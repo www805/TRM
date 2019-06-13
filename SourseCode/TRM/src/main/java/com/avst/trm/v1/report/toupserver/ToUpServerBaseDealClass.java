@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_downserv
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.JacksonUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RRParam;
@@ -52,7 +53,7 @@ public class ToUpServerBaseDealClass {
         if(StringUtils.isNotEmpty(rr)){
 
             RResult result=(RResult) JacksonUtil.stringToObjebt_1(rr, RResult.class);
-            System.out.println(result.getActioncode()+":result.getActioncode() initsynchronizeddata");
+            LogUtil.intoLog(this.getClass(),result.getActioncode()+":result.getActioncode() initsynchronizeddata");
             if(null!=result && result.getActioncode().equals(Code.SUCCESS.toString())){
 
                 //请求成功的处理
@@ -87,9 +88,9 @@ public class ToUpServerBaseDealClass {
             EntityWrapper<Base_datainfo> entityWrapper=new EntityWrapper<Base_datainfo>();
             List<Base_datainfo> tablelist=base_datainfoMapper.selectList(entityWrapper);//获取全部需要同步的表
             if(null==tablelist||tablelist.size() == 0){
-                System.out.println("-------------------------------------------------");
-                System.out.println("需要同步的数据库表查询为空，请查看-------重大问题");
-                System.out.println("-------------------------------------------------");
+                LogUtil.intoLog(this.getClass(),"-------------------------------------------------");
+                LogUtil.intoLog(this.getClass(),"需要同步的数据库表查询为空，请查看-------重大问题");
+                LogUtil.intoLog(this.getClass(),"-------------------------------------------------");
                 rrParam.setMessage("需要同步的数据库表查询为空，请查看-------重大问题");
                 return rrParam;
             }
@@ -122,7 +123,7 @@ public class ToUpServerBaseDealClass {
         if(StringUtils.isNotEmpty(rr)){
 
             RResult result=(RResult) JacksonUtil.stringToObjebt_1(rr, RResult.class);
-            System.out.println(result.getActioncode()+":result.getActioncode() startSynchronizedata");
+            LogUtil.intoLog(this.getClass(),result.getActioncode()+":result.getActioncode() startSynchronizedata");
             if(null!=result && result.getActioncode().equals(Code.SUCCESS.toString())){
 
                 //请求成功的处理
@@ -230,7 +231,7 @@ public class ToUpServerBaseDealClass {
         if(StringUtils.isNotEmpty(rr)){
 
             RResult<List<StartSynchronizedata_2_Param>> result=(RResult<List<StartSynchronizedata_2_Param>>) JacksonUtil.stringToObjebt_1(rr, RResult.class);
-            System.out.println(result.getActioncode()+":result.getActioncode()");
+            LogUtil.intoLog(this.getClass(),result.getActioncode()+":result.getActioncode()");
             if(null!=result && result.getActioncode().equals(Code.SUCCESS.toString())){
 
                 //请求成功的处理
@@ -274,7 +275,7 @@ public class ToUpServerBaseDealClass {
             if(StringUtils.isNotEmpty(rr)) {
 
                 RResult<List<StartSynchronizedata_2_Param>> result = (RResult<List<StartSynchronizedata_2_Param>>) JacksonUtil.stringToObjebt_1(rr, RResult.class);
-                System.out.println(result.getActioncode() + ":result.getActioncode()");
+                LogUtil.intoLog(this.getClass(),result.getActioncode() + ":result.getActioncode()");
 
                 rrParam.setCode(result.getActioncode().hashCode());
                 rrParam.setMessage(result.getMessage());

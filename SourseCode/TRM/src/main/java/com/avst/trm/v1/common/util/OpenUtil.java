@@ -39,7 +39,7 @@ public class OpenUtil {
 	public static String generateShortUuid_8() {  
 	StringBuffer shortBuffer = new StringBuffer();  
 	String uuid = UUID.randomUUID().toString().replace("-", "");  
-	System.out.println(uuid);
+	LogUtil.intoLog(OpenUtil.class,uuid);
 	for (int i = 0; i < 8; i++) {  
 	    String str = uuid.substring(i * 4, i * 4 + 4);  
 	    int x = Integer.parseInt(str, 16);  
@@ -66,7 +66,7 @@ public class OpenUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}    
-        System.out.println("EncoderMd5_file MD5:"+md5); 
+        LogUtil.intoLog(OpenUtil.class,"EncoderMd5_file MD5:"+md5);
 		return md5;
 		}
 	 /** 
@@ -105,24 +105,24 @@ public class OpenUtil {
 	public static String createpath_notpro(String files,String basepath ){
 	
 	Date dd=new Date();
-	System.out.println("basepath_:"+basepath);
+	LogUtil.intoLog(OpenUtil.class,"basepath_:"+basepath);
 	String path=basepath+DateUtil.getYear(dd)+"/"+DateUtil.getMonth(dd)+"/"+DateUtil.getDay(dd)+"/"+files;
 	File file =new File(path);    
 	if  (!file.exists()  && !file.isDirectory())      
 	{       
-		System.out.println(path+"//不存在");  
+		LogUtil.intoLog(OpenUtil.class,path+"//不存在");
 		boolean bool=file.mkdirs();  
 		if(!bool){
 			boolean bool2=file.mkdirs();
-			System.out.println("------------------------");
-			System.out.println("                      ");
-			System.out.println("第一次创建存储ts的文件夹失败，第二次失败："+bool2);
-			System.out.println("                      ");
-			System.out.println("------------------------");
+			LogUtil.intoLog(OpenUtil.class,"------------------------");
+			LogUtil.intoLog(OpenUtil.class,"                      ");
+			LogUtil.intoLog(OpenUtil.class,"第一次创建存储ts的文件夹失败，第二次失败："+bool2);
+			LogUtil.intoLog(OpenUtil.class,"                      ");
+			LogUtil.intoLog(OpenUtil.class,"------------------------");
 		}
 	} else   
 	{  
-		System.out.println(path+"//已存在");  
+		LogUtil.intoLog(OpenUtil.class,path+"//已存在");
 	}
 	
 	 return path;
@@ -138,19 +138,19 @@ public class OpenUtil {
 			File file =new File(path);    
 			if  (!file.exists()  && !file.isDirectory())      
 			{       
-				System.out.println(path+"//不存在");  
+				LogUtil.intoLog(OpenUtil.class,path+"//不存在");
 				boolean bool=file.mkdirs();  
 				if(!bool){
 					boolean bool2=file.mkdirs();
-					System.out.println("------------------------");
-					System.out.println("                      ");
-					System.out.println("第一次创建createpath_files失败，第二次："+bool2);
-					System.out.println("                      ");
-					System.out.println("------------------------");
+					LogUtil.intoLog(OpenUtil.class,"------------------------");
+					LogUtil.intoLog(OpenUtil.class,"                      ");
+					LogUtil.intoLog(OpenUtil.class,"第一次创建createpath_files失败，第二次："+bool2);
+					LogUtil.intoLog(OpenUtil.class,"                      ");
+					LogUtil.intoLog(OpenUtil.class,"------------------------");
 				}
 			} else   
 			{  
-				System.out.println(path+"//已存在");  
+				LogUtil.intoLog(OpenUtil.class,path+"//已存在");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,19 +170,19 @@ public class OpenUtil {
 		File file =new File(path);    
 		if  (!file.exists()  && !file.isDirectory())      
 		{       
-			System.out.println(path+"//不存在");  
+			LogUtil.intoLog(OpenUtil.class,path+"//不存在");
 			boolean bool=file.mkdirs();  
 			if(!bool){
 				boolean bool2=file.mkdirs();
-				System.out.println("------------------------");
-				System.out.println("                      ");
-				System.out.println("第一次创建createpath_files失败，第二次："+bool2);
-				System.out.println("                      ");
-				System.out.println("------------------------");
+				LogUtil.intoLog(OpenUtil.class,"------------------------");
+				LogUtil.intoLog(OpenUtil.class,"                      ");
+				LogUtil.intoLog(OpenUtil.class,"第一次创建createpath_files失败，第二次："+bool2);
+				LogUtil.intoLog(OpenUtil.class,"                      ");
+				LogUtil.intoLog(OpenUtil.class,"------------------------");
 			}
 		} else   
 		{  
-			System.out.println(path+"//已存在");  
+			LogUtil.intoLog(OpenUtil.class,path+"//已存在");
 		}
 		
 		 return path;
@@ -204,23 +204,23 @@ public class OpenUtil {
 		//如果文件夹不存在则创建    
 		if  (! file2.exists()  && !file2.isDirectory())      
 		{       
-		    System.out.println(filepath2+"//文件夹不存在");  
+		    LogUtil.intoLog(OpenUtil.class,filepath2+"//文件夹不存在");
 		    file2.mkdirs();    
 		} else   
 		{  
-		    System.out.println(filepath2+"//文件夹存在");  
+		    LogUtil.intoLog(OpenUtil.class,filepath2+"//文件夹存在");
 		}
 		
 		//创建目标文件  
     	if (!file.exists() && !file.isDirectory()) {
     		try {
     			boolean bool=file.createNewFile();
-    			System.out.println(path+"//创建"+bool); 
+    			LogUtil.intoLog(OpenUtil.class,path+"//创建"+bool);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
     	}else{
-    		System.out.println(path+"//文件存在"); 
+    		LogUtil.intoLog(OpenUtil.class,path+"//文件存在");
     	}
 		
 		 return path;
@@ -243,11 +243,11 @@ public class OpenUtil {
 		//如果文件夹不存在则创建    
 		if  (! file2.exists()  && !file2.isDirectory())      
 		{       
-		    System.out.println(filepath2+"//文件夹不存在");  
+		    LogUtil.intoLog(OpenUtil.class,filepath2+"//文件夹不存在");
 		    file2.mkdirs();    
 		} else   
 		{  
-		    System.out.println(filepath2+"//文件夹存在");  
+		    LogUtil.intoLog(OpenUtil.class,filepath2+"//文件夹存在");
 		}
 		
 		//创建目标文件  
@@ -258,7 +258,7 @@ public class OpenUtil {
 				e.printStackTrace();
 			}
     	}else{
-    		System.out.println(path+"//文件存在"); 
+    		LogUtil.intoLog(OpenUtil.class,path+"//文件存在");
     	}
 		
 		 return path;
@@ -277,11 +277,11 @@ public class OpenUtil {
 		//如果文件夹不存在则创建    
 		if  (! file.exists()  && !file.isDirectory())      
 		{       
-		    System.out.println(file+"//文件夹不存在");  
+		    LogUtil.intoLog(OpenUtil.class,file+"//文件夹不存在");
 		    file.mkdirs();    
 		} else   
 		{  
-		    System.out.println(file+"//文件夹存在");  
+		    LogUtil.intoLog(OpenUtil.class,file+"//文件夹存在");
 		}
 		 return path;
 	}
@@ -306,7 +306,7 @@ public class OpenUtil {
 			try {
 			    md5 = MessageDigest.getInstance("MD5");
 			} catch (Exception e) {
-			    System.out.println(e.toString());
+			    LogUtil.intoLog(OpenUtil.class,e.toString());
 			    e.printStackTrace();
 			    return "";
 			}
@@ -345,17 +345,17 @@ public static String numtoStr(int digit,Integer num){
 		if(arr.length==3){
 			String time=strtime.substring(0, strtime.indexOf("."));
 			Integer time_s=Integer.parseInt((time.substring(0, time.indexOf(":"))))*3600+Integer.parseInt((time.substring(time.indexOf(":")+1, time.lastIndexOf(":"))))*60+Integer.parseInt(time.substring(time.lastIndexOf(":")+1));
-			System.out.println(time_s);
+			LogUtil.intoLog(OpenUtil.class,time_s);
 			return time_s;
 		}else if(arr.length==2){
 			String time3=strtime.substring(0, strtime.indexOf("."));
 			String t1=time3.substring(0, time3.lastIndexOf(":"));
 			String t2=time3.substring(time3.indexOf(":")+1);
 			Integer time_s3=Integer.parseInt(t1)*60+Integer.parseInt(t2);
-			System.out.println(time_s3);
+			LogUtil.intoLog(OpenUtil.class,time_s3);
 			return time_s3;
 		}else{
-			System.out.println("strtimetoSS出错");
+			LogUtil.intoLog(OpenUtil.class,"strtimetoSS出错");
 			return 0;
 		}		
 	}
@@ -396,7 +396,7 @@ public static String numtoStr(int digit,Integer num){
            FileReader read = new FileReader(filepath);
            BufferedReader br = new BufferedReader(read);
            while ((row = br.readLine()) != null) {
-//               System.out.println(row);
+//               LogUtil.intoLog(OpenUtil.class,row);
           	 str+=row+"\r\n";
            }
            br.close();
@@ -651,7 +651,7 @@ public static String numtoStr(int digit,Integer num){
 			return list;
 			
 		}else{
-			System.out.println(cutstr+":cutstr waitMinusPath:"+waitMinusPath+" ,have one is null");
+			LogUtil.intoLog(OpenUtil.class,cutstr+":cutstr waitMinusPath:"+waitMinusPath+" ,have one is null");
 		}
 		return null;
 	}
@@ -775,7 +775,7 @@ public static String numtoStr(int digit,Integer num){
 	 while(m.find()){
 		 String s=m.group();
 		 s=s.replaceAll("<br>", "");
-		 System.out.println(s);
+		 LogUtil.intoLog(OpenUtil.class,s);
 		 slist.add(s );
 	 }
 	 return slist;
@@ -981,13 +981,13 @@ public static String numtoStr(int digit,Integer num){
 	public static String FileRenameTo(String filePath, String newFileName) {
         File f = new File(filePath);
         if (!f.exists()) { // 判断原文件是否存在
-        	System.out.println("原文件不存在，请注意--");
+        	LogUtil.intoLog(OpenUtil.class,"原文件不存在，请注意--");
             return null;
         }
         
         newFileName = newFileName.trim();
         if ("".equals(newFileName) || newFileName == null) {
-        	System.out.println("文件名不能为空，请注意--");
+        	LogUtil.intoLog(OpenUtil.class,"文件名不能为空，请注意--");
             return null;
         }
         String newFilePath = null;
@@ -1057,7 +1057,7 @@ public static String numtoStr(int digit,Integer num){
 				}
 			}
 
-			System.out.println(filePath);
+			LogUtil.intoLog(OpenUtil.class,filePath);
 			return filePath;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1074,7 +1074,7 @@ public static String numtoStr(int digit,Integer num){
 
 		String str=System.getProperty("java.home");
 		if(null!=str&&(str.indexOf("jdk")>-1 || str.indexOf("jre")>-1 )){
-			System.out.println("----getJDKorJREPath str:"+str);
+			LogUtil.intoLog(OpenUtil.class,"----getJDKorJREPath str:"+str);
 			return str.endsWith("\\") ? (str+"bin\\"):(str+"\\bin\\");
 		}
 		return null;
@@ -1089,13 +1089,13 @@ public static String numtoStr(int digit,Integer num){
 	public static boolean setFileHide(String filepath){
 
 		if(StringUtils.isEmpty(filepath)){
-			System.out.println("setFileHide filepath is null");
+			LogUtil.intoLog(OpenUtil.class,"setFileHide filepath is null");
 			return false;
 		}
 
 		File file = new File(filepath);
 		if(!file.exists()){
-			System.out.println("setFileHide file is null 文件不存在");
+			LogUtil.intoLog(OpenUtil.class,"setFileHide file is null 文件不存在");
 			return false;
 		}
 
@@ -1118,9 +1118,9 @@ public static String numtoStr(int digit,Integer num){
 
 //		String str="D:\\lswj\\NameSpace.java";
 //
-//		System.out.println(setFileHide(str));
+//		LogUtil.intoLog(OpenUtil.class,setFileHide(str));
 
-		System.out.println(getXMSoursePath());
+		LogUtil.intoLog(OpenUtil.class,getXMSoursePath());
 
 
 

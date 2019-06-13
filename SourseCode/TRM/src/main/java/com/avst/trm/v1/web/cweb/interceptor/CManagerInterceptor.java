@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.cweb.interceptor;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.socketio.NettySocketConfig;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
@@ -22,7 +23,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
     //在控制器执行前调用
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("执行preHandle方法-->01");
+        LogUtil.intoLog(this.getClass(),"执行preHandle方法-->01");
 
 
         //获取session，判断用户
@@ -71,7 +72,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         if (disbool&&!url.equals("/cweb/")) {
             return true;  //通过拦截器，继续执行请求
         } else {//跳转登录界面
-            System.out.println(firstinterface+":firstinterface");
+            LogUtil.intoLog(this.getClass(),firstinterface+":firstinterface");
             request.getRequestDispatcher(firstinterface).forward(request, response);
             return false;  //没有通过拦截器，返回登录页面
         }
@@ -80,14 +81,14 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) throws Exception {
-        System.out.println("执行postHandle方法-->02");
+        LogUtil.intoLog(this.getClass(),"执行postHandle方法-->02");
         super.postHandle(request, response, handler, modelAndView);
     }
     //整个请求执行完成后调用
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
-        System.out.println("执行afterCompletion方法-->03");
+        LogUtil.intoLog(this.getClass(),"执行afterCompletion方法-->03");
         super.afterCompletion(request, response, handler, ex);
     }
 

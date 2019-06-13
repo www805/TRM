@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.util.properties;
 
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
@@ -38,10 +39,10 @@ public class PropertiesListener implements ApplicationListener<ApplicationStarte
         }
         File file=new File(propath);
         if (file.exists()){
-            System.out.println("调用外部的部分参数配置，propath："+propath);
+            LogUtil.intoLog(this.getClass(),"调用外部的部分参数配置，propath："+propath);
             PropertiesListenerConfig.loadAllPropertiesWithOutSide(propath,propertyFileName);
         }else{
-            System.out.println("调用内部的参数配置，propath："+propath);
+            LogUtil.intoLog(this.getClass(),"调用内部的参数配置，propath："+propath);
             PropertiesListenerConfig.loadAllProperties(propertyFileName);
         }
     }

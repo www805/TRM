@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -32,7 +33,7 @@ public class Scheduler {
     @Scheduled(fixedRate = 20000)
     public void testTasks() {
 
-        System.out.println("定时任务执行时间：" + dateFormat.format(new Date()));
+        LogUtil.intoLog(this.getClass(),"定时任务执行时间：" + dateFormat.format(new Date()));
     }
 
     //每个小时的第五分钟执行
@@ -43,14 +44,14 @@ public class Scheduler {
     @Scheduled(cron = "0 05 1/1 * * *")
     public void testTasks2() {
 
-        System.out.println("定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
+        LogUtil.intoLog(this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
 
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         //检测授权
         int authorizebool=serverconfig.getAuthorizebool();
         if(authorizebool!=1){//还没有生成隐性授权文件
             boolean bool= AnalysisSQ.createClientini(base_serverconfigMapper,serverconfig);
-            System.out.println("initClient authorizebool:"+bool);
+            LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
         }
 
         Date date=serverconfig.getWorkstarttime();//数据库的开始时间
@@ -59,7 +60,7 @@ public class Scheduler {
             CommonCache.clientSQbool=false;
             return ;
         }
-        System.out.println(DateUtil.format(date)+":DateUtil.format(date)----sqEntity.getStartTime():"+sqEntity.getStartTime());
+        LogUtil.intoLog(this.getClass(),DateUtil.format(date)+":DateUtil.format(date)----sqEntity.getStartTime():"+sqEntity.getStartTime());
 
         //更新最外面的使用时间
         long nowtime=DateUtil.getSeconds();

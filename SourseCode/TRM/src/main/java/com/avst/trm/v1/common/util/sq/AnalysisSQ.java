@@ -3,10 +3,7 @@ package com.avst.trm.v1.common.util.sq;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
-import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.OpenUtil;
-import com.avst.trm.v1.common.util.ReadWriteFile;
-import com.avst.trm.v1.common.util.SpringUtil;
+import com.avst.trm.v1.common.util.*;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.wb.deencode.DeCodeUtil;
 import org.apache.commons.lang.StringUtils;
@@ -87,7 +84,7 @@ public class AnalysisSQ {
             String rr=ReadWriteFile.readTxtFileToStr(keypath,"utf8");
             rr+=";0";//再加上一个服务器使用时间
             String encode=encode_uid(rr.trim());
-            System.out.println("--encode:"+encode);
+            LogUtil.intoLog(AnalysisSQ.class,"--encode:"+encode);
 
 
             ReadWriteFile.writeTxtFile(encode,inipath,"utf8");
@@ -116,7 +113,7 @@ public class AnalysisSQ {
                 serverconfig.setWorkdays(1);
                 serverconfig.setSsid(OpenUtil.getUUID_32());
                 int updatebool=base_serverconfigMapper.updateById(serverconfig);
-                System.out.println(updatebool+":updatebool");
+                LogUtil.intoLog(AnalysisSQ.class,updatebool+":updatebool");
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -141,13 +138,13 @@ public class AnalysisSQ {
             String rr=ReadWriteFile.readTxtFileToStr(inipath,"utf8");
 
             String decode=decode_uid(rr);
-            System.out.println("--decode:"+decode);
+            LogUtil.intoLog(AnalysisSQ.class,"--decode:"+decode);
 
             String[] arr=decode.split(";");
             int useday=Integer.parseInt(arr[1]);
             useday=day;
             String newcode=arr[0]+";"+useday;
-            System.out.println(newcode+":newcode--");
+            LogUtil.intoLog(AnalysisSQ.class,newcode+":newcode--");
             ReadWriteFile.writeTxtFile(encode_uid(newcode),inipath);
 
             return true;
@@ -168,7 +165,7 @@ public class AnalysisSQ {
 
         File file=new File(inipath);
         if(!file.exists()){
-            System.out.println("未找到使用的授权文件---");
+            LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---");
             return -100001;
         }
         try {
@@ -181,17 +178,17 @@ public class AnalysisSQ {
             String foreverBool=sqcodearr[1];
             String cpuCode=sqcodearr[3];
             String localcpuCode=NetTool.getLocalMac();
-//            if(!localcpuCode.equals(cpuCode)){
-//                System.out.println(localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
-//                System.out.println("授权机器码不一致");
-//                return -1;
-//            }
+            if(!localcpuCode.equals(cpuCode)){
+                LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
+                LogUtil.intoLog(AnalysisSQ.class,"授权机器码不一致");
+                return -1;
+            }
 
             if(foreverBool.equals("true")){
                 return 1001;
             }else{
                 int sqDay=Integer.parseInt(sqcodearr[4]);
-//                System.out.println(sqDay+":sqDay usetime:"+usetime );
+//                LogUtil.intoLog(AnalysisSQ.class,sqDay+":sqDay usetime:"+usetime );
                 return (sqDay-usetime);
             }
 
@@ -211,7 +208,7 @@ public class AnalysisSQ {
 
         File file=new File(inipath);
         if(!file.exists()){
-            System.out.println("未找到使用的授权文件---");
+            LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---");
             return null;
         }
         try {
@@ -323,7 +320,7 @@ public class AnalysisSQ {
                 Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
                 boolean bool=createClientini(base_serverconfigMapper, new Base_serverconfig() );
                 if(!bool){
-                    System.out.println("createClientini 初始化失败--");
+                    LogUtil.intoLog(AnalysisSQ.class,"createClientini 初始化失败--");
                     return null;
                 }
             }
@@ -340,7 +337,7 @@ public class AnalysisSQ {
     public static void main(String[] args) {
 
         SQEntity sqEntity=AnalysisSQ.getSQEntity();
-        System.out.println(sqEntity.getStartTime());
+        LogUtil.intoLog(AnalysisSQ.class,sqEntity.getStartTime());
 
     }
 

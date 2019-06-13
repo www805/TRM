@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -172,7 +173,7 @@ public class RecordService extends BaseService {
     public void addRecord(RResult result, ReqParam<AddRecordParam> param){
 
         if (addRecordbool){
-            System.out.println("---addRecordbool---Start---");
+            LogUtil.intoLog(this.getClass(),"---addRecordbool---Start---");
             result.setMessage("保存中,请稍等...");
             return;
         }
@@ -195,14 +196,14 @@ public class RecordService extends BaseService {
 
         //修改笔录状态
         Integer recordbool=addRecordParam.getRecordbool();
-        System.out.println("recordbool__"+recordbool);
+        LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
         EntityWrapper updaterecordParam=new EntityWrapper();
         updaterecordParam.eq("ssid",recordssid);
         Police_record record=new Police_record();
         record.setSsid(recordssid);
         record.setRecordbool(recordbool);
         int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-        System.out.println("updaterecord_bool__"+updaterecord_bool);
+        LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
 
         //获取该笔录下的全部题目答案
         EntityWrapper recordToProblemsParam=new EntityWrapper();
@@ -214,12 +215,12 @@ public class RecordService extends BaseService {
                 EntityWrapper answersParam=new EntityWrapper();
                 answersParam.eq("recordtoproblemssid",recordToProblem.getSsid());
                 int answerdelete_bool=police_answerMapper.delete(answersParam);
-                System.out.println("answerdelete_bool__"+answerdelete_bool);
+                LogUtil.intoLog(this.getClass(),"answerdelete_bool__"+answerdelete_bool);
             }
              int recordtoproblemdelete_bool=police_recordtoproblemMapper.delete(recordToProblemsParam);
-             System.out.println("recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
+             LogUtil.intoLog(this.getClass(),"recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
         }else{
-            System.out.println("该笔录没有任何题目答案__1");
+            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__1");
         }
 
         //根据参数笔录题目包括答案，新增笔录题目答案
@@ -231,7 +232,7 @@ public class RecordService extends BaseService {
                 problem.setOrdernum(Integer.valueOf(i+1));
                 problem.setRecordssid(recordssid);
                 int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
-                System.out.println("recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
+                LogUtil.intoLog(this.getClass(),"recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
                 if (recordtoprobleminsert_bool>0){
                     List<Police_answer> answers=problem.getAnswers();
                     if (null!=answers&&answers.size()>0){
@@ -242,13 +243,13 @@ public class RecordService extends BaseService {
                             answer.setOrdernum(Integer.valueOf(j+1));
                             answer.setRecordtoproblemssid(problem.getSsid());
                           int answerinsert_bool =  police_answerMapper.insert(answer);
-                            System.out.println("answerinsert_bool__"+answerinsert_bool);
+                            LogUtil.intoLog(this.getClass(),"answerinsert_bool__"+answerinsert_bool);
                         }
                     }
                 }
             }
         }else{
-            System.out.println("该笔录没有任何题目答案__2");
+            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
         }
 
 
@@ -452,7 +453,7 @@ public class RecordService extends BaseService {
         police_recordtype.setId(getRecordtypeByIdParam.getId());
         police_recordtype =  police_recordtypeMapper.selectOne(police_recordtype);
         if (null==police_recordtype){
-            System.out.println("未找到该笔录类型--");
+            LogUtil.intoLog(this.getClass(),"未找到该笔录类型--");
             result.setMessage("系统错误");
         }
         result.setData(police_recordtype);
@@ -469,7 +470,7 @@ public class RecordService extends BaseService {
         police_recordtype.setSsid(OpenUtil.getUUID_32());
         police_recordtype.setCreatetime(new Date());
         int insert_bool=police_recordtypeMapper.insert(police_recordtype);
-        System.out.println("insert_bool__"+insert_bool);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool>0){
             result.setData(insert_bool);
             changeResultToSuccess(result);
@@ -486,7 +487,7 @@ public class RecordService extends BaseService {
         String ssid=police_recordtype.getSsid();
 
         int update_bool=police_recordtypeMapper.updateById(police_recordtype);
-        System.out.println("update_bool__"+update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool>0){
             result.setData(update_bool);
             changeResultToSuccess(result);
@@ -518,11 +519,11 @@ public class RecordService extends BaseService {
 
         //需要新增人员信息
         if (null!=adduser_bool&&adduser_bool==1){
-             System.out.println("需要新增人员____");
+             LogUtil.intoLog(this.getClass(),"需要新增人员____");
             addUserInfo.setSsid(OpenUtil.getUUID_32());
             addUserInfo.setCreatetime(new Date());
            int insertuserinfo_bool = police_userinfoMapper.insert(addUserInfo);
-            System.out.println("insertuserinfo_bool__"+insertuserinfo_bool);
+            LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
            if (insertuserinfo_bool>0){
                Police_userinfototype police_userinfototype=new Police_userinfototype();
                police_userinfototype.setCardnum(addUserInfo.getCardnum());
@@ -531,7 +532,7 @@ public class RecordService extends BaseService {
                police_userinfototype.setCardtypessid(addUserInfo.getCardtypessid());
                police_userinfototype.setUserssid(addUserInfo.getSsid());
               int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
-               System.out.println("insertuserinfototype_bool__"+insertuserinfototype_bool);
+               LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
                userssid=addUserInfo.getSsid();//得到用户的ssid
            }
         }
@@ -539,20 +540,20 @@ public class RecordService extends BaseService {
 
         //需要新增案件信息
         if (null!=addcase_bool&&addcase_bool==1){
-            System.out.println("需要新增案件信息____");
+            LogUtil.intoLog(this.getClass(),"需要新增案件信息____");
             addPolice_case.setSsid(OpenUtil.getUUID_32());
             addPolice_case.setCreatetime(new Date());
             addPolice_case.setOrdernum(0);
             addPolice_case.setUserssid(addUserInfo.getSsid());
             int insertcase_bool =  police_caseMapper.insert(addPolice_case);
-           System.out.println("insertcase_bool__"+insertcase_bool);
+           LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
            if (insertcase_bool>0){
                casessid=addPolice_case.getSsid();
            }
         }
 
         if (StringUtils.isBlank(userssid)||StringUtils.isBlank(casessid)){
-            System.out.println("userssid__"+userssid+"__casessid__"+casessid);
+            LogUtil.intoLog(this.getClass(),"userssid__"+userssid+"__casessid__"+casessid);
             result.setMessage("参数为空");
             return;
         }
@@ -566,7 +567,7 @@ public class RecordService extends BaseService {
         record.setRecordtypessid(recordtypessid);
         record.setRecordname(recordname);
         int insertrecord_bool=police_recordMapper.insert(record);
-        System.out.println("insertrecord_bool__"+insertrecord_bool);
+        LogUtil.intoLog(this.getClass(),"insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
             result.setMessage("系统异常");
             return;
@@ -584,7 +585,7 @@ public class RecordService extends BaseService {
         arraignment.setOtheradminssid(addCaseToArraignmentParam.getOtheradminssid());
         arraignment.setRecordssid(record.getSsid());
         int insertarraignment_bool=police_arraignmentMapper.insert(arraignment);
-        System.out.println("insertarraignment_bool__"+insertarraignment_bool);
+        LogUtil.intoLog(this.getClass(),"insertarraignment_bool__"+insertarraignment_bool);
 
         if (insertarraignment_bool<0){
             result.setMessage("系统异常");
@@ -599,7 +600,7 @@ public class RecordService extends BaseService {
                 casetoarraignment.setArraignmentssid(arraignment.getSsid());
                 casetoarraignment.setCasessid(casessid);
                 int insertcasetoarraignment_bool=police_casetoarraignmentMapper.insert(casetoarraignment);
-                System.out.println("insertcasetoarraignment_bool__"+insertcasetoarraignment_bool);
+                LogUtil.intoLog(this.getClass(),"insertcasetoarraignment_bool__"+insertcasetoarraignment_bool);
          }
 
         //添加其他
@@ -616,7 +617,7 @@ public class RecordService extends BaseService {
                 userto1.setUsertitle(userto.getUsertitle());
                 userto1.setUsertype(userto.getUsertype());
                 int insertuserto_bool= police_usertoMapper.insert(userto1);
-                System.out.println("insertuserto_bool__"+insertuserto_bool);
+                LogUtil.intoLog(this.getClass(),"insertuserto_bool__"+insertuserto_bool);
             }
         }
 
@@ -636,8 +637,8 @@ public class RecordService extends BaseService {
         }
          String cardtypesssid=getUserByCardParam.getCardtypesssid();//证件类型ssid
          String cardnum=getUserByCardParam.getCardnum();//证件号
-        System.out.println("证件类型："+cardtypesssid);
-        System.out.println("证件号码："+cardnum);
+        LogUtil.intoLog(this.getClass(),"证件类型："+cardtypesssid);
+        LogUtil.intoLog(this.getClass(),"证件号码："+cardnum);
 
         if (StringUtils.isBlank(cardtypesssid)||StringUtils.isBlank(cardnum)){
             result.setMessage("请输入证件号");
@@ -683,7 +684,7 @@ public class RecordService extends BaseService {
                 result.setData(getUserByCardVO);
                 changeResultToSuccess(result);
             }else{
-                System.out.println("人员用户找到多个--"+cardnum);
+                LogUtil.intoLog(this.getClass(),"人员用户找到多个--"+cardnum);
                 result.setMessage("系统异常");
                 return;
             }
@@ -1212,7 +1213,7 @@ public class RecordService extends BaseService {
             if (null!=police_arraignment){
                 police_arraignment.setMtssid(mtssid);
                int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
-                System.out.println("arraignmentupdateById_bool__"+arraignmentupdateById_bool);
+                LogUtil.intoLog(this.getClass(),"arraignmentupdateById_bool__"+arraignmentupdateById_bool);
                 if (arraignmentupdateById_bool>0){
                     result.setData(true);
                     changeResultToSuccess(result);
@@ -1278,7 +1279,7 @@ public class RecordService extends BaseService {
         addCaseParam.setSsid(OpenUtil.getUUID_32());
         addCaseParam.setCreatetime(new Date());
        int caseinsert_bool = police_caseMapper.insert(addCaseParam);
-       System.out.println("caseinsert_bool__"+caseinsert_bool);
+       LogUtil.intoLog(this.getClass(),"caseinsert_bool__"+caseinsert_bool);
         if (caseinsert_bool>0){
             result.setData(addCaseParam.getSsid());
             changeResultToSuccess(result);
@@ -1296,14 +1297,14 @@ public class RecordService extends BaseService {
         String casessid=updateCaseParam.getSsid();
         if (StringUtils.isBlank(casessid)){
             result.setMessage("参数为空");
-            System.out.println("getCaseBySsid__ssid:"+casessid);
+            LogUtil.intoLog(this.getClass(),"getCaseBySsid__ssid:"+casessid);
             return;
         }
 
         EntityWrapper updateParam=new EntityWrapper();
         updateParam.eq("ssid",casessid);
         int caseupdate_bool = police_caseMapper.update(updateCaseParam,updateParam);
-        System.out.println("caseupdate_bool__"+caseupdate_bool);
+        LogUtil.intoLog(this.getClass(),"caseupdate_bool__"+caseupdate_bool);
         if (caseupdate_bool>0){
             result.setData(caseupdate_bool);
             changeResultToSuccess(result);
@@ -1322,7 +1323,7 @@ public class RecordService extends BaseService {
         String casessid=getCaseBySsidParam.getCasessid();
         if (StringUtils.isBlank(casessid)){
             result.setMessage("参数为空");
-            System.out.println("getCaseBySsid__ssid:"+casessid);
+            LogUtil.intoLog(this.getClass(),"getCaseBySsid__ssid:"+casessid);
             return;
         }
         EntityWrapper caseParam=new EntityWrapper();
@@ -1334,7 +1335,7 @@ public class RecordService extends BaseService {
             result.setData(getCaseBySsidVO);
             changeResultToSuccess(result);
         }else{
-            System.out.println("查找到案件数__"+caseAndUserInfos.size());
+            LogUtil.intoLog(this.getClass(),"查找到案件数__"+caseAndUserInfos.size());
             result.setMessage("系统异常");
             return;
         }

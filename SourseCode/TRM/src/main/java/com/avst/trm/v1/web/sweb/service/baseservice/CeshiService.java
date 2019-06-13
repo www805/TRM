@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdmintorole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.Getlist3Param;
@@ -41,14 +42,14 @@ public class CeshiService extends BaseService {
             EntityWrapper ew=new EntityWrapper();
 //            ew.setEntity(new Admininfo());
               ew.eq("a.id",1);
-            System.out.println(ew.getSqlSegment()+"---------");
+            LogUtil.intoLog(this.getClass(),ew.getSqlSegment()+"---------");
             int count=admininfoMapper.getAdminAndAdmintorolecount(ew);
             result.setData(count);
             this.changeResultToSuccess(result);
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 
@@ -76,7 +77,7 @@ public class CeshiService extends BaseService {
 //            page.setRecords(list);
                     list=admininfoMapper.selectPage(page,ew );
 
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
 
             result.setData(list);
@@ -84,7 +85,7 @@ public class CeshiService extends BaseService {
         }catch (Exception e){
             e.fillInStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 
@@ -115,7 +116,7 @@ public class CeshiService extends BaseService {
 //            page.setRecords(list);
             list=admininfoMapper.getAdminAndAdmintorolelist(page,ew );
 
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
             if(null!=list&&list.size() > 0){
                 List<Getlist3VOParam> getlist3VOParamList=new ArrayList<Getlist3VOParam>();
@@ -134,7 +135,7 @@ public class CeshiService extends BaseService {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 

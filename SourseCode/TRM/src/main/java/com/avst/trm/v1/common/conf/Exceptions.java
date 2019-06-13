@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -29,7 +30,7 @@ public class Exceptions {
         result.setMessage("权限不足");
         result.setEndtime(DateUtil.getDateAndMinute());
         result.setData(null);
-        System.out.println("异常信息:"+e.getMessage());
+        LogUtil.intoLog(this.getClass(),"异常信息:"+e.getMessage());
         return result;
     }
 
@@ -40,7 +41,7 @@ public class Exceptions {
         result.setMessage("未认证");
         result.setEndtime(DateUtil.getDateAndMinute());
         result.setData(null);
-        System.out.println("异常信息:"+e.getMessage());
+        LogUtil.intoLog(this.getClass(),"异常信息:"+e.getMessage());
         return result;
     }
 
@@ -52,7 +53,7 @@ public class Exceptions {
         result.setMessage(e.getMessage());
         result.setEndtime(DateUtil.getDateAndMinute());
         result.setData(null);
-        System.out.println("异常信息:"+e.getMessage());
+        LogUtil.intoLog(this.getClass(),"异常信息:"+e.getMessage());
         return result;
     }*/
 

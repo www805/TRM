@@ -4,6 +4,7 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -92,7 +93,7 @@ public class Arraignment_countService extends BaseService {
 ////            page.setRecords(list);
 //            list=keywordMapper.selectPage(page,ew );
 //
-//            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+//            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
 //                    page.getTotal()+"-----"+page.getPages());
 //
 //            if(null!=list&&list.size() > 0){
@@ -104,7 +105,7 @@ public class Arraignment_countService extends BaseService {
 //        }catch (Exception e){
 //            e.fillInStackTrace();
 //        }finally {
-//            System.out.println("请求结束");
+//            LogUtil.intoLog(this.getClass(),"请求结束");
 //        }
     }
 
@@ -175,7 +176,7 @@ public class Arraignment_countService extends BaseService {
             }
 //            AdminAndWorkunit list1 = arraignmentCountMapper.getList(page, ew);
 
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
             if(null!=list&&list.size() > 0){
                 getlist3VO.setPagelist(list);
@@ -186,7 +187,7 @@ public class Arraignment_countService extends BaseService {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 

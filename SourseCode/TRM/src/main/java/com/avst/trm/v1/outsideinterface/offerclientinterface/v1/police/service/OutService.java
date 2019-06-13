@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -74,7 +75,7 @@ public class OutService  extends BaseService {
     public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
         StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
         if (null == startRercordParam) {
-            System.out.println("参数为空__");
+            LogUtil.intoLog(this.getClass(),"参数为空__");
             result.setMessage("参数为空");
             return result;
         }
@@ -118,15 +119,15 @@ public class OutService  extends BaseService {
                     if (null!=police_arraignment){
                         police_arraignment.setMtssid(mtssid);
                         int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
-                        System.out.println("arraignmentupdateById_bool__"+arraignmentupdateById_bool);
+                        LogUtil.intoLog(this.getClass(),"arraignmentupdateById_bool__"+arraignmentupdateById_bool);
                     }
-                    System.out.println("startMC开启成功__");
+                    LogUtil.intoLog(this.getClass(),"startMC开启成功__");
                 }
 
                 result.setData(startMCVO);
                 changeResultToSuccess(result);
             }else{
-                System.out.println("startMC开启失败__");
+                LogUtil.intoLog(this.getClass(),"startMC开启失败__");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,7 +139,7 @@ public class OutService  extends BaseService {
         OverMCParam_out overMCParam_out=gson.fromJson(gson.toJson(param.getParam()), OverMCParam_out.class);
 
         if (null == overMCParam_out) {
-            System.out.println("参数为空__");
+            LogUtil.intoLog(this.getClass(),"参数为空__");
             result.setMessage("参数为空");
             return result;
         }
@@ -147,9 +148,9 @@ public class OutService  extends BaseService {
             param.setParam(overMCParam_out);
             result = meetingControl.overMC(param);
             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
-                System.out.println("overMC关闭成功__"+overMCParam_out.getMtssid());
+                LogUtil.intoLog(this.getClass(),"overMC关闭成功__"+overMCParam_out.getMtssid());
             }else{
-                System.out.println("overMC关闭失败__"+overMCParam_out.getMtssid());
+                LogUtil.intoLog(this.getClass(),"overMC关闭失败__"+overMCParam_out.getMtssid());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -161,10 +162,10 @@ public class OutService  extends BaseService {
         //请求参数转换
         SetMCAsrTxtBackVO setMCAsrTxtBackVO=param.getParam();
         if (null==setMCAsrTxtBackVO){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             return false;
         }
-        System.out.println(setMCAsrTxtBackVO.toString());
+        LogUtil.intoLog(this.getClass(),setMCAsrTxtBackVO.toString());
 
         try {
             if(null!=setMCAsrTxtBackVO){
@@ -204,7 +205,7 @@ public class OutService  extends BaseService {
         //请求参数转换
         GetMCParam_out getMCParam_out = param.getParam();
         if (null==getMCParam_out){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return  result;
         }
@@ -234,17 +235,17 @@ public class OutService  extends BaseService {
                             }
 
                         }
-                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
+                        LogUtil.intoLog(this.getClass(),"排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
                       /*  Collections.sort(asrTxtParam_toouts, (s1, s2) -> s2.getStarttime().toString().compareTo(s1.getStarttime().toString()));*/
                         asrTxtParam_toouts.sort((o1, o2) -> o1.getAsrstartime().compareTo(o2.getAsrstartime()));
-                        System.out.println("排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
+                        LogUtil.intoLog(this.getClass(),"排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
                         getMCVO.setList(asrTxtParam_toouts);
                         result.setData(getMCVO);
                     }
                 }
                 changeResultToSuccess(result);
             }else{
-                System.out.println("请求getMC__出错");
+                LogUtil.intoLog(this.getClass(),"请求getMC__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -257,7 +258,7 @@ public class OutService  extends BaseService {
         //请求参数转换
         GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out = param.getParam();
         if (null==getMCaLLUserAsrTxtListParam_out){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return  result;
         }
@@ -291,15 +292,15 @@ public class OutService  extends BaseService {
 
 
                     }
-                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
+                    LogUtil.intoLog(this.getClass(),"排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
                    /* Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getStarttime().toString().compareTo(s2.getStarttime().toString()));*/
                     asrTxtParam_toouts.sort((o1, o2) -> o1.getAsrstartime().compareTo(o2.getAsrstartime()));
-                    System.out.println("排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
+                    LogUtil.intoLog(this.getClass(),"排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
 
                     getRecordrealingVO.setList(asrTxtParam_toouts);
                 }
             }else{
-                System.out.println("请求getMCaLLUserAsrTxtList__出错");
+                LogUtil.intoLog(this.getClass(),"请求getMCaLLUserAsrTxtList__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -317,7 +318,7 @@ public class OutService  extends BaseService {
                 fdCacheParams=gson.fromJson(gson.toJson(rr2.getData()), new TypeToken<List<FDCacheParam>>(){}.getType());
                 getRecordrealingVO.setFdCacheParams(fdCacheParams);
             }else{
-                System.out.println("请求getMCaLLUserAsrTxtList__出错");
+                LogUtil.intoLog(this.getClass(),"请求getMCaLLUserAsrTxtList__出错");
             }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
@@ -332,7 +333,7 @@ public class OutService  extends BaseService {
         //请求参数转换
         GetMCStateParam_out getMCStateParam_out = param.getParam();
         if (null==getMCStateParam_out){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return  result;
         }
@@ -345,7 +346,7 @@ public class OutService  extends BaseService {
                 result.setData(mtstate);
                 changeResultToSuccess(result);
             }else{
-                System.out.println("请求getMCState__出错");
+                LogUtil.intoLog(this.getClass(),"请求getMCState__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -357,13 +358,13 @@ public class OutService  extends BaseService {
         //请求参数转换
         GetPolygraphdataParam getPolygraphdataParam = param.getParam();
         if (null==getPolygraphdataParam){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return ;
         }
         String mtssid=getPolygraphdataParam.getMtssid();
         if (StringUtils.isBlank(mtssid)){
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return ;
         }
@@ -383,11 +384,11 @@ public class OutService  extends BaseService {
                 polygraphssid=mcCacheParam.getTdList().get(0).getPolygraphssid();
             }
         }else{
-            System.out.println("请求getMCdata__出错");
+            LogUtil.intoLog(this.getClass(),"请求getMCdata__出错");
         }
 
         if (null==polygraphssid){
-            System.out.println("监测仪ssid为空__"+polygraphssid);
+            LogUtil.intoLog(this.getClass(),"监测仪ssid为空__"+polygraphssid);
             changeResultToSuccess(result);
             return;
         }
@@ -407,9 +408,9 @@ public class OutService  extends BaseService {
             CheckPolygraphStateVO checkPolygraphStateVO=gson.fromJson(gson.toJson(rr1.getData()),CheckPolygraphStateVO.class);
             if (null!=checkPolygraphStateVO){
                 workstate=checkPolygraphStateVO.getWorkstate();
-                System.out.println("身心监测状态__"+workstate);
+                LogUtil.intoLog(this.getClass(),"身心监测状态__"+workstate);
                 if (null!=workstate&&workstate==1){
-                    System.out.println("身心监测状态正常开始获取数据__"+workstate);
+                    LogUtil.intoLog(this.getClass(),"身心监测状态正常开始获取数据__"+workstate);
 
                     //状态正常开始获取仪器数据
                     ReqParam<GetPolygraphAnalysisParam> param2=new ReqParam<>();
@@ -425,17 +426,17 @@ public class OutService  extends BaseService {
                         changeResultToSuccess(result);
                         return;
                     }else{
-                        System.out.println("请求getPolygraphAnalysise__出错");
+                        LogUtil.intoLog(this.getClass(),"请求getPolygraphAnalysise__出错");
                     }
 
                 }else {
-                    System.out.println("身心监测状态__"+workstate);
+                    LogUtil.intoLog(this.getClass(),"身心监测状态__"+workstate);
                     changeResultToSuccess(result);
                     return;
                 }
             }
         }else{
-            System.out.println("请求checkPolygraphState__出错");
+            LogUtil.intoLog(this.getClass(),"请求checkPolygraphState__出错");
         }
         return;
     }
@@ -479,10 +480,10 @@ public class OutService  extends BaseService {
                     state=recordFileParam.getState();
                 }
             }
-            System.out.println("数据存储状态__"+state);
+            LogUtil.intoLog(this.getClass(),"数据存储状态__"+state);
             getPlayUrlVO.setRecordFileParams(recordFileParams);
            if (null!=state&&state==2){
-               System.out.println("数据存储正常开始获取地址__"+state);
+               LogUtil.intoLog(this.getClass(),"数据存储正常开始获取地址__"+state);
 
                //2.说去文件地址
                RResult<GetURLToPlayVO> rr2=new RResult<GetURLToPlayVO>();
@@ -498,23 +499,23 @@ public class OutService  extends BaseService {
                        List<RecordPlayParam> recordPlayParams =getURLToPlayVO.getRecordList();
                        if (null!=recordPlayParams&&recordPlayParams.size()>0){
                            for (RecordPlayParam recordPlayParam : recordPlayParams) {
-                               System.out.println("直播地址__"+recordPlayParam.getPlayUrl());
+                               LogUtil.intoLog(this.getClass(),"直播地址__"+recordPlayParam.getPlayUrl());
                            }
                        }
                        getPlayUrlVO.setRecordPlayParams(recordPlayParams);
                    }
                }else{
-                   System.out.println("请求getURLToPlay__出错");
+                   LogUtil.intoLog(this.getClass(),"请求getURLToPlay__出错");
                }
                result.setData(getPlayUrlVO);
                changeResultToSuccess(result);
            }else{
-               System.out.println("数据存储状态异常__"+state);
+               LogUtil.intoLog(this.getClass(),"数据存储状态异常__"+state);
                result.setMessage("获取点播中...请等待");
                return;
            }
         }else{
-            System.out.println("请求checkRecordFileState__出错");
+            LogUtil.intoLog(this.getClass(),"请求checkRecordFileState__出错");
         }
 
        /* */

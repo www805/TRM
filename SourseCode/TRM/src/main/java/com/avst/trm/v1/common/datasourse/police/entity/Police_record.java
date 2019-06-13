@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -218,6 +219,6 @@ public class Police_record extends Model<Police_record> {
         long a=1556245697000L;
         long b=1556246444000L;
 
-        System.out.println((b-a)/ 1000);
+        LogUtil.intoLog(Police_record.class,(b-a)/ 1000);
     }
 }

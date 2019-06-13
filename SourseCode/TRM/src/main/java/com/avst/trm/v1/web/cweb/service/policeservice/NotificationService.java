@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_notification;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Notification;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_notificationMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -190,7 +191,7 @@ public class NotificationService extends BaseService {
             ew2.eq("datassid", getNotificationParam.getSsid().trim());
         }
         delete_bool = filesaveMapper.delete(ew2);
-        System.out.println("delete_bool：" + delete_bool);
+        LogUtil.intoLog(this.getClass(),"delete_bool：" + delete_bool);
 
         if(delete_bool == 1){
             result.setData("删除成功!");

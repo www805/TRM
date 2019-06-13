@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.sweb.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,7 +20,7 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
     //在控制器执行前调用
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        System.out.println("执行preHandle方法-->01");
+        LogUtil.intoLog(this.getClass(),"执行preHandle方法-->01");
 
         //获取session，判断用户
         HttpSession session=request.getSession();
@@ -67,14 +68,14 @@ public class ManagerInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) throws Exception {
-        System.out.println("执行postHandle方法-->02");
+        LogUtil.intoLog(this.getClass(),"执行postHandle方法-->02");
         super.postHandle(request, response, handler, modelAndView);
     }
     //整个请求执行完成后调用
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
-        System.out.println("执行afterCompletion方法-->03");
+        LogUtil.intoLog(this.getClass(),"执行afterCompletion方法-->03");
         super.afterCompletion(request, response, handler, ex);
     }
 

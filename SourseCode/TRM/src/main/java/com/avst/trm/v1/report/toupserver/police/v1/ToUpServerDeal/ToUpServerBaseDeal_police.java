@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_downserv
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.JacksonUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RRParam;
@@ -85,7 +86,7 @@ public class ToUpServerBaseDeal_police  implements  ToUpServerBaseReqInterface{
         if(StringUtils.isNotEmpty(rr)){
 
             RResult result=(RResult) JacksonUtil.stringToObjebt_1(rr, RResult.class);
-            System.out.println(result.getActioncode()+":result.getActioncode()");
+            LogUtil.intoLog(this.getClass(),result.getActioncode()+":result.getActioncode()");
             if(null!=result && result.getActioncode().equals(Code.SUCCESS.toString())){
 
                 //请求成功的处理
@@ -116,7 +117,7 @@ public class ToUpServerBaseDeal_police  implements  ToUpServerBaseReqInterface{
                 }
             }else{
                 rrParam.setMessage(result.getMessage());
-                System.out.println(result.getMessage()+"-----上级服务器返回的错误信息");
+                LogUtil.intoLog(this.getClass(),result.getMessage()+"-----上级服务器返回的错误信息");
 
             }
         }

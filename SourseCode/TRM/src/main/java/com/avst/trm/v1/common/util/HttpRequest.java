@@ -36,7 +36,7 @@ public class HttpRequest {
 
 				String getURL = url;
     			 
-    			System.out.println(DateUtil.getDateAndMinute()+" getURL:"+getURL);
+    			LogUtil.intoLog(HttpRequest.class,DateUtil.getDateAndMinute()+" getURL:"+getURL);
     			if(getURL.startsWith("https://")){
     				URL getUrl = new URL(getURL); 
     				connections =    (HttpsURLConnection) getUrl.openConnection();
@@ -100,7 +100,7 @@ public class HttpRequest {
                     reader = new BufferedReader(new InputStreamReader(connections.getInputStream(),"utf-8"));
                     int code = connections.getResponseCode();
                     lines = reader.readLine();
-                    System.out.println("----https协议请求的返回code："+code);
+                    LogUtil.intoLog(HttpRequest.class,"----https协议请求的返回code："+code);
     			}else{
     				getURL=getURL+"?"+ URLEncoder.encode(param, "utf-8");
     				URL getUrl = new URL(getURL);
@@ -119,7 +119,7 @@ public class HttpRequest {
      			
      			   lines = reader.readLine();
      			  int code = connection.getResponseCode();
-     			  System.out.println("----http协议请求的返回code："+code);
+     			  LogUtil.intoLog(HttpRequest.class,"----http协议请求的返回code："+code);
     			}
     			
     			   
