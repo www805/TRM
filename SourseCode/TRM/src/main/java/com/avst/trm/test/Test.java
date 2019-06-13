@@ -1,6 +1,7 @@
 package com.avst.trm.test;
 
 import com.avst.trm.v1.common.util.HttpRequest;
+import com.avst.trm.v1.common.util.LogUtil;
 
 import javax.servlet.http.HttpServlet;
 import java.util.HashMap;
@@ -22,9 +23,9 @@ public class Test {
 
       Map<String , String> map =new HashMap<String , String>();
       map.put("sqNum","1234567");
-//      System.out.println(HttpRequest.uploadToUrl(uploadFilePath,actionUrl,map));
+//      LogUtil.intoLog(Test.class,HttpRequest.uploadToUrl(uploadFilePath,actionUrl,map));
 
-      System.out.println(HttpRequest.uploadFile(actionUrl,uploadFilePath,map));
+      LogUtil.intoLog(Test.class,HttpRequest.uploadFile(actionUrl,uploadFilePath,map));
 
    }
 

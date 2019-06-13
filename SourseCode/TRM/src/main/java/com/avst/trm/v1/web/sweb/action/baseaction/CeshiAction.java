@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.CheckSQParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -51,7 +52,7 @@ public class CeshiAction extends BaseAction {
         base_filesave.setSsid("sjcyfnj572");
         base_filesave.setId(23);
         Object o=base_filesave;
-        System.out.println("-------------"+mapper.insert(o));
+        LogUtil.intoLog(this.getClass(),"-------------"+mapper.insert(o));
 
         return rResult;
     }

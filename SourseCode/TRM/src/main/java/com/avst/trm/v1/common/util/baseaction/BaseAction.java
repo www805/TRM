@@ -62,7 +62,7 @@ public class BaseAction {
 		}
 		rresult.setActioncode(Code.SUCCESS.toString());
 		rresult.setMessage("请求成功");
-		//System.out.println(JacksonUtil.objebtToString(rresult));
+		//LogUtil.intoLog(this.getClass(),JacksonUtil.objebtToString(rresult));
 	}
 
 	

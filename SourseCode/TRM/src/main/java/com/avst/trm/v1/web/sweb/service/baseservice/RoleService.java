@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.sweb.service.baseservice;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -58,7 +59,7 @@ public class RoleService extends BaseService {
         }catch (Exception e){
             e.fillInStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
         return;
     }
@@ -94,7 +95,7 @@ public class RoleService extends BaseService {
             Base_role role=new Base_role();
             role.setRolebool(rolebool);
             int delete_bool= roleMapper.update(role,ew);
-            System.out.println("delete_bool__"+delete_bool);
+            LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
             if (delete_bool<1){
                 result.setMessage("系统异常");
                 return;
@@ -122,7 +123,7 @@ public class RoleService extends BaseService {
                result.setData(role);
                changeResultToSuccess(result);
            }else{
-               System.out.println("系统异常：多个角色");
+               LogUtil.intoLog(this.getClass(),"系统异常：多个角色");
                result.setMessage("系统异常");
                return;
            }
@@ -135,7 +136,7 @@ public class RoleService extends BaseService {
             EntityWrapper ew=new EntityWrapper();
             ew.eq(true,"ssid",param.getSsid());
             int update_bool=roleMapper.update(param,ew);
-            System.out.println("update_bool--"+update_bool);
+            LogUtil.intoLog(this.getClass(),"update_bool--"+update_bool);
             if (update_bool<1){
                 result.setMessage("系统异常");
                 return;
@@ -153,7 +154,7 @@ public class RoleService extends BaseService {
             param.setCreatetime(new Date());
             param.setSsid(OpenUtil.getUUID_32());
             int insert_bool=roleMapper.insert(param);
-            System.out.println("insert_bool--"+insert_bool);
+            LogUtil.intoLog(this.getClass(),"insert_bool--"+insert_bool);
             if (insert_bool<1){
                 result.setMessage("系统异常");
                 return;

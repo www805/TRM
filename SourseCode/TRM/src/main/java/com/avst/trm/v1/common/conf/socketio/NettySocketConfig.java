@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.conf.socketio;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.annotation.SpringAnnotationScanner;
 import com.corundumstudio.socketio.listener.ConnectListener;
@@ -39,9 +40,9 @@ public class NettySocketConfig {
             public void onConnect(SocketIOClient client) {
                 // 判断是否有客户端连接
                 if (client != null) {
-                    System.out.println("连接成功__clientId_____" + client.getSessionId().toString());
+                    LogUtil.intoLog(this.getClass(),"连接成功__clientId_____" + client.getSessionId().toString());
                 } else {
-                    System.out.println("没有人连接上_____");
+                    LogUtil.intoLog(this.getClass(),"没有人连接上_____");
                 }
             }
         });

@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -190,7 +191,7 @@ public class ServerConfigService extends BaseService {
                     serverconfig.setClient_filesavessid(filesave.getSsid());
                 }
                 Integer integer = serverconfigMapper.updateById(serverconfig);
-                System.out.println("同步系统配置： " + integer);
+                LogUtil.intoLog(this.getClass(),"同步系统配置： " + integer);
             }
 
         } catch (IOException e) {

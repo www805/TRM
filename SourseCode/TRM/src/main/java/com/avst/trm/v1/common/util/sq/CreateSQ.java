@@ -2,6 +2,7 @@ package com.avst.trm.v1.common.util.sq;
 
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.wb.deencode.EncodeUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,9 +28,9 @@ public class CreateSQ {
 
         try {
             String sqcode=sqEntity.toString();
-            System.out.println("授权创建前 sqcode:"+sqcode);
+            LogUtil.intoLog(CreateSQ.class,"授权创建前 sqcode:"+sqcode);
             String rr=EncodeUtil.encoderByDES(sqcode);
-            System.out.println("授权创建后 rr:"+rr);
+            LogUtil.intoLog(CreateSQ.class,"授权创建后 rr:"+rr);
 
             String path=basepath+"\\"+ DateUtil.getSeconds() +"_"+javakeyname;
             ReadWriteFile.writeTxtFile(rr,path);
@@ -49,17 +50,15 @@ public class CreateSQ {
         // 当前的节点服务器和该节点的下级服务器（客户端服务器）UnitCode一致，只是SortNum不同，节点是0，其他自动在上一个数值上加1
         sqEntity.setUnitCode("avst");
         sqEntity.setSqDay(10000);
-        sqEntity.setSortNum(6);
+        sqEntity.setSortNum(7);
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(true);
-        sqEntity.setClientName("销售测试客户端服务器160");
-        String address="00E14C68051C";
-        address=AnalysisSQ.encode_uid(address);
-        sqEntity.setCpuCode(address);
-        System.out.println();
+        sqEntity.setClientName("吴斌客户端服务器161");
+        sqEntity.setCpuCode("7774727242454549724A4544");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
-        System.out.println(deSQ(sqEntity,"E:\\trmshouquan"));
+        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));
+
 
     }
 

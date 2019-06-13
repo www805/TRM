@@ -2,6 +2,7 @@ package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action;
 
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -58,14 +59,14 @@ public class OutAction extends BaseAction {
             checkPolygraphStateParam.setPhType("PH_CMCROSS");
             checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
             param.setParam(checkPolygraphStateParam);
-            System.out.println(JacksonUtil.objebtToString(equipmentControl.checkPolygraphState(param)));
+            LogUtil.intoLog(this.getClass(),JacksonUtil.objebtToString(equipmentControl.checkPolygraphState(param)));
         }else if(type==2){
             ReqParam<GetPolygraphAnalysisParam> param=new ReqParam<GetPolygraphAnalysisParam>();
             GetPolygraphAnalysisParam checkPolygraphStateParam=new GetPolygraphAnalysisParam();
             checkPolygraphStateParam.setPhType("PH_CMCROSS");
             checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
             param.setParam(checkPolygraphStateParam);
-            System.out.println(JacksonUtil.objebtToString(equipmentControl.getPolygraphAnalysis(param)));
+            LogUtil.intoLog(this.getClass(),JacksonUtil.objebtToString(equipmentControl.getPolygraphAnalysis(param)));
 
         }else if (type==3){
             ReqParam<GetPolygraphRealTimeImageParam> param=new ReqParam<GetPolygraphRealTimeImageParam>();
@@ -73,7 +74,7 @@ public class OutAction extends BaseAction {
             checkPolygraphStateParam.setPhType("PH_CMCROSS");
             checkPolygraphStateParam.setPolygraphssid("212021juyts25d");
             param.setParam(checkPolygraphStateParam);
-            System.out.println(JacksonUtil.objebtToString(equipmentControl.getPolygraphRealTimeImage(param)));
+            LogUtil.intoLog(this.getClass(),JacksonUtil.objebtToString(equipmentControl.getPolygraphRealTimeImage(param)));
 
         }
 
@@ -125,7 +126,7 @@ public class OutAction extends BaseAction {
     @RequestMapping("/outtRercordAsrTxtBack")
     public boolean setRercordAsrTxtBack(@RequestBody ReqParam<SetMCAsrTxtBackVO> param, HttpSession session) {
         if (null == param) {
-            System.out.println("参数为空");
+            LogUtil.intoLog(this.getClass(),"参数为空");
         } else {
             return outService.setRercordAsrTxtBack(param, session);
         }
@@ -277,7 +278,7 @@ public class OutAction extends BaseAction {
             Rectangle pageSize = reader.getPageSize(1);
             float height = pageSize.getHeight();
             float width = pageSize.getWidth();
-            System.out.println("width = "+width+", height = "+height);
+            LogUtil.intoLog(this.getClass(),"width = "+width+", height = "+height);
 
             Map<String,String> dataMap = new HashMap();
             dataMap.put("recordtypename","询问笔录");

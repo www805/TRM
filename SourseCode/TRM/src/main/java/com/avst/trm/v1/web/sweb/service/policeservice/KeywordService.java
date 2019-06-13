@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -88,7 +89,7 @@ public class KeywordService extends BaseService {
 //            page.setRecords(list);
             list=keywordMapper.selectPage(page,ew );
 
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
 
             if(null!=list&&list.size() > 0){
@@ -100,7 +101,7 @@ public class KeywordService extends BaseService {
         }catch (Exception e){
             e.fillInStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 
@@ -131,7 +132,7 @@ public class KeywordService extends BaseService {
 //            page.setRecords(list);
             list=keywordMapper.selectPage(page,ew );
 
-            System.out.println(page.getSize()+"-----"+page.getCurrent()+"-----"+
+            LogUtil.intoLog(this.getClass(),page.getSize()+"-----"+page.getCurrent()+"-----"+
                     page.getTotal()+"-----"+page.getPages());
             if(null!=list&&list.size() > 0){
                 getlist3VO.setPagelist(list);
@@ -142,7 +143,7 @@ public class KeywordService extends BaseService {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
     }
 
@@ -173,7 +174,7 @@ public class KeywordService extends BaseService {
         }
 
 //        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-//        System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
+//        LogUtil.intoLog(this.getClass(),df.format(new Date()));// new Date()为获取当前系统时间
 
         keyword.setCreatetime(new Date());
         keyword.setSsid(OpenUtil.getUUID_32());

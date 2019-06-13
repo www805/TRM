@@ -14,6 +14,7 @@ import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_templateMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -100,7 +101,7 @@ public class MainService extends BaseService {
         }
 
         if (StringUtils.isBlank(type)){
-            System.out.println("系统异常--"+type);
+            LogUtil.intoLog(this.getClass(),"系统异常--"+type);
             result.setMessage("系统异常");
             return;
         }
@@ -110,7 +111,7 @@ public class MainService extends BaseService {
         String loginaccount1=userloginParam.getLoginaccount();
         String password1=userloginParam.getPassword();
         if (StringUtils.isBlank(loginaccount1)||StringUtils.isBlank(password1)){
-            System.out.println("账号:"+loginaccount1+"密码:"+password1+"不能为空--");
+            LogUtil.intoLog(this.getClass(),"账号:"+loginaccount1+"密码:"+password1+"不能为空--");
             result.setMessage("账号密码不能为空");
             return;
         }
@@ -127,23 +128,23 @@ public class MainService extends BaseService {
                 Integer adminbool=user.getAdminbool();//状态
 
                 if (!password.equals(password1.trim())){
-                    System.out.println("账户:"+loginaccount1+"用户密码不正确--"+password1);
+                    LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"用户密码不正确--"+password1);
                     result.setMessage("密码错误");
                     return;
                 }
                 if (StringUtils.isNotBlank(loginaccount)&&loginaccount.equals(loginaccount1.trim())&&StringUtils.isNotBlank(password)&&password.equals(password1.trim())){
                     if (null!=adminbool&&adminbool!=1){
-                        System.out.println("账户:"+loginaccount1+"用户状态:"+adminbool+"--");
+                        LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"用户状态:"+adminbool+"--");
                         result.setMessage("用户状态异常");
                         return;
                     }
                     //登陆成功
-                    System.out.println("账户:"+loginaccount1+"登陆成功--");
+                    LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登陆成功--");
                     result.setMessage("登陆成功");
                     //修改最后一次登陆时间
                     user.setLastlogintime(new Date());
                     int updateById_bool=base_admininfoMapper.updateById(user);
-                    System.out.println("updateById_bool--"+updateById_bool);
+                    LogUtil.intoLog(this.getClass(),"updateById_bool--"+updateById_bool);
 
                     //session存储
                     httpSession.setAttribute(Constant.MANAGE_CLIENT,user);
@@ -152,12 +153,12 @@ public class MainService extends BaseService {
                     return;
                 }
             }else{
-                System.out.println("多个用户异常--"+loginaccount1);
+                LogUtil.intoLog(this.getClass(),"多个用户异常--"+loginaccount1);
                 result.setMessage("系统异常");
                 return;
             }
         }else{
-            System.out.println("用户不存在--"+loginaccount1);
+            LogUtil.intoLog(this.getClass(),"用户不存在--"+loginaccount1);
             result.setMessage("没有找到该用户");
             return;
         }
@@ -169,7 +170,7 @@ public class MainService extends BaseService {
     public void userloginout(RResult result,ReqParam param,HttpSession session){
         if (null!=session.getAttribute(Constant.MANAGE_CLIENT)){
             session.removeAttribute(Constant.MANAGE_CLIENT);
-            System.out.println("登出成功");
+            LogUtil.intoLog(this.getClass(),"登出成功");
             result.setMessage("登出成功");
         }
         changeResultToSuccess(result);
@@ -221,7 +222,7 @@ public class MainService extends BaseService {
                     File oldfile=new File(oldfilepath);
                     if (oldfile.exists()) {
                         oldfile.delete();
-                        System.out.println("删除原有客户logo:"+oldfilepath);
+                        LogUtil.intoLog(this.getClass(),"删除原有客户logo:"+oldfilepath);
                     }
                 }
 
@@ -231,10 +232,10 @@ public class MainService extends BaseService {
                 String filename = DateUtil.getSeconds()+"."+suffix;
 
                 String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
-                System.out.println("客户端logo真实地址："+realurl);
+                LogUtil.intoLog(this.getClass(),"客户端logo真实地址："+realurl);
                 multipartfile.transferTo(new File(realurl));
                 String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
-                System.out.println("客户端logo下载地址："+downurl);
+                LogUtil.intoLog(this.getClass(),"客户端logo下载地址："+downurl);
 
 
                 if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
@@ -249,13 +250,13 @@ public class MainService extends BaseService {
                         EntityWrapper filesaveparam = new EntityWrapper();
                         filesaveparam.eq("ssid",client_filesavessid);
                         int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
-                        System.out.println("filesaveupdate_bool__"+filesaveupdate_bool);
+                        LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveupdate_bool);
                     }else{
                         //新增
                         base_filesave.setSsid(OpenUtil.getUUID_32());
                         int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
-                        System.out.println("filesaveinsert_bool__"+filesaveinsert_bool);
-                        System.out.println("新增的文件ssid"+base_filesave.getSsid());
+                        LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
+                        LogUtil.intoLog(this.getClass(),"新增的文件ssid"+base_filesave.getSsid());
                         client_filesavessid=base_filesave.getSsid();
                     }
                 }
@@ -269,7 +270,7 @@ public class MainService extends BaseService {
         serverconfigparam.eq("ssid",updateServerconfigParam.getSsid());
         updateServerconfigParam.setClient_filesavessid(client_filesavessid);
        int updateById_bool=base_serverconfigMapper.update(updateServerconfigParam,serverconfigparam);//没有任何需要修改值的时候会报错
-        System.out.println("updateById_bool"+updateById_bool);
+        LogUtil.intoLog(this.getClass(),"updateById_bool"+updateById_bool);
         updateServerconfigVO.setBool(updateById_bool);
         result.setData(updateServerconfigVO);
         if (updateById_bool<1){
@@ -295,7 +296,7 @@ public class MainService extends BaseService {
                 changeResultToSuccess(result);
                 return;
             }else{
-                System.out.println("多个系统配置异常--");
+                LogUtil.intoLog(this.getClass(),"多个系统配置异常--");
                 result.setMessage("系统异常");
                 return;
             }

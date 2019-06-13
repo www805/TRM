@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_actionMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -330,7 +331,7 @@ public class CommonCache {
                 checkSQParam.setMsg("服务器授权异常");
                 return checkSQParam;
             }
-            System.out.println("initClient authorizebool:"+bool);
+            LogUtil.intoLog(CommonCache.class,"initClient authorizebool:"+bool);
         }
 
         int bool=AnalysisSQ.checkUseTime();

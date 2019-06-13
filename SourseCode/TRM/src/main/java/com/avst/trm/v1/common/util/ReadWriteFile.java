@@ -79,7 +79,7 @@ public class ReadWriteFile {
         InputStreamReader inp=null;
         try {
         	List<String> readList=new ArrayList<String>();	
-        	System.out.println("文件路径为："+path);
+        	LogUtil.intoLog(ReadWriteFile.class,"文件路径为："+path);
             
             
             input = new FileInputStream(path);
@@ -125,7 +125,7 @@ public class ReadWriteFile {
         InputStream input = null;
         InputStreamReader inp=null;
         try {
-        	System.out.println("文件路径为："+path);
+        	LogUtil.intoLog(ReadWriteFile.class,"文件路径为："+path);
             
             
             input = new FileInputStream(path);
@@ -217,7 +217,7 @@ public class ReadWriteFile {
      * 
      */
     public static boolean writeApptoTxtFile(String newStr,String path) throws IOException{
-        //System.out.println("进入写文件"+newStr);
+        //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
     	
     	String filepath="";
 		try {
@@ -227,16 +227,16 @@ public class ReadWriteFile {
 		}
     	File filenamepath = new File(filepath);
     	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
-    		System.out.println(path+"//注意，读取的是一个不存在的地址文件，启动创建");
+    		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
     		
 			boolean bool=filenamepath.mkdirs();  
 			if(!bool){
 				boolean bool2=filenamepath.mkdirs();
-				System.out.println("------------------------");
-				System.out.println("                      ");
-				System.out.println("第一次创建文件夹失败，第二次失败："+bool2);
-				System.out.println("                      ");
-				System.out.println("------------------------");
+				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
+				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+				LogUtil.intoLog(ReadWriteFile.class,"第一次创建文件夹失败，第二次失败："+bool2);
+				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
 			}
     	}
     	
@@ -264,7 +264,7 @@ public class ReadWriteFile {
      * 
      */
     public static boolean writeTxtFile(String newStr,String path) {
-        //System.out.println("进入写文件"+newStr);
+        //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
         try {
         	String filepath="";
 			try {
@@ -274,16 +274,16 @@ public class ReadWriteFile {
 			}
         	File filenamepath = new File(filepath);
         	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
-        		System.out.println(path+"//注意，读取的是一个不存在的地址文件，启动创建");
+        		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
         		
     			boolean bool=filenamepath.mkdirs();  
     			if(!bool){
     				boolean bool2=filenamepath.mkdirs();
-    				System.out.println("------------------------");
-    				System.out.println("                      ");
-    				System.out.println("第一次创建文件夹失败，第二次失败："+bool2);
-    				System.out.println("                      ");
-    				System.out.println("------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"第一次创建文件夹失败，第二次失败："+bool2);
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
     			}
         	}
         	File filename = new File(path);
@@ -319,7 +319,7 @@ public class ReadWriteFile {
      * 
      */
     public static boolean writeTxtFile(String newStr,String path,String code){
-        //System.out.println("进入写文件"+newStr);
+        //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
         try {
         	String filepath="";
 			try {
@@ -329,16 +329,16 @@ public class ReadWriteFile {
 			}
         	File filenamepath = new File(filepath);
         	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
-        		System.out.println(path+"//注意，读取的是一个不存在的地址文件，启动创建");
+        		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
         		
     			boolean bool=filenamepath.mkdirs();  
     			if(!bool){
     				boolean bool2=filenamepath.mkdirs();
-    				System.out.println("------------------------");
-    				System.out.println("                      ");
-    				System.out.println("第一次创建文件夹失败，第二次失败："+bool2);
-    				System.out.println("                      ");
-    				System.out.println("------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"第一次创建文件夹失败，第二次失败："+bool2);
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
     			}
         	}
         	File filename = new File(path);
@@ -376,7 +376,7 @@ public class ReadWriteFile {
      * 
      */
     public static boolean writeTxtFile_gbk(String newStr,String path) {
-        System.out.println("进入写文件"+newStr);
+        LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
         try {
         	String filepath="";
 			try {
@@ -386,16 +386,16 @@ public class ReadWriteFile {
 			}
         	File filenamepath = new File(filepath);
         	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
-        		System.out.println(path+"//注意，读取的是一个不存在的地址文件，启动创建");
+        		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
         		
     			boolean bool=filenamepath.mkdirs();  
     			if(!bool){
     				boolean bool2=filenamepath.mkdirs();
-    				System.out.println("------------------------");
-    				System.out.println("                      ");
-    				System.out.println("第一次创建文件夹失败，第二次失败："+bool2);
-    				System.out.println("                      ");
-    				System.out.println("------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"第一次创建文件夹失败，第二次失败："+bool2);
+    				LogUtil.intoLog(ReadWriteFile.class,"                      ");
+    				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
     			}
         	}
         	
@@ -405,7 +405,7 @@ public class ReadWriteFile {
         		try {
         			
 					boolean bool_add=filename.createNewFile();
-					System.out.println("新增文件 bool_add:"+bool_add);
+					LogUtil.intoLog(ReadWriteFile.class,"新增文件 bool_add:"+bool_add);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -457,7 +457,7 @@ public class ReadWriteFile {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("文件出错");
+		LogUtil.intoLog(ReadWriteFile.class,"文件出错");
 		return false;
 	}
     

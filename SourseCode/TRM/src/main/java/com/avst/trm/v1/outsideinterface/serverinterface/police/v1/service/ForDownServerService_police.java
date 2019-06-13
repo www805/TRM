@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasheet_upserverMapp
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_upserverMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.JacksonUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -164,7 +165,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
             base_datasynchroni_upserver.setUnitsort(Integer.parseInt(param.getSqNum()));
             base_datasynchroni_upserver.setLastuploadtime(new Date());
             int insert=base_datasynchroni_upserverMapper.insert(base_datasynchroni_upserver);
-            System.out.println("base_datasynchroni_upserverMapper.insert bool:"+insert);
+            LogUtil.intoLog(this.getClass(),"base_datasynchroni_upserverMapper.insert bool:"+insert);
             //写入缓存
             if(insert>=0){
                 startSynchronizedata_1_param.setSdTableSsid(newssid);
@@ -265,7 +266,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
                 EntityWrapper entityWrapper=new EntityWrapper();
                 entityWrapper.eq("ssid",datassid);
                 int delete=baseMapper.delete(entityWrapper);
-                System.out.println(delete+":delete--baseMapper.delete");
+                LogUtil.intoLog(this.getClass(),delete+":delete--baseMapper.delete");
                 result.setMessage("数据同步失败已删除这条同步数据");
             }
         }else{
@@ -285,7 +286,7 @@ public class ForDownServerService_police extends BaseService implements ForDownS
             String name=file.getName();
             String filename=file.getOriginalFilename();
 
-            System.out.println(filename+"-----filename----name:"+name);
+            LogUtil.intoLog(this.getClass(),filename+"-----filename----name:"+name);
             fos = new FileOutputStream(basepath+filename);
 
             byte[] b = new byte[1024];

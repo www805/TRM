@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admintoroleMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_workunitMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -113,7 +114,7 @@ public class UserService extends BaseService {
             Base_admininfo admininfo=new Base_admininfo();
             admininfo.setAdminbool(adminbool);
             int delete_bool= base_admininfoMapper.update(admininfo,ew);
-            System.out.println("delete_bool__"+delete_bool);
+            LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
             if (delete_bool<1){
                 result.setMessage("系统异常");
                 return;
@@ -147,7 +148,7 @@ public class UserService extends BaseService {
                 result.setData(adminAndWorkunit);
                 changeResultToSuccess(result);
             }else{
-                System.out.println("系统异常：多个用户");
+                LogUtil.intoLog(this.getClass(),"系统异常：多个用户");
                 result.setMessage("系统异常");
                 return;
             }
@@ -162,7 +163,7 @@ public class UserService extends BaseService {
             param.setRegistertime(new Date());
             Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
             int insert_bool=base_admininfoMapper.insert(admininfo);
-            System.out.println("insert_bool__"+insert_bool);
+            LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
             if (insert_bool>0){
                 //添加角色关联数据
                 List<Base_role> roles=param.getRoles();
@@ -173,7 +174,7 @@ public class UserService extends BaseService {
                         admintorole.setRolessid(role.getSsid());
                         admintorole.setCreatetime(new Date());
                        int admintorole_insertbool = base_admintoroleMapper.insert(admintorole);
-                        System.out.println("admintorole_insertbool__"+admintorole_insertbool+"添加的角色为："+role.getRolename());
+                        LogUtil.intoLog(this.getClass(),"admintorole_insertbool__"+admintorole_insertbool+"添加的角色为："+role.getRolename());
                     }
                 }
                 result.setData(insert_bool);
@@ -197,13 +198,13 @@ public class UserService extends BaseService {
         param.setUpdatetime(new Date());
         Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
         int update_bool = base_admininfoMapper.update(admininfo,ew);
-        System.out.println("update_bool__" + update_bool);
+        LogUtil.intoLog(this.getClass(),"update_bool__" + update_bool);
         if (update_bool > 0) {
             //删除原有角色关联数据
             EntityWrapper ewadmintorole=new EntityWrapper();
             ewadmintorole.eq("adminssid",param.getSsid());
             int delete_bool=base_admintoroleMapper.delete(ewadmintorole);
-            System.out.println("delete_bool__"+delete_bool);
+            LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
             //添加角色关联数据
             List<Base_role> roles = param.getRoles();
             if (null != roles && roles.size() > 0) {
@@ -214,7 +215,7 @@ public class UserService extends BaseService {
                     admintorole.setCreatetime(new Date());
                     admintorole.setSsid(OpenUtil.getUUID_32());
                     int admintorole_insertbool = base_admintoroleMapper.insert(admintorole);
-                    System.out.println("admintorole_insertbool__" + admintorole_insertbool );
+                    LogUtil.intoLog(this.getClass(),"admintorole_insertbool__" + admintorole_insertbool );
                 }
             }
             ShiroRealm.reloadAuthorizing();

@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_permissions;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_roletopermissions;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_permissionsMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roletopermissionsMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -85,7 +86,7 @@ public class PermissionsService extends BaseService {
         EntityWrapper deleteParam=new EntityWrapper();
         deleteParam.eq("rolessid",rolessid);
         int delete_bool=base_roletopermissionsMapper.delete(deleteParam);
-        System.out.println("delete_bool__"+delete_bool);
+        LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
 
         List<Base_permissions> permissions=param.getPermissions();
         if (null!=permissions&&permissions.size()>0){
@@ -96,7 +97,7 @@ public class PermissionsService extends BaseService {
                 roletopermissions.setSsid(OpenUtil.getUUID_32());
                 roletopermissions.setPermissionsssid(permission.getSsid());
                 int insert_bool = base_roletopermissionsMapper.insert(roletopermissions);
-                System.out.println("insert_bool__"+insert_bool);
+                LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
             }
         }
         ShiroRealm.reloadAuthorizing();
@@ -109,7 +110,7 @@ public class PermissionsService extends BaseService {
     public void  getPermissionsByMenu(RResult result){
         Subject currentUser = SecurityUtils.getSubject();
         if (currentUser.hasRole("getPermissionsByMenu")) {
-            System.out.println("初始化权限--");
+            LogUtil.intoLog(this.getClass(),"初始化权限--");
         }
         GetPermissionsVO menuVO=new GetPermissionsVO();
         List<Base_permissions> list=ShiroRealm.menus;

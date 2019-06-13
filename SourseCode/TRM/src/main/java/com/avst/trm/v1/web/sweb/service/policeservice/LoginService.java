@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
@@ -36,7 +37,7 @@ public class LoginService extends BaseService {
 
         if(!StringUtils.isNotBlank(loginaccount) && !StringUtils.isNotBlank(password)){
             result.setMessage("用户名密码不能为空");
-            System.out.println("LogAction gotologin loginParam is null");
+            LogUtil.intoLog(this.getClass(),"LogAction gotologin loginParam is null");
             return;
         }
 
@@ -53,7 +54,7 @@ public class LoginService extends BaseService {
             EntityWrapper ew=new EntityWrapper();
             ew.eq("loginaccount", loginParam.getLoginaccount());
 
-            System.out.println(ew.getSqlSegment()+"---------");
+            LogUtil.intoLog(this.getClass(),ew.getSqlSegment()+"---------");
             List<Base_admininfo> adminManage=admininfoMapper.selectList(ew);
             if (null==adminManage||adminManage.size()<1){
                 result.setMessage("未找到该用户");
@@ -75,19 +76,19 @@ public class LoginService extends BaseService {
 
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
                         subject.login( new UsernamePasswordToken(loginaccount, password));   //完成登录
-                        System.out.println("用户是否登录："+subject.isAuthenticated());
+                        LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
 
 
                         //修改用户最后一次登陆
                         base_admininfo.setLastlogintime(new Date());
                         int updateById_bool=admininfoMapper.updateById(base_admininfo);
-                        System.out.println("updateById_bool__"+updateById_bool);
+                        LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
 
                         this.changeResultToSuccess(result);
 
 
                     }else{
-                        System.out.println("系统异常--登陆账号多个："+loginaccount);
+                        LogUtil.intoLog(this.getClass(),"系统异常--登陆账号多个："+loginaccount);
                         result.setMessage("系统异常");
                         return;
                     }
@@ -95,7 +96,7 @@ public class LoginService extends BaseService {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            System.out.println("请求结束");
+            LogUtil.intoLog(this.getClass(),"请求结束");
         }
         return;
     }

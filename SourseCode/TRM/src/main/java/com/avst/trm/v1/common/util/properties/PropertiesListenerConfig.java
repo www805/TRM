@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import org.springframework.beans.BeansException;
@@ -27,7 +28,7 @@ public class PropertiesListenerConfig {
             try {
                 // PropertiesLoaderUtils的默认编码是ISO-8859-1,在这里转码一下
                 propertiesMap.put(keyStr, new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
-                System.out.println(keyStr+"-------"+new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
+                LogUtil.intoLog(PropertiesListenerConfig.class,keyStr+"-------"+new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (java.lang.Exception e) {
@@ -66,7 +67,7 @@ public class PropertiesListenerConfig {
                         }
                         String[] arr=pro.split("=");
                         if(null!=arr&&arr.length==2){
-                            System.out.println(arr[0]+":key----val:"+arr[1]);
+                            LogUtil.intoLog(PropertiesListenerConfig.class,arr[0]+":key----val:"+arr[1]);
                             propertiesMap.put(arr[0],arr[1]);
                         }
                     } catch (Exception e) {
@@ -74,7 +75,7 @@ public class PropertiesListenerConfig {
                     }
                 }
            }else{
-               System.out.println("还是要用内部的属性文件，propath："+propath);
+               LogUtil.intoLog(PropertiesListenerConfig.class,"还是要用内部的属性文件，propath："+propath);
                loadAllProperties(propertyFileName);
            }
 

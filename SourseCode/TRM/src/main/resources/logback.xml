@@ -21,7 +21,7 @@
             <!-- 日志命名:单个文件大于128MB 按照时间+自增i 生成log文件 -->
             <fileNamePattern>${log.path}zlyPay-log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>512MB</maxFileSize>
+                <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <!-- 最大保存时间：30天-->
             <maxHistory>30</maxHistory>
@@ -59,14 +59,15 @@
             <charset>utf-8</charset>
         </encoder>
         <!-- 日志级别过滤器 -->
-        <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">-->
-            <!--&lt;!&ndash; 过滤的级别 &ndash;&gt;-->
-            <!--<level>ERROR</level>-->
-            <!--&lt;!&ndash; 匹配时的操作：接收（记录） &ndash;&gt;-->
-            <!--<onMatch>ACCEPT</onMatch>-->
-            <!--&lt;!&ndash; 不匹配时的操作：拒绝（不记录） &ndash;&gt;-->
-            <!--<onMismatch>DENY</onMismatch>-->
-        <!--</filter>-->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>ERROR</level>
+            <!-- 匹配时的操作：接收（记录） -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝（不记录） -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
     </appender>
 
     <!-- 控制台 -->
