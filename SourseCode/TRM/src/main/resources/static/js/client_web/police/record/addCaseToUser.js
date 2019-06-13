@@ -1077,7 +1077,7 @@ function blblur() {
    if ($.trim(cardtypetext)=="居民身份证"){
        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
        if(reg.test(cardnum) === false) {
-           alert("身份证输入不合法");
+           layer.msg("身份证输入不合法");
            $("#cardnum").val("");
            return false;
        }
