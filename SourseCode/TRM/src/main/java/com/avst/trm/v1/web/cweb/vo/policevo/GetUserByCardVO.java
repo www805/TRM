@@ -13,16 +13,6 @@ public class GetUserByCardVO {
 
     private List<CaseAndUserInfo> cases;//人员相关的案件信息
 
-    private List<AdminAndWorkunit> otheruserinfos;//询问人员等
-
-    public List<AdminAndWorkunit> getOtheruserinfos() {
-        return otheruserinfos;
-    }
-
-    public void setOtheruserinfos(List<AdminAndWorkunit> otheruserinfos) {
-        this.otheruserinfos = otheruserinfos;
-    }
-
     public UserInfo getUserinfo() {
         return userinfo;
     }

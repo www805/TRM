@@ -91,6 +91,9 @@ public class RecordService extends BaseService {
     @Autowired
     private Police_workunitMapper police_workunitMapper;
 
+    @Autowired
+    private Police_userinfototypeMapper police_userinfototypeMapper;
+
     @Value("${file.basepath}")
     private String filePath;
 
@@ -503,6 +506,56 @@ public class RecordService extends BaseService {
         }
 
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
+        String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
+        String recordname=addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
+        String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
+        String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
+
+        Integer adduser_bool=addCaseToArraignmentParam.getAdduser_bool();//是否新增人员的信息
+        UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
+        Integer addcase_bool=addCaseToArraignmentParam.getAddcase_bool();//是否新增案件的信息
+        Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
+
+        //需要新增人员信息
+        if (null!=adduser_bool&&adduser_bool==1){
+             System.out.println("需要新增人员____");
+            addUserInfo.setSsid(OpenUtil.getUUID_32());
+            addUserInfo.setCreatetime(new Date());
+           int insertuserinfo_bool = police_userinfoMapper.insert(addUserInfo);
+            System.out.println("insertuserinfo_bool__"+insertuserinfo_bool);
+           if (insertuserinfo_bool>0){
+               Police_userinfototype police_userinfototype=new Police_userinfototype();
+               police_userinfototype.setCardnum(addUserInfo.getCardnum());
+               police_userinfototype.setSsid(OpenUtil.getUUID_32());
+               police_userinfototype.setCreatetime(new Date());
+               police_userinfototype.setCardtypessid(addUserInfo.getCardtypessid());
+               police_userinfototype.setUserssid(addUserInfo.getSsid());
+              int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
+               System.out.println("insertuserinfototype_bool__"+insertuserinfototype_bool);
+               userssid=addUserInfo.getSsid();//得到用户的ssid
+           }
+        }
+
+
+        //需要新增案件信息
+        if (null!=addcase_bool&&addcase_bool==1){
+            System.out.println("需要新增案件信息____");
+            addPolice_case.setSsid(OpenUtil.getUUID_32());
+            addPolice_case.setCreatetime(new Date());
+            addPolice_case.setOrdernum(0);
+            addPolice_case.setUserssid(addUserInfo.getSsid());
+            int insertcase_bool =  police_caseMapper.insert(addPolice_case);
+           System.out.println("insertcase_bool__"+insertcase_bool);
+           if (insertcase_bool>0){
+               casessid=addPolice_case.getSsid();
+           }
+        }
+
+        if (StringUtils.isBlank(userssid)||StringUtils.isBlank(casessid)){
+            System.out.println("userssid__"+userssid+"__casessid__"+casessid);
+            result.setMessage("参数为空");
+            return;
+        }
 
 
         //添加笔录信息
@@ -510,8 +563,8 @@ public class RecordService extends BaseService {
         record.setSsid(OpenUtil.getUUID_32());
         record.setCreatetime(new Date());
         record.setRecordbool(1);//1进行中2未开始
-        record.setRecordtypessid(addCaseToArraignmentParam.getRecordtypessid());
-        record.setRecordname(addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", ""));
+        record.setRecordtypessid(recordtypessid);
+        record.setRecordname(recordname);
         int insertrecord_bool=police_recordMapper.insert(record);
         System.out.println("insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
@@ -519,44 +572,44 @@ public class RecordService extends BaseService {
             return;
         }
 
-            //添加提讯数据
-            Police_arraignment arraignment=new Police_arraignment();
-            arraignment.setSsid(OpenUtil.getUUID_32());
-            arraignment.setCreatetime(new Date());
-            arraignment.setAdminssid(addCaseToArraignmentParam.getAdminssid());
-            arraignment.setAsknum(addCaseToArraignmentParam.getAsknum()+1);
-            arraignment.setAskobj(addCaseToArraignmentParam.getAskobj());
-            arraignment.setRecordadminssid(addCaseToArraignmentParam.getRecordadminssid());
-            arraignment.setRecordplace(addCaseToArraignmentParam.getRecordplace());
-            arraignment.setOtheradminssid(addCaseToArraignmentParam.getOtheradminssid());
-            arraignment.setRecordssid(record.getSsid());
-            int insertarraignment_bool=police_arraignmentMapper.insert(arraignment);
-            System.out.println("insertarraignment_bool__"+insertarraignment_bool);
+       //添加提讯数据
+        Police_arraignment arraignment=new Police_arraignment();
+        arraignment.setSsid(OpenUtil.getUUID_32());
+        arraignment.setCreatetime(new Date());
+        arraignment.setAdminssid(addCaseToArraignmentParam.getAdminssid());
+        arraignment.setAsknum(addCaseToArraignmentParam.getAsknum()+1);
+        arraignment.setAskobj(addCaseToArraignmentParam.getAskobj());
+        arraignment.setRecordadminssid(addCaseToArraignmentParam.getRecordadminssid());
+        arraignment.setRecordplace(addCaseToArraignmentParam.getRecordplace());
+        arraignment.setOtheradminssid(addCaseToArraignmentParam.getOtheradminssid());
+        arraignment.setRecordssid(record.getSsid());
+        int insertarraignment_bool=police_arraignmentMapper.insert(arraignment);
+        System.out.println("insertarraignment_bool__"+insertarraignment_bool);
 
-            if (insertarraignment_bool<0){
-                result.setMessage("系统异常");
-                return;
-            }
+        if (insertarraignment_bool<0){
+            result.setMessage("系统异常");
+            return;
+        }
 
-            if (StringUtils.isNotBlank(addCaseToArraignmentParam.getCasessid())){
-                //添加案件提讯信息
+        //添加案件提讯信息
+        if (StringUtils.isNotBlank(casessid)){
                 Police_casetoarraignment casetoarraignment=new Police_casetoarraignment();
                 casetoarraignment.setCreatetime(new Date());
                 casetoarraignment.setSsid(OpenUtil.getUUID_32());
                 casetoarraignment.setArraignmentssid(arraignment.getSsid());
-                casetoarraignment.setCasessid(addCaseToArraignmentParam.getCasessid());
+                casetoarraignment.setCasessid(casessid);
                 int insertcasetoarraignment_bool=police_casetoarraignmentMapper.insert(casetoarraignment);
                 System.out.println("insertcasetoarraignment_bool__"+insertcasetoarraignment_bool);
-            }
+         }
 
         //添加其他
-        if (null!=addCaseToArraignmentParam.getUsertos()&&addCaseToArraignmentParam.getUsertos().size()>0){
+        if (null!=usertos&&usertos.size()>0){
             for (Police_userto userto : usertos) {
               Police_userto  userto1=new Police_userto();
                 userto1.setSsid(OpenUtil.getUUID_32());
                 userto1.setCreatetime(new Date());
                 userto1.setArraignmentssid(arraignment.getSsid());
-                userto1.setUserssid(addCaseToArraignmentParam.getUserssid());
+                userto1.setUserssid(userssid);
                 userto1.setLanguage(userto.getLanguage());
                 userto1.setOtheruserssid(userto.getOtheruserssid());
                 userto1.setRelation(userto.getRelation());
@@ -625,17 +678,6 @@ public class RecordService extends BaseService {
                         c.setAsknum(arraignmentAndRecords.size());
                     }
                     getUserByCardVO.setCases(cases);
-                }
-
-                //询问人等
-                Base_admininfo admininfo=(Base_admininfo)httpSession.getAttribute(Constant.MANAGE_CLIENT);
-
-                EntityWrapper otheruserinfosparam=new EntityWrapper();
-                otheruserinfosparam.ne("a.ssid",admininfo.getSsid());
-                otheruserinfosparam.eq("a.adminbool",1);//正常人
-                List<AdminAndWorkunit> otheruserinfos=base_admininfoMapper.getAdminListAndWorkunit(otheruserinfosparam);
-                if (null!=otheruserinfos&&otheruserinfos.size()>0){
-                    getUserByCardVO.setOtheruserinfos(otheruserinfos);
                 }
 
                 result.setData(getUserByCardVO);
@@ -1235,7 +1277,6 @@ public class RecordService extends BaseService {
         }
         addCaseParam.setSsid(OpenUtil.getUUID_32());
         addCaseParam.setCreatetime(new Date());
-        addCaseParam.setStarttime(new Date());
        int caseinsert_bool = police_caseMapper.insert(addCaseParam);
        System.out.println("caseinsert_bool__"+caseinsert_bool);
         if (caseinsert_bool>0){

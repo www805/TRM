@@ -20,6 +20,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
 import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UserloginParam;
@@ -411,6 +412,25 @@ public class MainService extends BaseService {
         getHomeVO.setDq_y(years);
         result.setData(getHomeVO);
         changeResultToSuccess(result);
+        return;
+    }
+
+
+
+    public void getAdminList(RResult result, ReqParam<GetAdminListParam> param){
+        GetAdminListParam getAdminListParam=param.getParam();
+        if (null==getAdminListParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper adminparam=new EntityWrapper();
+        adminparam.eq("a.adminbool",1);//正常人
+        List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
+        if (null!=adminList&&adminList.size()>0){
+            result.setData(adminList);
+            changeResultToSuccess(result);
+        }
         return;
     }
 }

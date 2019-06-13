@@ -164,6 +164,7 @@ public class OutService  extends BaseService {
             System.out.println("参数为空");
             return false;
         }
+        System.out.println(setMCAsrTxtBackVO.toString());
 
         try {
             if(null!=setMCAsrTxtBackVO){

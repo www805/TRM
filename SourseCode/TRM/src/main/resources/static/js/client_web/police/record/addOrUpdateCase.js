@@ -28,9 +28,10 @@ function callbackgetCaseBySsid(data) {
                     $("#cause").val(caseAndUserInfo.cause);
                     $("#casenum").val(caseAndUserInfo.casenum);
                     $("#occurrencetime").val(caseAndUserInfo.occurrencetime);
-                    $("#caseway").val(caseAndUserInfo.caseway);
-                    $("#userssid").val(caseAndUserInfo.userssid);
+                    $("#starttime").val(caseAndUserInfo.starttime);
+                    $("#endtime").val(caseAndUserInfo.endtime);
                     $("#userssid").find("option[value='"+caseAndUserInfo.userssid+"']").attr("selected",true);
+                    $("#caseway").val(caseAndUserInfo.caseway);
                 }
             }
         }
@@ -54,6 +55,8 @@ function addOrUpdateCase() {
     var cause=$("#cause").val();
     var casenum=$("#casenum").val();
     var occurrencetime=$("#occurrencetime").val();
+    var starttime=$("#starttime").val();
+    var endtime=$("#endtime").val();
     var caseway=$("#caseway").val();
     var userssid=$("#userssid").val();
 
@@ -97,6 +100,8 @@ function addOrUpdateCase() {
             cause:cause,
             casenum:casenum,
             occurrencetime:occurrencetime,
+            starttime:starttime,
+            endtime:endtime,
             caseway:caseway,
             userssid:userssid
         }

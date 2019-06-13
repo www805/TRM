@@ -39,6 +39,7 @@ function getactionid_manage() {
         addOrUpdateUser_updateUser:"addOrUpdateUser_updateUser",
 
 
+
         getKeyword_getKeywordList:"getKeyword_getKeywordList",
         getKeyword_getAddOrUpdateKeyword:"getKeyword_getAddOrUpdateKeyword",
         getKeyword_deleteKeyword:"getKeyword_deleteKeyword",
@@ -108,6 +109,7 @@ function getactionid_manage() {
         addCaseToUser_toaddCaseToUserDetail:"addCaseToUser_toaddCaseToUserDetail",
         addCaseToUser_addCase:"addCaseToUser_addCase",
         addCaseToUser_getUserinfoList:"addCaseToUser_getUserinfoList",
+        addCaseToUser_getAdminList:"addCaseToUser_getAdminList",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

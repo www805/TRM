@@ -252,8 +252,8 @@ public class OutAction extends BaseAction {
 
 
     /*
-    * 暂时废弃*/
-   public static void main(String[] args) throws IOException, TemplateException {
+    * 已废弃*/
+ /*  public static void main(String[] args) throws IOException, TemplateException {
         // 模板路径
         String templatePath = "C:/Users/Administrator/Desktop/AskToTemplate.pdf";
         // 生成的新文件路径
@@ -326,7 +326,7 @@ public class OutAction extends BaseAction {
             copy.addPage(importPage);
             doc.close();
 
-          /*  try {
+          *//*  try {
 
             String finalPath = "C:/Users/Administrator/Desktop/111.pdf";
 
@@ -372,15 +372,14 @@ public class OutAction extends BaseAction {
                 reader.close();
             } catch (Exception e) {
                 e.printStackTrace();
-            }*/
+            }*//*
 
 
         } catch (DocumentException e) {
             e.printStackTrace();
         }
     }
-
-    private static PdfPCell getCell(Phrase phrase, boolean yellowFlag, int colSpan, int rowSpan) {
+   private static PdfPCell getCell(Phrase phrase, boolean yellowFlag, int colSpan, int rowSpan) {
         PdfPCell cells = new PdfPCell(phrase);
         cells.setUseAscender(true);
         cells.setHorizontalAlignment(0);
@@ -392,6 +391,6 @@ public class OutAction extends BaseAction {
         cells.setLeading(1.5F,1.5F);
         cells.setPaddingTop(10F);
         return cells;
-    }
+    }*/
 
 }

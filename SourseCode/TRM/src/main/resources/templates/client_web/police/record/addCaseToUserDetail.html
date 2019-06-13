@@ -57,11 +57,6 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>证件号码</label>
                             <div class="layui-input-block">
-                               <!-- <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()">
-                                <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>-->
-                               <!-- <select name="cardnum" lay-verify="required"  id="cardnum"  lay-filter="change_cardnum_ssid" lay-search="" >
-                                    <option value=""></option>
-                                </select>-->
                                 <div class="layui-form-select">
                                     <div class="layui-select-title">
                                         <input type="text" name="cardnum" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="blblur();" onfocus="getUserinfoList()">
@@ -92,13 +87,14 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <div class="layui-col-lg6" >
+                            <div class="layui-col-lg5" >
                                 <label class="layui-form-label">年龄</label>
                                 <div class="layui-input-block"  >
-                                    <input type="number" name="age" id="age" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" >
+                                    <input type="number" name="age" id="age" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" style="width: 60px" >
                                 </div>
                             </div>
-                            <div class="layui-col-lg6">
+                            <div class="layui-col-lg7">
+                                <div style="float: left">
                                     <label class="layui-form-label" >性别</label>
                                     <div class="layui-input-block" >
                                         <select name="sex" lay-verify="required" id="sex" >
@@ -108,6 +104,7 @@
                                             <option value="-1">未知</option>
                                         </select>
                                     </div>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
@@ -363,18 +360,27 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
                             <div class="layui-input-block">
-                                <div class="layui-col-lg11">
-                                    <select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="">
+                                <div class="layui-col-lg12">
+                                    <!--<select name="casename" lay-verify="required"  id="casename"  lay-filter="change_case" lay-search="">
                                         <option value=""></option>
-                                    </select>
+                                    </select>-->
+
+                                <div class="layui-form-select">
+                                        <div class="layui-select-title">
+                                            <input type="text" name="casename" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="blblur2();" onfocus="getCaseList()">
+                                        </div>
+                                        <dl class="layui-anim layui-anim-upbit"  id="casename_ssid"   >
+
+                                        </dl>
+                                    </div>
                                 </div>
-                                <div class="layui-col-lg1">
+                              <!--  <div class="layui-col-lg1">
                                     <div class="layui-btn-group">
                                         <button class="layui-btn layui-btn-normal " onclick="open_addCase();" title="添加新案件">
                                             <i class="layui-icon">&#xe608;</i>
                                         </button>
                                     </div>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                         <div class="layui-col-lg12">
@@ -512,6 +518,7 @@
         getNationalitys();
         getNationals();
         getCards();
+        getAdminList();
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块

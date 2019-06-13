@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
 import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UserloginParam;
@@ -170,6 +171,29 @@ public class MainAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+
+    /**
+     * 获取全部管理员
+     */
+    @RequestMapping("/getAdminList")
+    @ResponseBody
+    public  RResult getAdminList(@RequestBody ReqParam<GetAdminListParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getAdminList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
 
 
 

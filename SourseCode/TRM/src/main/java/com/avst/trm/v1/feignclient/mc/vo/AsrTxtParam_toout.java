@@ -75,4 +75,16 @@ public class AsrTxtParam_toout {
         this.asrtime = asrtime;
     }
 
+    @Override
+    public String toString() {
+        return "AsrTxtParam_toout{" +
+                "userssid='" + userssid + '\'' +
+                ", txt='" + txt + '\'' +
+                ", starttime='" + starttime + '\'' +
+                ", asrnum=" + asrnum +
+                ", asrtime='" + asrtime + '\'' +
+                ", asrsort=" + asrsort +
+                ", asrstartime='" + asrstartime + '\'' +
+                '}';
+    }
 }

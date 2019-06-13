@@ -26,19 +26,6 @@ public class RecordAction extends BaseAction {
     private RecordService recordService;
 
 
-/*
- ① 获取笔录列表：/v1/police/record/getRecords
-②  添加笔录：/v1/police/record/addRecord
-③  查看单个笔录：/v1/police/record/getRecordById
-④  实时录音文件上传：/v1/police/record/uploadRecord
-⑤  笔录主页面数据：/v1/police/record/recordIndex
-⑥  获取笔录类型列表：/v1/police/record/getRecordtypes
-⑦  获取单个笔录类型：/v1/police/record/getRecordtypeById
-⑧  添加笔录类型：/v1/police/record/addRecordtype
-⑨  修改笔录类型：/v1/police/record/updateRecordtype
-⑩  添加笔录模板：/v1/police/record/addRecordTemplate
-⑪  添加案件提讯：/v1/police/record/addCaseToArraignment
-     */
     /**
      *获取笔录列表
      * @param param
@@ -463,6 +450,12 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+
+
+
+
 
 
 

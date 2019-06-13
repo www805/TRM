@@ -48,6 +48,20 @@
         </div>
 
         <div class="layui-form-item">
+            <label class="layui-form-label">开始时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="starttime" id="starttime" required  placeholder="请输入开始时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="endtime" id="endtime" required  placeholder="请输入结束时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
             <label class="layui-form-label">到案方式</label>
             <div class="layui-input-block">
                 <input type="text" name="caseway" id="caseway" required  lay-verify="required" placeholder="请输入到案方式" autocomplete="off" class="layui-input">
@@ -109,6 +123,14 @@
 
         laydate.render({
             elem: '#occurrencetime'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#starttime'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#endtime'
             ,type: 'datetime'
         });
         form.render();
