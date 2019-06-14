@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<link rel="stylesheet" href="/layui/css/layui.css">
+
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<title>word展示</title>
+</head>
+
+<body>
+
+	<div id="view" >
+	测试word
+		<button id="parentIframe">测试</button>
+	</div>
+
+
+
+</body>
+<script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
+<script src="/layui/layui.all.js" type="text/javascript"></script>
+<script language="JavaScript" type="text/JavaScript">
+
+
+		//iframe层-多媒体
+		$('#parentIframe').on('click', function() {
+			layer.open({
+				type: 2,
+				title: false,
+				area: ['830px', '560px'],
+				shade: 0.8,
+				closeBtn: 0,
+				shadeClose: true,
+				content: '//192.168.17.175:80/upload/笔录系统6月20号节点任务统计20190603.html'
+			});
+		});
+
+
+</script>
+</html>
