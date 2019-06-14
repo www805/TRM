@@ -54,11 +54,11 @@
             <div style="margin-top: 5px">
                 <label class="layui-form-label" style="width: auto;">关键字</label>
                 <div class="layui-input-inline" style="float: left; ">
-                    <input type="text" name="templatename" id="templatename" style="width:75px;" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input">
+                    <input type="text" name="templatename" id="templatename" style="width:75px;" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="getTmplateTypesParam();">
                 </div>
                 <label class="layui-form-label" style="width: auto;">类型</label>
                 <div class="layui-input-inline" style="width: 75px;float: left;margin-right: 10px;">
-                    <select name="templatetypessid" lay-verify="" id="templatetypessid">
+                    <select name="templatetypessid" lay-verify="" id="templatetypessid" lay-filter="change_templatetypessid">
                         <option value="">全部</option>
                     </select>
                 </div>
@@ -121,6 +121,10 @@
         var element = layui.element;
         var form = layui.form;
         //使用模块
+
+        form.on('select(change_templatetypessid)', function(data){
+            getTmplateTypesParam();
+        });
     });
 </script>
 </body>

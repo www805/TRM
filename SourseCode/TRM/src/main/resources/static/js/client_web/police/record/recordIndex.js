@@ -186,27 +186,11 @@ function showpagetohtml(){
 
 }
 
-
-
-
-
-
-
-//跳转笔录详情页
-/*function togetRecordById() {
-    if (!isNotEmpty(recordssid_go)){
-        layer.msg("请先获取笔录");
-        return;
-    }
-    var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
-    window.location.href=url+"?ssid="+recordssid_go;
-}*/
 //跳转笔录编辑页
 function towaitRecord(recordssid,recordbool) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
-
     if (recordbool==1){
         var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
         window.location.href=url+"?ssid="+recordssid;
@@ -214,6 +198,6 @@ function towaitRecord(recordssid,recordbool) {
         var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;
     }
-
 }
+
 

@@ -29,17 +29,17 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">案件名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
+                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input" oninput=" getCasesByParam();">
             </div>
 
             <label class="layui-form-label" style="width: auto;">案件编号</label>
             <div class="layui-input-inline">
-                <input type="text" name="casenum" id="casenum" lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="casenum" id="casenum" lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input" oninput=" getCasesByParam();">
             </div>
 
             <label class="layui-form-label" style="width: auto;">案件人名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入案件人名称" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入案件人名称" autocomplete="off" class="layui-input" oninput=" getCasesByParam();">
             </div>
 
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,10);" >

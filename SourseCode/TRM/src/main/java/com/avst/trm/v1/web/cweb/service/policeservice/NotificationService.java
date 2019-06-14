@@ -41,6 +41,9 @@ public class NotificationService extends BaseService {
     @Value("${file.notification}")
     private String filePath;
 
+    @Value("${upload.basepath}")
+    private String uploadbasepath;
+
     /**
      * 获取告知书列表
      * @param result
@@ -159,7 +162,8 @@ public class NotificationService extends BaseService {
         Base_filesave filesave = new Base_filesave();
         filesave.setDatassid(getNotificationParam.getSsid());
         filesave = filesaveMapper.selectOne(filesave);
-
+        String filesavepath=uploadbasepath+filesave.getRecorddownurl();
+        filesave.setRecorddownurl(filesavepath);
         result.setData(filesave);
         changeResultToSuccess(result);
     }

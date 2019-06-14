@@ -203,3 +203,13 @@ function callbackgetPidRecordtypes(data) {
         layer.msg(data.message);
     }
 }
+
+$(function () {
+    layui.use(['form','jquery','laydate'], function() {
+        var form=layui.form;
+        form.on('select(change_pid)', function(data){
+            getRecordtypes();
+        });
+    });
+
+})

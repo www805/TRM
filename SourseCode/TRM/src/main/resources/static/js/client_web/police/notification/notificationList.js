@@ -86,9 +86,7 @@ function calldownloadNotification(data){
         var filesave=data.data;
         if (isNotEmpty(filesave)){
             layer.msg("下载中，请稍后...");
-            var host = "http://" + window.location.host;
-            host = host.replace(":8080","");
-            window.location.href = host + filesave.recorddownurl;
+            window.location.href =  filesave.recorddownurl;
             // setTimeout("window.location.reload()",1500);
         }
     }else{

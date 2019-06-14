@@ -73,12 +73,31 @@ public class OutService  extends BaseService {
 
 
     public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
+
+
+
         StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
         if (null == startRercordParam) {
             LogUtil.intoLog(this.getClass(),"参数为空__");
             result.setMessage("参数为空");
             return result;
         }
+        //判断是否开过会议
+        Police_arraignment police_arraignment=new Police_arraignment();
+        if (StringUtils.isNotBlank(startRercordParam.getRecordssid())){
+            police_arraignment.setRecordssid(startRercordParam.getRecordssid());
+            police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+            if (null!=police_arraignment){
+                String mtssid=police_arraignment.getMtssid();
+                if (StringUtils.isNotBlank(mtssid)){
+                    result.setData(-1);
+                    result.setMessage("该案件已开启过会议");
+                    return result;
+                }
+            }
+        }
+
+
         //获取
         Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
@@ -112,17 +131,12 @@ public class OutService  extends BaseService {
                 String mtssid=startMCVO.getMtssid();
 
                 //根据recordssid获取提讯
-                Police_arraignment police_arraignment=new Police_arraignment();
-                if (StringUtils.isNotBlank(startRercordParam.getRecordssid())){
-                    police_arraignment.setRecordssid(startRercordParam.getRecordssid());
-                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
                     if (null!=police_arraignment){
                         police_arraignment.setMtssid(mtssid);
                         int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
                         LogUtil.intoLog(this.getClass(),"arraignmentupdateById_bool__"+arraignmentupdateById_bool);
                     }
                     LogUtil.intoLog(this.getClass(),"startMC开启成功__");
-                }
 
                 result.setData(startMCVO);
                 changeResultToSuccess(result);
