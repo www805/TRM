@@ -19,19 +19,10 @@ public class AddCaseToArraignmentParam {
     private Integer asknum;
     private List<Police_userto> usertos;//其他在场人员信息
 
-    private Integer adduser_bool;//是否需要新增人员 1需要 -1不需要
     private UserInfo addUserInfo;//新增人员的信息
 
-    private Integer addcase_bool;//是否需要新增案件 1需要 -1不需要
     private Police_case addPolice_case;//新增案件的信息
 
-    public Integer getAdduser_bool() {
-        return adduser_bool;
-    }
-
-    public void setAdduser_bool(Integer adduser_bool) {
-        this.adduser_bool = adduser_bool;
-    }
 
     public UserInfo getAddUserInfo() {
         return addUserInfo;
@@ -39,14 +30,6 @@ public class AddCaseToArraignmentParam {
 
     public void setAddUserInfo(UserInfo addUserInfo) {
         this.addUserInfo = addUserInfo;
-    }
-
-    public Integer getAddcase_bool() {
-        return addcase_bool;
-    }
-
-    public void setAddcase_bool(Integer addcase_bool) {
-        this.addcase_bool = addcase_bool;
     }
 
     public Police_case getAddPolice_case() {

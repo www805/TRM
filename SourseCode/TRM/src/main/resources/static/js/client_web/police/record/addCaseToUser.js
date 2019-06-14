@@ -2,16 +2,13 @@ var cases=null;//案件数据
 var otheruserinfos=null;//其他询问人员数据
 var cards=null;//全部证件类型
 
-var dqcardssid=null;//当前人员证件ssid
-var dqcardnum=null;//当前人员证件号码
+
 var dquserssid=null;//当前用户的ssid
 var dqcasessid=null;//当前案件ssid
 
 //开始笔录按钮
 function addCaseToArraignment() {
-    var  adduser_bool=-1;//是否需要新增人员 1需要 -1不需要
     var  addUserInfo={};//新增人员的信息
-    var  addcase_bool=-1;//是否需要新增案件 1需要 -1不需要
     var  addPolice_case={};//新增案件的信息
 
   var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
@@ -22,8 +19,27 @@ function addCaseToArraignment() {
     }
 
     var cardnum=$("#cardnum").val();
+    var cardtypetext=$("#cards option:selected").text();
     if (!isNotEmpty(cardnum)){
         parent.layer.msg("证件号码不能为空");
+        return;
+    }
+    if ($.trim(cardtypetext)=="居民身份证"){
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(reg.test(cardnum) === false) {
+            parent.layer.msg("身份证输入不合法");
+            return false;
+        }
+    }
+    var  username=$("#username").val();
+    if (!isNotEmpty(username)){
+        parent.layer.msg("姓名不能为空");
+        return;
+    }
+
+    var  casename=$("#casename").val();
+    if (!isNotEmpty(casename)){
+        parent.layer.msg("案件名称不能为空");
         return;
     }
 
@@ -52,68 +68,60 @@ function addCaseToArraignment() {
         return;
     }
 
-    if (!isNotEmpty(dquserssid)){
-        adduser_bool=1;
-        //收集人员信息
-        var cardtypessid=$("#cards option:selected").val();
-        var  username=$("#username").val();
-        var  beforename=$("#beforename").val();
-        var  nickname= $("#nickname").val();
-        var  age=$("#age").val();
-        var  sex=$("#sex").val();
-        var  both=$("#both").val();
-        var  nationalssid=$("#national").val();
-        var  nationalityssid=$("#nationality").val();
-        var  professional=$("#professional").val();
-        var  educationlevel=$("#educationlevel").val();
-        var  politicsstatus=$("#politicsstatus").val();
-        var  phone=$("#phone").val();
-        var  domicile=$("#domicile").val();
-        var  residence=$("#residence").val();
-        var  workunits=$("#workunits").val();
-        addUserInfo={
-            cardtypessid:cardtypessid,
-            cardnum:cardnum,
-            username:username,
-            beforename:beforename,
-            nickname:nickname,
-            age:age,
-            sex:sex,
-            both:both,
-            nationalssid:nationalssid,
-            nationalityssid:nationalityssid,
-            professional:professional,
-            educationlevel:educationlevel,
-            politicsstatus:politicsstatus,
-            phone:phone,
-            domicile:domicile,
-            residence:residence,
-            workunits:workunits
-        }
+    //收集人员信息
+    var cardtypessid=$("#cards option:selected").val();
+  /*  var  username=$("#username").val();*/
+    var  beforename=$("#beforename").val();
+    var  nickname= $("#nickname").val();
+    var  age=$("#age").val();
+    var  sex=$("#sex").val();
+    var  both=$("#both").val();
+    var  nationalssid=$("#national").val();
+    var  nationalityssid=$("#nationality").val();
+    var  professional=$("#professional").val();
+    var  educationlevel=$("#educationlevel").val();
+    var  politicsstatus=$("#politicsstatus").val();
+    var  phone=$("#phone").val();
+    var  domicile=$("#domicile").val();
+    var  residence=$("#residence").val();
+    var  workunits=$("#workunits").val();
+    addUserInfo={
+        cardtypessid:cardtypessid,
+        cardnum:cardnum,
+        username:username,
+        beforename:beforename,
+        nickname:nickname,
+        age:age,
+        sex:sex,
+        both:both,
+        nationalssid:nationalssid,
+        nationalityssid:nationalityssid,
+        professional:professional,
+        educationlevel:educationlevel,
+        politicsstatus:politicsstatus,
+        phone:phone,
+        domicile:domicile,
+        residence:residence,
+        workunits:workunits
     }
 
-    if (!isNotEmpty(dqcasessid)){
-        addcase_bool=1;
-        //收集人员信息
-        var casename=$("#casename").val();
-        var cause=$("#cause").val();
-        var casenum=$("#casenum").val();
-        var occurrencetime=$("#occurrencetime").val();
-        var caseway=$("#caseway").val();
-        var starttime=$("#starttime").val();
-        var endtime=$("#endtime").val();
 
-
-
-        addPolice_case={
-            casename:casename,
-            cause:cause,
-            casenum:casenum,
-            occurrencetime:occurrencetime,
-            starttime:starttime,
-            endtime:endtime,
-            caseway:caseway
-        }
+    //收集人员信息
+   /* var casename=$("#casename").val();*/
+    var cause=$("#cause").val();
+    var casenum=$("#casenum").val();
+    var occurrencetime=$("#occurrencetime").val();
+    var caseway=$("#caseway").val();
+    var starttime=$("#starttime").val();
+    var endtime=$("#endtime").val();
+    addPolice_case={
+        casename:casename,
+        cause:cause,
+        casenum:casenum,
+        occurrencetime:occurrencetime,
+        starttime:starttime,
+        endtime:endtime,
+        caseway:caseway
     }
 
     //其他人
@@ -152,9 +160,7 @@ function addCaseToArraignment() {
             recordtypessid:recordtypessid,
             recordname:recordname,
             usertos:usertos,
-            adduser_bool:adduser_bool,
             addUserInfo:addUserInfo,
-            addcase_bool:addcase_bool,
             addPolice_case:addPolice_case
         }
     };
@@ -181,7 +187,7 @@ function callbackaddCaseToArraignment(data) {
 }
 
 /**
- * 获取笔录类型列表左侧显示
+ * 获取笔录类型列表
  */
 function getRecordtypes() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getRecordtypes);
@@ -259,8 +265,6 @@ function gettree(data){
 
             $("iframe").prop("src",url);
         }
-
-
     });
     layui.use(['element','form'], function(){
         var element = layui.element;
@@ -373,7 +377,6 @@ function getAdminList() {
     };
     ajaxSubmitByJson(url,data,callbackgetAdminList);
 }
-
 function callbackgetAdminList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
          otheruserinfos=data.data;
@@ -397,35 +400,30 @@ function callbackgetAdminList(data) {
  * 获取人员信息
  */
 function getUserByCard(){
+    var cardnum =  $("#cardnum").val();
+    var cardtypetext=$("#cards option:selected").text();
+    var cardtypesssid=$("#cards option:selected").val();
+     init_form();//初始化表单
+    var bool=checkout_cardnum(cardnum,cardtypetext);
+    if (!bool){
+        return;
+    }
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
-    var cards=$("#cards option:selected").val();
-    var cardnum=$("#cardnum").val();
-     dqcardssid=cards;
-     dqcardnum=cardnum;
-     dquserssid=null;
 
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            cardtypesssid:cards,
+            cardtypesssid:cardtypesssid,
             cardnum:cardnum
         }
     };
     ajaxSubmitByJson(url,data,callbackgetUserByCard);
 }
 function callbackgetUserByCard(data){
-    layui.use(['form'], function(){
-        var form=layui.form;
-        $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
-        $('select').not("#cards").prop('selectedIndex', 0);
-        $('#casename option').not(":lt(1)").remove();
-        form.render('select');
-    });
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
             var userinfo=data.userinfo;
-            cases=data.cases;
             if (isNotEmpty(userinfo)){
                 dquserssid=userinfo.ssid;
 
@@ -448,13 +446,22 @@ function callbackgetUserByCard(data){
                 $("#politicsstatus").val(userinfo.politicsstatus);
             }
 
-            //案件select
-            $('#casename option').not(":lt(1)").remove();
-            if (isNotEmpty(cases)){
-                setcases(cases);
+            if (isNotEmpty(dquserssid)){
+                getCaseById();
             }
-        }
 
+            var cardnum =  $("#cardnum").val();
+            var cardtypetext=$("#cards option:selected").text();
+            var bool=checkout_cardnum(cardnum,cardtypetext);
+            if (!bool){
+                return;
+            }
+            
+            //案件select
+           /* if (isNotEmpty(cases)){
+                setcases(cases);
+            }*/
+        }
         /*其他在场人员数据渲染*/
 
     }else{
@@ -468,41 +475,40 @@ function callbackgetUserByCard(data){
     });
 }
 function setcases(cases){
-    $('#casename option').not(":lt(1)").remove();
+    $("#casename_ssid").html("");
     if (isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c= cases[i];
-            //  $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.occurrencetime+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casename+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.casenum+"</option>")
-            $("#casename").append("<option value='"+c.ssid+"' title='"+c.casename+"'>"+c.casename+"</option>")
+            $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
         }
         
         if (isNotEmpty(dqcasessid)){
             $("#casename").val(dqcasessid);
             $("#cause").val("");
             $("#casenum").val("");
-            $("#occurrencetime").val("");
-            $("#starttime").val("");
-            $("#endtime").val("");
             $("#caseway").val("");
             $("#asknum").val("0");
             $("#recordname").val("");
-
-
-
             if (isNotEmpty(cases)){
                 for (var i = 0; i < cases.length; i++) {
                     var c = cases[i];
                     if (dqcasessid==c.ssid){
                         var casename=$("#casename").find("option:selected").text();
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                        var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
-
+                        var username=$("#username").val();
+                        var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
-                        $("#occurrencetime").val(c.occurrencetime);
-                        $("#starttime").val(c.starttime);
-                        $("#endtime").val(c.endtime);
+                        if (isNotEmpty(c.starttime)){
+                            $("#starttime").val(c.starttime);
+                        }
+                        if (isNotEmpty(c.endtime)){
+                            $("#endtime").val(c.endtime);
+                        }
+                        if (isNotEmpty(c.occurrencetime)){
+                            $("#occurrencetime").val(c.occurrencetime);
+                        }
                         $("#caseway").val(c.caseway);
                         $("#asknum").val(c.asknum);
                         $("#recordname").val(recordname);
@@ -598,6 +604,10 @@ function getUserByCard_other(obj){
     var cards=$(obj).closest(".layui-tab-item").find("select[name='tab_card']").val();
     var cardnum=$(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
 
+    var dqcardssid=$("#cards option:selected").val();
+    var dqcardnum=$("#cardnum").val();
+
+
     if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){ //判断主要人员信息是否搜索
         parent.layer.msg("请先获取人员基本信息");
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
@@ -669,54 +679,37 @@ $(function () {
         var form=layui.form;
 
         form.on('select(change_card)', function(data){
-            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#asknum')").val("");
-            $('select ').not("#cards").prop('selectedIndex', 0)
-            $('#casename option').not(":lt(1)").remove();
-            form.render();
-        });
+            dquserssid=null;//当前用户的ssid
+            dqcasessid=null;//当前案件ssid
+            cases=null;
+                var form=layui.form;
+                var laydate=layui.laydate;
+                $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
+                $('select').not("#cards").prop('selectedIndex', 0);
+                $("#casename_ssid").html("");
 
+                laydate.render({
+                    elem: '#occurrencetime' //指定元素
+                    ,type:"datetime"
+                    ,value: new Date(Date.parse(new Date()))
+                    ,format: 'yyyy-MM-dd HH:mm:ss'
+                });
+                laydate.render({
+                    elem: '#starttime' //指定元素
+                    ,type:"datetime"
+                    ,value: new Date(Date.parse(new Date()))
+                    ,format: 'yyyy-MM-dd HH:mm:ss'
+                });
+                laydate.render({
+                    elem: '#endtime' //指定元素
+                    ,type:"datetime"
+                    ,value: new Date(Date.parse(new Date()))
+                    ,format: 'yyyy-MM-dd HH:mm:ss'
+                });
 
+                getUserByCard();
 
-        form.on('select(change_case)', function(data){
-            var casessid=data.value;
-            $("#cause").val("");
-            $("#casenum").val("");
-            $("#caseway").val("");
-            $("#asknum").val("0");
-            $("#recordname").val("");
-         /*
-          $("#occurrencetime").val("");
-            $("#starttime").val("");
-            $("#endtime").val("");*/
-
-
-
-            if (isNotEmpty(cases)){
-                for (var i = 0; i < cases.length; i++) {
-                    var c = cases[i];
-                    if (casessid==c.ssid){
-                        var casename=$("#casename").find("option:selected").text();
-                        var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                        var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
-
-
-                        $("#cause").val(c.cause);
-                        $("#casenum").val(c.casenum);
-                        if (isNotEmpty(c.starttime)){
-                            $("#starttime").val(c.starttime);
-                        }
-                        if (isNotEmpty(c.endtime)){
-                            $("#endtime").val(c.endtime);
-                        }
-                        if (isNotEmpty(c.occurrencetime)){
-                            $("#occurrencetime").val(c.occurrencetime);
-                        }
-                        $("#caseway").val(c.caseway);
-                        $("#asknum").val(c.asknum);
-                        $("#recordname").val(recordname);
-                    }
-                }
-            }
+                form.render('select');
         });
 
         form.on('select(change_otheruserinfos)', function(data){
@@ -734,161 +727,8 @@ $(function () {
     });
 });
 
-//添加案件按钮，已废弃
-/*function open_addCase() {
-    var cardnum=$("#cardnum").val();
-        if (!isNotEmpty(cardnum)){ //判断主要人员信息是否搜索
-            parent.layer.msg("请完善人员基本信息");
-            return;
-         }
-    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">案件名称</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="casenamem" id="casenamem"   lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">案件编号</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="casenumm" id="casenumm" required  lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">当前案由</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="causem" id="causem" required  lay-verify="required" placeholder="请输入当前案由" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">案发时间</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="occurrencetimem" id="occurrencetimem" required  placeholder="请输入案发时间" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                 <div class="layui-form-item">\
-                    <label class="layui-form-label">开始时间</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="starttimem" id="starttimem" required  placeholder="请输入开始时间" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">结束时间</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="endtimem" id="endtimem" required  placeholder="请输入结束时间" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">到案方式</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="casewaym" id="casewaym" required  lay-verify="required" placeholder="请输入到案方式" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-            </form>';
 
-    var index = parent.layer.open({
-        type:1,
-        title:'添加案件',
-        content:html,
-        area: ['700px', '550px'],
-        btn: ['确定', '取消'],
-        yes:function(index, layero){
-            var url= url=getActionURL(getactionid_manage().addCaseToUser_addCase);
-            var casename=$("#casenamem",parent.document).val();
-            var cause=$("#causem",parent.document).val();
-            var casenum=$("#casenumm",parent.document).val();
-            var occurrencetime=$("#occurrencetimem",parent.document).val();
-            var caseway=$("#casewaym",parent.document).val();
-            var starttime=$("#starttimem",parent.document).val();
-            var endtime=$("#endtimem",parent.document).val();
-            var userssid=dquserssid;
-
-
-            if (!isNotEmpty(casename)) {
-                parent.layer.msg("请输入案件名称");
-                $("#casename").focus();
-                return;
-            }
-            if (!isNotEmpty(cause)) {
-                parent.layer.msg("请输入当前案由");
-                $("#cause").focus();
-                return;
-            }
-            if (!isNotEmpty(casenum)) {
-                parent.layer.msg("请输入案件编号");
-                $("#casenum").focus();
-                return;
-            }
-            if (!isNotEmpty(occurrencetime)) {
-                parent.layer.msg("请输入案发时间");
-                $("#occurrencetime").focus();
-                return;
-            }
-            if (!isNotEmpty(caseway)) {
-                parent.layer.msg("请输入到案方式");
-                $("#caseway").focus();
-                return;
-            }
-
-
-            var data={
-                token:INIT_CLIENTKEY,
-                param:{
-                    casename:casename,
-                    cause:cause,
-                    casenum:casenum,
-                    occurrencetime:occurrencetime,
-                    starttime:starttime,
-                    endtime:endtime,
-                    caseway:caseway,
-                    userssid:userssid
-                }
-            };
-            ajaxSubmitByJson(url,data,function (data) {
-                if(null!=data&&data.actioncode=='SUCCESS'){
-                    if (isNotEmpty(data)){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            dqcasessid=data;
-                            getCaseById();
-                        }
-                    }
-                }else{
-                    parent.layer.msg(data.message);
-                }
-            });
-            parent.layer.close(index);
-        },
-        btn2:function(index, layero){
-            parent.layer.close(index);
-        }
-    });
-
-    parent.layui.use(['form', 'layedit', 'laydate','laypage', 'layer'], function(){
-        var form = parent.layui.form
-            ,layer = parent.layui.layer
-            ,layedit = parent.layui.layedit
-            ,laydate = parent.layui.laydate;
-
-        var laypage = parent.layui.laypage
-            ,layer = parent.layui.layer;
-
-        laydate.render({
-            elem: '#occurrencetimem'
-            ,type: 'datetime'
-        });
-        laydate.render({
-            elem: '#starttimem'
-            ,type: 'datetime'
-        });
-        laydate.render({
-            elem: '#endtimem'
-            ,type: 'datetime'
-        });
-        form.render();
-    });
-}*/
-
+//废弃
 function getCaseById() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getCaseById);
     var userssid=dquserssid;
@@ -923,20 +763,17 @@ function callbakegetCaseById(data) {
  */
 function getUserinfoList() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserinfoList);
-
-    var cards=$("#cards option:selected").val();
+    var cardtypesssid=$("#cards option:selected").val();
     var cardnum=$("#cardnum").val();
-
     if (!isNotEmpty(cardnum)) {
         $("#cardnum_ssid").html("");
         $("#cardnum_ssid").append('<p class="layui-select-none">无匹配项</p>');
         return;
     }
-
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            cardtypesssid:cards,
+            cardtypesssid:cardtypesssid,
             cardnum:cardnum
         }
     };
@@ -971,6 +808,17 @@ function callbackgetUserinfoList(data) {
         form.render();
     });
 }
+function select_cardnum(obj) {
+    $("#cardnum_ssid").css("display","none");
+    var cardnum=$(obj).attr("lay-value");
+    $("#cardnum").val(cardnum);
+    getUserByCard();
+    $("#cardnum_ssid").html("");
+}
+function select_cardnumblur() {
+    $("#cardnum_ssid").css("display","none");
+    getUserByCard();
+}
 
 function getCaseList() {
     $("#casename_ssid").html("");
@@ -995,33 +843,26 @@ function getCaseList() {
     }
 
 }
-
 function select_case(obj) {
     $("#casename_ssid").css("display","none");
     var casename=$(obj).attr("lay-value");
-
-    $("#casename").val($(obj).text());
     dqcasessid=casename;
+    $("#casename").val($(obj).text());
     if (isNotEmpty(dqcasessid)){
         $("#cause").val("");
         $("#casenum").val("");
-      /*  $("#occurrencetime").val("");
-        $("#starttime").val("");
-        $("#endtime").val("");*/
         $("#caseway").val("");
         $("#asknum").val("0");
         $("#recordname").val("");
-
-
 
         if (isNotEmpty(cases)){
             for (var i = 0; i < cases.length; i++) {
                 var c = cases[i];
                 if (dqcasessid==c.ssid){
+                    var username=$("#username").val();
                     var casename=$("#casename").val();
                     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                    var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
-
+                    var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
@@ -1038,82 +879,156 @@ function select_case(obj) {
                     if (isNotEmpty(c.occurrencetime)){
                         $("#occurrencetime").val(c.occurrencetime);
                     }
-
-
                 }
             }
         }
     }
-
     $("#casename_ssid").html("");
 }
-
-function blblur2() {
+function select_caseblur() {
     $("#casename_ssid").css("display","none");
-
     var casename=$("#casename").val();
     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-    var asknum=$("#asknum").val();
-    var recordname="《"+casename+"》"+recordtypename+"_第"+(parseInt(asknum)+1)+"版";
-    if (isNotEmpty(casename)){
+    var username=$("#username").val();
+    //需要验证案件ssid
+    dqcasessid=null;
+    $("#cause").val("");
+    $("#casenum").val("");
+    $("#caseway").val("");
+    $("#asknum").val("0");
+    $("#recordname").val("");
+    if (isNotEmpty(cases)){
+        for (var i = 0; i < cases.length; i++) {
+            var c = cases[i];
+            if (c.casename.trim()==casename.trim()) {
+                dqcasessid=c.ssid;
+                var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+
+                $("#cause").val(c.cause);
+                $("#casenum").val(c.casenum);
+                $("#caseway").val(c.caseway);
+                $("#asknum").val(c.asknum);
+                $("#recordname").val(recordname);
+
+                if (isNotEmpty(c.starttime)){
+                    $("#starttime").val(c.starttime);
+                }
+                if (isNotEmpty(c.endtime)){
+                    $("#endtime").val(c.endtime);
+                }
+                if (isNotEmpty(c.occurrencetime)){
+                    $("#occurrencetime").val(c.occurrencetime);
+                }
+                break;
+            }
+        }
+    }
+    if (isNotEmpty(casename)&&!isNotEmpty(dqcasessid)){
+        var asknum=$("#asknum").val();
+        var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(asknum)+1)+"版";
         $("#recordname").val(recordname);
-    }else{
-        $("#recordname").val("");
+        layui.use(['form','laydate'], function(){
+            var form=layui.form;
+            var laydate=layui.laydate;
+            $("#casenum,#cause,#caseway").val("");
+            $("#casename_ssid").html("");
+            laydate.render({
+                elem: '#occurrencetime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#starttime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#endtime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            form.render('select');
+        });
     }
 }
 
-function select_cardnum(obj) {
-    $("#cardnum_ssid").css("display","none");
-   var cardnum=$(obj).attr("lay-value");
-   $("#cardnum").val(cardnum);
-    getUserByCard();
-    $("#cardnum_ssid").html("");
+//检验主身份证号码
+function checkout_cardnum(cardnum,cardtypetext) {
+    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
+        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        if(reg.test(cardnum) === false) {
+            layer.msg("身份证输入不合法");
+            init_form();
+            return false;
+        }
+        //解析身份证
+        cardnum = $.trim(cardnum);
+        if (cardnum.length==15){
+            return true;
+        }else  if (cardnum.length==18){
+            var birth = cardnum.substring(6, 10) + "-" + cardnum.substring(10, 12) + "-" + cardnum.substring(12, 14);
+            $("#both").val(birth);
+            var sex = parseInt(cardnum.substr(16, 1)) % 2;
+            if (sex==1){
+                sex=1;
+            }else {
+                sex=2;
+            }
+            $("#sex").val(sex);
+            var myDate = new Date();
+            var month = myDate.getMonth() + 1;
+            var day = myDate.getDate();
+            var age = myDate.getFullYear() - cardnum.substring(6, 10) - 1;
+            if (cardnum.substring(10, 12) < month || cardnum.substring(10, 12) == month && cardnum.substring(12, 14) <= day) {
+                age++;
+            }
+            $("#age").val(age);
+            return true;
+        }
+        layui.use('form', function(){
+            var $ = layui.$;
+            var form = layui.form;
+            form.render();
+        });
+    }
+    return true;
 }
 
-function blblur() {
-    $("#cardnum_ssid").css("display","none");
-    var cardnum =  $("#cardnum").val();
-    var cardtypetext=$("#cards option:selected").text();
-   if ($.trim(cardtypetext)=="居民身份证"){
-       var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-       if(reg.test(cardnum) === false) {
-           layer.msg("身份证输入不合法");
-           $("#cardnum").val("");
-           return false;
-       }
 
-       //解析身份证
-       cardnum = $.trim(cardnum);
-       if (cardnum.length==15){
+//初始化页面
+function init_form() {
+     dquserssid=null;//当前用户的ssid
+     dqcasessid=null;//当前案件ssid
+     cases=null;
+    layui.use(['form','laydate'], function(){
+        var form=layui.form;
+        var laydate=layui.laydate;
+        $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
+        $('select').not("#cards").prop('selectedIndex', 0);
+        $("#casename_ssid").html("");
 
-       }else{
-           var birth = cardnum.substring(6, 10) + "-" + cardnum.substring(10, 12) + "-" + cardnum.substring(12, 14);
-           $("#both").val(birth);
-           var sex = parseInt(cardnum.substr(16, 1)) % 2;
-           if (sex==1){
-               sex=1;
-           }else {
-               sex=2;
-           }
-           console.log(sex);
-           $("#sex").val(sex);
-           var myDate = new Date();
-           var month = myDate.getMonth() + 1;
-           var day = myDate.getDate();
-           var age = myDate.getFullYear() - cardnum.substring(6, 10) - 1;
-           if (cardnum.substring(10, 12) < month || cardnum.substring(10, 12) == month && cardnum.substring(12, 14) <= day) {
-               age++;
-           }
-           $("#age").val(age);
-       }
-       layui.use('form', function(){
-           var $ = layui.$;
-           var form = layui.form;
+        laydate.render({
+            elem: '#occurrencetime' //指定元素
+            ,type:"datetime"
+            ,value: new Date(Date.parse(new Date()))
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+        });
+        laydate.render({
+            elem: '#starttime' //指定元素
+            ,type:"datetime"
+            ,value: new Date(Date.parse(new Date()))
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+        });
+        laydate.render({
+            elem: '#endtime' //指定元素
+            ,type:"datetime"
+            ,value: new Date(Date.parse(new Date()))
+            ,format: 'yyyy-MM-dd HH:mm:ss'
+        });
 
-           form.render();
-       });
-
-
-   }
-    /*getUserByCard();*/
+        form.render('select');
+    });
 }

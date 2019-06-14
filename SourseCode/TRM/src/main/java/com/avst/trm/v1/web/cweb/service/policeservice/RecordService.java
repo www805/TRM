@@ -512,17 +512,15 @@ public class RecordService extends BaseService {
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
 
-        Integer adduser_bool=addCaseToArraignmentParam.getAdduser_bool();//是否新增人员的信息
         UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
-        Integer addcase_bool=addCaseToArraignmentParam.getAddcase_bool();//是否新增案件的信息
         Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
 
         //需要新增人员信息
-        if (null!=adduser_bool&&adduser_bool==1){
-             LogUtil.intoLog(this.getClass(),"需要新增人员____");
+        if (StringUtils.isBlank(userssid)){
+            LogUtil.intoLog(this.getClass(),"需要新增人员____");
             addUserInfo.setSsid(OpenUtil.getUUID_32());
             addUserInfo.setCreatetime(new Date());
-           int insertuserinfo_bool = police_userinfoMapper.insert(addUserInfo);
+            int insertuserinfo_bool = police_userinfoMapper.insert(addUserInfo);
             LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
            if (insertuserinfo_bool>0){
                Police_userinfototype police_userinfototype=new Police_userinfototype();
@@ -534,23 +532,37 @@ public class RecordService extends BaseService {
               int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
                LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
                userssid=addUserInfo.getSsid();//得到用户的ssid
+               LogUtil.intoLog(this.getClass(),"新增的人员ssid____"+userssid);
            }
+        }else{
+          //修改用户信息
+            EntityWrapper updateuserinfoParam=new EntityWrapper();
+            updateuserinfoParam.eq("ssid",userssid);
+            Police_userinfo police_userinfo=gson.fromJson(gson.toJson(addUserInfo),UserInfo.class);
+            int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
+            LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
         }
 
+            //需要新增案件信息
+            if (StringUtils.isBlank(casessid)){
+                LogUtil.intoLog(this.getClass(),"需要新增案件信息____");
+                addPolice_case.setSsid(OpenUtil.getUUID_32());
+                addPolice_case.setCreatetime(new Date());
+                addPolice_case.setOrdernum(0);
+                addPolice_case.setUserssid(userssid);
+                int insertcase_bool =  police_caseMapper.insert(addPolice_case);
+                LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
+                if (insertcase_bool>0){
+                    casessid=addPolice_case.getSsid();
+                }
+            }else{
+                //修改案件信息
+                EntityWrapper updatecaseParam=new EntityWrapper();
+                updatecaseParam.eq("ssid",casessid);
+                int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
+                LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
+            }
 
-        //需要新增案件信息
-        if (null!=addcase_bool&&addcase_bool==1){
-            LogUtil.intoLog(this.getClass(),"需要新增案件信息____");
-            addPolice_case.setSsid(OpenUtil.getUUID_32());
-            addPolice_case.setCreatetime(new Date());
-            addPolice_case.setOrdernum(0);
-            addPolice_case.setUserssid(addUserInfo.getSsid());
-            int insertcase_bool =  police_caseMapper.insert(addPolice_case);
-           LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
-           if (insertcase_bool>0){
-               casessid=addPolice_case.getSsid();
-           }
-        }
 
         if (StringUtils.isBlank(userssid)||StringUtils.isBlank(casessid)){
             LogUtil.intoLog(this.getClass(),"userssid__"+userssid+"__casessid__"+casessid);
