@@ -784,8 +784,6 @@ function callbackgetgetRecordrealing(data) {
                 liveurl=fdCacheParam.livingUrl;
             }
         }
-
-
         if (isNotEmpty(list)) {
             layer.close(loadindex);
             for (var i = 0; i < list.length; i++) {
@@ -831,6 +829,74 @@ function callbackgetgetRecordrealing(data) {
     }
 }
 
+
+/**
+ * 视频地址切换 type 1主麦 type 2副麦
+ */
+
+function select_liveurl(obj,type){
+    $(obj).removeClass("layui-bg-gray");
+    $(obj).siblings().addClass("layui-bg-gray");
+    if (isNotEmpty(useretlist)){
+        for (var i = 0; i < useretlist.length; i++) {
+            var useret = useretlist[i];
+            var userssid1=useret.userssid;
+            for (var j = 0; j < recorduser.length; j++) {
+                var u = recorduser[j];
+                var userssid2=u.userssid;
+                if (userssid1==userssid2) {
+                    var grade=u.grade;
+                    if (type==grade){
+                        liveurl=useret.livingurl;
+                        console.log("liveurl_____"+liveurl+"______"+grade)
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    initplayer();
+}
+
+
+//阻止回车
+function qw_keydown(event) {
+    var e = event || window.event;
+    if (e && e.keyCode == 13) { //回车键的键值为13
+        event.preventDefault();
+    }
+}
+
+
+
+
+//自动上墙
+function setrecord_html() {
+    $("#recorddetail tr").attr("automaticbool","");
+    var trtd_html='<tr automaticbool="1">\
+        <td style="padding: 0;width: 90%;" class="onetd" >\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"   q_starttime="">'+datadata["q"]+'</label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                    </div>\
+                </td>\
+                </tr>';
+    $("#recorddetail").append(trtd_html);
+    $('#recorddetail tr:last label[name="w"]').focus();
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
+}
+
+
+
+//*******************************************************************图表区域start****************************************************************//
 /**
  * 监测数据
  */
@@ -879,7 +945,7 @@ function callbackgetPolygraphdata(data) {
                 $("#xthtml #xt3").html(' '+stress+' | ');
                 $("#xthtml #xt4").html(' '+bp+' | ');
                 $("#xthtml #xt5").html(' '+spo2+'  ');
-               $("#xthtml #xt6").html(' '+hr+' | ');
+                $("#xthtml #xt6").html(' '+hr+' | ');
                 $("#xthtml #xt7").html(' '+hrv+' | ');
                 $("#xthtml #xt8").html(' '+br+' | ');
 
@@ -938,6 +1004,65 @@ function callbackgetPolygraphdata(data) {
                         data: data1
                     }]
                 });
+
+                if (isNotEmpty(myMonitorall)){
+                    myMonitorall.setOption({
+                        xAxis: {
+                            data: date_hr
+                        },
+                        series: [{
+                            data: data_hr
+                        }]
+                    });
+                    myMonitorall2.setOption({
+                        xAxis: {
+                            data: date_hrv
+                        },
+                        series: [{
+                            data: data_hrv
+                        }]
+                    });
+                    myMonitorall3.setOption({
+                        xAxis: {
+                            data: date_br
+                        },
+                        series: [{
+                            data: data_br
+                        }]
+                    });
+                    myMonitorall4.setOption({
+                        xAxis: {
+                            data: date_relax
+                        },
+                        series: [{
+                            data: data_relax
+                        }]
+                    });
+                    myMonitorall5.setOption({
+                        xAxis: {
+                            data: date_stress
+                        },
+                        series: [{
+                            data: data_stress
+                        }]
+                    });
+                    myMonitorall6.setOption({
+                        xAxis: {
+                            data: date_bp
+                        },
+                        series: [{
+                            data: data_bp
+                        }]
+                    });
+                    myMonitorall7.setOption({
+                        xAxis: {
+                            data: date_spo2
+                        },
+                        series: [{
+                            data: data_spo2
+                        }]
+                    });
+                }
             }
         }
     }else{
@@ -946,34 +1071,6 @@ function callbackgetPolygraphdata(data) {
 }
 
 
-
-/**
- * 视频地址切换 type 1主麦 type 2副麦
- */
-
-function select_liveurl(obj,type){
-    $(obj).removeClass("layui-bg-gray");
-    $(obj).siblings().addClass("layui-bg-gray");
-    if (isNotEmpty(useretlist)){
-        for (var i = 0; i < useretlist.length; i++) {
-            var useret = useretlist[i];
-            var userssid1=useret.userssid;
-            for (var j = 0; j < recorduser.length; j++) {
-                var u = recorduser[j];
-                var userssid2=u.userssid;
-                if (userssid1==userssid2) {
-                    var grade=u.grade;
-                    if (type==grade){
-                        liveurl=useret.livingurl;
-                        console.log("liveurl_____"+liveurl+"______"+grade)
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    initplayer();
-}
 
 /**
  * 身心监测按钮组
@@ -996,393 +1093,344 @@ function select_monitor(obj) {
     });
 }
 
-function qw_keydown(event) {
-    var e = event || window.event;
-    if (e && e.keyCode == 13) { //回车键的键值为13
-        event.preventDefault();
-    }
+
+//显示全部图表
+
+var option = {
+    tooltip: {
+        trigger: 'axis',
+        formatter: '{a}: {c}'
+    },
+    xAxis: {
+        type: 'category',
+        splitLine: {
+            show: false
+        },
+        show: false,
+    },
+    yAxis: {
+        type: 'value',
+        boundaryGap: [0, '100%'],
+        splitLine: {
+            show: false
+        },
+        show: true
+    },
+    grid: {
+        x:30,
+        y:45,
+        x2:30,
+        y2:10,
+    },
+    series: [{
+        type: 'line',
+        showSymbol: false,
+        hoverAnimation: false,
+        itemStyle : {
+            normal : {
+                color:'#00FF00',
+                lineStyle:{
+                    color:'#00FF00'
+                }
+            }
+        },
+    }]
+};
+var myMonitorall;
+var myMonitorall2;
+var myMonitorall3;
+var myMonitorall4;
+var myMonitorall5;
+var myMonitorall6;
+var myMonitorall7;
+function select_monitorall(obj) {
+    var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 10px;"><div class="layui-row" id="monitorall" >\
+                    <div class=" layadmin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; ">\
+                        <div carousel-item="">\
+                            <ul class="layui-row layui-col-space10 layui-this">\
+                                <li class="layui-col-xs6">\
+                                    <a class="layadmin-backlog-body">\
+                                    <p class="layuiadmin-big-font">生理状态</p>\
+                                    <p><cite id="xt1">正常</cite></p>\
+                                    </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                    <a class="layadmin-backlog-body">\
+                                    <h3>当前时间</h3>\
+                                    <p><cite id="dqtime">0000年00月00日 星期0 00 : 00 : 00</cite></p>\
+                                     </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                     <div id="monitorall1" style="height:120px;width:100%;"></div>\
+                                </li>\
+                                 <li class="layui-col-xs6">\
+                                    <a class="layadmin-backlog-body">\
+                                    <h3>心率</h3>\
+                                    <p><cite id="xt6">0</cite></p>\
+                                </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                <div id="monitorall2" style="height:120px;width:100%;"></div>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                    <a class="layadmin-backlog-body">\
+                                    <h3>心率变异</h3>\
+                                    <p><cite id="xt7">0</cite></p>\
+                                    </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                <div id="monitorall3" style="height:120px;width:100%;"></div>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                    <a lay-href="app/content/comment" class="layadmin-backlog-body">\
+                                    <h3>呼吸次数</h3>\
+                                    <p><cite id="xt8">0</cite></p>\
+                                    </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                <div id="monitorall4" style="height:120px;width:100%;"></div>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
+                                    <h3>放松值</h3>\
+                                    <p><cite id="xt2">0</cite></p>\
+                                    </a>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                <div id="monitorall5" style="height:120px;width:100%;"></div>\
+                                </li>\
+                                <li class="layui-col-xs6">\
+                                    <a lay-href="app/content/comment" class="layadmin-backlog-body">\
+                                    <h3>紧张值</h3>\
+                                    <p><cite id="xt3">0</cite></p>\
+                                    </a>\
+                                </li>\
+                            <li class="layui-col-xs6">\
+                            <div id="monitorall6" style="height:120px;width:100%;"></div>\
+                            </li>\
+                                <li class="layui-col-xs6">\
+                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
+                                    <h3>血压变化</h3>\
+                                    <p><cite id="xt4">0</cite></p>\
+                                    </a>\
+                                </li>\
+                            <li class="layui-col-xs6">\
+                            <div id="monitorall7" style="height:120px;width:100%;"></div>\
+                            </li>\
+                                <li class="layui-col-xs6">\
+                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
+                                    <h3>血氧</h3>\
+                                    <p><cite id="xt5">0</cite></p>\
+                                    </a>\
+                                </li>\
+                        </ul>\
+                    </div>\
+                </div>\
+        </div></form>';
+    layer.open({
+         type: 1
+        ,skin: 'layui-layer-molv' //样式类名
+        ,title: "身心检测"
+        ,area: ['40%','98%']
+        ,shade: 0
+        ,id: 'layer_monitorall' //设定一个id，防止重复弹出
+        ,offset: 'l'
+        ,resize: true
+        ,content: html
+    });
+
+    monitorall1(option);
+    myMonitorall.setOption({
+        title: {
+            text: "心率",
+        },
+        xAxis: {
+            data: date_br
+        },
+        series: [{
+            name:"心率",
+            data: data_br
+        }]
+    });
+    monitorall2(option);
+    myMonitorall2.setOption({
+        title: {
+            text: "心率变异",
+        },
+        xAxis: {
+            data: date_hrv
+        },
+        series: [{
+            name:"心率变异",
+            data: data_hrv
+        }]
+    });
+    monitorall3(option);
+    myMonitorall3.setOption({
+        title: {
+            text: "呼吸次数",
+        },
+        xAxis: {
+            data: date_br
+        },
+        series: [{
+            name:"呼吸次数",
+            data: data_br
+        }]
+    });
+    monitorall4(option);
+    myMonitorall4.setOption({
+        title: {
+            text: "放松值",
+        },
+        xAxis: {
+            data: date_relax
+        },
+        series: [{
+            name:"放松值",
+            data: data_relax
+        }]
+    });
+    monitorall5(option);
+    myMonitorall5.setOption({
+        title: {
+            text: "紧张值",
+        },
+        xAxis: {
+            data: date_stress
+        },
+        series: [{
+            name:"紧张值",
+            data: data_stress
+        }]
+    });
+    monitorall6(option);
+    myMonitorall6.setOption({
+        title: {
+            text: "血压变化",
+        },
+        xAxis: {
+            data: date_bp
+        },
+        series: [{
+            name:"血压变化",
+            data: data_bp
+        }]
+    });
+    monitorall7(option);
+    myMonitorall7.setOption({
+        title: {
+            text: "血氧",
+        },
+        xAxis: {
+            data: date_spo2
+        },
+        series: [{
+            name:"血氧",
+            data: data_spo2
+        }]
+    });
 }
 
 
-var datadata={};
-
-var laststarttime_qq=-1;
-var laststarttime_ww=-1;
-var last_type=-1;//1问题 2是答案
-var qq="";
-var ww="";
-var www="";
-$(function () {
-    //回车加trtd
-    var trtd_html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  w_starttime=""placeholder=""></label></div>\
-                </td>\
-                <td style="float: right;">\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                    </div>\
-                </td>\
-                </tr>';
-    document.onkeydown = function (event) {
-        var e = event || window.event;
-        if (e && e.keyCode == 13) { //回车键的键值为13
-            if (null!=td_lastindex["key"]){
-                $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
-                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
-            } else{
-                $("#recorddetail").append(trtd_html);
-                $('#recorddetail tr:last label[name="w"]').focus();
-            }
-            $("#recorddetail label").focus(function(){
-                td_lastindex["key"]=$(this).closest("tr").index();
-                td_lastindex["value"]=$(this).attr("name");
-            });
-            event.preventDefault();
-        }
-    };
-
-
-
-    $("#dl_dd dd").click(function () {
-        var text=$(this).attr('lay-value');
-        //文本
-        $("#recorddetail label").each(function(){
-                var lastindex=$(this).closest("tr").index();
-                var value=$(this).attr("name");
-                if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-                    $(this).append(text);
-                }
-        });
-        btn(this);
-    })
-
-/*    var defaults = {}
-        , one_second = 1000
-        , one_minute = one_second * 60
-        , one_hour = one_minute * 60
-        , one_day = one_hour * 24
-        , startDate = new Date()
-        , face = document.getElementById('jishi');
-
-    var requestAnimationFrame = (function() {
-        return window.requestAnimationFrame       ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame    ||
-            window.oRequestAnimationFrame      ||
-            window.msRequestAnimationFrame     ||
-            function( callback ){
-                window.setTimeout(callback, 1000 / 60);
-            };
-    }());
-
-    tick();
-    function tick() {
-
-        var now = new Date()
-            , elapsed = now - startDate
-            , parts = [];
-
-        parts[0] = '' + Math.floor( elapsed / one_hour );
-        parts[1] = '' + Math.floor( (elapsed % one_hour) / one_minute );
-        parts[2] = '' + Math.floor( ( (elapsed % one_hour) % one_minute ) / one_second );
-
-        parts[0] = (parts[0].length == 1) ? '0' + parts[0] : parts[0];
-        parts[1] = (parts[1].length == 1) ? '0' + parts[1] : parts[1];
-        parts[2] = (parts[2].length == 1) ? '0' + parts[2] : parts[2];
-
-        face.innerText = parts.join(':');
-
-        requestAnimationFrame(tick);
-
-    }*/
-    nowdate();
-    function nowdate() {
-        var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
-        var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-        var newDate = new Date();
-        newDate.setDate(newDate.getDate());
-        $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
-
-        setInterval( function() {
-            var seconds = new Date().getSeconds();
-            $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
-
-            var minutes = new Date().getMinutes();
-            $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
-
-            var hours = new Date().getHours();
-            $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
-        },1000);
-    }
-
-
-    // 建立连接
-    if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
-
-        socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
-        socket.on('connect', function (data) {
-            console.log("连接成功__");
-        });
-        socket.on('disconnect', function (data) {
-            console.log("断开连接__");
-        });
-
-
-
-        socket.on('getback', function (data) {
-            var mtssiddata=data.mtssid;
-            if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
-                if (isNotEmpty(recorduser)){
-                    for (var i = 0; i < recorduser.length; i++) {
-                        var user = recorduser[i];
-                        var userssid=user.userssid;
-                        if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"...":data.txt;//翻译文本
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var recordrealshtml="";
-
-
-                            //实时会议数据
-                            if (usertype==1){
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                            }else if (usertype==2){
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                            }
-
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
-                            }
-                            $("#recordreals").append(recordrealshtml);
-                            var div = document.getElementById('recordreals');
-                            div.scrollTop = div.scrollHeight;
-
-
-
-                            //检测自动上墙是否开启
-                            var record_switch_bool=$("#record_switch_bool").attr("isn");
-                            if (record_switch_bool==1){
-                                if (last_type==-1){
-                                    if (usertype==1){
-                                        qq+=translatext;
-                                        last_type=usertype;
-                                        laststarttime_qq=starttime;
-                                        datadata["q"]=qq;
-                                        datadata["w"]=ww;
-                                        setrecord_html();
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                    }
-                                }else  if (last_type==1){//最后是问
-                                    last_type=usertype;
-                                    if (usertype==1){//最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_qq==starttime||laststarttime_qq==-1){
-                                            qq="";//清空q
-                                            qq+=translatext;
-                                            laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                        }else{
-
-                                            //2.初始化问答
-                                            laststarttime_qq=-1;
-                                            laststarttime_ww=-1;
-                                            last_type=-1;//1问题 2是答案
-                                            qq="";
-                                            ww="";
-                                            www="";
-                                            qq+=translatext;
-                                            last_type=usertype;
-                                            laststarttime_qq=starttime;
-                                            datadata["q"]=qq;
-                                            datadata["w"]=ww;
-                                            setrecord_html();
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                        }
-                                    }else if (usertype==2){//最后是问，本次是答，开始拼接答案
-                                        ww+=translatext;
-                                        laststarttime_ww=starttime;
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
-                                    }
-                                }else  if (last_type==2){//最后是答
-                                    last_type=usertype;
-                                    if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_ww==starttime||laststarttime_ww==-1){
-                                            ww="";
-                                            ww+=translatext;
-                                            laststarttime_ww=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
-                                         }else{
-                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text();
-                                            www=labletext;
-                                            ww=www+translatext;
-                                            laststarttime_ww=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
-                                         }
-
-                                    }else if (usertype==1){//最后是答，本次为问
-
-                                        //2.初始化问答
-                                        laststarttime_qq=-1;
-                                        laststarttime_ww=-1;
-                                        last_type=-1;//1问题 2是答案
-                                        qq="";
-                                        ww="";
-                                        www="";
-                                        qq+=translatext;
-                                        last_type=usertype;
-                                        laststarttime_qq=starttime;
-                                        datadata["q"]=qq;
-                                        datadata["w"]=ww;
-                                        setrecord_html();
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                    }
-                                }
-                            }
-                        }
+function monitorall1(option){
+     myMonitorall = echarts.init(document.getElementById('monitorall1'),'dark');
+    $(window).resize(function() {
+        myMonitorall.resize();
+    });
+   /* var option = {
+        title: {
+            text: '心率',
+        },
+        tooltip: {
+            trigger: 'axis',
+            formatter: '{a}: {c}'
+        },
+        xAxis: {
+            type: 'category',
+            splitLine: {
+                show: false
+            },
+            show: false,
+            data: date
+        },
+        yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+                show: false
+            },
+            show: true
+        },
+        grid: {
+            x:30,
+            y:45,
+            x2:30,
+            y2:10,
+        },
+        series: [{
+            name: '心率',
+            type: 'line',
+            showSymbol: false,
+            hoverAnimation: false,
+            itemStyle : {
+                normal : {
+                    color:'#00FF00',
+                    lineStyle:{
+                        color:'#00FF00'
                     }
                 }
-            }
-        });
-    }else{
-        console.log("socket连接失败")
-    }
-
-
-    $(window).on('pagehide', function(event) {
-        addRecord(null);
+            },
+            data: data
+        }]
+    };*/
+    myMonitorall.setOption(option);
+}
+function monitorall2(option){
+     myMonitorall2 = echarts.init(document.getElementById('monitorall2'),'dark');
+    $(window).resize(function() {
+        myMonitorall2.resize();
     });
-
-    window.setInterval(function (args) {
-        if (isNotEmpty(mtssid)) {
-            getPolygraphdata();
-        }
-    },1000);
-
-
-    $("#record_switch_bool").click(function () {
-        var isn=$(this).attr("isn");
-        var obj=this;
-        var con;
-        if (isn==-1) {
-            con="确定要开启自动甄别吗";
-        }else{
-            con="确定要关闭自动甄别吗";
-        }
-        layer.open({
-            content:con
-            ,btn: ['确定', '取消']
-            ,yes: function(index, layero){
-                if (isn==-1){
-                    $(obj).attr("isn",1);
-                    $(obj).addClass("layui-form-onswitch");
-                    $(obj).find("em").html("开启");
-                    layer.msg("自动甄别已开启");
-                } else {
-                    $(obj).attr("isn",-1);
-                    $(obj).removeClass("layui-form-onswitch");
-                    $(obj).find("em").html("关闭");
-                    layer.msg("自动甄别已关闭");
-                }
-                layer.close(index);
-            }
-            ,btn2: function(index, layero){
-                layer.close(index);
-            }
-            ,cancel: function(){
-            }
-        });
-
+    myMonitorall2.setOption(option);
+}
+function monitorall3(option){
+    myMonitorall3 = echarts.init(document.getElementById('monitorall3'),'dark');
+    $(window).resize(function() {
+        myMonitorall3.resize();
     });
-
-
-    layui.use(['layer','form'], function(){
-        var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
-            ,form = layui.form;
-
-            /*  form.on('switch(automatic_record)', function(switchdata){
-            var obj=switchdata.elem.checked;
-
-            var con;
-            var switch_bool;
-            if (obj) {
-                con="确定要开启自动甄别吗";
-                switch_bool=1;
-            }else{
-                con="确定要关闭自动甄别吗";
-                switch_bool=-1;
-            }
-            layer.open({
-                content:con
-                ,btn: ['确定', '取消']
-                ,yes: function(index, layero){
-                    switchdata.elem.checked=obj;
-                    form.render();
-                    if (switch_bool==1) {
-                        layer.msg("自动甄别已开启")
-                    }else{
-                        layer.msg("自动甄别已关闭")
-                    }
-                    layer.close(index);
-                }
-                ,btn2: function(index, layero){
-                    switchdata.elem.checked=!obj;
-
-                    form.render();
-                    layer.close(index);
-                }
-                ,cancel: function(){
-                    //右上角关闭回调
-                    switchdata.elem.checked=!obj;
-                    form.render();
-                }
-            });
-        });*/
+    myMonitorall3.setOption(option);
+}
+function monitorall4(option){
+    myMonitorall4 = echarts.init(document.getElementById('monitorall4'),'dark');
+    $(window).resize(function() {
+        myMonitorall4.resize();
     });
-
-});
-
-//自动上墙
-function setrecord_html() {
-    $("#recorddetail tr").attr("automaticbool","");
-    var trtd_html='<tr automaticbool="1">\
-        <td style="padding: 0;width: 90%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"   q_starttime="">'+datadata["q"]+'</label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
-                </td>\
-                <td style="float: right;">\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                    </div>\
-                </td>\
-                </tr>';
-    $("#recorddetail").append(trtd_html);
-    $('#recorddetail tr:last label[name="w"]').focus();
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
+    myMonitorall4.setOption(option);
+}
+function monitorall5(option){
+    myMonitorall5 = echarts.init(document.getElementById('monitorall5'),'dark');
+    $(window).resize(function() {
+        myMonitorall5.resize();
     });
+    myMonitorall5.setOption(option);
+}
+function monitorall6(option){
+    myMonitorall6 = echarts.init(document.getElementById('monitorall6'),'dark');
+    $(window).resize(function() {
+        myMonitorall6.resize();
+    });
+    myMonitorall6.setOption(option);
+}
+function monitorall7(option){
+    myMonitorall7 = echarts.init(document.getElementById('monitorall7'),'dark');
+    $(window).resize(function() {
+        myMonitorall7.resize();
+    });
+    myMonitorall7.setOption(option);
 }
 
-/*******************************图表区域*************************/
+
+
 var myChart;
 var date1 = [];
 var data1 = [];
@@ -1501,12 +1549,6 @@ for (var i = 1; i < 50; i++) {
     addData_stress(false,0);
 }
 
-
-
-
-
-
-
 function main1() {
     $("#main1").css( 'width',$(".layui-tab-title").width() );
     $(window).resize(function() {
@@ -1561,8 +1603,10 @@ function main1() {
     };
     myChart.setOption(option);
 }
+//*******************************************************************图表区域end****************************************************************//
 
-
+//*******************************************************************点击start****************************************************************//
+//身心检测
 function initheart() {
     $("#initheart_click").removeClass("layui-show");
     $(".layui-tab-content").css("height","650px");
@@ -1598,16 +1642,17 @@ function initheart() {
     });
     initplayer();
 }
-
-
+//语音识别
 function initasr() {
     $("#initheart_click").addClass("layui-show");
     $(".layui-tab-content").css("height","450px");
 }
+//案件
 function initcase() {
     $("#initheart_click").addClass("layui-show");
     $(".layui-tab-content").css("height","450px");
 }
+//直播
 function initliving() {
     $("#initheart_click").addClass("layui-show");
     $(".layui-tab-content").css("height","450px");
@@ -1618,7 +1663,9 @@ function initliving() {
     }
     initplayer();
 }
+//*******************************************************************点击start****************************************************************//
 
+//重置模板
 function clearRecord() {
     $("#recorddetail").html("");
     var bool=$(obj).parents("tr").attr("automaticbool");
@@ -1633,9 +1680,12 @@ function clearRecord() {
     td_lastindex={};
 }
 
-//**********告知书***********//
+
+
+
+
+//*******************************************************************告知书start****************************************************************//
 //获取告知书列表
-var open_getNotifications_index;
 function open_getNotifications() {
     var html= '<table class="layui-table"  lay-skin="nob">\
         <colgroup>\
@@ -1645,7 +1695,7 @@ function open_getNotifications() {
         <tbody id="notificationList">\
         </tbody>\
         </table>';
-     open_getNotifications_index = layer.open({
+    var index = layer.open({
         type:1,
         title:'选择告知书',
         content:html,
@@ -1653,8 +1703,6 @@ function open_getNotifications() {
         shade:0,
         area: ['893px', '600px'],
     });
-
-
     var url=getActionURL(getactionid_manage().waitRecord_getNotifications);
     var data={
         token:INIT_CLIENTKEY,
@@ -1739,4 +1787,339 @@ function previewgetNotifications(htmlpath) {
          }
     });
 }
+//*******************************************************************告知书start****************************************************************//
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var datadata={};
+
+var laststarttime_qq=-1;
+var laststarttime_ww=-1;
+var last_type=-1;//1问题 2是答案
+var qq="";
+var ww="";
+var www="";
+$(function () {
+    //回车加trtd
+    var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" q_starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  w_starttime=""placeholder=""></label></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                    </div>\
+                </td>\
+                </tr>';
+    document.onkeydown = function (event) {
+        var e = event || window.event;
+        if (e && e.keyCode == 13) { //回车键的键值为13
+            if (null!=td_lastindex["key"]){
+                $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
+                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
+            } else{
+                $("#recorddetail").append(trtd_html);
+                $('#recorddetail tr:last label[name="w"]').focus();
+            }
+            $("#recorddetail label").focus(function(){
+                td_lastindex["key"]=$(this).closest("tr").index();
+                td_lastindex["value"]=$(this).attr("name");
+            });
+            event.preventDefault();
+        }
+    };
+
+
+
+    $("#dl_dd dd").click(function () {
+        var text=$(this).attr('lay-value');
+        //文本
+        $("#recorddetail label").each(function(){
+            var lastindex=$(this).closest("tr").index();
+            var value=$(this).attr("name");
+            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                $(this).append(text);
+            }
+        });
+        btn(this);
+    })
+
+    /*    var defaults = {}
+            , one_second = 1000
+            , one_minute = one_second * 60
+            , one_hour = one_minute * 60
+            , one_day = one_hour * 24
+            , startDate = new Date()
+            , face = document.getElementById('jishi');
+
+        var requestAnimationFrame = (function() {
+            return window.requestAnimationFrame       ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame    ||
+                window.oRequestAnimationFrame      ||
+                window.msRequestAnimationFrame     ||
+                function( callback ){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        }());
+
+        tick();
+        function tick() {
+
+            var now = new Date()
+                , elapsed = now - startDate
+                , parts = [];
+
+            parts[0] = '' + Math.floor( elapsed / one_hour );
+            parts[1] = '' + Math.floor( (elapsed % one_hour) / one_minute );
+            parts[2] = '' + Math.floor( ( (elapsed % one_hour) % one_minute ) / one_second );
+
+            parts[0] = (parts[0].length == 1) ? '0' + parts[0] : parts[0];
+            parts[1] = (parts[1].length == 1) ? '0' + parts[1] : parts[1];
+            parts[2] = (parts[2].length == 1) ? '0' + parts[2] : parts[2];
+
+            face.innerText = parts.join(':');
+
+            requestAnimationFrame(tick);
+
+        }*/
+    nowdate();
+    function nowdate() {
+        var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
+        var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+        var newDate = new Date();
+        newDate.setDate(newDate.getDate());
+        $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
+        setInterval( function() {
+            var seconds = new Date().getSeconds();
+            $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+            var minutes = new Date().getMinutes();
+            $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+            var hours = new Date().getHours();
+            $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+            $("#dqtime").html(($('#Date').html()+$("#hours").html()+"："+ $("#min").html()+"："+$("#sec").html()));
+        },1000);
+    }
+
+
+    // 建立连接
+    if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
+
+        socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
+        socket.on('connect', function (data) {
+            console.log("连接成功__");
+        });
+        socket.on('disconnect', function (data) {
+            console.log("断开连接__");
+        });
+
+
+
+        socket.on('getback', function (data) {
+            var mtssiddata=data.mtssid;
+            if (isNotEmpty(mtssiddata)&&isNotEmpty(mtssid)&&mtssiddata==mtssid) {
+                if (isNotEmpty(recorduser)){
+                    for (var i = 0; i < recorduser.length; i++) {
+                        var user = recorduser[i];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//1、询问人2被询问人
+                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var starttime=data.starttime;
+                            var asrstartime=data.asrstartime;
+                            var recordrealshtml="";
+
+
+                            //实时会议数据
+                            if (usertype==1){
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrstartime+' </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                            }else if (usertype==2){
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                            }
+
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
+                            }
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals');
+                            div.scrollTop = div.scrollHeight;
+
+
+
+                            //检测自动上墙是否开启
+                            var record_switch_bool=$("#record_switch_bool").attr("isn");
+                            if (record_switch_bool==1){
+                                if (last_type==-1){
+                                    if (usertype==1){
+                                        qq+=translatext;
+                                        last_type=usertype;
+                                        laststarttime_qq=starttime;
+                                        datadata["q"]=qq;
+                                        datadata["w"]=ww;
+                                        setrecord_html();
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+                                    }
+                                }else  if (last_type==1){//最后是问
+                                    last_type=usertype;
+                                    if (usertype==1){//最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
+                                        if (laststarttime_qq==starttime||laststarttime_qq==-1){
+                                            qq="";//清空q
+                                            qq+=translatext;
+                                            laststarttime_qq=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+                                        }else{
+
+                                            //2.初始化问答
+                                            laststarttime_qq=-1;
+                                            laststarttime_ww=-1;
+                                            last_type=-1;//1问题 2是答案
+                                            qq="";
+                                            ww="";
+                                            www="";
+                                            qq+=translatext;
+                                            last_type=usertype;
+                                            laststarttime_qq=starttime;
+                                            datadata["q"]=qq;
+                                            datadata["w"]=ww;
+                                            setrecord_html();
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+                                        }
+                                    }else if (usertype==2){//最后是问，本次是答，开始拼接答案
+                                        ww+=translatext;
+                                        laststarttime_ww=starttime;
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
+                                    }
+                                }else  if (last_type==2){//最后是答
+                                    last_type=usertype;
+                                    if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
+                                        if (laststarttime_ww==starttime||laststarttime_ww==-1){
+                                            ww="";
+                                            ww+=translatext;
+                                            laststarttime_ww=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
+                                        }else{
+                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text();
+                                            www=labletext;
+                                            ww=www+translatext;
+                                            laststarttime_ww=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                        }
+
+                                    }else if (usertype==1){//最后是答，本次为问
+
+                                        //2.初始化问答
+                                        laststarttime_qq=-1;
+                                        laststarttime_ww=-1;
+                                        last_type=-1;//1问题 2是答案
+                                        qq="";
+                                        ww="";
+                                        www="";
+                                        qq+=translatext;
+                                        last_type=usertype;
+                                        laststarttime_qq=starttime;
+                                        datadata["q"]=qq;
+                                        datadata["w"]=ww;
+                                        setrecord_html();
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }else{
+        console.log("socket连接失败")
+    }
+
+
+    $(window).on('pagehide', function(event) {
+        addRecord(null);
+    });
+
+    window.setInterval(function (args) {
+        if (isNotEmpty(mtssid)) {
+            getPolygraphdata();
+        }
+    },1000);
+
+
+    $("#record_switch_bool").click(function () {
+        var isn=$(this).attr("isn");
+        var obj=this;
+        var con;
+        if (isn==-1) {
+            con="确定要开启自动甄别吗";
+        }else{
+            con="确定要关闭自动甄别吗";
+        }
+        layer.open({
+            content:con
+            ,btn: ['确定', '取消']
+            ,yes: function(index, layero){
+                if (isn==-1){
+                    $(obj).attr("isn",1);
+                    $(obj).addClass("layui-form-onswitch");
+                    $(obj).find("em").html("开启");
+                    layer.msg("自动甄别已开启");
+                } else {
+                    $(obj).attr("isn",-1);
+                    $(obj).removeClass("layui-form-onswitch");
+                    $(obj).find("em").html("关闭");
+                    layer.msg("自动甄别已关闭");
+                }
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+                layer.close(index);
+            }
+            ,cancel: function(){
+            }
+        });
+    });
+});
