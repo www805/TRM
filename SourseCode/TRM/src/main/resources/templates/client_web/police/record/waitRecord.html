@@ -283,7 +283,7 @@
                                         <span class="layui-badge layui-bg-gray" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
                                         <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
                                     </div>
-                                    <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
+                                    <!--<span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>-->
                                 </div>
 
                                 <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
@@ -536,7 +536,7 @@
                                 </tbody>\
                         </table>';
 
-        layer.open({
+       /* var index = layer.open({
             type:1,
             title: '笔录状态栏',
             closeBtn: 0,
@@ -547,7 +547,10 @@
             maxmin: true,
             resize:false,
             content: html,
-        });
+            success: function(layero,index){
+                layer.min(index);
+            }
+        });*/
 
     });
 

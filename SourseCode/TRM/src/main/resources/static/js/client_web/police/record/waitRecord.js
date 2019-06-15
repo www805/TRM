@@ -191,6 +191,8 @@ function img_bool(obj,type){
             icon: 16,
             time:1000
         });
+        $("#record_img img").css("display","none");
+        $("#startrecord").css("display","block");
         startMC(startMC_index);
     }else if (type==2) {
        //暂停录音
@@ -528,6 +530,9 @@ function callbackstartMC(data) {
         if (null!=data.data&&data.data==-1){
             $("#record_img img").css("display","none");
             $("#endrecord").css("display","block");
+        }else {
+            $("#record_img img").css("display","none");
+            $("#pauserecord").css("display","block");
         }
         layer.msg(data.message);
     }
