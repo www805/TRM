@@ -779,7 +779,6 @@ function getUserinfoList() {
     };
     ajaxSubmitByJson(url,data,callbackgetUserinfoList);
 }
-
 function callbackgetUserinfoList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -820,6 +819,7 @@ function select_cardnumblur() {
     getUserByCard();
 }
 
+//案件
 function getCaseList() {
     $("#casename_ssid").html("");
     var caselike=[];
@@ -953,6 +953,70 @@ function select_caseblur() {
             form.render('select');
         });
     }
+}
+
+//案由
+function getCauseList() {
+    $("#cause_text").html("");
+    var causelike=[];
+    var cause = $("#cause").val();
+    var causeList=["人格权纠纷","婚姻家庭纠纷","继承纠纷","不动产登记纠纷","物权保护纠纷","所有权纠纷","用益物权纠纷","担保物权纠纷","占有保护纠纷","合同纠纷","不当得利纠纷","无因管理纠纷","知识产权合同纠纷","知识产权权属、侵权纠纷","不正当竞争纠纷","垄断纠纷","劳动争议","人事争议","海事海商纠纷","与企业有关的纠纷","与公司有关的纠纷","合伙企业纠纷","与破产有关的纠纷","证券纠纷"];
+        if (isNotEmpty(causeList)){
+            for (var i = 0; i < causeList.length; i++) {
+                var c = causeList[i];
+                if (c.indexOf(cause) >= 0) {
+                    causelike.push(c);
+                }
+            }
+            if (isNotEmpty(causelike)){
+                for (var j = 0; j < causelike.length; j++) {
+                    var cl=causelike[j];
+                    $("#cause_text").append("<dd lay-value='"+cl+"' onmousedown='select_cause(this);'>"+cl+"</dd>");
+                }
+            }
+            $("#cause_text").css("display","block");
+        }
+}
+function select_cause(obj) {
+    $("#cause_text").css("display","none");
+    var cause=$(obj).attr("lay-value");
+    $("#cause").val(cause);
+    $("#cause_text").html("");
+}
+function select_causeblur() {
+    $("#cause_text").css("display","none");
+}
+
+//到案方式
+function getCasewayList() {
+    $("#caseway_text").html("");
+    var casewaylike=[];
+    var caseway = $("#caseway").val();
+    var casewayList=["自首","口头传唤","强制传唤","传唤证传唤","拘传","群众扭送","移送","110指令","来所报案","日常工作中发现"];
+    if (isNotEmpty(casewayList)){
+        for (var i = 0; i < casewayList.length; i++) {
+            var c = casewayList[i];
+            if (c.indexOf(caseway) >= 0) {
+                casewaylike.push(c);
+            }
+        }
+        if (isNotEmpty(casewaylike)){
+            for (var j = 0; j < casewaylike.length; j++) {
+                var cl=casewaylike[j];
+                $("#caseway_text").append("<dd lay-value='"+cl+"' onmousedown='select_caseway(this);'>"+cl+"</dd>");
+            }
+        }
+        $("#caseway_text").css("display","block");
+    }
+}
+function select_caseway(obj) {
+    $("#caseway_text").css("display","none");
+    var caseway=$(obj).attr("lay-value");
+    $("#caseway").val(caseway);
+    $("#caseway_text").html("");
+}
+function select_casewayblur() {
+    $("#caseway_text").css("display","none");
 }
 
 //检验主身份证号码
