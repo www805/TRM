@@ -375,7 +375,15 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label">当前案由</label>
                             <div class="layui-input-block">
-                                <input type="text" name="cause" id="cause" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                <!--<input type="text" name="cause" id="cause" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">-->
+                               <div class="layui-form-select">
+                                    <div class="layui-select-title">
+                                        <input type="text" name="cause" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="cause" oninput="getCauseList()"  onblur="select_causeblur();" onfocus="getCauseList()">
+                                    </div>
+                                    <dl class="layui-anim layui-anim-upbit"  id="cause_text"   >
+
+                                    </dl>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-col-lg12">
@@ -400,7 +408,15 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label">到案方式</label>
                             <div class="layui-input-block">
-                                <input type="text" name="caseway" id="caseway" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                              <!--  <input type="text" name="caseway" id="caseway" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">-->
+                                <div class="layui-form-select">
+                                    <div class="layui-select-title">
+                                        <input type="text" name="caseway" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id="caseway" oninput="getCasewayList()"  onblur="select_casewayblur();" onfocus="getCasewayList()">
+                                    </div>
+                                    <dl class="layui-anim layui-anim-upbit"  id="caseway_text"   >
+
+                                    </dl>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">
