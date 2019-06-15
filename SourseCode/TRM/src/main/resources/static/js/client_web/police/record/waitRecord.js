@@ -674,6 +674,7 @@ function exportWord(obj){
     ajaxSubmitByJson(url, paramdata, function (data) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
+            alert(data);
             if (isNotEmpty(data)){
                 window.location.href = data;
               /*  layer.open({

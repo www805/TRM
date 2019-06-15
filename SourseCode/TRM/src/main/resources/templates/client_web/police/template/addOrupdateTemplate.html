@@ -120,7 +120,7 @@
 
             <label class="layui-form-label" style="width: auto;">问题类型</label>
             <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-                <select name="templatetypeid" lay-verify="" id="problemType">
+                <select name="templatetypeid" lay-verify="" id="problemType" lay-filter="pid">
                     <option value="">全部</option>
                 </select>
             </div>
@@ -179,7 +179,7 @@
             </div>
             <div>
                 <i class="layui-icon layui-icon-edit" style="margin-left:20px; font-size: 28px; line-height:30px; color: #1E9FFF;"></i>
-                <span id="editState">编辑修改中....</span>
+                <span id="editState">模板编辑中....</span>
             </div>
 
 
@@ -287,6 +287,21 @@
                 addTr("","","");//新增一条空白的问答
             }
         };
+    });
+
+    layui.use(['element', 'upload', "layer", "form"], function () {
+        var element = layui.element;
+        var upload = layui.upload;
+        var form = layui.form;
+        var layer = layui.layer;
+
+        form.on('select(pid)', function (data) {
+            var text = $("#keyword").val();
+            if(text.replace(/\s*/g,"") == ""){
+            }
+            getProblems_init(1,10);
+        });
+
     });
 
     function upp(obj) {

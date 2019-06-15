@@ -86,9 +86,26 @@ function calldownloadNotification(data){
         var filesave=data.data;
         if (isNotEmpty(filesave)){
             layer.msg("下载中，请稍后...");
-            var host = "http://" + window.location.host;
-            host = host.replace(":8080","");
-            window.location.href = host + filesave.recorddownurl;
+            // window.location.href = filesave.recorddownurl;
+
+            var url = filesave.recorddownurl;
+
+            // alert(url);
+
+            var a = document.createElement('a');          // 创建一个a节点插入的document
+            var event = new MouseEvent('click');           // 模拟鼠标click点击事件
+            a.download = filesave.uploadfilename;                  // 设置a节点的download属性值
+            a.href = url;                                 // 将图片的src赋值给a节点的href
+            a.dispatchEvent(event);
+
+            // DownLoadReportIMG(url);
+
+            // window.location.href=url.replace("image/png", "image/octet-stream");
+
+            // var host = "http://" + window.location.host;
+            // host = host.replace(":8080","");
+            // window.location.href = host + filesave.recorddownurl;
+            // oDownLoad(host + filesave.recorddownurl);
             // setTimeout("window.location.reload()",1500);
         }
     }else{
@@ -195,3 +212,20 @@ function opneModal_1(problem) {
     });
 }
 
+function DownLoadReportIMG(imgPathURL) {
+    //如果隐藏IFRAME不存在，则添加
+    if (!document.getElementById("IframeReportImg"))
+        $('<iframe style="display:none;" id="IframeReportImg" name="IframeReportImg" onload="DoSaveAsIMG();" width="0" height="0" src="about:blank"></iframe>').appendTo("body");
+    if (document.all.IframeReportImg.src != imgPathURL) {
+        //加载图片
+        document.all.IframeReportImg.src = imgPathURL;
+    }
+    else {
+        //图片直接另存为
+        DoSaveAsIMG();
+    }
+}
+function DoSaveAsIMG() {
+    if (document.all.IframeReportImg.src != "about:blank")
+        window.frames["IframeReportImg"].document.execCommand("SaveAs");
+}

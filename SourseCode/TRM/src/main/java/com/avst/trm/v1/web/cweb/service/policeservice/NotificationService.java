@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Notification;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_notificationMapper;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -40,6 +41,9 @@ public class NotificationService extends BaseService {
 
     @Value("${file.notification}")
     private String filePath;
+
+    @Value("${upload.basepath}")
+    private String uploadbasepath;
 
     /**
      * 获取告知书列表
@@ -100,8 +104,8 @@ public class NotificationService extends BaseService {
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         imageName += suffix;
 
-        if(!".doc".equals(suffix) && !".docx".equals(suffix) && !".pdf".equals(suffix)){
-            rResult.setMessage("上传失败，只能上传doc/docx/pdf文件");
+        if(!".doc".equalsIgnoreCase(suffix) && !".docx".equalsIgnoreCase(suffix) && !".pdf".equalsIgnoreCase(suffix) && !".png".equalsIgnoreCase(suffix) && !".jpg".equalsIgnoreCase(suffix) && !".jpeg".equalsIgnoreCase(suffix) && !".gif".equalsIgnoreCase(suffix) && !".bmp".equalsIgnoreCase(suffix)){
+            rResult.setMessage("上传失败，只能上传doc/docx/pdf/png/jpg/jpeg/gif/bmp文件");
             return;
         }
 
@@ -115,6 +119,14 @@ public class NotificationService extends BaseService {
             //解析下载地址
             String uploadpath=OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),realpath);
             rResult.setData(uploadpath);
+
+            if(!".doc".equalsIgnoreCase(realpath) || !".docx".equalsIgnoreCase(realpath)){
+                String replace = realpath.replace(".docx", ".html");
+                replace = replace.replace(".doc", ".html");
+
+                WordToHtmlUtil.wordToHtml(realpath, replace);
+            }
+
 
             Police_notification notification = new Police_notification();
             notification.setNotificationname(fileName);
@@ -159,6 +171,7 @@ public class NotificationService extends BaseService {
         Base_filesave filesave = new Base_filesave();
         filesave.setDatassid(getNotificationParam.getSsid());
         filesave = filesaveMapper.selectOne(filesave);
+        filesave.setRecorddownurl(uploadbasepath + filesave.getRecorddownurl());
 
         result.setData(filesave);
         changeResultToSuccess(result);

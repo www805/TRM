@@ -10,7 +10,7 @@
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
     <div th:replace="header :: header">...</div>
     <div class="layui-elem-quote" style=" padding: 10px;">
-        <h3 th:text="${notificationListModel.title}">新增 / 修改模板</h3>
+        <h3 th:text="${notificationListModel.title}">新增 / 修改告知书</h3>
     </div>
 
     <form class="layui-form" >
@@ -91,20 +91,21 @@
         var uploadInst = upload.render({
             elem: '#uploadFile' //绑定元素
             ,url: url //上传接口
-            ,accept: 'file' //只允许上传图片文件
-            // ,exts: 'doc|docx|xls|xlsx' //只允许上传压缩文件
+            // ,accept: 'file' //只允许上传图片文件
+            , acceptMime: 'image/png, image/jpg,image/jpeg, .doc, .docx, .pdf, .gif, .bmp' //只允许上传图片文件
+            ,exts: 'doc|docx|gif|bmp|png|jpg|jpeg|pdf' //只允许上传压缩文件
             ,before: function(obj){
                 //预读本地文件示例，不支持ie8
-                obj.preview(function(index, file, result){
-                    // console.log(file);
-
-                    var filevalue = file.name;
-                    var fileType = getFileType(filevalue)
-                    if(fileType !== 'doc' && fileType !== 'docx' && fileType !== 'pdf'){
-                        layer.msg("请选择doc/docx/pdf类型的文件上传！",{icon: 2});
-                    }
-                });
-                return false;
+                // obj.preview(function(index, file, result){
+                //     // console.log(file);
+                //
+                //     var filevalue = file.name;
+                //     var fileType = getFileType(filevalue)
+                //     if(fileType !== 'doc' && fileType !== 'docx' && fileType !== 'pdf'){
+                //         layer.msg("请选择doc/docx/pdf类型的文件上传！",{icon: 2});
+                //     }
+                // });
+                // return false;
             }
             ,done: function(res){
                 //上传完毕回调doc|docx|
@@ -124,6 +125,7 @@
         layer.closeAll();
 
     });
+
     function getFileType(filePath){
         var startIndex = filePath.lastIndexOf(".");
         if(startIndex != -1)

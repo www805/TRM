@@ -121,7 +121,7 @@
 
                 <label class="layui-form-label" style="width: auto;">模板类型</label>
                 <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-                    <select name="templatetypeid" lay-verify="" id="templateTypes">
+                    <select name="templatetypeid" lay-verify="" id="templateTypes" lay-filter="pid">
                     </select>
                 </div>
 
@@ -162,10 +162,12 @@
         </div>
 
         <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
-            <b style="padding-right: 20px; color: #113c11;" id="templateTitle">抢劫笔录第一版</b>
+            <b style="padding-right: 20px; color: #113c11;" id="templateTitle">暂无模板</b>
             <b style="margin-right: 10px;color: #3023d2;" id="leixing"></b>
-            <i class="layui-icon layui-icon-edit" style="font-size: 28px; color: #1E9FFF;"></i>
-            <span>查看中....</span>
+            <span id="zhuangtai" style="display:none;">
+                <i class="layui-icon layui-icon-list" style="font-size: 28px; color: #1E9FFF;"></i>
+                <span>查看中....</span>
+            </span>
         </div>
 
         <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 666px; min-height:666px;" >
@@ -186,7 +188,7 @@
         <tbody id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
-            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}<span class="layui-badge layui-bg-green" style="float: right;">{{value.typename}}模板</span></td>
+            <td onclick="getTemplateById({{index}});">{{value.title==null?"":value.title}}<span class="layui-badge layui-bg-green" style="float: right;">{{value.typename==null?"未知":value.typename}}模板</span></td>
         </tr>
         {{#  }); }}
         </tbody>
@@ -211,43 +213,60 @@
         setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
         getTmplateTypess();
         getTmplateTypesParams();
+
+        document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) { //回车键的键值为13
+                event.preventDefault();
+                getTmplates_init(1,10);
+            }
+        };
     });
 
-    layui.use(['element','upload'], function(){
+    layui.use(['element', 'upload', "layer", "form"], function () {
         var element = layui.element;
         var upload = layui.upload;
+        var form = layui.form;
+        var layer = layui.layer;
 
-        var url=getActionURL(getactionid_manage().templateIndex_uploadFile);
+        form.on('select(pid)', function (data) {
+            var text = $("#keyword").val();
+            if(text.replace(/\s*/g,"") == ""){
+            }
+            getTmplates_init(1,10);
+        });
+
+        var url = getActionURL(getactionid_manage().templateIndex_uploadFile);
 
         //执行实例
         var uploadInst = upload.render({
             elem: '#uploadFile' //绑定元素
-            ,url: url //上传接口
-            ,accept: 'file' //只允许上传图片文件
+            , url: url //上传接口
+            , accept: 'file' //只允许上传图片文件
             // ,exts: 'doc|docx|xls|xlsx' //只允许上传压缩文件
-            ,before: function(obj){
+            , before: function (obj) {
                 //预读本地文件示例，不支持ie8
-                obj.preview(function(index, file, result){
+                obj.preview(function (index, file, result) {
                     // console.log(file);
 
                     var filevalue = file.name;
                     var fileType = getFileType(filevalue)
-                    if(fileType !== 'xls'){
-                        layer.msg("请选择xls类型的文件导入！",{icon: 2});
+                    if (fileType !== 'xls') {
+                        layer.msg("请选择xls类型的文件导入！", {icon: 2});
                     }
                 });
                 return false;
             }
-            ,done: function(res){
+            , done: function (res) {
                 //上传完毕回调doc|docx|
                 console.log(res);
 
-                if("SUCCESS" == res.actioncode){
-                    layer.msg(res.message,{icon: 1});
-                    setTimeout("window.location.reload()",1600);
+                if ("SUCCESS" == res.actioncode) {
+                    layer.msg(res.message, {icon: 1});
+                    setTimeout("window.location.reload()", 1600);
                 }
             }
-            ,error: function(res){
+            , error: function (res) {
                 //请求异常回调
                 console.log("请求异常回调");
                 // layer.msg(res.message,{icon: 2});

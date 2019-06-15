@@ -70,6 +70,9 @@ public class TemplateService extends BaseService {
     @Value("${file.template}")
     private String filePath;
 
+    @Value("${upload.basepath}")
+    private String uploadbasepath;
+
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
 
@@ -87,8 +90,8 @@ public class TemplateService extends BaseService {
         }
         if (null != getTemplatesParam.getTemplatetypeid()) {
             if(getTemplatesParam.getTemplatetypeid() == -1){
-                String topF = police_templatetypeMapper.getTemplateTypeTopId();
-                ew.eq("l.templatetypessid", topF);
+//                String topF = police_templatetypeMapper.getTemplateTypeTopId();
+//                ew.eq("l.templatetypessid", topF);
             }else{
                 ew.eq("l.templatetypessid", getTemplatesParam.getTemplatetypeid());
             }
@@ -936,7 +939,7 @@ public class TemplateService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            result.setData(uploadpath);
+            result.setData(uploadbasepath + uploadpath);
 
             changeResultToSuccess(result);
         } catch (IOException e) {
@@ -1039,7 +1042,7 @@ public class TemplateService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            result.setData(uploadpath);
+            result.setData(uploadbasepath + uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("Excel导出成功，请稍后...");

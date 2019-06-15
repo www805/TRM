@@ -3,11 +3,14 @@ var editSsid;
 var templateTypeId;
 var templateId;
 var templatetypeidSSID;
+var xiazai = false;
+var xiazai2 = false;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
     var keyword =$("#keyword").val();
     var templatetypeid = $("#templateTypes").val();
+
     if(!templatetypeid){
         templatetypeid = -1;
     }
@@ -73,6 +76,7 @@ function callTmplates2(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
+            pagelist = data.data.pagelist;
             getTemplateById(0);
         }
     }else{
@@ -90,6 +94,7 @@ function callTmplateTypes(data){
                 var templateType = listAll[i];
 
                 if(i == 0){
+                    $("#templateTypes").append("<option value='-1' >全部</option>");
                     templatetypeidSSID = templateType.id;
                 }
                 $("#templateTypes").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
@@ -180,15 +185,17 @@ function exportWord(obj){
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                // var host = "http://localhost";
-                var host = "http://" + window.location.host;
-                host = host.replace(":8080","");
-                window.location.href = host + data;
-                // window.open(host + data);
+                var url = data;
+                var a = document.createElement('a');          // 创建一个a节点插入的document
+                var event = new MouseEvent('click')           // 模拟鼠标click点击事件
+                a.download = 'beautifulGirl'                  // 设置a节点的download属性值
+                a.href = url;                                 // 将图片的src赋值给a节点的href
+                a.dispatchEvent(event);
                 layer.msg("导出成功,等待下载中...");
+                // DownLoadReportIMG(url);
             }
         }else{
-            layer.msg("导出失败");
+            layer.msg("导出失败",{icon: 2});
         }
         btn(obj);
     });
@@ -211,15 +218,18 @@ function exportEcxcel(obj){
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                // var host = "http://localhost";
-                var host = "http://" + window.location.host;
-                host = host.replace(":8080","");
-                window.location.href = host + data;
-                // window.open(host + data);
+                var url = data;
+                var a = document.createElement('a');          // 创建一个a节点插入的document
+                var event = new MouseEvent('click')           // 模拟鼠标click点击事件
+                a.download = 'beautifulGirl'                  // 设置a节点的download属性值
+                a.href = url;                                 // 将图片的src赋值给a节点的href
+                a.dispatchEvent(event);
                 layer.msg("导出成功,等待下载中...");
+
+                // DownLoadReportIMG(url);
             }
         }else{
-            layer.msg("导出失败");
+            layer.msg("导出失败",{icon: 2});
         }
         btn(obj);
     });
@@ -227,13 +237,18 @@ function exportEcxcel(obj){
 
 function getTemplateById(id) {
 
-    if (pagelist[id]) {
+    if (null != pagelist && pagelist.length > 0) {
+        $("#zhuangtai").show();
+        $("#leixing").show();
         editSsid = pagelist[id].ssid;
         // templateTypeId = $("#templateTitle").val();
         templateTypeId = pagelist[id].templatetypessid;
         templateId = pagelist[id].id;
 
         $('#templateTitle').html(pagelist[id].title);
+        if(pagelist[id].typename == null){
+            pagelist[id].typename = "未知";
+        }
         $('#leixing').html("类型：" + pagelist[id].typename);
         var templateToProblems = pagelist[id].templateToProblems;
         var tableProblems = '';
@@ -243,11 +258,38 @@ function getTemplateById(id) {
             for (var i = 0; i < templateToProblems.length; i++) {
                 var Problem = templateToProblems[i];
 
-                tableProblems += '<tr><td class="font_red_color">问：' + Problem.problem + '</td></tr>';
-                tableProblems += '<tr><td class="font_blue_color">答：' + Problem.referanswer + '</td></tr>';
+                if(Problem) {
+                    tableProblems += '<tr><td class="font_red_color">问：' + Problem.problem + '</td></tr>';
+                    tableProblems += '<tr><td class="font_blue_color">答：' + Problem.referanswer + '</td></tr>';
+                }
             }
             $('#tableProblems').html(tableProblems);
         }
 
+    }else{
+        $("#zhuangtai").hide();
+        $("#leixing").hide();
+        $("#tableProblems").html("");
+        $("#templateTitle").html("暂无模板");
     }
+
+}
+
+
+function DownLoadReportIMG(imgPathURL) {
+    //如果隐藏IFRAME不存在，则添加
+    if (!document.getElementById("IframeReportImg"))
+        $('<iframe style="display:none;" id="IframeReportImg" name="IframeReportImg" onload="DoSaveAsIMG();" width="0" height="0" src="about:blank"></iframe>').appendTo("body");
+    if (document.all.IframeReportImg.src != imgPathURL) {
+        //加载图片
+        document.all.IframeReportImg.src = imgPathURL;
+    }
+    else {
+        //图片直接另存为
+        DoSaveAsIMG();
+    }
+}
+function DoSaveAsIMG() {
+    if (document.all.IframeReportImg.src != "about:blank")
+        window.frames["IframeReportImg"].document.execCommand("SaveAs");
 }
