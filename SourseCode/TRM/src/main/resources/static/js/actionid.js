@@ -144,6 +144,8 @@ function getactionid_manage() {
         waitRecord_exportWord:"waitRecord_exportWord",
         waitRecord_exportPdf:"waitRecord_exportPdf",
         waitRecord_updateArraignment:"waitRecord_updateArraignment",
+        waitRecord_getNotifications:"waitRecord_getNotifications",
+        waitRecord_downloadNotification:"waitRecord_downloadNotification",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

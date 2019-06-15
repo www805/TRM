@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.mc.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.cweb.vo.policevo.ExportWordVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -335,7 +336,7 @@ public class RecordAction extends BaseAction {
      */
     @RequestMapping("/exportWord")
     public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param, HttpServletRequest request){
-        RResult result=this.createNewResultOfFail();
+        RResult<ExportWordVO> result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){

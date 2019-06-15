@@ -23,14 +23,9 @@
             title: "AVST",
             buffer:'5',
             skin: "vodWhite",
-            volume:'0'
         });
         function initplayer(){
-            var initstate=true;
-            if (null==videourl) {
-                initstate=false;
-            }
-            SewisePlayer.toPlay(videourl, recordnameshow, 0, initstate);
+            SewisePlayer.toPlay(videourl, recordnameshow, 0, false);
         }
     </script>
     <!--播放器/代码结束-->

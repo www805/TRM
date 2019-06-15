@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -197,13 +198,15 @@ public class RecordService extends BaseService {
         //修改笔录状态
         Integer recordbool=addRecordParam.getRecordbool();
         LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
-        EntityWrapper updaterecordParam=new EntityWrapper();
-        updaterecordParam.eq("ssid",recordssid);
-        Police_record record=new Police_record();
-        record.setSsid(recordssid);
-        record.setRecordbool(recordbool);
-        int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-        LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+        if (null!=recordbool){
+            EntityWrapper updaterecordParam=new EntityWrapper();
+            updaterecordParam.eq("ssid",recordssid);
+            Police_record record=new Police_record();
+            record.setSsid(recordssid);
+            record.setRecordbool(recordbool);
+            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+        }
 
         //获取该笔录下的全部题目答案
         EntityWrapper recordToProblemsParam=new EntityWrapper();
@@ -968,10 +971,10 @@ public class RecordService extends BaseService {
 
                 PdfPTable tableBox4 = new PdfPTable(8);
                 tableBox4.setWidthPercentage(100F); // 宽度100%填充
-                tableBox4.setWidths(new float[]{16,10,8,8,8,10,10,30});
+                tableBox4.setWidths(new float[]{16,10,8,8,10,15,3,30});
                 tableBox4.addCell(getCell(new Phrase(String.valueOf("政治面貌"), fontChinese), false, 1, 1,15,0));
-                tableBox4.addCell(getCell(new Phrase(String.valueOf(politicsstatus), fontChinese), false, 2, 1,13,0));
-                tableBox4.addCell(getCell(new Phrase(String.valueOf("工作单位及职务"), fontChinese), false, 3, 1,15,0));
+                tableBox4.addCell(getCell(new Phrase(String.valueOf(politicsstatus), fontChinese), false, 3, 1,13,0));
+                tableBox4.addCell(getCell(new Phrase(String.valueOf("工作单位及职务"), fontChinese), false, 2, 1,15,0));
                 tableBox4.addCell(getCell(new Phrase(String.valueOf(workunits), fontChinese), false, 2, 1,13,0));
                 PdfPCell cells4 = new PdfPCell(tableBox4);
                 cells4.setColspan(8);
@@ -1042,7 +1045,8 @@ public class RecordService extends BaseService {
         return cells;
     }
 
-    public void exportWord(RResult result, ReqParam<ExportWordParam> param, HttpServletRequest request){
+    public void exportWord(RResult<ExportWordVO> result, ReqParam<ExportWordParam> param, HttpServletRequest request){
+        ExportWordVO exportWordVO=new ExportWordVO();
         ExportWordParam exportWordParam=param.getParam();
         if (null==exportWordParam){
             result.setMessage("参数为空");
@@ -1191,8 +1195,16 @@ public class RecordService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            result.setData(uploadbasepath+uploadpath);
+            exportWordVO.setWord_path(uploadbasepath+uploadpath);
 
+          /*  String html = path.substring(0,path.lastIndexOf("."));//前缀
+            String htmlpath=html+".html";
+           boolean bool = WordToHtmlUtil.wordToHtml(path,htmlpath);
+           if (bool){
+               htmlpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),htmlpath);
+               exportWordVO.setWord_htmlpath(htmlpath);
+           }*/
+           result.setData(exportWordVO);
             changeResultToSuccess(result);
         } catch (IOException e) {
             e.printStackTrace();

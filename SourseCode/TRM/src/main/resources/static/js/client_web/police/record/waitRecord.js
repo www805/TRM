@@ -2,10 +2,12 @@ var templatessid=null;//模板ssid
 var recordUserInfos;//询问人和被询问人数据
 var td_lastindex={};//td的上一个光标位置  为0需要处理一下
 var recorduser=[];//会议用户集合
+
+
 var mcbool=null;//会议状态
 
 
-//跳转变更模板页面
+//跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
 
@@ -29,8 +31,6 @@ function opneModal_1() {
         }
     });
 }
-
-//变更模板题目
 function getTemplateById() {
     if (isNotEmpty(templatessid)){
         var url=getActionURL(getactionid_manage().waitRecord_getTemplateById);
@@ -186,24 +186,24 @@ function tr_downn(obj) {
 function img_bool(obj,type){
     if (type==1){
         //开始会议
-        if (!isNotEmpty(mtssid)){
-            startMC();
-        }else{
-            layer.msg("会议已关闭");
-            return;
-        }
-    }else{
+        console.log("开始会议")
+        var startMC_index = layer.msg("会议开启中，请稍等...", {
+            icon: 16,
+            time:1000
+        });
+        startMC(startMC_index);
+    }else if (type==2) {
        //暂停录音
-      /*  $(obj).css("display","none");
-        $(obj).siblings().css("display","block");*/
+        console.log("暂停会议")
+    }else if(type==-1) {
+        console.log("会议已结束")
+        layer.msg("该案件已开启过会议");
     }
 }
 
 //粘贴语音翻译文本
 var copy_text_html="";
 var touchtime = new Date().getTime();
-
-
 function copy_text(obj,event) {
     var text=$(obj).text();
     copy_text_html=text;
@@ -250,7 +250,7 @@ function copy_text(obj,event) {
 
 
 
-//编辑框下面按钮事件-------------------------------start
+//编辑框下面按钮事件-------------------------------start-------------------------------
 var currenttime;//当前时间
 var yesterdaytime;//昨日时间
 var occurrencetime_format;//案发时间
@@ -324,40 +324,7 @@ function callbackgetTime(data) {
         layer.msg(data.message);
     }
 }
-
-//开启情绪分析
-/*function random(lower, upper) {
-    return Math.floor(Math.random() * (upper - lower)) + lower;
-}
-function openxthtml(obj) {
-    var xtbool=$(obj).attr("xtbool");
-    if (xtbool==1){
-        layer.msg("情绪分析已开启");
-        return;
-    }else{
-        layer.confirm('确定要启动情绪分析吗', {
-            btn: ['确认','取消'], //按钮
-            shade: [0.1,'#fff'], //不显示遮罩
-        }, function(index){
-            $("#xthtml").css("display","block");
-            $(obj).attr("xtbool","1");
-            var strings=["高度紧张","中度紧张","不很紧张","平平淡淡"];
-            var ran=random(1,100);
-            var t = setInterval(function (args) {
-                $("#xthtml #xt1").html('<i class="layui-icon">&#xe67a;</i>'+strings[Math.floor(Math.random()*strings.length)]+'  ');
-                $("#xthtml #xt2").html('<i class="layui-icon">&#xe6af;</i> '+random(1,100)+' ');
-                $("#xthtml #xt3").html('<i class="layui-icon">&#xe69c;</i> '+random(1,100)+' ');
-                $("#xthtml #xt4").html('<i class="layui-icon">&#xe6fc;</i> '+random(1,100)+'/分  ');
-                $("#xthtml #xt5").html('<i class="layui-icon">&#xe62c;</i>'+random(1,100)+'mmHg  ');
-            },2000);
-
-            layer.close(index);
-        }, function(index){
-            layer.close(index);
-        });
-    }
-}*/
-//编辑框下面按钮事件-------------------------------end
+//编辑框下面按钮事件-------------------------------end-------------------------------
 
 
 //获取笔录信息
@@ -377,13 +344,30 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             var record=data.record;
             if (isNotEmpty(record)){
-
+                //获取提讯会议ssid
                 mcbool=record.mcbool;
+                var police_arraignment=record.police_arraignment;
+                if (isNotEmpty(police_arraignment)){
+                    var mtssiddata=police_arraignment.mtssid;
+                    if (isNotEmpty(mtssiddata)){
+                        mtssid=mtssiddata;
+                        getRecordrealing();
+                    }
 
-                if (null!=mcbool&&mcbool==1){
-                    $("#endrecord").css("display","none");
-                    $("#endrecord").siblings().css("display","block");
+                    if ((!isNotEmpty(mcbool)||mcbool!=1)&&isNotEmpty(mtssiddata)){
+                        //存在会议但是状态为空或者1
+                        $("#record_img img").css("display","none");
+                        $("#endrecord").css("display","block");
+                    }else if (null!=mcbool&&mcbool==1){
+                        //存在会议状态正常
+                        $("#record_img img").css("display","none");
+                        $("#startrecord").css("display","block");
+                        }
+
                 }
+
+
+
 
                 //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
@@ -440,17 +424,6 @@ function callbackgetRecordById(data) {
                         });
                     }
                 }
-
-                //获取提讯会议ssid
-                var police_arraignment=record.police_arraignment;
-                if (isNotEmpty(police_arraignment)){
-                    var mtssiddata=police_arraignment.mtssid;
-                    if (isNotEmpty(mtssiddata)){
-                        mtssid=mtssiddata;
-                        getRecordrealing();
-                    }
-                }
-
             }
             //案件信息
             var caseAndUserInfo=data.caseAndUserInfo;
@@ -480,9 +453,8 @@ function callbackgetRecordById(data) {
 //开始会议
 var mtssid=null;//会议ssid
 var useretlist=null;
-function startMC() {
-    $("#endrecord").css("display","none");
-    $("#endrecord").siblings().css("display","block");
+function startMC(startMC_index) {
+    layer.close(startMC_index);
     if (isNotEmpty(recordUserInfos)){
         var tdList=[];
         var user1={
@@ -510,11 +482,13 @@ function startMC() {
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
     }else {
-        layer.msg("参数为空");
+        layer.msg("网络异常,请刷新重试---!");
     }
 }
 function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
+        $("#record_img img").css("display","none");
+        $("#startrecord").css("display","block");
         var data=data.data;
         if (isNotEmpty(data)){
             var asrnum=data.asrnum;
@@ -533,19 +507,22 @@ function callbackstartMC(data) {
                             var grade=u.grade;
                             if (1==grade){
                                 liveurl=useret.livingurl;
-                                console.log("liveurl_____"+liveurl)
+                                console.log("liveurl_____"+liveurl+"_______"+grade);
                                 break;
                             }
                         }
                     }
                 }
             }
-
             mtssid=mtssiddata;
           /*  updateArraignment();*/
             layer.msg("会议已开启");
         }
     }else{
+        if (null!=data.data&&data.data==-1){
+            $("#record_img img").css("display","none");
+            $("#endrecord").css("display","block");
+        }
         layer.msg(data.message);
     }
 }
@@ -676,17 +653,28 @@ function exportWord(obj){
             var data=data.data;
             alert(data);
             if (isNotEmpty(data)){
-                window.location.href = data;
-              /*  layer.open({
-                    type: 2,
-                    title: '导出WORD笔录',
-                    shadeClose: true,
-                    shade: false,
-                    maxmin: true, //开启最大化最小化按钮
-                    area: ['893px', '600px'],
-                    content: data
-                });*/
+                var word_htmlpath=data.word_htmlpath;//预览html地址
+                var word_path=data.word_path;//下载地址
+                window.location.href = word_path;
                 layer.msg("导出成功,等待下载中...");
+               /* if (null!=word_htmlpath) {
+                    layer.open({
+                        type: 2,
+                        title: '导出WORD笔录',
+                        btn: ['下载'],
+                        shadeClose: true,
+                        maxmin: true, //开启最大化最小化按钮
+                        area: ['893px', '600px'],
+                        content: word_htmlpath,
+                        yes:function(index, layero){
+                            window.location.href = word_path;
+                            layer.msg("导出成功,等待下载中...");
+                            layer.close(index);
+                        }
+                    });
+                }else {
+                    layer.msg("导出失败");
+                }*/
             }
         }else{
             layer.msg("导出失败");
@@ -712,7 +700,6 @@ function exportPdf(obj) {
                     type: 2,
                     title: '导出PDF笔录',
                     shadeClose: true,
-                    shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: ['893px', '600px'],
                     content: data
@@ -966,7 +953,7 @@ function select_liveurl(obj,type){
                     var grade=u.grade;
                     if (type==grade){
                         liveurl=useret.livingurl;
-                        console.log("liveurl_____"+liveurl)
+                        console.log("liveurl_____"+liveurl+"______"+grade)
                         break;
                     }
                 }
@@ -1061,7 +1048,7 @@ $(function () {
         btn(this);
     })
 
-    var defaults = {}
+/*    var defaults = {}
         , one_second = 1000
         , one_minute = one_second * 60
         , one_hour = one_minute * 60
@@ -1099,7 +1086,7 @@ $(function () {
 
         requestAnimationFrame(tick);
 
-    }
+    }*/
     nowdate();
     function nowdate() {
         var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
@@ -1174,8 +1161,8 @@ $(function () {
 
 
                             //检测自动上墙是否开启
-                            var record_switch_bool=$("#record_switch_bool").prop("checked");
-                            if (record_switch_bool){
+                            var record_switch_bool=$("#record_switch_bool").attr("isn");
+                            if (record_switch_bool==1){
                                 if (last_type==-1){
                                     if (usertype==1){
                                         qq+=translatext;
@@ -1259,7 +1246,7 @@ $(function () {
 
 
     $(window).on('pagehide', function(event) {
-        addRecord(1);
+        addRecord(null);
     });
 
     window.setInterval(function (args) {
@@ -1269,13 +1256,48 @@ $(function () {
     },1000);
 
 
+    $("#record_switch_bool").click(function () {
+        var isn=$(this).attr("isn");
+        var obj=this;
+        var con;
+        if (isn==-1) {
+            con="确定要开启自动甄别吗";
+        }else{
+            con="确定要关闭自动甄别吗";
+        }
+        layer.open({
+            content:con
+            ,btn: ['确定', '取消']
+            ,yes: function(index, layero){
+                if (isn==-1){
+                    $(obj).attr("isn",1);
+                    $(obj).addClass("layui-form-onswitch");
+                    $(obj).find("em").html("开启");
+                    layer.msg("自动甄别已开启");
+                } else {
+                    $(obj).attr("isn",-1);
+                    $(obj).removeClass("layui-form-onswitch");
+                    $(obj).find("em").html("关闭");
+                    layer.msg("自动甄别已关闭");
+                }
+                layer.close(index);
+            }
+            ,btn2: function(index, layero){
+                layer.close(index);
+            }
+            ,cancel: function(){
+            }
+        });
+
+    });
+
+
     layui.use(['layer','form'], function(){
         var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
             ,form = layui.form;
 
-        form.on('switch(automatic_record)', function(switchdata){
+            /*  form.on('switch(automatic_record)', function(switchdata){
             var obj=switchdata.elem.checked;
-
 
             var con;
             var switch_bool;
@@ -1311,7 +1333,7 @@ $(function () {
                     form.render();
                 }
             });
-        });
+        });*/
     });
 
 });
@@ -1528,6 +1550,25 @@ function initheart() {
     if (isNotEmpty($("#living3_2").html())) {
         $("#living3_1").html($("#living3_2").html());
         $("#living3_2").html("");
+        if (isNotEmpty(useretlist)){
+            for (var i = 0; i < useretlist.length; i++) {
+                var useret = useretlist[i];
+                var userssid1=useret.userssid;
+                for (var j = 0; j < recorduser.length; j++) {
+                    var u = recorduser[j];
+                    var userssid2=u.userssid;
+                    if (userssid1==userssid2) {
+                        var grade=u.grade;
+                        if (2==grade){//只播放被询问人的
+                            liveurl=useret.livingurl;
+                            console.log("liveurled_____"+liveurl+"_______"+grade)
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        initplayer();
     }
 
     layui.use(['element'], function(){
@@ -1570,5 +1611,85 @@ function clearRecord() {
         www="";
     }
     td_lastindex={};
+}
+
+//**********告知书***********//
+//获取告知书列表
+var open_getNotifications_index;
+function open_getNotifications() {
+    var html= '<table class="layui-table"  lay-skin="nob">\
+        <colgroup>\
+        <col>\
+        <col  width="200">\
+        </colgroup>\
+        <tbody id="notificationList">\
+        </tbody>\
+        </table>';
+     open_getNotifications_index = layer.open({
+        type:1,
+        title:'选择告知书',
+        content:html,
+        shadeClose:true,
+        area: ['893px', '600px'],
+    });
+
+
+    var url=getActionURL(getactionid_manage().waitRecord_getNotifications);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            currPage:1,
+            pageSize:100
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+              var pagelist=data.pagelist;
+              $("#notificationList").html("");
+              if (isNotEmpty(pagelist)){
+                  for (var i = 0; i < pagelist.length; i++) {
+                      var l = pagelist[i];
+                      var l_html="<tr>\
+                                      <td>"+l.notificationname+"</td>\
+                                      <td style='padding-bottom: 0;'>\
+                                          <div class='layui-btn-container'>\
+                                          <button  class='layui-btn layui-btn-danger'>打开</button>\
+                                          <button  class='layui-btn'>朗读</button>\
+                                          <button  class='layui-btn layui-btn-normal' onclick='downloadNotification(\""+l.ssid+"\")'>直接下载</button>\
+                                          </div>\
+                                          </td>\
+                                 </tr>";
+                      $("#notificationList").append(l_html);
+                  }
+              }
+            }
+        }else{
+            layer.msg(data.message);
+        }
+    });
+}
+
+//下载告知书
+function downloadNotification(ssid) {
+    var url=getActionURL(getactionid_manage().waitRecord_downloadNotification);
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {
+            ssid: ssid
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                layer.msg("下载中，请稍后...");
+                window.location.href=data.recorddownurl;
+            }
+        }else{
+            layer.msg(data.message);
+        }
+    });
 }
 

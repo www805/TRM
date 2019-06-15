@@ -18,15 +18,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">类型父类</label>
             <div class="layui-input-inline">
-                <select name="pid" lay-verify="required" id="pid">
+                <select name="pid" lay-verify="required" id="pid" lay-filter="change_pid">
                     <option value="">全部</option>
                 </select>
             </div>
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecordtypes();" >
             <input type="button" class="layui-btn layui-btn-normal" value="添加" onclick="opneModal_1();" >
         </div>
-        <label class=" layui-col-xs12" style="font-size: 12px"><span style="color: red">*</span>仅支持二级类型</label>
     </form>
+    <label class=" layui-col-xs12" style="font-size: 12px"><span style="color: red">*</span>仅支持二级类型</label>
     <table class="layui-table">
         <thead>
         <tr>

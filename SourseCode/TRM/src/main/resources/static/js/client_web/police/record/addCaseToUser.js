@@ -753,7 +753,7 @@ function callbakegetCaseById(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
 }
 
@@ -800,7 +800,7 @@ function callbackgetUserinfoList(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var form =  layui.form;
@@ -960,7 +960,7 @@ function checkout_cardnum(cardnum,cardtypetext) {
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
-            layer.msg("身份证输入不合法");
+            parent.layer.msg("身份证输入不合法");
             init_form();
             return false;
         }
