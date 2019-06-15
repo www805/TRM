@@ -54,6 +54,19 @@ public class Police_recordtoproblem extends Model<Police_recordtoproblem> {
 
     private Integer integer2;
 
+    /**
+     * 录音开始时间：默认-1，-1代表该题目为自添
+     */
+    private Long starttime;
+
+    public Long getStarttime() {
+        return starttime;
+    }
+
+    public void setStarttime(Long starttime) {
+        this.starttime = starttime;
+    }
+
     public Integer getId() {
         return id;
     }

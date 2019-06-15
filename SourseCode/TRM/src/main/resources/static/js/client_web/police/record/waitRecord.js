@@ -96,8 +96,8 @@ function callsetAllproblem(data) {
 
                         var html='<tr >\
                                 <td style="padding: 0;width: 90%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.problem+'" >'+templateToProblem.problem+'</label></div>\
-                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.referanswer+'"></label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" >'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""></label></div>\
                                 </td>\
                                 <td style="float: right;">\
                                                                 <div class="layui-btn-group">\
@@ -135,8 +135,8 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  placeholder="'+text+'" >'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  class="" placeholder="'+w+'"></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  placeholder="'+text+'"  q_starttime="">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  class="" placeholder="'+w+'" w_starttime=""></label></div>\
         </td>\
         <td style="float: right;">\
             <div class="layui-btn-group">\
@@ -208,21 +208,27 @@ function copy_text(obj,event) {
     var text=$(obj).text();
     copy_text_html=text;
     var classc=$(obj).closest("div").attr("class");
+    var starttime=$(obj).closest("div").attr("starttime");
 
 
     //鼠标左击右击
    if( new Date().getTime() - touchtime < 250 ){
         if(3 == event.which){
             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
+            var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime");
+            if (!isNotEmpty(old)) {
+                $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime",starttime);//直接使用最后追加的时间点
+            }
         }else if(1 == event.which){
             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
+            var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime");
+            if (!isNotEmpty(old)) {
+                $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime",starttime);//直接使用最后追加的时间点
+            }
         }
     }else{
         touchtime = new Date().getTime();
     }
-
-
-
 
 
 
@@ -396,16 +402,16 @@ function callbackgetRecordById(data) {
                         var problemtext=problem.problem==null?"未知":problem.problem;
                         var problemhtml= '<tr>\
                         <td style="padding: 0;width: 90%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" placeholder="'+problemtext+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
                         var answers=problem.answers;
                         if (isNotEmpty(answers)){
                             for (var j = 0; j < answers.length; j++) {
                                 var answer = answers[j];
                                 var answertext=answer.answer==null?"未知":answer.answer;
-                                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="'+answertext+'">'+answertext+'</label></div>';
+                                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
                             }
                         }else{
-                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""></label></div>';
+                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""  w_starttime=""></label></div>';
                         }
                         problemhtml+=' </td>\
                         <td style="float: right;">\
@@ -482,7 +488,7 @@ function startMC(startMC_index) {
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
     }else {
-        layer.msg("网络异常,请刷新重试---!");
+        layer.msg("请刷新重试...");
     }
 }
 function callbackstartMC(data) {
@@ -567,22 +573,28 @@ function addRecord(recordbool) {
             var arr={};
             var answers=[];//答案集合
             var q=$(this).find("label[name='q']").text();
+            var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
             q=q.replace(/\s/g,'');
                     //经过筛选的q
                     var ws=$(this).find("label[name='w']");
+                    var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
                     if (isNotEmpty(q)){
                         if (null!=ws&&ws.length>0){
                             for (var j = 0; j < ws.length; j++) {
                                 var w =ws.eq(j).text();
                                 w=w.replace(/\s/g,'');
                                         //经过筛选的w
-                                        answers.push({
-                                            answer:w
-                                        });
+                                        if (isNotEmpty(w)) {
+                                            answers.push({
+                                                answer:w,
+                                                starttime:w_starttime,
+                                            });
+                                        }
                             }
                         }
                         recordToProblems.push({
                             problem:q,
+                            starttime:q_starttime,
                             answers:answers
                         });
                     }
@@ -1004,8 +1016,8 @@ $(function () {
     //回车加trtd
     var trtd_html='<tr>\
         <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" ></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" q_starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  w_starttime=""placeholder=""></label></div>\
                 </td>\
                 <td style="float: right;">\
                     <div class="layui-btn-group">\
@@ -1171,6 +1183,8 @@ $(function () {
                                         datadata["q"]=qq;
                                         datadata["w"]=ww;
                                         setrecord_html();
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                     }
                                 }else  if (last_type==1){//最后是问
                                     last_type=usertype;
@@ -1180,6 +1194,7 @@ $(function () {
                                             qq+=translatext;
                                             laststarttime_qq=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                         }else{
 
                                             //2.初始化问答
@@ -1195,11 +1210,14 @@ $(function () {
                                             datadata["q"]=qq;
                                             datadata["w"]=ww;
                                             setrecord_html();
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                         }
                                     }else if (usertype==2){//最后是问，本次是答，开始拼接答案
                                         ww+=translatext;
                                         laststarttime_ww=starttime;
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
                                     }
                                 }else  if (last_type==2){//最后是答
                                     last_type=usertype;
@@ -1232,6 +1250,8 @@ $(function () {
                                         datadata["q"]=qq;
                                         datadata["w"]=ww;
                                         setrecord_html();
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                     }
                                 }
                             }
@@ -1343,8 +1363,8 @@ function setrecord_html() {
     $("#recorddetail tr").attr("automaticbool","");
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 90%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" >'+datadata["q"]+'</label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="">'+datadata["w"]+'</label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"   q_starttime="">'+datadata["q"]+'</label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
                 </td>\
                 <td style="float: right;">\
                     <div class="layui-btn-group">\
@@ -1629,7 +1649,8 @@ function open_getNotifications() {
         type:1,
         title:'选择告知书',
         content:html,
-        shadeClose:true,
+        shadeClose:false,
+        shade:0,
         area: ['893px', '600px'],
     });
 
@@ -1655,7 +1676,7 @@ function open_getNotifications() {
                                       <td>"+l.notificationname+"</td>\
                                       <td style='padding-bottom: 0;'>\
                                           <div class='layui-btn-container'>\
-                                          <button  class='layui-btn layui-btn-danger'>打开</button>\
+                                          <button  class='layui-btn layui-btn-danger' onclick='previewgetNotifications();'>打开</button>\
                                           <button  class='layui-btn'>朗读</button>\
                                           <button  class='layui-btn layui-btn-normal' onclick='downloadNotification(\""+l.ssid+"\")'>直接下载</button>\
                                           </div>\
@@ -1684,12 +1705,38 @@ function downloadNotification(ssid) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
+                var recorddownurl=data.recorddownurl;
                 layer.msg("下载中，请稍后...");
-                window.location.href=data.recorddownurl;
+              /*  var replace = recorddownurl.replace(".docx", ".html");
+                replace = replace.replace(".doc", ".html");*/
+                window.location.href=replace;
+
             }
         }else{
             layer.msg(data.message);
         }
+    });
+}
+
+//打开告知书
+var previewgetNotifications_index=null;
+function previewgetNotifications(htmlpath) {
+    if (isNotEmpty(previewgetNotifications_index)) {
+        layer.close(previewgetNotifications_index);
+    }
+     previewgetNotifications_index = layer.open({
+        type:1,
+        title:'阅读告知书',
+        content:htmlpath,
+        shadeClose:false,
+        area: ['893px', '600px'],
+        btn: ['朗读','下载'],
+         yes:function(index, layero){
+             layer.close(index);
+         }
+         ,btn2: function(index, layero){
+             layer.close(index);
+         }
     });
 }
 

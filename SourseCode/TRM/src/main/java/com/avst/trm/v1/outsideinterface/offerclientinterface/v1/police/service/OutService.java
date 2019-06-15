@@ -73,9 +73,6 @@ public class OutService  extends BaseService {
 
 
     public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
-
-
-
         StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
         if (null == startRercordParam) {
             LogUtil.intoLog(this.getClass(),"参数为空__");

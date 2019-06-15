@@ -109,7 +109,7 @@ function callbackgetRecords(data) {
                                     problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
                                 }
                             }else{
-                                problemhtml+='<tr> <td class="font_blue_color">答：... </td></tr>';
+                                problemhtml+='<tr> <td class="font_blue_color">答：</td></tr>';
                             }
                             $("#recorddetail").append(problemhtml);
                         }
@@ -143,7 +143,7 @@ function setproblems(recordssid) {
                                 problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
                             }
                         }else{
-                            problemhtml+='<tr> <td class="font_blue_color">答：... </td></tr>';
+                            problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
                         }
                         $("#recorddetail").append(problemhtml);
                     }

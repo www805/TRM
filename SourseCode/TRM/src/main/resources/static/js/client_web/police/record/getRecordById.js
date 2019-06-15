@@ -98,13 +98,13 @@ function callbackgetRecordById(data) {
                         for (var z = 0; z< problems.length;z++) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
+                            var problemhtml='<tr ondblclick="showrecord('+problem.starttime+')"><td class="font_red_color">问：'+problemtext+' </td></tr>';
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){
                                 for (var j = 0; j < answers.length; j++) {
                                     var answer = answers[j];
                                     var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
+                                    problemhtml+='<tr> <td class="font_blue_color" ondblclick="showrecord('+answer.starttime+')">答：'+answertext+' </td></tr>';
                                 }
                             }else{
                                 problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
@@ -265,7 +265,9 @@ function exportWord(obj){
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                window.location.href = data;
+                var word_htmlpath=data.word_htmlpath;//预览html地址
+                var word_path=data.word_path;//下载地址
+                window.location.href = word_path;
                 layer.msg("导出成功,等待下载中...");
             }
         }else{

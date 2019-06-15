@@ -175,7 +175,7 @@ public class RecordService extends BaseService {
 
         if (addRecordbool){
             LogUtil.intoLog(this.getClass(),"---addRecordbool---Start---");
-            result.setMessage("保存中,请稍等...");
+            result.setMessage("保存处理中,请稍等重试...");
             return;
         }
         addRecordbool=true;
