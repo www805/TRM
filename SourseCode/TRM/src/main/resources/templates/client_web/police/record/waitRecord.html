@@ -180,8 +180,8 @@
         50%{opacity:0;text-shadow:none;}
         100%{opacity:1.0;}
     }
-    #monitorall li{height: 130px}
-    #monitorall a{height: 100px;text-align: center}
+    #monitorall li:not(0){height: 130px}
+    #monitorall a{height: 100px;text-align: center;vertical-align:middle;}
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -283,7 +283,7 @@
                                         <span class="layui-badge layui-bg-gray" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
                                         <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
                                     </div>
-                                    <!--<span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>-->
+                                   <!-- <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>-->
                                 </div>
 
                                 <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
@@ -527,23 +527,17 @@
                                         <span class="layui-badge layui-bg-gray" id="type1">未开启</span>\
                                     </td>\
                                     </tr>\
-                                     <tr>\
-                                        <td>案件信息</td>\
-                                        <td>\
-                                        <span class="layui-badge layui-bg-gray" id="type1">未开启</span>\
-                                        </td>\
-                                    </tr>\
                                 </tbody>\
                         </table>';
 
-       /* var index = layer.open({
+   /*    var index = layer.open({
             type:1,
             title: '笔录状态栏',
             closeBtn: 0,
             skin: 'layui-layer-lan',
             shade: 0,
             offset: 'lb',
-            area: ['250px', '180px'],
+            area: ['250px', '150px'],
             maxmin: true,
             resize:false,
             content: html,

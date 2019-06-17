@@ -956,11 +956,13 @@ function callbackgetPolygraphdata(data) {
 
                 var hr_snr=obj.hr_snr.toFixed(0)==null?0:obj.hr_snr.toFixed(0);;
                 if (isNotEmpty(hr_snr)&&hr_snr>0.1){
-                    $("#showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
-                    $("#showmsg strong").text("心率准确监测中");
+                    $("#showmsg,#open_showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
+                    $("#showmsg strong,#open_showmsg strong").text("心率准确监测中");
+
+
                 }else{
-                    $("#showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
-                    $("#showmsg strong").text("心率监测不准确");
+                    $("#showmsg,#open_showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
+                    $("#showmsg strong,#open_showmsg strong").text("心率监测不准确");
                 }
 
                 addData_hr(true,hr);
@@ -1071,7 +1073,7 @@ function callbackgetPolygraphdata(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+       /* layer.msg(data.message);*///不需要弹出错误信息
     }
 }
 
@@ -1148,11 +1150,20 @@ var myMonitorall4;
 var myMonitorall5;
 var myMonitorall6;
 var myMonitorall7;
+
 function select_monitorall(obj) {
     var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 10px;"><div class="layui-row" id="monitorall" >\
                     <div class=" layadmin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; ">\
                         <div carousel-item="">\
                             <ul class="layui-row layui-col-space10 layui-this">\
+                                <li class="layui-col-xs12">\
+                                        <a class="">\
+                                        <p class="layuiadmin-big-font">检测状态</p>\
+                                        <p><cite id="">\
+        <div id="open_showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>监测加载中...</strong></div>\
+                                        </cite></p>\
+                                    </a>\
+                                </li>\
                                 <li class="layui-col-xs6">\
                                     <a class="layadmin-backlog-body">\
                                     <p class="layuiadmin-big-font">生理状态</p>\
