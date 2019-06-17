@@ -146,6 +146,7 @@ function getactionid_manage() {
         waitRecord_updateArraignment:"waitRecord_updateArraignment",
         waitRecord_getNotifications:"waitRecord_getNotifications",
         waitRecord_downloadNotification:"waitRecord_downloadNotification",
+        waitRecord_getEquipmentsState:"waitRecord_getEquipmentsState",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

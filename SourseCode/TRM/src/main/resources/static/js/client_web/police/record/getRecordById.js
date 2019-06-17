@@ -104,7 +104,7 @@ function callbackgetRecordById(data) {
                                 for (var j = 0; j < answers.length; j++) {
                                     var answer = answers[j];
                                     var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr> <td class="font_blue_color" ondblclick="showrecord('+answer.starttime+')">答：'+answertext+' </td></tr>';
+                                    problemhtml+='<tr ondblclick="showrecord('+answer.starttime+')"> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
                                 }
                             }else{
                                 problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
@@ -347,7 +347,7 @@ function callbackgetPlayUrl(data) {
 
 //视频进度
 function showrecord(times) {
-    if (isNotEmpty(times)){
+    if (isNotEmpty(times)&&times!=-1){
         var locationtime=times;
         locationtime=locationtime/1000<0?0:locationtime/1000;
         SewisePlayer.doSeek(locationtime);

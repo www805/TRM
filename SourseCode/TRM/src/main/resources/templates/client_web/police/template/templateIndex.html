@@ -103,14 +103,11 @@
 
 <div style="margin: 5px;" class="layui-form">
     <div th:replace="header :: header">...</div>
-
+    <div class="layui-elem-quote" style=" padding: 10px;">
+        <h3 th:text="${templateIndex.title}">模板管理</h3>
+    </div>
 
     <div class="layui-row" id="layui-row1">
-        <div class="layui-elem-quote" style=" padding: 10px;">
-            <h3 th:text="${templateIndex.title}">模板管理</h3>
-        </div>
-
-
         <div class="layui-col-md5" style="border:1px solid #F2F2F2;padding-top: 5px;">
 
             <div>
@@ -131,52 +128,52 @@
                 </div>
             </div>
 
-            <div style="overflow:auto;width: 100%; height: 725px; min-height:725px;" >
+           <div style="overflow:auto;width: 100%; height: 725px; min-height:725px;" >
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;">
                     【模板列表】点击模板，右边将显示模板的问题详情<i class="layui-icon">&#xe623;</i>
                 </div>
-                <div th:replace="page :: page">...</div>
+               <div th:replace="page :: page">...</div>
             </div>
         </div>
-
-    </div>
-
-    <div class="layui-col-md7" style="border:1px solid #F2F2F2; padding-top: 5px;">
-        <div class="">
-            <button class="layui-btn layui-btn-normal" onclick="eitdTemplateYe();" >编辑</button>
-            <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
-            <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
-            <div class="layui-inline" style="margin-bottom:0">
-                <div class="layui-unselect layui-form-select" name="btn_div" showorhide="false">
-                    <div class="layui-select-title">
-                        <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i> 导出</button>
+        <div class="layui-col-md7" style="border:1px solid #F2F2F2; padding-top: 5px;">
+            <div class="">
+                <button class="layui-btn layui-btn-normal" onclick="eitdTemplateYe();" >编辑</button>
+               <button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>
+                <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
+                <div class="layui-inline" style="margin-bottom:0">
+                    <div class="layui-unselect layui-form-select" name="btn_div" showorhide="false">
+                        <div class="layui-select-title">
+                            <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i> 导出</button>
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit" >
+                            <dd onclick="exportWord(this);">导出word</dd>
+                            <dd onclick="exportEcxcel(this);">导出Ecxcel</dd>
+                        </dl>
                     </div>
-                    <dl class="layui-anim layui-anim-upbit" >
-                        <dd onclick="exportWord(this);">导出word</dd>
-                        <dd onclick="exportEcxcel(this);">导出Ecxcel</dd>
-                    </dl>
                 </div>
+
+
             </div>
 
-
-        </div>
-
-        <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
-            <b style="padding-right: 20px; color: #113c11;" id="templateTitle">暂无模板</b>
-            <b style="margin-right: 10px;color: #3023d2;" id="leixing"></b>
-            <span id="zhuangtai" style="display:none;">
+            <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
+                <b style="padding-right: 20px; color: #113c11;" id="templateTitle">暂无模板</b>
+                <b style="margin-right: 10px;color: #3023d2;" id="leixing"></b>
+                <span id="zhuangtai" style="display:none;">
                 <i class="layui-icon layui-icon-list" style="font-size: 28px; color: #1E9FFF;"></i>
                 <span>查看中....</span>
             </span>
-        </div>
+            </div>
 
-        <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 666px; min-height:666px;" >
-            <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;margin-top: 0px;">
-                <tbody id="tableProblems"></tbody>
-            </table>
-        </div>
+            <div style="width: 100%;overflow-x: hidden; overflow-y: scroll;display:block; height: 666px; min-height:666px;" >
+                <table class="layui-table" lay-skin="line" lay-even style="table-layout: fixed;margin-top: 0px;">
+                    <tbody id="tableProblems"></tbody>
+                </table>
+            </div>
 
+        </div>
     </div>
+
+
 
     <div th:replace="footer :: footer">...</div>
 </div>

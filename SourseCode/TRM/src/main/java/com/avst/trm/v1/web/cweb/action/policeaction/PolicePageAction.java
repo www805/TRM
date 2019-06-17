@@ -173,6 +173,15 @@ public class PolicePageAction {
         model.addAttribute("title","笔录制作详情");
         return new ModelAndView("client_web/police/record/addCaseToUserDetail", "addCaseToUserDetailModel", model);
     }
+
+
+    @GetMapping("togetPolygraph")
+    public ModelAndView togetPolygraph(Model model){
+        model.addAttribute("title","身心检测");
+        return new ModelAndView("client_web/police/record/getPolygraph", "getPolygraphModel", model);
+    }
+
+
     /*********************************关于笔录 end*********************************/
 
 

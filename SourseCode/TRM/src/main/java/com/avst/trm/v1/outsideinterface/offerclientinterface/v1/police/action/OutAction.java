@@ -17,6 +17,7 @@ import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
@@ -34,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/***
+ * 对接外部接口
+ */
 @RestController
 @RequestMapping("/v1/police/out")
 public class OutAction extends BaseAction {
@@ -244,6 +248,24 @@ public class OutAction extends BaseAction {
         return result;
     }
 
+
+
+    /**
+     * 获取各个设备的状态
+     * @param param
+     * @return
+     */
+    @RequestMapping("getEquipmentsState")
+    public RResult getEquipmentsState(@RequestBody  ReqParam<GetEquipmentsStateParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getEquipmentsState(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

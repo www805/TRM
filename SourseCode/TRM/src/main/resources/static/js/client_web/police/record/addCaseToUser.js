@@ -380,6 +380,7 @@ function getAdminList() {
 function callbackgetAdminList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
          otheruserinfos=data.data;
+
         $('#otheruserinfos option').not(":lt(1)").remove();
         $('#recordadmin option').not(":lt(1)").remove();
         if (isNotEmpty(otheruserinfos)){
@@ -394,6 +395,11 @@ function callbackgetAdminList(data) {
     }else{
         parent.layer.msg(data.message);
     }
+    layui.use('form', function(){
+        var $ = layui.$;
+        var form = layui.form;
+        form.render();
+    });
 }
 
 /**

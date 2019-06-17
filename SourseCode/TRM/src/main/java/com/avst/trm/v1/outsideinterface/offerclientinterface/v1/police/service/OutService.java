@@ -31,8 +31,10 @@ import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.feignclient.mc.vo.StartMCVO;
 import com.avst.trm.v1.feignclient.mc.vo.param.MCCacheParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetEquipmentsStateVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
@@ -383,10 +385,10 @@ public class OutService  extends BaseService {
         //查询会议数据获取检测仪的ssid
         String polygraphssid=null;
         ReqParam<GetMCdataParam_out> param3=new ReqParam<>();
-        GetMCdataParam_out getMCStateParam_out=new GetMCdataParam_out();
-        getMCStateParam_out.setMcType(MCType.AVST);
-        getMCStateParam_out.setMtssid(mtssid);
-        param3.setParam(getMCStateParam_out);
+        GetMCdataParam_out getMCdataParam_out=new GetMCdataParam_out();
+        getMCdataParam_out.setMcType(MCType.AVST);
+        getMCdataParam_out.setMtssid(mtssid);
+        param3.setParam(getMCdataParam_out);
         RResult rr3=new RResult();
         rr3=meetingControl.getMCdata(param3);
         if (null != rr3 && rr3.getActioncode().equals(Code.SUCCESS.toString())) {
@@ -433,6 +435,7 @@ public class OutService  extends BaseService {
                     rr2=equipmentControl.getPolygraphAnalysis(param2);
                     if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
                         GetPolygraphAnalysisVO getPolygraphAnalysisVO=gson.fromJson(gson.toJson(rr2.getData()),GetPolygraphAnalysisVO.class);
+                        LogUtil.intoLog(this.getClass(),"getPolygraphAnalysise__"+getPolygraphAnalysisVO.toString());
                         result.setData(getPolygraphAnalysisVO);
                         changeResultToSuccess(result);
                         return;
@@ -530,6 +533,115 @@ public class OutService  extends BaseService {
         }
 
        /* */
+        return;
+    }
+
+
+    public void getEquipmentsState(RResult result,ReqParam<GetEquipmentsStateParam> param){
+        GetEquipmentsStateVO getEquipmentsStateVO=new GetEquipmentsStateVO();
+        //请求参数转换
+        GetEquipmentsStateParam getEquipmentsStateParam = param.getParam();
+        if (null==getEquipmentsStateParam){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return ;
+        }
+        String mtssid=getEquipmentsStateParam.getMtssid();
+        if (StringUtils.isBlank(mtssid)){
+            LogUtil.intoLog(this.getClass(),"getEquipmentsState参数为空mtssid____"+mtssid);
+            result.setMessage("参数为空");
+            return ;
+        }
+        //状态： -1异常 1正常  0未启动
+        Integer AsrState=0;//语音识别状态
+        Integer PolygraphState=0;//身心检测状态
+        Integer LiveState=0;//直播状态
+        Integer MtState=0;//会议状态  //会议状态 0初始化，1进行中，2已结束，3暂停
+        Integer PlayState=0;//点播文件状态
+
+        //获取会议状态
+        ReqParam<GetMCStateParam_out> mt_param=new ReqParam<>();//会议参数
+        GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
+        getMCStateParam_out.setMcType(MCType.AVST);
+        getMCStateParam_out.setMtssid(mtssid);
+        mt_param.setParam(getMCStateParam_out);
+        RResult mt_rr=new RResult();//会议返回
+        try {
+            mt_rr=meetingControl.getMCState(mt_param);
+            if (null != mt_rr && mt_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                MtState= 1;
+                LiveState=1;
+                AsrState=1;
+                //设置状态
+                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__成功"+MtState);
+            }else{
+                //设置状态
+                MtState= -1;
+                LiveState=-1;
+                AsrState=-1;
+                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__出错");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //获取身心检测的状态
+        String polygraphssid=null;//身心检测的ssid
+        ReqParam<GetMCdataParam_out> MCdata_param=new ReqParam<>();
+        GetMCdataParam_out getMCdataParam_out=new GetMCdataParam_out();
+        getMCdataParam_out.setMcType(MCType.AVST);
+        getMCdataParam_out.setMtssid(mtssid);
+        MCdata_param.setParam(getMCdataParam_out);
+        RResult  MCdata_rr=new RResult();
+        try {
+            MCdata_rr=meetingControl.getMCdata(MCdata_param);
+            if (null != MCdata_rr && MCdata_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                MCCacheParam mcCacheParam = gson.fromJson(gson.toJson(MCdata_rr.getData()),MCCacheParam.class);
+                if (null!=mcCacheParam&&null!=mcCacheParam.getTdList()&&mcCacheParam.getTdList().size()>0){
+                    polygraphssid=mcCacheParam.getTdList().get(0).getPolygraphssid();
+                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCdata__成功");
+                }
+            }else{
+                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCdata__出错");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (null==polygraphssid){
+            PolygraphState=0;
+            //设置状态
+        }else {
+            ReqParam<CheckPolygraphStateParam> Polygraph_param=new ReqParam<>();
+            CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
+            checkPolygraphStateParam.setPhType(PHType.CMCROSS);
+            checkPolygraphStateParam.setPolygraphssid(polygraphssid);
+            Polygraph_param.setParam(checkPolygraphStateParam);
+            RResult<CheckPolygraphStateVO> Polygraph_rr=new RResult();
+            try {
+                Polygraph_rr=equipmentControl.checkPolygraphState(Polygraph_param);
+                if (null != Polygraph_rr && Polygraph_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                    PolygraphState=1;
+                    //设置状态
+                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__成功");
+                }else{
+                    //设置状态
+                    PolygraphState=-1;
+                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__出错");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        getEquipmentsStateVO.setAsrState(AsrState);
+        getEquipmentsStateVO.setPolygraphState(PolygraphState);
+        getEquipmentsStateVO.setLiveState(LiveState);
+        getEquipmentsStateVO.setMtState(MtState);
+        getEquipmentsStateVO.setPlayState(PlayState);
+        result.setData(getEquipmentsStateVO);
+        changeResultToSuccess(result);
         return;
     }
 
