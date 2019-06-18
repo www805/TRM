@@ -14,6 +14,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.cweb.req.policereq.GetNotificationParam;
+import com.avst.trm.v1.web.cweb.vo.policevo.DownloadNotificationVO;
 import com.avst.trm.v1.web.cweb.vo.policevo.GetNotificationVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -167,6 +168,8 @@ public class NotificationService extends BaseService {
      * @param param
      */
     public void downloadNotification(RResult result, ReqParam<GetNotificationParam> param) {
+        DownloadNotificationVO downloadNotificationVO =new DownloadNotificationVO();
+
         //请求参数转换
         GetNotificationParam getNotificationParam = param.getParam();
         if (null==getNotificationParam){
@@ -178,9 +181,31 @@ public class NotificationService extends BaseService {
             Base_filesave filesave = new Base_filesave();
             filesave.setDatassid(getNotificationParam.getSsid());
             filesave = filesaveMapper.selectOne(filesave);
-            if(null!=filesave&&StringUtils.isNotEmpty(filesave.getRecorddownurl())){
-                filesave.setRecorddownurl(uploadbasepath + filesave.getRecorddownurl());
-                result.setData(filesave);
+            String downurl=uploadbasepath + filesave.getRecorddownurl();
+            String realurl=filesave.getRecordrealurl();
+            String recorddownurl_html=null;
+            if(null!=filesave&&StringUtils.isNotEmpty(downurl)&&StringUtils.isNotEmpty(realurl)){
+                filesave.setRecorddownurl(downurl);
+                downloadNotificationVO.setBase_filesave(filesave);
+
+                if(realurl.endsWith(".doc")){
+                    String replace = realurl.replace(".doc", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"文件存在:"+replace);
+                        recorddownurl_html=downurl.replace(".doc", ".html");
+                    }
+                }else if(realurl.endsWith(".docx")){
+                    String replace = realurl.replace(".docx", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"文件存在:"+replace);
+                        recorddownurl_html=downurl.replace(".docx", ".html");
+                    }
+                }
+                LogUtil.intoLog(this.getClass(),"文件转换完成的html:"+recorddownurl_html);
+                downloadNotificationVO.setRecorddownurl_html(recorddownurl_html);
+                result.setData(downloadNotificationVO);
                 changeResultToSuccess(result);
             }else{
                 result.setMessage("请求下载地址失败");

@@ -85,28 +85,33 @@ function calldownloadNotification(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         var filesave=data.data;
         if (isNotEmpty(filesave)){
-            layer.msg("下载中，请稍后...");
-            // window.location.href = filesave.recorddownurl;
+            var base_filesave=filesave.base_filesave;
+            if (isNotEmpty(base_filesave)) {
+                layer.msg("下载中，请稍后...");
+                // window.location.href = filesave.recorddownurl;
 
-            var url = filesave.recorddownurl;
+                var url = base_filesave.recorddownurl;
 
-            // alert(url);
+                // alert(url);
 
-            var a = document.createElement('a');          // 创建一个a节点插入的document
-            var event = new MouseEvent('click');           // 模拟鼠标click点击事件
-            a.download = filesave.uploadfilename;                  // 设置a节点的download属性值
-            a.href = url;                                 // 将图片的src赋值给a节点的href
-            a.dispatchEvent(event);
+                var a = document.createElement('a');          // 创建一个a节点插入的document
+                var event = new MouseEvent('click');           // 模拟鼠标click点击事件
+                a.download = filesave.uploadfilename;                  // 设置a节点的download属性值
+                a.href = url;                                 // 将图片的src赋值给a节点的href
+                a.dispatchEvent(event);
 
-            // DownLoadReportIMG(url);
+                // DownLoadReportIMG(url);
 
-            // window.location.href=url.replace("image/png", "image/octet-stream");
+                // window.location.href=url.replace("image/png", "image/octet-stream");
 
-            // var host = "http://" + window.location.host;
-            // host = host.replace(":8080","");
-            // window.location.href = host + filesave.recorddownurl;
-            // oDownLoad(host + filesave.recorddownurl);
-            // setTimeout("window.location.reload()",1500);
+                // var host = "http://" + window.location.host;
+                // host = host.replace(":8080","");
+                // window.location.href = host + filesave.recorddownurl;
+                // oDownLoad(host + filesave.recorddownurl);
+                // setTimeout("window.location.reload()",1500);
+
+
+            }
         }
     }else{
         layer.msg(data.message,{icon: 2});

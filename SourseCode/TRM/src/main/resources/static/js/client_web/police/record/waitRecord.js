@@ -183,17 +183,18 @@ function tr_downn(obj) {
 }
 
 //录音按钮显示隐藏 type:1开始录音
+var startMC_index;
 function img_bool(obj,type){
     if (type==1){
         //开始会议
         console.log("开始会议")
-        var startMC_index = layer.msg("会议开启中，请稍等...", {
+         startMC_index = layer.msg("会议开启中，请稍等...", {
             icon: 16,
-            time:1000
+            time:-1
         });
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
-        startMC(startMC_index);
+        startMC();
     }else if (type==2) {
        //暂停录音
         console.log("暂停会议")
@@ -461,9 +462,18 @@ function callbackgetRecordById(data) {
 //开始会议
 var mtssid=null;//会议ssid
 var useretlist=null;
-function startMC(startMC_index) {
-    layer.close(startMC_index);
+function startMC() {
     if (isNotEmpty(recordUserInfos)){
+        $("#MtState").text("加载中");
+        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").text("加载中");
+        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").text("加载中");
+        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").text("加载中");
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+
+
         var tdList=[];
         var user1={
             username:recordUserInfos.username
@@ -490,10 +500,12 @@ function startMC(startMC_index) {
         };
         ajaxSubmitByJson(url, data, callbackstartMC);
     }else {
+        layer.close(startMC_index);
         layer.msg("请刷新重试...");
     }
 }
 function callbackstartMC(data) {
+    layer.close(startMC_index);
     if(null!=data&&data.actioncode=='SUCCESS'){
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
@@ -534,6 +546,15 @@ function callbackstartMC(data) {
             $("#record_img img").css("display","none");
             $("#pauserecord").css("display","block");
         }
+
+        $("#MtState").text("未启动");
+        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").text("未启动");
+        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").text("未启动");
+        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").text("未启动");
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
         layer.msg(data.message);
     }
 }
@@ -946,23 +967,42 @@ function callbackgetPolygraphdata(data) {
                 var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
 
                 $("#xthtml #xt1").html(' '+status_text+'   ');
-                $("#xthtml #xt2,#monitorall #xt2").html(' '+relax+'  ');
-                $("#xthtml #xt3,#monitorall #xt3").html(' '+stress+'  ');
-                $("#xthtml #xt4,#monitorall #xt4").html(' '+bp+'  ');
-                $("#xthtml #xt5,#monitorall #xt5").html(' '+spo2+'  ');
-                $("#xthtml #xt6,#monitorall #xt6").html(' '+hr+'  ');
-                $("#xthtml #xt7,#monitorall #xt7").html(' '+hrv+'  ');
-                $("#xthtml #xt8,#monitorall #xt8").html(' '+br+'  ');
+                $("#xthtml #xt2").html(' '+relax+'  ');
+                $("#xthtml #xt3").html(' '+stress+'  ');
+                $("#xthtml #xt4").html(' '+bp+'  ');
+                $("#xthtml #xt5").html(' '+spo2+'  ');
+                $("#xthtml #xt6").html(' '+hr+'  ');
+                $("#xthtml #xt7").html(' '+hrv+'  ');
+                $("#xthtml #xt8").html(' '+br+'  ');
+
+
+
+                if (isNotEmpty(select_monitorall_iframe_body)) {
+                    select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+status_text+'   ');
+                    select_monitorall_iframe_body.find("#monitorall #xt2").html(' '+relax+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt3").html(' '+stress+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt4").html(' '+bp+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt5").html(' '+spo2+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt6").html(' '+hr+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt7").html(' '+hrv+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt8").html(' '+br+'  ');
+                }
 
                 var hr_snr=obj.hr_snr.toFixed(0)==null?0:obj.hr_snr.toFixed(0);;
                 if (isNotEmpty(hr_snr)&&hr_snr>0.1){
                     $("#showmsg,#open_showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
                     $("#showmsg strong,#open_showmsg strong").text("心率准确监测中");
-
-
+                    if (isNotEmpty(select_monitorall_iframe_body)) {
+                        select_monitorall_iframe_body.find("#open_showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
+                        select_monitorall_iframe_body.find("#open_showmsg strong").text("心率准确监测中");
+                    }
                 }else{
                     $("#showmsg,#open_showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
                     $("#showmsg strong,#open_showmsg strong").text("心率监测不准确");
+                    if (isNotEmpty(select_monitorall_iframe_body)) {
+                        select_monitorall_iframe_body.find("#open_showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
+                        select_monitorall_iframe_body.find("#open_showmsg strong").text("心率监测不准确");
+                    }
                 }
 
                 addData_hr(true,hr);
@@ -1012,8 +1052,8 @@ function callbackgetPolygraphdata(data) {
                     }]
                 });
 
-                if (isNotEmpty(myMonitorall)){
-                    myMonitorall.setOption({
+                if (isNotEmpty(select_monitorall_iframe)){
+                    select_monitorall_iframe.myMonitorall.setOption({
                         xAxis: {
                             data: date_hr
                         },
@@ -1021,7 +1061,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hr
                         }]
                     });
-                    myMonitorall2.setOption({
+                    select_monitorall_iframe.myMonitorall2.setOption({
                         xAxis: {
                             data: date_hrv
                         },
@@ -1029,7 +1069,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hrv
                         }]
                     });
-                    myMonitorall3.setOption({
+                    select_monitorall_iframe.myMonitorall3.setOption({
                         xAxis: {
                             data: date_br
                         },
@@ -1037,7 +1077,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_br
                         }]
                     });
-                    myMonitorall4.setOption({
+                    select_monitorall_iframe.myMonitorall4.setOption({
                         xAxis: {
                             data: date_relax
                         },
@@ -1045,7 +1085,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_relax
                         }]
                     });
-                    myMonitorall5.setOption({
+                    select_monitorall_iframe.myMonitorall5.setOption({
                         xAxis: {
                             data: date_stress
                         },
@@ -1053,7 +1093,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_stress
                         }]
                     });
-                    myMonitorall6.setOption({
+                    select_monitorall_iframe.myMonitorall6.setOption({
                         xAxis: {
                             data: date_bp
                         },
@@ -1061,7 +1101,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_bp
                         }]
                     });
-                    myMonitorall7.setOption({
+                    select_monitorall_iframe.myMonitorall7.setOption({
                         xAxis: {
                             data: date_spo2
                         },
@@ -1143,6 +1183,7 @@ var option = {
         },
     }]
 };
+/*
 var myMonitorall;
 var myMonitorall2;
 var myMonitorall3;
@@ -1150,6 +1191,10 @@ var myMonitorall4;
 var myMonitorall5;
 var myMonitorall6;
 var myMonitorall7;
+*/
+
+var select_monitorall_iframe=null;
+var select_monitorall_iframe_body=null;
 
 function select_monitorall(obj) {
     var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 10px;"><div class="layui-row" id="monitorall" >\
@@ -1244,7 +1289,7 @@ function select_monitorall(obj) {
                 </div>\
         </div></form>';
     layer.open({
-         type: 1
+         type: 2
         , skin: 'layui-layer-lan' //样式类名
         ,title: "身心检测"
         ,area: ['40%','98%']
@@ -1252,10 +1297,105 @@ function select_monitorall(obj) {
         ,id: 'layer_monitorall' //设定一个id，防止重复弹出
         ,offset: 'l'
         ,resize: true
-        ,content: html
+        ,content: togetPolygraphurl
+        ,success:function (layero,index) {
+            select_monitorall_iframe = window['layui-layer-iframe' + index];
+            select_monitorall_iframe_body=layer.getChildFrame('body', index);
+            select_monitorall_iframe.monitorall1(option);
+            select_monitorall_iframe.myMonitorall.setOption({
+                title: {
+                    text: "心率",
+                },
+                xAxis: {
+                    data: date_br
+                },
+                series: [{
+                    name:"心率",
+                    data: data_br
+                }]
+            });
+            select_monitorall_iframe.monitorall2(option);
+            select_monitorall_iframe.myMonitorall2.setOption({
+                title: {
+                    text: "心率变异",
+                },
+                xAxis: {
+                    data: date_hrv
+                },
+                series: [{
+                    name:"心率变异",
+                    data: data_hrv
+                }]
+            });
+            select_monitorall_iframe.monitorall3(option);
+            select_monitorall_iframe.myMonitorall3.setOption({
+                title: {
+                    text: "呼吸次数",
+                },
+                xAxis: {
+                    data: date_br
+                },
+                series: [{
+                    name:"呼吸次数",
+                    data: data_br
+                }]
+            });
+            select_monitorall_iframe.monitorall4(option);
+            select_monitorall_iframe.myMonitorall4.setOption({
+                title: {
+                    text: "放松值",
+                },
+                xAxis: {
+                    data: date_relax
+                },
+                series: [{
+                    name:"放松值",
+                    data: data_relax
+                }]
+            });
+            select_monitorall_iframe.monitorall5(option);
+            select_monitorall_iframe.myMonitorall5.setOption({
+                title: {
+                    text: "紧张值",
+                },
+                xAxis: {
+                    data: date_stress
+                },
+                series: [{
+                    name:"紧张值",
+                    data: data_stress
+                }]
+            });
+            select_monitorall_iframe.monitorall6(option);
+            select_monitorall_iframe.myMonitorall6.setOption({
+                title: {
+                    text: "血压变化",
+                },
+                xAxis: {
+                    data: date_bp
+                },
+                series: [{
+                    name:"血压变化",
+                    data: data_bp
+                }]
+            });
+            select_monitorall_iframe.monitorall7(option);
+            select_monitorall_iframe.myMonitorall7.setOption({
+                title: {
+                    text: "血氧",
+                },
+                xAxis: {
+                    data: date_spo2
+                },
+                series: [{
+                    name:"血氧",
+                    data: data_spo2
+                }]
+            });
+        }
     });
 
-    monitorall1(option);
+   /* monitorall1(option);
     myMonitorall.setOption({
         title: {
             text: "心率",
@@ -1345,11 +1485,11 @@ function select_monitorall(obj) {
             name:"血氧",
             data: data_spo2
         }]
-    });
+    });*/
 }
 
 
-function monitorall1(option){
+/*function monitorall1(option){
      myMonitorall = echarts.init(document.getElementById('monitorall1'),'dark');
     $(window).resize(function() {
         myMonitorall.resize();
@@ -1397,7 +1537,7 @@ function monitorall7(option){
         myMonitorall7.resize();
     });
     myMonitorall7.setOption(option);
-}
+}*/
 
 
 
@@ -1694,8 +1834,8 @@ function open_getNotifications() {
                                       <td>"+l.notificationname+"</td>\
                                       <td style='padding-bottom: 0;'>\
                                           <div class='layui-btn-container'>\
-                                          <button  class='layui-btn layui-btn-danger' onclick='previewgetNotifications();'>打开</button>\
-                                          <button  class='layui-btn'>朗读</button>\
+                                          <button  class='layui-btn layui-btn-danger' onclick='previewgetNotifications(\""+l.ssid+"\");'>打开</button>\
+                                          <button  class='layui-btn layui-btn-disabled'>朗读</button>\
                                           <button  class='layui-btn layui-btn-normal' onclick='downloadNotification(\""+l.ssid+"\")'>直接下载</button>\
                                           </div>\
                                           </td>\
@@ -1723,12 +1863,12 @@ function downloadNotification(ssid) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
-                var recorddownurl=data.recorddownurl;
-                layer.msg("下载中，请稍后...");
-              /*  var replace = recorddownurl.replace(".docx", ".html");
-                replace = replace.replace(".doc", ".html");*/
-                window.location.href=replace;
-
+                var base_filesave=data.base_filesave;
+                if (isNotEmpty(base_filesave)) {
+                    var recorddownurl=base_filesave.recorddownurl;
+                    layer.msg("下载中，请稍后...");
+                    window.location.href=recorddownurl;
+                }
             }
         }else{
             layer.msg(data.message);
@@ -1738,24 +1878,40 @@ function downloadNotification(ssid) {
 
 //打开告知书
 var previewgetNotifications_index=null;
-function previewgetNotifications(htmlpath) {
+function previewgetNotifications(ssid) {
     if (isNotEmpty(previewgetNotifications_index)) {
         layer.close(previewgetNotifications_index);
     }
-     previewgetNotifications_index = layer.open({
-        type:1,
-        title:'阅读告知书',
-        content:htmlpath,
-        shadeClose:false,
-        area: ['893px', '600px'],
-        btn: ['朗读','下载'],
-         yes:function(index, layero){
-             layer.close(index);
-         }
-         ,btn2: function(index, layero){
-             layer.close(index);
-         }
+
+    var url=getActionURL(getactionid_manage().waitRecord_downloadNotification);
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {
+            ssid: ssid
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var recorddownurl_html=data.recorddownurl_html;
+                if (isNotEmpty(recorddownurl_html)) {
+                    previewgetNotifications_index = layer.open({
+                        type:2,
+                        title:'阅读告知书',
+                        content:recorddownurl_html,
+                        shadeClose:false,
+                        area: ['50%', '700px'],
+                    });
+                }else {
+                    layer.msg("文件未找到，可尝试下载预览");
+                }
+            }
+        }else{
+            layer.msg(data.message);
+        }
     });
+
 }
 //*******************************************************************告知书start****************************************************************//
 
@@ -1970,7 +2126,10 @@ $(function () {
             $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
             var hours = new Date().getHours();
             $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
-            $("#dqtime").html(($('#Date').html()+$("#hours").html()+"："+ $("#min").html()+"："+$("#sec").html()));
+
+            if (isNotEmpty(select_monitorall_iframe_body)) {
+                select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());
+            }
         },1000);
     }
 
@@ -2127,7 +2286,7 @@ $(function () {
     window.setInterval(function (args) {
         if (isNotEmpty(mtssid)) {
             getPolygraphdata();
-           /* getEquipmentsState();*/
+           getEquipmentsState();
         }
     },1000);
 

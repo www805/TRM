@@ -1188,7 +1188,7 @@ public class RecordService extends BaseService {
                 fileMkdir.mkdirs();
             }
             String filename=record.getRecordname().replace(" ", "").replace("\"", "");
-            String path = filePathNew +filename+".docx";
+            String path = filePathNew +filename+".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             template.process(dataMap, out);
@@ -1197,13 +1197,6 @@ public class RecordService extends BaseService {
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
             exportWordVO.setWord_path(uploadbasepath+uploadpath);
 
-          /*  String html = path.substring(0,path.lastIndexOf("."));//前缀
-            String htmlpath=html+".html";
-           boolean bool = WordToHtmlUtil.wordToHtml(path,htmlpath);
-           if (bool){
-               htmlpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),htmlpath);
-               exportWordVO.setWord_htmlpath(htmlpath);
-           }*/
            result.setData(exportWordVO);
             changeResultToSuccess(result);
         } catch (IOException e) {
