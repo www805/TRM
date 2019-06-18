@@ -1052,7 +1052,7 @@ function callbackgetPolygraphdata(data) {
                     }]
                 });
 
-                if (isNotEmpty(select_monitorall_iframe)){
+                if (null!=select_monitorall_iframe){
                     select_monitorall_iframe.myMonitorall.setOption({
                         xAxis: {
                             data: date_hr
@@ -1392,6 +1392,11 @@ function select_monitorall(obj) {
                     data: data_spo2
                 }]
             });
+        },
+        cancel: function(index, layero){
+             select_monitorall_iframe=null;
+             select_monitorall_iframe_body=null;
+                layer.close(index)
         }
     });
 
