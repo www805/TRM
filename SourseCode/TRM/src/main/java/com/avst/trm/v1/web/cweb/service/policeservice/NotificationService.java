@@ -97,15 +97,19 @@ public class NotificationService extends BaseService {
         String fileName = file.getOriginalFilename();
 
         //2 获取随机文件名
-//        String imageName = getRandomFileName();
         String imageName = OpenUtil.getUUID_32();
 
         //获取文件后缀
         String suffix = fileName.substring(fileName.lastIndexOf("."));
         imageName += suffix;
 
-        if(!".doc".equalsIgnoreCase(suffix) && !".docx".equalsIgnoreCase(suffix) && !".pdf".equalsIgnoreCase(suffix) && !".png".equalsIgnoreCase(suffix) && !".jpg".equalsIgnoreCase(suffix) && !".jpeg".equalsIgnoreCase(suffix) && !".gif".equalsIgnoreCase(suffix) && !".bmp".equalsIgnoreCase(suffix)){
-            rResult.setMessage("上传失败，只能上传doc/docx/pdf/png/jpg/jpeg/gif/bmp文件");
+        if(!".doc".equalsIgnoreCase(suffix) &&
+                !".docx".equalsIgnoreCase(suffix) &&
+                !".pdf".equalsIgnoreCase(suffix) &&
+                !".png".equalsIgnoreCase(suffix) &&
+                !".jpg".equalsIgnoreCase(suffix) &&
+                !".jpeg".equalsIgnoreCase(suffix) ){
+            rResult.setMessage("上传失败，只能上传doc/docx/pdf/png/jpg/jpeg文件");
             return;
         }
 
@@ -120,13 +124,13 @@ public class NotificationService extends BaseService {
             String uploadpath=OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),realpath);
             rResult.setData(uploadpath);
 
-            if(!".doc".equalsIgnoreCase(realpath) || !".docx".equalsIgnoreCase(realpath)){
+            if(realpath.endsWith(".doc")){
+                String replace = realpath.replace(".doc", ".html");
+                WordToHtmlUtil.wordToHtml(realpath, replace);
+            }else if(realpath.endsWith(".docx")){
                 String replace = realpath.replace(".docx", ".html");
-                replace = replace.replace(".doc", ".html");
-
                 WordToHtmlUtil.wordToHtml(realpath, replace);
             }
-
 
             Police_notification notification = new Police_notification();
             notification.setNotificationname(fileName);
@@ -149,8 +153,10 @@ public class NotificationService extends BaseService {
             this.changeResultToSuccess(rResult);
             rResult.setMessage("上传成功");
 
-        } catch (IOException e) {
-            rResult.setMessage(e.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            rResult.setMessage("文件上传失败");
+            LogUtil.intoLog(4,this.getClass(),"文件上传失败,realpath:"+realpath);
         }
 
     }
@@ -167,14 +173,25 @@ public class NotificationService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+        try {
 
-        Base_filesave filesave = new Base_filesave();
-        filesave.setDatassid(getNotificationParam.getSsid());
-        filesave = filesaveMapper.selectOne(filesave);
-        filesave.setRecorddownurl(uploadbasepath + filesave.getRecorddownurl());
+            Base_filesave filesave = new Base_filesave();
+            filesave.setDatassid(getNotificationParam.getSsid());
+            filesave = filesaveMapper.selectOne(filesave);
+            if(null!=filesave&&StringUtils.isNotEmpty(filesave.getRecorddownurl())){
+                filesave.setRecorddownurl(uploadbasepath + filesave.getRecorddownurl());
+                result.setData(filesave);
+                changeResultToSuccess(result);
+            }else{
+                result.setMessage("请求下载地址失败");
+                LogUtil.intoLog(4,this.getClass(),"请求下载地址失败，数据库查找数据为空，getNotificationParam.getSsid()："
+                        +getNotificationParam.getSsid()+"---filesave.getRecorddownurl():"+filesave.getRecorddownurl());
+            }
 
-        result.setData(filesave);
-        changeResultToSuccess(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.intoLog(4,this.getClass(),"请求下载地址失败，抛错，getNotificationParam.getSsid()："+getNotificationParam.getSsid());
+        }
     }
 
     /**
