@@ -6,6 +6,9 @@ var iidno=0;//是否第一次获取iid
 
 var recordnameshow="";
 
+var subtractime_q=0;//问的时间差
+var subtractime_w=0;//答的时间差
+
 /*弹出框数据*/
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
@@ -98,13 +101,13 @@ function callbackgetRecordById(data) {
                         for (var z = 0; z< problems.length;z++) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml='<tr ondblclick="showrecord('+problem.starttime+')"><td class="font_red_color">问：'+problemtext+' </td></tr>';
+                            var problemhtml='<tr ondblclick="showrecord('+problem.starttime+',1)"><td class="font_red_color">问：'+problemtext+' </td></tr>';
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){
                                 for (var j = 0; j < answers.length; j++) {
                                     var answer = answers[j];
                                     var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr ondblclick="showrecord('+answer.starttime+')"> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
+                                    problemhtml+='<tr ondblclick="showrecord('+answer.starttime+',2)"> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
                                 }
                             }else{
                                 problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
@@ -207,16 +210,20 @@ function callbackgetRecord(data) {
                             var asrtime=data.asrtime;//时间
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
+                            var subtractime=data.subtractime;//时间差
                             //实时会议数据
                             var recordrealshtml="";
+
                             //实时会议数据
                             if (usertype==1){
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
+                                subtractime_q=subtractime;
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+')">\
                                                             <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')">\
+                                subtractime_w=subtractime;
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+')">\
                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
@@ -346,9 +353,21 @@ function callbackgetPlayUrl(data) {
 }
 
 //视频进度
-function showrecord(times) {
-    if (isNotEmpty(times)&&times!=-1){
+//usertype 任务类型 1问 2答
+function showrecord(times,usertype) {
+    if (isNotEmpty(times)&&times!=-1&&isNotEmpty(usertype)){
+
         var locationtime=times;
+        console.log("locationtime____"+locationtime)
+       if (usertype==1){
+           console.log("subtractime_q______"+subtractime_q);
+           locationtime=locationtime+subtractime_q;
+           console.log("locationtime____qqqqqqqq_______"+locationtime);
+       }else if (usertype==2){
+           console.log("subtractime_w______"+subtractime_w);
+           locationtime=locationtime+subtractime_w;
+           console.log("locationtime____wwwwwwww_______"+locationtime);
+       }
         locationtime=locationtime/1000<0?0:locationtime/1000;
         SewisePlayer.doSeek(locationtime);
     }

@@ -167,6 +167,7 @@ function tr_remove(obj) {
          laststarttime_ww=-1;
          last_type=-1;//1问题 2是答案
          qq="";
+         qqq="";
          ww="";
          www="";
      }
@@ -667,6 +668,10 @@ function overRecord() {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
+        isn_pagehide=1;
+        if (null!=setinterval1){
+            clearInterval(setinterval1);
+        }
         addRecord(2);//保存问答信息
 
         layer.close(index);
@@ -1789,6 +1794,7 @@ function clearRecord() {
         laststarttime_ww=-1;
         last_type=-1;//1问题 2是答案
         qq="";
+        qqq="";
         ww="";
         www="";
     }
@@ -2028,8 +2034,16 @@ var laststarttime_qq=-1;
 var laststarttime_ww=-1;
 var last_type=-1;//1问题 2是答案
 var qq="";
+var qqq="";
 var ww="";
 var www="";
+
+
+//判断是否需要添加
+var isn_pagehide=-1;
+
+//定时器关闭
+var setinterval1=null;
 $(function () {
     //回车加trtd
     var trtd_html='<tr>\
@@ -2117,26 +2131,28 @@ $(function () {
             requestAnimationFrame(tick);
 
         }*/
-    nowdate();
-    function nowdate() {
-        var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
-        var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-        var newDate = new Date();
-        newDate.setDate(newDate.getDate());
-        $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
-        setInterval( function() {
-            var seconds = new Date().getSeconds();
-            $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
-            var minutes = new Date().getMinutes();
-            $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
-            var hours = new Date().getHours();
-            $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+    var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
+    var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+    var newDate = new Date();
+    newDate.setDate(newDate.getDate());
+    $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
+    setinterval1= setInterval( function() {
+        var seconds = new Date().getSeconds();
+        $("#sec").html(( seconds < 10 ? "0" : "" ) + seconds);
+        var minutes = new Date().getMinutes();
+        $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
+        var hours = new Date().getHours();
+        $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
 
-            if (isNotEmpty(select_monitorall_iframe_body)) {
-                select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());
-            }
-        },1000);
-    }
+        if (isNotEmpty(select_monitorall_iframe_body)) {
+            select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());
+        }
+
+        if (isNotEmpty(mtssid)) {
+            getPolygraphdata();
+            getEquipmentsState();
+        }
+    },1000);
 
 
     // 建立连接
@@ -2190,7 +2206,6 @@ $(function () {
                             div.scrollTop = div.scrollHeight;
 
 
-
                             //检测自动上墙是否开启
                             var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (record_switch_bool==1){
@@ -2212,12 +2227,18 @@ $(function () {
                                             qq="";//清空q
                                             qq+=translatext;
                                             laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+
                                         }else{
+                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text();
+                                            qqq=labletext;
+                                            qq=qqq+translatext;
+                                            laststarttime_qq=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
 
                                             //2.初始化问答
-                                            laststarttime_qq=-1;
+                                           /* laststarttime_qq=-1;
                                             laststarttime_ww=-1;
                                             last_type=-1;//1问题 2是答案
                                             qq="";
@@ -2230,7 +2251,7 @@ $(function () {
                                             datadata["w"]=ww;
                                             setrecord_html();
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);*/
                                         }
                                     }else if (usertype==2){//最后是问，本次是答，开始拼接答案
                                         ww+=translatext;
@@ -2261,6 +2282,7 @@ $(function () {
                                         laststarttime_ww=-1;
                                         last_type=-1;//1问题 2是答案
                                         qq="";
+                                        qqq="";
                                         ww="";
                                         www="";
                                         qq+=translatext;
@@ -2285,15 +2307,14 @@ $(function () {
 
 
     $(window).on('pagehide', function(event) {
-        addRecord(null);
+        if (isn_pagehide==-1){
+            if (null!=setinterval1){
+                clearInterval(setinterval1);
+            }
+            addRecord(null);
+        }
     });
 
-    window.setInterval(function (args) {
-        if (isNotEmpty(mtssid)) {
-            getPolygraphdata();
-           getEquipmentsState();
-        }
-    },1000);
 
 
     $("#record_switch_bool").click(function () {

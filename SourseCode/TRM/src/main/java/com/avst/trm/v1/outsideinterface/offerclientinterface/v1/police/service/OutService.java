@@ -246,7 +246,6 @@ public class OutService  extends BaseService {
                                 asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
                                 asrTxtParam_toout.setAsrstartime(asrstartime);
                             }
-
                         }
                         LogUtil.intoLog(this.getClass(),"排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
                       /*  Collections.sort(asrTxtParam_toouts, (s1, s2) -> s2.getStarttime().toString().compareTo(s1.getStarttime().toString()));*/

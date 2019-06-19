@@ -19,6 +19,17 @@ public class AsrTxtParam_toout {
 
     private String asrstartime;//asr开始识别开始时间
 
+    private long subtractime;//时间差
+
+
+    public long getSubtractime() {
+        return subtractime;
+    }
+
+    public void setSubtractime(long subtractime) {
+        this.subtractime = subtractime;
+    }
+
     public String getAsrstartime() {
         return asrstartime;
     }
