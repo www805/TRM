@@ -1,4 +1,9 @@
+var recordtypes_son=null;//子集个数
+var oldpidm=null;//原有的pidm
+
 function opneModal_1(id) {
+    recordtypes_son=null;
+    oldpidm=null;
     getPidRecordtypes();
     var html='  <form class="layui-form layui-form-pane site-inline"  style="margin: 30px;">\
                <div class="layui-form-item">\
@@ -33,6 +38,12 @@ function opneModal_1(id) {
             }
             if (isNotEmpty(id)) {
                 var url=getActionURL(getactionid_manage().recordTypeList_updateRecordtype);
+
+                if (oldpidm==0&&pidm!=0&&recordtypes_son>0){
+                    layer.msg("所选择的类型不符合规范，请重新选择");
+                    return;
+                }
+                
                 var data={
                    token:INIT_CLIENTKEY,
                    param:{
@@ -97,6 +108,14 @@ function callbackgetRecordtypeById(data) {
                 }
             });
             $("#typenamem").val(data.typename);
+
+
+            oldpidm=data.pid;
+            recordtypes_son=0;
+            var recordtypes=data.recordtypes;
+            if (isNotEmpty(recordtypes)){
+                recordtypes_son=recordtypes.length;
+            }
         }
         layui.use('form', function(){
             var form =  layui.form;

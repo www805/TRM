@@ -451,6 +451,7 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+        Recordtype recordtype=new Recordtype();
 
         Police_recordtype police_recordtype=new Police_recordtype();
         police_recordtype.setId(getRecordtypeByIdParam.getId());
@@ -459,7 +460,19 @@ public class RecordService extends BaseService {
             LogUtil.intoLog(this.getClass(),"未找到该笔录类型--");
             result.setMessage("系统错误");
         }
-        result.setData(police_recordtype);
+        recordtype=gson.fromJson(gson.toJson(police_recordtype),Recordtype.class);
+
+        //开始获取子集
+        List<Police_recordtype> records_son=new ArrayList<>();
+
+        EntityWrapper ew=new EntityWrapper();
+        ew.eq("pid",police_recordtype.getId());
+        records_son =  police_recordtypeMapper.selectList(ew);
+        if (null!=records_son&&records_son.size()>0) {
+            recordtype.setRecordtypes(records_son);
+        }
+
+        result.setData(recordtype);
         changeResultToSuccess(result);
         return;
     }
