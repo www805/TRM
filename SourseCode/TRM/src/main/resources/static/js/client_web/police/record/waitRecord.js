@@ -2228,8 +2228,6 @@ $(function () {
                                             qq+=translatext;
                                             laststarttime_qq=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-
                                         }else{
                                             var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text();
                                             qqq=labletext;
