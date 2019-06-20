@@ -38,7 +38,7 @@
             color: red;
         }
         .font_blue_color{
-            color: #1171d6;
+            color: #999;
         }
 
         #table4 td{
@@ -138,8 +138,8 @@
         <div class="layui-col-md7" style="border:1px solid #F2F2F2; padding-top: 5px;">
             <div class="">
                 <button class="layui-btn layui-btn-normal" onclick="eitdTemplateYe();" >编辑</button>
-               <button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>
-                <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" id="uploadFile" ><i class="layui-icon">&#xe681;</i>导入</button>
+                <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印 id="uploadFile"</button>-->
+                <button class="layui-btn layui-btn-normal" style="margin-left: 0px;"  onclick="modelbanUpdateTemplate()"><i class="layui-icon">&#xe681;</i>导入</button>
                 <div class="layui-inline" style="margin-bottom:0">
                     <div class="layui-unselect layui-form-select" name="btn_div" showorhide="false">
                         <div class="layui-select-title">
@@ -195,7 +195,7 @@
 
 
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
-<script src="/layui/layui.js"></script>
+<script src="/layui/layui.all.js"></script>
 <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
 <script type="text/javascript" th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
@@ -204,6 +204,7 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var upload;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -220,92 +221,24 @@
         };
     });
 
-    layui.use(['element', 'upload', "layer", "form"], function () {
-        var element = layui.element;
-        var upload = layui.upload;
-        var form = layui.form;
-        var layer = layui.layer;
-
-        form.on('select(pid)', function (data) {
-            var text = $("#keyword").val();
-            if(text.replace(/\s*/g,"") == ""){
-            }
-            getTmplates_init(1,10);
-        });
-
-        var url = getActionURL(getactionid_manage().templateIndex_uploadFile);
-
-        //执行实例
-        var uploadInst = upload.render({
-            elem: '#uploadFile' //绑定元素
-            , url: url //上传接口
-            , accept: 'file' //只允许上传图片文件
-            // ,exts: 'doc|docx|xls|xlsx' //只允许上传压缩文件
-            , before: function (obj) {
-                //预读本地文件示例，不支持ie8
-                obj.preview(function (index, file, result) {
-                    // console.log(file);
-
-                    var filevalue = file.name;
-                    var fileType = getFileType(filevalue)
-                    if (fileType !== 'xls') {
-                        layer.msg("请选择xls类型的文件导入！", {icon: 2});
-                    }
-                });
-                return false;
-            }
-            , done: function (res) {
-                //上传完毕回调doc|docx|
-                console.log(res);
-
-                if ("SUCCESS" == res.actioncode) {
-                    layer.msg(res.message, {icon: 1});
-                    setTimeout("window.location.reload()", 1600);
-                }
-            }
-            , error: function (res) {
-                //请求异常回调
-                console.log("请求异常回调");
-                // layer.msg(res.message,{icon: 2});
-            }
-        });
-        layer.closeAll();
-
-        // var uploading = false;
-        //
-        // $("#client_url").on("change", function(){
-        //     if(uploading){
-        //         alert("文件正在上传中，请稍候");
-        //         return false;
-        //     }
-        //
-        //     console.log($("#infoLogoForm")[0]);
-        //     console.log(new FormData($('#infoLogoForm')[0]));
-        //     $.ajax({
-        //         url: url,
-        //         type: 'POST',
-        //         cache: false,
-        //         data: new FormData($('#infoLogoForm')[0]),
-        //         processData: false,
-        //         contentType: false,
-        //         dataType:"json",
-        //         beforeSend: function(){
-        //             uploading = true;
-        //         },
-        //         success : function(data) {
-        //             if (data.code == 1) {
-        //                 // $("#logo").attr("src", data.msg);
-        //
-        //                 layer.msg("导出成功,等待下载中...");
-        //             } else {
-        //                 layer.msg(data.msg);
-        //             }
-        //             uploading = false;
-        //         }
-        //     });
-        // });
-
-    });
+    // layui.use(['element', 'upload', "layer", "form"], function () {
+    //     var element = layui.element;
+    //     var upload = layui.upload;
+    //     var form = layui.form;
+    //     var layer = layui.layer;
+    //
+    //     form.on('select(pid)', function (data) {
+    //         var text = $("#keyword").val();
+    //         if(text.replace(/\s*/g,"") == ""){
+    //         }
+    //         getTmplates_init(1,10);
+    //     });
+    //
+    //     var url = getActionURL(getactionid_manage().templateIndex_uploadFile);
+    //
+    //
+    //
+    // });
 
     function getFileType(filePath){
         var startIndex = filePath.lastIndexOf(".");

@@ -1057,14 +1057,18 @@ public class TemplateService extends BaseService {
     /**
      * 导入模板
      * @param result
-     * @param file
+     * @param file  上传文件
+     * @param tmplateTypeId  模板类型id
+     * @param repeatStatus  是否同意覆盖，不为空就是同意
      */
-    public void uploadFile(RResult result, MultipartFile file) {
+    public void uploadFile(RResult result, MultipartFile file, String tmplateTypeId, String repeatStatus) {
         if (file.isEmpty()) {
             result.setMessage("上传失败，请选择文件");
         }
+
         List<String> list = new ArrayList<>();
         InputStream fis = null;
+
         try {
             fis = file.getInputStream();
 
@@ -1153,6 +1157,25 @@ public class TemplateService extends BaseService {
 
         //插入模板表
         if(null != list && list.size() > 0){
+
+            //先判断文件是否已经存在，如果存在就返回一个参数，，让前端再上传一次，但是带参数的
+            //参数再次点击
+            if(null == repeatStatus){
+
+                String fileTitle = list.get(0);
+
+                Police_template repeat_template = new Police_template();
+                repeat_template.setTitle(fileTitle);
+                Police_template repeatTemplate = police_templateMapper.selectOne(repeat_template);
+
+                if(null != repeatTemplate){
+                    result.setData(504);
+                    result.setMessage("模板已经存在，是否覆盖模板");
+                    return;
+                }
+
+            }
+
             String title = "";
             String problem = "";
             int templateID = 0; //模板id
@@ -1163,7 +1186,19 @@ public class TemplateService extends BaseService {
                     police_template.setTitle(title);
                     Police_template selectOne = police_templateMapper.selectOne(police_template);
 
+                    //如果本来就有的，就在名字后面加一个副本，如果没有的，就直接新增
                     if(null == selectOne){
+                        //不存在
+                        police_template.setTitle(title);
+                    }else{
+                        //存在
+                        //如果本来就有的就不新增了
+                        police_template.setTitle(title + " 副本");
+                    }
+
+                    //覆盖就是不新增
+                    //否则全部新增
+                    if(null == repeatStatus){
                         police_template.setCreatetime(new Date());
                         police_template.setSsid(OpenUtil.getUUID_32());
                         police_template.setOrdernum(0);
@@ -1174,12 +1209,15 @@ public class TemplateService extends BaseService {
                         Police_templatetotype templatetotype = new Police_templatetotype();
                         templatetotype.setTemplatessid(police_template.getId() + "");
                         templatetotype.setTemplatebool(-1);
-                        //获取排序第一的id
-                        String topId = police_templatetypeMapper.getTemplateTypeTopId();
-                        templatetotype.setTemplatetypessid(topId);
+                        //如何为空，获取排序第一的id
+                        if(null == tmplateTypeId){
+                            tmplateTypeId = police_templatetypeMapper.getTemplateTypeTopId();
+                        }
+                        templatetotype.setTemplatetypessid(tmplateTypeId);
                         templatetotype.setCreatetime(new Date());
                         police_templatetotypeMapper.insert(templatetotype);
                     }
+
                     templateID = selectOne.getId();
 
                     EntityWrapper ew = new EntityWrapper();
@@ -1238,11 +1276,13 @@ public class TemplateService extends BaseService {
                     police_templatetoproblemMapper.insert(templatetoproblem);
                 }
             }
+
+
+            //插入问题表
+            //请求成功，展示出来
+            this.changeResultToSuccess(result);
+            result.setMessage("模板导入成功，请稍后...");
         }
-        //插入问题表
-        //请求成功，展示出来
-        this.changeResultToSuccess(result);
-        result.setMessage("模板导入成功，请稍后...");
     }
 
 

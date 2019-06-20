@@ -5,6 +5,7 @@ var templateId;
 var templatetypeidSSID;
 var xiazai = false;
 var xiazai2 = false;
+var updateTemplateType;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
@@ -140,13 +141,25 @@ function showpagetohtml(){
     }
 }
 
-layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate'], function(){
+layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload'], function(){
     var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
         ,form = layui.form
         ,layer = layui.layer
         ,layedit = layui.layedit
         ,laydate = layui.laydate
-        ,laypage = layui.laypage;
+        ,laypage = layui.laypage
+        ,element = layui.element;
+
+    upload = layui.upload;
+
+    form.on('select(pid)', function (data) {
+        // var text = $("#keyword").val();
+        // if(text.replace(/\s*/g,"") == ""){
+        // }
+        getTmplates_init(1,10);
+    });
+
+
 
     //不显示首页尾页
     laypage.render({
@@ -167,6 +180,106 @@ function btn(obj) {
     }
 }
 
+function modelbanUpdateTemplate() {
+    // var problem = "";
+    // var referanswer = "";
+    // var id = "";
+    //
+    // if (isNotEmpty(problemV)){
+    //     problem = problemV.problem;
+    //     referanswer = problemV.referanswer;
+    //     id = problemV.id;
+    // }
+
+    //  problemV
+
+    var templateTypes = "";
+    var templateType = {};
+    for (var i = 0; i < list.length; i++) {
+        templateType = list[i];
+        if (i == 0) {
+            updateTemplateType = templateType.id; //把第一个类型给他
+        }
+        templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
+    }
+
+    var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
+        "            <label class=\"layui-form-label\">模板类型</label>\n" +
+        "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
+        "                <select name=\"problemtypessid\" onchange='updateTemplateType = this[selectedIndex].value;' lay-verify=\"\" style=\"margin-top: 5px;width: 120px;height: 30px;\">\n"
+        + templateTypes +
+        "                </select>\n" +
+        "            </div>\n" +
+        "            <div class=\"layui-upload\" style='margin-left: 40px;' id='xzfile'>\n" +
+        "                <button type=\"button\" class=\"layui-btn layui-btn-normal\" id=\"uploadFile\">选择文件</button>\n" +
+        "            </div>\n" +
+        "            <div class=\"layui-upload\" style='margin-left: 40px;margin-top: 10px;'>\n" +
+        "                <button type=\"button\" class=\"layui-btn\" id=\"testListAction\" onclick='updateTemplateFile();'>开始导入</button>\n" +
+        "            </div>\n" +
+        "        </div>";
+
+    //弹窗层
+    layer.open({
+        type: 1,
+        title: "导入模板",
+        area: ['420px', '220px'], //宽高
+        shadeClose: true,
+        content: content
+    });
+
+    var url = getActionURL(getactionid_manage().templateIndex_uploadFile);
+
+    //执行实例
+    var uploadInst = upload.render({
+        elem: '#uploadFile' //绑定元素
+        ,url: url //上传接口
+        ,acceptMime: '.xls' //只允许上传图片文件
+        ,exts: 'xls' //只允许上传压缩文件
+        ,auto: false //选择文件后不自动上传
+        ,bindAction: '#testListAction' //指向一个按钮触发上传
+        ,data: {
+            tmplateType:updateTemplateType.toString()
+        } //可选项。额外的参数，如：{id: 123, abc: 'xxx'}
+        , before: function (obj) {
+            console.log("开始上传");
+            //预读本地文件示例，不支持ie8
+            obj.preview(function (index, file, result) {
+                console.log(file);
+
+                var filevalue = file.name;
+                var fileType = getFileType(filevalue)
+                if (fileType !== 'xls') {
+                    layer.msg("请选择xls类型的文件导入！", {icon: 2});
+                }
+            });
+            return false;
+        }
+        , done: function (res) {
+            //上传完毕回调doc|docx|
+            console.log(res);
+
+            if ("SUCCESS" == res.actioncode) {
+                layer.msg(res.message, {icon: 1});
+                setTimeout("window.location.reload()", 1500);
+            }else if(res.data == 504){
+                layer.msg(res.message, {icon: 2});
+            }
+        }
+        , error: function (res) {
+            //请求异常回调
+            console.log("请求异常回调");
+            // layer.msg(res.message,{icon: 2});
+        }
+    });
+    // layer.closeAll();
+}
+
+function updateTemplateFile() {
+    var text = $("#xzfile").find("span").text();
+    if(!text){
+        layer.msg("请选择文件，再开始导入", {icon: 5});
+    }
+}
 
 //导出word
 function exportWord(obj){
