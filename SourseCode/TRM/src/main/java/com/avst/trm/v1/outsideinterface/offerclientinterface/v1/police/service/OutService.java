@@ -31,6 +31,7 @@ import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.feignclient.mc.vo.StartMCVO;
 import com.avst.trm.v1.feignclient.mc.vo.param.MCCacheParam;
+import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
@@ -65,7 +66,8 @@ public class OutService  extends BaseService {
     @Autowired
     private EquipmentControl equipmentControl;
 
-
+    @Autowired
+    private ZkControl zkControl;
 
 
     private Gson gson = new Gson();
@@ -644,6 +646,12 @@ public class OutService  extends BaseService {
         return;
     }
 
+
+    public void getClient(RResult rresult,ReqParam param){
+          RResult zk_rr = zkControl.getControlInfoAll();
+          rresult.setData(zk_rr);
+          return;
+    }
 
 
 }

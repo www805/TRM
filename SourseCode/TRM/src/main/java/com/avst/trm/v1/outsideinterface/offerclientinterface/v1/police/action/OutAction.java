@@ -47,6 +47,9 @@ public class OutAction extends BaseAction {
     @Autowired
     private EquipmentControl equipmentControl;
 
+
+
+
 //-----------------------------------------------mc start 分割线----------------------------------------
 
     /**
@@ -236,7 +239,7 @@ public class OutAction extends BaseAction {
      * @param param
      * @return
      */
-    @RequestMapping("getPolygraphdata")
+    @RequestMapping("/getPolygraphdata")
     public RResult getPolygraphdata(@RequestBody  ReqParam<GetPolygraphdataParam> param){
         RResult result = this.createNewResultOfFail();
         if (null == param) {
@@ -255,7 +258,7 @@ public class OutAction extends BaseAction {
      * @param param
      * @return
      */
-    @RequestMapping("getEquipmentsState")
+    @RequestMapping("/getEquipmentsState")
     public RResult getEquipmentsState(@RequestBody  ReqParam<GetEquipmentsStateParam> param){
         RResult result = this.createNewResultOfFail();
         if (null == param) {
@@ -266,6 +269,30 @@ public class OutAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 获取各个客户端的状态
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getClient")
+    public RResult getClient(@RequestBody  ReqParam param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getClient(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
+
+
 
 
 
