@@ -1,15 +1,13 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.util.StatusCode;
-import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.feignclient.zk.ZkControl;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoVO;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Date;
 
 @Service
 public class ControlInfoService {
@@ -26,9 +24,9 @@ public class ControlInfoService {
      * 获取本服务器信息
      * @return
      */
-    public ControlInfoVO getControlInfo(){
+    public ControlInfoParamVO getControlInfo(){
         //返回本服务的信息
-        ControlInfoVO infoVO = new ControlInfoVO();
+        ControlInfoParamVO infoVO = new ControlInfoParamVO();
         infoVO.setName(SystemName);
 
         //获取本机ip
@@ -40,6 +38,7 @@ public class ControlInfoService {
             e.printStackTrace();
         }
 
+        infoVO.setType("业务系统");
         infoVO.setStatus(StatusCode.OK);
 
         return infoVO;

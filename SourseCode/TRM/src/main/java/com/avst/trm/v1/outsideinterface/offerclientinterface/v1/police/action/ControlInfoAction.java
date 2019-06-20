@@ -4,7 +4,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.ControlInfoService;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +25,7 @@ public class ControlInfoAction extends BaseAction {
      */
     @RequestMapping("/getControlInfo")
     @ResponseBody
-    public ControlInfoVO getControlInfo(){
+    public ControlInfoParamVO getControlInfo(){
         return controlInfoService.getControlInfo();
     }
 
