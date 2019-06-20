@@ -505,6 +505,19 @@ public class RecordService extends BaseService {
         int update_bool=police_recordtypeMapper.updateById(police_recordtype);
         LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool>0){
+
+            //开始获取子集并且修改
+            EntityWrapper ew=new EntityWrapper();
+            ew.eq("pid",police_recordtype.getId());
+            List<Police_recordtype> records_son =  police_recordtypeMapper.selectList(ew);
+            if (null!=records_son&&records_son.size()>0&&police_recordtype.getPid()!=0) {
+                for (Police_recordtype rt : records_son) {
+                    rt.setPid(police_recordtype.getPid());
+                    int updatepoliceRecordtype_bool=police_recordtypeMapper.updateById(rt);
+                    LogUtil.intoLog(this.getClass(),"updatepoliceRecordtype_bool__"+updatepoliceRecordtype_bool);
+                }
+            }
+
             result.setData(update_bool);
             changeResultToSuccess(result);
         }

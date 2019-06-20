@@ -5,7 +5,7 @@ function opneModal_1(id) {
     recordtypes_son=null;
     oldpidm=null;
     getPidRecordtypes();
-    var html='  <form class="layui-form layui-form-pane site-inline"  style="margin: 30px;">\
+    var html=  '<form class="layui-form layui-form-pane site-inline"  style="margin: 30px;">\
                <div class="layui-form-item">\
                    <label class="layui-form-label">所属类型</label>\
                     <div class="layui-input-block">\
@@ -20,6 +20,12 @@ function opneModal_1(id) {
                     <input type="text" name="typenamem" id="typenamem" lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">\
                     </div>\
                 </div>\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">排序</label>\
+                    <div class="layui-input-block">\
+                    <input type="num" name="ordernumm" id="ordernumm" lay-verify="required" autocomplete="off" placeholder="请输入排序" class="layui-input" value="1">\
+                    </div>\
+                </div>\
             </form>';
 
     var index = layer.open({
@@ -31,6 +37,8 @@ function opneModal_1(id) {
         yes:function(index, layero){
             var pidm=$("#pidm option:selected").val();
             var typenamem=$("#typenamem").val();
+            var typenamem=$("#typenamem").val();
+            var ordernum=$("#ordernumm").val();
             if(!isNotEmpty(typenamem)){
                 layer.msg("请输入类型名称");
                 $("#typenamem").focus();
@@ -38,28 +46,35 @@ function opneModal_1(id) {
             }
             if (isNotEmpty(id)) {
                 var url=getActionURL(getactionid_manage().recordTypeList_updateRecordtype);
-
-                if (oldpidm==0&&pidm!=0&&recordtypes_son>0){
-                    layer.msg("所选择的类型不符合规范，请重新选择");
-                    return;
-                }
-                
                 var data={
-                   token:INIT_CLIENTKEY,
-                   param:{
-                       id:id,
-                       pid:pidm,
-                       typename:typenamem
-                   }
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        id:id,
+                        pid:pidm,
+                        ordernum:ordernum,
+                        typename:typenamem
+                    }
                 };
-                ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
-                layer.close(index);
+                if (oldpidm==0&&pidm!=0&&recordtypes_son>0){
+                    layer.confirm('该类目下的子类目将会变成同级，是否保存？', {
+                        btn: ['保存','取消'] //按钮
+                    }, function(){
+                        ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
+                        layer.close(index);
+                    }, function(){
+
+                    });
+                }else {
+                    ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
+                    layer.close(index);
+                }
             } else {
                 var url=getActionURL(getactionid_manage().recordTypeList_addRecordtype);
                 var data={
                     token:INIT_CLIENTKEY,
                     param: {
                         pid: pidm,
+                        ordernum:ordernum,
                         typename: typenamem
                     }
                 };
@@ -108,7 +123,7 @@ function callbackgetRecordtypeById(data) {
                 }
             });
             $("#typenamem").val(data.typename);
-
+            $("#ordernumm").val(data.ordernum);
 
             oldpidm=data.pid;
             recordtypes_son=0;
@@ -161,19 +176,19 @@ function getRandomColor() {
 }
 
 var len="----";
+var color='red';
 var num=$("#recordtypehtml tr").length;
-var color=getRandomColor();
-var color1=color;
 function gets(data) {
-    var color2=getRandomColor();
+    var color2='blue';
     if (isNotEmpty(data)){
         for (var i = 0; i < data.length; i++) {
             var l = data[i];
             num++;
             var html='<tr>\
-                                    <td>'+num+'</td>\
-                                    <td style="text-align: left;color: '+color+';font-weight: bold;">|'+len+' '+l.typename+'</td>\
-                                    <td>'+l.createtime+'</td>\
+                                     <td>'+num+'</td>\
+                                     <td style="text-align: left;color: '+color+';font-weight: bold;">|'+len+' '+l.typename+'</td>\
+                                     <td>'+l.createtime+'</td>\
+                                     <td>'+l.ordernum+'</td>\
                                     <td>\
                                         <a  class="layui-btn layui-btn-normal layui-btn-sm" onclick="opneModal_1('+l.id+');">修改</a>\
                                     </td>\
@@ -184,7 +199,7 @@ function gets(data) {
                 color=color2;
                 gets(l.police_recordtypes);
                 len="----";
-                color=color1;
+                color='red';
             }
         }
     }
