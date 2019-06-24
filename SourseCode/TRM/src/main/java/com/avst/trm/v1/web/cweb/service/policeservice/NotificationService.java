@@ -246,11 +246,13 @@ public class NotificationService extends BaseService {
             ew2.eq("datassid", getNotificationParam.getSsid().trim());
         }
         delete_bool = filesaveMapper.delete(ew2);
-        LogUtil.intoLog(this.getClass(),"delete_bool：" + delete_bool);
+        LogUtil.intoLog(this.getClass(),"filesaveMapper.delete delete_bool：" + delete_bool);
 
         if(delete_bool == 1){
             result.setData("删除成功!");
             changeResultToSuccess(result);
+        }else{
+            result.setMessage("删除失败");
         }
 
     }

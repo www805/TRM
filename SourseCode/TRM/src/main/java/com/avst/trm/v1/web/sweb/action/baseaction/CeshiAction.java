@@ -65,8 +65,6 @@ public class CeshiAction extends BaseAction {
         String code="";
         CheckSQParam checkSQParam=CommonCache.checkSQ();
 
-
-
         return checkSQParam.getMsg();
     }
 

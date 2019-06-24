@@ -375,7 +375,7 @@ function ajaxErrDialog() {
  */
 function isNotEmpty(str) {
 	if (str == "" || str == null || str == undefined || str == 'null'
-			|| str == 'Null' || str == 'NULL') {
+			|| str == 'Null' || str == 'NULL'|| str == NaN || str == 'NaN') {
 		return false;
 	}
 	if (str.length == 0)
@@ -429,6 +429,36 @@ function getFomatTime(timestr, havehour) {
 				+ d.getSeconds();
 	}
 	return time;
+}
+
+/**
+ * 把数字转成时分秒
+ * ss一定要是数字
+ */
+function getFomathms(ss){
+
+	if(isNumber(ss)){
+		ss=parseInt(ss);
+		var h=parseInt(ss/3600);
+		var m=parseInt(ss%3600/60);
+		var s=parseInt(ss%3600%60);
+
+		var rr="";
+		if(h<10){
+			rr="0";
+		}
+		rr+=h+":";
+		if(m<10){
+			rr+="0";
+		}
+		rr+=m+":";
+		if(s<10){
+			rr+="0";
+		}
+		rr+=s;
+		return rr;
+	}
+	return ss;
 }
 
 // 文件下载请求,uuid

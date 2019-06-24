@@ -31,10 +31,12 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
         boolean disbool=true;
         InitVO initVO;
-        if(null==session.getAttribute(Constant.INIT_CLIENT)){//web客户端页面动作集
+        if(null==session.getAttribute(Constant.INIT_CLIENT)
+            ||CommonCache.initbool){//web客户端页面动作集
             disbool=false;
             initVO=CommonCache.getinit_CLIENT();
             session.setAttribute(Constant.INIT_CLIENT,initVO);
+            CommonCache.initbool=false;
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
         }
@@ -43,11 +45,14 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             session.setAttribute(Constant.INIT_CLIENTKEY,clientkey);
         }
 
-        String socketio_port=PropertiesListenerConfig.getProperty("socketio.server.port");
-        String socketio_host=PropertiesListenerConfig.getProperty("socketio.server.host");
-        if (null!= socketio_host&&null!= socketio_port){
-            session.setAttribute(Constant.SOCKETIO_HOST,socketio_host);
-            session.setAttribute(Constant.SOCKETIO_PORT,socketio_port);
+        if(null==session.getAttribute(Constant.SOCKETIO_HOST)||
+                null==session.getAttribute(Constant.SOCKETIO_PORT)){
+            String socketio_host=PropertiesListenerConfig.getProperty("socketio.server.host");
+            String socketio_port=PropertiesListenerConfig.getProperty("socketio.server.port");
+            if (null!= socketio_host&&null!= socketio_port){
+                session.setAttribute(Constant.SOCKETIO_HOST,socketio_host);
+                session.setAttribute(Constant.SOCKETIO_PORT,socketio_port);
+            }
         }
 
         String url=request.getRequestURI();
@@ -55,17 +60,18 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
-            disbool=false;
-        }
         String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
         String firstinterface=basepath+"/gotologin";
-        //判断session中的用户信息是否可以通过
-        if(null==session.getAttribute(Constant.MANAGE_CLIENT)){
+        if(null==initVO||!initVO.getCode().equals(CodeForSQ.TRUE)){//看web客户端页面动作集是否有效
             disbool=false;
         }else{
-            String interfaceurl=initVO.getFirstinterface();
-            firstinterface= ( interfaceurl.startsWith("/") ? interfaceurl : ("/"+interfaceurl) );
+            //判断session中的用户信息是否可以通过
+            if(null==session.getAttribute(Constant.MANAGE_CLIENT)){
+                disbool=false;
+            }else{
+                String interfaceurl=initVO.getFirstinterface();
+                firstinterface= ( interfaceurl.startsWith("/") ? interfaceurl : ("/"+interfaceurl) );
+            }
         }
 
 //        disbool = true;  //暂时让他成功

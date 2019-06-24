@@ -50,7 +50,7 @@ public class Scheduler {
         //检测授权
         int authorizebool=serverconfig.getAuthorizebool();
         if(authorizebool!=1){//还没有生成隐性授权文件
-            boolean bool= AnalysisSQ.createClientini(base_serverconfigMapper,serverconfig);
+            boolean bool= AnalysisSQ.createClientini(serverconfig);
             LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
         }
 

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>设备直播</title>
+    <title>视频点播</title>
 </head>
 <body>
 <div  data-th-fragment="video">
@@ -12,8 +12,13 @@
 
     <!--播放器/代码开始-->
     <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
+    <script th:src="@{/layui/layui.js}"type="text/javascript"></script>
     <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js"></script>
     <script type="text/javascript">
+
+        var setinterval1;
+        var totaltime;
+
         SewisePlayer.setup({
             server: "vod",
             type: "mp4",
@@ -26,9 +31,86 @@
         });
         function initplayer(){
             SewisePlayer.toPlay(videourl, recordnameshow, 0, false);
+            /*初始化总时间*/
+            totaltime=SewisePlayer.duration();
+            if(isNumber(totaltime)){
+                $("#totaltime").html(getFomathms(totaltime));
+            };
+            setinterval1= setInterval( function() {
+                gotoprogrssBarByPlayer();
+            },1000);
+
         }
+        layui.use('element', function(){
+            var element = layui.element;
+        });
+
+        function gotoprogrssBarByPlayer(){
+            if(!isNumber(totaltime)){
+                totaltime=SewisePlayer.duration();
+                $("#totaltime").html(getFomathms(totaltime));
+            };
+            /*当前点播的秒数*/
+            var currenttime=SewisePlayer.playTime();
+            $("#currenttime").html(getFomathms(currenttime));
+            if(currenttime<5){/*最少5秒，要不然一开始显示巨丑*/
+                currenttime=5;
+            }
+            var progrssnum=currenttime/totaltime*100;
+            $("#progrssBar").empty();
+            var progrssBarstr="<div class=\"layui-progress-bar layui-bg-red\" lay-percent=\""+progrssnum+"%\" style=\"width: "+progrssnum+"%;\"></div>";
+            $("#progrssBar").append(progrssBarstr);
+        }
+
+
+        /**
+         * 修改进度(统一方法)
+         */
+        function changeProgrss(pb){
+
+            var progrss;
+            if(!isNumber(pb)){
+
+                //当前div的开始和结束位置的x轴的位置
+                var startx=$("#progrssBar").offset().left;
+                var progrssBarwidth=$("#progrssBar").width();
+
+                var checkx2startx=checkx-startx;
+                progrss =parseInt(checkx2startx/progrssBarwidth*totaltime);
+            }else{
+                progrss=pb;
+            }
+            if(isNumber(totaltime)){
+                SewisePlayer.doSeek(progrss);
+                gotoprogrssBarByPlayer();
+
+
+
+            }
+        }
+
+        var checkx;
+        $(function(){
+            $('#progrssBar').mousemove(function(e) {
+                checkx = e.originalEvent.x || e.originalEvent.layerX || 0;
+            });
+
+        });
+
+
+
     </script>
     <!--播放器/代码结束-->
+
+    <div  style="width: 100%;display:flex;">
+        <div class="layui-progress layui-progress-big layui-bg-gray" id="progrssBar" style="width: 70%;flex:none;" onclick="changeProgrss();">
+            <div class="layui-progress-bar layui-bg-red" lay-percent="20%\" style="width: 20%"></div>
+        </div>
+        <div style="flex:1;float: right;"><!--时间显示-->
+            <label >&nbsp;&nbsp;</label><label id="currenttime">00:00:00</label>/<label id="totaltime" >未知</label>
+        </div>
+    </div>
+
 </div>
 </body>
 </html>

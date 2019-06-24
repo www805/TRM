@@ -74,7 +74,7 @@ public class AnalysisSQ {
      * 修改数据库
      * @return
      */
-    public static boolean createClientini(Base_serverconfigMapper base_serverconfigMapper, Base_serverconfig serverconfig){
+    public static boolean createClientini( Base_serverconfig serverconfig){
 
         try {
             if(StringUtils.isEmpty(inifilename)){
@@ -112,8 +112,10 @@ public class AnalysisSQ {
                 serverconfig.setWorkstarttime(DateUtil.getNowTime());
                 serverconfig.setWorkdays(1);
                 serverconfig.setSsid(OpenUtil.getUUID_32());
-                int updatebool=base_serverconfigMapper.updateById(serverconfig);
-                LogUtil.intoLog(AnalysisSQ.class,updatebool+":updatebool");
+                boolean bool=updateServiceConfig(serverconfig,1);
+                if(bool){//成功的话刷新一遍客户端页面
+                    CommonCache.getinit_CLIENT(true);
+                }
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -163,9 +165,12 @@ public class AnalysisSQ {
      */
     public static int checkUseTime(){
 
+
+
         File file=new File(inipath);
         if(!file.exists()){
             LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---");
+            updateServiceConfig(null,-1);
             return -100001;
         }
         try {
@@ -181,6 +186,8 @@ public class AnalysisSQ {
             if(!localcpuCode.equals(cpuCode)){
                 LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
                 LogUtil.intoLog(AnalysisSQ.class,"授权机器码不一致");
+
+                updateServiceConfig(null,-1);
                 return -1;
             }
 
@@ -199,6 +206,38 @@ public class AnalysisSQ {
 
     }
 
+    /**
+     * 修改系统配置表
+     * @return
+     */
+    private static boolean  updateServiceConfig(Base_serverconfig serverconfig,int authorizebool){
+
+        try {
+            Base_serverconfigMapper base_serverconfigMapper=SpringUtil.getBean(Base_serverconfigMapper.class);
+            if(null==serverconfig){
+                serverconfig=new Base_serverconfig();
+                serverconfig.setId(1);
+                serverconfig=base_serverconfigMapper.selectById(1);
+            }
+            int updatebool=-1;
+            if(null!=serverconfig&&serverconfig.getId() >0){
+                serverconfig.setAuthorizebool(authorizebool);
+                updatebool=base_serverconfigMapper.updateById(serverconfig);
+            }else{
+                updatebool=base_serverconfigMapper.insert(serverconfig);
+            }
+            if(updatebool >= 0){
+                LogUtil.intoLog(1,AnalysisSQ.class,"修改系统配置成功，authorizebool："+authorizebool);
+                return true;
+            }else{
+                LogUtil.intoLog(1,AnalysisSQ.class,"修改系统配置失败，authorizebool："+authorizebool);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.intoLog(4,AnalysisSQ.class,"修改系统配置数据库抛错，大错------");
+        }
+        return false;
+    }
 
     /**
      * 本地授权信息获取
@@ -318,7 +357,7 @@ public class AnalysisSQ {
             File file=new File(inipath);
             if(!file.exists()){
                 Base_serverconfigMapper base_serverconfigMapper= SpringUtil.getBean(Base_serverconfigMapper.class);
-                boolean bool=createClientini(base_serverconfigMapper, new Base_serverconfig() );
+                boolean bool=createClientini(new Base_serverconfig() );
                 if(!bool){
                     LogUtil.intoLog(AnalysisSQ.class,"createClientini 初始化失败--");
                     return null;

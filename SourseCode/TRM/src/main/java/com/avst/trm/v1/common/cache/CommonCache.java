@@ -177,7 +177,7 @@ public class CommonCache {
 
 
     /**
-     * 页面动作初始化
+     * 页面动作初始化(后台服务器端)
      */
     private static InitVO init_WEB;
 
@@ -241,9 +241,25 @@ public class CommonCache {
 
 
     /**
-     * 页面动作初始化第三方客户端
+     * 页面动作初始化客户端
      */
     private static com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO init_CLIENT;
+
+    public static boolean initbool=false;//是否是初始化
+
+    /**
+     * 强制初始化客户端页面
+     * @param bool
+     * @return
+     */
+    public static synchronized com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO getinit_CLIENT(boolean bool){
+        if(bool){
+            init_CLIENT=null;
+            actionListMap=null;
+            LogUtil.intoLog(1,CommonCache.class,"重置客户端页面动作");
+        }
+        return getinit_CLIENT();
+    }
 
     /**
      * 获取第三方客户端页面动作初始化数据
@@ -252,7 +268,7 @@ public class CommonCache {
     public static synchronized com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO getinit_CLIENT(){
 
         if(null==init_CLIENT){
-
+            initbool=true;
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }
@@ -325,7 +341,7 @@ public class CommonCache {
         }
         Integer authorizebool=serverconfig.getAuthorizebool();
         if(null==authorizebool||authorizebool!=1){//还没有生成隐性授权文件
-            boolean bool=AnalysisSQ.createClientini(base_serverconfigMapper,serverconfig);
+            boolean bool=AnalysisSQ.createClientini(serverconfig);
             if(!bool){
                 checkSQParam.setCode(CodeForSQ.ERROR100002);
                 checkSQParam.setMsg("服务器授权异常");
