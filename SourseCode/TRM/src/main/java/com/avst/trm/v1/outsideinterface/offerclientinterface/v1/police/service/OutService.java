@@ -35,10 +35,7 @@ import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetEquipmentsStateVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
@@ -648,10 +645,18 @@ public class OutService  extends BaseService {
 
 
     public void getClient(RResult rresult,ReqParam param){
-          RResult zk_rr = zkControl.getControlInfoAll();
-          rresult.setData(zk_rr);
+        RResult zk_rr = zkControl.getControlInfoAll();
+        List<ControlInfoParamVO> list=new ArrayList<>();
+        if (null != zk_rr && zk_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            list= gson.fromJson(gson.toJson(zk_rr.getData()), new TypeToken<List<ControlInfoParamVO>>(){}.getType());
+            if (null!=list&&list.size()>0){
+                rresult.setData(list);
+                changeResultToSuccess(rresult);
+                return;
+            }
+        }else{
+            LogUtil.intoLog(this.getClass(),"getClient请求__出错");
+        }
           return;
     }
-
-
 }

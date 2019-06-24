@@ -1803,8 +1803,6 @@ function clearRecord() {
 
 
 
-
-
 //*******************************************************************告知书start****************************************************************//
 //获取告知书列表
 function open_getNotifications() {
@@ -2026,6 +2024,28 @@ function callbackgetEquipmentsState(data) {
     }
 }
 
+
+/**
+ * 获取各个客户端的状态
+ */
+function getClient() {
+    var url="/v1/police/out/getClient";
+    var data={
+        token:INIT_CLIENTKEY,
+         param:{
+          
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetClient);
+}
+function callbackgetClient(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log(data)
+        }
+    }
+}
 
 
 var datadata={};
