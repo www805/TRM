@@ -54,10 +54,10 @@ public class CreateSQ {
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(true);
         sqEntity.setClientName("销售客户端服务器164");
-        sqEntity.setCpuCode("414176414574474941427673");
+        sqEntity.setCpuCode("41414174434A457677724A77");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
-        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));
+        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:"));
 
 
     }
