@@ -446,7 +446,7 @@ public class TemplateAction extends MainAction {
      */
     @PostMapping(value = "/uploadFile")
     @ResponseBody
-    public RResult uploadFile(@RequestParam("file") MultipartFile file, String tmplateTypeId, String repeatStatus) {
+    public RResult uploadFile(@RequestParam("file") MultipartFile file,String tmplateTypeId,String repeatStatus) {
         RResult rResult = createNewResultOfFail();
         templateService.uploadFile(rResult, file, tmplateTypeId, repeatStatus);
         return rResult;

@@ -6,6 +6,7 @@ var templatetypeidSSID;
 var xiazai = false;
 var xiazai2 = false;
 var updateTemplateType;
+var repeatStatus = null;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
@@ -116,7 +117,7 @@ function getTmplateTypesParams() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 10;//测试
+        var pageSize = 15;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);
@@ -156,7 +157,7 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload']
         // var text = $("#keyword").val();
         // if(text.replace(/\s*/g,"") == ""){
         // }
-        getTmplates_init(1,10);
+        getTmplates_init(1,15);
     });
 
 
@@ -238,14 +239,17 @@ function modelbanUpdateTemplate() {
         ,auto: false //选择文件后不自动上传
         ,bindAction: '#testListAction' //指向一个按钮触发上传
         ,data: {
-            tmplateType:updateTemplateType.toString()
+            tmplateTypeId:updateTemplateType.toString()
+            ,repeatStatus:repeatStatus
         } //可选项。额外的参数，如：{id: 123, abc: 'xxx'}
         , before: function (obj) {
-            console.log("开始上传");
+            this.data = {
+                tmplateTypeId: updateTemplateType.toString() //末班类型
+                ,repeatStatus: repeatStatus //覆盖
+            };
+
             //预读本地文件示例，不支持ie8
             obj.preview(function (index, file, result) {
-                console.log(file);
-
                 var filevalue = file.name;
                 var fileType = getFileType(filevalue)
                 if (fileType !== 'xls') {
@@ -257,12 +261,24 @@ function modelbanUpdateTemplate() {
         , done: function (res) {
             //上传完毕回调doc|docx|
             console.log(res);
-
+            repeatStatus = null;
             if ("SUCCESS" == res.actioncode) {
                 layer.msg(res.message, {icon: 1});
                 setTimeout("window.location.reload()", 1500);
             }else if(res.data == 504){
-                layer.msg(res.message, {icon: 2});
+
+                //询问框
+                layer.confirm(res.message, {
+                    btn: ['覆盖','不覆盖','取消'] //按钮
+                }, function(){
+                    repeatStatus = "1";
+                    uploadInst.upload();
+                }, function(){
+                    repeatStatus = "2";
+                    uploadInst.upload();
+                }, function(){
+                    layer.closeAll();
+                });
             }
         }
         , error: function (res) {

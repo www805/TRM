@@ -153,6 +153,14 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        Police_template template1 = new Police_template();
+        template1.setTitle(template.getTitle());
+        Police_template one = police_templateMapper.selectOne(template1);
+        if(null != one){
+            result.setMessage("模板名称不能重复");
+            return;
+        }
+
         //删除关联题目
         EntityWrapper ew=new EntityWrapper();
         ew.eq("templatessid",template.getId());
@@ -1157,23 +1165,24 @@ public class TemplateService extends BaseService {
 
         //插入模板表
         if(null != list && list.size() > 0){
-
+            Template selectOne = null; //保存覆盖的模板
             //先判断文件是否已经存在，如果存在就返回一个参数，，让前端再上传一次，但是带参数的
             //参数再次点击
-            if(null == repeatStatus){
+            if(null == repeatStatus || "null".equalsIgnoreCase(repeatStatus)){
 
                 String fileTitle = list.get(0);
 
-                Police_template repeat_template = new Police_template();
-                repeat_template.setTitle(fileTitle);
-                Police_template repeatTemplate = police_templateMapper.selectOne(repeat_template);
+                EntityWrapper ewt = new EntityWrapper();
+                ewt.eq("t.title", fileTitle);
+                ewt.eq("e.id", tmplateTypeId);
+                List<Template> templateLists = police_templateMapper.getTemplateLists(ewt);
 
-                if(null != repeatTemplate){
+                if (null != templateLists && templateLists.size() > 0) {
+                    selectOne = templateLists.get(0);
                     result.setData(504);
-                    result.setMessage("模板已经存在，是否覆盖模板");
+                    result.setMessage("模板已经存在，是否覆盖该模板");
                     return;
                 }
-
             }
 
             String title = "";
@@ -1184,26 +1193,43 @@ public class TemplateService extends BaseService {
                     title = list.get(0);
                     Police_template police_template = new Police_template();
                     police_template.setTitle(title);
-                    Police_template selectOne = police_templateMapper.selectOne(police_template);
 
                     //如果本来就有的，就在名字后面加一个副本，如果没有的，就直接新增
-                    if(null == selectOne){
+                    int num = 0;
+                    while (true) {
+                        if (num > 0) {
+                            title += " 副本";
+                        }
+                        EntityWrapper ewt = new EntityWrapper();
+                        ewt.eq("t.title", title);
+                        ewt.eq("e.id", tmplateTypeId);
+                        List<Template> templateLists = police_templateMapper.getTemplateLists(ewt);
+
                         //不存在
-                        police_template.setTitle(title);
-                    }else{
-                        //存在
-                        //如果本来就有的就不新增了
-                        police_template.setTitle(title + " 副本");
+                        if (null == templateLists || templateLists.size() == 0) {
+                            police_template.setTitle(title);
+                            break;
+                        }else {
+                            //存在，并且选择的是覆盖，就进来
+                            //如果本来有就不新增了
+                            if (null != repeatStatus && "1".equalsIgnoreCase(repeatStatus)) {
+                                //把覆盖的模板复制出去
+                                selectOne = templateLists.get(0);
+                                break;
+                            }
+                        }
+                        num++;
                     }
+
 
                     //覆盖就是不新增
                     //否则全部新增
-                    if(null == repeatStatus){
+                    if(null == repeatStatus || "null".equalsIgnoreCase(repeatStatus) || "2".equalsIgnoreCase(repeatStatus)){
                         police_template.setCreatetime(new Date());
                         police_template.setSsid(OpenUtil.getUUID_32());
                         police_template.setOrdernum(0);
                         police_templateMapper.insert(police_template);
-                        selectOne = police_template;
+                        selectOne = new Template(police_template);
 
                         //添加模板类型
                         Police_templatetotype templatetotype = new Police_templatetotype();

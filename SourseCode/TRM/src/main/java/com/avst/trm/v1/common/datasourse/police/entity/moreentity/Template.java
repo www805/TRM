@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
+import com.avst.trm.v1.common.datasourse.police.entity.Police_template;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.ArrayList;
@@ -41,6 +42,18 @@ public class Template {
     private String templatetypessid;
 
     private String typename;
+
+    public Template() {
+    }
+
+    public Template(Police_template template) {
+        this.id = template.getId();
+        this.title = template.getTitle();
+        this.ordernum = template.getOrdernum();
+        this.createtime = template.getCreatetime();
+        this.updatetime = template.getUpdatetime();
+        this.ssid = template.getSsid();
+    }
 
     public String getTypename() {
         return typename;
