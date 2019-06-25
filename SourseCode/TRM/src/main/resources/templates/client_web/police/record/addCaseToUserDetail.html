@@ -445,12 +445,15 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问人二</label>
+                            <label class="layui-form-label">询问人二</label>
                             <div class="layui-input-block">
-                                <select name="otheruserinfos" id="otheruserinfos" lay-verify="required" lay-search="" lay-filter="change_otheruserinfos">
-                                    <option value=""></option>
+                                <div class="layui-col-sm8" >
+                                    <select name="otheruserinfos" id="otheruserinfos" lay-verify="required" lay-search="" lay-filter="change_otheruserinfos">
+                                        <option value=""></option>
 
-                                </select>
+                                    </select>
+                                </div>
+                                <div class="layui-col-sm4 layui-btn layui-btn-normal" type="button" onclick="open_addUser();" > <i class="layui-icon" style="padding: auto;margin: auto" >&#xe608;</i>添加</div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">

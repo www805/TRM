@@ -5,7 +5,7 @@ var recorduser=[];//会议用户集合
 
 
 var mcbool=null;//会议状态
-
+var recordbool=null;//笔录状态
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -96,30 +96,20 @@ function callsetAllproblem(data) {
 
                         var html='<tr >\
                                 <td style="padding: 0;width: 90%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" >'+templateToProblem.problem+'</label></div>\
-                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""></label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" >'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""></label></div>\
                                 </td>\
                                 <td style="float: right;">\
                                                                 <div class="layui-btn-group">\
                                                                 <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                                                                 <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                                                                 <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                                                                <div style="display: inline" id="btnadd"></div>\
                                                                 </div>\
                                                             </td>\
                                                             </tr>';
-                        if (null!=td_lastindex["key"]){
-                            $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-                            $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
-                        } else{
-                            $("#recorddetail").append(html);
-                            $('#recorddetail tr:last label[name="w"]').focus();
-                        }
+                        focuslable(html,1,'w');
                     }
-
-                    $("#recorddetail label").focus(function(){
-                        td_lastindex["key"]=$(this).closest("tr").index();
-                        td_lastindex["value"]=$(this).attr("name");
-                    });
                 }
             }
         }
@@ -135,28 +125,19 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"  class=""  placeholder="'+text+'"  q_starttime="">'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  class="" placeholder="'+w+'" w_starttime=""></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime=""></label></div>\
         </td>\
         <td style="float: right;">\
             <div class="layui-btn-group">\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
             <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete" ></i>删除</a>\
+             <div style="display: inline" id="btnadd"></div>\
             </div>\
         </td>\
         </tr>';
-    if (null!=td_lastindex["key"]){
-        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-        $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
-    } else{
-        $("#recorddetail").append(html);
-        $('#recorddetail tr:last label[name="w"]').focus();
-    }
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
+    focuslable(html,1,'w');
 }
 
 //tr移动删除事件
@@ -173,14 +154,20 @@ function tr_remove(obj) {
      }
     td_lastindex={};
     $(obj).parents("tr").remove();
+    addbtn();
+    setRecordreal();
 }
 function tr_up(obj) {
     var $tr = $(obj).parents("tr");
     $tr.prev().before($tr);
+    addbtn();
+    setRecordreal();
 }
 function tr_downn(obj) {
     var $tr = $(obj).parents("tr");
     $tr.next().after($tr);
+    addbtn();
+    setRecordreal();
 }
 
 //录音按钮显示隐藏 type:1开始录音
@@ -189,7 +176,7 @@ function img_bool(obj,type){
     if (type==1){
         //开始会议
         console.log("开始会议")
-         startMC_index = layer.msg("会议开启中，请稍等...", {
+         startMC_index = layer.msg("笔录开启中，请稍等...", {
             icon: 16,
             time:-1
         });
@@ -201,13 +188,13 @@ function img_bool(obj,type){
         console.log("暂停会议")
     }else if(type==-1) {
         console.log("会议已结束")
-        layer.msg("该案件已开启过会议");
+        layer.msg("该案件已开启过笔录");
     }
 }
 
 //粘贴语音翻译文本
 var copy_text_html="";
-var touchtime = new Date().getTime();
+/*var touchtime = new Date().getTime();*/
 function copy_text(obj,event) {
     var text=$(obj).text();
     copy_text_html=text;
@@ -216,7 +203,7 @@ function copy_text(obj,event) {
 
 
     //鼠标左击右击
-   if( new Date().getTime() - touchtime < 250 ){
+/*   if( new Date().getTime() - touchtime < 250 ){
         if(3 == event.which){
             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
             var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime");
@@ -232,16 +219,26 @@ function copy_text(obj,event) {
         }
     }else{
         touchtime = new Date().getTime();
-    }
+    }*/
 
 
 
     //字典定位问答
-    /* if (classc=="btalk") {
+     if (classc=="btalk") {
          $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
+         var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime");
+         if (!isNotEmpty(old)) {
+             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime",starttime);//直接使用最后追加的时间点
+         }
      }else if(classc=="atalk"){
          $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
-     }*/
+         var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime");
+         if (!isNotEmpty(old)) {
+             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime",starttime);//直接使用最后追加的时间点
+         }
+     }
+
+
     //当前下标问答
     /* $("#recorddetail label").each(function(){
          var lastindex=$(this).closest("tr").index();
@@ -376,9 +373,6 @@ function callbackgetRecordById(data) {
 
                 }
 
-
-
-
                 //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
@@ -395,44 +389,6 @@ function callbackgetRecordById(data) {
                     };
                     recorduser.push(user1);
                     recorduser.push(user2);
-                }
-
-                //问答
-                var problems=record.problems;
-                $("#recorddetail").html("");
-                if (isNotEmpty(problems)) {
-                    for (var z = 0; z< problems.length;z++) {
-                        var problem = problems[z];
-                        var problemtext=problem.problem==null?"未知":problem.problem;
-                        var problemhtml= '<tr>\
-                        <td style="padding: 0;width: 90%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
-                        var answers=problem.answers;
-                        if (isNotEmpty(answers)){
-                            for (var j = 0; j < answers.length; j++) {
-                                var answer = answers[j];
-                                var answertext=answer.answer==null?"未知":answer.answer;
-                                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
-                            }
-                        }else{
-                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder=""  w_starttime=""></label></div>';
-                        }
-                        problemhtml+=' </td>\
-                        <td style="float: right;">\
-                            <div class="layui-btn-group">\
-                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                        </div>\
-                        </td>\
-                        </tr>';
-                        $("#recorddetail").append(problemhtml);
-
-                        $("#recorddetail label").focus(function(){
-                            td_lastindex["key"]=$(this).closest("tr").index();
-                            td_lastindex["value"]=$(this).attr("name");
-                        });
-                    }
                 }
             }
             //案件信息
@@ -537,7 +493,7 @@ function callbackstartMC(data) {
             }
             mtssid=mtssiddata;
           /*  updateArraignment();*/
-            layer.msg("会议已开启");
+            layer.msg("笔录已开启");
         }
     }else{
         if (null!=data.data&&data.data==-1){
@@ -570,7 +526,22 @@ function overMC() {
                 mtssid:mtssid
             }
         };
-        ajaxSubmitByJson(url, data, callbackoverMC);
+        $.ajax({
+            url : url,
+            type : "POST",
+            async : false,
+            dataType : "json",
+            contentType: "application/json",
+            data : JSON.stringify(data),
+            timeout : 60000,
+            success : callbackoverMC,
+            error : function () {
+                parent.layer.msg("网络异常,请稍后重试---!", {
+                    icon : 1
+                },1);
+            }
+        });
+       /* ajaxSubmitByJson(url, data, callbackoverMC);*/
     }
 }
 function callbackoverMC(data) {
@@ -580,7 +551,6 @@ function callbackoverMC(data) {
             console.log("overMC(返回结果_"+data);
             if (data){
                 mtssid=null;//会议ssid
-                 layer.msg("会议已关闭");
             }
         }
     }else{
@@ -590,10 +560,9 @@ function callbackoverMC(data) {
 
 //保存按钮
 //recordbool 1进行中 2已结束
-function addRecord(recordbool) {
+function addRecord() {
     if (isNotEmpty(recordssid)){
         var url=getActionURL(getactionid_manage().waitRecord_addRecord);
-
         //需要收拾数据
         var recordToProblems=[];//题目集合
         $("#recorddetail td.onetd").each(function (i) {
@@ -634,11 +603,25 @@ function addRecord(recordbool) {
                 recordToProblems:recordToProblems
             }
         };
-        ajaxSubmitByJson(url, data, calladdRecord);
-        if (recordbool==2) {
+        //ajaxSubmitByJson(url, data, calladdRecord);
+        if (recordbool==2&&mtssid!=null) {
             overMC();//结束会议
-            window.history.go(-1);
         }
+        $.ajax({
+            url : url,
+            type : "POST",
+            async : false,
+            dataType : "json",
+            contentType: "application/json",
+            data : JSON.stringify(data),
+            timeout : 60000,
+            success : calladdRecord,
+            error : function () {
+                parent.layer.msg("网络异常,请稍后重试---!", {
+                    icon : 1
+                },1);
+            }
+        });
     }else{
         layer.msg("系统异常");
     }
@@ -647,15 +630,21 @@ function calladdRecord(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg('保存成功', {
-                btn: ['去查看', '继续编辑'],
-                yes:function(index){
-                    parent.document.getElementById("record_select").click();
-                    layer.close(index);
-                }, btn2:function(index){
-                    layer.close(index);
-                    return false;
-                }});
+            if (recordbool==2) {
+                layer.msg("笔录已结束",{time:500},function () {
+                    window.history.go(-1);
+                })
+            }else {
+                layer.msg('保存成功', {
+                    btn: ['去查看', '继续编辑'],
+                    yes:function(index){
+                        parent.document.getElementById("record_select").click();
+                        layer.close(index);
+                    }, btn2:function(index){
+                        layer.close(index);
+                        return false;
+                    }});
+            }
         }
     }else{
         layer.msg(data.message);
@@ -668,12 +657,11 @@ function overRecord() {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
-        isn_pagehide=1;
         if (null!=setinterval1){
             clearInterval(setinterval1);
         }
-        addRecord(2);//保存问答信息
-
+        recordbool=2;
+        addRecord();
         layer.close(index);
     }, function(index){
 
@@ -755,33 +743,6 @@ function exportPdf(obj) {
         btn(obj);
     });
 }
-
-//修改提讯数据（注入会议ssid）
-/*
-function updateArraignment() {
-    if (isNotEmpty(mtssid)){
-        var url=getActionURL(getactionid_manage().waitRecord_updateArraignment);
-        var data={
-            token:INIT_CLIENTKEY,
-            cmparam:{
-                recordssid: recordssid,
-                mtssid:mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackupdateArraignment);
-    }
-}
-function callbackupdateArraignment(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            layer.msg("会议已开启");
-        }
-    }else{
-        layer.msg(data.message);
-    }
-}
-*/
 
 
 /**
@@ -891,14 +852,33 @@ function select_liveurl(obj,type){
 
 
 //阻止回车
-function qw_keydown(event) {
+function qw_keydown(obj,event) {
     var e = event || window.event;
     if (e && e.keyCode == 13) { //回车键的键值为13
+        var dqname=$(obj).attr("name");
+        if (dqname=="q") {
+           var trindex= $(obj).closest("tr").index();
+            var lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');
+            setFocus(lable);
+        }else {
+            focuslable(trtd_html,1,'q');
+        }
         event.preventDefault();
     }
 }
-
-
+function setFocus(el) {
+    el = el[0];
+    el.focus();
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    var sel = window.getSelection();
+    if(sel.anchorOffset!=0){
+        return;
+    };
+    sel.removeAllRanges();
+    sel.addRange(range);
+};
 
 
 //自动上墙
@@ -906,23 +886,18 @@ function setrecord_html() {
     $("#recorddetail tr").attr("automaticbool","");
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 90%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);"   q_starttime="">'+datadata["q"]+'</label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime="">'+datadata["q"]+'</label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
                 </td>\
                 <td style="float: right;">\
                     <div class="layui-btn-group">\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                     <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                    </div>\
+                    <div style="display: inline" id="btnadd"></div></div>\
                 </td>\
                 </tr>';
-    $("#recorddetail").append(trtd_html);
-    $('#recorddetail tr:last label[name="w"]').focus();
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
+    focuslable(trtd_html,1,'w');
 }
 
 
@@ -993,21 +968,32 @@ function callbackgetPolygraphdata(data) {
                     select_monitorall_iframe_body.find("#monitorall #xt8").html(' '+br+'  ');
                 }
 
-                var hr_snr=obj.hr_snr.toFixed(0)==null?0:obj.hr_snr.toFixed(0);;
-                if (isNotEmpty(hr_snr)&&hr_snr>0.1){
-                    $("#showmsg,#open_showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
-                    $("#showmsg strong,#open_showmsg strong").text("心率准确监测中");
-                    if (isNotEmpty(select_monitorall_iframe_body)) {
-                        select_monitorall_iframe_body.find("#open_showmsg").css({"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"});
-                        select_monitorall_iframe_body.find("#open_showmsg strong").text("心率准确监测中");
-                    }
+                var hr_snr=obj.hr_snr.toFixed(1)==null?0:obj.hr_snr.toFixed(1);
+                var fps=obj.fps.toFixed(1)==null?0:obj.fps.toFixed(1);
+                var stress_snr=obj.stress_snr.toFixed(1)==null?0:obj.stress_snr.toFixed(1);
+                var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
+                snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
+
+
+                $("#snrtext").html(snrtext);
+                $("#snrtext3").html(snrtext);
+
+                var tsmsg="身心监测加载中...";
+                var tscss={"color":" #31708f","background-color": "#d9edf7"," border-color": "#bce8f1"};
+                if (isNotEmpty(hr_snr)&&hr_snr>=0.1){
+                    tsmsg="身心准确监测中";
+                    tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
                 }else{
-                    $("#showmsg,#open_showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
-                    $("#showmsg strong,#open_showmsg strong").text("心率监测不准确");
-                    if (isNotEmpty(select_monitorall_iframe_body)) {
-                        select_monitorall_iframe_body.find("#open_showmsg").css({"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"});
-                        select_monitorall_iframe_body.find("#open_showmsg strong").text("心率监测不准确");
-                    }
+                    tsmsg="监测不准确，请调整光线，减少身体晃动";
+                    tscss={"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"};
+                }
+
+                $("#showmsg,#open_showmsg").css(tscss);
+                $("#showmsg strong,#open_showmsg strong").text(tsmsg);
+                if (isNotEmpty(select_monitorall_iframe_body)) {
+                    select_monitorall_iframe_body.find("#open_showmsg").css(tscss);
+                    select_monitorall_iframe_body.find("#open_showmsg strong").text(tsmsg);
+                    select_monitorall_iframe_body.find("#snrtext2").html(snrtext);
                 }
 
                 addData_hr(true,hr);
@@ -1202,97 +1188,6 @@ var select_monitorall_iframe=null;
 var select_monitorall_iframe_body=null;
 
 function select_monitorall(obj) {
-    var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 10px;"><div class="layui-row" id="monitorall" >\
-                    <div class=" layadmin-backlog" lay-anim="" lay-indicator="inside" lay-arrow="none" style="width: 100%; ">\
-                        <div carousel-item="">\
-                            <ul class="layui-row layui-col-space10 layui-this">\
-                                <li class="layui-col-xs12">\
-                                        <a class="">\
-                                        <p class="layuiadmin-big-font">检测状态</p>\
-                                        <p><cite id="">\
-        <div id="open_showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>监测加载中...</strong></div>\
-                                        </cite></p>\
-                                    </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a class="layadmin-backlog-body">\
-                                    <p class="layuiadmin-big-font">生理状态</p>\
-                                    <p><cite id="xt1">正常</cite></p>\
-                                    </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a class="layadmin-backlog-body">\
-                                    <h3>当前时间</h3>\
-                                    <p><cite id="dqtime">0000年00月00日 星期0 00 : 00 : 00</cite></p>\
-                                     </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                     <div id="monitorall1" style="height:120px;width:100%;"></div>\
-                                </li>\
-                                 <li class="layui-col-xs6">\
-                                    <a class="layadmin-backlog-body">\
-                                    <h3>心率</h3>\
-                                    <p><cite id="xt6">0</cite></p>\
-                                </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                <div id="monitorall2" style="height:120px;width:100%;"></div>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a class="layadmin-backlog-body">\
-                                    <h3>心率变异</h3>\
-                                    <p><cite id="xt7">0</cite></p>\
-                                    </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                <div id="monitorall3" style="height:120px;width:100%;"></div>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a lay-href="app/content/comment" class="layadmin-backlog-body">\
-                                    <h3>呼吸次数</h3>\
-                                    <p><cite id="xt8">0</cite></p>\
-                                    </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                <div id="monitorall4" style="height:120px;width:100%;"></div>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
-                                    <h3>放松值</h3>\
-                                    <p><cite id="xt2">0</cite></p>\
-                                    </a>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                <div id="monitorall5" style="height:120px;width:100%;"></div>\
-                                </li>\
-                                <li class="layui-col-xs6">\
-                                    <a lay-href="app/content/comment" class="layadmin-backlog-body">\
-                                    <h3>紧张值</h3>\
-                                    <p><cite id="xt3">0</cite></p>\
-                                    </a>\
-                                </li>\
-                            <li class="layui-col-xs6">\
-                            <div id="monitorall6" style="height:120px;width:100%;"></div>\
-                            </li>\
-                                <li class="layui-col-xs6">\
-                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
-                                    <h3>血压变化</h3>\
-                                    <p><cite id="xt4">0</cite></p>\
-                                    </a>\
-                                </li>\
-                            <li class="layui-col-xs6">\
-                            <div id="monitorall7" style="height:120px;width:100%;"></div>\
-                            </li>\
-                                <li class="layui-col-xs6">\
-                                    <a lay-href="app/forum/list" class="layadmin-backlog-body">\
-                                    <h3>血氧</h3>\
-                                    <p><cite id="xt5">0</cite></p>\
-                                    </a>\
-                                </li>\
-                        </ul>\
-                    </div>\
-                </div>\
-        </div></form>';
     layer.open({
          type: 2
         , skin: 'layui-layer-lan' //样式类名
@@ -1404,152 +1299,7 @@ function select_monitorall(obj) {
                 layer.close(index)
         }
     });
-
-   /* monitorall1(option);
-    myMonitorall.setOption({
-        title: {
-            text: "心率",
-        },
-        xAxis: {
-            data: date_br
-        },
-        series: [{
-            name:"心率",
-            data: data_br
-        }]
-    });
-    monitorall2(option);
-    myMonitorall2.setOption({
-        title: {
-            text: "心率变异",
-        },
-        xAxis: {
-            data: date_hrv
-        },
-        series: [{
-            name:"心率变异",
-            data: data_hrv
-        }]
-    });
-    monitorall3(option);
-    myMonitorall3.setOption({
-        title: {
-            text: "呼吸次数",
-        },
-        xAxis: {
-            data: date_br
-        },
-        series: [{
-            name:"呼吸次数",
-            data: data_br
-        }]
-    });
-    monitorall4(option);
-    myMonitorall4.setOption({
-        title: {
-            text: "放松值",
-        },
-        xAxis: {
-            data: date_relax
-        },
-        series: [{
-            name:"放松值",
-            data: data_relax
-        }]
-    });
-    monitorall5(option);
-    myMonitorall5.setOption({
-        title: {
-            text: "紧张值",
-        },
-        xAxis: {
-            data: date_stress
-        },
-        series: [{
-            name:"紧张值",
-            data: data_stress
-        }]
-    });
-    monitorall6(option);
-    myMonitorall6.setOption({
-        title: {
-            text: "血压变化",
-        },
-        xAxis: {
-            data: date_bp
-        },
-        series: [{
-            name:"血压变化",
-            data: data_bp
-        }]
-    });
-    monitorall7(option);
-    myMonitorall7.setOption({
-        title: {
-            text: "血氧",
-        },
-        xAxis: {
-            data: date_spo2
-        },
-        series: [{
-            name:"血氧",
-            data: data_spo2
-        }]
-    });*/
 }
-
-
-/*function monitorall1(option){
-     myMonitorall = echarts.init(document.getElementById('monitorall1'),'dark');
-    $(window).resize(function() {
-        myMonitorall.resize();
-    });
-    myMonitorall.setOption(option);
-}
-function monitorall2(option){
-     myMonitorall2 = echarts.init(document.getElementById('monitorall2'),'dark');
-    $(window).resize(function() {
-        myMonitorall2.resize();
-    });
-    myMonitorall2.setOption(option);
-}
-function monitorall3(option){
-    myMonitorall3 = echarts.init(document.getElementById('monitorall3'),'dark');
-    $(window).resize(function() {
-        myMonitorall3.resize();
-    });
-    myMonitorall3.setOption(option);
-}
-function monitorall4(option){
-    myMonitorall4 = echarts.init(document.getElementById('monitorall4'),'dark');
-    $(window).resize(function() {
-        myMonitorall4.resize();
-    });
-    myMonitorall4.setOption(option);
-}
-function monitorall5(option){
-    myMonitorall5 = echarts.init(document.getElementById('monitorall5'),'dark');
-    $(window).resize(function() {
-        myMonitorall5.resize();
-    });
-    myMonitorall5.setOption(option);
-}
-function monitorall6(option){
-    myMonitorall6 = echarts.init(document.getElementById('monitorall6'),'dark');
-    $(window).resize(function() {
-        myMonitorall6.resize();
-    });
-    myMonitorall6.setOption(option);
-}
-function monitorall7(option){
-    myMonitorall7 = echarts.init(document.getElementById('monitorall7'),'dark');
-    $(window).resize(function() {
-        myMonitorall7.resize();
-    });
-    myMonitorall7.setOption(option);
-}*/
-
-
 
 var myChart;
 var date1 = [];
@@ -1788,17 +1538,15 @@ function initliving() {
 //重置模板
 function clearRecord() {
     $("#recorddetail").html("");
-    var bool=$(obj).parents("tr").attr("automaticbool");
-    if (isNotEmpty(bool)&&bool==1){
-        laststarttime_qq=-1;
-        laststarttime_ww=-1;
-        last_type=-1;//1问题 2是答案
-        qq="";
-        qqq="";
-        ww="";
-        www="";
-    }
+    laststarttime_qq=-1;
+    laststarttime_ww=-1;
+    last_type=-1;//1问题 2是答案
+    qq="";
+    qqq="";
+    ww="";
+    www="";
     td_lastindex={};
+    setRecordreal();
 }
 
 
@@ -2036,7 +1784,7 @@ function getClient() {
           
         }
     };
-    ajaxSubmitByJson(url, data, callbackgetClient);
+    /*ajaxSubmitByJson(url, data, callbackgetClient);*/
 }
 function callbackgetClient(data) {
     if (null != data && data.actioncode == 'SUCCESS') {
@@ -2046,6 +1794,196 @@ function callbackgetClient(data) {
         }
     }
 }
+
+var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                   <div style="display: inline" id="btnadd"></div>\
+                   </div>\
+                </td>\
+                </tr>';
+
+//lable focus 1当前光标加一行 2尾部追加 qw光标文还是答
+function focuslable(html,type,qw) {
+    if (!isNotEmpty(html)) {html=trtd_html}
+    var qwfocus=null;
+    if (null!=td_lastindex["key"]&&type==1){
+            $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+             qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
+            td_lastindex["key"]=td_lastindex["key"]+1;
+        } else{
+            $("#recorddetail").append(html);
+            qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
+            td_lastindex["key"]=$('#recorddetail tr:last').index();
+     }
+    setFocus(qwfocus);
+    td_lastindex["value"]=qw;
+    addbtn();
+}
+//最后一行添加按钮初始化
+function addbtn() {
+    var btnhtml='<button class="layui-btn layui-btn-warm  layui-btn-xs" style="margin-right: 10px;width: 99%" title="添加一行自定义问答" lay-event="del" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon">&#xe608;</i>添加</button>';
+    $("#recorddetail tr").each(function () {
+        $("#btnadd",this).html("");
+    });
+    $('#recorddetail tr:last #btnadd').html(btnhtml);
+
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
+
+    setRecordreal();
+    $('#recorddetail label').bind('input', function() {
+      setRecordreal();
+    });
+
+}
+
+/*笔录实时保存*/
+function setRecordreal() {
+    var url=getActionURL(getactionid_manage().waitRecord_setRecordreal);
+
+    var recordToProblems=[];//题目集合
+    $("#recorddetail td.onetd").each(function (i) {
+        var arr={};
+        var answers=[];//答案集合
+        var q=$(this).find("label[name='q']").text();
+        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
+        q=q.replace(/\s/g,'');
+        //经过筛选的q
+        var ws=$(this).find("label[name='w']");
+        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
+        if (isNotEmpty(q)){
+            if (null!=ws&&ws.length>0){
+                for (var j = 0; j < ws.length; j++) {
+                    var w =ws.eq(j).text();
+                    w=w.replace(/\s/g,'');
+                    //经过筛选的w
+                    if (isNotEmpty(w)) {
+                        answers.push({
+                            answer:w,
+                            starttime:w_starttime,
+                        });
+                    }
+                }
+            }
+            recordToProblems.push({
+                problem:q,
+                starttime:q_starttime,
+                answers:answers
+            });
+        }
+    });
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+            recordToProblems:recordToProblems
+        }
+    };
+    ajaxSubmitByJson(url, data, callbacksetRecordreal);
+}
+
+function callbacksetRecordreal(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log(data);
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+function getRecordrealByRecordssid() {
+    var url=getActionURL(getactionid_manage().waitRecord_getRecordrealByRecordssid);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid:recordssid
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
+}
+
+function callbackgetRecordrealByRecordssid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var problems=data;
+            $("#recorddetail").html("");
+            if (isNotEmpty(problems)) {
+                for (var z = 0; z< problems.length;z++) {
+                    var problem = problems[z];
+                    var problemtext=problem.problem==null?"未知":problem.problem;
+                    var problemhtml= '<tr>\
+                        <td style="padding: 0;width: 90%;" class="onetd">\
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                    var answers=problem.answers;
+                    if (isNotEmpty(answers)){
+                        for (var j = 0; j < answers.length; j++) {
+                            var answer = answers[j];
+                            var answertext=answer.answer==null?"未知":answer.answer;
+                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                        }
+                    }else{
+                        problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
+                    }
+                    problemhtml+=' </td>\
+                        <td style="float: right;">\
+                            <div class="layui-btn-group">\
+                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                         <div style="display: inline" id="btnadd"></div>\
+                         </div>\
+                        </td>\
+                        </tr>';
+                    focuslable(problemhtml,1,'w');
+                }
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 var datadata={};
@@ -2059,43 +1997,12 @@ var ww="";
 var www="";
 
 
-//判断是否需要添加
-var isn_pagehide=-1;
-
 //定时器关闭
 var setinterval1=null;
 $(function () {
-    //回车加trtd
-    var trtd_html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(event);"  w_starttime=""placeholder=""></label></div>\
-                </td>\
-                <td style="float: right;">\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                    </div>\
-                </td>\
-                </tr>';
-    document.onkeydown = function (event) {
-        var e = event || window.event;
-        if (e && e.keyCode == 13) { //回车键的键值为13
-            if (null!=td_lastindex["key"]){
-                $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(trtd_html);
-                $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="w"]').focus();
-            } else{
-                $("#recorddetail").append(trtd_html);
-                $('#recorddetail tr:last label[name="w"]').focus();
-            }
-            $("#recorddetail label").focus(function(){
-                td_lastindex["key"]=$(this).closest("tr").index();
-                td_lastindex["value"]=$(this).attr("name");
-            });
-            event.preventDefault();
-        }
-    };
+
+
+
 
 
 
@@ -2255,21 +2162,7 @@ $(function () {
                                             laststarttime_qq=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
 
-                                            //2.初始化问答
-                                           /* laststarttime_qq=-1;
-                                            laststarttime_ww=-1;
-                                            last_type=-1;//1问题 2是答案
-                                            qq="";
-                                            ww="";
-                                            www="";
-                                            qq+=translatext;
-                                            last_type=usertype;
-                                            laststarttime_qq=starttime;
-                                            datadata["q"]=qq;
-                                            datadata["w"]=ww;
-                                            setrecord_html();
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);*/
+
                                         }
                                     }else if (usertype==2){//最后是问，本次是答，开始拼接答案
                                         ww+=translatext;
@@ -2324,16 +2217,6 @@ $(function () {
     }
 
 
-    $(window).on('pagehide', function(event) {
-        if (isn_pagehide==-1){
-            if (null!=setinterval1){
-                clearInterval(setinterval1);
-            }
-            addRecord(null);
-        }
-    });
-
-
 
     $("#record_switch_bool").click(function () {
         var isn=$(this).attr("isn");
@@ -2367,5 +2250,9 @@ $(function () {
             ,cancel: function(){
             }
         });
+    });
+
+    $("#baocun").click(function () {
+        addRecord();
     });
 });

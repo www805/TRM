@@ -6,6 +6,9 @@ var cards=null;//全部证件类型
 var dquserssid=null;//当前用户的ssid
 var dqcasessid=null;//当前案件ssid
 
+
+var dqotheruserinfo=null;//当前询问人(新增询问人回显)
+
 //开始笔录按钮
 function addCaseToArraignment() {
     var  addUserInfo={};//新增人员的信息
@@ -70,7 +73,6 @@ function addCaseToArraignment() {
 
     //收集人员信息
     var cardtypessid=$("#cards option:selected").val();
-  /*  var  username=$("#username").val();*/
     var  beforename=$("#beforename").val();
     var  nickname= $("#nickname").val();
     var  age=$("#age").val();
@@ -107,7 +109,6 @@ function addCaseToArraignment() {
 
 
     //收集人员信息
-   /* var casename=$("#casename").val();*/
     var cause=$("#cause").val();
     var casenum=$("#casenum").val();
     var occurrencetime=$("#occurrencetime").val();
@@ -391,6 +392,15 @@ function callbackgetAdminList(data) {
                     $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                 }
             }
+            if (isNotEmpty(dqotheruserinfo)){
+                $("#otheruserinfos").val(dqotheruserinfo);
+                for (var i = 0; i < otheruserinfos.length; i++) {
+                    var u = otheruserinfos[i];
+                    if (dqotheruserinfo==u.ssid){
+                        $("#otherworkname").val(u.workname);
+                    }
+                }
+            }
         }
     }else{
         parent.layer.msg(data.message);
@@ -462,21 +472,13 @@ function callbackgetUserByCard(data){
             if (!bool){
                 return;
             }
-            
-            //案件select
-           /* if (isNotEmpty(cases)){
-                setcases(cases);
-            }*/
         }
-        /*其他在场人员数据渲染*/
-
     }else{
         parent.layer.msg(data.message);
     }
     layui.use('form', function(){
         var $ = layui.$;
         var form = layui.form;
-
         form.render();
     });
 }
@@ -1101,4 +1103,62 @@ function init_form() {
 
         form.render('select');
     });
+}
+
+/**
+ * 添加询问人
+ */
+function open_addUser() {
+    dqotheruserinfo=null;
+    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">询问人名称</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="usernamem" id="usernamem"   lay-verify="required" placeholder="请输入询问人名称" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+            </form>';
+
+    var index = parent.layer.open({
+        type:1,
+        title:'添加临时询问人',
+        content:html,
+        area: ['700px', '200px'],
+        btn: ['确定', '取消'],
+        yes:function(index, layero){
+            var url= url=getActionURL(getactionid_manage().addCaseToUser_addUser);
+            var username=$("#usernamem",parent.document).val();
+
+            if (!isNotEmpty(username)){
+                parent.layer.msg("请输入询问人名称");
+                return;
+            }
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    username:username,
+                }
+            };
+            ajaxSubmitByJson(url,data,function (data) {
+                if(null!=data&&data.actioncode=='SUCCESS'){
+                    if (isNotEmpty(data)){
+                        var data=data.data;
+                        if (isNotEmpty(data)){
+                            dqotheruserinfo=data;
+                            getAdminList();
+                        }
+                    }
+                }else{
+                    parent.layer.msg(data.message);
+                }
+            });
+            parent.layer.close(index);
+        },
+        btn2:function(index, layero){
+            parent.layer.close(index);
+        }
+    });
+
+
+
 }

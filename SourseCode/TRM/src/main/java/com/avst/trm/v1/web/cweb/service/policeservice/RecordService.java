@@ -22,6 +22,7 @@ import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.mc.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -139,30 +140,35 @@ public class RecordService extends BaseService {
         if (null!=records&&records.size()>0){
             for (Record record : records) {
                 String  recordssid=record.getSsid();
-                //查找笔录的全部题目
-                EntityWrapper probleparam=new EntityWrapper();
-                probleparam.eq("r.ssid",record.getSsid());
-                probleparam.orderBy("p.ordernum",true);
-                probleparam.orderBy("p.createtime",true);
-                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
-                if (null!=problems&&problems.size()>0){
-                    //根据题目和笔录查找对应答案
-                    for (RecordToProblem problem : problems) {
-                        String problemssid=problem.getSsid();
-                        if (StringUtils.isNotBlank(problem.getSsid())){
-                            EntityWrapper answerParam=new EntityWrapper();
-                            answerParam.eq("recordtoproblemssid",problemssid);
-                            answerParam.orderBy("ordernum",true);
-                            answerParam.orderBy("createtime",true);
-                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                            if (null!=answers&&answers.size()>0){
-                                problem.setAnswers(answers);
+                Integer recordbool_=record.getRecordbool();//笔录状态1进行中2已完成
+                if (recordbool_==1){
+                    List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
+                    record.setProblems(recordToProblems);
+                }else {
+                    //查找笔录的全部题目
+                    EntityWrapper probleparam=new EntityWrapper();
+                    probleparam.eq("r.ssid",record.getSsid());
+                    probleparam.orderBy("p.ordernum",true);
+                    probleparam.orderBy("p.createtime",true);
+                    List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
+                    if (null!=problems&&problems.size()>0){
+                        //根据题目和笔录查找对应答案
+                        for (RecordToProblem problem : problems) {
+                            String problemssid=problem.getSsid();
+                            if (StringUtils.isNotBlank(problem.getSsid())){
+                                EntityWrapper answerParam=new EntityWrapper();
+                                answerParam.eq("recordtoproblemssid",problemssid);
+                                answerParam.orderBy("ordernum",true);
+                                answerParam.orderBy("createtime",true);
+                                List<Police_answer> answers=police_answerMapper.selectList(answerParam);
+                                if (null!=answers&&answers.size()>0){
+                                    problem.setAnswers(answers);
+                                }
                             }
                         }
+                        record.setProblems(problems);
                     }
-                    record.setProblems(problems);
                 }
-
             }
         }
         getRecordsVO.setPagelist(records);
@@ -170,6 +176,42 @@ public class RecordService extends BaseService {
         changeResultToSuccess(result);
         return;
     }
+
+    //提供给笔录问答实时记录初始化使用
+    public  List<Record> initRecordrealingCache(){
+        EntityWrapper recordparam=new EntityWrapper();
+        recordparam.eq("recordbool",1);//获取进行中的笔录
+        List<Police_record> list=police_recordMapper.selectList(recordparam);
+        List<Record> records=new ArrayList<>();
+        if (null!=list&&list.size()>0){
+            for (Police_record police_record : list) {
+                Record record=new Record();
+                String  recordssid=police_record.getSsid();
+                EntityWrapper probleparam=new EntityWrapper();
+                probleparam.eq("r.ssid",recordssid);
+                probleparam.orderBy("p.ordernum",true);
+                probleparam.orderBy("p.createtime",true);
+                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
+                if (null!=problems&&problems.size()>0){
+                    for (RecordToProblem problem : problems) {
+                        EntityWrapper answerParam=new EntityWrapper();
+                        answerParam.eq("recordtoproblemssid",problem.getSsid());
+                        answerParam.orderBy("ordernum",true);
+                        answerParam.orderBy("createtime",true);
+                        List<Police_answer> answers=police_answerMapper.selectList(answerParam);
+                        if (null!=answers&&answers.size()>0){
+                            problem.setAnswers(answers);
+                        }
+                    }
+                    record.setSsid(recordssid);
+                    record.setProblems(problems);
+                    records.add(record);
+                }
+            }
+        }
+        return  records;
+    }
+
 
     public void addRecord(RResult result, ReqParam<AddRecordParam> param){
 
@@ -188,7 +230,9 @@ public class RecordService extends BaseService {
             return;
         }
         String recordssid=addRecordParam.getRecordssid();//笔录ssid
-        List<RecordToProblem> recordToProblems1=addRecordParam.getRecordToProblems();//笔录携带的题目答案集合
+      /*  List<RecordToProblem> recordToProblems1=addRecordParam.getRecordToProblems();//笔录携带的题目答案集合*/
+
+        List<RecordToProblem> recordToProblems1=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
 
         if (StringUtils.isBlank(recordssid)){
             result.setMessage("参数为空");
@@ -1414,4 +1458,62 @@ public class RecordService extends BaseService {
     }
 
 
+    public void addUser(RResult result,ReqParam<AddUserParam> param, HttpSession session){
+        AddUserParam addUserParam=param.getParam();
+        if (null==addUserParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String username=addUserParam.getUsername();
+        Base_admininfo base_admininfo=new Base_admininfo();
+        base_admininfo.setSsid(OpenUtil.getUUID_32());
+        base_admininfo.setTemporaryaskbool(1);
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        base_admininfo.setCreator(user.getSsid());
+        base_admininfo.setWorkunitssid(user.getWorkunitssid());
+        base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
+        base_admininfo.setUsername(username);
+        base_admininfo.setRegistertime(new Date());
+        int insert_bool=base_admininfoMapper.insert(base_admininfo);
+        LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
+        if (insert_bool>0){
+            result.setData(base_admininfo.getSsid());
+            changeResultToSuccess(result);
+            return;
+        }
+        return;
+    }
+
+    /***************************笔录问答实时缓存****start***************************/
+    public void getRecordrealByRecordssid(RResult result,ReqParam<GetRecordrealByRecordssidParam> param){
+        GetRecordrealByRecordssidParam getRecordrealByRecordssidParam=param.getParam();
+        if (null==getRecordrealByRecordssidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=getRecordrealByRecordssidParam.getRecordssid();
+        if (null==recordssid){
+            result.setMessage("参数为空");
+            return;
+        }
+        List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
+        changeResultToSuccess(result);
+        result.setData(recordToProblems);
+        return;
+    }
+    public void setRecordreal(RResult result,ReqParam<SetRecordrealParam> param){
+        SetRecordrealParam setRecordrealParam=param.getParam();
+        if (null==setRecordrealParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=setRecordrealParam.getRecordssid();
+        List<RecordToProblem> recordToProblems=setRecordrealParam.getRecordToProblems();
+        RecordrealingCache.setRecordreal(recordssid,recordToProblems);
+        changeResultToSuccess(result);
+        result.setData(1);
+        return;
+    }
+    /***************************笔录问答实时缓存****end***************************/
 }

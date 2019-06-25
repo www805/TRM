@@ -14,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/sweb/base/user")
 public class UserAction extends BaseAction{
@@ -125,12 +127,12 @@ public class UserAction extends BaseAction{
     @RequiresPermissions("addUser")
     @RequestMapping(value = "/addUser")
     @ResponseBody
-    public RResult addUser(@RequestBody AdminAndWorkunit param) {
+    public RResult addUser(@RequestBody AdminAndWorkunit param,HttpSession session) {
         RResult result=createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else{
-            userService.addUser(result,param);
+            userService.addUser(result,param,session);
         }
 
         result.setEndtime(DateUtil.getDateAndMinute());
@@ -176,6 +178,8 @@ public class UserAction extends BaseAction{
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
 
 
 

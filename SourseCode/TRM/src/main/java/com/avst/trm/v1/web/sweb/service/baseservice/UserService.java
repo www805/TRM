@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.sweb.service.baseservice;
 
+import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.shiro.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admintorole;
@@ -23,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +63,8 @@ public class UserService extends BaseService {
         }
         //筛选剔除已删除用户：
         ew.ne(true,"a.adminbool",-1);
+        //筛选剔除临时询问用户：
+        ew.ne(true,"a.temporaryaskbool",1);
 
        int count = base_admininfoMapper.countgetUserList(ew);
        param.setRecordCount(count);
@@ -156,12 +160,28 @@ public class UserService extends BaseService {
         return;
     }
 
-    public void addUser(RResult result,AdminAndWorkunit param){
+    public void addUser(RResult result, AdminAndWorkunit param, HttpSession session){
+
+
+        boolean checkLoginaccount_bool=false;
+        String loginaccount=param.getLoginaccount();
+        if (StringUtils.isNotBlank(loginaccount)){
+            checkLoginaccount_bool = checkLoginaccount(loginaccount,null);
+        }
+        //检测账号是否重复
+        if (!checkLoginaccount_bool){
+            result.setMessage("登录账号已存在,请重新输入");
+            return;
+        }
+
         try {
             //新增用户
-            param.setSsid(OpenUtil.getUUID_32());
-            param.setRegistertime(new Date());
             Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
+            admininfo.setSsid(OpenUtil.getUUID_32());
+            admininfo.setRegistertime(new Date());
+            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_WEB);
+            admininfo.setCreator(user.getSsid());
+            admininfo.setTemporaryaskbool(-1);//非临时询问人
             int insert_bool=base_admininfoMapper.insert(admininfo);
             LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
             if (insert_bool>0){
@@ -189,15 +209,33 @@ public class UserService extends BaseService {
     public void updateUser(RResult result,AdminAndWorkunit param) {
         //新增用户
         EntityWrapper ew=new EntityWrapper();
-
+        ew.eq("ssid",param.getSsid());
         if (StringUtils.isBlank(param.getSsid())){
             result.setMessage("参数为空");
             return;
         }
-        ew.eq("ssid",param.getSsid());
+
+        String oldloginaccount=null;
+        Base_admininfo admininfo=new Base_admininfo();
+        admininfo.setSsid(param.getSsid());
+        admininfo = base_admininfoMapper.selectOne(admininfo);
+        oldloginaccount=admininfo.getLoginaccount();
+
+
+        boolean checkLoginaccount_bool=false;
+        String loginaccount=param.getLoginaccount();
+        if (StringUtils.isNotBlank(loginaccount)){
+            checkLoginaccount_bool = checkLoginaccount(loginaccount,oldloginaccount);
+        }
+        //检测账号是否重复
+        if (!checkLoginaccount_bool){
+            result.setMessage("登录账号已存在,请重新输入");
+            return;
+        }
+
         param.setUpdatetime(new Date());
-        Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
-        int update_bool = base_admininfoMapper.update(admininfo,ew);
+        Base_admininfo base_admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
+        int update_bool = base_admininfoMapper.update(base_admininfo,ew);
         LogUtil.intoLog(this.getClass(),"update_bool__" + update_bool);
         if (update_bool > 0) {
             //删除原有角色关联数据
@@ -210,7 +248,7 @@ public class UserService extends BaseService {
             if (null != roles && roles.size() > 0) {
                 for (Base_role role : roles) {
                     Base_admintorole admintorole = new Base_admintorole();
-                    admintorole.setAdminssid(admininfo.getSsid());
+                    admintorole.setAdminssid(base_admininfo.getSsid());
                     admintorole.setRolessid(role.getSsid());
                     admintorole.setCreatetime(new Date());
                     admintorole.setSsid(OpenUtil.getUUID_32());
@@ -223,6 +261,25 @@ public class UserService extends BaseService {
             changeResultToSuccess(result);
             return;
         }
+    }
+
+    /**
+     * 检测账号是否存在
+     * @return
+     */
+    public boolean checkLoginaccount(String loginaccount,String oldloginaccount) {
+        if (null!=loginaccount){
+                if (null!=oldloginaccount&&loginaccount.trim().equals(oldloginaccount.trim())){
+                    return  true;
+                }
+                EntityWrapper adminew=new EntityWrapper();
+                adminew.eq("loginaccount",loginaccount);
+                List<Base_admininfo> admininfos = base_admininfoMapper.selectList(adminew);
+                if (null==admininfos||admininfos.size()<1){
+                    return  true;
+                }
+        }
+        return  false;
     }
 
 }

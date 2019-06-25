@@ -84,6 +84,26 @@ public class Base_admininfo extends Model<Base_admininfo> {
 
     private Integer integer2;
 
+    private String creator;//创建者ssid
+
+    private Integer temporaryaskbool;//是否为临时询问人1是临时询问人-1非临时询问人
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public Integer getTemporaryaskbool() {
+        return temporaryaskbool;
+    }
+
+    public void setTemporaryaskbool(Integer temporaryaskbool) {
+        this.temporaryaskbool = temporaryaskbool;
+    }
+
     public Integer getId() {
         return id;
     }

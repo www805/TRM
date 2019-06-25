@@ -452,6 +452,59 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 添加临时询问人
+     * @param param
+     * @return
+     */
+    @RequestMapping("/addUser")
+    public  RResult addUser(@RequestBody ReqParam<AddUserParam> param, HttpSession session){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.addUser(result,param,session);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 笔录问答实时保存---------------
+     */
+    @RequestMapping("/getRecordrealByRecordssid")
+    public  RResult getRecordrealByRecordssid(@RequestBody ReqParam<GetRecordrealByRecordssidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getRecordrealByRecordssid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    @RequestMapping("/setRecordreal")
+    public  RResult setRecordreal(@RequestBody ReqParam<SetRecordrealParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            recordService.setRecordreal(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
 
 
 

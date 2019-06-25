@@ -74,6 +74,13 @@ public class LoginService extends BaseService {
                             return;
                         }
 
+                        if (null!=base_admininfo.getTemporaryaskbool()&&base_admininfo.getTemporaryaskbool()==1){
+                            result.setMessage("临时询问人不可登录");
+                            return;
+                        }
+
+
+
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
                         subject.login( new UsernamePasswordToken(loginaccount, password));   //完成登录
                         LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());

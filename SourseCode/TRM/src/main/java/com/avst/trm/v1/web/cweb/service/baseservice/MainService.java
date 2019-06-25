@@ -138,6 +138,13 @@ public class MainService extends BaseService {
                         result.setMessage("用户状态异常");
                         return;
                     }
+
+
+                    if (null!=user.getTemporaryaskbool()&&user.getTemporaryaskbool()==1){
+                        result.setMessage("临时询问人不可登录");
+                        return;
+                    }
+
                     //登陆成功
                     LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登陆成功--");
                     result.setMessage("登陆成功");
@@ -427,6 +434,7 @@ public class MainService extends BaseService {
 
         EntityWrapper adminparam=new EntityWrapper();
         adminparam.eq("a.adminbool",1);//正常人
+        adminparam.orderBy("a.registerTime",false);
         List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
         if (null!=adminList&&adminList.size()>0){
             result.setData(adminList);

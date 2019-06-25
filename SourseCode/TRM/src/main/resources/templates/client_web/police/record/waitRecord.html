@@ -188,11 +188,11 @@
     <div th:replace="header :: header">...</div>
 
     <div class="layui-elem-quote layui-row" style=" padding: 10px;">
-        <div class="layui-col-md3 ">
+        <div class="layui-col-md2 ">
                 <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
         </div>
-        <div class="layui-col-md6 " style="font-size: 16px;text-align: center;text-shadow: 0 0 0.2em #1E9FFF;" id="xthtml" >
-            <div style="float: left">
+        <div class="layui-col-md7 " style="font-size: 16px;text-align: center;text-shadow: 0 0 0.2em #1E9FFF;" id="xthtml" >
+            <div style="float: right">
                 生理状态：<span id="xt1"> 加载中  </span>
                 心率：<span id="xt6"> 0.0  </span>
                 心率变异：<span id="xt7"> 0.0  </span>
@@ -201,9 +201,10 @@
                 紧张值：<span id="xt3"> 0.0  </span>
                 血压变化：<span id="xt4"> 0.0  </span>
                 血氧：<span id="xt5"> 0.0</span>
+               <span class="layui-badge layui-bg-black" id="snrtext3">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span>
             </div>
         </div>
-        <div class="layui-col-md3 clock ">
+        <div class="layui-col-md3 clock " >
             <ul>
                 <li id="Date">0000年00月00日</li>
                 <li id="hours">00</li>
@@ -268,7 +269,7 @@
 
                                </div>
                                  <div class="layui-col-md12" >
-                                    <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>监测加载中...</strong></div>
+                                    <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
                                 </div>
                                 <div class="layui-col-md12" >
                                    <div id="main1" style="height:200px;width:100%;"></div>
@@ -284,8 +285,8 @@
                                         <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
                                     </div>
                                     <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
+                                    <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
                                 </div>
-
                                 <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
                                     <div style="float: left;width: 100%">
                                         生理状态：<span id="xt1"> 加载中  </span>
@@ -338,8 +339,7 @@
         </div>
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
             <div style="margin-top: 5px">
-                <button class="layui-btn layui-btn-normal " onclick="addRecord(null);" id="baocun"  >保存</button>
-                <!--<button class="layui-btn layui-btn-normal " ><i class="iconfont icon-dayin" title="打印"></i> 打印</button>-->
+                <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
                 <div class="layui-inline" style="margin-bottom:0">
                     <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                         <div class="layui-select-title">
@@ -352,7 +352,7 @@
                     </div>
                 </div>
                 <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
-
+                <button class="layui-btn layui-btn-normal " onclick="focuslable(null,1,'q');">添加自定义问答</button>
                     <div style="float: right">
                         <button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
                         <button class="layui-btn layui-btn-disabled "><i class="iconfont icon-langdu" title="朗读"></i> 朗读</button>
@@ -363,7 +363,7 @@
                     <div class="layui-card"  >
                         <div class="layui-card-header">
                             <div class="layui-input-inline layui-col-md6" >
-                            笔录制作<span style="color: red;font-weight: normal">（提示:空白处回车添加自定义问答）</span><!--用时：<span id="jishi">00:00:00</span>-->
+                            笔录制作<span style="color: red;font-weight: normal">（提示:光标移至指定"答" 回车添加自定义问答）</span><!--用时：<span id="jishi">00:00:00</span>-->
                             </div>
                             <div class="layui-input-inline layui-col-md6">
                                 <div  style="float: right">
@@ -494,6 +494,7 @@
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
         recordssid=[[${waitRecordModel.recordssid}]];
         getRecordById();
+        getRecordrealByRecordssid();
         getTime();
         main1();
         getClient();

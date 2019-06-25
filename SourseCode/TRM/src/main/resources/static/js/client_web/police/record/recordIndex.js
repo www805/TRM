@@ -85,7 +85,7 @@ function callbackgetRecords(data) {
         if (isNotEmpty(data)){
             records=data.data.pagelist;
             pageshow(data);
-
+            $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
@@ -121,12 +121,14 @@ function callbackgetRecords(data) {
         layer.msg(data.message);
     }
 }
-function setproblems(recordssid) {
+function setproblems(recordssid,obj) {
     $('#recorddetail').html("");
+    $("#pagelisttemplates_tbody tr").css({"background-color":" #fff"});
     if (isNotEmpty(recordssid)&&isNotEmpty(records)) {
         for (var i = 0; i < records.length; i++) {
             var l = records[i];
             if (l.ssid==recordssid){
+                $(obj).css({"background-color":" #f2f2f2"});
                 $("#recordtitle").text(l.recordname==null?"笔录标题":l.recordname);
                 recordssid_go=l.ssid;
                 var problems=l.problems;

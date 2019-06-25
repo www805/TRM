@@ -40,6 +40,7 @@ function getactionid_manage() {
 
 
 
+
         getKeyword_getKeywordList:"getKeyword_getKeywordList",
         getKeyword_getAddOrUpdateKeyword:"getKeyword_getAddOrUpdateKeyword",
         getKeyword_deleteKeyword:"getKeyword_deleteKeyword",
@@ -110,6 +111,7 @@ function getactionid_manage() {
         addCaseToUser_addCase:"addCaseToUser_addCase",
         addCaseToUser_getUserinfoList:"addCaseToUser_getUserinfoList",
         addCaseToUser_getAdminList:"addCaseToUser_getAdminList",
+        addCaseToUser_addUser:"addCaseToUser_addUser",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -148,6 +150,8 @@ function getactionid_manage() {
         waitRecord_downloadNotification:"waitRecord_downloadNotification",
         waitRecord_getEquipmentsState:"waitRecord_getEquipmentsState",
         waitRecord_togetPolygraph:"waitRecord_togetPolygraph",
+        waitRecord_getRecordrealByRecordssid:"waitRecord_getRecordrealByRecordssid",
+        waitRecord_setRecordreal:"waitRecord_setRecordreal",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
