@@ -621,7 +621,7 @@ public class RecordService extends BaseService {
                 addPolice_case.setCreatetime(new Date());
                 addPolice_case.setOrdernum(0);
                 addPolice_case.setUserssid(userssid);
-                addPolice_case.setCreator(addCaseToArraignmentParam.getCreatoruuid());
+                addPolice_case.setCreator(addCaseToArraignmentParam.getAdminssid());
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
                 LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
                 if (insertcase_bool>0){
@@ -777,7 +777,7 @@ public class RecordService extends BaseService {
     }
 
 
-    public void getCaseById(RResult result, ReqParam<GetCaseByIdParam> param){
+    public void getCaseById(RResult result, ReqParam<GetCaseByIdParam> param,HttpSession session){
         GetCaseByIdVO getCaseByIdVO=new GetCaseByIdVO();
 
         GetCaseByIdParam getCaseByIdParam=param.getParam();
@@ -792,16 +792,12 @@ public class RecordService extends BaseService {
             return;
         }
 
-        String creatoruuid=getCaseByIdParam.getCreatoruuid();
-        if (StringUtils.isBlank(creatoruuid)){
-            result.setMessage("参数2为空");
-            return;
-        }
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
 
         //根据用户userssid查询案件列表
         EntityWrapper caseparam=new EntityWrapper();
         caseparam.eq("c.userssid",userssid);
-        caseparam.eq("c.creator",creatoruuid);
+        caseparam.eq("c.creator",user.getSsid());
         caseparam.orderBy("c.occurrencetime",false);
         List<CaseAndUserInfo> cases=police_caseMapper.getCaseByUserSsid(caseparam);//加入询问次数
         if (null!=cases&&cases.size()>0){
@@ -1317,7 +1313,7 @@ public class RecordService extends BaseService {
         }
     }
 
-    public void getCases(RResult result,ReqParam<GetCasesParam> param){
+    public void getCases(RResult result,ReqParam<GetCasesParam> param,HttpSession session){
         GetCasesParam getCasesParam=param.getParam();
         if (null==getCasesParam){
             result.setMessage("参数为空");
@@ -1336,6 +1332,9 @@ public class RecordService extends BaseService {
         if (StringUtils.isNotBlank(getCasesParam.getUsername())){
             ew.like(true,"u.username",getCasesParam.getUsername().trim());
         }
+
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        ew.eq("c.creator",user.getSsid());
 
         int count = police_caseMapper.countgetArraignmentList(ew);
         getCasesParam.setRecordCount(count);
@@ -1370,14 +1369,17 @@ public class RecordService extends BaseService {
         changeResultToSuccess(result);
     }
 
-    public void addCase(RResult result,ReqParam<AddCaseParam> param){
+    public void addCase(RResult result,ReqParam<AddCaseParam> param,HttpSession session){
         AddCaseParam addCaseParam=param.getParam();
         if (null==addCaseParam){
             result.setMessage("参数为空");
             return;
         }
+
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
         addCaseParam.setSsid(OpenUtil.getUUID_32());
         addCaseParam.setCreatetime(new Date());
+        addCaseParam.setCreator(user.getSsid());
        int caseinsert_bool = police_caseMapper.insert(addCaseParam);
        LogUtil.intoLog(this.getClass(),"caseinsert_bool__"+caseinsert_bool);
         if (caseinsert_bool>0){
@@ -1497,6 +1499,34 @@ public class RecordService extends BaseService {
         }
         return;
     }
+
+    public void getRecordByCasessid(RResult result,ReqParam<GetRecordByCasessidParam> param){
+        GetRecordByCasessidParam getRecordByCasessidParam=param.getParam();
+        if (null==getRecordByCasessidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String casessid=getRecordByCasessidParam.getCasessid();
+        if (StringUtils.isBlank(casessid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper caseparam=new EntityWrapper();
+        caseparam.eq("cr.casessid",casessid);
+        caseparam.orderBy("a.createtime",false);
+        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(caseparam);
+        if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+           //获取案件提讯的笔录问答
+            result.setData(arraignmentAndRecords);
+        }
+        changeResultToSuccess(result);
+        return;
+    }
+
+
+
 
     /***************************笔录问答实时缓存****start***************************/
     public void getRecordrealByRecordssid(RResult result,ReqParam<GetRecordrealByRecordssidParam> param){

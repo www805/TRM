@@ -163,7 +163,6 @@ function addCaseToArraignment() {
             usertos:usertos,
             addUserInfo:addUserInfo,
             addPolice_case:addPolice_case,
-            creatoruuid:sessionadminssid
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
@@ -737,7 +736,7 @@ $(function () {
 });
 
 
-//废弃
+
 function getCaseById() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getCaseById);
     var userssid=dquserssid;
@@ -745,7 +744,6 @@ function getCaseById() {
         token:INIT_CLIENTKEY,
         param:{
             userssid:userssid,
-            creatoruuid:sessionadminssid
         }
     };
     ajaxSubmitByJson(url,data,callbakegetCaseById) ;

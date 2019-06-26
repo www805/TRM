@@ -16,6 +16,11 @@
         white-space: nowrap;
         text-overflow: ellipsis;
     }
+    .noline a:hover{
+        text-decoration: underline;
+        font-size: 20px;
+        font-weight: bold;
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -81,7 +86,7 @@
             <td>{{value.starttime==null?"":value.starttime}}</td>
             <td>{{value.endtime==null?"":value.endtime}}</td>
             <td>{{value.creator==null?"":value.creator}}</td>
-            <td {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</td>
+            <td  class="noline"  onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
             <td>
                 <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
             </td>

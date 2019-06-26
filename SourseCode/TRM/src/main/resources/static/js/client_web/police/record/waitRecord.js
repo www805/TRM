@@ -984,7 +984,7 @@ function callbackgetPolygraphdata(data) {
                     tsmsg="身心准确监测中";
                     tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
                 }else{
-                    tsmsg="监测不准确，请调整光线，减少身体晃动";
+                    tsmsg="监测准确度较低，请调整光线，减少身体晃动";
                     tscss={"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"};
                 }
 

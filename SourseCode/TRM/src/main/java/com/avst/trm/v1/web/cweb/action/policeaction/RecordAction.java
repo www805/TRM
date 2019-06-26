@@ -240,14 +240,14 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping(value = "/getCaseById")
-    public RResult getCaseById(@RequestBody  ReqParam<GetCaseByIdParam> param){
+    public RResult getCaseById(@RequestBody  ReqParam<GetCaseByIdParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-           recordService.getCaseById(result,param);
+           recordService.getCaseById(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -371,14 +371,14 @@ public class RecordAction extends BaseAction {
      * 获取案件列表
      */
     @RequestMapping("/getCases")
-    public  RResult getCases(@RequestBody ReqParam<GetCasesParam> param){
+    public  RResult getCases(@RequestBody ReqParam<GetCasesParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getCases(result,param);
+            recordService.getCases(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -388,14 +388,14 @@ public class RecordAction extends BaseAction {
      * 添加案件
      */
     @RequestMapping("/addCase")
-    public  RResult addCase(@RequestBody ReqParam<AddCaseParam> param){
+    public  RResult addCase(@RequestBody ReqParam<AddCaseParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.addCase(result,param);
+            recordService.addCase(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -470,6 +470,27 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 根据案件ssid获取笔录
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getRecordByCasessid")
+    public  RResult getRecordByCasessid(@RequestBody ReqParam<GetRecordByCasessidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getRecordByCasessid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
     /**
