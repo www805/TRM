@@ -28,7 +28,6 @@ public class PropertiesListenerConfig {
             try {
                 // PropertiesLoaderUtils的默认编码是ISO-8859-1,在这里转码一下
                 propertiesMap.put(keyStr, new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
-                LogUtil.intoLog(PropertiesListenerConfig.class,keyStr+"-------"+new String(props.getProperty(keyStr).getBytes("ISO-8859-1"), "utf-8"));
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (java.lang.Exception e) {
@@ -86,9 +85,10 @@ public class PropertiesListenerConfig {
 
     public static String getProperty(String name) {
 
-        String s = propertiesMap.get(name);
-
-        return propertiesMap.get(name).toString();
+        if(null==propertiesMap||null==propertiesMap.entrySet()||propertiesMap.entrySet().size()==0){
+            loadAllProperties("application.properties");
+        }
+        return propertiesMap.get(name);
     }
 
     public static Map<String, String> getAllProperty() {

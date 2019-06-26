@@ -384,30 +384,7 @@ public static String numtoStr(int digit,Integer num){
 	}
 	   return false;
    }
-   
-   
-   /**
-    * 读取数据
-    */
-   public static String readData(String filepath) {
-  	 String str="";
-       try {
-      	 String row="";
-           FileReader read = new FileReader(filepath);
-           BufferedReader br = new BufferedReader(read);
-           while ((row = br.readLine()) != null) {
-//               LogUtil.intoLog(OpenUtil.class,row);
-          	 str+=row+"\r\n";
-           }
-           br.close();
-           read.close();
-       } catch (FileNotFoundException e) {
-           e.printStackTrace();
-       } catch (Exception e) {
-           e.printStackTrace();
-       }
-		return str;
-   }
+
    
    /**
 	 * 检测字段的首尾的特殊字符检测
@@ -1116,11 +1093,8 @@ public static String numtoStr(int digit,Integer num){
 	
 	public static void main(String[] args) {
 
-//		String str="D:\\lswj\\NameSpace.java";
-//
-//		LogUtil.intoLog(OpenUtil.class,setFileHide(str));
 
-		LogUtil.intoLog(OpenUtil.class,getXMSoursePath());
+		LogUtil.intoLog(getfile_folder("d:\\ws\\12\\1/txt"));
 
 
 

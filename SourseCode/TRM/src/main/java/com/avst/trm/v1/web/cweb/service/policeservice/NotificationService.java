@@ -1,14 +1,13 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_notification;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Notification;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_notificationMapper;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
-import com.avst.trm.v1.common.util.WordToHtmlUtil;
+import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
