@@ -623,6 +623,7 @@ public class RecordService extends BaseService {
                 addPolice_case.setCreatetime(new Date());
                 addPolice_case.setOrdernum(0);
                 addPolice_case.setUserssid(userssid);
+                addPolice_case.setCreator(addCaseToArraignmentParam.getCreatoruuid());
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
                 LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
                 if (insertcase_bool>0){
@@ -793,9 +794,16 @@ public class RecordService extends BaseService {
             return;
         }
 
+        String creatoruuid=getCaseByIdParam.getCreatoruuid();
+        if (StringUtils.isBlank(creatoruuid)){
+            result.setMessage("参数2为空");
+            return;
+        }
+
         //根据用户userssid查询案件列表
         EntityWrapper caseparam=new EntityWrapper();
         caseparam.eq("c.userssid",userssid);
+        caseparam.eq("c.creator",creatoruuid);
         caseparam.orderBy("c.occurrencetime",false);
         List<CaseAndUserInfo> cases=police_caseMapper.getCaseByUserSsid(caseparam);//加入询问次数
         if (null!=cases&&cases.size()>0){
@@ -1349,6 +1357,13 @@ public class RecordService extends BaseService {
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                     recordAndCase.setArraignments(arraignmentAndRecords);
+                }
+                if(StringUtils.isNotEmpty(recordAndCase.getCreator())){
+                    //查出创建人的名称ew
+                    Base_admininfo base_admininfo = new Base_admininfo();
+                    base_admininfo.setSsid(recordAndCase.getCreator());
+                    Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
+                    recordAndCase.setCreator(admininfo.getUsername());
                 }
             }
             getCasesVO.setPagelist(list);

@@ -83,6 +83,12 @@ function callTmplates2(data){
         if (isNotEmpty(data)){
             all = data.data.pagelist;
             pageshow(data);
+            var listcountsize = data.data.pageparam.recordCount;
+            if (listcountsize == 0) {
+                $("#wushuju").show();
+            } else {
+                $("#wushuju").hide();
+            }
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -224,7 +230,7 @@ function getProblemTypesParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 10;//测试
+        var pageSize = 11;//测试
         getProblems_init(currPage, pageSize);
     }  else if (len == 2) {
         getProblems('', arguments[0], arguments[1]);

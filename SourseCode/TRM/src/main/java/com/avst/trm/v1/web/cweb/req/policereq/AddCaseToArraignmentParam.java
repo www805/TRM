@@ -23,6 +23,15 @@ public class AddCaseToArraignmentParam {
 
     private Police_case addPolice_case;//新增案件的信息
 
+    private String creatoruuid; //案件创建人
+
+    public String getCreatoruuid() {
+        return creatoruuid;
+    }
+
+    public void setCreatoruuid(String creatoruuid) {
+        this.creatoruuid = creatoruuid;
+    }
 
     public UserInfo getAddUserInfo() {
         return addUserInfo;

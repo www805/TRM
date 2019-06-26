@@ -16,6 +16,7 @@
         <result column="createtime" property="createtime" />
         <result column="userssid" property="userssid" />
         <result column="ssid" property="ssid" />
+        <result column="creator" property="creator" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

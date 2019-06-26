@@ -153,13 +153,13 @@ public class TemplateService extends BaseService {
             return;
         }
 
-        Police_template template1 = new Police_template();
-        template1.setTitle(template.getTitle());
-        Police_template one = police_templateMapper.selectOne(template1);
-        if(null != one){
-            result.setMessage("模板名称不能重复");
-            return;
-        }
+//        Police_template template1 = new Police_template();
+//        template1.setTitle(template.getTitle());
+//        Police_template one = police_templateMapper.selectOne(template1);
+//        if(null != one){
+//            result.setMessage("模板名称不能重复");
+//            return;
+//        }
 
         //删除关联题目
         EntityWrapper ew=new EntityWrapper();

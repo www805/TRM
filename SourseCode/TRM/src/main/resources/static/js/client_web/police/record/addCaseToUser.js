@@ -162,7 +162,8 @@ function addCaseToArraignment() {
             recordname:recordname,
             usertos:usertos,
             addUserInfo:addUserInfo,
-            addPolice_case:addPolice_case
+            addPolice_case:addPolice_case,
+            creatoruuid:sessionadminssid
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
@@ -743,7 +744,8 @@ function getCaseById() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            userssid:userssid
+            userssid:userssid,
+            creatoruuid:sessionadminssid
         }
     };
     ajaxSubmitByJson(url,data,callbakegetCaseById) ;

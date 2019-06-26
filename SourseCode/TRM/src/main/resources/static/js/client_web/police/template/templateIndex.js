@@ -68,6 +68,8 @@ function callTmplates(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
+            console.log("1111111");
+            console.log(data);
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -80,6 +82,12 @@ function callTmplates2(data){
             pageshow(data);
             pagelist = data.data.pagelist;
             getTemplateById(0);
+            var listcountsize = data.data.pageparam.recordCount;
+            if (listcountsize == 0) {
+                $("#wushuju").show();
+            } else {
+                $("#wushuju").hide();
+            }
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -117,7 +125,7 @@ function getTmplateTypesParams() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 15;//测试
+        var pageSize = 13;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);
@@ -157,7 +165,7 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload']
         // var text = $("#keyword").val();
         // if(text.replace(/\s*/g,"") == ""){
         // }
-        getTmplates_init(1,15);
+        getTmplates_init(1,13);
     });
 
 

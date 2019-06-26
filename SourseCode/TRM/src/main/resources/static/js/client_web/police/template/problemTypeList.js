@@ -77,6 +77,12 @@ function callProblemTypeList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
+            var listcountsize = data.data.pageparam.recordCount;
+            if (listcountsize == 0) {
+                $("#wushuju").show();
+            } else {
+                $("#wushuju").hide();
+            }
         }
     }else{
         layer.msg(data.message,{icon: 2});

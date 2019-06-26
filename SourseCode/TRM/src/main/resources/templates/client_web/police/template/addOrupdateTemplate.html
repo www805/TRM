@@ -124,7 +124,7 @@
             </div>
 
             <div style="float: left;">
-                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,10);" >
+                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,11);" >
                 <input type="button" class="layui-btn layui-btn-normal" value="添加问题" onclick="addUpdateinfo('',0,1);" >
             </div>
 
@@ -132,6 +132,7 @@
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;">
                     【问题列表】双击问题或点击导入，即可插入到模板中<i class="layui-icon">&#xe623;</i>
                 </div>
+                <div id="wushuju" style="display: none;font-size: 24px;color: #90a2bc;text-align: center;margin-top: 15px;">暂无问题，请新增问题</div>
                 <div th:replace="page :: page">...</div>
             </div>
         </div>
@@ -298,7 +299,7 @@
             var text = $("#keyword").val();
             if(text.replace(/\s*/g,"") == ""){
             }
-            getProblems_init(1,10);
+            getProblems_init(1,11);
         });
 
     });

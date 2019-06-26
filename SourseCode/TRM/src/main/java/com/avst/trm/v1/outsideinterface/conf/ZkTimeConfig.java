@@ -1,13 +1,14 @@
-package com.avst.trm.v1.common.conf;
+package com.avst.trm.v1.outsideinterface.conf;
 
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * 当springboot启动的时候，会自动执行该类
+ * 监测总控同步时间 ZkTimeConfig
  */
 @Component
-@Order(value = 1)
-public class ZkTimeConfig implements ApplicationRunner {
+public class ZkTimeConfig {
 
     @Autowired
     private ZkControl zkControl;
@@ -28,9 +28,11 @@ public class ZkTimeConfig implements ApplicationRunner {
     @Value("${control.servser.date}")
     private Integer servserDate;
 
-    //获取服务器时间进行比对
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+    @Value("${control.servser.formulas}")
+    private String formulas;
+
+    //获取总控时间进行比对
+    public void compare() {
 
         try {
             //从总控获取时间
@@ -50,7 +52,13 @@ public class ZkTimeConfig implements ApplicationRunner {
                     //把转成总控时间和当前服务器时间戳进行计算
                     Date newday = dateFormatter.parse(newTime);
                     Date oldDay = dateFormatter.parse(createTime);
-                    long intervalDay = (newday.getTime() - oldDay.getTime())/(1*60*60*1000);
+
+                    //计算公式转换成整数
+                    JexlEngine jexlEngine = new JexlBuilder().create();
+                    JexlExpression expression = jexlEngine.createExpression(formulas);
+                    Integer evaluate = (Integer) expression.evaluate(null);
+
+                    long intervalDay = (newday.getTime() - oldDay.getTime())/(evaluate);
 
                     //如果时间差过1小时以上，就修改系统时间
                     if (Math.abs(intervalDay) >= servserDate) {
@@ -84,6 +92,8 @@ public class ZkTimeConfig implements ApplicationRunner {
                                 cmd = "  date -s " + cmd;
                                 Runtime.getRuntime().exec(cmd);
                             }
+
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -96,7 +106,7 @@ public class ZkTimeConfig implements ApplicationRunner {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            System.out.println("结束");
+//            System.out.println("结束");
         }
 
 

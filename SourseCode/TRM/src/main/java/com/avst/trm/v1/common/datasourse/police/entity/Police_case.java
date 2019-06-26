@@ -79,6 +79,11 @@ public class Police_case extends Model<Police_case> {
      */
     private String userssid;
 
+    /**
+     * 创建人
+     */
+    private String creator;
+
     private String ssid;
 
     private String string1;
@@ -88,6 +93,14 @@ public class Police_case extends Model<Police_case> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
 
     public Integer getId() {
         return id;
