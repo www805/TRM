@@ -25,6 +25,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 修改Word模板文件，并添加数据导出到一个新的Word文件
+ */
 public class XwpfTUtil {
 
 
@@ -37,10 +40,7 @@ public class XwpfTUtil {
         params.put("${username}", "吴斌");
 
         String path="C:\\Users\\Administrator\\Desktop\\ceshi1.docx";
-//        String path="i:\\wubin\\ceshi2.docx";
         String newfilepath="C:\\Users\\Administrator\\Desktop\\ceshi2.docx";
-//        XwpfTUtil xwpfTUtil=new XwpfTUtil();
-//        xwpfTUtil.replaceInPara(path,newpath,params);
 
         List<Talk> talkList=new ArrayList<>();
         Talk talk=new Talk();
@@ -74,6 +74,19 @@ public class XwpfTUtil {
         System.out.println((new Date()).getTime());
         replaceAndGenerateWord(path,newfilepath,params,talkList);
         System.out.println((new Date()).getTime());
+
+
+//        List<String> slist=new ArrayList<String>();
+//        slist.add("${age}");
+//        slist.add("${username}");
+//        File file=new File(path);
+//        try {
+//            InputStream inputStream=new FileInputStream(file);
+//            checkWord(inputStream,"ceshi1.doc",slist);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
     /**
@@ -94,15 +107,6 @@ public class XwpfTUtil {
             String talkspace=PropertiesListenerConfig.getProperty("talkspace");
             if(StringUtils.isEmpty(talkspace)){
                 talkspace="${talk}";
-            }
-
-            //组合谈话字符串
-            if(null!=talkList&&talkList.size() > 0){
-                String talkstr="\r\n\r\n";
-                for(Talk talk:talkList){
-                    talkstr+=talk.getQuestion()+"\r\n"+talk.getAnswer()+"\r\n";
-                }
-                map.put(talkspace,talkstr);
             }
 
             String[] sp = srcPath.split("\\.");
@@ -132,6 +136,8 @@ public class XwpfTUtil {
             // 比较文件扩展名
             if (sp[sp.length - 1].equalsIgnoreCase("docx")) {
 
+                map.put(talkspace,"\r\n");//docx不需要用替换的形式改talk，这里就直接给一个换行
+
                 if(!tmpfile.exists()){
                     tmpfile.createNewFile();
                 }
@@ -154,6 +160,26 @@ public class XwpfTUtil {
                         run.setText(oneparaString, 0);
                     }
                 }
+
+                //组合谈话
+                if(null!=talkList&&talkList.size() > 0){
+
+                    XWPFParagraph xwpfParagraph=document.createParagraph();
+                    for(int i=talkList.size()-1;i>-1;i--){//必须反着来不然就会出现问答倒序排列
+                        Talk talk=talkList.get(i);
+                        XWPFRun xwpfRun2=xwpfParagraph.insertNewRun(0);
+                        xwpfRun2.setText(talk.getAnswer());//必须先写入答，在写入问，反着来
+                        xwpfRun2.addCarriageReturn();//硬回车
+                        XWPFRun xwpfRun=xwpfParagraph.insertNewRun(0);
+                        xwpfRun.setText(talk.getQuestion());
+                        xwpfRun.addCarriageReturn();//硬回车
+
+                    }
+
+                }
+
+
+
 
                 // 替换表格中的指定文字
                 Iterator<XWPFTable> itTable = document.getTablesIterator();
@@ -180,6 +206,16 @@ public class XwpfTUtil {
                 return true;
             }else if ((sp[sp.length - 1].equalsIgnoreCase("doc"))
                     && (dp[dp.length - 1].equalsIgnoreCase("doc"))) { // doc只能生成doc，如果生成docx会出错
+
+                //组合谈话字符串
+                if(null!=talkList&&talkList.size() > 0){
+                    String talkstr="\r\n\r\n";
+                    for(Talk talk:talkList){
+                        talkstr+=talk.getQuestion()+"\r\n"+talk.getAnswer()+"\r\n";
+                    }
+                    map.put(talkspace,talkstr);
+                }
+
                 document2 = new HWPFDocument(new FileInputStream(oldfile));
                 Range range = document2.getRange();
                 for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -234,6 +270,124 @@ public class XwpfTUtil {
     //word 转PDF
     //检测Word模板是否正确
 
+    /**
+     * 检查Word模板文档是否正确
+     * @param  inputStream
+     * @param filename
+     * @param list
+     * @return 当返回的是一个不为空的list，才是正确的，null说明传入参数有误
+     */
+    public static List<String> checkWord(InputStream inputStream ,String filename,List<String> list){
+        XWPFDocument document=null;
+        HWPFDocument document2=null;
+        try {
 
+            if(null==list||list.size() ==0){
+                return null;
+            }
+
+            String[] sp = filename.split("\\.");
+            if ( sp.length <= 0) {
+                return null;
+            }
+            if (!sp[sp.length - 1].equalsIgnoreCase("docx")
+                    &&!(sp[sp.length - 1].equalsIgnoreCase("doc"))) {
+                return null;
+            }
+
+            // 比较文件扩展名
+            if (sp[sp.length - 1].equalsIgnoreCase("docx")) {
+
+                document = new XWPFDocument(inputStream);
+                // 替换段落中的指定文字
+                Iterator<XWPFParagraph> itPara = document.getParagraphsIterator();
+                while (itPara.hasNext()) {
+                    XWPFParagraph paragraph = itPara.next();
+                    List<XWPFRun> runs = paragraph.getRuns();
+                    for (XWPFRun run : runs) {
+                        String oneparaString = run.getText(run.getTextPosition());
+                        if (StringUtils.isBlank(oneparaString)){
+                            continue;
+                        }
+                        System.out.println(oneparaString+":oneparaString");
+                        int i=0;
+                        for(String mark:list){
+                            if(oneparaString.equals(mark)){
+                                list.remove(i);
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                }
+
+                // 替换表格中的指定文字
+                Iterator<XWPFTable> itTable = document.getTablesIterator();
+                while (itTable.hasNext()) {
+                    XWPFTable table = itTable.next();
+                    int rcount = table.getNumberOfRows();
+                    for (int i = 0; i < rcount; i++) {
+                        XWPFTableRow row = table.getRow(i);
+                        List<XWPFTableCell> cells = row.getTableCells();
+                        for (XWPFTableCell cell : cells) {
+                            String cellTextString = cell.getText();
+                            System.out.println(cellTextString+":cellTextString");
+                            int j=0;
+                            for(String mark:list){
+                                if(cellTextString.equals(mark)){
+                                    list.remove(j);
+                                    break;
+                                }
+                                j++;
+                            }
+                        }
+                    }
+                }
+
+            }else if ((sp[sp.length - 1].equalsIgnoreCase("doc"))) { // doc只能生成doc，如果生成docx会出错
+                document2 = new HWPFDocument(inputStream);
+                Range range = document2.getRange();
+                int count=range.numParagraphs();
+                for(int i=0;i<count;i++){
+                    String text=range.getParagraph(i).text();
+                    System.out.println(text+":text");
+                    if(StringUtils.isEmpty(text)){
+                        continue;
+                    }
+                    for(int j=0;j<list.size();j++){
+                        String mark=list.get(j);
+                        if(text.indexOf(mark) > -1){
+                            list.remove(j);
+                            j--;
+                        }
+                    }
+                }
+            }
+            System.out.println("---list.size():"+list.size());
+
+            return list;//当返回的是一个不为空的list，才是正确的，
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }  finally {
+
+            if (document != null) {
+                try {
+                    document.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            if (document2 != null) {
+                try {
+                    document2.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+
+    }
 
 }

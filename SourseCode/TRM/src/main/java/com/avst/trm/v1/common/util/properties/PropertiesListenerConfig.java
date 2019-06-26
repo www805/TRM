@@ -85,9 +85,11 @@ public class PropertiesListenerConfig {
 
     public static String getProperty(String name) {
 
-        if(null==propertiesMap||null==propertiesMap.entrySet()||propertiesMap.entrySet().size()==0){
-            loadAllProperties("application.properties");
-        }
+//        if(null==propertiesMap||null==propertiesMap.entrySet()||propertiesMap.entrySet().size()==0){
+//            loadAllProperties("application.properties");
+//        }
+
+        new PropertiesListener("application.properties","trm.properties");
         return propertiesMap.get(name);
     }
 

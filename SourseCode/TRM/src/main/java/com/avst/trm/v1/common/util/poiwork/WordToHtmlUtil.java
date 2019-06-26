@@ -15,6 +15,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import com.avst.trm.v1.common.util.LogUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;
 import org.apache.poi.hwpf.converter.WordToHtmlConverter;
@@ -26,7 +27,9 @@ import org.apache.poi.xwpf.converter.xhtml.XHTMLOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.w3c.dom.Document;
 
-
+/**
+ * Word转HTML
+ */
 public class WordToHtmlUtil {
 
     /**
@@ -224,6 +227,19 @@ public class WordToHtmlUtil {
      * @return
      */
     public static boolean wordToHtml(String wordpath,String htmlpath){
+
+        if(StringUtils.isEmpty(htmlpath)){
+            return false;
+        }
+        try {
+            File file=new File(htmlpath);
+            if(!file.exists()){
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
         if (wordpath.endsWith(".docx") || wordpath.endsWith(".DOCX")) {
             return Word2007ToHtml(wordpath,htmlpath);
