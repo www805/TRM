@@ -1,5 +1,7 @@
 package com.avst.trm.v1.common.util.poiwork.param;
 
+import java.util.List;
+
 /**
  * 问答实体类
  */
@@ -7,7 +9,7 @@ public class Talk {
 
     private String question;
 
-    private String answer;
+    private List<Answer> answers;
 
     public String getQuestion() {
         return question;
@@ -17,11 +19,11 @@ public class Talk {
         this.question = question;
     }
 
-    public String getAnswer() {
-        return answer;
+    public List<Answer> getAnswers() {
+        return answers;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 }

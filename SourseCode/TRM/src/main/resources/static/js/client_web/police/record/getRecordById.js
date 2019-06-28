@@ -9,6 +9,10 @@ var recordnameshow="";
 var subtractime_q=0;//问的时间差
 var subtractime_w=0;//答的时间差
 
+
+var pdfdownurl=null;//pdf下载地址
+var worddownurl=null;//word下载地址
+
 /*弹出框数据*/
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
@@ -90,6 +94,9 @@ function callbackgetRecordById(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var record=data.record;
+             pdfdownurl=record.pdfdownurl;//pdf下载地址
+             worddownurl=record.worddownurl;//word下载地址
+
             var caseAndUserInfo=data.caseAndUserInfo;
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
@@ -101,13 +108,13 @@ function callbackgetRecordById(data) {
                         for (var z = 0; z< problems.length;z++) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml='<tr ondblclick="showrecord('+problem.starttime+',1)"><td class="font_red_color">问：'+problemtext+' </td></tr>';
+                            var problemhtml='<tr ondblclick="showrecord('+problem.starttime+',1,this)"><td class="font_red_color">问：'+problemtext+' </td></tr>';
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){
                                 for (var j = 0; j < answers.length; j++) {
                                     var answer = answers[j];
                                     var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr ondblclick="showrecord('+answer.starttime+',2)"> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
+                                    problemhtml+='<tr ondblclick="showrecord('+answer.starttime+',2,this)"> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
                                 }
                             }else{
                                 problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
@@ -217,13 +224,13 @@ function callbackgetRecord(data) {
                             //实时会议数据
                             if (usertype==1){
                                 subtractime_q=subtractime;
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+')">\
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)">\
                                                             <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 subtractime_w=subtractime;
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+')">\
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)">\
                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
@@ -261,58 +268,31 @@ function btn(obj) {
     }
 }
 function exportWord(obj){
-    var url=getActionURL(getactionid_manage().getRecordById_exportWord);
-    var paramdata={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url, paramdata, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var word_htmlpath=data.word_htmlpath;//预览html地址
-                var word_path=data.word_path;//下载地址
-                window.location.href = word_path;
-                layer.msg("导出成功,等待下载中...");
-            }
-        }else{
-            layer.msg("导出失败");
-        }
-        btn(obj);
-    });
+    if (isNotEmpty(worddownurl)){
+        window.location.href = worddownurl;
+        layer.msg("导出成功,等待下载中...");
+    }else {
+        layer.msg("导出失败");
+    }
+    btn(obj);
 }
-
+var pdfdownurl=null;//pdf下载地址
 function exportPdf(obj) {
-    var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
-    var paramdata={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url, paramdata, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                //window.location.href = data;
-                layer.open({
-                    type: 2,
-                    title: '导出PDF笔录',
-                    shadeClose: true,
-                    shade: false,
-                    maxmin: true, //开启最大化最小化按钮
-                    area: ['893px', '600px'],
-                    content: data
-                });
-                layer.msg("导出成功,等待下载中...");
-            }
+     if (isNotEmpty(pdfdownurl)){
+            layer.open({
+                type: 2,
+                title: '导出PDF笔录',
+                shadeClose: true,
+                shade: false,
+                maxmin: true, //开启最大化最小化按钮
+                area: ['893px', '600px'],
+                content: pdfdownurl
+            });
+            layer.msg("导出成功,等待下载中...");
         }else{
             layer.msg("导出失败");
         }
-        btn(obj);
-    });
+      btn(obj);
 }
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
@@ -354,22 +334,20 @@ function callbackgetPlayUrl(data) {
 
 //视频进度
 //usertype 任务类型 1问 2答
-function showrecord(times,usertype) {
+function showrecord(times,usertype,obj) {
+    $("#recorddetail td").removeClass("highlight");
+
     if (isNotEmpty(times)&&times!=-1&&isNotEmpty(usertype)){
 
         var locationtime=times;
-        console.log("locationtime____"+locationtime)
        if (usertype==1){
-           console.log("subtractime_q______"+subtractime_q);
            locationtime=locationtime+subtractime_q;
-           console.log("locationtime____qqqqqqqq_______"+locationtime);
        }else if (usertype==2){
-           console.log("subtractime_w______"+subtractime_w);
            locationtime=locationtime+subtractime_w;
-           console.log("locationtime____wwwwwwww_______"+locationtime);
        }
         locationtime=locationtime/1000<0?0:locationtime/1000;
-        SewisePlayer.doSeek(locationtime);
+        changeProgrss(locationtime);
+        $("td",obj).addClass("highlight");
     }
 }
 

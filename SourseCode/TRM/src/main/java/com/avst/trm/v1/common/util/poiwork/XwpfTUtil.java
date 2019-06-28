@@ -1,7 +1,10 @@
 package com.avst.trm.v1.common.util.poiwork;
 
+import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.poiwork.param.Answer;
 import com.avst.trm.v1.common.util.poiwork.param.Talk;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.apache.commons.io.FileUtils;
@@ -39,10 +42,10 @@ public class XwpfTUtil {
         params.put("${age}", "");
         params.put("${username}", "吴斌");
 
-        String path="C:\\Users\\Administrator\\Desktop\\ceshi1.docx";
-        String newfilepath="C:\\Users\\Administrator\\Desktop\\ceshi2.docx";
+        String path="C:\\Users\\admin\\Desktop\\ceshi.docx";
+        String newfilepath="C:\\Users\\admin\\Desktop\\ceshi2.docx";
 
-        List<Talk> talkList=new ArrayList<>();
+     /*    List<Talk> talkList=new ArrayList<>();
         Talk talk=new Talk();
         talk.setAnswer("答1");
         talk.setQuestion("问1");
@@ -70,9 +73,9 @@ public class XwpfTUtil {
         talk=new Talk();
         talk.setAnswer("答7");
         talk.setQuestion("问7");
-        talkList.add(talk);
+        talkList.add(talk);*/
         System.out.println((new Date()).getTime());
-        replaceAndGenerateWord(path,newfilepath,params,talkList);
+       replaceAndGenerateWord(path,newfilepath,params,null);
         System.out.println((new Date()).getTime());
 
 
@@ -97,7 +100,7 @@ public class XwpfTUtil {
      * @param talkList 插入最下方的问答集合，也可以是其他
      * @return
      */
-    public static boolean replaceAndGenerateWord(String srcPath,String newfilepath, Map<String, String> map, List<Talk> talkList){
+    public static boolean replaceAndGenerateWord(String srcPath,String newfilepath, Map<String, String> map,  List<Talk> talkList){
         FileOutputStream outStream=null;
         XWPFDocument document=null;
         HWPFDocument document2=null;
@@ -167,17 +170,18 @@ public class XwpfTUtil {
                     XWPFParagraph xwpfParagraph=document.createParagraph();
                     for(int i=talkList.size()-1;i>-1;i--){//必须反着来不然就会出现问答倒序排列
                         Talk talk=talkList.get(i);
-                        XWPFRun xwpfRun2=xwpfParagraph.insertNewRun(0);
-                        xwpfRun2.setText(talk.getAnswer());//必须先写入答，在写入问，反着来
-                        xwpfRun2.addCarriageReturn();//硬回车
+                        if (null!=talk.getAnswers()&&talk.getAnswers().size()>0){
+                            for (Answer answer : talk.getAnswers()) {
+                                XWPFRun xwpfRun2=xwpfParagraph.insertNewRun(0);
+                                xwpfRun2.setText(answer.getAnswer());//必须先写入答，在写入问，反着来
+                                xwpfRun2.addCarriageReturn();//硬回车
+                            }
+                        }
                         XWPFRun xwpfRun=xwpfParagraph.insertNewRun(0);
                         xwpfRun.setText(talk.getQuestion());
                         xwpfRun.addCarriageReturn();//硬回车
-
                     }
-
                 }
-
 
 
 
@@ -211,7 +215,12 @@ public class XwpfTUtil {
                 if(null!=talkList&&talkList.size() > 0){
                     String talkstr="\r\n\r\n";
                     for(Talk talk:talkList){
-                        talkstr+=talk.getQuestion()+"\r\n"+talk.getAnswer()+"\r\n";
+                        talkstr+=talk.getQuestion()+"\r\n";
+                        if (null!=talk.getAnswers()&&talk.getAnswers().size()>0){
+                            for (Answer answer : talk.getAnswers()) {
+                                talkstr+=answer.getAnswer()+"\r\n";
+                            }
+                        }
                     }
                     map.put(talkspace,talkstr);
                 }

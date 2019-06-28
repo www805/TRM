@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${wordTemplateListModel.title}">智能提讯系统</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
+</head>
+<style>
+    html{
+        background-color: #FFFFFF;
+    }
+</style>
+<body>
+<div class="layui-fluid layadmin-message-fluid layui-form" style="padding: 0 15px">
+    <div th:replace="header :: header">...</div>
+
+    <div class="layui-elem-quote"style=" padding: 10px;">
+        <h3 th:text="${wordTemplateListModel.title}">智能提讯系统</h3>
+    </div>
+
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: auto;">word模板名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="wordtemplatename" id="wordtemplatename" lay-verify="required" placeholder="请输入word模板名称" autocomplete="off" class="layui-input" oninput=" getWordTemplateListByParam();">
+            </div>
+
+            <label class="layui-form-label" style="width: auto;">笔录类型</label>
+            <div class="layui-input-inline">
+                <select name="recordtypessid" lay-verify="" id="recordtypessid" lay-filter="recordtypessid_filter" >
+                    <option value="">全部</option>
+
+                </select>
+            </div>
+
+
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,10);" >
+            <input type="button" class="layui-btn layui-btn-normal" value="上传模板" onclick="open_uploadword(null)" >
+        </div>
+    </form>
+    <div th:replace="page :: page">...</div>
+    <div th:replace="footer :: footer">...</div>
+</div>
+<script id="pagelisttemplates" type="text/html">
+
+
+    <table class="layui-table" style="table-layout: fixed">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>是否为默认</th>
+            <th>笔录类型</th>
+            <th>word模板名称</th>
+            <th>创建时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="pagelisttemplates_tbody">
+        {{#  layui.each(pagelist, function(index, value){ }}
+        <tr>
+            <td>{{index+1}}</td>
+            <td>
+                <input  type="checkbox" name="defaultbool" lay-skin="switch" id="defaultbool" lay-text="默认|非默认"   lay-filter="defaultbool_filter" {{value.defaultbool==1?"checked":""}} value="{{value.ssid}}" >
+            </td>
+            <td>{{value.recordtypename==null?"":value.recordtypename}}</td>
+            <td>{{value.wordtemplatename==null?"":value.wordtemplatename}}</td>
+            <td>{{value.createtime==null?"":value.createtime}}</td>
+            <td>
+                <a href="#" onclick="preview('{{value.wordtemplate_downurl_html}}')"  title="{{value.wordtemplate_downurl_html==null?'请先上传word模板':'点击预览'}}"     class="layui-btn {{value.wordtemplate_downurl_html==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >预览</a>
+                <a href="#" class="layui-btn layui-btn-normal layui-btn-sm" onclick="open_uploadword('{{value.ssid}}')">修改</a>
+            </td>
+        </tr>
+        {{#  }); }}
+        </tbody>
+    </table>
+
+</script>
+<script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui.js}"type="text/javascript"></script>
+<script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}"  type="text/javascript" ></script>
+<script th:src="@{/js/actionid.js}" type="text/javascript"></script>
+<script th:src="@{/js/list.js}" type="text/javascript"></script>
+<script th:src="@{/js/client_web/police/record/wordTemplateList.js}" type="text/javascript"></script>
+<script th:inline="javascript">
+    var INIT_CLIENT;
+    var INIT_CLIENTKEY;
+    $(function(){
+        INIT_CLIENT=[[${session.INIT_CLIENT}]];
+        INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
+        setpageAction(INIT_CLIENT,"client_web/police/record/wordTemplateList");
+        word_getRecordtypes();
+        getWordTemplateListByParam();
+
+    });
+    layui.use(['layer','element','form'], function(){
+        var layer = layui.layer; //获得layer模块
+        var element = layui.element;
+        var form = layui.form;
+        //使用模块
+    });
+</script>
+</body>
+</html>

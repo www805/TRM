@@ -12,6 +12,7 @@
         <result column="recordstarttime" property="recordstarttime" />
         <result column="recordbool" property="recordbool" />
         <result column="pdf_filesavessid" property="pdf_filesavessid" />
+        <result column="word_filesavessid" property="word_filesavessid" />
         <result column="recordtypessid" property="recordtypessid" />
         <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />

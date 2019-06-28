@@ -13,6 +13,7 @@ import com.avst.trm.v1.web.cweb.vo.policevo.ExportWordVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -492,9 +493,77 @@ public class RecordAction extends BaseAction {
 
 
 
+    /**
+     * 获取笔录word模板-------------------------------
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getWordTemplateList")
+    public  RResult getWordTemplateList(@RequestBody ReqParam<GetWordTemplateListParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getWordTemplateList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    @RequestMapping("/uploadWordTemplate")
+    public  RResult uploadWordTemplate(ReqParam param,@RequestParam(value="wordfile",required=false) MultipartFile multipartfile){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.uploadWordTemplate(result,param,multipartfile);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    @RequestMapping("/getWordTemplateByssid")
+    public  RResult getWordTemplateByssid(@RequestBody ReqParam<GetWordTemplateByssidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getWordTemplateByssid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    @RequestMapping("/changeboolWordTemplate")
+    public  RResult changeboolWordTemplate(@RequestBody ReqParam<ChangeboolWordTemplateParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.changeboolWordTemplate(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
+
+
 
     /**
-     * 笔录问答实时保存---------------
+     * 笔录问答实时保存-----------------------------
      */
     @RequestMapping("/getRecordrealByRecordssid")
     public  RResult getRecordrealByRecordssid(@RequestBody ReqParam<GetRecordrealByRecordssidParam> param){
@@ -523,6 +592,7 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
 
 
 

@@ -3,17 +3,25 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
+import com.avst.trm.v1.common.util.poiwork.WordToPDF;
+import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
+import com.avst.trm.v1.common.util.poiwork.param.Answer;
+import com.avst.trm.v1.common.util.poiwork.param.Talk;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
@@ -28,11 +36,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -41,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -95,12 +99,23 @@ public class RecordService extends BaseService {
     @Autowired
     private Police_userinfototypeMapper police_userinfototypeMapper;
 
+    @Autowired
+    private Police_wordtemplateMapper police_wordtemplateMapper;
+
+    @Autowired
+    private Base_filesaveMapper base_filesaveMapper;
+
     @Value("${file.basepath}")
     private String filePath;
 
     @Value("${upload.basepath}")
     private String uploadbasepath;
 
+    @Value("${file.wordtemplate}")
+    private String filewordtemplate; //word模板存储位置
+
+    @Value("${file.recordwordOrpdf}")
+    private String filerecordwordOrpdf; //笔录word或者pdf路径
 
     private boolean addRecordbool=false;
 
@@ -237,18 +252,6 @@ public class RecordService extends BaseService {
             return;
         }
 
-        //修改笔录状态
-        Integer recordbool=addRecordParam.getRecordbool();
-        LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
-        if (null!=recordbool){
-            EntityWrapper updaterecordParam=new EntityWrapper();
-            updaterecordParam.eq("ssid",recordssid);
-            Police_record record=new Police_record();
-            record.setSsid(recordssid);
-            record.setRecordbool(recordbool);
-            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
-        }
 
         //获取该笔录下的全部题目答案
         EntityWrapper recordToProblemsParam=new EntityWrapper();
@@ -297,6 +300,33 @@ public class RecordService extends BaseService {
             LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
         }
 
+
+        //修改笔录状态
+        Integer recordbool=addRecordParam.getRecordbool();
+        LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
+        if (null!=recordbool){
+            //生成word 和pdf
+            RResult exportPdf_rr=new RResult();
+            ExportPdfParam exportPdfParam=new ExportPdfParam();
+            exportPdfParam.setRecordssid(recordssid);
+            ReqParam reqParam=new ReqParam();
+            reqParam.setParam(exportPdfParam);
+            exportPdf_rr=exportPdf(exportPdf_rr, reqParam);
+            if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__成功__开始修改笔录状态保存问答");
+                EntityWrapper updaterecordParam=new EntityWrapper();
+                updaterecordParam.eq("ssid",recordssid);
+                Police_record record=new Police_record();
+                record.setSsid(recordssid);
+                record.setRecordbool(recordbool);
+                int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+                LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+            }else{
+                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__出错");
+                result.setMessage("系统错误");
+                return;
+            }
+        }
 
         addRecordbool=false;
         result.setData(recordssid);
@@ -845,37 +875,37 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void exportPdf(RResult result, ReqParam<ExportPdfParam> param){
+    public RResult exportPdf(RResult result, ReqParam<ExportPdfParam> param){
         ExportPdfParam exportPdfParam=param.getParam();
         if (null==exportPdfParam){
             result.setMessage("参数为空");
-            return;
+            return result;
         }
         String recordssid=exportPdfParam.getRecordssid();
         if (StringUtils.isBlank(recordssid)){
             result.setMessage("参数为空");
-            return;
+            return result;
         }
+
+        Map<String,String> dataMap=exportData(recordssid);
 
         //根据笔录ssid获取录音数据
         EntityWrapper recordParam=new EntityWrapper();
         recordParam.eq("r.ssid",recordssid);
         Record record=police_recordMapper.getRecordBySsid(recordParam);
-
-
-        List<String> qw=new ArrayList<>();
-
-
         if (null!=record) {
-            String questionandanswer = "";//题目答案
             EntityWrapper ew = new EntityWrapper();
             ew.eq("r.ssid", record.getSsid());
             ew.orderBy("p.ordernum", true);
             ew.orderBy("p.createtime", true);
-            List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-            if (null != problems && problems.size() > 0) {
-                for (RecordToProblem problem : problems) {
-                    qw.add("问：" + problem.getProblem());
+            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+            List<Talk> talks = new ArrayList<>();//问答
+            if (null != questionandanswer && questionandanswer.size() > 0) {
+                for (RecordToProblem problem : questionandanswer) {
+                    Talk talk = new Talk();
+                    List<Answer> as = new ArrayList<>();//答集合
+                    talk.setQuestion("问：" + problem.getProblem());
+
                     String problemssid = problem.getSsid();
                     if (StringUtils.isNotBlank(problemssid)) {
                         EntityWrapper answerParam = new EntityWrapper();
@@ -885,12 +915,290 @@ public class RecordService extends BaseService {
                         List<Police_answer> answers = police_answerMapper.selectList(answerParam);
                         if (null != answers && answers.size() > 0) {
                             for (Police_answer answer : answers) {
-                                qw.add("答：" + answer.getAnswer());
+                                Answer a = new Answer();
+                                a.setAnswer("答：" + answer.getAnswer());
+                                as.add(a);
                             }
+                            problem.setAnswers(answers);
+                        } else {
+                            Answer a = new Answer();
+                            a.setAnswer("答：");
+                            as.add(a);
                         }
+                    }
+                    talk.setAnswers(as);
+                    talks.add(talk);
+                }
+            }
+
+
+            //1、获取模板的真实地址
+            String wordtemplate_realurl=null;//模板路径
+            EntityWrapper wordew=new EntityWrapper();
+            wordew.eq("w.recordtypessid",record.getRecordtypessid());
+            List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
+            if (null!=wordTemplate&&wordTemplate.size()>0){
+                for (WordTemplate template : wordTemplate) {
+                    if (template.getDefaultbool()==1){
+                        wordtemplate_realurl=template.getWordtemplate_realurl();
                     }
                 }
             }
+            LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板真实地址__"+wordtemplate_realurl);
+            if (StringUtils.isBlank(wordtemplate_realurl)){
+                result.setMessage("请先上传笔录类型对应的word笔录模板");
+                return result;
+            }
+
+            try {
+                String uploadpath=uploadbasepath;
+                String savePath=filerecordwordOrpdf;
+                String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+                //获取生成的真实地址
+                String filename=record.getRecordname().replace(" ", "").replace("\"", "");
+                String suffix =wordtemplate_realurl.substring(wordtemplate_realurl.lastIndexOf(".") + 1);
+
+                String wordfilename=filename+"."+suffix;
+                String wordrealurl = OpenUtil.createpath_fileByBasepath(savePath, wordfilename);
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word真实地址__"+wordrealurl);
+
+                //获取生成的下载地址
+                String worddownurl =uploadpath+OpenUtil.strMinusBasePath(qg, wordrealurl) ;
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word下载地址__"+worddownurl);
+
+
+                System.out.println((new Date()).getTime());
+                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,talks);
+                System.out.println((new Date()).getTime());
+
+                String oldfilepath=record.getWordrealurl();
+                String word_filesavessid=record.getWord_filesavessid();
+                //将地址保存在文件存储表以及修改笔录标的文件存储ssid
+                if (StringUtils.isNotBlank(wordrealurl)&&StringUtils.isNotBlank(worddownurl)){
+                    Base_filesave base_filesave=new Base_filesave();
+                    base_filesave.setDatassid(recordssid);
+                    base_filesave.setUploadfilename(wordfilename);
+                    base_filesave.setRealfilename(wordfilename);
+                    base_filesave.setRecordrealurl(wordrealurl);
+                    base_filesave.setRecorddownurl(worddownurl);
+                    if (StringUtils.isNotBlank(oldfilepath)){
+                        //修改
+                        EntityWrapper filesaveparam = new EntityWrapper();
+                        filesaveparam.eq("ssid",word_filesavessid);
+                        int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
+                        LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveupdate_bool);
+                    }else{
+                        //新增
+                        base_filesave.setSsid(OpenUtil.getUUID_32());
+                        int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                        LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveinsert_bool);
+                        word_filesavessid=base_filesave.getSsid();
+                    }
+                }
+
+                LogUtil.intoLog(this.getClass(),"__________________________开始word转pdf_____________________");
+                //获取pdf下载和真实地址、
+                String pdffilename=filename+".pdf";
+                String pdfrealurl=OpenUtil.createpath_fileByBasepath(savePath, pdffilename);
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word转pdf真实地址__"+pdfrealurl);
+                String pdfdownurl=uploadpath+OpenUtil.strMinusBasePath(qg, pdfrealurl) ;
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word转pdf下载地址__"+pdfdownurl);
+               boolean wordtopdf_bool= WordToPDF.word2pdf(pdfrealurl,wordrealurl);
+               if (wordtopdf_bool){
+                   String oldPdfrealurl=record.getPdfrealurl();
+                   String pdf_filesavessid=record.getPdf_filesavessid();
+                   if (StringUtils.isNotBlank(pdfdownurl)&&StringUtils.isNotBlank(pdfrealurl)){
+                       Base_filesave base_filesave=new Base_filesave();
+                       base_filesave.setDatassid(recordssid);
+                       base_filesave.setUploadfilename(pdffilename);
+                       base_filesave.setRealfilename(pdffilename);
+                       base_filesave.setRecordrealurl(pdfrealurl);
+                       base_filesave.setRecorddownurl(pdfdownurl);
+                       if (StringUtils.isNotBlank(oldPdfrealurl)){
+                           //修改
+                           EntityWrapper filesaveparam = new EntityWrapper();
+                           filesaveparam.eq("ssid",pdf_filesavessid);
+                           int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
+                           LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveupdate_bool);
+                       }else{
+                           //新增
+                           base_filesave.setSsid(OpenUtil.getUUID_32());
+                           int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                           LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveinsert_bool);
+                           pdf_filesavessid=base_filesave.getSsid();
+                       }
+                   }
+                EntityWrapper e=new EntityWrapper();
+                e.eq("ssid",recordssid);
+                record.setWord_filesavessid(word_filesavessid);
+                record.setPdf_filesavessid(pdf_filesavessid);
+                int police_recordMapper_updatebool=police_recordMapper.update(record,e);
+                   LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                result.setData(pdfdownurl);
+                changeResultToSuccess(result);
+               }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+    public void exportWord(RResult<ExportWordVO> result, ReqParam<ExportWordParam> param, HttpServletRequest request){
+        ExportWordVO exportWordVO=new ExportWordVO();
+        ExportWordParam exportWordParam=param.getParam();
+        if (null==exportWordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=exportWordParam.getRecordssid();
+        if (null==recordssid){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        Map<String,String> dataMap=exportData(recordssid);
+
+        //根据笔录ssid获取录音数据
+        EntityWrapper recordParam = new EntityWrapper();
+        recordParam.eq("r.ssid", recordssid);
+        Record record = police_recordMapper.getRecordBySsid(recordParam);
+        if (null!=record){
+
+            EntityWrapper ew = new EntityWrapper();
+            ew.eq("r.ssid", record.getSsid());
+            ew.orderBy("p.ordernum", true);
+            ew.orderBy("p.createtime", true);
+            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+
+            List<Talk> talks = new ArrayList<>();//问答
+            if (null != questionandanswer && questionandanswer.size() > 0) {
+                for (RecordToProblem problem : questionandanswer) {
+                    Talk talk = new Talk();
+                    List<Answer> as = new ArrayList<>();//答集合
+                    talk.setQuestion("问：" + problem.getProblem());
+
+                    String problemssid = problem.getSsid();
+                    if (StringUtils.isNotBlank(problemssid)) {
+                        EntityWrapper answerParam = new EntityWrapper();
+                        answerParam.eq("recordtoproblemssid", problemssid);
+                        answerParam.orderBy("ordernum", true);
+                        answerParam.orderBy("createtime", true);
+                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
+                        if (null != answers && answers.size() > 0) {
+                            for (Police_answer answer : answers) {
+                                Answer a = new Answer();
+                                a.setAnswer("答：" + answer.getAnswer());
+                                as.add(a);
+                            }
+                            problem.setAnswers(answers);
+                        } else {
+                            Answer a = new Answer();
+                            a.setAnswer("答：");
+                            as.add(a);
+                        }
+                    }
+                    talk.setAnswers(as);
+                    talks.add(talk);
+                }
+            }
+
+
+         //1、获取模板的真实地址
+          String wordtemplate_realurl=null;//模板路径
+           EntityWrapper wordew=new EntityWrapper();
+           wordew.eq("w.recordtypessid",record.getRecordtypessid());
+           List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
+           if (null!=wordTemplate&&wordTemplate.size()>0){
+               for (WordTemplate template : wordTemplate) {
+                    if (template.getDefaultbool()==1){
+                        wordtemplate_realurl=template.getWordtemplate_realurl();
+                    }
+               }
+           }
+            LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板真实地址__"+wordtemplate_realurl);
+           if (StringUtils.isBlank(wordtemplate_realurl)){
+               result.setMessage("请先上传笔录类型对应的word笔录模板");
+               return;
+           }
+
+            try {
+                String uploadpath=uploadbasepath;
+                String savePath=filerecordwordOrpdf;
+                String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+                //获取生成的真实地址
+                String filename=record.getRecordname().replace(" ", "").replace("\"", "");
+                String suffix =wordtemplate_realurl.substring(wordtemplate_realurl.lastIndexOf(".") + 1);
+
+                String wordfilename=filename+"."+suffix;
+                String wordrealurl = OpenUtil.createpath_fileByBasepath(savePath, wordfilename);
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word真实地址__"+wordrealurl);
+
+                //获取生成的下载地址
+                String worddownurl =uploadpath+OpenUtil.strMinusBasePath(qg, wordrealurl) ;
+                LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word下载地址__"+worddownurl);
+
+                System.out.println((new Date()).getTime());
+                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,talks);
+                System.out.println((new Date()).getTime());
+
+                String oldfilepath=record.getWordrealurl();
+
+                //将地址保存在文件存储表以及修改笔录标的文件存储ssid
+                String word_filesavessid=record.getWord_filesavessid();
+                if (StringUtils.isNotBlank(wordrealurl)&&StringUtils.isNotBlank(worddownurl)){
+                    Base_filesave base_filesave=new Base_filesave();
+                    base_filesave.setDatassid(recordssid);
+                    base_filesave.setUploadfilename(wordfilename);
+                    base_filesave.setRealfilename(wordfilename);
+                    base_filesave.setRecordrealurl(wordrealurl);
+                    base_filesave.setRecorddownurl(worddownurl);
+                    if (StringUtils.isNotBlank(oldfilepath)){
+                        //修改
+                        EntityWrapper filesaveparam = new EntityWrapper();
+                        filesaveparam.eq("ssid",word_filesavessid);
+                        int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
+                        LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveupdate_bool);
+                    }else{
+                        //新增
+                        base_filesave.setSsid(OpenUtil.getUUID_32());
+                        int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                        LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
+                        word_filesavessid=base_filesave.getSsid();
+                    }
+                }
+
+                EntityWrapper e=new EntityWrapper();
+                e.eq("ssid",recordssid);
+                record.setWord_filesavessid(word_filesavessid);
+                int police_recordMapper_updatebool=police_recordMapper.update(record,e);
+                LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+
+                exportWordVO.setWord_path(worddownurl);
+                result.setData(exportWordVO);
+                changeResultToSuccess(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return;
+    }
+
+
+    /**
+     * 收集导出数据
+     * @param recordssid
+     * @return
+     */
+    public  Map<String,String> exportData(String recordssid) {
+        //根据笔录ssid获取录音数据
+        EntityWrapper recordParam = new EntityWrapper();
+        recordParam.eq("r.ssid", recordssid);
+        Record record = police_recordMapper.getRecordBySsid(recordParam);
+        Map<String, String> dataMap = new HashMap<String, String>();
+        if (null != record) {
 
             /**
              *   获取提讯人和被询问人
@@ -953,331 +1261,25 @@ public class RecordService extends BaseService {
                 cardnum = userInfos.get(0).getCardtypename() + userInfos.get(0).getCardnum();
             }
 
-
-            String filePathNew1 = filePath + "/zips/record/";
-            String filePathNew = OpenUtil.createpath_fileByBasepath(filePathNew1);
-            File fileMkdir = new File(filePathNew);
-            if (!fileMkdir.exists()) {
-                //如果不存在，就创建该目录
-                fileMkdir.mkdirs();
-            }
-            String filename=record.getRecordname().replace(" ", "").replace("\"", "");
-            String path = filePathNew +filename+".pdf";
-
-            try {
-                Document document = new Document();
-                PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(path));
-                BaseFont bfChinese = BaseFont.createFont("STSong-Light", "UniGB-UCS2-H", BaseFont.NOT_EMBEDDED);
-                Font fontChinese = new Font(bfChinese, 16F, Font.NORMAL);// 五号
-
-                document.open();
-
-                Paragraph paragraph2 = new Paragraph("",fontChinese);
-                PdfPTable tableBox2 = new PdfPTable(8);
-                tableBox2.setWidthPercentage(90f); // 宽度100%填充
-                tableBox2.setSpacingBefore(15f); // 前间距
-                tableBox2.setSpacingAfter(10f); // 后间距
-
-
-                Font firsetTitleFont = new Font(bfChinese, 26F, Font.NORMAL);// 五号
-                PdfPCell cells = new PdfPCell(new Phrase(String.valueOf(recordtypename), firsetTitleFont));
-                cells.setColspan(8);
-                cells.setRowspan(1);
-                cells.setPaddingTop(10F);
-                cells.setPaddingBottom(10F);
-                cells.disableBorderSide(15);
-                cells.setHorizontalAlignment(cells.ALIGN_CENTER); // 设置水平居中
-                cells.setVerticalAlignment(cells.ALIGN_MIDDLE); // 设置垂直居中
-                tableBox2.addCell(cells);
-
-
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("时间"), fontChinese), false, 1, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordstarttime), fontChinese), false, 3, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("至"), fontChinese), false, 1, 1,15,1));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordendtime), fontChinese), false, 3, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("地点"), fontChinese), false, 1, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(recordplace), fontChinese), false, 7, 1,13,0));
-
-
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("询问人（签名）"), fontChinese), false, 2, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname1), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("询问人（签名）"), fontChinese), false, 2, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname2), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("记录人（签名）"), fontChinese), false, 2, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(""), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("工作单位"), fontChinese), false, 2, 1,15,1));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(workname3), fontChinese), false, 2, 1,13,0));
-
-                PdfPTable tableBox3 = new PdfPTable(8);
-                tableBox3.setWidthPercentage(100F); // 宽度100%填充
-                tableBox3.setWidths(new float[]{16,15,8,5,8,5,16,27});
-                tableBox3.addCell(getCell(new Phrase(String.valueOf("被询问人"), fontChinese), false, 1, 1,15,0));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf(username), fontChinese), false, 1, 1,13,0));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf("性别"), fontChinese), false, 1, 1,15,1));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf(sex), fontChinese), false, 1, 1,13,0));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf("年龄"), fontChinese), false, 1, 1,15,1));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf(age), fontChinese), false, 1, 1,13,0));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf("出生日期"), fontChinese), false, 1, 1,15,1));
-                tableBox3.addCell(getCell(new Phrase(String.valueOf(both), fontChinese), false, 1, 1,13,0));
-                PdfPCell cells3 = new PdfPCell(tableBox3);
-                cells3.setColspan(8);
-                cells3.setRowspan(1);
-                cells3.disableBorderSide(15);
-                tableBox2.addCell(cells3);
-
-                PdfPTable tableBox5 = new PdfPTable(8);
-                tableBox5.setWidthPercentage(100F); // 宽度100%填充
-                tableBox5.setWidths(new float[]{16,10,6,8,10,10,10,30});
-                tableBox5.addCell(getCell(new Phrase(String.valueOf("身份证件种类及号码"), fontChinese), false, 3, 1,15,0));
-                tableBox5.addCell(getCell(new Phrase(String.valueOf(cardnum), fontChinese), false, 5, 1,13,0));
-                PdfPCell cells5 = new PdfPCell(tableBox5);
-                cells5.setColspan(8);
-                cells5.setRowspan(1);
-                cells5.disableBorderSide(15);
-                tableBox2.addCell(cells5);
-
-
-                PdfPTable tableBox4 = new PdfPTable(8);
-                tableBox4.setWidthPercentage(100F); // 宽度100%填充
-                tableBox4.setWidths(new float[]{16,10,8,8,10,15,3,30});
-                tableBox4.addCell(getCell(new Phrase(String.valueOf("政治面貌"), fontChinese), false, 1, 1,15,0));
-                tableBox4.addCell(getCell(new Phrase(String.valueOf(politicsstatus), fontChinese), false, 3, 1,13,0));
-                tableBox4.addCell(getCell(new Phrase(String.valueOf("工作单位及职务"), fontChinese), false, 2, 1,15,0));
-                tableBox4.addCell(getCell(new Phrase(String.valueOf(workunits), fontChinese), false, 2, 1,13,0));
-                PdfPCell cells4 = new PdfPCell(tableBox4);
-                cells4.setColspan(8);
-                cells4.setRowspan(1);
-                cells4.disableBorderSide(15);
-                tableBox2.addCell(cells4);
-
-
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("现住址"), fontChinese), false, 1, 1,15,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(residence), fontChinese), false, 2, 1,13,0));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf("联系方式"), fontChinese), false, 2, 1,15,1));
-                tableBox2.addCell(getCell(new Phrase(String.valueOf(phone), fontChinese), false, 3, 1,13,0));
-
-                PdfPTable tableBox6 = new PdfPTable(8);
-                tableBox6.setWidthPercentage(100F); // 宽度100%填充
-                tableBox6.setWidths(new float[]{20,8,10,10,10,10,10,34});
-                tableBox6.addCell(getCell(new Phrase(String.valueOf("户籍所在地"), fontChinese), false, 1, 1,15,0));
-                tableBox6.addCell(getCell(new Phrase(String.valueOf(domicile), fontChinese), false, 7, 1,13,0));
-                PdfPCell cells6 = new PdfPCell(tableBox6);
-                cells6.setColspan(8);
-                cells6.setRowspan(1);
-                cells6.disableBorderSide(15);
-                tableBox2.addCell(cells6);
-
-
-                Paragraph paragraph = new Paragraph("",fontChinese);
-                PdfPTable tableBox = new PdfPTable(1);
-                tableBox.setWidthPercentage(90f); // 宽度100%填充
-                tableBox.setSpacingAfter(15f); // 后间距
-
-                // 遍历查询出的结果
-                for (String qqww : qw) {
-                    tableBox.addCell(getCell(new Phrase(String.valueOf(qqww), fontChinese), false, 2, 1,15,0));
-                }
-                paragraph2.add(tableBox2);
-                document.add(paragraph2);
-                paragraph.add(tableBox);
-                document.add(paragraph);
-                document.close();
-                writer.close();
-
-                String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-                result.setData(uploadbasepath+uploadpath);
-                changeResultToSuccess(result);
-                return;
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            dataMap.put("${recordtypename}", recordtypename == null ? "" : recordtypename);
+            dataMap.put("${recordstarttime}", recordstarttime == null ? "" : recordstarttime);
+            dataMap.put("${recordendtime}", recordendtime == null ? "" : recordendtime);
+            dataMap.put("${recordplace}", recordplace == null ? "" : recordplace);
+            dataMap.put("${workname1}", workname1 == null ? "" : workname1);
+            dataMap.put("${workname2}", workname2 == null ? "" : workname2);
+            dataMap.put("${workname3}", workname3 == null ? "" : workname3);
+            dataMap.put("${username}", username == null ? "" : username);
+            dataMap.put("${sex}", sex == null ? "" : sex);
+            dataMap.put("${age}", age == null ? "" : age);
+            dataMap.put("${cardnum}", cardnum == null ? "" : cardnum);
+            dataMap.put("${politicsstatus}", politicsstatus == null ? "" : politicsstatus);
+            dataMap.put("${workunits}", workunits == null ? "" : workunits);
+            dataMap.put("${residence}", residence == null ? "" : residence);
+            dataMap.put("${phone}", phone == null ? "" : phone);
+            dataMap.put("${domicile}", domicile == null ? "" : domicile);
+            dataMap.put("${both}", both == null ? "" : both);
         }
-        return;
-    }
-
-
-    private static PdfPCell getCell(Phrase phrase, boolean yellowFlag, int colSpan, int rowSpan,int disableborderside,int horizontalalignment) {
-        PdfPCell cells = new PdfPCell(phrase);
-        cells.setUseAscender(true);
-        cells.setHorizontalAlignment(horizontalalignment); // 设置水平居中
-        cells.setVerticalAlignment(cells.ALIGN_MIDDLE); // 设置垂直居中
-        cells.setColspan(colSpan);
-        cells.setRowspan(rowSpan);
-        cells.setNoWrap(false);
-        cells.disableBorderSide(disableborderside);//只剩下
-        cells.setLeading(1.5F,1.5F);
-        cells.setPaddingTop(8F);
-        cells.setPaddingBottom(8F);
-        return cells;
-    }
-
-    public void exportWord(RResult<ExportWordVO> result, ReqParam<ExportWordParam> param, HttpServletRequest request){
-        ExportWordVO exportWordVO=new ExportWordVO();
-        ExportWordParam exportWordParam=param.getParam();
-        if (null==exportWordParam){
-            result.setMessage("参数为空");
-            return;
-        }
-        String recordssid=exportWordParam.getRecordssid();
-        if (StringUtils.isBlank(recordssid)){
-            result.setMessage("参数为空");
-            return;
-        }
-
-        //根据笔录ssid获取录音数据
-        EntityWrapper recordParam=new EntityWrapper();
-        recordParam.eq("r.ssid",recordssid);
-        Record record=police_recordMapper.getRecordBySsid(recordParam);
-
-        if (null!=record){
-                String questionandanswer="";//题目答案
-                EntityWrapper ew=new EntityWrapper();
-                ew.eq("r.ssid",record.getSsid());
-                ew.orderBy("p.ordernum",true);
-                ew.orderBy("p.createtime",true);
-                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-                if (null!=problems&&problems.size()>0){
-                    for (RecordToProblem problem : problems) {
-                        questionandanswer+="问："+problem.getProblem()+"<w:br/>";
-                        String problemssid=problem.getSsid();
-                        if (StringUtils.isNotBlank(problemssid)){
-                            EntityWrapper answerParam=new EntityWrapper();
-                            answerParam.eq("recordtoproblemssid",problemssid);
-                            answerParam.orderBy("ordernum",true);
-                            answerParam.orderBy("createtime",true);
-                            List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                            if (null!=answers&&answers.size()>0){
-                                for (Police_answer answer : answers) {
-                                    questionandanswer+="答："+answer.getAnswer()+"<w:br/>";
-                                }
-                            }
-                        }
-                    }
-                }
-
-                /**
-                 *   获取提讯人和被询问人
-                 */
-                EntityWrapper recorduserinfosParam=new EntityWrapper();
-                recorduserinfosParam.eq("a.recordssid",record.getSsid());
-                RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
-
-                String userssid=recordUserInfos.getUserssid();
-                Police_userinfo police_userinfo=new Police_userinfo();
-                police_userinfo.setSsid(userssid);
-                police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
-
-
-                Police_arraignment police_arraignment=new Police_arraignment();
-                police_arraignment.setRecordssid(recordssid);
-                police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
-
-
-        Police_recordtype police_recordtype=new Police_recordtype();
-        police_recordtype.setSsid(record.getRecordtypessid());
-        police_recordtype=police_recordtypeMapper.selectOne(police_recordtype);
-
-        String recordtypename=police_recordtype.getTypename();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
-        String recordstarttime=sdf.format(record.getCreatetime());
-        String recordendtime=sdf.format(new Date());
-        String recordplace=police_arraignment.getRecordplace();
-
-        //工作单位
-        Police_workunit police_workunit1=new Police_workunit();
-        police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
-        police_workunit1=police_workunitMapper.selectOne(police_workunit1);
-        Police_workunit police_workunit2=new Police_workunit();
-        police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
-        police_workunit2=police_workunitMapper.selectOne(police_workunit2);
-        Police_workunit police_workunit3=new Police_workunit();
-        police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
-        police_workunit3=police_workunitMapper.selectOne(police_workunit3);
-
-        String workname1=police_workunit1.getWorkname();
-        String workname2=police_workunit2.getWorkname();
-        String workname3=police_workunit3.getWorkname();
-        String username=police_userinfo.getUsername();
-        String sex=police_userinfo.getSex()==1?"男":"女";
-        String age=police_userinfo.getAge().toString();
-        String politicsstatus=police_userinfo.getPoliticsstatus();
-        String workunits=police_userinfo.getWorkunits();
-        String residence=police_userinfo.getResidence();
-        String phone=police_userinfo.getPhone();
-        String domicile=police_userinfo.getDomicile();
-         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
-        String both=sdf2.format(police_userinfo.getBoth());
-
-        EntityWrapper userinfoparam=new EntityWrapper();
-        userinfoparam.eq("u.ssid",userssid);
-        List<UserInfo> userInfos=police_userinfoMapper.getUserByCard(userinfoparam);
-         String cardnum=null;
-        if (null!=userInfos&&userInfos.size()>0){
-            cardnum=userInfos.get(0).getCardtypename()+userInfos.get(0).getCardnum();
-        }
-
-        Map<String,Object> dataMap = new HashMap<String,Object>();
-        dataMap.put("recordtypename", recordtypename==null?"":recordtypename);
-        dataMap.put("recordstarttime", recordstarttime==null?"":recordstarttime);
-        dataMap.put("recordendtime", recordendtime==null?"":recordendtime);
-        dataMap.put("recordplace",recordplace==null?"":recordplace);
-        dataMap.put("workname1", workname1==null?"":workname1);
-        dataMap.put("workname2", workname2==null?"":workname2);
-        dataMap.put("workname3", workname3==null?"":workname3);
-        dataMap.put("username", username==null?"":username);
-        dataMap.put("sex",sex==null?"":sex);
-        dataMap.put("age", age==null?"":age);
-        dataMap.put("cardnum",cardnum==null?"":cardnum);
-        dataMap.put("politicsstatus", politicsstatus==null?"":politicsstatus);
-        dataMap.put("workunits",workunits==null?"":workunits);
-        dataMap.put("residence", residence==null?"":residence);
-        dataMap.put("phone", phone==null?"":phone);
-        dataMap.put("domicile",domicile==null?"":domicile);
-        dataMap.put("both", both==null?"":both);
-        dataMap.put("questionandanswer",questionandanswer==null?"":questionandanswer);
-
-        try {
-
-            /*template*/
-            Configuration configuration = new Configuration(new Version("2.3.23"));
-            configuration.setDefaultEncoding("utf-8");
-            configuration.setClassForTemplateLoading(RecordService.class, "/config");
-
-            //以utf-8的编码读取ftl文件
-            Template template = configuration.getTemplate("askTo_wordtemplate.ftl","UTF-8");
-
-            String filePathNew1 = filePath + "/zips/record/";
-            String filePathNew = OpenUtil.createpath_fileByBasepath(filePathNew1);
-            File fileMkdir = new File(filePathNew);
-            if (!fileMkdir.exists()) {
-                //如果不存在，就创建该目录
-                fileMkdir.mkdirs();
-            }
-            String filename=record.getRecordname().replace(" ", "").replace("\"", "");
-            String path = filePathNew +filename+".doc";
-
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
-            template.process(dataMap, out);
-            out.close();
-
-            String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            exportWordVO.setWord_path(uploadbasepath+uploadpath);
-
-           result.setData(exportWordVO);
-            changeResultToSuccess(result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TemplateException e) {
-            e.printStackTrace();
-        }
-        }
-        return;
+        return dataMap;
     }
 
     public void updateArraignment(RResult result, ReqParam<UpdateArraignmentParam> param){
@@ -1525,6 +1527,376 @@ public class RecordService extends BaseService {
         return;
     }
 
+    public void getWordTemplateList(RResult result,ReqParam<GetWordTemplateListParam> param){
+        GetWordTemplateListParam getWordTemplateListParam=param.getParam();
+        if (null==getWordTemplateListParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        GetWordTemplateListVO vo=new GetWordTemplateListVO();
+
+         String wordtemplatename=getWordTemplateListParam.getWordtemplatename();//word模板名称
+         String recordtypessid=getWordTemplateListParam.getRecordtypessid();//笔录类型
+
+        EntityWrapper ew=new EntityWrapper();
+        ew.orderBy("w.createtime",false);
+        if (StringUtils.isNotBlank(wordtemplatename)){
+            ew.like("w.wordtemplatename",wordtemplatename);
+        }
+        if (StringUtils.isNotBlank(recordtypessid)){
+            ew.eq("w.recordtypessid",recordtypessid);
+        }
+
+        int count=police_wordtemplateMapper.countgetWordTemplateList(ew);
+        getWordTemplateListParam.setRecordCount(count);
+
+        Page<WordTemplate> page=new Page<>(getWordTemplateListParam.getCurrPage(),getWordTemplateListParam.getPageSize());
+        List<WordTemplate> pagelist=police_wordtemplateMapper.getWordTemplateList(page,ew);
+
+        //检测html文件是否存在-------------------------------------start----------------------------
+        for (WordTemplate wordTemplate : pagelist) {
+            String wordtemplate_downurl_html=null;
+            String realurl=wordTemplate.getWordtemplate_realurl();
+            String downurl=wordTemplate.getWordtemplate_downurl();
+            if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                if(realurl.endsWith(".doc")){
+                    String replace = realurl.replace(".doc", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"word模板doc转html文件存在:"+replace);
+                        wordtemplate_downurl_html=downurl.replace(".doc", ".html");
+                    }
+                }else if(realurl.endsWith(".docx")){
+                    String replace = realurl.replace(".docx", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"word模板docx转html文件存在:"+replace);
+                        wordtemplate_downurl_html=downurl.replace(".docx", ".html");
+                    }
+                }
+            }
+            wordTemplate.setWordtemplate_downurl_html(wordtemplate_downurl_html);
+        }
+        //检测html文件是否存在-------------------------------------end----------------------------
+        vo.setPagelist(pagelist);
+        vo.setPageparam(getWordTemplateListParam);
+
+
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void uploadWordTemplate(RResult result,ReqParam param, MultipartFile multipartfile){
+        String Stringparam=(String)param.getParam();
+        //请求参数转换
+        UploadWordTemplateParam uploadWordTemplateParam=gson.fromJson(Stringparam, UploadWordTemplateParam.class);
+        if (null==uploadWordTemplateParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String ssid=uploadWordTemplateParam.getSsid();
+        String recordtypessid=uploadWordTemplateParam.getRecordtypessid();
+        Integer defaultbool=uploadWordTemplateParam.getDefaultbool();
+        String wordtemplatename=uploadWordTemplateParam.getWordtemplatename();
+
+
+
+        Police_wordtemplate police_wordtemplate=new Police_wordtemplate();
+        police_wordtemplate.setDefaultbool(defaultbool);
+        police_wordtemplate.setRecordtypessid(recordtypessid);
+        police_wordtemplate.setWordtemplatename(wordtemplatename);
+
+        String wordtemplate_filesavessid=null;
+        if(StringUtils.isNotBlank(ssid)){
+            EntityWrapper oldew=new EntityWrapper();
+            oldew.eq("w.ssid",ssid);
+            List<WordTemplate> oldwordTemplates=police_wordtemplateMapper.getWordTemplate(oldew);
+            WordTemplate oldwordTemplate=new WordTemplate();
+            if (null!=oldwordTemplates&&oldwordTemplates.size()==1){
+                oldwordTemplate=oldwordTemplates.get(0);
+            }
+
+           //获取原来的地址，进行处理
+
+             wordtemplate_filesavessid=oldwordTemplate.getWordtemplate_filesavessid();
+            try {
+                if (null!=multipartfile){
+                    String uploadpath=uploadbasepath;
+                    String savePath=filewordtemplate;
+                    String qg=PropertiesListenerConfig.getProperty("file.qg");
+                    String oldwordtemplate_realurl=oldwordTemplate.getWordtemplate_realurl();//旧真实地址
+
+
+
+
+                    String oldfilename=multipartfile.getOriginalFilename();
+                    String suffix =oldfilename.substring(oldfilename.lastIndexOf(".") + 1);
+                    String filename = wordtemplatename+"_"+DateUtil.getSeconds()+"."+suffix;//模板名称加后缀
+                    if(oldfilename.endsWith(".doc")||oldfilename.endsWith(".DOC")||oldfilename.endsWith(".docx")||oldfilename.endsWith(".DOCX")){
+                        if (StringUtils.isNotBlank(oldwordtemplate_realurl)){
+                            File oldfile=new File(oldwordtemplate_realurl);
+                            if (oldfile.exists()) {
+                                oldfile.delete();
+                                LogUtil.intoLog(this.getClass(),"删除笔录word模板旧真实地址:"+oldwordtemplate_realurl);
+                            }
+
+                            if(oldwordtemplate_realurl.endsWith(".doc")){
+                                String replace = oldwordtemplate_realurl.replace(".doc", ".html");
+                                File f = new File(replace);
+                                if (f.exists()) {
+                                    f.delete();
+                                    LogUtil.intoLog(this.getClass(),"删除笔录word模板html旧真实地址:"+replace);
+                                }
+                            }else if(oldwordtemplate_realurl.endsWith(".docx")){
+                                String replace = oldwordtemplate_realurl.replace(".docx", ".html");
+                                File f = new File(replace);
+                                if (f.exists()) {
+                                    f.delete();
+                                    LogUtil.intoLog(this.getClass(),"删除笔录word模板html旧真实地址:"+replace);
+                                }
+                            }
+                        }
+                        String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
+                        LogUtil.intoLog(this.getClass(),"笔录word模板真实地址："+realurl);
+                        multipartfile.transferTo(new File(realurl));
+                        String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
+                        LogUtil.intoLog(this.getClass(),"笔录word模板下载地址："+downurl);
+
+                        if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+
+                            //word转html-----------------start---------------
+                            if(realurl.endsWith(".doc")){
+                                String replace = realurl.replace(".doc", ".html");
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                            }else if(realurl.endsWith(".docx")){
+                                String replace = realurl.replace(".docx", ".html");
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                            }
+                            //word转html-----------------end-----------------
+
+                            Base_filesave base_filesave=new Base_filesave();
+                            base_filesave.setDatassid(ssid);
+                            base_filesave.setUploadfilename(oldfilename);
+                            base_filesave.setRealfilename(filename);
+                            base_filesave.setRecordrealurl(realurl);
+                            base_filesave.setRecorddownurl(downurl);
+                            if (StringUtils.isNotBlank(oldwordtemplate_realurl)){
+                                //修改
+                                EntityWrapper filesaveparam = new EntityWrapper();
+                                filesaveparam.eq("ssid",wordtemplate_filesavessid);
+                                int filesaveupdate_bool=base_filesaveMapper.update(base_filesave,filesaveparam);
+                                LogUtil.intoLog(this.getClass(),"filesaveupdate_bool__"+filesaveupdate_bool);
+                            }else{
+                                //新增
+                                base_filesave.setSsid(OpenUtil.getUUID_32());
+                                int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                                LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
+                                wordtemplate_filesavessid=base_filesave.getSsid();
+                            }
+                        }
+                    }else {
+                        result.setMessage("请选择doc或者docx的word文档进行上传");
+                        return;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //修改
+            police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
+            EntityWrapper updateew=new EntityWrapper();
+            updateew.eq("ssid",ssid);
+            int police_wordtemplateMapper_updatebool =  police_wordtemplateMapper.update(police_wordtemplate,updateew);
+            LogUtil.intoLog(this.getClass(),"police_wordtemplateMapper_updatebool__"+police_wordtemplateMapper_updatebool);
+            if (police_wordtemplateMapper_updatebool>0){
+                result.setData(1);
+                changeResultToSuccess(result);
+            }
+        }else {
+            //新增
+            police_wordtemplate.setSsid(OpenUtil.getUUID_32());
+            police_wordtemplate.setCreatetime(new Date());
+            police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
+            int police_wordtemplateMapper_insertbool =  police_wordtemplateMapper.insert(police_wordtemplate);
+            LogUtil.intoLog(this.getClass(),"police_wordtemplateMapper_insertbool__"+police_wordtemplateMapper_insertbool);
+            ssid=police_wordtemplate.getSsid();
+
+
+            if (null!=multipartfile){
+                //开始进行文件上传
+
+                try {
+                    String uploadpath=uploadbasepath;
+                    String savePath=filewordtemplate;
+                    String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+                    String oldfilename=multipartfile.getOriginalFilename();
+                    String suffix =oldfilename.substring(oldfilename.lastIndexOf(".") + 1);
+                    String filename = wordtemplatename+"_"+DateUtil.getSeconds()+"."+suffix;//模板名称加后缀
+
+                    if(oldfilename.endsWith(".doc")||oldfilename.endsWith(".DOC")||oldfilename.endsWith(".docx")||oldfilename.endsWith(".DOCX")){
+                        String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
+                        LogUtil.intoLog(this.getClass(),"笔录word模板真实地址："+realurl);
+                        multipartfile.transferTo(new File(realurl));
+                        String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
+                        LogUtil.intoLog(this.getClass(),"笔录word模板下载地址："+downurl);
+
+                        if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                            //word转html-----------------start---------------
+                            if(realurl.endsWith(".doc")){
+                                String replace = realurl.replace(".doc", ".html");
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                            }else if(realurl.endsWith(".docx")){
+                                String replace = realurl.replace(".docx", ".html");
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                            }
+                            //word转html-----------------end-----------------
+
+
+                            Base_filesave base_filesave=new Base_filesave();
+                            base_filesave.setDatassid(ssid);
+                            base_filesave.setUploadfilename(oldfilename);
+                            base_filesave.setRealfilename(filename);
+                            base_filesave.setRecordrealurl(realurl);
+                            base_filesave.setRecorddownurl(downurl);
+                            base_filesave.setSsid(OpenUtil.getUUID_32());
+                            int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                            LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
+                            if (filesaveinsert_bool>0){
+                                //存在文件开始上传，回填上传文件的ssid
+                                wordtemplate_filesavessid=base_filesave.getSsid();
+                                police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
+                                EntityWrapper updateew=new EntityWrapper();
+                                updateew.eq("ssid",ssid);
+                                int police_wordtemplateMapper_updatebool =  police_wordtemplateMapper.update(police_wordtemplate,updateew);
+                            }
+                        }
+                    }else {
+                        result.setMessage("请选择doc或者docx的word文档进行上传");
+                        return;
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (police_wordtemplateMapper_insertbool>0){
+                result.setData(1);
+                changeResultToSuccess(result);
+            }
+        }
+
+        if (defaultbool==1){
+            //获取该模板的类型，并且将该类型的处理ssi全部1改为-1
+            EntityWrapper updateew=new EntityWrapper();
+            updateew.eq("recordtypessid",recordtypessid);
+            updateew.ne("ssid",ssid);
+            List<Police_wordtemplate> police_wordtemplates=police_wordtemplateMapper.selectList(updateew);
+            for (Police_wordtemplate policeWordtemplate : police_wordtemplates) {
+                if (policeWordtemplate.getDefaultbool()==1){
+                    policeWordtemplate.setDefaultbool(-1);
+                    int police_wordtemplatemapper__defaultboolbool =police_wordtemplateMapper.updateById(policeWordtemplate);
+                    LogUtil.intoLog(this.getClass(),"police_wordtemplatemapper__defaultboolbool__"+police_wordtemplatemapper__defaultboolbool);
+                }
+            }
+        }
+        return;
+    }
+
+    public void  getWordTemplateByssid(RResult result,ReqParam<GetWordTemplateByssidParam> param){
+        GetWordTemplateByssidParam getWordTemplateByssidParam=param.getParam();
+        if (null==getWordTemplateByssidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String ssid=getWordTemplateByssidParam.getSsid();
+        if (StringUtils.isBlank(ssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper ew=new EntityWrapper();
+        ew.eq("w.ssid",ssid);
+
+        WordTemplate wordTemplate=new WordTemplate();
+        List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(ew);
+        if (null!=wordTemplates&&wordTemplates.size()==1){
+            wordTemplate=wordTemplates.get(0);
+        }
+
+        if (null!=wordTemplate){
+            //检测html文件是否存在-------------------------------------start----------------------------
+            String wordtemplate_downurl_html=null;
+            String realurl=wordTemplate.getWordtemplate_realurl();
+            String downurl=wordTemplate.getWordtemplate_downurl();
+            if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                if(realurl.endsWith(".doc")){
+                    String replace = realurl.replace(".doc", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"word模板doc转html文件存在:"+replace);
+                        wordtemplate_downurl_html=downurl.replace(".doc", ".html");
+                    }
+                }else if(realurl.endsWith(".docx")){
+                    String replace = realurl.replace(".docx", ".html");
+                    File f = new File(replace);
+                    if (f.exists()) {
+                        LogUtil.intoLog(this.getClass(),"word模板docx转html文件存在:"+replace);
+                        wordtemplate_downurl_html=downurl.replace(".docx", ".html");
+                    }
+                }
+            }
+            //检测html文件是否存在-------------------------------------end----------------------------
+            wordTemplate.setWordtemplate_downurl_html(wordtemplate_downurl_html);
+            result.setData(wordTemplate);
+            changeResultToSuccess(result);
+        }
+
+        return;
+    }
+
+
+    public  void changeboolWordTemplate(RResult result,ReqParam<ChangeboolWordTemplateParam> param){
+        ChangeboolWordTemplateParam changeboolWordTemplateParam=param.getParam();
+        if (null==changeboolWordTemplateParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String ssid=changeboolWordTemplateParam.getSsid();
+        Integer defaultbool=changeboolWordTemplateParam.getDefaultbool();
+
+
+        Police_wordtemplate police_wordtemplate=new Police_wordtemplate();
+        police_wordtemplate.setSsid(ssid);
+        police_wordtemplate=police_wordtemplateMapper.selectOne(police_wordtemplate);
+        if (null!=police_wordtemplate){
+                if (defaultbool==1){
+                    //获取该模板的类型，并将该类型的都改为默认
+                    String recordtypessid=police_wordtemplate.getRecordtypessid();
+                    EntityWrapper updateew=new EntityWrapper();
+                    updateew.eq("recordtypessid",recordtypessid);
+                    List<Police_wordtemplate> police_wordtemplates=police_wordtemplateMapper.selectList(updateew);
+                    for (Police_wordtemplate policeWordtemplate : police_wordtemplates) {
+                        if (policeWordtemplate.getDefaultbool()==1){
+                            policeWordtemplate.setDefaultbool(-1);
+                            int updatebool =police_wordtemplateMapper.updateById(policeWordtemplate);
+                        }
+                    }
+                }
+
+                EntityWrapper update=new EntityWrapper();
+                update.eq("ssid",ssid);
+                police_wordtemplate.setDefaultbool(defaultbool);
+                int updatebool2 =  police_wordtemplateMapper.update(police_wordtemplate,update);
+
+                result.setData(1);
+                changeResultToSuccess(result);
+        }
+        return;
+    }
 
 
 

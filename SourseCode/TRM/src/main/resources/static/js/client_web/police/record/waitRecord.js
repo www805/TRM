@@ -682,33 +682,14 @@ function exportWord(obj){
     ajaxSubmitByJson(url, paramdata, function (data) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
-            alert(data);
             if (isNotEmpty(data)){
                 var word_htmlpath=data.word_htmlpath;//预览html地址
                 var word_path=data.word_path;//下载地址
                 window.location.href = word_path;
                 layer.msg("导出成功,等待下载中...");
-               /* if (null!=word_htmlpath) {
-                    layer.open({
-                        type: 2,
-                        title: '导出WORD笔录',
-                        btn: ['下载'],
-                        shadeClose: true,
-                        maxmin: true, //开启最大化最小化按钮
-                        area: ['893px', '600px'],
-                        content: word_htmlpath,
-                        yes:function(index, layero){
-                            window.location.href = word_path;
-                            layer.msg("导出成功,等待下载中...");
-                            layer.close(index);
-                        }
-                    });
-                }else {
-                    layer.msg("导出失败");
-                }*/
             }
         }else{
-            layer.msg("导出失败");
+            layer.msg(data.message);
         }
         btn(obj);
     });

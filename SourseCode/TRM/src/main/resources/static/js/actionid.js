@@ -129,8 +129,6 @@ function getactionid_manage() {
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
-        getRecordById_exportWord:"getRecordById_exportWord",
-        getRecordById_exportPdf:"getRecordById_exportPdf",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -206,7 +204,11 @@ function getactionid_manage() {
         addOrUpdateCase_addCase:"addOrUpdateCase_addCase",
         addOrUpdateCase_getUserinfoList:"addOrUpdateCase_getUserinfoList",
 
-
+        wordTemplateList_getWordTemplateList:"wordTemplateList_getWordTemplateList",
+        wordTemplateList_getRecordtypes:"wordTemplateList_getRecordtypes",
+        wordTemplateList_uploadWordTemplate:"wordTemplateList_uploadWordTemplate",
+        wordTemplateList_changeboolWordTemplate:"wordTemplateList_changeboolWordTemplate",
+        wordTemplateList_getWordTemplateByssid:"wordTemplateList_getWordTemplateByssid",
 
     };
 }

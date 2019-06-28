@@ -60,6 +60,11 @@ public class Police_record extends Model<Police_record> {
      */
     private String pdf_filesavessid;
 
+    /**
+     * word地址
+     */
+    private String word_filesavessid;
+
 
     /**
      * 笔录类型
@@ -88,6 +93,15 @@ public class Police_record extends Model<Police_record> {
     private Integer integer1;
 
     private Integer integer2;
+
+
+    public String getWord_filesavessid() {
+        return word_filesavessid;
+    }
+
+    public void setWord_filesavessid(String word_filesavessid) {
+        this.word_filesavessid = word_filesavessid;
+    }
 
     public Integer getId() {
         return id;
