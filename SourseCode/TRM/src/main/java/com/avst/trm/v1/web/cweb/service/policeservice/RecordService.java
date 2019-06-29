@@ -894,43 +894,6 @@ public class RecordService extends BaseService {
         recordParam.eq("r.ssid",recordssid);
         Record record=police_recordMapper.getRecordBySsid(recordParam);
         if (null!=record) {
-            EntityWrapper ew = new EntityWrapper();
-            ew.eq("r.ssid", record.getSsid());
-            ew.orderBy("p.ordernum", true);
-            ew.orderBy("p.createtime", true);
-            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-            List<Talk> talks = new ArrayList<>();//问答
-            if (null != questionandanswer && questionandanswer.size() > 0) {
-                for (RecordToProblem problem : questionandanswer) {
-                    Talk talk = new Talk();
-                    List<Answer> as = new ArrayList<>();//答集合
-                    talk.setQuestion("问：" + problem.getProblem());
-
-                    String problemssid = problem.getSsid();
-                    if (StringUtils.isNotBlank(problemssid)) {
-                        EntityWrapper answerParam = new EntityWrapper();
-                        answerParam.eq("recordtoproblemssid", problemssid);
-                        answerParam.orderBy("ordernum", true);
-                        answerParam.orderBy("createtime", true);
-                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
-                        if (null != answers && answers.size() > 0) {
-                            for (Police_answer answer : answers) {
-                                Answer a = new Answer();
-                                a.setAnswer("答：" + answer.getAnswer());
-                                as.add(a);
-                            }
-                            problem.setAnswers(answers);
-                        } else {
-                            Answer a = new Answer();
-                            a.setAnswer("答：");
-                            as.add(a);
-                        }
-                    }
-                    talk.setAnswers(as);
-                    talks.add(talk);
-                }
-            }
-
 
             //1、获取模板的真实地址
             String wordtemplate_realurl=null;//模板路径
@@ -941,6 +904,7 @@ public class RecordService extends BaseService {
                 for (WordTemplate template : wordTemplate) {
                     if (template.getDefaultbool()==1){
                         wordtemplate_realurl=template.getWordtemplate_realurl();
+                        break;
                     }
                 }
             }
@@ -969,7 +933,7 @@ public class RecordService extends BaseService {
 
 
                 System.out.println((new Date()).getTime());
-                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,talks);
+                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,null);
                 System.out.println((new Date()).getTime());
 
                 String oldfilepath=record.getWordrealurl();
@@ -1066,45 +1030,6 @@ public class RecordService extends BaseService {
         Record record = police_recordMapper.getRecordBySsid(recordParam);
         if (null!=record){
 
-            EntityWrapper ew = new EntityWrapper();
-            ew.eq("r.ssid", record.getSsid());
-            ew.orderBy("p.ordernum", true);
-            ew.orderBy("p.createtime", true);
-            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-
-            List<Talk> talks = new ArrayList<>();//问答
-            if (null != questionandanswer && questionandanswer.size() > 0) {
-                for (RecordToProblem problem : questionandanswer) {
-                    Talk talk = new Talk();
-                    List<Answer> as = new ArrayList<>();//答集合
-                    talk.setQuestion("问：" + problem.getProblem());
-
-                    String problemssid = problem.getSsid();
-                    if (StringUtils.isNotBlank(problemssid)) {
-                        EntityWrapper answerParam = new EntityWrapper();
-                        answerParam.eq("recordtoproblemssid", problemssid);
-                        answerParam.orderBy("ordernum", true);
-                        answerParam.orderBy("createtime", true);
-                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
-                        if (null != answers && answers.size() > 0) {
-                            for (Police_answer answer : answers) {
-                                Answer a = new Answer();
-                                a.setAnswer("答：" + answer.getAnswer());
-                                as.add(a);
-                            }
-                            problem.setAnswers(answers);
-                        } else {
-                            Answer a = new Answer();
-                            a.setAnswer("答：");
-                            as.add(a);
-                        }
-                    }
-                    talk.setAnswers(as);
-                    talks.add(talk);
-                }
-            }
-
-
          //1、获取模板的真实地址
           String wordtemplate_realurl=null;//模板路径
            EntityWrapper wordew=new EntityWrapper();
@@ -1114,6 +1039,7 @@ public class RecordService extends BaseService {
                for (WordTemplate template : wordTemplate) {
                     if (template.getDefaultbool()==1){
                         wordtemplate_realurl=template.getWordtemplate_realurl();
+                        break;
                     }
                }
            }
@@ -1141,7 +1067,7 @@ public class RecordService extends BaseService {
                 LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word下载地址__"+worddownurl);
 
                 System.out.println((new Date()).getTime());
-                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,talks);
+                XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,null);
                 System.out.println((new Date()).getTime());
 
                 String oldfilepath=record.getWordrealurl();
@@ -1199,6 +1125,46 @@ public class RecordService extends BaseService {
         Record record = police_recordMapper.getRecordBySsid(recordParam);
         Map<String, String> dataMap = new HashMap<String, String>();
         if (null != record) {
+
+            EntityWrapper ew = new EntityWrapper();
+            ew.eq("r.ssid", record.getSsid());
+            ew.orderBy("p.ordernum", true);
+            ew.orderBy("p.createtime", true);
+            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+            /* List<Talk> talks = new ArrayList<>();//问答*/
+            String talk="";
+            if (null != questionandanswer && questionandanswer.size() > 0) {
+                for (RecordToProblem problem : questionandanswer) {
+                  /*  Talk talk = new Talk();
+                    List<Answer> as = new ArrayList<>();//答集合
+                    talk.setQuestion("问：" + problem.getProblem());*/
+                    talk+="问："+problem.getProblem()+"\r";
+                    String problemssid = problem.getSsid();
+                    if (StringUtils.isNotBlank(problemssid)) {
+                        EntityWrapper answerParam = new EntityWrapper();
+                        answerParam.eq("recordtoproblemssid", problemssid);
+                        answerParam.orderBy("ordernum", true);
+                        answerParam.orderBy("createtime", true);
+                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
+                        if (null != answers && answers.size() > 0) {
+                            for (Police_answer answer : answers) {
+                              /*  Answer a = new Answer();
+                                a.setAnswer("答：" + answer.getAnswer());
+                                as.add(a);*/
+                                talk+="答："+answer.getAnswer()+"\r";
+                            }
+                            problem.setAnswers(answers);
+                        } else {
+                          /*  Answer a = new Answer();
+                            a.setAnswer("答：");
+                            as.add(a);*/
+                            talk+="答：\r";
+                        }
+                    }
+                   /* talk.setAnswers(as);
+                    talks.add(talk);*/
+                }
+            }
 
             /**
              *   获取提讯人和被询问人
@@ -1278,6 +1244,7 @@ public class RecordService extends BaseService {
             dataMap.put("${phone}", phone == null ? "" : phone);
             dataMap.put("${domicile}", domicile == null ? "" : domicile);
             dataMap.put("${both}", both == null ? "" : both);
+            dataMap.put("${talk}", talk == null ? "" : talk);
         }
         return dataMap;
     }
