@@ -125,8 +125,10 @@ function callNotificationList(data){
             var listcountsize = data.data.pageparam.recordCount;
             if (listcountsize == 0) {
                 $("#wushuju").show();
+                $("#pagelistview").hide();
             } else {
                 $("#wushuju").hide();
+                $("#pagelistview").show();
             }
         }
     }else{
