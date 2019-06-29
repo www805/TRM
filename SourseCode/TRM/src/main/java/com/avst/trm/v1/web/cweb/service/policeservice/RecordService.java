@@ -327,9 +327,7 @@ public class RecordService extends BaseService {
                 int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
                 LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
             }else{
-                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__出错");
-                result.setMessage("系统错误");
-                return;
+                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__出错__"+exportPdf_rr.getMessage());
             }
         }
 
