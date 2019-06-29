@@ -4,9 +4,11 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -104,6 +106,9 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Base_filesaveMapper base_filesaveMapper;
+
+    @Autowired
+    private Base_nationalityMapper base_nationalityMapper;
 
     @Value("${file.basepath}")
     private String filePath;
@@ -1223,8 +1228,19 @@ public class RecordService extends BaseService {
             userinfoparam.eq("u.ssid", userssid);
             List<UserInfo> userInfos = police_userinfoMapper.getUserByCard(userinfoparam);
             String cardnum = null;
+            String nationality=null;
             if (null != userInfos && userInfos.size() > 0) {
-                cardnum = userInfos.get(0).getCardtypename() + userInfos.get(0).getCardnum();
+                UserInfo userInfo=userInfos.get(0);
+                cardnum =userInfo.getCardtypename() + userInfo.getCardnum();
+                String nationalityssid=userInfo.getNationalityssid();
+                if (StringUtils.isNotBlank(nationalityssid)){
+                    Base_nationality base_nationality=new Base_nationality();
+                    base_nationality.setSsid(nationalityssid);
+                    base_nationality=base_nationalityMapper.selectOne(base_nationality);
+                    if (null!=base_nationality){
+                        nationality=base_nationality.getZhname();
+                    }
+                }
             }
 
             dataMap.put("${recordtypename}", recordtypename == null ? "" : recordtypename);
@@ -1245,6 +1261,8 @@ public class RecordService extends BaseService {
             dataMap.put("${domicile}", domicile == null ? "" : domicile);
             dataMap.put("${both}", both == null ? "" : both);
             dataMap.put("${talk}", talk == null ? "" : talk);
+            dataMap.put("${nationality}", nationality == null ? "" : nationality);
+
         }
         return dataMap;
     }

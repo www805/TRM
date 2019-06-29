@@ -418,3 +418,13 @@ $(function () {
         });
     });
 });
+
+
+function exportWord(worddownurl) {
+    if (isNotEmpty(worddownurl)){
+        window.location.href = worddownurl;
+        layer.msg("导出成功,等待下载中...");
+    }else {
+        layer.msg("导出失败");
+    }
+}

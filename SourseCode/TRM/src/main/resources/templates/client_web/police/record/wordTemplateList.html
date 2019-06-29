@@ -68,6 +68,7 @@
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <td>
                 <a href="#" onclick="preview('{{value.wordtemplate_downurl_html}}')"  title="{{value.wordtemplate_downurl_html==null?'请先上传word模板':'点击预览'}}"     class="layui-btn {{value.wordtemplate_downurl_html==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >预览</a>
+                <a href="#" class="layui-btn layui-btn-normal layui-btn-sm" onclick="exportWord('{{value.wordtemplate_downurl}}')">导出</a>
                 <a href="#" class="layui-btn layui-btn-normal layui-btn-sm" onclick="open_uploadword('{{value.ssid}}')">修改</a>
             </td>
         </tr>
