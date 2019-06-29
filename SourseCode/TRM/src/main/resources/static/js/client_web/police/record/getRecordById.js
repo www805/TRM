@@ -272,11 +272,10 @@ function exportWord(obj){
         window.location.href = worddownurl;
         layer.msg("导出成功,等待下载中...");
     }else {
-        layer.msg("导出失败");
+        layer.msg("未找到笔录类型对应模板");
     }
     btn(obj);
 }
-var pdfdownurl=null;//pdf下载地址
 function exportPdf(obj) {
      if (isNotEmpty(pdfdownurl)){
             layer.open({
@@ -290,7 +289,7 @@ function exportPdf(obj) {
             });
             layer.msg("导出成功,等待下载中...");
         }else{
-            layer.msg("导出失败");
+         layer.msg("未找到笔录类型对应模板");
         }
       btn(obj);
 }

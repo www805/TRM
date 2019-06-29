@@ -526,7 +526,7 @@ function overMC() {
                 mtssid:mtssid
             }
         };
-        $.ajax({
+        /*$.ajax({
             url : url,
             type : "POST",
             async : false,
@@ -540,8 +540,8 @@ function overMC() {
                     icon : 1
                 },1);
             }
-        });
-       /* ajaxSubmitByJson(url, data, callbackoverMC);*/
+        });*/
+        ajaxSubmitByJson(url, data, callbackoverMC);
     }
 }
 function callbackoverMC(data) {
@@ -554,13 +554,16 @@ function callbackoverMC(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+       /* layer.msg(data.message);*/
     }
 }
 
 //保存按钮
 //recordbool 1进行中 2已结束
 function addRecord() {
+    if (isNotEmpty(overRecord_index)) {
+        layer.close(overRecord_index);
+    }
     if (isNotEmpty(recordssid)){
         var url=getActionURL(getactionid_manage().waitRecord_addRecord);
         //需要收拾数据
@@ -603,11 +606,11 @@ function addRecord() {
                 recordToProblems:recordToProblems
             }
         };
-        //ajaxSubmitByJson(url, data, calladdRecord);
         if (recordbool==2&&mtssid!=null) {
             overMC();//结束会议
         }
-        $.ajax({
+        ajaxSubmitByJson(url, data, calladdRecord);
+      /*  $.ajax({
             url : url,
             type : "POST",
             async : false,
@@ -621,7 +624,7 @@ function addRecord() {
                     icon : 1
                 },1);
             }
-        });
+        });*/
     }else{
         layer.msg("系统异常");
     }
@@ -630,8 +633,12 @@ function calladdRecord(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
+            if (isNotEmpty(overRecord_loadindex)) {
+                layer.close(overRecord_loadindex);
+            }
+
             if (recordbool==2) {
-                layer.msg("笔录已结束",{time:500},function () {
+                layer.msg("笔录保存成功",{time:500},function () {
                     window.history.go(-1);
                 })
             }else {
@@ -652,17 +659,24 @@ function calladdRecord(data) {
 }
 
 //结束笔录按钮
-function overRecord() {
-    layer.confirm('是否结束笔录', {
+var overRecord_index=null;
+var overRecord_loadindex =null;
+    function overRecord() {
+    layer.confirm('是否结束笔录?<br/><span style="font-size: 4px;color: red">(提示：请先确保笔录对应类型存在word模板<br/>否则将无法导出模板)</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
         if (null!=setinterval1){
             clearInterval(setinterval1);
         }
+        overRecord_index=index;
         recordbool=2;
         addRecord();
-        layer.close(index);
+        overRecord_loadindex = layer.msg("保存中，请稍等...", {
+            icon: 16,
+            shade: [0.1, 'transparent']
+        });
+
     }, function(index){
         layer.close(index);
     });
