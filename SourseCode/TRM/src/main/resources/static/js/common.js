@@ -362,9 +362,9 @@ function ajaxSubmitByJson(url, data, success_fun,error_fun) {
  * ajax 请求失败的提醒
  */
 function ajaxErrDialog() {
-	parent.layer.msg("网络异常,请稍后重试---!", {
+/*	parent.layer.msg("网络异常,请稍后重试---!", {
 		icon : 1
-	},1);
+	},1);*/
 
 }
 
