@@ -318,17 +318,19 @@ public class RecordService extends BaseService {
             reqParam.setParam(exportPdfParam);
             exportPdf_rr=exportPdf(exportPdf_rr, reqParam);
             if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__成功__开始修改笔录状态保存问答");
-                EntityWrapper updaterecordParam=new EntityWrapper();
-                updaterecordParam.eq("ssid",recordssid);
-                Police_record record=new Police_record();
-                record.setSsid(recordssid);
-                record.setRecordbool(recordbool);
-                int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-                LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__成功__保存问答");
             }else{
                 LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__出错__"+exportPdf_rr.getMessage());
             }
+
+
+            EntityWrapper updaterecordParam=new EntityWrapper();
+            updaterecordParam.eq("ssid",recordssid);
+            Police_record record=new Police_record();
+            record.setSsid(recordssid);
+            record.setRecordbool(recordbool);
+            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
         }
 
         addRecordbool=false;

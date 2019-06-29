@@ -664,7 +664,6 @@ function overRecord() {
         addRecord();
         layer.close(index);
     }, function(index){
-
         layer.close(index);
     });
 }
