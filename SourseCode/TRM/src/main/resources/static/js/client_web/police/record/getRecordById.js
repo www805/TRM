@@ -176,7 +176,7 @@ function callbackgetRecordById(data) {
 function getRecord() {
     $("#recordreals").html("");
     if (isNotEmpty(mtssid)) {
-        var url="/v1/police/out/getRecord";
+        var url=getUrl_manage().getRecord;
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -295,7 +295,7 @@ function exportPdf(obj) {
 }
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
-        var url="/v1/police/out/getPlayUrl";
+        var url=getUrl_manage().getPlayUrl;
         var data={
             iid: iid
         };

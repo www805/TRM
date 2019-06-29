@@ -446,7 +446,7 @@ function startMC() {
         tdList.push(user1);
         tdList.push(user2);
 
-        var url="/v1/police/out/startRercord";
+        var url=getUrl_manage().startRercord;
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -519,7 +519,7 @@ function callbackstartMC(data) {
 //结束会议
 function overMC() {
     if (isNotEmpty(recordssid)){
-        var url="/v1/police/out/overRercord";
+        var url=getUrl_manage().overRercord;
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -662,7 +662,7 @@ function calladdRecord(data) {
 var overRecord_index=null;
 var overRecord_loadindex =null;
     function overRecord() {
-    layer.confirm('是否结束笔录?<br/><span style="font-size: 4px;color: red">(提示：请先确保笔录对应类型存在word模板<br/>否则将无法导出模板)</span>', {
+    layer.confirm('是否结束笔录?<br/><span style="font-size: 4px;color: red">*请先确保笔录类型存在对应word模板，否则无法导出模板</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -744,7 +744,7 @@ function exportPdf(obj) {
  */
 function getRecordrealing() {
     if (isNotEmpty(mtssid)) {
-        var url="/v1/police/out/getRecordrealing";
+        var url=getUrl_manage().getRecordrealing;
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -902,7 +902,7 @@ function setrecord_html() {
  */
 function getPolygraphdata() {
     if (isNotEmpty(mtssid)) {
-        var url="/v1/police/out/getPolygraphdata";
+        var url=getUrl_manage().getPolygraphdata;
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -1678,8 +1678,9 @@ function  getEquipmentsState() {
     $("#PolygraphState").text("加载中");
     $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
-    if (isNotEmpty(mtssid)){
-        var url="/v1/police/out/getEquipmentsState";
+
+    if ((isNotEmpty(mcbool)||mcbool==1)&&isNotEmpty(mtssid)){
+        var url=getUrl_manage().getEquipmentsState;
         var data = {
             token: INIT_CLIENTKEY,
             param: {
@@ -1771,7 +1772,7 @@ function callbackgetEquipmentsState(data) {
  * 获取各个客户端的状态
  */
 function getClient() {
-    var url="/v1/police/out/getClient";
+    var url=getUrl_manage().getClient;
     var data={
         token:INIT_CLIENTKEY,
          param:{
@@ -2155,8 +2156,6 @@ $(function () {
                                             qq=qqq+translatext;
                                             laststarttime_qq=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
-
-
                                         }
                                     }else if (usertype==2){//最后是问，本次是答，开始拼接答案
                                         ww+=translatext;
