@@ -1,6 +1,7 @@
 package com.avst.trm.v1.feignclient.mc.req;
 
-public class GetMCdataParam_out {
+public class GetPhssidByMTssidParam_out {
+
     private String mtssid;
 
     private String mcType;

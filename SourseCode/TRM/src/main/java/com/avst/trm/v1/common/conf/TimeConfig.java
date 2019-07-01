@@ -18,8 +18,12 @@ public class TimeConfig implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        //获取总控时间，同步时间
-        zkTimeConfig.compare();
+        try {
+            //获取总控时间，同步时间
+            zkTimeConfig.compare();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }

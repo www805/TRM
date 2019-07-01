@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.util.baseaction;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * 返回的参数集合

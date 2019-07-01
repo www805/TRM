@@ -3,6 +3,7 @@ package com.avst.trm.v1.feignclient.mc;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.mc.req.*;
+import com.avst.trm.v1.feignclient.mc.vo.PhDataParam_toout;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public interface MeetingControl {
 
     @RequestMapping("/mt/v1/getMC")
     @ResponseBody
-    public RResult getMC(@RequestBody ReqParam<GetMCParam_out> param);
+    public RResult getMC(@RequestBody ReqParam<GetPhssidByMTssidParam_out> param);
 
     @RequestMapping("/mt/v1/getMCaLLUserAsrTxtList")
     @ResponseBody
@@ -40,9 +41,18 @@ public interface MeetingControl {
     public RResult getMCState(@RequestBody ReqParam<GetMCStateParam_out> param);
 
 
-    @RequestMapping("/mt/v1/getMCdata")
+    /**
+     * 这里通过会议ssid获取测谎仪ssid是可能的，但是一旦一个会议由多个测谎仪就有问题，这里需要在会议的对应接口中处理
+     * @param param
+     * @return
+     */
+    @RequestMapping("/mt/v1/getPhssidByMTssid")
     @ResponseBody
-    public RResult getMCdata(@RequestBody ReqParam<GetMCdataParam_out> param);
+    public RResult getPhssidByMTssid(@RequestBody ReqParam<GetPhssidByMTssidParam_out> param);
+
+    @RequestMapping(value = "/mt/v1/getPHData")
+    @ResponseBody
+    public RResult<PhDataParam_toout> getPHData(@RequestBody ReqParam<GetPHDataParam_out> param);
 
 
 }

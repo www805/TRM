@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
+import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -17,7 +18,6 @@ import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
-import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import com.avst.trm.v1.feignclient.ec.vo.param.FDCacheParam;
@@ -28,9 +28,9 @@ import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.PhDataParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.feignclient.mc.vo.StartMCVO;
-import com.avst.trm.v1.feignclient.mc.vo.param.MCCacheParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
@@ -213,9 +213,9 @@ public class OutService  extends BaseService {
         return false;
     }
 
-    public RResult getRecord(RResult result, ReqParam<GetMCParam_out> param){
+    public RResult getRecord(RResult result, ReqParam<GetPhssidByMTssidParam_out> param){
         //请求参数转换
-        GetMCParam_out getMCParam_out = param.getParam();
+        GetPhssidByMTssidParam_out getMCParam_out = param.getParam();
         if (null==getMCParam_out){
             LogUtil.intoLog(this.getClass(),"参数为空");
             result.setMessage("参数为空");
@@ -380,75 +380,30 @@ public class OutService  extends BaseService {
             return ;
         }
 
-        //查询会议数据获取检测仪的ssid
-        String polygraphssid=null;
-        ReqParam<GetMCdataParam_out> param3=new ReqParam<>();
-        GetMCdataParam_out getMCdataParam_out=new GetMCdataParam_out();
-        getMCdataParam_out.setMcType(MCType.AVST);
-        getMCdataParam_out.setMtssid(mtssid);
-        param3.setParam(getMCdataParam_out);
-        RResult rr3=new RResult();
-        rr3=meetingControl.getMCdata(param3);
-        if (null != rr3 && rr3.getActioncode().equals(Code.SUCCESS.toString())) {
-            MCCacheParam mcCacheParam = gson.fromJson(gson.toJson(rr3.getData()),MCCacheParam.class);
-            if (null!=mcCacheParam&&null!=mcCacheParam.getTdList()&&mcCacheParam.getTdList().size()>0){
-                polygraphssid=mcCacheParam.getTdList().get(0).getPolygraphssid();
-            }
-        }else{
-            LogUtil.intoLog(this.getClass(),"请求getMCdata__出错");
-        }
+        ReqParam<GetPHDataParam_out> phparam=new ReqParam<GetPHDataParam_out>();
+        GetPHDataParam_out getPHDataParam_out=new GetPHDataParam_out();
+        getPHDataParam_out.setMcType(MCType.AVST);
+        getPHDataParam_out.setMtssid(mtssid);
+        phparam.setParam(getPHDataParam_out);
+        RResult<PhDataParam_toout> rr1=meetingControl.getPHData(phparam);
+        if (null != rr1 && rr1.getActioncode().equals(Code.SUCCESS.toString())) {
+            PhDataParam_toout vo=gson.fromJson(gson.toJson(rr1.getData()),PhDataParam_toout.class);
+            if (null!=vo){
 
-        if (null==polygraphssid){
-            LogUtil.intoLog(this.getClass(),"监测仪ssid为空__"+polygraphssid);
+                GetPolygraphAnalysisVO getPolygraphAnalysisVO=new GetPolygraphAnalysisVO();
+                getPolygraphAnalysisVO.setT(vo.getT());
+                LogUtil.intoLog(this.getClass(),"getPolygraphAnalysise__"+ JacksonUtil.objebtToString(getPolygraphAnalysisVO));
+                result.setData(getPolygraphAnalysisVO);
+                changeResultToSuccess(result);
+                return;
+            }else{
+                LogUtil.intoLog(this.getClass(),"请求getPolygraphAnalysise__出错,rr1.getMessage():"+rr1.getMessage());
+            }
+
+        }else {
+            LogUtil.intoLog(this.getClass(),"身心监测数据获取异常 mtssid："+mtssid);
             changeResultToSuccess(result);
             return;
-        }
-
-
-        //检查心跳仪器状态
-        ReqParam<CheckPolygraphStateParam> param1=new ReqParam<>();
-        CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
-        checkPolygraphStateParam.setPhType(PHType.CMCROSS);
-        checkPolygraphStateParam.setPolygraphssid(polygraphssid);
-        param1.setParam(checkPolygraphStateParam);
-
-        RResult<CheckPolygraphStateVO> rr1=new RResult();
-        rr1=equipmentControl.checkPolygraphState(param1);
-        Integer workstate=null;//约定一套状态指令，1成功，0初始化中，其他都为错误
-        if (null != rr1 && rr1.getActioncode().equals(Code.SUCCESS.toString())) {
-            CheckPolygraphStateVO checkPolygraphStateVO=gson.fromJson(gson.toJson(rr1.getData()),CheckPolygraphStateVO.class);
-            if (null!=checkPolygraphStateVO){
-                workstate=checkPolygraphStateVO.getWorkstate();
-                LogUtil.intoLog(this.getClass(),"身心监测状态__"+workstate);
-                if (null!=workstate&&workstate==1){
-                    LogUtil.intoLog(this.getClass(),"身心监测状态正常开始获取数据__"+workstate);
-
-                    //状态正常开始获取仪器数据
-                    ReqParam<GetPolygraphAnalysisParam> param2=new ReqParam<>();
-                    GetPolygraphAnalysisParam getPolygraphAnalysisParam=new GetPolygraphAnalysisParam();
-                    getPolygraphAnalysisParam.setPhType(PHType.CMCROSS);
-                    getPolygraphAnalysisParam.setPolygraphssid(polygraphssid);
-                    param2.setParam(getPolygraphAnalysisParam);
-                    RResult<GetPolygraphAnalysisVO> rr2=new RResult();
-                    rr2=equipmentControl.getPolygraphAnalysis(param2);
-                    if (null != rr2 && rr2.getActioncode().equals(Code.SUCCESS.toString())) {
-                        GetPolygraphAnalysisVO getPolygraphAnalysisVO=gson.fromJson(gson.toJson(rr2.getData()),GetPolygraphAnalysisVO.class);
-                        LogUtil.intoLog(this.getClass(),"getPolygraphAnalysise__"+getPolygraphAnalysisVO.toString());
-                        result.setData(getPolygraphAnalysisVO);
-                        changeResultToSuccess(result);
-                        return;
-                    }else{
-                        LogUtil.intoLog(this.getClass(),"请求getPolygraphAnalysise__出错");
-                    }
-
-                }else {
-                    LogUtil.intoLog(this.getClass(),"身心监测状态__"+workstate);
-                    changeResultToSuccess(result);
-                    return;
-                }
-            }
-        }else{
-            LogUtil.intoLog(this.getClass(),"请求checkPolygraphState__出错");
         }
         return;
     }
@@ -586,22 +541,24 @@ public class OutService  extends BaseService {
 
         //获取身心检测的状态
         String polygraphssid=null;//身心检测的ssid
-        ReqParam<GetMCdataParam_out> MCdata_param=new ReqParam<>();
-        GetMCdataParam_out getMCdataParam_out=new GetMCdataParam_out();
+        ReqParam<GetPhssidByMTssidParam_out> MCdata_param=new ReqParam<>();
+        GetPhssidByMTssidParam_out getMCdataParam_out=new GetPhssidByMTssidParam_out();
         getMCdataParam_out.setMcType(MCType.AVST);
         getMCdataParam_out.setMtssid(mtssid);
         MCdata_param.setParam(getMCdataParam_out);
-        RResult  MCdata_rr=new RResult();
+        RResult  rResult=new RResult();
         try {
-            MCdata_rr=meetingControl.getMCdata(MCdata_param);
-            if (null != MCdata_rr && MCdata_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                MCCacheParam mcCacheParam = gson.fromJson(gson.toJson(MCdata_rr.getData()),MCCacheParam.class);
-                if (null!=mcCacheParam&&null!=mcCacheParam.getTdList()&&mcCacheParam.getTdList().size()>0){
-                    polygraphssid=mcCacheParam.getTdList().get(0).getPolygraphssid();
-                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCdata__成功");
+            rResult=meetingControl.getPhssidByMTssid(MCdata_param);
+            if (null != rResult && rResult.getActioncode().equals(Code.SUCCESS.toString())) {
+                String phssid = rResult.getData().toString();
+                if (StringUtils.isNotEmpty(phssid)){
+                    polygraphssid=phssid;
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid 请求polygraphssid__成功,polygraphssid:"+polygraphssid);
+                }else{
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid ，polygraphssid is null");
                 }
             }else{
-                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCdata__出错");
+                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求polygraphssid__出错,rResult.getMessage():"+rResult.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();

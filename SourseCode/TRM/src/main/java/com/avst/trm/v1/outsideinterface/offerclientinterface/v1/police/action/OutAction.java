@@ -12,7 +12,7 @@ import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
-import com.avst.trm.v1.feignclient.mc.req.GetMCParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
@@ -21,17 +21,12 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEq
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
-import freemarker.template.TemplateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /***
  * 对接外部接口
@@ -145,7 +140,7 @@ public class OutAction extends BaseAction {
      * @return
      */
     @RequestMapping("/getRecord")
-    public RResult getRecord(@RequestBody ReqParam<GetMCParam_out> param) {
+    public RResult getRecord(@RequestBody ReqParam<GetPhssidByMTssidParam_out> param) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");
