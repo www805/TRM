@@ -1,6 +1,6 @@
-package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo;
+package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req;
 
-public class ControlInfoParamVO {
+public class ControlInfoParam {
 
     //服务名称
     private String servername;
@@ -69,4 +69,3 @@ public class ControlInfoParamVO {
 
 
 }
-

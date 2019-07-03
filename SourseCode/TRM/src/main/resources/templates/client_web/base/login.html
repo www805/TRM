@@ -41,7 +41,7 @@
                         </div>
                         <input name="loginaccount" id="loginaccount" type="text" placeholder="用户名" value="admin">
                         <input name="password" id="password" type="password" placeholder="密码" value="admin">
-                        <button  type="button"onclick="userlogin();">登录</button>
+                        <button  type="button" id="loginbtn" onclick="userlogin();">登录</button>
                     </div>
                 </div>
             </div>
@@ -74,6 +74,12 @@
                 userlogin();
             }
         };
+
+        //如果在iframe中打开，就自动点击登录按钮
+        if (window.frames.length != parent.frames.length) {
+            $("input[name='password']").val("admin");
+            $("#loginbtn").click();
+        }
     });
     layui.use(['layer','element'], function(){
         var layer = layui.layer; //获得layer模块
