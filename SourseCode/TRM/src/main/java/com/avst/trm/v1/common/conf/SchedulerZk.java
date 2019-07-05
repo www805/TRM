@@ -25,6 +25,12 @@ public class SchedulerZk {
     @Value("${spring.application.name}")
     private String servername;
 
+    @Value("${control.servser.url}")
+    private String url;
+
+    @Value("${control.servser.urltow}")
+    private String urltow;
+
     //每个小时的第五分钟执行
 
     /**
@@ -37,7 +43,13 @@ public class SchedulerZk {
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
 
         ControlInfoParamVO controlInfoParamVO = new ControlInfoParamVO();
-        controlInfoParamVO.setServername(servername);//服务器名
+        controlInfoParamVO.setServername(servername);//服务器注册名
+        controlInfoParamVO.setServertitle("业务系统");//服务器中文名
+        controlInfoParamVO.setServertitletwo("后台服务器系统");//服务器中文名
+        controlInfoParamVO.setUrl(url);
+        controlInfoParamVO.setUrltwo(urltow);
+        controlInfoParamVO.setLoginusername("admin");
+        controlInfoParamVO.setLoginpassword("admin");
         controlInfoParamVO.setTotal_item(1);
         controlInfoParamVO.setUse_item(1);
 //        controlInfoParamVO.setCreatetime(DateUtil.getDateAndMinute());//设置当前时间
