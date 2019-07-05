@@ -59,6 +59,7 @@
         <thead>
         <tr>
             <th>序号</th>
+            <th>案件状态</th>
             <th>案件名称</th>
             <th>案件编号</th>
             <th>当前案由</th>
@@ -75,6 +76,8 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
+            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已完成</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
+            <td>{{caseboolbooltext}}</td>
             <td>{{value.casename==null?"":value.casename}}</td>
             <td>{{value.casenum==null?"":value.casenum}}</td>
             <td>{{value.cause==null?"":value.cause}}</td>

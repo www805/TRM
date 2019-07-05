@@ -116,7 +116,6 @@ function callbackgetRecordByCasessid(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var data=data.data;
-            console.log(data);
             for (var i = 0; i < data.length; i++) {
                 var datum = data[i];
                 var bool="";
@@ -126,12 +125,6 @@ function callbackgetRecordByCasessid(data) {
                     bool="<span style='color: #00FF00 ' bool='2'>已完成</span>";
                 }
                 datum["bool"]=bool;
-
-                if (datum.askobj==1){
-                    datum.askobj="被害人";
-                }else{
-                    datum.askobj="证人";
-                }
             }
 
             layui.use(['table'], function(){
@@ -171,6 +164,62 @@ function callbackgetRecordByCasessid(data) {
         }
     }else{
         layer.msg(data.message);
+    }
+}
+
+//案件归档
+function changeboolCase(ssid,oldcasebool) {
+    var con="案件归档后将不再被提讯，确定要归档吗";
+    if (isNotEmpty(oldcasebool)&&oldcasebool==2){
+        layer.msg("案件已归档");
+        return;
+    }
+
+    if (oldcasebool==0){
+        con="案件还未提讯，确定归档吗"
+    }
+
+    layer.open({
+        content:con
+        ,btn: ['确定', '取消']
+        ,yes: function(index, layero){
+            var url=getActionURL(getactionid_manage().caseIndex_changeboolCase);
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    ssid:ssid,
+                    bool:2
+                }
+            };
+            ajaxSubmitByJson(url,data,callbackchangeboolCase);
+            layer.close(index);
+        }
+        ,btn2: function(index, layero){
+            layer.close(index);
+        }
+    });
+}
+
+function callbackchangeboolCase(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)) {
+            layer.msg("归档成功", {time: 500}, function () {
+                getCasesByParam();
+            });
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
+function toaddOupdateurl(ssid,casebool) {
+    if (casebool==2){
+        layer.msg("案件已归档");
+        return;
+    }
+    if (isNotEmpty(ssid)&&casebool!=2){
+        window.location.href=addOupdateurl+"?ssid="+ssid;
     }
 }
 

@@ -487,7 +487,9 @@ function setcases(cases){
     if (isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c= cases[i];
-            $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
+            if (c.casebool!=2){
+                $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
+            }
         }
         
         if (isNotEmpty(dqcasessid)){
@@ -842,7 +844,9 @@ function getCaseList() {
         if (isNotEmpty(caselike)){
             for (var j = 0; j < caselike.length; j++) {
                 var cl=caselike[j];
-                $("#casename_ssid").append("<dd lay-value='"+cl.ssid+"' onmousedown='select_case(this);'>"+cl.casename+"</dd>");
+                if (cl.casebool!=2){
+                    $("#casename_ssid").append("<dd lay-value='"+cl.ssid+"' onmousedown='select_case(this);'>"+cl.casename+"</dd>");
+                }
             }
         } else{
             $("#casename_ssid").append('<p class="layui-select-none">无匹配项</p>');
@@ -1123,7 +1127,7 @@ function open_addUser() {
         type:1,
         title:'添加临时询问人',
         content:html,
-        area: ['700px', '200px'],
+        area: ['500px', '200px'],
         btn: ['确定', '取消'],
         yes:function(index, layero){
             var url= url=getActionURL(getactionid_manage().addCaseToUser_addUser);
@@ -1158,7 +1162,44 @@ function open_addUser() {
             parent.layer.close(index);
         }
     });
+}
 
+function open_addAskobj() {
+    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
+                <div class="layui-form-item">\
+                    <label class="layui-form-label">询问对象</label>\
+                    <div class="layui-input-block">\
+                        <input type="text" name="askobjm" id="askobjm"   lay-verify="required" placeholder="请输入询问对象" autocomplete="off" class="layui-input">\
+                    </div>\
+                </div>\
+            </form>';
 
+    var index = parent.layer.open({
+        type:1,
+        title:'添加询问对象',
+        content:html,
+        area: ['500px', '200px'],
+        btn: ['确定', '取消'],
+        yes:function(index, layero){
+            var askobjm=$("#askobjm",parent.document).val();
+
+            if (!isNotEmpty(askobjm)){
+                parent.layer.msg("请输入询问对象");
+                return;
+            }
+
+            $("#askobj").append("<option value='"+askobjm+"' >"+askobjm+"</option>");
+            layui.use('form', function(){
+                var $ = layui.$;
+                var form = layui.form;
+                $("#askobj").val(askobjm);
+                form.render();
+            });
+            parent.layer.close(index);
+        },
+        btn2:function(index, layero){
+            parent.layer.close(index);
+        }
+    });
 
 }

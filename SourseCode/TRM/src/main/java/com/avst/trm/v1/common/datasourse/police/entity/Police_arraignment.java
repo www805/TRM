@@ -51,7 +51,7 @@ public class Police_arraignment extends Model<Police_arraignment> {
     /**
      * 询问对象:例如：犯罪嫌疑人，被害人
      */
-    private Integer askobj;
+    private String askobj;
 
     /**
      * 询问次数:默认1
@@ -121,11 +121,11 @@ public class Police_arraignment extends Model<Police_arraignment> {
         this.otheradminssid = otheradminssid;
     }
 
-    public Integer getAskobj() {
+    public String getAskobj() {
         return askobj;
     }
 
-    public void setAskobj(Integer askobj) {
+    public void setAskobj(String askobj) {
         this.askobj = askobj;
     }
 

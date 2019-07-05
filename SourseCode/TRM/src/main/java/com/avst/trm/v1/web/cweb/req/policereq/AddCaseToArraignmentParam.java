@@ -15,7 +15,7 @@ public class AddCaseToArraignmentParam {
     private String recordtypessid;
     private String recordplace;
     private String recordname;
-    private Integer askobj;
+    private String askobj;
     private Integer asknum;
     private List<Police_userto> usertos;//其他在场人员信息
 
@@ -111,11 +111,11 @@ public class AddCaseToArraignmentParam {
         this.recordplace = recordplace;
     }
 
-    public Integer getAskobj() {
+    public String getAskobj() {
         return askobj;
     }
 
-    public void setAskobj(Integer askobj) {
+    public void setAskobj(String askobj) {
         this.askobj = askobj;
     }
 

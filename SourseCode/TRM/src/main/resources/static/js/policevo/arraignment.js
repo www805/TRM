@@ -113,13 +113,6 @@ function callbackgetArraignmentByCaseSsid(data) {
                     datum.recordbool="未开始";
                 }
 
-
-                if (datum.askobj==1){
-                    datum.askobj="犯罪嫌疑人";
-                }else{
-                    datum.askobj="其他";
-                }
-                
             } 
 
             layui.use(['table'], function(){

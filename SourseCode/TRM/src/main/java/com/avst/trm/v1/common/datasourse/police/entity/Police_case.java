@@ -84,6 +84,11 @@ public class Police_case extends Model<Police_case> {
      */
     private String creator;
 
+    /**
+     * 案件状态;0未开始1进行中 2已归档（已完成）默认0
+     */
+    private Integer casebool;
+
     private String ssid;
 
     private String string1;
@@ -93,6 +98,14 @@ public class Police_case extends Model<Police_case> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public Integer getCasebool() {
+        return casebool;
+    }
+
+    public void setCasebool(Integer casebool) {
+        this.casebool = casebool;
+    }
 
     public String getCreator() {
         return creator;
@@ -223,22 +236,24 @@ public class Police_case extends Model<Police_case> {
     @Override
     public String toString() {
         return "Police_case{" +
-        "id=" + id +
-        ", casename=" + casename +
-        ", cause=" + cause +
-        ", casenum=" + casenum +
-        ", occurrencetime=" + occurrencetime +
-        ", starttime=" + starttime +
-        ", endtime=" + endtime +
-        ", caseway=" + caseway +
-        ", ordernum=" + ordernum +
-        ", createtime=" + createtime +
-        ", userssid=" + userssid +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", casename='" + casename + '\'' +
+                ", cause='" + cause + '\'' +
+                ", casenum='" + casenum + '\'' +
+                ", occurrencetime=" + occurrencetime +
+                ", starttime=" + starttime +
+                ", endtime=" + endtime +
+                ", caseway='" + caseway + '\'' +
+                ", ordernum=" + ordernum +
+                ", createtime=" + createtime +
+                ", userssid='" + userssid + '\'' +
+                ", creator='" + creator + '\'' +
+                ", casebool=" + casebool +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                ", integer2=" + integer2 +
+                '}';
     }
 }

@@ -27,12 +27,11 @@ import com.avst.trm.v1.feignclient.ec.vo.ph.CheckPolygraphStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
-import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
-import com.avst.trm.v1.feignclient.mc.vo.PhDataParam_toout;
-import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
-import com.avst.trm.v1.feignclient.mc.vo.StartMCVO;
+import com.avst.trm.v1.feignclient.mc.vo.*;
+import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
@@ -385,7 +384,7 @@ public class OutService  extends BaseService {
         getPHDataParam_out.setMcType(MCType.AVST);
         getPHDataParam_out.setMtssid(mtssid);
         phparam.setParam(getPHDataParam_out);
-        RResult<PhDataParam_toout> rr1=meetingControl.getPHData(phparam);
+        RResult rr1=meetingControl.getPHData(phparam);
         if (null != rr1 && rr1.getActioncode().equals(Code.SUCCESS.toString())) {
             PhDataParam_toout vo=gson.fromJson(gson.toJson(rr1.getData()),PhDataParam_toout.class);
             if (null!=vo){
@@ -405,6 +404,70 @@ public class OutService  extends BaseService {
             changeResultToSuccess(result);
             return;
         }
+        return;
+    }
+
+
+    public void getPHDataBack(RResult result,ReqParam<GetPHDataBackParam> param){
+        GetPHDataBackParam getPHDataBackParam = param.getParam();
+        if (null==getPHDataBackParam){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String mtssid=getPHDataBackParam.getMtssid();
+
+        GetPHDataParam_out getPHDataParam_out=new GetPHDataParam_out();
+        getPHDataParam_out.setMcType(MCType.AVST);
+        getPHDataParam_out.setMtssid(mtssid);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(getPHDataParam_out);
+        RResult getPHDataBack_rr =  meetingControl.getPHDataBack(reqParam);
+        if (null != getPHDataBack_rr && getPHDataBack_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            LogUtil.intoLog(this.getClass(),"meetingControl.getPHDataBack__成功");
+            List<PHDataBackVoParam> phDataBackVoParams=gson.fromJson(gson.toJson(getPHDataBack_rr.getData()), new TypeToken<List<PHDataBackVoParam>>(){}.getType());
+            result.setData(phDataBackVoParams);
+            changeResultToSuccess(result);
+        }else {
+            LogUtil.intoLog(this.getClass(),"meetingControl.getPHDataBack__出错");
+        }
+        return;
+    }
+
+    public void getFdrecordStarttimeByMTssid(RResult result,ReqParam<GetFdrecordStarttimeByMTssidParam_out> param){
+        long fdrecordstarttime=0;//会议直播开始时间戳
+        GetFdrecordStarttimeByMTssidParam_out getFdrecordStarttimeByMTssidParam_out = param.getParam();
+        if (null==getFdrecordStarttimeByMTssidParam_out){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String mtssid=getFdrecordStarttimeByMTssidParam_out.getMtssid();
+
+        GetFdrecordStarttimeByMTssidParam_out out=new GetFdrecordStarttimeByMTssidParam_out();
+        out.setMcType(MCType.AVST);
+        out.setMtssid(mtssid);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(out);
+        RResult getfdrecordstarttimebymtssid_rr =  meetingControl.getFdrecordStarttimeByMTssid(reqParam);
+        if (null != getfdrecordstarttimebymtssid_rr && getfdrecordstarttimebymtssid_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid__成功");
+            String data=getfdrecordstarttimebymtssid_rr.getData().toString();
+            if (StringUtils.isNotEmpty(data)){
+                fdrecordstarttime=Long.valueOf(data);
+                LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid 请求fdrecordstarttime__成功,fdrecordstarttime:"+fdrecordstarttime);
+            }else{
+                LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid ，polygraphssid is null");
+            }
+
+            result.setData(fdrecordstarttime);
+            changeResultToSuccess(result);
+        }else {
+            LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid__出错");
+        }
+
         return;
     }
 
@@ -478,7 +541,13 @@ public class OutService  extends BaseService {
                changeResultToSuccess(result);
            }else{
                LogUtil.intoLog(this.getClass(),"数据存储状态异常__"+state);
-               result.setMessage("获取点播中...请等待");
+
+              /* 0文件未获取，等待中；1文件正常，生成请求地址中；2文件可以正常使用；-1文件未正常获取，需强制获取；-2文件请求地址有误，需重新生成*/
+               String msgtext="点播获取失败";
+                if(null!=state)   {
+                    msgtext=state==0?"点播文件未获取...请等待":(state==1?"点播文件正常，生成请求地址中...请等待":"点播获取失败");
+                }
+               result.setMessage(msgtext);
                return;
            }
         }else{

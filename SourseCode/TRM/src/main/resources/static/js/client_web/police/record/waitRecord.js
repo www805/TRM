@@ -7,6 +7,9 @@ var recorduser=[];//会议用户集合
 var mcbool=null;//会议状态
 var recordbool=null;//笔录状态
 
+
+var fdrecordstarttime=0;//直播开始时间戳（用于计算笔录时间锚点）
+
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -98,13 +101,13 @@ function callsetAllproblem(data) {
                                 <td style="padding: 0;width: 90%;" class="onetd" >\
                                     <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" >'+templateToProblem.problem+'</label></div>\
                                     <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""></label></div>\
+                                    <div  id="btnadd"></div>\
                                 </td>\
                                 <td style="float: right;">\
                                                                 <div class="layui-btn-group">\
                                                                 <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                                                                 <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                                                                 <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                                                                <div style="display: inline" id="btnadd"></div>\
                                                                 </div>\
                                                             </td>\
                                                             </tr>';
@@ -127,13 +130,13 @@ function copy_problems(obj) {
         <td style="padding: 0;width: 90%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="">'+text+'</label></div>\
             <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime=""></label></div>\
+            <div  id="btnadd"></div>\
         </td>\
         <td style="float: right;">\
             <div class="layui-btn-group">\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
             <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete" ></i>删除</a>\
-             <div style="display: inline" id="btnadd"></div>\
             </div>\
         </td>\
         </tr>';
@@ -225,16 +228,20 @@ function copy_text(obj,event) {
 
     //字典定位问答
      if (classc=="btalk") {
-         $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').append(copy_text_html);
-         var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime");
-         if (!isNotEmpty(old)) {
-             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]').attr("w_starttime",starttime);//直接使用最后追加的时间点
+         var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]');
+         var old= $html.attr("w_starttime");
+         var h=$html.html();
+         $html.append(copy_text_html);
+         if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
+             $html.attr("w_starttime",starttime);//直接使用最后追加的时间点
          }
      }else if(classc=="atalk"){
-         $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').append(copy_text_html);
-         var old= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime");
-         if (!isNotEmpty(old)) {
-             $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]').attr("q_starttime",starttime);//直接使用最后追加的时间点
+        var $html= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
+         var old= $html.attr("q_starttime");
+         var h=$html.html();
+         $html.append(copy_text_html);
+         if (!isNotEmpty(old)||!isNotEmpty(h)) {
+             $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
          }
      }
 
@@ -249,8 +256,8 @@ function copy_text(obj,event) {
          }
     });*/
     copy_text_html="";
+    setRecordreal();
     return false;
-
 }
 
 
@@ -359,6 +366,7 @@ function callbackgetRecordById(data) {
                     if (isNotEmpty(mtssiddata)){
                         mtssid=mtssiddata;
                         getRecordrealing();
+                        getFdrecordStarttimeByMTssid();
                     }
 
                     if ((!isNotEmpty(mcbool)||mcbool!=1)&&isNotEmpty(mtssiddata)){
@@ -458,7 +466,11 @@ function startMC() {
         ajaxSubmitByJson(url, data, callbackstartMC);
     }else {
         layer.close(startMC_index);
-        layer.msg("请刷新重试...");
+        layer.msg("请稍等",{time:1000},function () {
+            getRecordById();
+            $("#record_img img").css("display","none");
+            $("#pauserecord").css("display","block");
+        });
     }
 }
 function callbackstartMC(data) {
@@ -492,6 +504,7 @@ function callbackstartMC(data) {
                 }
             }
             mtssid=mtssiddata;
+            getFdrecordStarttimeByMTssid();//开始获取开始时间
           /*  updateArraignment();*/
             layer.msg("笔录已开启");
         }
@@ -606,9 +619,6 @@ function addRecord() {
                 recordToProblems:recordToProblems
             }
         };
-        if (recordbool==2&&mtssid!=null) {
-            overMC();//结束会议
-        }
         ajaxSubmitByJson(url, data, calladdRecord);
       /*  $.ajax({
             url : url,
@@ -641,7 +651,55 @@ function calladdRecord(data) {
                 layer.msg("笔录保存成功",{time:500},function () {
                     window.history.go(-1);
                 })
-            }else {
+            }else if (recordbool==3){//导出word
+                var url=getActionURL(getactionid_manage().waitRecord_exportWord);
+                var paramdata={
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        recordssid: recordssid,
+                    }
+                };
+                ajaxSubmitByJson(url, paramdata, function (data) {
+                    if(null!=data&&data.actioncode=='SUCCESS'){
+                        var data=data.data;
+                        if (isNotEmpty(data)){
+                            var word_htmlpath=data.word_htmlpath;//预览html地址
+                            var word_path=data.word_path;//下载地址
+                            window.location.href = word_path;
+                            layer.msg("导出成功,等待下载中...");
+                        }
+                    }else{
+                        layer.msg(data.message);
+                    }
+                });
+            } else  if (recordbool==4){//导出pdf
+                var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
+                var paramdata={
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        recordssid: recordssid,
+                    }
+                };
+                ajaxSubmitByJson(url, paramdata, function (data) {
+                    if(null!=data&&data.actioncode=='SUCCESS'){
+                        var data=data.data;
+                        if (isNotEmpty(data)){
+                            //window.location.href = data;
+                            layer.open({
+                                type: 2,
+                                title: '导出PDF笔录',
+                                shadeClose: true,
+                                maxmin: true, //开启最大化最小化按钮
+                                area: ['893px', '600px'],
+                                content: data
+                            });
+                            layer.msg("导出成功,等待下载中...");
+                        }
+                    }else{
+                        layer.msg(data.message);
+                    }
+                });
+            } else {
                 layer.msg('保存成功', {
                     btn: ['去查看', '继续编辑'],
                     yes:function(index){
@@ -669,14 +727,23 @@ var overRecord_loadindex =null;
         if (null!=setinterval1){
             clearInterval(setinterval1);
         }
+
+        $("#record_switch_bool").attr("isn",-1);
+        $("#record_switch_bool").removeClass("layui-form-onswitch");
+        $("#record_switch_bool").find("em").html("关闭");
+
+
         overRecord_index=index;
         recordbool=2;
+        if (recordbool==2&&mtssid!=null) {
+            overMC();//结束会议
+        }
         addRecord();
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
+            typy:1,
             icon: 16,
             shade: [0.1, 'transparent']
         });
-
     }, function(index){
         layer.close(index);
     });
@@ -685,56 +752,22 @@ var overRecord_loadindex =null;
 
 //导出word
 function exportWord(obj){
-    var url=getActionURL(getactionid_manage().waitRecord_exportWord);
-    var paramdata={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url, paramdata, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var word_htmlpath=data.word_htmlpath;//预览html地址
-                var word_path=data.word_path;//下载地址
-                window.location.href = word_path;
-                layer.msg("导出成功,等待下载中...");
-            }
-        }else{
-            layer.msg(data.message);
-        }
-        btn(obj);
+    recordbool=3;
+    addRecord();
+    btn(obj);
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent']
     });
 }
 
 function exportPdf(obj) {
-    var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
-    var paramdata={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url, paramdata, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                //window.location.href = data;
-                layer.open({
-                    type: 2,
-                    title: '导出PDF笔录',
-                    shadeClose: true,
-                    maxmin: true, //开启最大化最小化按钮
-                    area: ['893px', '600px'],
-                    content: data
-                });
-                layer.msg("导出成功,等待下载中...");
-            }
-        }else{
-            layer.msg("导出失败");
-        }
-        btn(obj);
+    recordbool=4;
+    addRecord();
+    btn(obj);
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent']
     });
 }
 
@@ -845,17 +878,49 @@ function select_liveurl(obj,type){
 }
 
 
-//阻止回车
+
+//获取会议中的直播的开始时间
+function getFdrecordStarttimeByMTssid() {
+    if (isNotEmpty(mtssid)){
+        var url=getUrl_manage().getFdrecordStarttimeByMTssid;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetFdrecordStarttimeByMTssid);
+    }
+}
+
+function callbackgetFdrecordStarttimeByMTssid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            fdrecordstarttime=data;
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+//回车
 function qw_keydown(obj,event) {
     var e = event || window.event;
     if (e && e.keyCode == 13) { //回车键的键值为13
         var dqname=$(obj).attr("name");
+        var trindex= $(obj).closest("tr").index();
         if (dqname=="q") {
-           var trindex= $(obj).closest("tr").index();
-            var lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');
+            var lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');//定位本行的答
             setFocus(lable);
         }else {
-            focuslable(trtd_html,1,'q');
+            var trlength=$("#recorddetail tr").length;
+            if (trlength==(trindex+1)){//最后一行答直接追加一行问答
+                focuslable(trtd_html,1,'q');
+            } else {
+                var lable=$('#recorddetail tr:eq("'+(trindex+1)+'") label[name="q"]');//定位到下一行的问
+                setFocus(lable);
+            }
         }
         event.preventDefault();
     }
@@ -863,6 +928,35 @@ function qw_keydown(obj,event) {
 function setFocus(el) {
     el = el[0];
     el.focus();
+
+    //回车加锚点：先判断语音识别是否开启
+    var asrstate=$("#AsrState").attr("AsrState");
+    if (isNotEmpty(asrstate)&&asrstate==0&&isNotEmpty(mtssid)){
+        console.log("语音识别未开启~")
+        var dqtime=new Date().getTime();
+        var qw_type=el.getAttribute("name");
+        if (isNotEmpty(qw_type)){
+            if (qw_type=="w"){
+                var w_starttime=el.getAttribute("w_starttime");
+                if ((!isNotEmpty(w_starttime)||w_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    //计算时间戳
+                    w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                    el.setAttribute("w_starttime",w_starttime);
+                }
+            }else  if (qw_type=="q"){
+                var q_starttime=el.getAttribute("q_starttime");
+                if ((!isNotEmpty(q_starttime)||q_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    //计算时间戳
+                    q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                    el.setAttribute("q_starttime",q_starttime);
+                }
+            }
+        }
+    }else {
+        console.log("语音识别非未开启状态~")
+    }
+
+
     var range = document.createRange();
     range.selectNodeContents(el);
     range.collapse(false);
@@ -880,20 +974,38 @@ function setrecord_html() {
     $("#recorddetail tr").attr("automaticbool","");
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 90%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime="">'+datadata["q"]+'</label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="">'+datadata["w"]+'</label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  >'+datadata["q"]+'</label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" >'+datadata["w"]+'</label></div>\
+               <div  id="btnadd"></div>\
                 </td>\
                 <td style="float: right;">\
                     <div class="layui-btn-group">\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                     <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                    <div style="display: inline" id="btnadd"></div></div>\
                 </td>\
                 </tr>';
     focuslable(trtd_html,1,'w');
 }
 
+
+
+//伸缩按钮
+function shrink(obj) {
+    var shrink_bool=$(obj).attr("shrink_bool");
+    if (shrink_bool==1){
+        $("#shrink_html").hide();
+        $(obj).attr("shrink_bool","-1");
+        $("i",obj).attr("class","layui-icon layui-icon-spread-left");
+        $("#notshrink_html").attr("class","layui-col-md12");
+    }else{
+        $("#shrink_html").show();
+        $(obj).attr("shrink_bool","1");
+        $("#notshrink_html").attr("class","layui-col-md9");
+        $("i",obj).attr("class","layui-icon layui-icon-shrink-right");
+
+    }
+}
 
 
 //*******************************************************************图表区域start****************************************************************//
@@ -1168,15 +1280,7 @@ var option = {
         },
     }]
 };
-/*
-var myMonitorall;
-var myMonitorall2;
-var myMonitorall3;
-var myMonitorall4;
-var myMonitorall5;
-var myMonitorall6;
-var myMonitorall7;
-*/
+
 
 var select_monitorall_iframe=null;
 var select_monitorall_iframe_body=null;
@@ -1679,7 +1783,7 @@ function  getEquipmentsState() {
     $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
 
-    if ((isNotEmpty(mcbool)||mcbool==1)&&isNotEmpty(mtssid)){
+    if (isNotEmpty(mtssid)){
         var url=getUrl_manage().getEquipmentsState;
         var data = {
             token: INIT_CLIENTKEY,
@@ -1794,13 +1898,13 @@ var trtd_html='<tr>\
         <td style="padding: 0;width: 90%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
               <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
+               <div  id="btnadd"></div>\
                 </td>\
                 <td style="float: right;">\
                     <div class="layui-btn-group">\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                     <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                   <div style="display: inline" id="btnadd"></div>\
                    </div>\
                 </td>\
                 </tr>';
@@ -1824,11 +1928,11 @@ function focuslable(html,type,qw) {
 }
 //最后一行添加按钮初始化
 function addbtn() {
-    var btnhtml='<button class="layui-btn layui-btn-warm  layui-btn-xs" style="margin-right: 10px;width: 99%" title="添加一行自定义问答" lay-event="del" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon">&#xe608;</i>添加</button>';
+    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
     $("#recorddetail tr").each(function () {
         $("#btnadd",this).html("");
     });
-    $('#recorddetail tr:last #btnadd').html(btnhtml);
+  $('#recorddetail tr:last #btnadd').html(btnhtml);
 
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
@@ -1837,7 +1941,7 @@ function addbtn() {
 
     setRecordreal();
     $('#recorddetail label').bind('input', function() {
-      setRecordreal();
+        setRecordreal();
     });
 
 }
@@ -1932,13 +2036,12 @@ function callbackgetRecordrealByRecordssid(data) {
                     }else{
                         problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
                     }
-                    problemhtml+=' </td>\
+                    problemhtml+=' <div  id="btnadd"></div></td>\
                         <td style="float: right;">\
                             <div class="layui-btn-group">\
                             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                         <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                         <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                         <div style="display: inline" id="btnadd"></div>\
                          </div>\
                         </td>\
                         </tr>';
@@ -1995,12 +2098,6 @@ var www="";
 //定时器关闭
 var setinterval1=null;
 $(function () {
-
-
-
-
-
-
     $("#dl_dd dd").click(function () {
         var text=$(this).attr('lay-value');
         //文本
@@ -2014,45 +2111,6 @@ $(function () {
         btn(this);
     })
 
-    /*    var defaults = {}
-            , one_second = 1000
-            , one_minute = one_second * 60
-            , one_hour = one_minute * 60
-            , one_day = one_hour * 24
-            , startDate = new Date()
-            , face = document.getElementById('jishi');
-
-        var requestAnimationFrame = (function() {
-            return window.requestAnimationFrame       ||
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame    ||
-                window.oRequestAnimationFrame      ||
-                window.msRequestAnimationFrame     ||
-                function( callback ){
-                    window.setTimeout(callback, 1000 / 60);
-                };
-        }());
-
-        tick();
-        function tick() {
-
-            var now = new Date()
-                , elapsed = now - startDate
-                , parts = [];
-
-            parts[0] = '' + Math.floor( elapsed / one_hour );
-            parts[1] = '' + Math.floor( (elapsed % one_hour) / one_minute );
-            parts[2] = '' + Math.floor( ( (elapsed % one_hour) % one_minute ) / one_second );
-
-            parts[0] = (parts[0].length == 1) ? '0' + parts[0] : parts[0];
-            parts[1] = (parts[1].length == 1) ? '0' + parts[1] : parts[1];
-            parts[2] = (parts[2].length == 1) ? '0' + parts[2] : parts[2];
-
-            face.innerText = parts.join(':');
-
-            requestAnimationFrame(tick);
-
-        }*/
     var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
     var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
     var newDate = new Date();
@@ -2199,6 +2257,7 @@ $(function () {
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                     }
                                 }
+                                setRecordreal();//实时保存一下
                             }
                         }
                     }
@@ -2208,7 +2267,6 @@ $(function () {
     }else{
         console.log("socket连接失败")
     }
-
 
 
     $("#record_switch_bool").click(function () {

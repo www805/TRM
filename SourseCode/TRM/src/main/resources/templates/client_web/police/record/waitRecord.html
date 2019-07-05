@@ -10,9 +10,6 @@
 
 </head>
 <style>
-    .layui-card{
-        border: 1px solid #F2F2F2;
-    }
     .layui-card-header{
         background-color: #E5F4FD;
         border: 2px solid #FFFFFF;
@@ -182,6 +179,14 @@
     }
     #monitorall li:not(0){height: 130px}
     #monitorall a{height: 100px;text-align: center;vertical-align:middle;}
+
+    .layui-btn+.layui-btn {
+        margin-left: 0px;
+    }
+    #btnadd{
+        text-align: center;
+    }
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -217,7 +222,7 @@
     </div>
 
     <div class="layui-row layui-form" id="layui-row1">
-        <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+        <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
             <!---->
             <div class="layui-col-md12 layui-collapse"  lay-accordion style="border: 0" >
                 <div class="layui-colla-item">
@@ -237,7 +242,7 @@
                     </div>
                 </div>
 
-                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" >
                     <ul class="layui-tab-title">
                         <li class="layui-this" onclick="initasr()" >语音识别</li>
                         <li onclick="initliving()">录音录像</li>
@@ -337,10 +342,13 @@
 
             <!---->
         </div>
-        <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
-            <div style="margin-top: 5px">
-                <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
-                <div class="layui-inline" style="margin-bottom:0">
+        <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
+            <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px">
+                <div class="layui-inline" >
+                    <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制笔录左侧功能和笔录页展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
+                    <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
+                </div>
+                <div class="layui-inline" >
                     <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                         <div class="layui-select-title">
                             <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
@@ -353,14 +361,14 @@
                 </div>
                 <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
                 <button class="layui-btn layui-btn-normal " onclick="focuslable(null,1,'q');">添加自定义问答</button>
-                    <div style="float: right">
+                <div style="float: right">
                         <button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
                         <button class="layui-btn layui-btn-disabled "><i class="iconfont icon-langdu" title="朗读"></i> 朗读</button>
-                    </div>
+                 </div>
             </div>
-            <div class="layui-card" >
+            <div class="layui-col-md12 " >
                 <div class="layui-card-body layui-row " style="padding: 0">
-                    <div class="layui-card"  >
+                    <div class="layui-card" style="border-width: 0;box-shadow:none" >
                         <div class="layui-card-header">
                             <div class="layui-input-inline layui-col-md6" >
                             笔录制作<span style="color: red;font-weight: normal">（提示:光标移至指定"答" 回车添加自定义问答）</span><!--用时：<span id="jishi">00:00:00</span>-->
@@ -375,21 +383,9 @@
                         <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
                             <div class="layui-card-body layui-row "  >
                                 <div class="layui-col-lg12 ">
-                                    <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 30px">
+                                    <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
                                         <tbody id="recorddetail">
-                                      <!--  <tr>
-                                            <td style="padding: 0;width: 90%;" class="onetd font_red_color" name="1">
-                                                <p contenteditable="true" name="q" class="table_td_tt font_red_color">问：我们是<span th:text="${session.MANAGE_CLIENT.workname}"></span>的民警(出示人民警察证)，现依法向你询问有关问题。根据刑事诉讼法的有关规定，你应当如实提供证据、证言，如果有意作伪证或者隐匿罪证的，要负法律责任。你明白吗？</p>
-                                                <p contenteditable="true" name="w" class="table_td_tt font_blue_color">答：我明白了。</p>
-                                            </td>
-                                            <td style="float: right;">
-                                                <div class="layui-btn-group">
-                                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>
-                                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>
-                                                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>
-                                                </div>
-                                            </td>
-                                        </tr>-->
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -399,32 +395,10 @@
                     </div>
                 </div>
             </div>
-           <!-- <div class="layui-col-md12 " style="height: 25px;position: absolute;bottom: 43px;background-color: #E5F4FD;z-index:1;text-align: center;display: none;" id="xthtml" >
-                <div class="layui-col-md6" >
-                    <div style="float: left">
-                            <span id="xt1">
-                              <i class="layui-icon">&#xe67a;</i>
-                              高度紧张
-                            </span>
-                        <span id="xt2"> <i class="layui-icon">&#xe6af;</i>
-                             78
-                             </span>
-                        <span id="xt3"> <i class="layui-icon">&#xe69c;</i>
-                             50
-                             </span>
-                        <span id="xt4"> <i class="layui-icon">&#xe6fc;</i>
-                             15/分
-                             </span>
-                        <span id="xt5"> <i class="layui-icon">&#xe62c;</i>
-                              92 mmHg
-                             </span>
-                    </div>
-                </div>
-            </div>-->
-            <div class="layui-col-md12 " style="height: 43px;line-height: 43px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
-                <div class="layui-col-md8" >
-                    <div class="layui-form-item" style="float: left;margin: 0">
-                        <div class="layui-inline" style="margin-bottom:0">
+            <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                <div class="layui-col-md8" style="margin-bottom:0;">
+                    <div class="" style="float: left;">
+                        <div class="layui-inline" style="margin-bottom:0;margin-right: 0px; ">
                                 <div class="layui-unselect layui-form-select  layui-form-selectup" name="btn_div"   showorhide="false">
                                     <div class="layui-select-title">
                                         <input type="button"  value="常用时间" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);">
@@ -450,15 +424,10 @@
                                     </dl>
                                 </div>
                         </div>
-                      <!--  <div class="layui-inline" style="margin-bottom:0">
-                                <button class="layui-btn layui-btn-normal" style="float: left;" onclick="openxthtml(this)" xtbool="0" title="启动情绪分析">
-                                    <i class="iconfont icon-xin"></i> 情绪分析
-                                </button>
-                        </div>-->
                     </div>
 
                 </div>
-                <div class="layui-col-md4" >
+                <div class="layui-col-md4"  >
                     <div class="layui-inline" style="margin-bottom:0;float: right">
                         <button class=" layui-btn layui-btn-warm "  onclick="overRecord();">结束笔录</button>
                     </div>
@@ -499,7 +468,7 @@
         getTime();
         main1();
         getClient();
-         togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
+        togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
@@ -516,25 +485,25 @@
                                     <tr>\
                                          <td>会议状态</td>\
                                         <td>\
-                                        <span class="layui-badge layui-bg-gray" id="MtState" MtState="" >未开启</span>\
+                                        <span class="layui-badge layui-bg-gray" id="MtState" MtState="0" >未开启</span>\
                                         </td>\
                                     </tr>\
                                     <tr>\
                                         <td>语音识别</td>\
                                         <td>\
-                                              <span class="layui-badge layui-bg-gray" id="AsrState" AsrState="" >未开启</span>\
+                                              <span class="layui-badge layui-bg-gray" id="AsrState" AsrState="0" >未开启</span>\
                                         </td>\
                                     </tr>\
                                     <tr>\
                                         <td>录音录像</td>\
                                         <td>\
-                                        <span class="layui-badge layui-bg-gray" id="LiveState" LiveState="">未开启</span>\
+                                        <span class="layui-badge layui-bg-gray" id="LiveState" LiveState="0">未开启</span>\
                                         </td>\
                                     </tr>\
                                      <tr>\
                                         <td>身心监控</td>\
                                         <td>\
-                                        <span class="layui-badge layui-bg-gray" id="PolygraphState" PolygraphState="">未开启</span>\
+                                        <span class="layui-badge layui-bg-gray" id="PolygraphState" PolygraphState="0">未开启</span>\
                                     </td>\
                                     </tr>\
                                 </tbody>\

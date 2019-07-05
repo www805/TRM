@@ -480,11 +480,14 @@
                         <div class="layui-col-lg6">
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问对象</label>
                             <div class="layui-input-block">
-                                <select name="askobj" lay-verify="required" id="askobj">
-                                    <option value=""></option>
-                                    <option value="1">被害人</option>
-                                    <option value="2">证人</option>
-                                </select>
+                                <div class="layui-col-sm8" >
+                                    <select name="askobj" id="askobj" lay-verify="required" lay-search="" lay-filter="change_askobj">
+                                        <option value=""></option>
+                                        <option value="被害人">被害人</option>
+                                        <option value="证人">证人</option>
+                                    </select>
+                                </div>
+                                <div class="layui-col-sm4 layui-btn layui-btn-normal" type="button" onclick="open_addAskobj();" > <i class="layui-icon" style="padding: auto;margin: auto" >&#xe608;</i>添加</div>
                             </div>
                         </div>
                         <div class="layui-col-lg6">

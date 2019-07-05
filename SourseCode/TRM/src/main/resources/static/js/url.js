@@ -34,6 +34,8 @@ function getUrl_manage() {
         getRecordrealing:getPath()+getinterface_service().getRecordrealing,
         getPolygraphdata:getPath()+getinterface_service().getPolygraphdata,
         getEquipmentsState:getPath()+getinterface_service().getEquipmentsState,
+        getPHDataBack:getPath()+getinterface_service().getPHDataBack,
+        getFdrecordStarttimeByMTssid:getPath()+getinterface_service().getFdrecordStarttimeByMTssid
 	};
 }
 
@@ -55,6 +57,8 @@ function getinterface_service() {
         getRecordrealing:"/v1/police/out/getRecordrealing",//获取缓存中的实时笔录
         getPolygraphdata:"/v1/police/out/getPolygraphdata",//获取身心检测数据
         getEquipmentsState:"/v1/police/out/getEquipmentsState",//获取设备状态
+        getPHDataBack:"/v1/police/out/getPHDataBack",
+        getFdrecordStarttimeByMTssid:"/v1/police/out/getFdrecordStarttimeByMTssid",
 	};
 }
 

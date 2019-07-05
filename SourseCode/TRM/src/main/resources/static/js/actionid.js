@@ -129,6 +129,7 @@ function getactionid_manage() {
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
+        getRecordById_togetPolygraph:"getRecordById_togetPolygraph",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -143,7 +144,7 @@ function getactionid_manage() {
         waitRecord_getTime:"waitRecord_getTime",
         waitRecord_exportWord:"waitRecord_exportWord",
         waitRecord_exportPdf:"waitRecord_exportPdf",
-        waitRecord_updateArraignment:"waitRecord_updateArraignment",
+        waitRecord_updateArraignment:"waitRecord_updateArraignment",//已废弃
         waitRecord_getNotifications:"waitRecord_getNotifications",
         waitRecord_downloadNotification:"waitRecord_downloadNotification",
         waitRecord_getEquipmentsState:"waitRecord_getEquipmentsState",
@@ -198,6 +199,7 @@ function getactionid_manage() {
         caseIndex_getRecordByCasessid:"caseIndex_getRecordByCasessid",
         caseIndex_towaitRecord:"caseIndex_towaitRecord",
         caseIndex_togetRecordById:"caseIndex_togetRecordById",
+        caseIndex_changeboolCase:"caseIndex_changeboolCase",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

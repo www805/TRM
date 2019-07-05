@@ -309,7 +309,7 @@ public class RecordService extends BaseService {
         //修改笔录状态
         Integer recordbool=addRecordParam.getRecordbool();
         LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
-        if (null!=recordbool){
+        if (null!=recordbool&&recordbool==2){
             //生成word 和pdf
             RResult exportPdf_rr=new RResult();
             ExportPdfParam exportPdfParam=new ExportPdfParam();
@@ -650,25 +650,26 @@ public class RecordService extends BaseService {
         }
 
             //需要新增案件信息
-            if (StringUtils.isBlank(casessid)){
+         if (StringUtils.isBlank(casessid)){
                 LogUtil.intoLog(this.getClass(),"需要新增案件信息____");
                 addPolice_case.setSsid(OpenUtil.getUUID_32());
                 addPolice_case.setCreatetime(new Date());
                 addPolice_case.setOrdernum(0);
                 addPolice_case.setUserssid(userssid);
+                addPolice_case.setCasebool(0);
                 addPolice_case.setCreator(addCaseToArraignmentParam.getAdminssid());
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
                 LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
                 if (insertcase_bool>0){
                     casessid=addPolice_case.getSsid();
                 }
-            }else{
+         }else{
                 //修改案件信息
                 EntityWrapper updatecaseParam=new EntityWrapper();
                 updatecaseParam.eq("ssid",casessid);
                 int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
                 LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
-            }
+         }
 
 
         if (StringUtils.isBlank(userssid)||StringUtils.isBlank(casessid)){
@@ -720,6 +721,15 @@ public class RecordService extends BaseService {
                 casetoarraignment.setCasessid(casessid);
                 int insertcasetoarraignment_bool=police_casetoarraignmentMapper.insert(casetoarraignment);
                 LogUtil.intoLog(this.getClass(),"insertcasetoarraignment_bool__"+insertcasetoarraignment_bool);
+
+
+            //修改案件状态
+            Police_case police_case=new Police_case();
+            police_case.setCasebool(1);
+            EntityWrapper ew=new EntityWrapper();
+            ew.eq("ssid",casessid);
+            int police_caseMapper_updatebool = police_caseMapper.update(police_case,ew);
+            LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
          }
 
         //添加其他
@@ -1367,6 +1377,7 @@ public class RecordService extends BaseService {
         addCaseParam.setSsid(OpenUtil.getUUID_32());
         addCaseParam.setCreatetime(new Date());
         addCaseParam.setCreator(user.getSsid());
+        addCaseParam.setCasebool(0);//初始化0
        int caseinsert_bool = police_caseMapper.insert(addCaseParam);
        LogUtil.intoLog(this.getClass(),"caseinsert_bool__"+caseinsert_bool);
         if (caseinsert_bool>0){
@@ -1880,6 +1891,51 @@ public class RecordService extends BaseService {
                 result.setData(1);
                 changeResultToSuccess(result);
         }
+        return;
+    }
+
+    public void changeboolCase(RResult result,ReqParam<ChangeboolCaseParam> param){
+        ChangeboolCaseParam changeboolCaseParam=param.getParam();
+        if (null==changeboolCaseParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String ssid=changeboolCaseParam.getSsid();
+        Integer bool=changeboolCaseParam.getBool();
+
+        if (bool==2){
+            int ingsize=0;//进行中的笔录
+            //归档，判断下面是否有进行中的笔录
+            EntityWrapper ewarraignment=new EntityWrapper();
+            ewarraignment.eq("cr.casessid",ssid);
+            ewarraignment.orderBy("a.createtime",false);
+            List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+            if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1){
+                        ingsize++;
+                    }
+                }
+            }
+            if (ingsize>0){
+                LogUtil.intoLog(this.getClass(),"ingsize__"+ingsize);
+                result.setMessage("请先结束正在进行中的笔录，再进行归档");
+                return;
+            }
+        }
+
+        Police_case police_case=new Police_case();
+        police_case.setEndtime(new Date());
+        police_case.setCasebool(bool);
+
+        EntityWrapper ew=new EntityWrapper();
+        ew.eq("ssid",ssid);
+       int police_caseMapper_updatebool = police_caseMapper.update(police_case,ew);
+       if (police_caseMapper_updatebool>0){
+           result.setData(police_caseMapper_updatebool);
+           changeResultToSuccess(result);
+       }
         return;
     }
 

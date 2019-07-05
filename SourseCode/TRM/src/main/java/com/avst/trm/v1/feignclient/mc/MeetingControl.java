@@ -43,6 +43,7 @@ public interface MeetingControl {
 
     /**
      * 这里通过会议ssid获取测谎仪ssid是可能的，但是一旦一个会议由多个测谎仪就有问题，这里需要在会议的对应接口中处理
+     * 根据会议获取测谎仪ssid
      * @param param
      * @return
      */
@@ -50,9 +51,34 @@ public interface MeetingControl {
     @ResponseBody
     public RResult getPhssidByMTssid(@RequestBody ReqParam<GetPhssidByMTssidParam_out> param);
 
+    /**
+     * 身心监护缓存推送数据
+     * @param param
+     * @return
+     */
     @RequestMapping(value = "/mt/v1/getPHData")
     @ResponseBody
-    public RResult<PhDataParam_toout> getPHData(@RequestBody ReqParam<GetPHDataParam_out> param);
+    public RResult getPHData(@RequestBody ReqParam<GetPHDataParam_out> param);
+
+
+    /**
+     * 身心检测回放数据
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/mt/v1/getPHDataBack")
+    @ResponseBody
+    public RResult getPHDataBack(@RequestBody ReqParam<GetPHDataParam_out> param);
+
+
+    /**
+     * 根据会议获取直播开始时间
+     * @param param
+     * @return
+     */
+    @RequestMapping("/mt/v1/getFdrecordStarttimeByMTssid")
+    @ResponseBody
+    public RResult getFdrecordStarttimeByMTssid(@RequestBody ReqParam<GetFdrecordStarttimeByMTssidParam_out> param);
 
 
 }
