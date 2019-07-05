@@ -77,7 +77,17 @@
 
         //如果在iframe中打开，就自动点击登录按钮
         if (window.frames.length != parent.frames.length) {
-            $("input[name='password']").val("admin");
+            var loginaccount = GetQueryString("loginusername");
+            var adminpassword = GetQueryString("loginpassword");
+
+            if(!isNotEmpty(loginaccount)){
+                loginaccount = "admin";
+            }
+            if(!isNotEmpty(adminpassword)){
+                adminpassword = "admin";
+            }
+            $("input[name='loginaccount']").val(loginaccount);
+            $("input[name='password']").val(adminpassword);
             $("#loginbtn").click();
         }
     });
