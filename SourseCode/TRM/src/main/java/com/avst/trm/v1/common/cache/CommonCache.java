@@ -11,6 +11,7 @@ import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
+import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
@@ -24,6 +25,45 @@ import java.util.*;
  * 一些常用的公共的缓存
  */
 public class CommonCache {
+
+    public static void main(String[] args) {
+        String gns="12|34|65";
+        System.out.println(gns.indexOf("|"));
+
+    }
+
+    /**
+     * 本地授权信息授权
+     */
+    public static SQEntity getSQEntity=null;
+
+    /**
+     * 授权客户端的功能列表
+     * 客户端的功能列表，暂时只有：record、asr、tts、fd、ph(笔录管理、语音识别、语音播报、设备控制、测谎仪)
+     * @return
+     */
+    public static List<String> gnlist(){
+        if(null==getSQEntity){
+            getSQEntity=AnalysisSQ.getSQEntity();
+        }
+        if(null!=getSQEntity){
+            String gns=getSQEntity.getGnlist();
+            if(StringUtils.isNotEmpty(gns)){
+                List<String> list=new ArrayList<String>();
+                if(gns.indexOf("|") > -1){
+                    String[] arr=gns.split("|");
+                    for(String s:arr){
+                        list.add(s.trim());
+                    }
+                }else {
+                    list.add(gns);
+                }
+                return list;
+            }
+        }
+        return null;
+    }
+
 
     /**
      * 客户端访问时使用的key

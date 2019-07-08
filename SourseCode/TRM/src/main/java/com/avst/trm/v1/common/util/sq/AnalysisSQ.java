@@ -10,6 +10,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -57,8 +59,8 @@ public class AnalysisSQ {
     }
 
 
-    //    private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
-    private static String inifilename="javatrm.ini";//main测试使用
+        private static String inifilename= PropertiesListenerConfig.getProperty("pro.javakeyname");//我们发出去的授权文件和运行的工程文件放在同一个目录下的
+    private static String inifilename_yingcang="java.ini";//隐藏的授权文件名
     /**
      *  初始化授权文件的路径
      */
@@ -67,7 +69,7 @@ public class AnalysisSQ {
     /**
      * 隐藏记录授权运行的文件
      */
-    private static String inipath= OpenUtil.getJDKorJREPath()+ inifilename;
+    private static String inipath= OpenUtil.getXMSoursePath()+"\\"+ inifilename_yingcang;
 
     /**
      * 生成客户端授权的隐秘文件
@@ -86,16 +88,16 @@ public class AnalysisSQ {
             String encode=encode_uid(rr.trim());
             LogUtil.intoLog(AnalysisSQ.class,"--encode:"+encode);
 
-
             ReadWriteFile.writeTxtFile(encode,inipath,"utf8");
 
-//            OpenUtil.setFileHide(inipath);
+            OpenUtil.setFileHide(inipath);
             String code=rr.split(";")[0];
             String[] sqcodearr= DeCodeUtil.decoderByDES(code).split(";");
             String servertype=sqcodearr[0];
             String clientName=sqcodearr[5];
             String startTime=sqcodearr[2];//授权开始时间
             String sortnum=sqcodearr[7];
+            String gnlist=sqcodearr[8];
 
             if(StringUtils.isEmpty(servertype)){
                 servertype="0";
@@ -265,6 +267,7 @@ public class AnalysisSQ {
             String clientName=sqcodearr[5];
             String unitCode=sqcodearr[6];
             String sortNum=sqcodearr[7];
+            String gnlist=sqcodearr[8];
 
             SQEntity sqEntity=new SQEntity();
             sqEntity.setClientName(clientName);
@@ -275,6 +278,7 @@ public class AnalysisSQ {
             sqEntity.setSqDay(Integer.parseInt(sqDay));
             sqEntity.setUnitCode(unitCode);
             sqEntity.setStartTime(startTime);
+            sqEntity.setGnlist(gnlist);
             return sqEntity;
         }catch (Exception e){
             e.printStackTrace();
@@ -303,6 +307,7 @@ public class AnalysisSQ {
             String clientName=sqcodearr[5];
             String unitCode=sqcodearr[6];
             String sortNum=sqcodearr[7];
+            String gnlist=sqcodearr[8];
 
             if(foreverBool.equals("true")){//永久授权不用检查使用剩余时间
 
@@ -321,6 +326,8 @@ public class AnalysisSQ {
             sqEntity.setSortNum(Integer.parseInt(sortNum));
             sqEntity.setSqDay(Integer.parseInt(sqDay));
             sqEntity.setUnitCode(unitCode);
+            sqEntity.setGnlist(gnlist);
+            sqEntity.setStartTime(startTime);
             return sqEntity;
         }catch (Exception e){
             e.printStackTrace();

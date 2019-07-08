@@ -328,10 +328,11 @@ public class ReadWriteFile {
 				filepath=path.substring(0, path.lastIndexOf("\\"));
 			}
         	File filenamepath = new File(filepath);
+
         	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
         		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
-        		
-    			boolean bool=filenamepath.mkdirs();  
+
+				boolean bool=filenamepath.mkdirs();
     			if(!bool){
     				boolean bool2=filenamepath.mkdirs();
     				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
@@ -341,6 +342,7 @@ public class ReadWriteFile {
     				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
     			}
         	}
+
         	File filename = new File(path);
         	if (!filename.exists()&& !filename.isDirectory()) {
         		try {
@@ -356,8 +358,7 @@ public class ReadWriteFile {
         	}
         	out.write(new String(code).getBytes());
         	out.close(); 
-        	
-        	
+
         	File f = new File(path);
         	FileWriter fw =  new FileWriter(f);
         	

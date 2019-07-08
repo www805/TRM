@@ -29,12 +29,6 @@ public class Scheduler {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    //每隔2秒执行一次
-    @Scheduled(fixedRate = 20000)
-    public void testTasks() {
-
-        LogUtil.intoLog(this.getClass(),"定时任务执行时间：" + dateFormat.format(new Date()));
-    }
 
     //每个小时的第五分钟执行
 
@@ -59,6 +53,8 @@ public class Scheduler {
         if(!DateUtil.format(date).equals(sqEntity.getStartTime())){//对比数据库和ini的开始时间，以防篡改
             CommonCache.clientSQbool=false;
             return ;
+        }else{
+            CommonCache.getSQEntity=sqEntity;
         }
         LogUtil.intoLog(this.getClass(),DateUtil.format(date)+":DateUtil.format(date)----sqEntity.getStartTime():"+sqEntity.getStartTime());
 

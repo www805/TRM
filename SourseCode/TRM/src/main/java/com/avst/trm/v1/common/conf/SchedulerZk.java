@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
@@ -34,10 +35,10 @@ public class SchedulerZk {
     //每个小时的第五分钟执行
 
     /**
-     * 10秒心跳一次
+     * 30秒心跳一次
      */
 //    @Scheduled(cron = "0 05 1/1 * * *")
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 30000)
     public void testTasks() {
 
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
@@ -60,7 +61,7 @@ public class SchedulerZk {
         try {
             zkControl.getHeartbeat(param);
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.intoLog(4,this.getClass(),"SchedulerZk.testTasks is error, 获取获取总控时间，同步时间 失败");
         }
     }
 

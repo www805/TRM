@@ -1052,6 +1052,19 @@ public static String numtoStr(int digit,Integer num){
 		String str=System.getProperty("java.home");
 		if(null!=str&&(str.indexOf("jdk")>-1 || str.indexOf("jre")>-1 )){
 			LogUtil.intoLog(OpenUtil.class,"----getJDKorJREPath str:"+str);
+
+			try {
+				File file = new File(str);
+				boolean bool=file.canWrite();
+				LogUtil.intoLog(OpenUtil.class,"----原始JDKorJREPath file.canWrite():"+bool);
+				if(!bool){
+					bool=file.setWritable(true);
+					LogUtil.intoLog(OpenUtil.class,"----修改后JDKorJREPath file.setWritable():"+bool);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 			return str.endsWith("\\") ? (str+"bin\\"):(str+"\\bin\\");
 		}
 		return null;

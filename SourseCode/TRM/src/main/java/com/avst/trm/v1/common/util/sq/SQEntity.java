@@ -40,6 +40,12 @@ public class SQEntity {
      */
     private int sortNum=1;
 
+    /**
+     * 客户端的功能列表，暂时只有：record、asr、tts、fd、ph(笔录管理、语音识别、语音播报、设备控制、测谎仪)
+     * 用 | 隔开
+     */
+    private String gnlist;//功能列表
+
     public String getServerType() {
         return serverType;
     }
@@ -104,6 +110,14 @@ public class SQEntity {
         this.sortNum = sortNum;
     }
 
+    public String getGnlist() {
+        return gnlist;
+    }
+
+    public void setGnlist(String gnlist) {
+        this.gnlist = gnlist;
+    }
+
     @Override
     public String toString() {
         return  serverType + ";" +
@@ -113,7 +127,8 @@ public class SQEntity {
                 sqDay +";"+
                 clientName + ";" +
                 unitCode + ";" +
-                sortNum ;
+                sortNum  + ";" +
+                gnlist ;
     }
 
 

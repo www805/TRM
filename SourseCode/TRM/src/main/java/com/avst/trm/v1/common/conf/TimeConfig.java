@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.conf;
 
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.outsideinterface.conf.ZkTimeConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -22,7 +23,7 @@ public class TimeConfig implements ApplicationRunner {
             //获取总控时间，同步时间
             zkTimeConfig.compare();
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.intoLog(4,this.getClass(),"TimeConfig.run is error, 获取获取总控时间，同步时间 失败");
         }
 
     }

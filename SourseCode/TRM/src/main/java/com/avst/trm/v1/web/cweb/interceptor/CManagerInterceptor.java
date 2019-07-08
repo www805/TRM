@@ -57,6 +57,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
         String url=request.getRequestURI();
         if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
+            LogUtil.intoLog(this.getClass(),url+":url，跳过进入登录页面的拦截");
             return true;
         }
 
@@ -78,7 +79,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         if (disbool&&!url.equals("/cweb/")) {
             return true;  //通过拦截器，继续执行请求
         } else {//跳转登录界面
-            LogUtil.intoLog(this.getClass(),firstinterface+":firstinterface");
+            LogUtil.intoLog(this.getClass(),firstinterface+":firstinterface，跳转登录界面");
             request.getRequestDispatcher(firstinterface).forward(request, response);
             return false;  //没有通过拦截器，返回登录页面
         }

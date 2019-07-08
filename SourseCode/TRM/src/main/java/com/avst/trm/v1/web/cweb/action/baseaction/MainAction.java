@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.cweb.action.baseaction;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -244,13 +245,13 @@ public class MainAction extends BaseAction {
      */
     public boolean checkToken( String token){
         String clientkey=CommonCache.getClientKey();
-       /* LogUtil.intoLog(this.getClass(),"token:"+token+"------clientkey:"+clientkey);
+      LogUtil.intoLog(this.getClass(),"token:"+token+"------clientkey:"+clientkey);
       if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
             return  false;
         }
         if (!token.trim().equals(clientkey.trim())){
             return  false;
-        }*/
+        }
         return  true;
     }
 

@@ -5,7 +5,6 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.wb.deencode.EncodeUtil;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  *  创建授权文件
@@ -50,11 +49,12 @@ public class CreateSQ {
         // 当前的节点服务器和该节点的下级服务器（客户端服务器）UnitCode一致，只是SortNum不同，节点是0，其他自动在上一个数值上加1
         sqEntity.setUnitCode("avst");
         sqEntity.setSqDay(10000);
-        sqEntity.setSortNum(13);
+        sqEntity.setSortNum(1);
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(true);
-        sqEntity.setClientName("销售客户端服务器");
-        sqEntity.setCpuCode("734949424A49447249437441");
+        sqEntity.setClientName("吴斌客户端服务器");
+        sqEntity.setCpuCode("7774727242454549724A4544");
+        sqEntity.setGnlist("record|asr|tts|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
         LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));

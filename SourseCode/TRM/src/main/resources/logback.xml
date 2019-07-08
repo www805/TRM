@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- scan 配置文件如果发生改变，将会被重新加载  scanPeriod 检测间隔时间-->
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
-    <contextName>zlyPay-log</contextName>
+    <contextName>trm-log</contextName>
 
     <!--  info 地址 -->
     <property name="log.path" value="D:\\log\\trm\\" />
@@ -18,7 +18,7 @@
         <file>${log.file}</file>
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 日志命名:单个文件大于128MB 按照时间+自增i 生成log文件 -->
+            <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
             <fileNamePattern>${log.path}zlyPay-log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
@@ -44,10 +44,10 @@
         <file>${log.file.error}</file>
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- 日志命名:单个文件大于2MB 按照时间+自增i 生成log文件 -->
+            <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
             <fileNamePattern>${log.path.error}zlyPay-log-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>128MB</maxFileSize>
+                <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <!-- 最大保存时间：180天-->
             <maxHistory>180</maxHistory>
