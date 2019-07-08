@@ -20,6 +20,8 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.SQEntity;
+import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
 import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
@@ -41,6 +43,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -416,6 +419,33 @@ public class MainService extends BaseService {
 
         getHomeVO.setRecord_monthnum_y(record_monthnum_y);//
         getHomeVO.setCase_monthnum_y(case_monthnum_y);//
+
+        CommonCache.gnlist();
+        SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
+        getHomeVO.setSqEntity(getSQEntity);
+
+        //授权功能
+        List gnArrayList = new ArrayList();
+        String gnlist = getSQEntity.getGnlist();
+        String[] strings = gnlist.split("\\|");
+        if (null != strings && strings.length > 0) {
+
+            for (int i = 0; i < strings.length; i++) {
+                String str = strings[i];
+                if("asr".equals(str)){
+                    gnArrayList.add(SQGN.asr);
+                }else if("fd".equals(str)){
+                    gnArrayList.add(SQGN.fd);
+                }else if("ph".equals(str)){
+                    gnArrayList.add(SQGN.ph);
+                }else if("record".equals(str)){
+                    gnArrayList.add(SQGN.record);
+                }else if("tts".equals(str)){
+                    gnArrayList.add(SQGN.tts);
+                }
+            }
+        }
+        getHomeVO.setSqgnList(gnArrayList);
 
         getHomeVO.setDq_y(years);
         result.setData(getHomeVO);

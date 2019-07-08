@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.cache;
 
 import com.avst.trm.v1.common.cache.param.CheckSQParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_page;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
@@ -589,5 +590,17 @@ public class CommonCache {
 
     }
 
+    /**
+     * 心跳提供的账号缓存
+     */
+    private static Base_admininfo admininfo;
+
+    public static Base_admininfo getAdmininfo(){
+        return admininfo;
+    }
+
+    public static void setAdmininfo(Base_admininfo base_admininfo){
+        admininfo = base_admininfo;
+    }
 
 }

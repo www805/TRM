@@ -1,14 +1,20 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.sq.SQEntity;
+import com.avst.trm.v1.common.util.sq.SQGN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class HomeService {
@@ -56,6 +62,31 @@ public class HomeService {
         Integer roleCount = roleMapper.selectCount(null);
         Integer fileCount = filesaveMapper.selectCount(null);
 
+        CommonCache.gnlist();
+        SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
+
+        //授权功能
+        List gnArrayList = new ArrayList();
+        String gnlist = getSQEntity.getGnlist();
+        String[] strings = gnlist.split("\\|");
+        if (null != strings && strings.length > 0) {
+
+            for (int i = 0; i < strings.length; i++) {
+                String str = strings[i];
+                if("asr".equals(str)){
+                    gnArrayList.add(SQGN.asr);
+                }else if("fd".equals(str)){
+                    gnArrayList.add(SQGN.fd);
+                }else if("ph".equals(str)){
+                    gnArrayList.add(SQGN.ph);
+                }else if("record".equals(str)){
+                    gnArrayList.add(SQGN.record);
+                }else if("tts".equals(str)){
+                    gnArrayList.add(SQGN.tts);
+                }
+            }
+        }
+
         model.addAttribute("policeTemplateCount", policeTemplateCount);
         model.addAttribute("policeProblemCount", policeProblemCount);
         model.addAttribute("policeAnswerCount", policeAnswerCount);
@@ -66,6 +97,8 @@ public class HomeService {
         model.addAttribute("fileCount", fileCount);
         model.addAttribute("admininfoCount", admininfoCount);
         model.addAttribute("roleCount", roleCount);
+        model.addAttribute("getSQEntity", getSQEntity);
+        model.addAttribute("getGnlist", gnArrayList);
 
     }
 }

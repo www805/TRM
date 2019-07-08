@@ -572,6 +572,7 @@ function addTr(text, referanswer, id) {
     // console.log(isNotEmpty(trObj));
     // console.log(trObj);
     // console.log(NoDelele);
+
     if(!isNotEmpty(trObj) && null == trObj || NoDelele == true){
         $("#dataTable").append(trHtml);
         htmlOBJ = $("#dataTable tr").last();
@@ -582,6 +583,12 @@ function addTr(text, referanswer, id) {
         //     $(this).html("<div><br/></div>");
         // });
     }else if(isNotEmpty(trObj) && null != trObj ){
+        //光标如果在问题，就跳到答案，如果是在答案就跳到下一行
+        if($(trObj).find("p").eq(1).is(":focus")){
+            $(trObj).find("p").eq(3).focus().select();
+            return;
+        }
+
         $(trObj).after(trHtml);
         htmlOBJ = $(trObj).next();
         // trObj = null;

@@ -5,9 +5,13 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.sq.SQEntity;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.HomeService;
 import com.avst.trm.v1.web.sweb.service.policeservice.LoginService;
+import com.avst.trm.v1.web.sweb.vo.InitVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @RequestMapping("/sweb/base/home")
@@ -61,7 +66,6 @@ public class HomeAction extends BaseAction{
         model.addAttribute("RResult", rResult);
         model.addAttribute("title", "首页");
         return new ModelAndView("server_web/base/home", "homeModel", model);
-
     }
 
     /**

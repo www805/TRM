@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
 import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
 import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/cweb/base/main")
@@ -162,6 +164,7 @@ public class MainAction extends BaseAction {
     @ResponseBody
     public RResult getHome(@RequestBody  ReqParam<GetHomeParam> param){
         RResult result=this.createNewResultOfFail();
+
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){

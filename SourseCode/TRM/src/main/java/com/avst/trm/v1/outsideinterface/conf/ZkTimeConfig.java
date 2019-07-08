@@ -92,27 +92,15 @@ public class ZkTimeConfig {
                                 cmd = "  date -s " + cmd;
                                 Runtime.getRuntime().exec(cmd);
                             }
-
-
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
 
                     }
                 }
-
-//                System.out.println("服务器获取到的时间：" + date);
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-//            System.out.println("结束");
         }
-
-
-
-
     }
-
-
 }

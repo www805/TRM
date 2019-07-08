@@ -27,6 +27,23 @@ function callbackgetHome(data) {
             $("#template_num").text(data.template_num);
             $("#userinfo_num").text(data.userinfo_num);
 
+            var sqEntity = data.sqEntity; //授权信息
+            var sqgnList = data.sqgnList; //授权功能信息
+
+            var sqEntityHTML = "<p>单位名称：" + sqEntity.clientName + "</p>";//单位名称
+            sqEntityHTML += "<p>授权开始时间：" + sqEntity.startTime + "</p>";//授权开始时间
+            sqEntityHTML += "<p>授权总天数：" + sqEntity.sqDay + "</p>";//授权总天数
+            sqEntityHTML += "<p>机器码：" + sqEntity.cpuCode + "</p>";//单位机器码
+            sqEntityHTML += "<p>排序：" + sqEntity.sortNum + "</p>";//排序
+
+            var sqgnListHTML = "";
+            for (var i = 0; i < sqgnList.length; i++) {
+                sqgnListHTML += "<p>" + sqgnList[i] + "</p>";//功能
+            }
+
+            $("#sqEntity").html(sqEntityHTML);
+            $("#sqgnList").html(sqgnListHTML);
+
             myChart.hideLoading();
             myChart2.hideLoading();
             myChart.setOption({

@@ -1,5 +1,7 @@
 package com.avst.trm.v1.web.cweb.vo.basevo;
 
+import com.avst.trm.v1.common.util.sq.SQEntity;
+
 import java.util.List;
 
 public class GetHomeVO {
@@ -32,6 +34,26 @@ public class GetHomeVO {
     private List<Integer> record_monthnum_y;//12月笔录
 
     private String dq_y;//当前年份
+
+    private SQEntity sqEntity; //系统授权信息
+
+    private List<String> sqgnList; //授权功能集合
+
+    public List<String> getSqgnList() {
+        return sqgnList;
+    }
+
+    public void setSqgnList(List<String> sqgnList) {
+        this.sqgnList = sqgnList;
+    }
+
+    public SQEntity getSqEntity() {
+        return sqEntity;
+    }
+
+    public void setSqEntity(SQEntity sqEntity) {
+        this.sqEntity = sqEntity;
+    }
 
     public String getDq_y() {
         return dq_y;

@@ -9,15 +9,15 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 //服务器启动的时候会执行一次
-/*@Component
-@Order(value = 1)*/
+@Component
+@Order(value = 1)
 public class TimeConfig implements ApplicationRunner {
 
     @Autowired
     private ZkTimeConfig zkTimeConfig;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args){
 
         try {
             //获取总控时间，同步时间
