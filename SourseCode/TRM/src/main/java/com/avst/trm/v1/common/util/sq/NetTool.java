@@ -50,7 +50,6 @@ return (hostname);
 
 private static String getLocalMac_win() throws SocketException {
 
-	// TODO Auto-generated method stub
 
 	StringBuffer sb=new StringBuffer("");
 	try {
@@ -59,7 +58,7 @@ private static String getLocalMac_win() throws SocketException {
 
 		byte[] mac = NetworkInterface.getByInetAddress(ia).getHardwareAddress();
 
-		LogUtil.intoLog(NetTool.class,"mac数组长度："+mac.length);
+//		LogUtil.intoLog(NetTool.class,"mac数组长度："+mac.length);
 
 
 		for(int i=0; i<mac.length; i++) {
@@ -76,7 +75,7 @@ private static String getLocalMac_win() throws SocketException {
 
 			String str = Integer.toHexString(temp);
 
-			LogUtil.intoLog(NetTool.class,"每8位:"+str);
+//			LogUtil.intoLog(NetTool.class,"每8位:"+str);
 
 			if(str.length()==1) {
 
@@ -89,7 +88,7 @@ private static String getLocalMac_win() throws SocketException {
 			}
 
 		}
-		LogUtil.intoLog(NetTool.class,"本机MAC地址:"+sb.toString().toUpperCase());
+//		LogUtil.intoLog(NetTool.class,"本机MAC地址:"+sb.toString().toUpperCase());
 	} catch (UnknownHostException e) {
 		e.printStackTrace();
 	}

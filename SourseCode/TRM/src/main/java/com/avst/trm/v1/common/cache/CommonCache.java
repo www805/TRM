@@ -78,6 +78,9 @@ public class CommonCache {
 
     public static String getServerSQCode(){
         if(!clientSQbool){
+
+            //查的时候如果不对再请求一遍授权check
+
             return null;
         }
         if(StringUtils.isEmpty(serverSQCode)){
@@ -101,6 +104,7 @@ public class CommonCache {
          }
          return clientkey;
      }
+
 
     /**
      * client客户端base请求地址
@@ -400,6 +404,10 @@ public class CommonCache {
         }else{
             if(bool == -100001){
                 checkSQParam.setCode(CodeForSQ.ERROR100001);
+
+                //重新授权
+                AnalysisSQ.createClientini(serverconfig);
+
             }else if(bool == -100002){
                 checkSQParam.setCode(CodeForSQ.ERROR100002);
             }else{
