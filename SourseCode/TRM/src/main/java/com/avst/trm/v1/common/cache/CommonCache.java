@@ -52,7 +52,7 @@ public class CommonCache {
             if(StringUtils.isNotEmpty(gns)){
                 List<String> list=new ArrayList<String>();
                 if(gns.indexOf("|") > -1){
-                    String[] arr=gns.split("|");
+                    String[] arr=gns.split("\\|");
                     for(String s:arr){
                         list.add(s.trim());
                     }

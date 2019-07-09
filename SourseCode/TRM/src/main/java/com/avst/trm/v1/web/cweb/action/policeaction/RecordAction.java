@@ -572,6 +572,26 @@ public class RecordAction extends BaseAction {
     }
 
 
+    /**
+     * 授权客户端的功能列表
+     * @param param
+     * @return
+     */
+    @RequestMapping("/gnlist")
+    public  RResult gnlist(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            recordService.gnlist(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 
@@ -607,6 +627,11 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+
+
+
 
 
 

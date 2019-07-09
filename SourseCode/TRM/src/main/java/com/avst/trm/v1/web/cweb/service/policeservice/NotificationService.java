@@ -24,9 +24,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import java.io.*;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service("NotificationService")
 public class NotificationService extends BaseService {
@@ -203,6 +206,43 @@ public class NotificationService extends BaseService {
                 }
                 LogUtil.intoLog(this.getClass(),"文件转换完成的html:"+recorddownurl_html);
                 downloadNotificationVO.setRecorddownurl_html(recorddownurl_html);
+
+                String htmlstr="";//需要转换的值
+                try {
+                    URL url = new URL(recorddownurl_html);
+                    InputStream in =url.openStream();
+                    InputStreamReader isr = new InputStreamReader(in);
+                    BufferedReader bufr = new BufferedReader(isr);
+                    String str;
+                    while ((str = bufr.readLine()) != null) {
+                        htmlstr+=","+str;
+                    }
+                    bufr.close();
+                    isr.close();
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //过滤文本
+                String regEx_script="<script[^>]*?>[\\s\\S]*?<\\/script>"; //定义script的正则表达式
+                String regEx_style="<style[^>]*?>[\\s\\S]*?<\\/style>"; //定义style的正则表达式
+                String regEx_html="<[^>]+>"; //定义HTML标签的正则表达式
+
+                Pattern p_script=Pattern.compile(regEx_script,Pattern.CASE_INSENSITIVE);
+                Matcher m_script=p_script.matcher(htmlstr);
+                htmlstr=m_script.replaceAll(""); //过滤script标签
+
+                Pattern p_style=Pattern.compile(regEx_style,Pattern.CASE_INSENSITIVE);
+                Matcher m_style=p_style.matcher(htmlstr);
+                htmlstr=m_style.replaceAll(""); //过滤style标签
+
+                Pattern p_html=Pattern.compile(regEx_html,Pattern.CASE_INSENSITIVE);
+                Matcher m_html=p_html.matcher(htmlstr);
+                htmlstr=m_html.replaceAll(""); //过滤html标签
+
+                htmlstr=htmlstr.replaceAll("\\s*", "");
+                downloadNotificationVO.setRecorddownurl_htmlread(htmlstr);
+
                 result.setData(downloadNotificationVO);
                 changeResultToSuccess(result);
             }else{
