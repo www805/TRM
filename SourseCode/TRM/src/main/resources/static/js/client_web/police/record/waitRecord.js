@@ -1823,10 +1823,10 @@ function previewgetNotifications(ssid) {
                         ,btn: ['开始朗读', '取消'],
                         id:"notification_read"
                         ,yes: function(index, layero){
-                            if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
+                           /* if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
                                 layer.msg("请先获取语音播报授权")
                                 return;
-                            }
+                            }*/
                             layer.msg("加载中，请稍等...", {
                                 icon: 16,
                                 time:1000

@@ -243,13 +243,13 @@
                 </div>
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="initec">
                     <ul class="layui-tab-title">
-                        <li onclick="initasr()" id="asr" style="display: none">语音识别</li>
-                        <li onclick="initliving()"id="fd" style="display: none">录音录像</li>
-                        <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
-                        <li onclick="initcase()"  class="layui-this"> 案件信息</li>
+                        <li onclick="initasr()" id="asr"   class="layui-this">语音识别</li>
+                        <li onclick="initliving()"id="fd" >录音录像</li>
+                        <li onclick="initheart();"id="ph" >身心监测</li>
+                        <li onclick="initcase()" > 案件信息</li>
                     </ul>
                     <div class="layui-tab-content"  style="height: 450px; overflow-x: hidden; overflow-y: scroll;">
-                        <div class="layui-tab-item"  id="asritem" >
+                        <div class="layui-tab-item  layui-show"  id="asritem" >
                             <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">
                             </div>
                             <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
@@ -301,7 +301,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-tab-item  layui-show">
+                        <div class="layui-tab-item ">
                                 <div style="height:100%; overflow-x: hidden; overflow-y: scroll; " >
                                     <div class="layui-card-body">
                                         <table class="layui-table" lay-skin="line" style="table-layout: fixed">
@@ -472,7 +472,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
         recordssid=[[${waitRecordModel.recordssid}]];
-        getgnlist();
+       /* getgnlist();*/
         getRecordById();
         getRecordrealByRecordssid();
         getTime();
