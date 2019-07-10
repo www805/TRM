@@ -32,13 +32,20 @@ function callbackgetHome(data) {
 
             var sqEntityHTML = "<p>单位名称：" + sqEntity.clientName + "</p>";//单位名称
             sqEntityHTML += "<p>授权开始时间：" + sqEntity.startTime + "</p>";//授权开始时间
-            sqEntityHTML += "<p>授权总天数：" + sqEntity.sqDay + "</p>";//授权总天数
-            sqEntityHTML += "<p>机器码：" + sqEntity.cpuCode + "</p>";//单位机器码
-            sqEntityHTML += "<p>排序：" + sqEntity.sortNum + "</p>";//排序
+
+            if(sqEntity.foreverBool == true){
+                sqEntityHTML += "<p>授权期限：永久</p>";//授权时间
+            }else{
+                sqEntityHTML += "<p>授权期限：临时</p>";//授权总天数
+                sqEntityHTML += "<p>授权已用天数：" + data.workdays + "</p>";//授权已用天数
+            }
+
+            sqEntityHTML += "<p>单位代码：" + sqEntity.unitCode + "</p>";//单位机器码
+            sqEntityHTML += "<p>客户端序号：" + sqEntity.sortNum + "</p>";//排序
 
             var sqgnListHTML = "";
             for (var i = 0; i < sqgnList.length; i++) {
-                sqgnListHTML += "<p>" + sqgnList[i] + "</p>";//功能
+                sqgnListHTML += "<span class=\"layui-badge layui-bg-blue\" style='margin-right: 5px;'>" + sqgnList[i] + "</span>";//功能
             }
 
             $("#sqEntity").html(sqEntityHTML);

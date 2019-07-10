@@ -33,43 +33,49 @@
 
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12 layui-col-space15">
-            <div class="layui-col-md4">
-            <div class="layui-card">
-                <div class="layui-card-header"><h3>笔录数据</h3></div>
-                <div class="layui-card-body " style="overflow:hidden;">
-                    <div class="piece piece_left" >
-                        <a th:href="@{/sweb/police/arraignment/getArraignment}">
-                            <p>模板</p>
-                            <h1 class="p_num" th:text="${policeTemplateCount}">36</h1>
-                        </a>
+            <div class="layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        笔录数据
+                        <span class="layui-badge layuiadmin-badge" style="float: right;margin-top: 13px;">总</span>
                     </div>
+                    <div class="layui-card-body " style="overflow:hidden;">
+                        <div class="piece piece_left" >
+                            <a th:href="@{/sweb/police/arraignment/getArraignment}">
+                                <p>模板</p>
+                                <h1 class="p_num" th:text="${policeTemplateCount}">36</h1>
+                            </a>
+                        </div>
 
-                    <div  class="piece">
-                        <a th:href="@{/sweb/police/arraignment/getArraignment}">
-                            <p>提讯总数</p>
-                            <h1 class="p_num" th:text="${policeProblemCount}">578</h1>
-                        </a>
-                    </div>
+                        <div  class="piece">
+                            <a th:href="@{/sweb/police/arraignment/getArraignment}">
+                                <p>提讯总数</p>
+                                <h1 class="p_num" th:text="${policeProblemCount}">578</h1>
+                            </a>
+                        </div>
 
-                    <div class="piece piece_left piece_bottom">
-                        <a th:href="@{/sweb/police/arraignment/getArraignment}">
-                            <p>题目</p>
-                            <h1 class="p_num" th:text="${policeAnswerCount}">1280</h1>
-                        </a>
-                    </div>
+                        <div class="piece piece_left piece_bottom">
+                            <a th:href="@{/sweb/police/arraignment/getArraignment}">
+                                <p>题目</p>
+                                <h1 class="p_num" th:text="${policeAnswerCount}">1280</h1>
+                            </a>
+                        </div>
 
-                    <div  class="piece piece_bottom">
-                        <a th:href="@{/sweb/police/arraignment/getArraignment}">
-                            <p>答案</p>
-                            <h1 class="p_num" th:text="${policeArraignmentCount}">8888</h1>
-                        </a>
+                        <div  class="piece piece_bottom">
+                            <a th:href="@{/sweb/police/arraignment/getArraignment}">
+                                <p>答案</p>
+                                <h1 class="p_num" th:text="${policeArraignmentCount}">8888</h1>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            </div>
-            <div class="layui-col-md4">
+            <div class="layui-col-md3">
                 <div class="layui-card">
-                    <div class="layui-card-header"><h3>案件数据</h3></div>
+                    <div class="layui-card-header">
+                        案件数据
+                        <span class="layui-badge layui-bg-green layuiadmin-badge" style="float: right;margin-top: 13px;">总</span>
+                    </div>
                     <div class="layui-card-body" style="overflow:hidden;">
                         <div class="piece piece_left">
                             <a th:href="@{/sweb/police/arraignment/getArraignment}">
@@ -102,9 +108,12 @@
                 </div>
             </div>
 
-            <div class="layui-col-md4">
+            <div class="layui-col-md3">
                 <div class="layui-card">
-                    <div class="layui-card-header"><h3>用户数据</h3></div>
+                    <div class="layui-card-header">
+                        用户数据
+                        <span class="layui-badge layui-bg-orange layuiadmin-badge" style="float: right;margin-top: 13px;">总</span>
+                    </div>
                     <div class="layui-card-body" style="overflow:hidden;">
                         <div class="piece piece_left">
                             <a th:href="@{/sweb/base/user/getUser}">
@@ -123,28 +132,25 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-
-        <div class="layui-col-md12 layui-col-space15">
-            <div class="layui-col-md6">
+            <div class="layui-col-md3">
                 <div class="layui-card">
-                    <div class="layui-card-header"><h3>授权信息</h3></div>
-                    <div class="layui-card-body" style="overflow:hidden;">
+                    <div class="layui-card-header">
+                        授权信息
+                        <span class="layui-badge layui-bg-black layuiadmin-badge" style="float: right;margin-top: 13px;">授权</span>
+                    </div>
+                    <div class="layui-card-body" style="color: #666;">
                         <p th:text="'单位名称：'+${getSQEntity.clientName}">系统用户</p>
                         <p th:text="'授权开始时间：'+${getSQEntity.startTime}">系统用户</p>
-                        <p th:text="'授权总天数：'+${getSQEntity.sqDay}">系统用户</p>
-                        <p th:text="'机器码：'+${getSQEntity.cpuCode}">系统用户</p>
-                        <p th:text="'排序：'+${getSQEntity.sortNum}">系统用户</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="layui-col-md6">
-                <div class="layui-card">
-                    <div class="layui-card-header"><h3>授权功能</h3></div>
-                    <div class="layui-card-body"  style="overflow:hidden;">
-                        <p th:each="entity : ${getGnlist}" th:text="${entity}">角色</p>
+                        <p th:text="'授权期限：'+${getSQEntity.foreverBool==true?'永久':'临时'}">系统用户</p>
+
+                        <p th:if="${getSQEntity.foreverBool==false}" th:text="'授权已用天数：'+${workdays}">系统用户</p>
+
+                        <p th:text="'单位代码：'+${getSQEntity.unitCode}">系统用户</p>
+                        <p th:text="'客户端序号：'+${getSQEntity.sortNum}">系统用户</p>
+                        <span>授权功能：</span>
+                        <span class="layui-badge layui-bg-blue" style="margin-right: 5px;" th:each="entity : ${getGnlist}" th:text="${entity}">角色</span>
                     </div>
                 </div>
             </div>

@@ -15,91 +15,88 @@
 <div class="layui-fluid" style="padding: 20px; background-color: #F2F2F2;">
     <div class="layui-row layui-col-space15">
 
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    笔录
-                    <span class="layui-badge layui-bg-blue layuiadmin-badge">总</span>
-                </div>
-                <div class="layui-card-body layuiadmin-card-list layui-row">
-                    <div style="text-align: center">
-                        <p class="layuiadmin-big-font" id="record_num" >0</p>
-                        <p>
-                            笔录数
-                        </p>
+        <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card ">
+                    <div class="layui-card-header">
+                        笔录
+                        <span class="layui-badge layui-bg-blue layuiadmin-badge">总</span>
+                    </div>
+                    <div class="layui-card-body layuiadmin-card-list layui-row">
+                        <div style="text-align: center">
+                            <p class="layuiadmin-big-font" id="record_num" >0</p>
+                            <p>
+                                笔录数
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    案件
-                    <span class="layui-badge layui-bg-cyan layuiadmin-badge">总</span>
-                </div>
-                <div class="layui-card-body layuiadmin-card-list">
-                    <div style="text-align: center">
-                        <p class="layuiadmin-big-font" id="case_num">0</p>
-                        <p>
-                            案件数
-                        </p>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        案件
+                        <span class="layui-badge layui-bg-cyan layuiadmin-badge">总</span>
+                    </div>
+                    <div class="layui-card-body layuiadmin-card-list">
+                        <div style="text-align: center">
+                            <p class="layuiadmin-big-font" id="case_num">0</p>
+                            <p>
+                                案件数
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    模板
-                    <span class="layui-badge layui-bg-green layuiadmin-badge">总</span>
-                </div>
-                <div class="layui-card-body layuiadmin-card-list">
-                    <div style="text-align: center">
-                        <p class="layuiadmin-big-font" id="template_num">0</p>
-                        <p>
-                           模板数
-                        </p>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        模板
+                        <span class="layui-badge layui-bg-green layuiadmin-badge">总</span>
+                    </div>
+                    <div class="layui-card-body layuiadmin-card-list">
+                        <div style="text-align: center">
+                            <p class="layuiadmin-big-font" id="template_num">0</p>
+                            <p>
+                               模板数
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    人员
-                    <span class="layui-badge layui-bg-orange layuiadmin-badge">总</span>
-                </div>
-                <div class="layui-card-body layuiadmin-card-list">
-                    <div style="text-align: center">
-                        <p class="layuiadmin-big-font" id="userinfo_num">0</p>
-                        <p>
-                           人员数
-                        </p>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        人员
+                        <span class="layui-badge layui-bg-orange layuiadmin-badge">总</span>
+                    </div>
+                    <div class="layui-card-body layuiadmin-card-list">
+                        <div style="text-align: center">
+                            <p class="layuiadmin-big-font" id="userinfo_num">0</p>
+                            <p>
+                               人员数
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
+        <div class="layui-col-sm12 layui-col-md4">
+            <div class="layui-card" style=" overflow:hidden;">
                 <div class="layui-card-header">
                     授权信息
+                    <span class="layui-badge layui-bg-black layuiadmin-badge">授权</span>
                 </div>
-                <div class="layui-card-body layuiadmin-card-list">
+                <div class="layui-card-body layuiadmin-card-list layui-col-sm6 layui-col-md6" style="padding-top: 5px;">
                     <div style="text-align: left;" id="sqEntity">
                         <p>授权信息</p>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="layui-col-sm6 layui-col-md2">
-            <div class="layui-card">
-                <div class="layui-card-header">
-                    授权功能
-                </div>
-                <div class="layui-card-body layuiadmin-card-list">
+                <div class="layui-card-body layuiadmin-card-list layui-col-sm6 layui-col-md6" style="padding-top: 5px;">
+                    <p>授权功能：</p>
                     <div style="text-align: left;" id="sqgnList">
-                        <p>授权功能</p>
+
                     </div>
                 </div>
             </div>

@@ -424,6 +424,11 @@ public class MainService extends BaseService {
         SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
         getHomeVO.setSqEntity(getSQEntity);
 
+        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
+        if (null != serverconfig) {
+            getHomeVO.setWorkdays(serverconfig.getWorkdays());
+        }
+
         //授权功能
         List gnArrayList = new ArrayList();
         String gnlist = getSQEntity.getGnlist();

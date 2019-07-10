@@ -39,6 +39,8 @@ public class GetHomeVO {
 
     private List<String> sqgnList; //授权功能集合
 
+    private Integer workdays; //授权信息，同步工作天数
+
     public List<String> getSqgnList() {
         return sqgnList;
     }
@@ -53,6 +55,14 @@ public class GetHomeVO {
 
     public void setSqEntity(SQEntity sqEntity) {
         this.sqEntity = sqEntity;
+    }
+
+    public Integer getWorkdays() {
+        return workdays;
+    }
+
+    public void setWorkdays(Integer workdays) {
+        this.workdays = workdays;
     }
 
     public String getDq_y() {

@@ -1,10 +1,8 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.sq.SQEntity;
@@ -49,6 +47,9 @@ public class HomeService {
     @Autowired
     private Base_filesaveMapper filesaveMapper;     //文件存储
 
+    @Autowired
+    private Base_serverconfigMapper base_serverconfigMapper;    //服务器系统配置
+
     public void getAllCount(RResult rResult, Model model) {
 
         Integer policeTemplateCount = policeTemplateMapper.selectCount(null);
@@ -87,6 +88,12 @@ public class HomeService {
             }
         }
 
+        Integer dayNum = 0;
+        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
+        if (null != serverconfig) {
+            dayNum = serverconfig.getWorkdays();
+        }
+
         model.addAttribute("policeTemplateCount", policeTemplateCount);
         model.addAttribute("policeProblemCount", policeProblemCount);
         model.addAttribute("policeAnswerCount", policeAnswerCount);
@@ -99,6 +106,7 @@ public class HomeService {
         model.addAttribute("roleCount", roleCount);
         model.addAttribute("getSQEntity", getSQEntity);
         model.addAttribute("getGnlist", gnArrayList);
+        model.addAttribute("workdays", dayNum);
 
     }
 }
