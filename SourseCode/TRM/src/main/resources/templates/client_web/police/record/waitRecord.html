@@ -196,7 +196,7 @@
         <div class="layui-col-md2 ">
                 <h3 th:text="${waitRecordModel.title}">智能提讯系统</h3>
         </div>
-        <div class="layui-col-md7 " style="font-size: 16px;text-align: center;text-shadow: 0 0 0.2em #1E9FFF;" id="xthtml" >
+        <div class="layui-col-md7 " style="font-size: 16px;text-align: center;text-shadow: 0 0 0.2em #1E9FFF;display: none" id="xthtml" >
             <div style="float: right">
                 生理状态：<span id="xt1"> 加载中  </span>
                 心率：<span id="xt6"> 0.0  </span>
@@ -252,11 +252,6 @@
                         <div class="layui-tab-item  layui-show"  id="asritem" >
                             <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">
                             </div>
-                            <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                                <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">
-                                <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,2);" id="startrecord">
-                                <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,-1);" id="endrecord">
-                            </div>
                         </div>
                         <div class="layui-tab-item"  id="fditem">
                             <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>
@@ -267,17 +262,17 @@
                             </div>
                         </div>
                         <div class="layui-tab-item"  id="phitem">
-                           <div style="height:100%; overflow-x: hidden; overflow-y: scroll;"  >
+                           <div style="height:100%; overflow-x: hidden; margin-bottom: 100px;overflow-y: scroll;"  >
                                <div  id="living3_1">
 
                                </div>
                                  <div class="layui-col-md12" >
-                                    <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
+                                    <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height: 35px;px;line-height: 35px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
                                 </div>
                                 <div class="layui-col-md12" >
-                                   <div id="main1" style="height:200px;width:100%;"></div>
+                                   <div id="main1" style="height:160px;width:100%;"></div>
                                 </div>
-                                <div class="layui-col-md12 layui-form-item" style="margin-top: 12px" >
+                                <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >
                                     <div  id="monitor_btn" style="display:inline">
                                         <span class="layui-badge" isn="1" type='hr' onclick="select_monitor(this);">心率</span>
                                         <span class="layui-badge layui-bg-gray" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
@@ -330,6 +325,11 @@
                                         </table>
                                     </div>
                                 </div>
+                        </div>
+                        <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
+                            <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">
+                            <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,2);" id="startrecord">
+                            <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,-1);" id="endrecord">
                         </div>
                     </div>
                 </div>
@@ -472,7 +472,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
         recordssid=[[${waitRecordModel.recordssid}]];
-       /* getgnlist();*/
+        getgnlist();
         getRecordById();
         getRecordrealByRecordssid();
         getTime();

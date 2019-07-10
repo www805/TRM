@@ -733,7 +733,6 @@ $(function () {
             form.render('select','change_otheruserinfos');
         });
 
-
     });
 });
 

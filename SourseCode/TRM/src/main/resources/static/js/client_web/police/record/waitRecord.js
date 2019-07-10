@@ -1823,10 +1823,10 @@ function previewgetNotifications(ssid) {
                         ,btn: ['开始朗读', '取消'],
                         id:"notification_read"
                         ,yes: function(index, layero){
-                           /* if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
+                          if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
                                 layer.msg("请先获取语音播报授权")
                                 return;
-                            }*/
+                            }
                             layer.msg("加载中，请稍等...", {
                                 icon: 16,
                                 time:1000
@@ -2234,59 +2234,6 @@ function callbackgnlist(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var lists=data.lists;
-           /* var asrhtml='<li onclick="initasr()" id="as">语音识别</li>';
-            var fdhtml='<li onclick="initliving()"id="fd">录音录像</li>';
-            var phhtml='<li onclick="initheart();"id="ph">身心监测</li>';
-            var  asritem='<div class="layui-tab-item">\
-                        <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">\
-                        </div>\
-                            <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >\
-                                <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">\
-                                <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,2);" id="startrecord">\
-                                <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,-1);" id="endrecord">\
-                            </div>\
-                        </div>';
-            var  fditem='<div class="layui-tab-item">\
-                        <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>\
-                        <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">副麦</span>\
-                        <div id="living3_2">\
-                            <div th:replace="living3 :: living"  >...</div>\
-                        </div>\
-                    </div>';
-            var phitenm='<div class="layui-tab-item">\
-                <div style="height:100%; overflow-x: hidden; overflow-y: scroll;"  >\
-                <div  id="living3_1">\
-                </div>\
-                <div class="layui-col-md12" >\
-                <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>\
-            </div>\
-            <div class="layui-col-md12" >\
-                <div id="main1" style="height:200px;width:100%;"></div>\
-                </div>\
-                <div class="layui-col-md12 layui-form-item" style="margin-top: 12px" >\
-                <div  id="monitor_btn" style="display:inline">\
-                <span class="layui-badge" isn="1" type="hr" onclick="select_monitor(this);">心率</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1" type="hrv"  onclick="select_monitor(this);">心率变异</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1" type="br"  onclick="select_monitor(this);">呼吸次数</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1"  type="relax"  onclick="select_monitor(this);">放松值</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1"  type="stress"  onclick="select_monitor(this);">紧张值</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1"  type="bp"  onclick="select_monitor(this);">血压变化</span>\
-                <span class="layui-badge layui-bg-gray" isn="-1"  type="spo2"  onclick="select_monitor(this);">血氧</span>\
-                </div>\
-                <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type="all"  onclick="select_monitorall(this);">查看全部</span>\
-                <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>\
-            </div>\
-            <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >\
-                <div style="float: left;width: 100%">\
-                生理状态：<span id="xt1"> 加载中  </span>\
-            放松值：<span id="xt2"> 0.0  </span>\
-            紧张值：<span id="xt3"> 0.0  </span>\
-            血压变化：<span id="xt4"> 0.0  </span>\
-            血氧：<span id="xt5"> 0.0</span>\
-                </div>\
-                </div>\
-                </div>\
-                </div>';*/
             if (isNotEmpty(lists)){
                 gnlist=lists;
                 if (!isNotEmpty(gnlist)||!gnlist.includes("record")){
@@ -2300,15 +2247,16 @@ function callbackgnlist(data) {
                 for (let i = 0; i < gnlist.length; i++) {
                     var list = gnlist[i];
                     if (list=="asr") {
-                      $("#asr").show();
+                      /*  $("#asr").show();
                         $("#initec ul li").removeClass("layui-this");
                         $("#initec .layui-tab-item").removeClass("layui-show");
                         $("#asr").addClass("layui-this");
-                        $("#asritem").addClass("layui-show");
+                        $("#asritem").addClass("layui-show");*/
                     }else if (list=="fd") {
-                       $("#fd").show();
+                       /*$("#fd").show();*/
                     }else if (list=="ph") {
-                       $("#ph").show();
+                      /* $("#ph").show();*/
+                        $("#xthtml").show();
                     }
                 }
             }
