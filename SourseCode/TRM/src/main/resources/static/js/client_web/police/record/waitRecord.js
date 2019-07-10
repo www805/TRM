@@ -832,12 +832,12 @@ function callbackgetgetRecordrealing(data) {
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
@@ -2430,12 +2430,12 @@ $(function () {
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
 
