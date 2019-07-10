@@ -90,7 +90,8 @@ public class AnalysisSQ {
 
             ReadWriteFile.writeTxtFile(encode,inipath,"utf8");
 
-            OpenUtil.setFileHide(inipath);
+//            OpenUtil.setFileHide(inipath);//暂时不用隐藏，写文件的时候有问题
+
             String code=rr.split(";")[0];
             String[] sqcodearr= DeCodeUtil.decoderByDES(code).split(";");
             String servertype=sqcodearr[0];
@@ -111,9 +112,11 @@ public class AnalysisSQ {
                 if(StringUtils.isNotEmpty(sortnum)){
                     serverconfig.setAuthorizesortnum(Integer.parseInt(sortnum));
                 }
-                serverconfig.setWorkstarttime(DateUtil.getNowTime());
+                serverconfig.setWorkstarttime(DateUtil.strToDate(startTime));//授权开始的时间
                 serverconfig.setWorkdays(1);
-                serverconfig.setSsid(OpenUtil.getUUID_32());
+                if(StringUtils.isEmpty(serverconfig.getSsid())){
+                    serverconfig.setSsid(OpenUtil.getUUID_32());
+                }
                 boolean bool=updateServiceConfig(serverconfig,1);
                 if(bool){//成功的话刷新一遍客户端页面
                     CommonCache.getinit_CLIENT(true);
@@ -146,6 +149,9 @@ public class AnalysisSQ {
 
             String[] arr=decode.split(";");
             int useday=Integer.parseInt(arr[1]);
+            if(useday==day){//时间一样的话就不需要写入授权文件
+                return true;
+            }
             useday=day;
             String newcode=arr[0]+";"+useday;
             LogUtil.intoLog(AnalysisSQ.class,newcode+":newcode--");
@@ -212,7 +218,7 @@ public class AnalysisSQ {
      * 修改系统配置表
      * @return
      */
-    private static boolean  updateServiceConfig(Base_serverconfig serverconfig,int authorizebool){
+    public static boolean  updateServiceConfig(Base_serverconfig serverconfig,int authorizebool){
 
         try {
             Base_serverconfigMapper base_serverconfigMapper=SpringUtil.getBean(Base_serverconfigMapper.class);
@@ -249,8 +255,18 @@ public class AnalysisSQ {
 
         File file=new File(inipath);
         if(!file.exists()){
-            LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---");
-            return null;
+            LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---重新授权");
+            Base_serverconfigMapper base_serverconfigMapper=SpringUtil.getBean(Base_serverconfigMapper.class);
+            Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
+            boolean bool=createClientini(serverconfig);
+            if(bool){
+                file=new File(inipath);
+                if(!file.exists()){
+                    return null;
+                }
+            }else{
+                return null;
+            }
         }
         try {
 

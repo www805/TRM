@@ -250,9 +250,14 @@ public class ReadWriteFile {
         try {
         	
         	BufferedWriter output = new BufferedWriter(new FileWriter(f,true));
-        	output.write(newStr);
-        	output.close();
-        	return true;
+			try {
+				output.write(newStr);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				output.close();
+			}
+			return true;
         } catch (IOException e1) {
             e1.printStackTrace();
         } 
@@ -275,8 +280,8 @@ public class ReadWriteFile {
         	File filenamepath = new File(filepath);
         	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
         		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
-        		
-    			boolean bool=filenamepath.mkdirs();  
+
+    			boolean bool=filenamepath.mkdirs();
     			if(!bool){
     				boolean bool2=filenamepath.mkdirs();
     				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
@@ -286,29 +291,37 @@ public class ReadWriteFile {
     				LogUtil.intoLog(ReadWriteFile.class,"------------------------");
     			}
         	}
-        	File filename = new File(path);
-        	if (!filename.exists()&& !filename.isDirectory()) {
-        		try {
-					filename.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
+			FileOutputStream out = new FileOutputStream(path,false);
+			try {
+				out.write(new String("utf-8").getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				out.flush();
+				out.close();
+			}
+
+			File f = new File(path);
+        	FileWriter fw=null;
+			try {
+				fw =  new FileWriter(f);
+				fw.write(newStr);
+
+				return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if(null!=fw){
+					fw.flush();
+					fw.close();
 				}
-        	}
-        	
-        	FileOutputStream out = new FileOutputStream(path,false);
-        	out.write(new String("utf-8").getBytes());
-        	out.close(); 
-        	
-        	
-        	File f = new File(path);
-        	FileWriter fw =  new FileWriter(f);
-        	
-        	fw.write(newStr);
-        	fw.close();
-        	return true;
+
+
+			}
+
         } catch (IOException e1) {
             e1.printStackTrace();
-        } 
+        }
         return false;
     }
     
@@ -320,6 +333,8 @@ public class ReadWriteFile {
      */
     public static boolean writeTxtFile(String newStr,String path,String code){
         //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
+		FileOutputStream out=null;
+		FileWriter fw=null;
         try {
         	String filepath="";
 			try {
@@ -352,22 +367,35 @@ public class ReadWriteFile {
 				}
         	}
         	
-        	FileOutputStream out = new FileOutputStream(path,false);
+        	 out = new FileOutputStream(filename,false);
         	if(StringUtils.isEmpty(code)){
         		code="utf-8";
         	}
-        	out.write(new String(code).getBytes());
-        	out.close(); 
+			try {
+				out.write(new String(code).getBytes());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				out.flush();
+				out.close();
+			}
 
-        	File f = new File(path);
-        	FileWriter fw =  new FileWriter(f);
-        	
-        	fw.write(newStr);
-        	fw.close();
-        	return true;
+
+			File f = new File(path);
+        	fw =  new FileWriter(f);
+
+			try {
+				fw.write(newStr);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				fw.flush();
+				fw.close();
+			}
+			return true;
         } catch (Exception e1) {
             e1.printStackTrace();
-        } 
+        }
         return false;
     }
     
@@ -416,26 +444,30 @@ public class ReadWriteFile {
         	
         	if(null!=newStr&&!newStr.trim().equals("")){
         		newStr=newStr.trim();
-//        		String[] arr=newStr.split("");
-//        		for(String s:arr){
-//        			if(null==s||s.trim().equals("") || s == "\r"|| s == "\n")
-//        			{
-//        				continue;
-//        			}
-//        			fos.write(s.getBytes("GBK"));   
-//        		}
-        		FileOutputStream out = new FileOutputStream(path,false);
-        		out.write(new String("GBK").getBytes());
-        		out.close(); 
-        		
-        		
-        		File f = new File(path);
+        		FileOutputStream out = new FileOutputStream(filename,false);
+				try {
+					out.write(new String("GBK").getBytes());
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					out.flush();
+					out.close();
+				}
+
+
+				File f = new File(path);
         		FileWriter fw =  new FileWriter(f);
-        		
-        		fw.write(newStr);
-        		fw.close();
-        		
-        		fos.close();
+
+				try {
+					fw.write(newStr);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					fw.flush();
+					fw.close();
+				}
+
+				fos.close();
         	}
         	
         	return true;
@@ -451,12 +483,20 @@ public class ReadWriteFile {
 			if (OpenUtil.fileisexist(path)) {
 				FileWriter fw = new FileWriter(file);
 				// 清除该文件的所有内容
-				fw.write(txt);
-				fw.close();
+				try {
+					fw.write(txt);
+				} catch (IOException e) {
+					e.printStackTrace();
+				} finally {
+					fw.flush();
+					fw.close();
+				}
 				return true;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+
 		}
 		LogUtil.intoLog(ReadWriteFile.class,"文件出错");
 		return false;
@@ -469,8 +509,9 @@ public class ReadWriteFile {
      * @throws IOException
      */
     public static void main(String[] s) throws IOException {
-    	
-    	
+
+//    	writeTxtFile("12346","H:\\gitspace\\TRM\\SourseCode\\ceshi.txt");
+		writeTxtFile("12346","H:\\gitspace\\TRM\\SourseCode\\java.txt");
     }
 
 

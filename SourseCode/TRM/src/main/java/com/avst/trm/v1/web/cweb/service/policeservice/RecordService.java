@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.MCType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
@@ -1941,6 +1942,22 @@ public class RecordService extends BaseService {
 
 
 
+    public void gnlist(RResult result,ReqParam param){
+        GnlistVO vo=new GnlistVO();
+        List<String> list= CommonCache.gnlist();
+        if (null!=list&&list.size()>0){
+            for (String s : list) {
+                LogUtil.intoLog(this.getClass(),"gnlist__"+s);
+            }
+            vo.setLists(list);
+        }
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+
+
     /***************************笔录问答实时缓存****start***************************/
     public void getRecordrealByRecordssid(RResult result,ReqParam<GetRecordrealByRecordssidParam> param){
         GetRecordrealByRecordssidParam getRecordrealByRecordssidParam=param.getParam();
@@ -1972,4 +1989,6 @@ public class RecordService extends BaseService {
         return;
     }
     /***************************笔录问答实时缓存****end***************************/
+
+
 }

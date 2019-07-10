@@ -18,6 +18,7 @@ import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
+import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
 import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import com.avst.trm.v1.feignclient.ec.vo.param.FDCacheParam;
@@ -25,10 +26,12 @@ import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
 import com.avst.trm.v1.feignclient.ec.vo.ph.CheckPolygraphStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
+import com.avst.trm.v1.feignclient.ec.vo.tts.Str2ttsVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.*;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
+import com.avst.trm.v1.feignclient.mc.vo.param.TdAndUserAndOtherCacheParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
@@ -574,6 +577,13 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return ;
         }
+
+        Integer fdrecord=getEquipmentsStateParam.getFdrecord();//是否需要录像，1使用，-1 不使用
+        Integer usepolygraph=getEquipmentsStateParam.getUsepolygraph();//是否使用测谎仪，1使用，-1 不使用
+        Integer useasr=getEquipmentsStateParam.getUseasr();//是否使用语言识别，1使用，-1 不使用
+        Integer asrRun=getEquipmentsStateParam.getAsrRun();//语音识别服务是否启动 1开启 -1不开起
+
+
         //状态： -1异常 1正常  0未启动
         Integer AsrState=0;//语音识别状态
         Integer PolygraphState=0;//身心检测状态
@@ -607,56 +617,58 @@ public class OutService  extends BaseService {
             e.printStackTrace();
         }
 
-
         //获取身心检测的状态
-        String polygraphssid=null;//身心检测的ssid
-        ReqParam<GetPhssidByMTssidParam_out> MCdata_param=new ReqParam<>();
-        GetPhssidByMTssidParam_out getMCdataParam_out=new GetPhssidByMTssidParam_out();
-        getMCdataParam_out.setMcType(MCType.AVST);
-        getMCdataParam_out.setMtssid(mtssid);
-        MCdata_param.setParam(getMCdataParam_out);
-        RResult  rResult=new RResult();
-        try {
-            rResult=meetingControl.getPhssidByMTssid(MCdata_param);
-            if (null != rResult && rResult.getActioncode().equals(Code.SUCCESS.toString())) {
-                String phssid = rResult.getData().toString();
-                if (StringUtils.isNotEmpty(phssid)){
-                    polygraphssid=phssid;
-                    LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid 请求polygraphssid__成功,polygraphssid:"+polygraphssid);
-                }else{
-                    LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid ，polygraphssid is null");
-                }
-            }else{
-                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求polygraphssid__出错,rResult.getMessage():"+rResult.getMessage());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (null==polygraphssid){
-            PolygraphState=0;
-            //设置状态
-        }else {
-            ReqParam<CheckPolygraphStateParam> Polygraph_param=new ReqParam<>();
-            CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
-            checkPolygraphStateParam.setPhType(PHType.CMCROSS);
-            checkPolygraphStateParam.setPolygraphssid(polygraphssid);
-            Polygraph_param.setParam(checkPolygraphStateParam);
-            RResult<CheckPolygraphStateVO> Polygraph_rr=new RResult();
+        if (null!=usepolygraph&&usepolygraph==1){//为使用状态时
+            String polygraphssid=null;//身心检测的ssid
+            ReqParam<GetPhssidByMTssidParam_out> MCdata_param=new ReqParam<>();
+            GetPhssidByMTssidParam_out getMCdataParam_out=new GetPhssidByMTssidParam_out();
+            getMCdataParam_out.setMcType(MCType.AVST);
+            getMCdataParam_out.setMtssid(mtssid);
+            MCdata_param.setParam(getMCdataParam_out);
+            RResult  rResult=new RResult();
             try {
-                Polygraph_rr=equipmentControl.checkPolygraphState(Polygraph_param);
-                if (null != Polygraph_rr && Polygraph_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                    PolygraphState=1;
-                    //设置状态
-                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__成功");
+                rResult=meetingControl.getPhssidByMTssid(MCdata_param);
+                if (null != rResult && rResult.getActioncode().equals(Code.SUCCESS.toString())) {
+                    String phssid = rResult.getData().toString();
+                    if (StringUtils.isNotEmpty(phssid)){
+                        polygraphssid=phssid;
+                        LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid 请求polygraphssid__成功,polygraphssid:"+polygraphssid);
+                    }else{
+                        LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid ，polygraphssid is null");
+                    }
                 }else{
-                    //设置状态
-                    PolygraphState=-1;
-                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__出错");
+                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求polygraphssid__出错,rResult.getMessage():"+rResult.getMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (null==polygraphssid){
+                PolygraphState=0;
+                //设置状态
+            }else {
+                ReqParam<CheckPolygraphStateParam> Polygraph_param=new ReqParam<>();
+                CheckPolygraphStateParam checkPolygraphStateParam=new CheckPolygraphStateParam();
+                checkPolygraphStateParam.setPhType(PHType.CMCROSS);
+                checkPolygraphStateParam.setPolygraphssid(polygraphssid);
+                Polygraph_param.setParam(checkPolygraphStateParam);
+                RResult<CheckPolygraphStateVO> Polygraph_rr=new RResult();
+                try {
+                    Polygraph_rr=equipmentControl.checkPolygraphState(Polygraph_param);
+                    if (null != Polygraph_rr && Polygraph_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                        PolygraphState=1;
+                        //设置状态
+                        LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__成功");
+                    }else{
+                        //设置状态
+                        PolygraphState=-1;
+                        LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__出错");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
 
 
         getEquipmentsStateVO.setAsrState(AsrState);
@@ -669,6 +681,70 @@ public class OutService  extends BaseService {
         return;
     }
 
+    public void str2Tts(RResult result, ReqParam<Str2TtsParam> param){
+        Str2ttsVO vo=new Str2ttsVO();
+
+        Str2TtsParam str2TtsParam = param.getParam();
+        if (null==str2TtsParam){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return ;
+        }
+        String text=str2TtsParam.getText();
+        if (StringUtils.isBlank(text)){
+            LogUtil.intoLog(this.getClass(),"str2Tts参数为空text____");
+            result.setMessage("参数为空");
+            return ;
+        }
+
+        ReqParam reqParam=new ReqParam();
+        str2TtsParam.setTtsType(TTSType.AVST);
+        reqParam.setParam(str2TtsParam);
+        RResult str2tts_rr = equipmentControl.str2Tts(reqParam);
+        if (null!=str2tts_rr&&str2tts_rr.getActioncode().equals(Code.SUCCESS.toString())){
+            String uploadpath= (String) str2tts_rr.getData();
+            vo.setUploadpath(uploadpath);
+            result.setData(vo);
+            changeResultToSuccess(result);
+            LogUtil.intoLog(this.getClass(),"str2Tts请求__成功");
+        }else {
+            LogUtil.intoLog(this.getClass(),"str2Tts请求__出错");
+        }
+        return;
+    }
+
+
+    public void getTdAndUserAndOtherCacheParamByMTssid(RResult result,ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param){
+        GetTdAndUserAndOtherCacheParamByMTssidPara_out getTdAndUserAndOtherCacheParamByMTssidPara_out = param.getParam();
+        if (null==getTdAndUserAndOtherCacheParamByMTssidPara_out){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return;
+        }
+        String mtssid=getTdAndUserAndOtherCacheParamByMTssidPara_out.getMtssid();
+        String userssid=getTdAndUserAndOtherCacheParamByMTssidPara_out.getUserssid();
+        if (StringUtils.isBlank(mtssid)||StringUtils.isBlank(userssid)){
+            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid参数为空mtssid____");
+            result.setMessage("参数为空");
+            return ;
+        }
+
+        ReqParam reqParam=new ReqParam();
+        getTdAndUserAndOtherCacheParamByMTssidPara_out.setMcType(MCType.AVST);
+        getTdAndUserAndOtherCacheParamByMTssidPara_out.setMtssid(mtssid);
+        getTdAndUserAndOtherCacheParamByMTssidPara_out.setUserssid(userssid);
+        reqParam.setParam(getTdAndUserAndOtherCacheParamByMTssidPara_out);
+        RResult rr = meetingControl.getTdAndUserAndOtherCacheParamByMTssid(reqParam);
+        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+            GetTdAndUserAndOtherCacheParamByMTssidVO vo=gson.fromJson(gson.toJson(rr.getData()),GetTdAndUserAndOtherCacheParamByMTssidVO.class );
+            result.setData(vo);
+            changeResultToSuccess(result);
+            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid请求__成功");
+        }else {
+            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid请求__出错");
+        }
+        return;
+    }
 
     public void getClient(RResult rresult,ReqParam param){
         RResult zk_rr = zkControl.getControlInfoAll();

@@ -398,6 +398,8 @@ function callbackgetRecordById(data) {
                     recorduser.push(user1);
                     recorduser.push(user2);
                 }
+
+                getTdAndUserAndOtherCacheParamByMTssid(recordUserInfosdata.userssid);
             }
             //案件信息
             var caseAndUserInfo=data.caseAndUserInfo;
@@ -473,6 +475,8 @@ function startMC() {
         });
     }
 }
+
+
 function callbackstartMC(data) {
     layer.close(startMC_index);
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -480,11 +484,14 @@ function callbackstartMC(data) {
         $("#startrecord").css("display","block");
         var data=data.data;
         if (isNotEmpty(data)){
-            var asrnum=data.asrnum;
-            var mtssiddata=data.mtssid;
-            var polygraphnum=data.polygraphnum;
+            var  polygraphnum=data.polygraphnum;
             var recordnum=data.recordnum;
-            useretlist=data.useretlist;
+            var asrnum=data.asrnum;
+
+            var mtssiddata=data.mtssid;
+             useretlist=data.useretlist;
+
+             var mcuserssid2=null;
             if (isNotEmpty(useretlist)){
                 for (var i = 0; i < useretlist.length; i++) {
                     var useret = useretlist[i];
@@ -498,12 +505,15 @@ function callbackstartMC(data) {
                                 liveurl=useret.livingurl;
                                 console.log("liveurl_____"+liveurl+"_______"+grade);
                                 break;
+                            }else if (grade==2){
+                                mcuserssid2=userssid1;
                             }
                         }
                     }
                 }
             }
             mtssid=mtssiddata;
+            getTdAndUserAndOtherCacheParamByMTssid(mcuserssid2);
             getFdrecordStarttimeByMTssid();//开始获取开始时间
           /*  updateArraignment();*/
             layer.msg("笔录已开启");
@@ -648,7 +658,7 @@ function calladdRecord(data) {
             }
 
             if (recordbool==2) {
-                layer.msg("笔录保存成功",{time:500},function () {
+                layer.msg("笔录结束",{time:500},function () {
                     window.history.go(-1);
                 })
             }else if (recordbool==3){//导出word
@@ -720,7 +730,7 @@ function calladdRecord(data) {
 var overRecord_index=null;
 var overRecord_loadindex =null;
     function overRecord() {
-    layer.confirm('是否结束笔录?<br/><span style="font-size: 4px;color: red">*请先确保笔录类型存在对应word模板，否则无法导出模板</span>', {
+    layer.confirm('是否结束笔录?<br/><span style="color: red">*请先确保笔录类型存在对应word模板，否则无法导出模板</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -822,12 +832,12 @@ function callbackgetgetRecordrealing(data) {
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
@@ -847,6 +857,41 @@ function callbackgetgetRecordrealing(data) {
         layer.msg(data.message);
     }
 }
+
+//获取
+var  fdrecord=null;//是否需要录像，1使用，-1 不使用
+var  usepolygraph=null;//是否使用测谎仪，1使用，-1 不使用
+var  useasr=null;//是否使用语言识别，1使用，-1 不使用
+var  asrRun=null;//语音识别服务是否启动 1开启 -1不开起
+function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
+    if (isNotEmpty(mtssid)) {
+        var url=getUrl_manage().getTdAndUserAndOtherCacheParamByMTssid;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid,
+                userssid:userssid,
+            }
+        };
+        ajaxSubmitByJson(url, data, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                      fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
+                      usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
+                      useasr=data.useasr==null?-1:data.useasr;//是否使用语言识别，1使用，-1 不使用
+                    if (null!=data.asrRun&&data.asrRun) {
+                        asrRun=1;//语音识别服务是否启动 1开启 -1不开起
+                    }else {
+                        asrRun=-1;//语音识别服务是否启动 1开启 -1不开起
+                    }
+                }
+            }
+        });
+    }
+}
+
+
 
 
 /**
@@ -900,7 +945,7 @@ function callbackgetFdrecordStarttimeByMTssid(data) {
             fdrecordstarttime=data;
         }
     }else{
-        layer.msg(data.message);
+       /* layer.msg(data.message);*/
     }
 }
 
@@ -1690,7 +1735,6 @@ function open_getNotifications() {
                                       <td style='padding-bottom: 0;'>\
                                           <div class='layui-btn-container'>\
                                           <button  class='layui-btn layui-btn-danger' onclick='previewgetNotifications(\""+l.ssid+"\");'>打开</button>\
-                                          <button  class='layui-btn layui-btn-disabled'>朗读</button>\
                                           <button  class='layui-btn layui-btn-normal' onclick='downloadNotification(\""+l.ssid+"\")'>直接下载</button>\
                                           </div>\
                                           </td>\
@@ -1733,30 +1777,114 @@ function downloadNotification(ssid) {
 
 //打开告知书
 var previewgetNotifications_index=null;
+var dqrecorddownurl_htmlread=null;//读取阅读txt
+
+var t1=null;
+var len=0;
 function previewgetNotifications(ssid) {
+
     if (isNotEmpty(previewgetNotifications_index)) {
         layer.close(previewgetNotifications_index);
+        clearInterval(t1);
+        if (isNotEmpty(audioplay)){
+            audioplay.pause();
+        }
+        audioplay=null;
+        len=0;
     }
 
     var url=getActionURL(getactionid_manage().waitRecord_downloadNotification);
-    var data = {
+    var setdata = {
         token: INIT_CLIENTKEY,
         param: {
             ssid: ssid
         }
     };
-    ajaxSubmitByJson(url, data, function (data) {
+
+
+    ajaxSubmitByJson(url, setdata, function (data) {
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
                 var recorddownurl_html=data.recorddownurl_html;
+
+                var base_filesave=data.base_filesave;
+
+
                 if (isNotEmpty(recorddownurl_html)) {
                     previewgetNotifications_index = layer.open({
                         type:2,
                         title:'阅读告知书',
                         content:recorddownurl_html,
                         shadeClose:false,
-                        area: ['50%', '700px'],
+                        maxmin: true,
+                        shade:0,
+                        area: ['50%', '700px']
+                        ,btn: ['开始朗读', '取消'],
+                        id:"notification_read"
+                        ,yes: function(index, layero){
+                           /* if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
+                                layer.msg("请先获取语音播报授权")
+                                return;
+                            }*/
+                            layer.msg("加载中，请稍等...", {
+                                icon: 16,
+                                time:1000
+                            });
+
+                            clearInterval(t1);
+                            if (isNotEmpty(audioplay)){
+                                audioplay.pause();
+                            }
+                            audioplay=null;
+                            len=0;
+
+                            //点击了
+                            dqrecorddownurl_htmlread=data.recorddownurl_htmlread;
+                            if (isNotEmpty(dqrecorddownurl_htmlread)){
+                                var arr=new Array();
+                                arr=dqrecorddownurl_htmlread.split(/[，|,]/);//注split可以用字符或字符串分割
+                                for (var i = 0; i < arr.length; i++) {
+                                    if(!isNotEmpty(arr[i])){
+                                        arr.splice(i,1);
+                                        i = i-1;
+                                    }
+                                }
+                                t1 = window.setInterval(function (args) {
+                                    var text=arr[len];
+                                    if (audioplay==null){
+                                        str2Tts(text);
+                                        len++;
+                                    } else if (audioplay.ended) {
+                                        str2Tts(text);
+                                        len++;
+                                    }
+                                    if (len>arr.length-1){
+                                        clearInterval(t1);
+                                    }
+                                },500);
+                            }else {
+                                layer.msg("未找到需要朗读的文本");
+                            }
+                        }
+                        ,btn2: function(index, layero){
+                            clearInterval(t1);
+                            if (isNotEmpty(audioplay)){
+                                audioplay.pause();
+                            }
+                            audioplay=null;
+                            len=0;
+                            layer.close(index)
+                        }
+                        ,cancel: function(index, layero){
+                            clearInterval(t1);
+                            if (isNotEmpty(audioplay)){
+                                audioplay.pause();
+                            }
+                            audioplay=null;
+                            len=0;
+                            layer.close(index)
+                        }
                     });
                 }else {
                     layer.msg("文件未找到，可尝试下载预览");
@@ -1782,13 +1910,16 @@ function  getEquipmentsState() {
     $("#PolygraphState").text("加载中");
     $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
-
     if (isNotEmpty(mtssid)){
         var url=getUrl_manage().getEquipmentsState;
         var data = {
             token: INIT_CLIENTKEY,
             param: {
-                mtssid: mtssid
+                mtssid: mtssid,
+                fdrecord:fdrecord,
+                usepolygraph:usepolygraph,
+                useasr:useasr,
+                asrRun:asrRun
             }
         };
 
@@ -2055,9 +2186,137 @@ function callbackgetRecordrealByRecordssid(data) {
 }
 
 
+function str2Tts(text) {
+    if (isNotEmpty(text)){
+        var url=getUrl_manage().str2Tts;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                text:text
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackstr2Tts);
+    }
+}
+
+var audioplay=null;
+function callbackstr2Tts(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var uploadpath=data.uploadpath;
+            if (isNotEmpty(uploadpath)){
+                audioplay =new Audio();
+                audioplay.src = uploadpath;
+                audioplay.play();
+            }
+        }
+    }else {
+        layer.msg(data.message);
+    }
+}
 
 
+function getgnlist() {
+    var url=getActionURL(getactionid_manage().waitRecord_gnlist);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+         
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgnlist);
+}
 
+var gnlist=null;
+function callbackgnlist(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var lists=data.lists;
+           /* var asrhtml='<li onclick="initasr()" id="as">语音识别</li>';
+            var fdhtml='<li onclick="initliving()"id="fd">录音录像</li>';
+            var phhtml='<li onclick="initheart();"id="ph">身心监测</li>';
+            var  asritem='<div class="layui-tab-item">\
+                        <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">\
+                        </div>\
+                            <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;margin-top:50px;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >\
+                                <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">\
+                                <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,2);" id="startrecord">\
+                                <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,-1);" id="endrecord">\
+                            </div>\
+                        </div>';
+            var  fditem='<div class="layui-tab-item">\
+                        <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>\
+                        <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">副麦</span>\
+                        <div id="living3_2">\
+                            <div th:replace="living3 :: living"  >...</div>\
+                        </div>\
+                    </div>';
+            var phitenm='<div class="layui-tab-item">\
+                <div style="height:100%; overflow-x: hidden; overflow-y: scroll;"  >\
+                <div  id="living3_1">\
+                </div>\
+                <div class="layui-col-md12" >\
+                <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:40px;line-height: 40px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>\
+            </div>\
+            <div class="layui-col-md12" >\
+                <div id="main1" style="height:200px;width:100%;"></div>\
+                </div>\
+                <div class="layui-col-md12 layui-form-item" style="margin-top: 12px" >\
+                <div  id="monitor_btn" style="display:inline">\
+                <span class="layui-badge" isn="1" type="hr" onclick="select_monitor(this);">心率</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1" type="hrv"  onclick="select_monitor(this);">心率变异</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1" type="br"  onclick="select_monitor(this);">呼吸次数</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1"  type="relax"  onclick="select_monitor(this);">放松值</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1"  type="stress"  onclick="select_monitor(this);">紧张值</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1"  type="bp"  onclick="select_monitor(this);">血压变化</span>\
+                <span class="layui-badge layui-bg-gray" isn="-1"  type="spo2"  onclick="select_monitor(this);">血氧</span>\
+                </div>\
+                <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type="all"  onclick="select_monitorall(this);">查看全部</span>\
+                <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>\
+            </div>\
+            <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >\
+                <div style="float: left;width: 100%">\
+                生理状态：<span id="xt1"> 加载中  </span>\
+            放松值：<span id="xt2"> 0.0  </span>\
+            紧张值：<span id="xt3"> 0.0  </span>\
+            血压变化：<span id="xt4"> 0.0  </span>\
+            血氧：<span id="xt5"> 0.0</span>\
+                </div>\
+                </div>\
+                </div>\
+                </div>';*/
+            if (isNotEmpty(lists)){
+                gnlist=lists;
+                if (!isNotEmpty(gnlist)||!gnlist.includes("record")){
+                    layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
+                        window.history.go(-1);
+                        return false;
+                    })
+                }
+
+
+                for (let i = 0; i < gnlist.length; i++) {
+                    var list = gnlist[i];
+                    if (list=="asr") {
+                      $("#asr").show();
+                        $("#initec ul li").removeClass("layui-this");
+                        $("#initec .layui-tab-item").removeClass("layui-show");
+                        $("#asr").addClass("layui-this");
+                        $("#asritem").addClass("layui-show");
+                    }else if (list=="fd") {
+                       $("#fd").show();
+                    }else if (list=="ph") {
+                       $("#ph").show();
+                    }
+                }
+            }
+        }
+    }else {
+        layer.msg(data.message);
+    }
+}
 
 
 
@@ -2128,8 +2387,11 @@ $(function () {
             select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());
         }
 
+
         if (isNotEmpty(mtssid)) {
-            getPolygraphdata();
+            if (usepolygraph==1){//使用测谎仪开启获取
+                getPolygraphdata();
+            }
             getEquipmentsState();
         }
     },1000);
@@ -2168,12 +2430,12 @@ $(function () {
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else if (usertype==2){
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span ondblclick="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }
 
@@ -2307,3 +2569,5 @@ $(function () {
         addRecord();
     });
 });
+
+

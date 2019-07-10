@@ -81,4 +81,7 @@ public interface MeetingControl {
     public RResult getFdrecordStarttimeByMTssid(@RequestBody ReqParam<GetFdrecordStarttimeByMTssidParam_out> param);
 
 
+    @RequestMapping("/mt/v1/getTdAndUserAndOtherCacheParamByMTssid")
+    @ResponseBody
+    public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param);
 }

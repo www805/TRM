@@ -151,6 +151,7 @@ function getactionid_manage() {
         waitRecord_togetPolygraph:"waitRecord_togetPolygraph",
         waitRecord_getRecordrealByRecordssid:"waitRecord_getRecordrealByRecordssid",
         waitRecord_setRecordreal:"waitRecord_setRecordreal",
+        waitRecord_gnlist:"waitRecord_gnlist",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

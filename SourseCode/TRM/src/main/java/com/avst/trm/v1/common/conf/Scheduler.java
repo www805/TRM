@@ -61,11 +61,16 @@ public class Scheduler {
     /**
      * 需要验证
      */
-    @Scheduled(cron = "0 05 1/1 * * *")
+    @Scheduled(cron = "0 5 1/1 * * *")
     public void testTasks2() {
 
         LogUtil.intoLog(this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
 
+        SQEntity sqEntity=AnalysisSQ.getSQEntity();
+        if(null==sqEntity){
+            LogUtil.intoLog(1,this.getClass(),"sqEntity==null,testTasks2 is over");
+            return ;
+        }
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         //检测授权
         int authorizebool=serverconfig.getAuthorizebool();
@@ -75,14 +80,18 @@ public class Scheduler {
         }
 
         Date date=serverconfig.getWorkstarttime();//数据库的开始时间
-        SQEntity sqEntity=AnalysisSQ.getSQEntity();
-        if(!DateUtil.format(date).equals(sqEntity.getStartTime())){//对比数据库和ini的开始时间，以防篡改
-            CommonCache.clientSQbool=false;
+
+        String databasetime=DateUtil.format(date);//数据库中的开始时间
+        String sqfiletime=sqEntity.getStartTime();//授权文件中的开始时间
+        LogUtil.intoLog(this.getClass(),databasetime+":databasetime:DateUtil.format(date)----sqEntity.getStartTime():sqfiletime:"+sqfiletime);
+        if(!databasetime.equals(sqfiletime)){//对比数据库和ini的开始时间，以防篡改
+            CommonCache.clientSQbool=false;//时间不对直接不允许用
+            LogUtil.intoLog(1,this.getClass(),"CommonCache.clientSQbool=false--时间不对授权直接不允许用");
             return ;
         }else{
             CommonCache.getSQEntity=sqEntity;
+            CommonCache.clientSQbool=true;
         }
-        LogUtil.intoLog(this.getClass(),DateUtil.format(date)+":DateUtil.format(date)----sqEntity.getStartTime():"+sqEntity.getStartTime());
 
         //更新最外面的使用时间
         long nowtime=DateUtil.getSeconds();
@@ -90,10 +99,23 @@ public class Scheduler {
         AnalysisSQ.updateClientini(workday);
 
         int bool=AnalysisSQ.checkUseTime();
+        LogUtil.intoLog(1,this.getClass(),"AnalysisSQ.checkUseTime()---bool:"+bool);
         if(bool > -1){//授权正确
             CommonCache.clientSQbool=true;
+            int workdays=serverconfig.getWorkdays();
+            //修改数据库的使用时间
+            if(workdays!=workday){//如果数据库的使用时间跟授权文件中的使用时间不一致，就修改数据库
+                serverconfig.setWorkdays(workday);
+                int updateById=base_serverconfigMapper.updateById(serverconfig);
+                LogUtil.intoLog(1,this.getClass(),"base_serverconfigMapper.updateById--修改数据库最新使用时间-updateById:"+updateById);
+            }
+
         }else{
             CommonCache.clientSQbool=false;
+            if(bool == -100001){
+                //重新授权
+                CommonCache.clientSQbool=AnalysisSQ.createClientini(serverconfig);
+            }
         }
 
 

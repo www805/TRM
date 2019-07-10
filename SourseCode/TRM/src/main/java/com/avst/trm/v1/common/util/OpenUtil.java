@@ -1095,6 +1095,37 @@ public static String numtoStr(int digit,Integer num){
 			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally {
+
+		}
+
+		return false;
+	}
+
+	/**
+	 * 显示隐藏文件
+	 * @param filepath
+	 * @return
+	 */
+	public static boolean setFileShow(String filepath){
+
+		if(StringUtils.isEmpty(filepath)){
+			LogUtil.intoLog(OpenUtil.class,"setFileShow filepath is null");
+			return false;
+		}
+
+		File file = new File(filepath);
+		if(!file.exists()){
+			LogUtil.intoLog(OpenUtil.class,"setFileShow file is null 文件不存在");
+			return false;
+		}
+
+		try {
+			Runtime runtime=Runtime.getRuntime();
+			runtime.exec("attrib " + "\"" + file.getAbsolutePath() + "\""+ " -H");
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 		return false;

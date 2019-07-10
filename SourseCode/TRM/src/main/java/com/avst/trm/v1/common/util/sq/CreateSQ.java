@@ -49,11 +49,11 @@ public class CreateSQ {
         // 当前的节点服务器和该节点的下级服务器（客户端服务器）UnitCode一致，只是SortNum不同，节点是0，其他自动在上一个数值上加1
         sqEntity.setUnitCode("avst");
         sqEntity.setSqDay(10000);
-        sqEntity.setSortNum(1);
+        sqEntity.setSortNum(4);
         sqEntity.setServerType("police");
-        sqEntity.setForeverBool(true);
-        sqEntity.setClientName("吴斌客户端服务器");
-        sqEntity.setCpuCode("7774727242454549724A4544");
+        sqEntity.setForeverBool(true);//是否永久授权
+        sqEntity.setClientName("测试客户端服务器");
+        sqEntity.setCpuCode("414176414574474941427673");
         sqEntity.setGnlist("record|asr|tts|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 

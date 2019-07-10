@@ -9,6 +9,7 @@ import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
+import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -61,5 +62,11 @@ public interface EquipmentControl {
     @RequestMapping("/ph/v1/getPolygraphRealTimeImage")
     @ResponseBody
     public RResult getPolygraphRealTimeImage(@RequestBody  ReqParam<GetPolygraphRealTimeImageParam> param);
+
+
+    @RequestMapping("/tts/v1/str2Tts")
+    @ResponseBody
+    public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param);
+
 
 }

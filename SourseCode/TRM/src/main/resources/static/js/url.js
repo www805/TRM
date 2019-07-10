@@ -35,7 +35,9 @@ function getUrl_manage() {
         getPolygraphdata:getPath()+getinterface_service().getPolygraphdata,
         getEquipmentsState:getPath()+getinterface_service().getEquipmentsState,
         getPHDataBack:getPath()+getinterface_service().getPHDataBack,
-        getFdrecordStarttimeByMTssid:getPath()+getinterface_service().getFdrecordStarttimeByMTssid
+        getFdrecordStarttimeByMTssid:getPath()+getinterface_service().getFdrecordStarttimeByMTssid,
+        str2Tts:getPath()+getinterface_service().str2Tts,
+        getTdAndUserAndOtherCacheParamByMTssid:getPath()+getinterface_service().getTdAndUserAndOtherCacheParamByMTssid,
 	};
 }
 
@@ -59,6 +61,8 @@ function getinterface_service() {
         getEquipmentsState:"/v1/police/out/getEquipmentsState",//获取设备状态
         getPHDataBack:"/v1/police/out/getPHDataBack",
         getFdrecordStarttimeByMTssid:"/v1/police/out/getFdrecordStarttimeByMTssid",
+        str2Tts:"/v1/police/out/str2Tts",
+        getTdAndUserAndOtherCacheParamByMTssid:"/v1/police/out/getTdAndUserAndOtherCacheParamByMTssid",
 	};
 }
 

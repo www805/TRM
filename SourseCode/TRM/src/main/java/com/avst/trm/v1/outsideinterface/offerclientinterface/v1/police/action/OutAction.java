@@ -12,6 +12,7 @@ import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
+import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
@@ -271,6 +272,38 @@ public class OutAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    @RequestMapping("/str2Tts")
+    public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.str2Tts(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    @RequestMapping("/getTdAndUserAndOtherCacheParamByMTssid")
+    public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody  ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getTdAndUserAndOtherCacheParamByMTssid(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
+
+
+
 
 
 
