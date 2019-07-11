@@ -10,7 +10,7 @@ var dqcasessid=null;//当前案件ssid
 var dqotheruserinfo=null;//当前询问人(新增询问人回显)
 
 //开始笔录按钮
-function addCaseToArraignment() {
+function addCaseToArraignment(obj) {
     var  addUserInfo={};//新增人员的信息
     var  addPolice_case={};//新增案件的信息
 
@@ -70,6 +70,8 @@ function addCaseToArraignment() {
         parent.layer.msg("笔录名称不能为空");
         return;
     }
+
+    $(obj).attr("onclick","");
 
     //收集人员信息
     var cardtypessid=$("#cards option:selected").val();

@@ -185,6 +185,7 @@ function img_bool(obj,type){
         });
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
+        $("#pauserecord").attr("onclick","");
         startMC();
     }else if (type==2) {
        //暂停录音
@@ -373,10 +374,12 @@ function callbackgetRecordById(data) {
                         //存在会议但是状态为空或者1
                         $("#record_img img").css("display","none");
                         $("#endrecord").css("display","block");
+                        $("#pauserecord").attr("onclick","");
                     }else if (null!=mcbool&&mcbool==1){
                         //存在会议状态正常
                         $("#record_img img").css("display","none");
                         $("#startrecord").css("display","block");
+                        $("#pauserecord").attr("onclick","");
                         }
 
                 }
@@ -471,7 +474,7 @@ function startMC() {
         layer.msg("请稍等",{time:1000},function () {
             getRecordById();
             $("#record_img img").css("display","none");
-            $("#pauserecord").css("display","block");
+            $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
         });
     }
 }
@@ -484,9 +487,9 @@ function callbackstartMC(data) {
         $("#startrecord").css("display","block");
         var data=data.data;
         if (isNotEmpty(data)){
-            var  polygraphnum=data.polygraphnum;
-            var recordnum=data.recordnum;
-            var asrnum=data.asrnum;
+            var polygraphnum=data.polygraphnum==null?0:data.polygraphnum;
+            var recordnum=data.recordnum?0:data.recordnum;
+            var asrnum=data.asrnum?0:data.asrnum;
 
             var mtssiddata=data.mtssid;
              useretlist=data.useretlist;
@@ -516,15 +519,17 @@ function callbackstartMC(data) {
             getTdAndUserAndOtherCacheParamByMTssid(mcuserssid2);
             getFdrecordStarttimeByMTssid();//开始获取开始时间
           /*  updateArraignment();*/
-            layer.msg("笔录已开启");
+            var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>测谎仪开启数："+recordnum;
+            layer.msg(con, {time: 1000});
         }
     }else{
         if (null!=data.data&&data.data==-1){
             $("#record_img img").css("display","none");
             $("#endrecord").css("display","block");
+            $("#pauserecord").attr("onclick","");
         }else {
             $("#record_img img").css("display","none");
-            $("#pauserecord").css("display","block");
+            $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
         }
 
         $("#MtState").text("未启动");
@@ -535,7 +540,8 @@ function callbackstartMC(data) {
         $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
         $("#PolygraphState").text("未启动");
         $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
-        layer.msg(data.message);
+
+        layer.msg("笔录开启失败");
     }
 }
 
@@ -2256,7 +2262,7 @@ function callbackgnlist(data) {
                        /*$("#fd").show();*/
                     }else if (list=="ph") {
                       /* $("#ph").show();*/
-                        $("#xthtml").show();
+                        $("#xthtml").css("visibility","visible");
                     }
                 }
             }
