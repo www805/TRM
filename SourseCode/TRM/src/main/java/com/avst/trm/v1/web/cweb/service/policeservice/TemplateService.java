@@ -42,7 +42,7 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-@Service("templateService2")
+@Service
 public class TemplateService extends BaseService {
     private Gson gson = new Gson();
 

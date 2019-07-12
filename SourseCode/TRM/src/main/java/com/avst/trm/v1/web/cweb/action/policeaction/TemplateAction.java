@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/cweb/police/template")
 public class TemplateAction extends MainAction {
 
-    @Resource(name="templateService2")
+    @Autowired
     private TemplateService templateService;
 
     /**

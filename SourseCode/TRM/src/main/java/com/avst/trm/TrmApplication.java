@@ -3,8 +3,12 @@ package com.avst.trm;
 import com.avst.trm.v1.common.util.properties.PropertiesListener;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.BeanNameGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -16,7 +20,7 @@ import java.util.Map;
 @EnableEurekaClient
 @EnableFeignClients
 @SpringBootApplication
-@MapperScan({"com.avst.trm.v1.common.datasourse.base.mapper","com.avst.trm.v1.common.datasourse.police.mapper"})
+@MapperScan(value = {"com.avst.trm.v1.common.datasourse.base.mapper","com.avst.trm.v1.common.datasourse.police.mapper"})
 @EnableScheduling
 public class TrmApplication {
 
@@ -34,11 +38,22 @@ public class TrmApplication {
     }
 
 
+    public static class CustomGenerator implements BeanNameGenerator {
+
+        @Override
+        public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
+            if(definition != null) {
+                return definition.getBeanClassName();
+            }
+            return null;
+        }
+    }
 
     public static void main(String[] args) {
 
         //注册监听器
         SpringApplication application = new SpringApplication(TrmApplication.class);
+        application.setBeanNameGenerator(new CustomGenerator());
         application.addListeners(new PropertiesListener("application.properties","trm.properties"));
         application.run( args);
 
