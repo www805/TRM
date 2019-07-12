@@ -18,6 +18,11 @@ public class ToOutService extends BaseService {
         return  rresult;
     }
 
+    //登录后台
+    public RResult getLoginUser(RResult rresult, ReqParam param) {
 
 
+
+        return null;
+    }
 }

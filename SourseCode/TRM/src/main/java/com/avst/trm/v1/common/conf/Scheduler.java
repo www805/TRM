@@ -122,9 +122,9 @@ public class Scheduler {
     }
 
     /**
-     * 30秒一次心跳
+     * 10秒一次心跳
      */
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 10000)
     public void testTasks() {
 
         InitVO initVO_WEB = CommonCache.getinit_WEB();
@@ -161,12 +161,21 @@ public class Scheduler {
 
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
 
+        //获取本机ip地址
+        String hostAddress = "localhost";
+        try {
+            InetAddress addr = InetAddress.getLocalHost();
+            hostAddress = addr.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         ControlInfoParamVO controlInfoParamVO = new ControlInfoParamVO();
         controlInfoParamVO.setServername(servername);//服务器注册名
         controlInfoParamVO.setServertitle("业务系统");//服务器中文名
         controlInfoParamVO.setServertitletwo("后台服务器系统");//服务器中文名
-        controlInfoParamVO.setUrl("http://localhost:" + port + url);
-        controlInfoParamVO.setUrltwo("http://localhost:" + port + urltow);
+        controlInfoParamVO.setUrl("http://" + hostAddress + ":" + port + url);//访问本服务器地址
+        controlInfoParamVO.setUrltwo("http://" + hostAddress + ":" + port + urltow);
         controlInfoParamVO.setLoginusername(admininfo.getLoginaccount());//登录账号
         controlInfoParamVO.setLoginpassword(admininfo.getPassword());//登录密码
         controlInfoParamVO.setTotal_item(1);//总业务数

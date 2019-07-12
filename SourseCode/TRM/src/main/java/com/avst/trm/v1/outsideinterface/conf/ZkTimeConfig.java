@@ -1,6 +1,7 @@
 package com.avst.trm.v1.outsideinterface.conf;
 
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import org.apache.commons.jexl3.JexlBuilder;
@@ -100,7 +101,8 @@ public class ZkTimeConfig {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            LogUtil.intoLog(4,this.getClass(),"getControlTime ZkTimeConfig。run 总控同步时间，请求异常");
         }
     }
 }

@@ -32,6 +32,17 @@ public class ControlInfoParamVO {
     //创建时间
     private String createtime;
 
+    //上次连接时间
+    private String lasttime;
+
+    public String getLasttime() {
+        return lasttime;
+    }
+
+    public void setLasttime(String lasttime) {
+        this.lasttime = lasttime;
+    }
+
     public String getServername() {
         return servername;
     }
@@ -134,8 +145,8 @@ public class ControlInfoParamVO {
                 ", loginpassword='" + loginpassword + '\'' +
                 ", status=" + status +
                 ", createtime='" + createtime + '\'' +
+                ", lasttime='" + lasttime + '\'' +
                 '}';
     }
-
 }
 
