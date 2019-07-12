@@ -382,7 +382,7 @@
                                 <div class="layui-col-lg12 ">
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
                                         <tbody id="recorddetail">
-                                        <tr>
+                                        <tr id="first_originaltr">
                                             <td style="padding: 0;width: 90%;" class="onetd">
                                                 <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>
                                                 <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" w_starttime="" placeholder=""></label></div>
@@ -467,6 +467,8 @@
     var socket;
     var SOCKETIO_HOST=[[${session.SOCKETIO_HOST}]];
     var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
+
+    var recordstate_index=null;//笔录状态栏的下标
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -519,7 +521,7 @@
                                 </tbody>\
                         </table>';
 
-       var index = layer.open({
+        recordstate_index = layer.open({
             type:1,
             title: '笔录状态栏',
             closeBtn: 0,

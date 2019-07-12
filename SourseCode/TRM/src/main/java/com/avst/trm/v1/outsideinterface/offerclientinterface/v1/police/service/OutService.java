@@ -438,41 +438,6 @@ public class OutService  extends BaseService {
         return;
     }
 
-    public void getFdrecordStarttimeByMTssid(RResult result,ReqParam<GetFdrecordStarttimeByMTssidParam_out> param){
-        long fdrecordstarttime=0;//会议直播开始时间戳
-        GetFdrecordStarttimeByMTssidParam_out getFdrecordStarttimeByMTssidParam_out = param.getParam();
-        if (null==getFdrecordStarttimeByMTssidParam_out){
-            LogUtil.intoLog(this.getClass(),"参数为空");
-            result.setMessage("参数为空");
-            return;
-        }
-
-        String mtssid=getFdrecordStarttimeByMTssidParam_out.getMtssid();
-
-        GetFdrecordStarttimeByMTssidParam_out out=new GetFdrecordStarttimeByMTssidParam_out();
-        out.setMcType(MCType.AVST);
-        out.setMtssid(mtssid);
-        ReqParam reqParam=new ReqParam();
-        reqParam.setParam(out);
-        RResult getfdrecordstarttimebymtssid_rr =  meetingControl.getFdrecordStarttimeByMTssid(reqParam);
-        if (null != getfdrecordstarttimebymtssid_rr && getfdrecordstarttimebymtssid_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-            LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid__成功");
-            String data=getfdrecordstarttimebymtssid_rr.getData().toString();
-            if (StringUtils.isNotEmpty(data)){
-                fdrecordstarttime=Long.valueOf(data);
-                LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid 请求fdrecordstarttime__成功,fdrecordstarttime:"+fdrecordstarttime);
-            }else{
-                LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid ，polygraphssid is null");
-            }
-
-            result.setData(fdrecordstarttime);
-            changeResultToSuccess(result);
-        }else {
-            LogUtil.intoLog(this.getClass(),"meetingControl.getFdrecordStarttimeByMTssid__出错");
-        }
-
-        return;
-    }
 
     //-------------------------------------------------------------------------------------------------------------------
 

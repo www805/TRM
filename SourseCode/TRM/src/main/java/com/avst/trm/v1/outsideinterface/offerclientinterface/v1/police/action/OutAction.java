@@ -261,17 +261,6 @@ public class OutAction extends BaseAction {
     }
 
 
-    @RequestMapping("/getFdrecordStarttimeByMTssid")
-    public RResult getFdrecordStarttimeByMTssid(@RequestBody  ReqParam<GetFdrecordStarttimeByMTssidParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            outService.getFdrecordStarttimeByMTssid(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
 
     @RequestMapping("/str2Tts")
     public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param){

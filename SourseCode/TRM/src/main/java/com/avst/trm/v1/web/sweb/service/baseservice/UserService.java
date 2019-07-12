@@ -75,7 +75,7 @@ public class UserService extends BaseService {
        Page<AdminAndWorkunit> page=new Page<AdminAndWorkunit>(param.getCurrPage(),param.getPageSize());
        List<AdminAndWorkunit> list=base_admininfoMapper.getUserList(page,ew);
        getUserListVO.setPageparam(param);
-       
+
        if (null!=list&&list.size()>0){
            //绑定状态正常的角色
            for (AdminAndWorkunit adminAndWorkunit : list) {

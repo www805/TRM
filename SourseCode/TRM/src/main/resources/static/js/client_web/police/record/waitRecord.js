@@ -91,6 +91,17 @@ function callsetAllproblem(data) {
             if (isNotEmpty(template)){
                 var templateToProblems=template.templateToProblems;
                 $("#templatetoproblem_html").html("");
+                //第一行去掉-----------------------------start
+                var textlen=null;
+                $("#first_originaltr label").each(function(){
+                    textlen+=$(this).text();
+                });
+                if (!isNotEmpty(textlen)){
+                    $("#first_originaltr").remove();
+                    td_lastindex["key"]=null;
+                    td_lastindex["value"]=null;
+                }
+                //第一行去掉-----------------------------end
                 if (isNotEmpty(templateToProblems)) {
                     for (var i = 0; i < templateToProblems.length; i++) {
                         var templateToProblem = templateToProblems[i];
@@ -140,6 +151,17 @@ function copy_problems(obj) {
             </div>\
         </td>\
         </tr>';
+    //第一行去掉-----------------------------start
+    var textlen=null;
+    $("#first_originaltr label").each(function(){
+        textlen+=$(this).text();
+    });
+    if (!isNotEmpty(textlen)){
+        $("#first_originaltr").remove();
+        td_lastindex["key"]=null;
+        td_lastindex["value"]=null;
+    }
+    //第一行去掉-----------------------------end
     focuslable(html,1,'w');
 }
 
@@ -289,6 +311,7 @@ function get_case_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(occurrencetime_format);
+                setRecordreal();
             }
         });
         btn(obj);
@@ -302,6 +325,7 @@ function get_current_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(currenttime);
+                setRecordreal();
             }
         });
         btn(obj);
@@ -315,6 +339,7 @@ function get_yesterday_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(yesterdaytime);
+                setRecordreal();
             }
         });
         btn(obj);
@@ -367,7 +392,6 @@ function callbackgetRecordById(data) {
                     if (isNotEmpty(mtssiddata)){
                         mtssid=mtssiddata;
                         getRecordrealing();
-                        getFdrecordStarttimeByMTssid();
                     }
 
                     if ((!isNotEmpty(mcbool)||mcbool!=1)&&isNotEmpty(mtssiddata)){
@@ -488,8 +512,8 @@ function callbackstartMC(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var polygraphnum=data.polygraphnum==null?0:data.polygraphnum;
-            var recordnum=data.recordnum?0:data.recordnum;
-            var asrnum=data.asrnum?0:data.asrnum;
+            var recordnum=data.recordnum==null?0:data.recordnum;
+            var asrnum=data.asrnum==null?0:data.asrnum;
 
             var mtssiddata=data.mtssid;
              useretlist=data.useretlist;
@@ -516,10 +540,10 @@ function callbackstartMC(data) {
                 }
             }
             mtssid=mtssiddata;
+            mcbool=1;//正常开启
             getTdAndUserAndOtherCacheParamByMTssid(mcuserssid2);
-            getFdrecordStarttimeByMTssid();//开始获取开始时间
           /*  updateArraignment();*/
-            var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>测谎仪开启数："+recordnum;
+            var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
             layer.msg(con, {time: 1000});
         }
     }else{
@@ -736,7 +760,7 @@ function calladdRecord(data) {
 var overRecord_index=null;
 var overRecord_loadindex =null;
     function overRecord() {
-    layer.confirm('是否结束笔录?<br/><span style="color: red">*请先确保笔录类型存在对应word模板，否则无法导出模板</span>', {
+    layer.confirm('是否结束笔录?<br/><span style="color: red">*确保笔录类型存在对应模板否则导出功能失效</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -869,8 +893,9 @@ var  fdrecord=null;//是否需要录像，1使用，-1 不使用
 var  usepolygraph=null;//是否使用测谎仪，1使用，-1 不使用
 var  useasr=null;//是否使用语言识别，1使用，-1 不使用
 var  asrRun=null;//语音识别服务是否启动 1开启 -1不开起
+//暂时没有区分副麦主麦，后期需要修改
 function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
-    if (isNotEmpty(mtssid)) {
+    if (isNotEmpty(mtssid)&&(isNotEmpty(mcbool)&&mcbool==1)) {//会议正常的时候
         var url=getUrl_manage().getTdAndUserAndOtherCacheParamByMTssid;
         var data={
             token:INIT_CLIENTKEY,
@@ -879,13 +904,21 @@ function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
                 userssid:userssid,
             }
         };
+
         ajaxSubmitByJson(url, data, function (data) {
             if(null!=data&&data.actioncode=='SUCCESS'){
                 var data=data.data;
                 if (isNotEmpty(data)){
+                      fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
                       fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
                       usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
                       useasr=data.useasr==null?-1:data.useasr;//是否使用语言识别，1使用，-1 不使用
+
+                    //第一行上时间
+                    var lable=  $('#first_originaltr label[name="q"]');
+                    setFocus(lable);
+
+
                     if (null!=data.asrRun&&data.asrRun) {
                         asrRun=1;//语音识别服务是否启动 1开启 -1不开起
                     }else {
@@ -929,32 +962,6 @@ function select_liveurl(obj,type){
 }
 
 
-
-//获取会议中的直播的开始时间
-function getFdrecordStarttimeByMTssid() {
-    if (isNotEmpty(mtssid)){
-        var url=getUrl_manage().getFdrecordStarttimeByMTssid;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetFdrecordStarttimeByMTssid);
-    }
-}
-
-function callbackgetFdrecordStarttimeByMTssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            fdrecordstarttime=data;
-        }
-    }else{
-       /* layer.msg(data.message);*/
-    }
-}
-
 //回车
 function qw_keydown(obj,event) {
     var e = event || window.event;
@@ -977,46 +984,48 @@ function qw_keydown(obj,event) {
     }
 }
 function setFocus(el) {
-    el = el[0];
-    el.focus();
+    if (isNotEmpty(el)){
+        el = el[0];
+        el.focus();
 
-    //回车加锚点：先判断语音识别是否开启
-    var asrstate=$("#AsrState").attr("AsrState");
-    if (isNotEmpty(asrstate)&&asrstate==0&&isNotEmpty(mtssid)){
-        console.log("语音识别未开启~")
-        var dqtime=new Date().getTime();
-        var qw_type=el.getAttribute("name");
-        if (isNotEmpty(qw_type)){
-            if (qw_type=="w"){
-                var w_starttime=el.getAttribute("w_starttime");
-                if ((!isNotEmpty(w_starttime)||w_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                    //计算时间戳
-                    w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                    el.setAttribute("w_starttime",w_starttime);
-                }
-            }else  if (qw_type=="q"){
-                var q_starttime=el.getAttribute("q_starttime");
-                if ((!isNotEmpty(q_starttime)||q_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                    //计算时间戳
-                    q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                    el.setAttribute("q_starttime",q_starttime);
+        //回车加锚点：先判断语音识别是否开启
+        console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
+        if (isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid)){
+            console.log("语音识别未开启~")
+            var dqtime=new Date().getTime();
+            var qw_type=el.getAttribute("name");
+            if (isNotEmpty(qw_type)){
+                if (qw_type=="w"){
+                    var w_starttime=el.getAttribute("w_starttime");
+                    if ((!isNotEmpty(w_starttime)||w_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                        //计算时间戳
+                        w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                        el.setAttribute("w_starttime",w_starttime);
+                    }
+                }else  if (qw_type=="q"){
+                    var q_starttime=el.getAttribute("q_starttime");
+                    if ((!isNotEmpty(q_starttime)||q_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                        //计算时间戳
+                        q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                        el.setAttribute("q_starttime",q_starttime);
+                    }
                 }
             }
+        }else {
+            console.log("语音识别非未开启状态~")
         }
-    }else {
-        console.log("语音识别非未开启状态~")
+
+
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        if(sel.anchorOffset!=0){
+            return;
+        };
+        sel.removeAllRanges();
+        sel.addRange(range);
     }
-
-
-    var range = document.createRange();
-    range.selectNodeContents(el);
-    range.collapse(false);
-    var sel = window.getSelection();
-    if(sel.anchorOffset!=0){
-        return;
-    };
-    sel.removeAllRanges();
-    sel.addRange(range);
 };
 
 
@@ -1036,6 +1045,17 @@ function setrecord_html() {
                     <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
                 </td>\
                 </tr>';
+    //第一行去掉-----------------------------start
+    var textlen=null;
+    $("#first_originaltr label").each(function(){
+        textlen+=$(this).text();
+    });
+    if (!isNotEmpty(textlen)){
+        $("#first_originaltr").remove();
+        td_lastindex["key"]=null;
+        td_lastindex["value"]=null;
+    }
+    //第一行去掉-----------------------------end
     focuslable(trtd_html,1,'w');
 }
 
@@ -1049,12 +1069,15 @@ function shrink(obj) {
         $(obj).attr("shrink_bool","-1");
         $("i",obj).attr("class","layui-icon layui-icon-spread-left");
         $("#notshrink_html").attr("class","layui-col-md12");
+
+        $("#layui-layer"+recordstate_index).hide();
+
     }else{
         $("#shrink_html").show();
         $(obj).attr("shrink_bool","1");
         $("#notshrink_html").attr("class","layui-col-md9");
         $("i",obj).attr("class","layui-icon layui-icon-shrink-right");
-
+        $("#layui-layer"+recordstate_index).show();
     }
 }
 
@@ -2050,11 +2073,12 @@ var trtd_html='<tr>\
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
     var qwfocus=null;
+
     if (null!=td_lastindex["key"]&&type==1){
-            $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
              qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
             td_lastindex["key"]=td_lastindex["key"]+1;
-        } else{
+    } else{
             $("#recorddetail").append(html);
             qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
             td_lastindex["key"]=$('#recorddetail tr:last').index();
@@ -2311,14 +2335,27 @@ var www="";
 //定时器关闭
 var setinterval1=null;
 $(function () {
+
+
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
+    $('#recorddetail label').bind('input', function() {
+        setRecordreal();
+    });
+   //初始化第一行的焦点
+
     $("#dl_dd dd").click(function () {
         var text=$(this).attr('lay-value');
         //文本
         $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
-            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+          /*  if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {*/
+           if (lastindex==td_lastindex["key"]&&value=="w") {
                 $(this).append(text);
+               setRecordreal();
             }
         });
         btn(this);
@@ -2346,7 +2383,9 @@ $(function () {
             if (usepolygraph==1){//使用测谎仪开启获取
                 getPolygraphdata();
             }
-            getEquipmentsState();
+            if ((isNotEmpty(mcbool)&&mcbool==1)){
+                getEquipmentsState();
+            }
         }
     },1000);
 

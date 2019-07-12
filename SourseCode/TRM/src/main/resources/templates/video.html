@@ -61,6 +61,54 @@
             var progrssBarstr="<div class=\"layui-progress-bar layui-bg-red\" lay-percent=\""+progrssnum+"%\" style=\"width: "+progrssnum+"%;\"></div>";
             $("#progrssBar").append(progrssBarstr);
 
+            if (isNotEmpty(currenttime)&&currenttime>0){
+                var locationtime=currenttime;
+                locationtime=locationtime*1000<0?0:locationtime*1000; //秒转时间戳
+                //左侧
+                var recordrealsdivlen=$("#recordreals div").length;//识别长度
+                $("#recordreals div").each(function (i,e) {
+                    var t=$(this).attr("times");
+                    var start=t;
+                    var end=0;
+                    if (i>=recordrealsdivlen-1) {
+                        end= t;//下一个区间
+                    }else {
+                        end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
+                    }
+                    if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
+                        $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+                        $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                        var top=$(this).position().top;
+                        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                    }
+                });
+
+                //中间
+                var arrph=[];
+                if (isNotEmpty(phdatabackList)){
+                    locationtime=currenttime; //时间戳转秒
+                    for (var i = 0; i < phdatabackList.length; i++) {
+                        var phdataback = phdatabackList[i];
+                        var num=phdataback.num;
+                        var startph=num;
+                        var endph=0;
+                        if (i>= phdatabackList.length-1) {
+                            endph= num;//下一个区间
+                        }else {
+                            endph=phdatabackList[i+1].num;
+                        }
+                        if (locationtime>=startph&&locationtime<=endph) {
+                            var start_i=i<0?0:i;
+                            var end_i=(i+50)>=phdatabackList.length?phdatabackList.length:(i+50);
+                            arrph= phdatabackList.slice(start_i,end_i);
+                        }
+                    }
+                    phdata(arrph);
+                }
+            }
+
+
+
         }
 
 

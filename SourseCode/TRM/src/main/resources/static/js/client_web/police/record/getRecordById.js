@@ -818,7 +818,7 @@ $(function () {
             locationtime=locationtime*1000<0?0:locationtime*1000; //秒转时间戳
 
 
-                //左侧
+              /*  //左侧
                 var recordrealsdivlen=$("#recordreals div").length;//识别长度
                 $("#recordreals div").each(function (i,e) {
                     var t=$(this).attr("times");
@@ -830,14 +830,17 @@ $(function () {
                         end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
                     }
                     if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
+                        console.log(locationtime+"__start__"+start+"__end__"+end)
                         $("#recordreals span").css("color","#fff").removeClass("highlight_left");
                         $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                        var top=$(this).position().top;
+                        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
                     }
-                });
+                });*/
 
 
                 //中间
-                var arrph=[];
+                /*var arrph=[];
                 if (isNotEmpty(phdatabackList)){
                     locationtime=time; //时间戳转秒
                     for (var i = 0; i < phdatabackList.length; i++) {
@@ -857,7 +860,7 @@ $(function () {
                         }
                     }
                     phdata(arrph);
-                }
+                }*/
             //定位_____________________end_______________________
         });
 

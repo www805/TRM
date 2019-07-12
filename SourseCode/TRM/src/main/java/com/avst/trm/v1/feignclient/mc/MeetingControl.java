@@ -71,15 +71,6 @@ public interface MeetingControl {
     public RResult getPHDataBack(@RequestBody ReqParam<GetPHDataParam_out> param);
 
 
-    /**
-     * 根据会议获取直播开始时间
-     * @param param
-     * @return
-     */
-    @RequestMapping("/mt/v1/getFdrecordStarttimeByMTssid")
-    @ResponseBody
-    public RResult getFdrecordStarttimeByMTssid(@RequestBody ReqParam<GetFdrecordStarttimeByMTssidParam_out> param);
-
 
     @RequestMapping("/mt/v1/getTdAndUserAndOtherCacheParamByMTssid")
     @ResponseBody
