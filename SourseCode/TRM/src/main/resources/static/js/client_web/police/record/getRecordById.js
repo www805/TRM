@@ -1,8 +1,8 @@
 var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
-var iid=null;
+/*var iid=null;*/
 var videourl=null;//视频地址
-var iidno=0;//是否第一次获取iid
+/*var iidno=0;//是否第一次获取iid*/
 
 var recordnameshow="";
 
@@ -15,8 +15,10 @@ var worddownurl=null;//word下载地址
 
 
 var problems=null;//问答
+var phdatabackList=null;//身心回放数据
 
 /*弹出框数据*/
+/*
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
 
@@ -40,6 +42,7 @@ function opneModal_1() {
         }
     });
 }
+*/
 
 /**
  * 局部刷新
@@ -93,30 +96,32 @@ function getRecordById() {
 }
 
 function setqw() {
-    $("#recorddetail").html("");
-    for (var z = 0; z< problems.length;z++) {
-        var problem = problems[z];
+    if (isNotEmpty(problems)){
+        $("#recorddetail").html("");
+        for (var z = 0; z< problems.length;z++) {
+            var problem = problems[z];
 
-        var problemstarttime=problem.starttime;
-        var q_starttime=parseFloat(problemstarttime)+parseFloat(subtractime_q);
+            var problemstarttime=problem.starttime;
+            var q_starttime=parseFloat(problemstarttime)+parseFloat(subtractime_q);
 
-        var problemtext=problem.problem==null?"未知":problem.problem;
-        var problemhtml='<tr ondblclick="showrecord('+q_starttime+',1,this)" times='+q_starttime+'><td class="font_red_color">问：'+problemtext+' </td></tr>';
-        var answers=problem.answers;
-        if (isNotEmpty(answers)){
-            for (var j = 0; j < answers.length; j++) {
-                var answer = answers[j];
+            var problemtext=problem.problem==null?"未知":problem.problem;
+            var problemhtml='<tr ondblclick="showrecord('+q_starttime+',1,this)" times='+q_starttime+'><td class="font_red_color">问：'+problemtext+' </td></tr>';
+            var answers=problem.answers;
+            if (isNotEmpty(answers)){
+                for (var j = 0; j < answers.length; j++) {
+                    var answer = answers[j];
 
-                var answerstarttime=answer.starttime;
-                var w_starttime=parseFloat(answerstarttime)+parseFloat(subtractime_w);
+                    var answerstarttime=answer.starttime;
+                    var w_starttime=parseFloat(answerstarttime)+parseFloat(subtractime_w);
 
-                var answertext=answer.answer==null?"未知":answer.answer;
-                problemhtml+='<tr ondblclick="showrecord('+w_starttime+',2,this)" times='+w_starttime+'> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
+                    var answertext=answer.answer==null?"未知":answer.answer;
+                    problemhtml+='<tr ondblclick="showrecord('+w_starttime+',2,this)" times='+w_starttime+'> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
+                }
+            }else{
+                problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
             }
-        }else{
-            problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
+            $("#recorddetail").append(problemhtml);
         }
-        $("#recorddetail").append(problemhtml);
     }
 }
 function callbackgetRecordById(data) {
@@ -137,8 +142,10 @@ function callbackgetRecordById(data) {
             }
 
             recordnameshow=record.recordname;//当前笔录名称
-            getRecord();//实时数据获取
-            getPHDataBack();//身心回放获取
+
+
+            /*getRecord();//实时数据获取*/
+            /*getPHDataBack();//身心回放获取*/
 
 
             var caseAndUserInfo=data.caseAndUserInfo;
@@ -174,19 +181,121 @@ function callbackgetRecordById(data) {
             //案件信息
             $("#caseAndUserInfo_html").html("");
             if (isNotEmpty(caseAndUserInfo)){
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+caseAndUserInfo.casename+"</td></tr>\
-                                  <tr><td>案件人</td><td>"+caseAndUserInfo.username+"</td> </tr>\
-                                  <tr><td>当前案由</td><td title='"+caseAndUserInfo.cause+"'>"+caseAndUserInfo.cause+"</td></tr>\
-                                  <tr><td>案件时间</td> <td>"+caseAndUserInfo.occurrencetime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+caseAndUserInfo.casenum+"</td> </tr>\
-                                  <tr><td>询问人一</td><td>"+recordUserInfosdata.adminname+"</td></tr>\
-                                  <tr><td>询问人二</td> <td>"+recordUserInfosdata.otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordUserInfosdata.recordadminname+"</td> </tr>";
+                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
+                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
+                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
+                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
+                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
+                var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
+                var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
+                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                                  <tr><td>案件人</td><td>"+username+"</td> </tr>\
+                                  <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
+                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
+                                  <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
+                                  <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
+                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>";
                 $("#caseAndUserInfo_html").html(init_casehtml);
             }
+
+            //左侧asr识别数据
+            var getMCVO=data.getMCVO;
+            if (isNotEmpty(getMCVO)){
+                set_getRecord(getMCVO);
+            }
+            var phDataBackVoParams=data.phDataBackVoParams;
+            if (isNotEmpty(phDataBackVoParams)){
+                phdatabackList=phDataBackVoParams;
+            }
+
+            var getPlayUrlVO=data.getPlayUrlVO;
+            if (isNotEmpty(getPlayUrlVO)) {
+                set_getPlayUrl(getPlayUrlVO);
+            }
+
         }
     }else{
         layer.msg(data.message);
+    }
+}
+
+//数据渲染
+function set_getRecord(data){
+    if (isNotEmpty(data.list)){
+        var list=data.list;
+        for (var i = 0; i < list.length; i++) {
+            var data=list[i];
+            if (isNotEmpty(recorduser)){
+                for (var j = 0; j < recorduser.length; j++) {
+                    var user = recorduser[j];
+                    var userssid=user.userssid;
+                    if (data.userssid==userssid){
+                        var username=user.username==null?"未知":user.username;//用户名称
+                        var usertype=user.grade;//1、询问人2被询问人
+                        var translatext=data.txt==null?"...":data.txt;//翻译文本
+                        var asrtime=data.asrtime;//时间
+                        var starttime=data.starttime;
+                        var asrstartime=data.asrstartime;
+                        var subtractime=data.subtractime;//时间差
+                        //实时会议数据
+                        var recordrealshtml="";
+
+
+                        //实时会议数据
+                        if (usertype==1){
+                            subtractime_q=subtractime;
+                            starttime=parseFloat(starttime)+parseFloat(subtractime_q);
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrstartime+'</p>\
+                                                            <span>'+translatext+'</span> \
+                                                      </div >';
+                        }else if (usertype==2){
+                            subtractime_w=subtractime;
+                            starttime=parseFloat(starttime)+parseFloat(subtractime_w);
+                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
+                                                           <p>'+asrstartime+' 【'+username+'】 </p>\
+                                                            <span>'+translatext+'</span> \
+                                                      </div >';
+                        }
+
+
+
+                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                            $("#recordreals div[userssid="+userssid+"]:last").remove();
+                        }
+                        $("#recordreals").append(recordrealshtml);
+                        var div = document.getElementById('recordreals');
+                        div.scrollTop = div.scrollHeight;
+                    }
+                }
+            }
+        }
+        setqw();
+    }
+}
+
+function  set_getPlayUrl(data) {
+    if (isNotEmpty(data)){
+        var iiddata=data.iid;
+        var recordFileParams=data.recordFileParams;
+        var recordPlayParams=data.recordPlayParams;
+        var state;
+        if (isNotEmpty(recordFileParams)){
+            for (var i = 0; i < recordFileParams.length; i++) {
+                var recordFile = recordFileParams[i];
+                state=recordFile.state;
+            }
+            if (isNotEmpty(recordPlayParams)&&state==2){
+                for (var i = 0; i < recordPlayParams.length; i++) {
+                    var recordPlay = recordPlayParams[i];
+                    videourl=recordPlay.playUrl;
+                }
+                initplayer();
+            }
+        }
     }
 }
 
@@ -194,7 +303,7 @@ function callbackgetRecordById(data) {
 /**
  * 获取会议实时数据
  */
-function getRecord() {
+/*function getRecord() {
     $("#recordreals").html("");
     if (isNotEmpty(mtssid)) {
         var url=getUrl_manage().getRecord;
@@ -278,7 +387,7 @@ function callbackgetRecord(data) {
     }else{
         layer.msg(data.message);
     }
-}
+}*/
 
 function btn(obj) {
     var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
@@ -318,6 +427,9 @@ function exportPdf(obj) {
         }
       btn(obj);
 }
+
+//获取直播地址
+/*
 function getPlayUrl() {
     if (isNotEmpty(iid)) {
         var url=getUrl_manage().getPlayUrl;
@@ -355,12 +467,11 @@ function callbackgetPlayUrl(data) {
         layer.msg(data.message);
     }
 }
-
-
+*/
 
 
 //**身心统计回放
-function getPHDataBack() {
+/*function getPHDataBack() {
     if (isNotEmpty(mtssid)) {
         var url=getUrl_manage().getPHDataBack;
         var data={
@@ -374,8 +485,6 @@ function getPHDataBack() {
         console.log("会议未找到__"+mtssid);
     }
 }
-
-var phdatabackList=null;
 function callbackgetPHDataBack(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var datas = data.data;
@@ -385,7 +494,7 @@ function callbackgetPHDataBack(data) {
     }else {
       layer.msg(data.message);
     }
-}
+}*/
 
 
 var option = {
@@ -862,6 +971,18 @@ $(function () {
                     phdata(arrph);
                 }*/
             //定位_____________________end_______________________
+        });
+
+        //回车搜索
+        $("#recordreals_select").keypress(function (e) {
+            if (e.which == 13) {
+               var liketxt = $("#recordreals_select").val();
+                console.log(liketxt)
+                $("#recordreals div").each(function (i,e) {
+                    var spantxt=$(this).find("span").text();
+                    console.log(spantxt);
+                });
+            }
         });
 
 

@@ -111,7 +111,9 @@ function getactionid_manage() {
         addCaseToUser_addCase:"addCaseToUser_addCase",
         addCaseToUser_getUserinfoList:"addCaseToUser_getUserinfoList",
         addCaseToUser_getAdminList:"addCaseToUser_getAdminList",
-        addCaseToUser_addUser:"addCaseToUser_addUser",
+        addCaseToUser_addUser:"addCaseToUser_addUser",//已废弃
+        addCaseToUser_getDefaultMtModelssid:"addCaseToUser_getDefaultMtModelssid",
+        addCaseToUser_getWorkunits:"addCaseToUser_getWorkunits",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -152,6 +154,7 @@ function getactionid_manage() {
         waitRecord_getRecordrealByRecordssid:"waitRecord_getRecordrealByRecordssid",
         waitRecord_setRecordreal:"waitRecord_setRecordreal",
         waitRecord_gnlist:"waitRecord_gnlist",
+        waitRecord_uploadNotification:"waitRecord_uploadNotification",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

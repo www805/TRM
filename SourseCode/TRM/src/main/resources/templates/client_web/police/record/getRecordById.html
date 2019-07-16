@@ -143,8 +143,7 @@
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息</li>
-                            <li onclick="getRecord();">语音识别</li>
-                           <!-- <li>身心监测</li>-->
+                            <li>语音识别</li><!--onclick="getRecord();"-->
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show">
@@ -181,7 +180,18 @@
                                 </div>
                             </div>
                             <div class="layui-tab-item">
+                                <!--<div class="layui-card-header" style="margin-bottom: 0px;font-weight: normal;background-color: transparent ">-->
                                 <div class="layui-card-header" style="margin-bottom: 0px;font-weight: normal;color: red">
+
+                                    <!-- <div class="layui-col-md8" >
+                                        <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容，回车跳转" autocomplete="off" class="layui-input" id="recordreals_select"  >
+                                    </div>
+                                    <div class="layui-col-md4" >
+                                        <div class="layui-btn-group">
+                                            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-up"></i></button>
+                                            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-down"></i></button>
+                                        </div>
+                                    </div>-->
                                     （提示:双击问答文本自动定位视频播放位置）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
                                 </div>
                                 <div class="layui-card">
@@ -224,9 +234,9 @@
                             </dl>
                         </div>
                     </div>
-                    <button class="layui-btn layui-btn-normal " onclick="getPlayUrl();" title="重新加载视频">
+                   <!-- <button class="layui-btn layui-btn-normal " onclick="getPlayUrl();" title="重新加载视频">
                         <i class="layui-icon">&#xe669;</i>
-                    </button>
+                    </button>-->
                 </div>
                     <div class="layui-card">
                         <div class="layui-card-header">笔录回放 <span style="color: red">（提示:<span class="highlight_left">黄色</span>高亮跟随视频定位，<span class="highlight_right">绿色</span>高亮跟随双击定位）</span></div>
@@ -302,6 +312,7 @@
         getRecordById();//获取笔录案件等信息
         main1();//身心统计回放
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
+
     });
     layui.use(['layer','element','slider','form'], function(){
         var layer = layui.layer; //获得layer模块

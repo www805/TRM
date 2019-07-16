@@ -3,13 +3,16 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.MCType;
+import com.avst.trm.v1.common.conf.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -26,11 +29,18 @@ import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
 import com.avst.trm.v1.common.util.poiwork.param.Answer;
 import com.avst.trm.v1.common.util.poiwork.param.Talk;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.feignclient.mc.req.StartMCParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
@@ -110,6 +120,13 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Base_nationalityMapper base_nationalityMapper;
+
+    @Autowired
+    private Base_typeMapper base_typeMapper;
+
+    @Autowired
+    private OutService outService;
+
 
     @Value("${file.basepath}")
     private String filePath;
@@ -427,6 +444,7 @@ public class RecordService extends BaseService {
                 }
 
                 //根据笔录ssid获取提讯数据
+                String mtssid=null;
                 try {
                     Police_arraignment police_arraignment=new Police_arraignment();
                     police_arraignment.setRecordssid(recordssid);
@@ -434,10 +452,11 @@ public class RecordService extends BaseService {
                     Integer mtstate=null;
                     if (null!=police_arraignment){
                         if (StringUtils.isNotBlank(police_arraignment.getMtssid())){
+                            mtssid=police_arraignment.getMtssid();
                             ReqParam<GetMCStateParam_out> getMCStateParam_outReqParam=new ReqParam<>();
                             GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
                             getMCStateParam_out.setMcType(MCType.AVST);
-                            getMCStateParam_out.setMtssid(police_arraignment.getMtssid());
+                            getMCStateParam_out.setMtssid(mtssid);
                             getMCStateParam_outReqParam.setParam(getMCStateParam_out);
                             RResult rr = meetingControl.getMCState(getMCStateParam_outReqParam);
                             if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
@@ -451,6 +470,67 @@ public class RecordService extends BaseService {
                     e.printStackTrace();
                 }
 
+
+                String iid=null;
+                //getRecord：获取会议asr识别数据
+                GetMCVO getMCVO=new GetMCVO();
+                ReqParam getrecord_param=new ReqParam<>();
+                GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                getPhssidByMTssidParam_out.setMtssid(mtssid);
+                getrecord_param.setParam(getPhssidByMTssidParam_out);
+                RResult getrecord_rr=new RResult();
+                getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
+                    if (null!=getMCVO){
+                        iid=getMCVO.getIid();
+                        getRecordByIdVO.setGetMCVO(getMCVO);
+                    }
+                    LogUtil.intoLog(this.getClass()," outService.getRecord__请求成功");
+                }else {
+                    Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
+                    LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
+                }
+
+                //getPlayUrl:获取直播地址
+                if (StringUtils.isNotBlank(iid)){
+                    GetPlayUrlVO getPlayUrlVO =new GetPlayUrlVO();
+                    GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
+                    getURLToPlayParam.setSsType(SSType.AVST);
+                    getURLToPlayParam.setIid(iid);
+                    RResult getplayurl_rr=new RResult();
+                    outService.getPlayUrl(getplayurl_rr,getURLToPlayParam);
+                    if (null!=getplayurl_rr&&getplayurl_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                        getPlayUrlVO=gson.fromJson(gson.toJson(getplayurl_rr.getData()),GetPlayUrlVO.class);
+                        if (null!=getMCVO){
+                            getRecordByIdVO.setGetPlayUrlVO(getPlayUrlVO);
+                        }
+                        LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求成功");
+                    }else {
+                        Object msg=getplayurl_rr==null?getplayurl_rr:getplayurl_rr.getMessage();
+                        LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求失败__"+msg);
+                    }
+                }
+
+                //getPHDataBack：获取身心回放
+                List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();
+                ReqParam getphdataback_param=new ReqParam<>();
+                GetPHDataBackParam getPHDataBackParam=new GetPHDataBackParam();
+                getPHDataBackParam.setMtssid(mtssid);
+                getphdataback_param.setParam(getPHDataBackParam);
+                RResult getphdataback_rr=new RResult();
+                outService.getPHDataBack(getphdataback_rr,getphdataback_param);
+                if (null!=getphdataback_rr&&getphdataback_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    phDataBackVoParams=gson.fromJson(gson.toJson(getphdataback_rr.getData()), new TypeToken<List<PHDataBackVoParam>>(){}.getType());
+                    if (null!=phDataBackVoParams){
+                        getRecordByIdVO.setPhDataBackVoParams(phDataBackVoParams);
+                    }
+                    LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求成功");
+                }else {
+                    Object msg=getphdataback_rr==null?getphdataback_rr:getphdataback_rr.getMessage();
+                    LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求失败__"+msg);
+                }
             }
 
         //获取实时数据
