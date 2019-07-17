@@ -88,6 +88,7 @@ function getactionid_manage() {
         main_toproblemTypeList:"main_toproblemTypeList",
         main_torecordTypeList:"main_torecordTypeList",
         main_gotoupdateServerconfig:"main_gotoupdateServerconfig",
+        main_getNavList:"main_getNavList",
 
         addCaseToUser_addCaseToArraignment:"addCaseToUser_addCaseToArraignment",
         addCaseToUser_towaitRecord:"addCaseToUser_towaitRecord",
@@ -215,6 +216,11 @@ function getactionid_manage() {
         wordTemplateList_uploadWordTemplate:"wordTemplateList_uploadWordTemplate",
         wordTemplateList_changeboolWordTemplate:"wordTemplateList_changeboolWordTemplate",
         wordTemplateList_getWordTemplateByssid:"wordTemplateList_getWordTemplateByssid",
+
+        main_updatePersonInfo:"main_updatePersonInfo",
+        updatePassword:"updatePassword",
+        main_getWorkunits:"main_getWorkunits",
+        main_getUserBySsid:"main_getUserBySsid",
 
     };
 }

@@ -130,6 +130,13 @@
             <version>3.11-beta2</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.yaml/snakeyaml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.23</version>
+        </dependency>
+
 
         <!--功能性的添加jar包-->
         <dependency>

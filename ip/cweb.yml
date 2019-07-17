@@ -1,0 +1,33 @@
+nav: 
+    - name: 笔录制作
+      icon: layui-icon layui-icon-survey
+      url: /cweb/police/policePage/toaddCaseToUser
+    - name: 笔录查看
+      icon: layui-icon layui-icon-search
+      url: /cweb/police/policePage/torecordIndex
+    - name: 模板管理
+      icon: layui-icon layui-icon-tabs
+      url: /cweb/police/policePage/totemplateIndex
+    - name: 案件管理
+      icon: layui-icon layui-icon-form
+      url: /cweb/police/policePage/tocaseIndex
+    - name: 基础配置
+      icon: layui-icon layui-icon-util
+      url: javascript:;
+      list: 
+        - name: 问题类型
+          url: /cweb/police/policePage/toproblemTypeList
+        - name: 模板类型
+          url: /cweb/police/policePage/totemplateTypeList
+        - name: 笔录类型
+          url: /cweb/police/policePage/torecordTypeList
+        - name: 笔录word模板
+          url: /cweb/police/policePage/towordTemplateList
+        - name: 告知书
+          url: /cweb/police/policePage/notificationList
+          
+bottom: 
+    declaration: 版权所有 © 2019
+    name: 顺泰伟成科技有限公司
+    url: http://www.baidu.com
+    

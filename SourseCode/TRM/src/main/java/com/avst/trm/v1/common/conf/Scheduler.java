@@ -121,10 +121,11 @@ public class Scheduler {
 
     }
 
+//    @Scheduled(fixedRate = 10000) //10秒心跳一次
     /**
-     * 10秒一次心跳
+     * 1分钟心跳一次
      */
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(cron = "0 0/1 * * * ? ")
     public void testTasks() {
 
         InitVO initVO_WEB = CommonCache.getinit_WEB();

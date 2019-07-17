@@ -1,20 +1,21 @@
 package com.avst.trm.v1.web.cweb.action.baseaction;
 
+import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.common.util.sq.SQEntity;
-import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
-import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
-import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
-import com.avst.trm.v1.web.cweb.req.basereq.UserloginParam;
+import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
+import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,18 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/cweb/base/main")
 public class MainAction extends BaseAction {
     @Autowired
     private MainService mainService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private Base_serverconfigMapper base_serverconfigMapper;
 
     @RequestMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
@@ -50,6 +56,7 @@ public class MainAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
             mainService.userlogin(result,param,httpSession);
+            AppCache.delAppCacheParam();
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -74,6 +81,77 @@ public class MainAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 修改用户密码
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updatePassWord")
+    @ResponseBody
+    public RResult updatePassWord(@RequestBody ReqParam<updatePassWordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.updatePassWord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 修改个人信息
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updatePersonInfo")
+    @ResponseBody
+    public RResult updatePersonInfo(@RequestBody ReqParam<updatePersonInfoParam> param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.updatePersonInfo(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+
+    /**
+     * 查询单个人信息
+     * @param ssid
+     * @return
+     */
+    @RequestMapping(value = "/getUserBySsid")
+    @ResponseBody
+    public RResult getUserBySsid(String ssid){
+        RResult result=createNewResultOfFail();
+        if (null==ssid){
+            result.setMessage("参数为空");
+        }else{
+            userService.getUserBySsid(result,ssid);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取全部单位pp
+     * @return
+     */
+    @RequestMapping(value = "/getWorkunits")
+    @ResponseBody
+    public RResult getWorkunits(){
+        RResult result=createNewResultOfFail();
+        userService.getWorkunits(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
     /**
      * 修改服务器配置
@@ -176,7 +254,25 @@ public class MainAction extends BaseAction {
         return result;
     }
 
-
+    /**
+     * 获取导航栏目
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getNavList")
+    @ResponseBody
+    public  RResult getNavList(@RequestBody ReqParam<AppCacheParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getNavList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
     /**
      * 获取全部管理员
@@ -197,9 +293,27 @@ public class MainAction extends BaseAction {
     }
 
 
+    /**
+     * 跳转==》修改个人信息页面
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/gotoupdatePersonInfo")
+    public ModelAndView gotoupdatePersonInfo(Model model){
+        model.addAttribute("title","个人信息");
+        return  new ModelAndView("client_web/base/updatePersonInfo","updatePersonInfoModel", model);
+    }
 
-
-
+    /**
+     * 跳转==》修改用户密码页面
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/gotoupdatePassword")
+    public ModelAndView gotoupdatePassword(Model model){
+        model.addAttribute("title","修改密码");
+        return  new ModelAndView("client_web/base/updatePassword","updatePasswordModel", model);
+    }
 
     /**
      * 跳转==》修改服务器配置页面
@@ -224,7 +338,14 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping(value = "/gotomain")
     public ModelAndView gotomain(Model model){
-        model.addAttribute("title","智能提讯系统");
+        AppCacheParam param = AppCache.getAppCacheParam();
+        if(null == param.getTitle()){
+            Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
+            if (null != base_serverconfig) {
+                param.setTitle(base_serverconfig.getClientname());
+            }
+        }
+        model.addAttribute("title",param.getTitle());
         return  new ModelAndView("client_web/base/main","mainModel", model);
     }
 

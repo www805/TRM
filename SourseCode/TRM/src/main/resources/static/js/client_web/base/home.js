@@ -31,13 +31,12 @@ function callbackgetHome(data) {
             var sqgnList = data.sqgnList; //授权功能信息
 
             var sqEntityHTML = "<p>单位名称：" + sqEntity.clientName + "</p>";//单位名称
-            sqEntityHTML += "<p>授权开始时间：" + sqEntity.startTime + "</p>";//授权开始时间
-
             if(sqEntity.foreverBool == true){
                 sqEntityHTML += "<p>授权期限：永久</p>";//授权时间
             }else{
+                sqEntityHTML += "<p>授权开始时间：" + sqEntity.startTime + "</p>";//授权开始时间
                 sqEntityHTML += "<p>授权期限：临时</p>";//授权总天数
-                sqEntityHTML += "<p>授权已用天数：" + data.workdays + "</p>";//授权已用天数
+                sqEntityHTML += "<p>授权总天数：" + sqEntity.sqDay + "</p>";//授权已用天数
             }
 
             sqEntityHTML += "<p>单位代码：" + sqEntity.unitCode + "</p>";//单位机器码

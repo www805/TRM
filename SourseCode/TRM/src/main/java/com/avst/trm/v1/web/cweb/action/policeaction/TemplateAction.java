@@ -2,21 +2,15 @@ package com.avst.trm.v1.web.cweb.action.policeaction;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_problemtype;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_templatetype;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Problemtype;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.TemplateService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 关于模板

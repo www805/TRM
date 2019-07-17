@@ -70,7 +70,13 @@ function updateServerconfig() {
     var workdays=$("#workdays").val();
 
     if (!isNotEmpty(clientname)) {
-        layer.msg("请输入系统名称");
+        layer.msg("请输入客户端名称");
+        $("#clientname").focus();
+        return;
+    }
+
+    if (clientname.length > 9) {
+        layer.msg("客户端名称不能超过9个字符");
         $("#clientname").focus();
         return;
     }

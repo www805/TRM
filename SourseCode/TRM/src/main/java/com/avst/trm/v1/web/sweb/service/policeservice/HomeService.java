@@ -1,21 +1,32 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
-public class HomeService {
+public class HomeService extends BaseService {
 
     @Autowired
     private Police_templateMapper policeTemplateMapper; //模板
@@ -49,6 +60,9 @@ public class HomeService {
 
     @Autowired
     private Base_serverconfigMapper base_serverconfigMapper;    //服务器系统配置
+
+    @Value("${nav.file.service}")
+    private String swebFile;
 
     public void getAllCount(RResult rResult, Model model) {
 
@@ -89,10 +103,10 @@ public class HomeService {
         }
 
         Integer dayNum = 0;
-        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
-        if (null != serverconfig) {
-            dayNum = serverconfig.getWorkdays();
-        }
+//        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
+//        if (null != serverconfig) {
+//            dayNum = serverconfig.getWorkdays();
+//        }
 
         model.addAttribute("policeTemplateCount", policeTemplateCount);
         model.addAttribute("policeProblemCount", policeProblemCount);
@@ -108,5 +122,34 @@ public class HomeService {
         model.addAttribute("getGnlist", gnArrayList);
         model.addAttribute("workdays", dayNum);
 
+    }
+
+    public void getNavList(RResult result) {
+
+        AppCacheParam cacheParam = AppServiceCache.getAppServiceCache();
+        if(null == cacheParam.getData()){
+            String path = OpenUtil.getXMSoursePath() + "\\" + swebFile + ".yml";
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(path);
+
+                Yaml yaml = new Yaml();
+                Map<String,Object> map = yaml.load(fis);
+                cacheParam.setData(map);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                if(null != fis){
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        result.setData(cacheParam);
+        changeResultToSuccess(result);
     }
 }

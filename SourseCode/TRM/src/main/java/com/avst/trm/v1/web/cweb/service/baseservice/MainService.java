@@ -1,14 +1,13 @@
 package com.avst.trm.v1.web.cweb.service.baseservice;
 
+import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
-import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_template;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_templateMapper;
@@ -23,10 +22,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
-import com.avst.trm.v1.web.cweb.req.basereq.GetAdminListParam;
-import com.avst.trm.v1.web.cweb.req.basereq.GetHomeParam;
-import com.avst.trm.v1.web.cweb.req.basereq.UpdateServerconfigParam;
-import com.avst.trm.v1.web.cweb.req.basereq.UserloginParam;
+import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.vo.basevo.GetHomeVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.GetServerconfigVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.UpdateServerconfigVO;
@@ -38,15 +34,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpSession;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service("mainService")
 public class MainService extends BaseService {
@@ -86,6 +81,9 @@ public class MainService extends BaseService {
     private String imagesfilePath;
     @Value("${upload.basepath}")
     private String uploadbasepath;
+    @Value("${nav.file.client}")
+    private String cwebFile;
+
 
     public InitVO initClient(InitVO initvo){
 
@@ -287,6 +285,8 @@ public class MainService extends BaseService {
             result.setMessage("修改异常");
             return;
         }
+        //清空导航栏缓存
+        AppCache.delAppCacheParam();
         changeResultToSuccess(result);
         return;
     }
@@ -424,10 +424,10 @@ public class MainService extends BaseService {
         SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
         getHomeVO.setSqEntity(getSQEntity);
 
-        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
-        if (null != serverconfig) {
-            getHomeVO.setWorkdays(serverconfig.getWorkdays());
-        }
+//        Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
+//        if (null != serverconfig) {
+//            getHomeVO.setWorkdays(serverconfig.getWorkdays());
+//        }
 
         //授权功能
         List gnArrayList = new ArrayList();
@@ -476,5 +476,128 @@ public class MainService extends BaseService {
             changeResultToSuccess(result);
         }
         return;
+    }
+
+    public void updatePassWord(RResult result, ReqParam<updatePassWordParam> param) {
+
+        updatePassWordParam paramParam = param.getParam();
+
+        if (null == paramParam) {
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (StringUtils.isBlank(paramParam.getSsid())) {
+            result.setMessage("ssid不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(paramParam.getOldpassword())) {
+            result.setMessage("旧密码不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(paramParam.getNewpassword())) {
+            result.setMessage("新密码不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(paramParam.getPassword())) {
+            result.setMessage("确认密码不能为空");
+            return;
+        }
+        if (!paramParam.getNewpassword().equals(paramParam.getPassword())) {
+            result.setMessage("两次确认密码必须一样");
+            return;
+        }
+
+        //查询旧密码是否正确
+        Base_admininfo base_admininfo = new Base_admininfo();
+        base_admininfo.setSsid(paramParam.getSsid());
+        base_admininfo.setPassword(paramParam.getOldpassword());
+        Base_admininfo baseAdmininfo = base_admininfoMapper.selectOne(base_admininfo);
+
+        if (null == baseAdmininfo) {
+            result.setMessage("旧密码错误");
+            return;
+        }
+
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("ssid", paramParam.getSsid());
+
+        Base_admininfo admininfo = new Base_admininfo();
+        admininfo.setPassword(paramParam.getNewpassword());
+
+        Integer update = base_admininfoMapper.update(admininfo, ew);
+        if (update != 1) {
+            result.setMessage("修改错误");
+        }
+
+        result.setData(update);
+        changeResultToSuccess(result);
+    }
+
+    public void updatePersonInfo(RResult result, ReqParam<updatePersonInfoParam> param) {
+
+        updatePersonInfoParam paramParam = param.getParam();
+
+        if (null == paramParam) {
+            result.setMessage("参数为空");
+            return;
+        }
+
+        if (StringUtils.isBlank(paramParam.getSsid())) {
+            result.setMessage("ssid不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(paramParam.getUsername())) {
+            result.setMessage("用户名称不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(paramParam.getWorkunitssid())) {
+            result.setMessage("工作单位不能为空");
+            return;
+        }
+
+        EntityWrapper ew = new EntityWrapper();
+        ew.eq("ssid", paramParam.getSsid());
+
+        Base_admininfo admininfo = new Base_admininfo();
+        admininfo.setUsername(paramParam.getUsername());
+        admininfo.setWorkunitssid(paramParam.getWorkunitssid());
+
+        Integer update = base_admininfoMapper.update(admininfo, ew);
+        if (update != 1) {
+            result.setMessage("修改错误");
+        }
+
+        result.setData(update);
+        changeResultToSuccess(result);
+    }
+
+    public void getNavList(RResult result, ReqParam<AppCacheParam> param) {
+
+        AppCacheParam cacheParam = AppCache.getAppCacheParam();
+        if(null == cacheParam.getData()){
+            String path = OpenUtil.getXMSoursePath() + "\\" + cwebFile + ".yml";
+            FileInputStream fis = null;
+            try {
+                fis = new FileInputStream(path);
+
+                Yaml yaml = new Yaml();
+                Map<String,Object> map = yaml.load(fis);
+                cacheParam.setData(map);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }finally {
+                if(null != fis){
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        result.setData(cacheParam);
+        changeResultToSuccess(result);
     }
 }

@@ -141,11 +141,11 @@
                     </div>
                     <div class="layui-card-body" style="color: #666;">
                         <p th:text="'单位名称：'+${getSQEntity.clientName}">系统用户</p>
-                        <p th:text="'授权开始时间：'+${getSQEntity.startTime}">系统用户</p>
+                        <p th:if="${getSQEntity.foreverBool==false}" th:text="'授权开始时间：'+${getSQEntity.startTime}">系统用户</p>
 
                         <p th:text="'授权期限：'+${getSQEntity.foreverBool==true?'永久':'临时'}">系统用户</p>
 
-                        <p th:if="${getSQEntity.foreverBool==false}" th:text="'授权已用天数：'+${workdays}">系统用户</p>
+                        <p th:if="${getSQEntity.foreverBool==false}" th:text="'授权总天数：'+${getSQEntity.sqDay}">系统用户</p>
 
                         <p th:text="'单位代码：'+${getSQEntity.unitCode}">系统用户</p>
                         <p th:text="'客户端序号：'+${getSQEntity.sortNum}">系统用户</p>

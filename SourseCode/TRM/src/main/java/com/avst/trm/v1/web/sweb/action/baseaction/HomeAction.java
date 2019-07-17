@@ -1,10 +1,16 @@
 package com.avst.trm.v1.web.sweb.action.baseaction;
 
+import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
@@ -34,6 +40,9 @@ public class HomeAction extends BaseAction{
     @Autowired
     private HomeService homeService;
 
+    @Autowired
+    private Base_serverconfigMapper base_serverconfigMapper;
+
     @RequestMapping(value = "/{pageid}")
     public ModelAndView gotomain(Model model,@PathVariable("pageid")String pageid) {
 
@@ -50,7 +59,14 @@ public class HomeAction extends BaseAction{
 
         //获取统计数据信息
 
-        model.addAttribute("title", "智能提讯管理系统");
+        AppCacheParam param = AppServiceCache.getAppServiceCache();
+        if(null == param.getTitle()){
+            Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
+            if (null != base_serverconfig) {
+                param.setTitle(base_serverconfig.getSysname());
+            }
+        }
+        model.addAttribute("title",param.getTitle());
         return new ModelAndView("server_web/base/main", "main", model);
     }
 
@@ -93,6 +109,7 @@ public class HomeAction extends BaseAction{
     public RResult checklogin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult result=createNewResultOfFail();
         loginService.gotologin(result,request,loginParam);
+        AppServiceCache.delAppServiceCache();
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -107,6 +124,19 @@ public class HomeAction extends BaseAction{
         Subject subject = SecurityUtils.getSubject();
         subject.logout();
         return rResult;
+    }
+
+    /**
+     * 获取导航栏目
+     * @return
+     */
+    @RequestMapping("/getNavList")
+    @ResponseBody
+    public  RResult getNavList(){
+        RResult result=this.createNewResultOfFail();
+        homeService.getNavList(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
     }
 
     @RequestMapping(value = "/404")

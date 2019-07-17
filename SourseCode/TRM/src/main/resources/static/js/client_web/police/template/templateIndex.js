@@ -68,8 +68,6 @@ function callTmplates(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
-            console.log("1111111");
-            console.log(data);
         }
     }else{
         layer.msg(data.message,{icon: 2});
