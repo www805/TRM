@@ -95,8 +95,16 @@ public class HomeAction extends BaseAction{
     public ModelAndView gotologin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult rResult=createNewResultOfFail();
 
+        AppCacheParam param = AppServiceCache.getAppServiceCache();
+        if(null == param.getTitle()){
+            Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
+            if (null != base_serverconfig) {
+                param.setTitle(base_serverconfig.getSysname());
+            }
+        }
+
         model.addAttribute("result", rResult);
-        model.addAttribute("title", "欢迎登录后台管理界面平台");
+        model.addAttribute("title", "欢迎登录后台" + param.getTitle());//欢迎登录后台管理界面平台
 
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
 //        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");

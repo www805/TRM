@@ -256,20 +256,13 @@ public class MainAction extends BaseAction {
 
     /**
      * 获取导航栏目
-     * @param param
      * @return
      */
     @RequestMapping("/getNavList")
     @ResponseBody
-    public  RResult getNavList(@RequestBody ReqParam<AppCacheParam> param){
+    public  RResult getNavList(){
         RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            mainService.getNavList(result,param);
-        }
+        mainService.getNavList(result);
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -329,7 +322,15 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping(value = "/gotologin")
     public ModelAndView gotologin(Model model){
-        model.addAttribute("title","欢迎使用智能提讯系统");
+        AppCacheParam param = AppCache.getAppCacheParam();
+        if(null == param.getTitle()){
+            Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
+            if (null != base_serverconfig) {
+                param.setTitle(base_serverconfig.getClientname());
+            }
+        }
+        model.addAttribute("title", "欢迎使用" + param.getTitle());
+        model.addAttribute("serviceName",  param.getTitle());
         return  new ModelAndView("client_web/base/login","loginModel", model);
     }
 

@@ -40,6 +40,7 @@ function callgetNavList(data) {
             for (var i = 0; i < nav_list.length; i++) {
                 var nav = nav_list[i];
                 var dd_HTML = "";
+                var nav_icon_HTML = "";
                 if(isNotEmpty(nav.list)){
                     for (var j = 0; j < nav.list.length; j++) {
                         var dd = nav.list[j];
@@ -49,10 +50,13 @@ function callgetNavList(data) {
                     dd_HTML = "<dl class=\"layui-nav-child\">" + dd_HTML + "</dl>";
                     nav.url = "javascript:;";
                 }
+                if(isNotEmpty(nav.icon)){
+                    nav_icon_HTML = "<i class=\"" + nav.icon + "\"></i>\n";
+                }
+
                 nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
-                    "                <a target=\"option\" href=\"" + nav.url + "\">\n" +
-                    "                    <i class=\"" + nav.icon + "\"></i>\n" +
-                    "                    <cite>" + nav.name + "</cite>\n" +
+                    "                <a target=\"option\" href=\"" + nav.url + "\">\n" + nav_icon_HTML+
+                    "                    <cite>" + nav.name + "</cite>\n"+
                     "                </a>\n" + dd_HTML +
                     "            </li>";
             }

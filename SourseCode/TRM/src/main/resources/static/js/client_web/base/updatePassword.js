@@ -1,6 +1,6 @@
 
 function updatePassword() {
-    var url=getActionURL(getactionid_manage().updatePassword);
+    var url=getActionURL(getactionid_manage().main_updatePassWord);
     var oldpassword=$("input[name='oldpassword']").val();
     var newpassword=$("input[name='newpassword']").val();
     var password=$("input[name='password']").val();
@@ -27,7 +27,7 @@ function updatePassword() {
         token:INIT_CLIENTKEY,
         param:{
             ssid: ssid,
-            username: username,
+            oldpassword: oldpassword,
             newpassword:newpassword,
             password:password
         }

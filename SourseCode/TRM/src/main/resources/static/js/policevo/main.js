@@ -33,9 +33,8 @@ function callgetNavList(data) {
                     dd_HTML = "<dl class=\"layui-nav-child\">" + dd_HTML + "</dl>";
                     nav.url = "javascript:;";
                 }
-
                 if(isNotEmpty(nav.icon)){
-                    nav_icon_HTML = "<i class=" + nav.icon + "></i>\n";
+                    nav_icon_HTML = "<i class=\"" + nav.icon + "\"></i>\n";
                 }
 
                 nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
@@ -43,7 +42,6 @@ function callgetNavList(data) {
                     "                    <cite>" + nav.name + "</cite>\n"+
                     "                </a>\n" + dd_HTML +
                     "            </li>";
-
             }
 
             //页脚

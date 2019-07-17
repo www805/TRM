@@ -23,7 +23,7 @@
 
     <div class="loginbody">
 
-    <span class="systemlogo"></span>
+    <span id="systemlogo" class="systemlogo"></span>
 
     <div class="loginbox">
 
@@ -39,7 +39,7 @@
 
 
 
-    <div class="loginbm">版权所有  2019  <a href="http://www.avst.cn">顺泰伟成科技有限公司</a> </div>
+    <div id="bottom_mian" class="loginbm">版权所有  2019  <a href="http://www.avst.cn">顺泰伟成科技有限公司</a> </div>
 
 
 </body>
@@ -51,13 +51,19 @@
 <script th:src="@{/js/policevo/login.js}" type="text/javascript"></script>
 <script src="/js/canvas-nest.js" type="text/javascript"></script>
 <script th:inline="javascript">
+    var INIT_WEB;
+    var INIT_CLIENT;
     $(function(){
        $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
         $(window).resize(function(){
             $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
         })
 
-        setpageAction([[${session.INIT_WEB}]],"server_web/base/login");
+        INIT_WEB = [[${session.INIT_WEB}]];
+        INIT_CLIENT = [[${session.INIT_CLIENT}]];
+        setpageAction(INIT_WEB, "server_web/base/login");
+
+        getNavList();
 
         //如果在iframe中打开，就自动点击登录按钮
         if (window.frames.length != parent.frames.length) {

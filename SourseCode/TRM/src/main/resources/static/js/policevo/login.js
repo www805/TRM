@@ -47,6 +47,39 @@ function callLogout(data){
 
 }
 
+function getNavList() {
+    setpageAction(INIT_WEB,"server_web/base/main");
+    var url=getActionURL(getactionid_manage().main_getNavList);
+    setpageAction(INIT_WEB,"server_web/base/login");
+
+    ajaxSubmitByJson(url,null,callgetNavList);
+}
+
+function callgetNavList(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+
+        if (isNotEmpty(data.data)) {
+            var appCache = data.data;
+
+            //替换logo图标
+            $("#systemlogo").css("background-image", "url(\"" + appCache.syslogoimage + "\")");
+
+            //页脚
+            var bottom_name = appCache.data.bottom.name;
+            var bottom_declaration = appCache.data.bottom.declaration;
+            var bottom_url = appCache.data.bottom.url;
+            var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+            $("#bottom_mian").html(bottom_html);
+        }
+        layui.use('element', function(){
+            var element =  layui.element;
+            element.render();
+        });
+    }else{
+        layer.msg(data.message);
+    }
+}
+
 function GetQueryString(name) {
     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
     var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则

@@ -218,7 +218,7 @@ function getactionid_manage() {
         wordTemplateList_getWordTemplateByssid:"wordTemplateList_getWordTemplateByssid",
 
         main_updatePersonInfo:"main_updatePersonInfo",
-        updatePassword:"updatePassword",
+        main_updatePassWord:"main_updatePassWord",
         main_getWorkunits:"main_getWorkunits",
         main_getUserBySsid:"main_getUserBySsid",
 

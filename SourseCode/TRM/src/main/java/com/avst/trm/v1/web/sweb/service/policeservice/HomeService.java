@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -13,6 +14,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +64,9 @@ public class HomeService extends BaseService {
 
     @Autowired
     private Base_serverconfigMapper base_serverconfigMapper;    //服务器系统配置
+
+    @Autowired
+    private Base_serverconfigMapper serverconfigMapper;
 
     @Value("${nav.file.service}")
     private String swebFile;
@@ -131,6 +138,38 @@ public class HomeService extends BaseService {
             String path = OpenUtil.getXMSoursePath() + "\\" + swebFile + ".yml";
             FileInputStream fis = null;
             try {
+
+                Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
+
+                //获取本机ip地址
+                String hostAddress = "localhost";
+                try {
+                    InetAddress addr = InetAddress.getLocalHost();
+                    hostAddress = addr.getHostAddress();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+
+                if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
+                    Base_filesave filesaveSyslogo = new Base_filesave();
+                    filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
+                    Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
+                    if (null!=syslogo){
+                        String recorddownurl = "http://" + hostAddress + ":80" + syslogo.getRecorddownurl();
+                        cacheParam.setSyslogoimage(recorddownurl);
+                    }
+                }
+
+                if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
+                    Base_filesave filesaveClientlogo = new Base_filesave();
+                    filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
+                    Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
+                    if (null!=clientlogo){
+                        String recorddownurl = "http://" + hostAddress + ":80" + clientlogo.getRecorddownurl();
+                        cacheParam.setClientimage(recorddownurl);
+                    }
+                }
+
                 fis = new FileInputStream(path);
 
                 Yaml yaml = new Yaml();

@@ -21,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -51,11 +53,23 @@ public class ServerConfigService extends BaseService {
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
+        //获取本机ip地址
+        String hostAddress = "localhost";
+        try {
+            InetAddress addr = InetAddress.getLocalHost();
+            hostAddress = addr.getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
             Base_filesave filesaveSyslogo = new Base_filesave();
             filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
             Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
-            serverConfigByIdVO.setSyslogoimage(syslogo.getRecorddownurl());
+            if (null!=syslogo){
+                String recorddownurl = "http://" + hostAddress + ":80" + syslogo.getRecorddownurl();
+                serverConfigByIdVO.setSyslogoimage(recorddownurl);
+            }
         }
 
         if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
@@ -63,7 +77,8 @@ public class ServerConfigService extends BaseService {
             filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
             Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
             if (null!=clientlogo){
-                serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
+                String recorddownurl = "http://" + hostAddress + ":80" + clientlogo.getRecorddownurl();
+                serverConfigByIdVO.setClientimage(recorddownurl);
             }
         }
 
