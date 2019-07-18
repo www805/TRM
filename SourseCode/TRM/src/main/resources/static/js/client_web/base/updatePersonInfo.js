@@ -17,7 +17,13 @@ function updatePersonInfo() {
 
 function getWorkunits() {
     var url=getActionURL(getactionid_manage().main_getWorkunits);
-    ajaxSubmit(url,null,callbackgetWorkunits);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+
+        }
+    };
+    ajaxSubmit(url,data,callbackgetWorkunits);
 }
 
 

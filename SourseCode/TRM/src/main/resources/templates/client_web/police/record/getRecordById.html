@@ -100,7 +100,6 @@
         color: #FFFFFF;background-color: red;
         -webkit-animation: fade 1s infinite ease-in-out;
     }
-
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -244,9 +243,18 @@
                                             </div>
                                             <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
                                             <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
-                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge-rim"  style="width: 100%;" id="monitoralltext">
-                                                生理状态： 加载中 <span  id="monitorall_hr">心率： 0</span> 心率变异： 0 呼吸次数： 0 放松值： 0 <span  id="monitorall_stress">紧张值： 0</span> 血压变化： 0 血氧： 0
-                                            </span></div>
+                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6">
+                                                <span class="layui-badge-rim"  style="width: 100%;" id="monitoralltext">
+                                                    生理状态： 加载中
+                                                    <span  id="monitorall_hr">心率： 0</span>
+                                                    <span  id="monitorall_hrv">心率变异： 0</span>
+                                                    <span  id="monitorall_br">呼吸次数： 0</span>
+                                                    <span  id="monitorall_relax">放松值： 0</span>
+                                                    <span  id="monitorall_stress">紧张值： 0</span>
+                                                    <span  id="monitorall_bp">血压变化： 0</span>
+                                                    <span  id="monitorall_spo2">血氧： 0</span>
+                                                 </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

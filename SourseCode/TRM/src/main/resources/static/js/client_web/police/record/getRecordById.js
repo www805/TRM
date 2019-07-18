@@ -1173,6 +1173,15 @@ function phdata(datad,dqdata) {
             var dqx=dqnum;
             var dqy=0;
             var itemStyle_color="#00FF00";
+            var itemStyle_color_hr=itemStyle_color;
+            var itemStyle_color_hrv=itemStyle_color;
+            var itemStyle_color_br=itemStyle_color;
+            var itemStyle_color_relax=itemStyle_color;
+            var itemStyle_color_stress=itemStyle_color;
+            var itemStyle_color_bp=itemStyle_color;
+            var itemStyle_color_spo2=itemStyle_color;
+
+
             $("#monitor_btn span").each(function (e) {
                 var type=$(this).attr("type");
                 var name=$(this).text();
@@ -1189,10 +1198,16 @@ function phdata(datad,dqdata) {
                         date1=date_hrv;
                         data1=data_hrv;
                         dqy=hrv;
+                        if (dqy<-10||dqy>10){
+                            itemStyle_color="red";
+                        }
                     }else if (type=="br") {
                         date1=date_br;
                         data1=data_br;
                         dqy=br;
+                        if (dq<12||dqy>20){
+                            itemStyle_color="red";
+                        }
                     }else if (type=="relax") {
                         date1=date_relax;
                         data1=data_relax;
@@ -1201,17 +1216,23 @@ function phdata(datad,dqdata) {
                         date1=date_stress;
                         data1=data_stress;
                         dqy=stress;
-                        if (dqy>0){
+                        if (dqy<0||dqy>30){
                             itemStyle_color="red";
                         }
                     }else if (type=="bp") {
                         date1=date_bp;
                         data1=data_bp;
                         dqy=bp;
+                        if (dqy<-10||dqy>10){
+                            itemStyle_color="red";
+                        }
                     }else if (type=="spo2") {
                         date1=date_spo2;
                         data1=data_spo2;
                         dqy=spo2;
+                        if (dqy<94){
+                            itemStyle_color="red";
+                        }
                     }
                 }
             });
@@ -1232,12 +1253,34 @@ function phdata(datad,dqdata) {
                 }]
             });
 
+
+
+
+
+
+            var redcolor="red";
+            if (hr<60||hr>100){
+                itemStyle_color_hr=redcolor;
+            }
+            if (hrv<-10||hrv>10){
+                itemStyle_color_hrv=redcolor;
+            }
+            if (br<12||br>20){
+                itemStyle_color_br=redcolor;
+            }
+            if (stress<0||stress>30){
+                itemStyle_color_stress=redcolor;
+            }
+            if (bp<-10||bp>10){
+                itemStyle_color_bp=redcolor;
+            }
+            if (spo2<94){
+                itemStyle_color_spo2=redcolor;
+            }
+
+
+
             if (null!=select_monitorall_iframe){
-                itemStyle_color="#00FF00";
-                var itemStyle_color_hr=itemStyle_color;
-                var itemStyle_color_stress=itemStyle_color;
-                if (hr<60||hr>100){itemStyle_color_hr="red"}
-                if (stress>0){itemStyle_color_stress="red"}
                 select_monitorall_iframe.myMonitorall.setOption({
                     xAxis: {
                         data: date_hr
@@ -1265,7 +1308,7 @@ function phdata(datad,dqdata) {
                                 {name: '当前值', value:hrv, xAxis:dqx, yAxis: hrv}
                             ],
                             itemStyle:{
-                                color:itemStyle_color,
+                                color:itemStyle_color_hrv,
                             }
                         }
                     }]
@@ -1281,7 +1324,7 @@ function phdata(datad,dqdata) {
                                 {name: '当前值', value:br, xAxis:dqx, yAxis: br}
                             ],
                             itemStyle:{
-                                color:itemStyle_color,
+                                color:itemStyle_color_br,
                             }
                         }
                     }]
@@ -1297,7 +1340,7 @@ function phdata(datad,dqdata) {
                                 {name: '当前值', value:relax, xAxis:dqx, yAxis: relax}
                             ],
                             itemStyle:{
-                                color:itemStyle_color,
+                                color:itemStyle_color_relax,
                             }
                         }
                     }]
@@ -1329,7 +1372,7 @@ function phdata(datad,dqdata) {
                                 {name: '当前值', value:bp, xAxis:dqx, yAxis: bp}
                             ],
                             itemStyle:{
-                                color:itemStyle_color,
+                                color:itemStyle_color_bp,
                             }
                         }
                     }]
@@ -1345,7 +1388,7 @@ function phdata(datad,dqdata) {
                                 {name: '当前值', value:spo2, xAxis:dqx, yAxis: spo2}
                             ],
                             itemStyle:{
-                                color:itemStyle_color,
+                                color:itemStyle_color_spo2,
                             }
                         }
                     }]
@@ -1388,16 +1431,37 @@ function phdata(datad,dqdata) {
             snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
             $("#snrtext").html(snrtext);
 
-            var monitoralltext="生理状态： "+status_text+" <span  id='monitorall_hr'>心率： "+hr+"</span> 心率变异： "+hrv+" 呼吸次数： "+br+" 放松值： "+relax+" <span  id='monitorall_stress'>紧张值： "+stress+"</span> 血压变化："+bp+"  血氧： "+spo2+"";
-            $("#monitorall_hr").removeClass("highlight_monitorall");
-            $("#monitorall_stress").removeClass("highlight_monitorall");
+            var monitoralltext=" 生理状态： "+status_text+"\
+                                                                <span  id=\"monitorall_hr\">心率： "+hr+"</span>\
+                                                                <span  id=\"monitorall_hrv\">心率变异： "+hrv+"</span>\
+                                                               <span  id=\"monitorall_br\">呼吸次数： "+br+"</span>\
+                                                                <span  id=\"monitorall_relax\">放松值： "+relax+"</span>\
+                                                                <span  id=\"monitorall_stress\">紧张值： "+stress+"</span>\
+                                                                <span  id=\"monitorall_bp\">血压变化： "+bp+"</span>\
+                                                                <span  id=\"monitorall_spo2\">血氧： "+spo2+"</span>";
+            $("#monitorall_stressstate,#monitorall_hr,#monitorall_hrv,#monitorall_br,#monitorall_relax,#monitorall_stress,#monitorall_bp,#monitorall_spo2").removeClass("highlight_monitorall");
            $("#monitoralltext").html(monitoralltext);
-           if (hr<60||hr>100) {
+            if (hr<60||hr>100){
                 $("#monitorall_hr").addClass("highlight_monitorall");
-           }
-           if (stress>0){
-               $("#monitorall_stress").addClass("highlight_monitorall");
-           }
+        }
+            if (hrv<-10||hrv>10){
+                $("#monitorall_hrv").addClass("highlight_monitorall");
+            }
+            if (br<12||br>20){
+                $("#monitorall_br").addClass("highlight_monitorall");
+            }
+            if (stress<0||stress>30){
+                $("#monitorall_stress").addClass("highlight_monitorall");
+            }
+            if (bp<-10||bp>10){
+                $("#monitorall_bp").addClass("highlight_monitorall");
+            }
+            if (spo2<94){
+                $("#monitorall_spo2").addClass("highlight_monitorall");
+            }
+
+
+
 
 
 
