@@ -75,4 +75,15 @@ public interface MeetingControl {
     @RequestMapping("/mt/v1/getTdAndUserAndOtherCacheParamByMTssid")
     @ResponseBody
     public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param);
+
+
+    /**
+     * 获取全部会议模板
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/mt/v1/getMc_model")
+    @ResponseBody
+    public RResult getMc_model(@RequestBody ReqParam<GetMc_modelParam_out> param);
+
 }

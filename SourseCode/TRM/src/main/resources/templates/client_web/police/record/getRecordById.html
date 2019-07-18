@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title  th:text="${getRecordByIdModel.title}">智能提讯系统</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
-    <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
 <style>
@@ -75,53 +74,33 @@
         white-space: normal;
         text-align: left;
     }
-    @font-face {font-family: "iconfont";
-        src: url('iconfont.eot?t=1558432184553'); /* IE9 */
-        src: url('iconfont.eot?t=1558432184553#iefix') format('embedded-opentype'), /* IE6-IE8 */
-        url('data:application/x-font-woff2;charset=utf-8;base64,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') format('woff2'),
-        url('iconfont.woff?t=1558432184553') format('woff'),
-        url('iconfont.ttf?t=1558432184553') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-        url('iconfont.svg?t=1558432184553#iconfont') format('svg'); /* iOS 4.1- */
-    }
-
-    .iconfont {
-        font-family: "iconfont" !important;
-        font-size: 16px;
-        font-style: normal;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-    }
-
-    .icon-gaozhishuchakan:before {
-        content: "\e639";
-    }
-
-    .icon-fanhuiyou:before {
-        content: "\e615";
-    }
-    .icon-dayin:before {
-        content: "\e605";
-    }
-
-    .icon-langdu:before {
-        content: "\e61f";
-    }
-
-    .icon-xin:before {
-        content: "\e6df";
-    }
-
-    .icon-daochu:before {
-        content: "\eb4d";
-    }
 
     .highlight_left{
      color: #FFFF00 !important ;text-shadow: black 0.1em 0.1em 0.2em;font-weight: bold;
     }
 
-      .highlight_right{
+    .highlight_right{
         color: #bfff00 !important ;text-shadow: black 0.1em 0.1em 0.2em;font-weight: bold;
     }
+
+    .highlight_all{
+        color: #156b4b !important ;font-weight: bold;
+        background-color: #FFFF00;
+    }
+    .highlight_dq{
+        color: rgba(34, 214, 61, 0.85) !important ;font-weight: bold;
+        background-color: #FFFF00;
+    }
+
+    @-webkit-keyframes fade{	/*透明度由0到1*/
+        0%{opacity:0; }
+        100%{ opacity:1;}
+    }
+    .highlight_monitorall {
+        color: #FFFFFF;background-color: red;
+        -webkit-animation: fade 1s infinite ease-in-out;
+    }
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -158,7 +137,7 @@
                                                            <td></td>
                                                        </tr>
                                                        <tr>
-                                                           <td>案件人</td>
+                                                           <td>被询(讯)问人</td>
                                                            <td></td>
                                                        </tr>
                                                        <tr>
@@ -180,19 +159,18 @@
                                 </div>
                             </div>
                             <div class="layui-tab-item">
-                                <!--<div class="layui-card-header" style="margin-bottom: 0px;font-weight: normal;background-color: transparent ">-->
-                                <div class="layui-card-header" style="margin-bottom: 0px;font-weight: normal;color: red">
-
-                                    <!-- <div class="layui-col-md8" >
-                                        <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容，回车跳转" autocomplete="off" class="layui-input" id="recordreals_select"  >
+                                <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal">
+                                    <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
+                                        <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();" >
                                     </div>
-                                    <div class="layui-col-md4" >
-                                        <div class="layui-btn-group">
-                                            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-up"></i></button>
-                                            <button type="button" class="layui-btn"><i class="layui-icon layui-icon-down"></i></button>
-                                        </div>
-                                    </div>-->
-                                    （提示:双击问答文本自动定位视频播放位置）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
+                                    <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
+                                            <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
+                                                <i class="layui-icon">&#xe619;</i>
+                                            </button>
+                                            <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
+                                                <i class="layui-icon">&#xe61a;</i>
+                                            </button>
+                                    </div>
                                 </div>
                                 <div class="layui-card">
                                     <!--<div class="layui-card-header">笔录实时回访</div>-->
@@ -225,7 +203,7 @@
                     <div class="layui-inline" style="margin-bottom:0">
                         <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                             <div class="layui-select-title">
-                                <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>
+                                <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
                             </div>
                             <dl class="layui-anim layui-anim-upbit" >
                                 <dd lay-value="" class="" onclick="exportWord(this);">导出word</dd>
@@ -242,9 +220,9 @@
                         <div class="layui-card-header">笔录回放 <span style="color: red">（提示:<span class="highlight_left">黄色</span>高亮跟随视频定位，<span class="highlight_right">绿色</span>高亮跟随双击定位）</span></div>
                         <div class="layui-card-body">
                             <!--视频点播区域-->
-                            <div class="layui-row" style="margin-top: 15px">
+                            <div class="layui-row" style="">
                                 <div class="layui-col-md5" >
-                                    <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
+                                    <div style="height: 675px; overflow-x: hidden; overflow-y: scroll;">
                                         <div class="layui-col-md12"  >
                                             <div th:replace="video :: video">...</div>
                                         </div>
@@ -265,7 +243,10 @@
                                                 <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
                                             </div>
                                             <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
-                                            <div style="width:98%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
+                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
+                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge-rim"  style="width: 100%;" id="monitoralltext">
+                                                生理状态： 加载中 <span  id="monitorall_hr">心率： 0</span> 心率变异： 0 呼吸次数： 0 放松值： 0 <span  id="monitorall_stress">紧张值： 0</span> 血压变化： 0 血氧： 0
+                                            </span></div>
                                         </div>
                                     </div>
                                 </div>

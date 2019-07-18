@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
@@ -169,7 +170,7 @@ public class RecordService extends BaseService {
             for (Record record : records) {
                 String  recordssid=record.getSsid();
                 Integer recordbool_=record.getRecordbool();//笔录状态1进行中2已完成
-                if (recordbool_==1){
+                if (null!=recordbool_&&recordbool_!=2){
                     List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
                     record.setProblems(recordToProblems);
                 }else {
@@ -208,7 +209,7 @@ public class RecordService extends BaseService {
     //提供给笔录问答实时记录初始化使用
     public  List<Record> initRecordrealingCache(){
         EntityWrapper recordparam=new EntityWrapper();
-        recordparam.eq("recordbool",1);//获取进行中的笔录
+        recordparam.eq("recordbool",1).or().eq("recordbool",0);//获取进行中的笔录
         List<Police_record> list=police_recordMapper.selectList(recordparam);
         List<Record> records=new ArrayList<>();
         if (null!=list&&list.size()>0){
@@ -371,8 +372,6 @@ public class RecordService extends BaseService {
             Record record=police_recordMapper.getRecordBySsid(recordParam);
 
             if (null!=record){
-
-
                 try {
                     /**
                      *  获取题目答案
@@ -587,11 +586,21 @@ public class RecordService extends BaseService {
                 }
             }
             for (int i = 0; i < recordtypes.size(); i++) {
+                GetRecordtypesVOParam m= recordtypes.get(i);
+                if (null!=m){
+                    String recordtypessid=m.getSsid();
+                    EntityWrapper word_ew=new EntityWrapper();
+                    word_ew.eq("r.ssid",recordtypessid);
+                    List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
+                    if (null!=wordTemplates&&wordTemplates.size()>0){
+                        m.setWordTemplates(wordTemplates);
+                    }
+                }
                 if(recordtypes.get(i).getPid()==0){
-                    getRecordtypesVOParamList.add(recordtypes.get(i));
+                    getRecordtypesVOParamList.add(m);
                 }
                 if (null!=pid){
-                    getRecordtypesVOParamList.add(recordtypes.get(i));
+                    getRecordtypesVOParamList.add(m);
                 }
             }
             getRecordtypesVO.setGetRecordtypesVOParamList(getRecordtypesVOParamList);
@@ -620,7 +629,6 @@ public class RecordService extends BaseService {
             return;
         }
         Recordtype recordtype=new Recordtype();
-
         Police_recordtype police_recordtype=new Police_recordtype();
         police_recordtype.setId(getRecordtypeByIdParam.getId());
         police_recordtype =  police_recordtypeMapper.selectOne(police_recordtype);
@@ -629,6 +637,15 @@ public class RecordService extends BaseService {
             result.setMessage("系统错误");
         }
         recordtype=gson.fromJson(gson.toJson(police_recordtype),Recordtype.class);
+            String recordtypessid=recordtype.getSsid();
+            EntityWrapper word_ew=new EntityWrapper();
+            word_ew.eq("r.ssid",recordtypessid);
+            List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
+            if (null!=wordTemplates&&wordTemplates.size()>0){
+                recordtype.setWordTemplates(wordTemplates);
+            }
+
+
 
         //开始获取子集
         List<Police_recordtype> records_son=new ArrayList<>();
@@ -637,7 +654,17 @@ public class RecordService extends BaseService {
         ew.eq("pid",police_recordtype.getId());
         records_son =  police_recordtypeMapper.selectList(ew);
         if (null!=records_son&&records_son.size()>0) {
-            recordtype.setRecordtypes(records_son);
+          List<RecordtypeToWord> recordtypes=gson.fromJson(gson.toJson(records_son), new TypeToken<List<RecordtypeToWord>>(){}.getType());
+            for (RecordtypeToWord recordtypeToWord : recordtypes) {
+                String recordtypessid_=recordtypeToWord.getSsid();
+                EntityWrapper word_ew_=new EntityWrapper();
+                word_ew_.eq("r.ssid",recordtypessid);
+                List<WordTemplate> wordTemplates_=police_wordtemplateMapper.getWordTemplate(word_ew_);
+                if (null!=wordTemplates_&&wordTemplates_.size()>0){
+                    recordtypeToWord.setWordTemplates(wordTemplates_);
+                }
+            }
+          recordtype.setRecordtypes(recordtypes);
         }
 
         result.setData(recordtype);
@@ -696,7 +723,7 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void addCaseToArraignment(RResult result, ReqParam<AddCaseToArraignmentParam> param){
+    public void addCaseToArraignment(RResult result, ReqParam<AddCaseToArraignmentParam> param, HttpSession session){
         AddCaseToArraignmentParam addCaseToArraignmentParam=param.getParam();
         if (null==addCaseToArraignmentParam){
             result.setMessage("参数为空");
@@ -708,9 +735,12 @@ public class RecordService extends BaseService {
         String recordname=addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
+        String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
 
         UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
         Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
+
+
 
         //需要新增人员信息
         if (StringUtils.isBlank(userssid)){
@@ -769,12 +799,48 @@ public class RecordService extends BaseService {
             return;
         }
 
+        String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
+        String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
+        String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
+        String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
+
+        if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
+            LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
+            Police_workunit workunit=new Police_workunit();
+            workunit.setSsid(OpenUtil.getUUID_32());
+            workunit.setCreatetime(new Date());
+            workunit.setWorkname(otherworkname);
+           int police_workunitMapper_insertbool= police_workunitMapper.insert(workunit);
+           LogUtil.intoLog("police_workunitMapper_insertbool__"+police_workunitMapper_insertbool);
+            if (police_workunitMapper_insertbool>0){
+                otherworkssid=workunit.getSsid();
+            }
+        }
+
+        if (StringUtils.isBlank(otheradminssid)&&StringUtils.isNotBlank(otheruserinfoname)){
+            LogUtil.intoLog(this.getClass(),"需要新增询问人二____"+otheruserinfoname);
+            Base_admininfo base_admininfo=new Base_admininfo();
+            base_admininfo.setSsid(OpenUtil.getUUID_32());
+            base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
+            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+            base_admininfo.setCreator(user.getSsid());
+            base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
+            base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
+            base_admininfo.setUsername(otheruserinfoname);
+            base_admininfo.setRegistertime(new Date());
+            int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
+            LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
+            if (base_admininfoMapper_insertbool>0){
+                otheradminssid=base_admininfo.getSsid();
+            }
+        }
+
 
         //添加笔录信息
         Police_record record=new Police_record();
         record.setSsid(OpenUtil.getUUID_32());
         record.setCreatetime(new Date());
-        record.setRecordbool(1);//1进行中2未开始
+        record.setRecordbool(0);//1进行中2未开始
         record.setRecordtypessid(recordtypessid);
         record.setRecordname(recordname);
         int insertrecord_bool=police_recordMapper.insert(record);
@@ -784,7 +850,18 @@ public class RecordService extends BaseService {
             return;
         }
 
+
+
        //添加提讯数据
+        if (StringUtils.isBlank(mtmodelssid)){
+            //会议模板为空，直接取默认的
+            Base_type base_type=new Base_type();
+            base_type.setType(CommonCache.getCurrentServerType());
+            base_type=base_typeMapper.selectOne(base_type);
+            if (null!=base_type){
+                mtmodelssid=base_type.getMtmodelssid();
+            }
+        }
         Police_arraignment arraignment=new Police_arraignment();
         arraignment.setSsid(OpenUtil.getUUID_32());
         arraignment.setCreatetime(new Date());
@@ -793,8 +870,9 @@ public class RecordService extends BaseService {
         arraignment.setAskobj(addCaseToArraignmentParam.getAskobj());
         arraignment.setRecordadminssid(addCaseToArraignmentParam.getRecordadminssid());
         arraignment.setRecordplace(addCaseToArraignmentParam.getRecordplace());
-        arraignment.setOtheradminssid(addCaseToArraignmentParam.getOtheradminssid());
+        arraignment.setOtheradminssid(otheradminssid);
         arraignment.setRecordssid(record.getSsid());
+        arraignment.setMtmodelssid(mtmodelssid);//会议模板ssid
         int insertarraignment_bool=police_arraignmentMapper.insert(arraignment);
         LogUtil.intoLog(this.getClass(),"insertarraignment_bool__"+insertarraignment_bool);
 
@@ -2004,14 +2082,14 @@ public class RecordService extends BaseService {
             List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
             if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                 for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
-                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1){
+                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())!=2){//未完成的
                         ingsize++;
                     }
                 }
             }
             if (ingsize>0){
                 LogUtil.intoLog(this.getClass(),"ingsize__"+ingsize);
-                result.setMessage("请先结束正在进行中的笔录，再进行归档");
+                result.setMessage("请先结束未完成的笔录，再进行归档");
                 return;
             }
         }

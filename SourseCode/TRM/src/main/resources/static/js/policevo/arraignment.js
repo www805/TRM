@@ -109,8 +109,12 @@ function callbackgetArraignmentByCaseSsid(data) {
                 var datum = data[i];
                 if (datum.recordbool==1){
                     datum.recordbool="进行中";
-                }else{
+                }else if (datum.recordbool==2){
+                    datum.recordbool="已完成";
+                }else if (datum.recordbool==0){
                     datum.recordbool="未开始";
+                }else {
+                    datum.recordbool="未知";
                 }
 
             } 

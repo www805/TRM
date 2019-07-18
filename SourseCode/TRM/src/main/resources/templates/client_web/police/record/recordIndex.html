@@ -72,6 +72,7 @@
                    <div class="layui-input-inline" style="width: 100px;float: left;margin-right: 20px;">
                        <select name="recordbool" lay-verify="" id="recordbool" lay-filter="change_recordbool" >
                            <option value="">全部</option>
+                           <option value="0">未开始</option>
                            <option value="1">进行中</option>
                            <option value="2">已完成</option>
                        </select>
@@ -80,7 +81,7 @@
                    <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,15);">
                </div>
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
-               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
+               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
             </div>
                 <div class="layui-card">
                     <div style="height: 660px; overflow-x: hidden; overflow-y: scroll;">
@@ -121,7 +122,7 @@
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
         {{#  var recordbool=value.recordbool;var recordbooltext; }}
-        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else{recordbooltext="<span style='color: #00FF00'>已完成</span>";}  }}
+        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
 
         {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   }}
         <tr onclick="setproblems('{{value.ssid}}',this)"   ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}');" style="background-color: {{backgroundcolor}}">

@@ -9,7 +9,7 @@ public class AddRecordParam {
 
     private List<RecordToProblem> recordToProblems;
 
-    private Integer recordbool;//笔录状态  1进行中 2已结束
+    private Integer recordbool;//笔录状态  1进行中 2已结束 0未开始
 
     public Integer getRecordbool() {
         return recordbool;

@@ -4,14 +4,14 @@ import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 
 import java.util.List;
 
-public class Recordtype extends Police_recordtype {
-    private List<Police_recordtype> recordtypes;
+public class Recordtype extends RecordtypeToWord {
+    private List<RecordtypeToWord> recordtypes;
 
-    public List<Police_recordtype> getRecordtypes() {
+    public List<RecordtypeToWord> getRecordtypes() {
         return recordtypes;
     }
 
-    public void setRecordtypes(List<Police_recordtype> recordtypes) {
+    public void setRecordtypes(List<RecordtypeToWord> recordtypes) {
         this.recordtypes = recordtypes;
     }
 }

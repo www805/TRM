@@ -193,7 +193,7 @@ function towaitRecord(recordssid,recordbool) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
-    if (recordbool==1){
+    if (recordbool!=2){
         var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
         window.location.href=url+"?ssid="+recordssid;
     } else{

@@ -20,7 +20,7 @@ import java.util.Date;
 /**
  * 监测总控同步时间 ZkTimeConfig
  */
-@Component
+/*@Component*/
 public class ZkTimeConfig {
 
     @Autowired

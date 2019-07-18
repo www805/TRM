@@ -286,6 +286,18 @@ public class OutAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping("/getMc_model")
+    public RResult getMc_model(@RequestBody  ReqParam<GetMc_modelParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getMc_model(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 

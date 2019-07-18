@@ -67,7 +67,8 @@ function callbackgetHome(data) {
             myChart2.setOption({
                 series: [{
                     name: '详情来源',
-                    data: [{value:data.record_finishnum_y, name:'已完成笔录'},
+                    data: [{value:data.record_waitnum_y,name:'未开始笔录'},
+                        {value:data.record_finishnum_y, name:'已完成笔录'},
                         {value:data.record_unfinishnum_y, name:'进行中笔录'},
                         {value:data.case_endnum_y, name:'未提讯案件'},
                         {value:data.case_startnum_y, name:'已提讯案件'},
@@ -167,7 +168,7 @@ $(function () {
         legend: {
             orient: 'vertical',
             x: 'left',
-            data:['已完成笔录','进行中笔录','未提讯案件','已提讯案件','模板','人员']
+            data:['未开始笔录','已完成笔录','进行中笔录','未提讯案件','已提讯案件','模板','人员']
         },
         toolbox: {
             show : true,

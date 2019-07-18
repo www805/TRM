@@ -21,6 +21,8 @@ public class GetHomeVO {
 
     private Integer record_unfinishnum_y;//进行中的笔录数量
 
+    private Integer record_waitnum_y;//未开始笔录数量
+
     private Integer record_num_y;//笔录总数
 
     private Integer case_num_y;//案件总数
@@ -40,6 +42,14 @@ public class GetHomeVO {
     private List<String> sqgnList; //授权功能集合
 
     private Integer workdays; //授权信息，同步工作天数
+
+    public Integer getRecord_waitnum_y() {
+        return record_waitnum_y;
+    }
+
+    public void setRecord_waitnum_y(Integer record_waitnum_y) {
+        this.record_waitnum_y = record_waitnum_y;
+    }
 
     public List<String> getSqgnList() {
         return sqgnList;

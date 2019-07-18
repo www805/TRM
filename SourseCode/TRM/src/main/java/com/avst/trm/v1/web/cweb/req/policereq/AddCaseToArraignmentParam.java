@@ -7,21 +7,60 @@ import com.avst.trm.v1.common.datasourse.police.entity.moreentity.UserInfo;
 import java.util.List;
 
 public class AddCaseToArraignmentParam {
-    private String userssid;
-    private String casessid;
-    private String adminssid;
-    private String otheradminssid;
-    private String recordadminssid;
-    private String recordtypessid;
-    private String recordplace;
-    private String recordname;
-    private String askobj;
-    private Integer asknum;
+    private String userssid;//被询问人的ssid
+    private String casessid;//案件ssid
+    private String adminssid;//询问人一的ssid
+    private String otheradminssid;//询问人二的ssid
+    private String otherworkssid;//询问人二对应的工作单位
+    private String recordadminssid;//记录人ssid
+    private String recordtypessid;//笔录类型ssid
+    private String recordplace;//问话地点
+    private String recordname;//笔录名称
+    private String askobj;//询问对象
+    private Integer asknum;//询问次数
+
+    private String mtmodelssid;//会议模板ssid
+
     private List<Police_userto> usertos;//其他在场人员信息
 
     private UserInfo addUserInfo;//新增人员的信息
-
     private Police_case addPolice_case;//新增案件的信息
+
+    private String otheruserinfoname;//新增询问人二的名称
+    private String otherworkname;//新增询问人二的对应的工作单位
+
+
+    public String getOtherworkssid() {
+        return otherworkssid;
+    }
+
+    public void setOtherworkssid(String otherworkssid) {
+        this.otherworkssid = otherworkssid;
+    }
+
+    public String getOtheruserinfoname() {
+        return otheruserinfoname;
+    }
+
+    public void setOtheruserinfoname(String otheruserinfoname) {
+        this.otheruserinfoname = otheruserinfoname;
+    }
+
+    public String getOtherworkname() {
+        return otherworkname;
+    }
+
+    public void setOtherworkname(String otherworkname) {
+        this.otherworkname = otherworkname;
+    }
+
+    public String getMtmodelssid() {
+        return mtmodelssid;
+    }
+
+    public void setMtmodelssid(String mtmodelssid) {
+        this.mtmodelssid = mtmodelssid;
+    }
 
     public UserInfo getAddUserInfo() {
         return addUserInfo;

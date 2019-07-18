@@ -190,7 +190,7 @@ function callbackgetRecordById(data) {
                 var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
                 var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
                 var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>案件人</td><td>"+username+"</td> </tr>\
+                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
@@ -706,7 +706,7 @@ function main1() {
                     }
                 }
             },
-            data: data1
+            data: data1,
         }]
     };
     myChart.setOption(option);
@@ -894,6 +894,68 @@ function showrecord(times,usertype,obj) {
         });
     }
 }
+var dqindex_realtxt=0;//当前显示的下标
+var likerealtxtarr=[];//搜索txt
+//搜索上
+function last_realtxt() {
+    if (isNotEmpty(likerealtxtarr)) {
+        dqindex_realtxt--;
+        if (dqindex_realtxt<0){
+            dqindex_realtxt=0;
+            layer.msg("这是第一个~");
+        }
+        set_dqrealtxt();
+    }
+}
+//搜索下
+function next_realtxt() {
+    if (isNotEmpty(likerealtxtarr)) {
+        dqindex_realtxt++;
+        if (dqindex_realtxt>=likerealtxtarr.length-1){
+            dqindex_realtxt=likerealtxtarr.length-1;
+            layer.msg("这是最后一个~");
+        }
+        set_dqrealtxt();
+    }
+}
+//搜索赋值
+function set_dqrealtxt(){
+    mouseoverbool=1;//不滚动
+    if (isNotEmpty(likerealtxtarr)) {
+        for (let i = 0; i < likerealtxtarr.length; i++) {
+            const all = likerealtxtarr[i];
+            all.find("a").removeClass("highlight_dq");
+        }
+        likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
+        var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
+        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+    }
+}
+
+function recordreals_select() {
+    mouseoverbool=1;//不滚动
+    var likerealtxt = $("#recordreals_select").val();
+    dqindex_realtxt=0;
+    likerealtxtarr=[];
+    $("#recordreals div").each(function (i,e) {
+        var spantxt=$(this).find("span").text();
+        $(this).find("span").html(spantxt);
+        if (isNotEmpty(likerealtxt)){
+            if (spantxt.indexOf(likerealtxt) >= 0) {
+                var html=$(this).find("span").html();
+                html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
+                $(this).find("span").html(html);
+                likerealtxtarr.push($(this).find("span"));
+            }
+        }
+    });
+
+    if (isNotEmpty(likerealtxtarr)){
+        set_dqrealtxt();
+    }else {
+        /*layer.msg("没有找到内容~");*/
+    }
+}
 
 
 $(function () {
@@ -974,27 +1036,23 @@ $(function () {
         });
 
         //回车搜索
-        $("#recordreals_select").keypress(function (e) {
+      /*  $("#recordreals_select").keypress(function (e) {
             if (e.which == 13) {
-               var liketxt = $("#recordreals_select").val();
-                console.log(liketxt)
-                $("#recordreals div").each(function (i,e) {
-                    var spantxt=$(this).find("span").text();
-                    console.log(spantxt);
-                });
+              recordreals_select();
             }
-        });
+        });*/
 
 
 
 });
-function phdata(datad) {
+
+//将数据传给统计图：datad全部数据，dqdata当前数据
+function phdata(datad,dqdata) {
         if (isNotEmpty(datad)){
 
             //将本次时间戳位置放中间--start--
-            var dqdata=datad[0];
-            var dqnum=0;
-            var dqobj=null;
+            var dqnum=0;//当前序号
+            var dqobj=null;//当前json值
             if(isNotEmpty(dqdata)){
                 dqnum=dqdata.num;
                 var dqphBataBackJson=dqdata.phBataBackJson;
@@ -1095,102 +1153,6 @@ function phdata(datad) {
             date_hrv=date_hrv2;
             data_hrv=data_hrv2;
 
-            $("#monitor_btn span").each(function (e) {
-                var type=$(this).attr("type");
-                var name=$(this).text();
-                var isn=$(this).attr("isn");
-                if (isn==1){
-                    if (type=="hr") {
-                        date1=date_hr;
-                        data1=data_hr;
-                    }else if (type=="hrv") {
-                        date1=date_hrv;
-                        data1=data_hrv;
-                    }else if (type=="br") {
-                        date1=date_br;
-                        data1=data_br;
-                    }else if (type=="relax") {
-                        date1=date_relax;
-                        data1=data_relax;
-                    }else if (type=="stress") {
-                        date1=date_stress;
-                        data1=data_stress;
-                    }else if (type=="bp") {
-                        date1=date_bp;
-                        data1=data_bp;
-                    }else if (type=="spo2") {
-                        date1=date_spo2;
-                        data1=data_spo2;
-                    }
-                }
-            });
-            myChart.setOption({
-                xAxis: {
-                    data: date1
-                },
-                series: [{
-                    data: data1
-                }]
-            });
-            if (null!=select_monitorall_iframe){
-                select_monitorall_iframe.myMonitorall.setOption({
-                    xAxis: {
-                        data: date_hr
-                    },
-                    series: [{
-                        data: data_hr
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall2.setOption({
-                    xAxis: {
-                        data: date_hrv
-                    },
-                    series: [{
-                        data: data_hrv
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall3.setOption({
-                    xAxis: {
-                        data: date_br
-                    },
-                    series: [{
-                        data: data_br
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall4.setOption({
-                    xAxis: {
-                        data: date_relax
-                    },
-                    series: [{
-                        data: data_relax
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall5.setOption({
-                    xAxis: {
-                        data: date_stress
-                    },
-                    series: [{
-                        data: data_stress
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall6.setOption({
-                    xAxis: {
-                        data: date_bp
-                    },
-                    series: [{
-                        data: data_bp
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall7.setOption({
-                    xAxis: {
-                        data: date_spo2
-                    },
-                    series: [{
-                        data: data_spo2
-                    }]
-                });
-            }
-
 
             if (isNotEmpty(dqobj)){
                 status=dqobj.status;
@@ -1207,6 +1169,189 @@ function phdata(datad) {
                 fps=dqobj.fps.toFixed(1);
                 stress_snr=dqobj.stress_snr.toFixed(1);
             }
+
+            var dqx=dqnum;
+            var dqy=0;
+            var itemStyle_color="#00FF00";
+            $("#monitor_btn span").each(function (e) {
+                var type=$(this).attr("type");
+                var name=$(this).text();
+                var isn=$(this).attr("isn");
+                if (isn==1){
+                    if (type=="hr") {
+                        date1=date_hr;
+                        data1=data_hr;
+                        dqy=hr;
+                        if (dqy<60||dqy>100){
+                            itemStyle_color="red";
+                        }
+                    }else if (type=="hrv") {
+                        date1=date_hrv;
+                        data1=data_hrv;
+                        dqy=hrv;
+                    }else if (type=="br") {
+                        date1=date_br;
+                        data1=data_br;
+                        dqy=br;
+                    }else if (type=="relax") {
+                        date1=date_relax;
+                        data1=data_relax;
+                        dqy=relax;
+                    }else if (type=="stress") {
+                        date1=date_stress;
+                        data1=data_stress;
+                        dqy=stress;
+                        if (dqy>0){
+                            itemStyle_color="red";
+                        }
+                    }else if (type=="bp") {
+                        date1=date_bp;
+                        data1=data_bp;
+                        dqy=bp;
+                    }else if (type=="spo2") {
+                        date1=date_spo2;
+                        data1=data_spo2;
+                        dqy=spo2;
+                    }
+                }
+            });
+            myChart.setOption({
+                xAxis: {
+                    data: date1
+                },
+                series: [{
+                    data: data1,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color,
+                        }
+                    }
+                }]
+            });
+
+            if (null!=select_monitorall_iframe){
+                itemStyle_color="#00FF00";
+                var itemStyle_color_hr=itemStyle_color;
+                var itemStyle_color_stress=itemStyle_color;
+                if (hr<60||hr>100){itemStyle_color_hr="red"}
+                if (stress>0){itemStyle_color_stress="red"}
+                select_monitorall_iframe.myMonitorall.setOption({
+                    xAxis: {
+                        data: date_hr
+                    },
+                    series: [{
+                        data: data_hr,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:hr, xAxis:dqx, yAxis: hr}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color_hr,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall2.setOption({
+                    xAxis: {
+                        data: date_hrv
+                    },
+                    series: [{
+                        data: data_hrv,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:hrv, xAxis:dqx, yAxis: hrv}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall3.setOption({
+                    xAxis: {
+                        data: date_br
+                    },
+                    series: [{
+                        data: data_br,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:br, xAxis:dqx, yAxis: br}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall4.setOption({
+                    xAxis: {
+                        data: date_relax
+                    },
+                    series: [{
+                        data: data_relax,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:relax, xAxis:dqx, yAxis: relax}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall5.setOption({
+                    xAxis: {
+                        data: date_stress
+                    },
+                    series: [{
+                        data: data_stress,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:stress, xAxis:dqx, yAxis: stress}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color_stress,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall6.setOption({
+                    xAxis: {
+                        data: date_bp
+                    },
+                    series: [{
+                        data: data_bp,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:bp, xAxis:dqx, yAxis: bp}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color,
+                            }
+                        }
+                    }]
+                });
+                select_monitorall_iframe.myMonitorall7.setOption({
+                    xAxis: {
+                        data: date_spo2
+                    },
+                    series: [{
+                        data: data_spo2,
+                        markPoint: {
+                            data: [
+                                {name: '当前值', value:spo2, xAxis:dqx, yAxis: spo2}
+                            ],
+                            itemStyle:{
+                                color:itemStyle_color,
+                            }
+                        }
+                    }]
+                });
+            }
+
             //开始填数据
             var status_text="未知";
             if (status==0){
@@ -1242,11 +1387,23 @@ function phdata(datad) {
             var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
             snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
             $("#snrtext").html(snrtext);
-            $("#snrtext3").html(snrtext);
+
+            var monitoralltext="生理状态： "+status_text+" <span  id='monitorall_hr'>心率： "+hr+"</span> 心率变异： "+hrv+" 呼吸次数： "+br+" 放松值： "+relax+" <span  id='monitorall_stress'>紧张值： "+stress+"</span> 血压变化："+bp+"  血氧： "+spo2+"";
+            $("#monitorall_hr").removeClass("highlight_monitorall");
+            $("#monitorall_stress").removeClass("highlight_monitorall");
+           $("#monitoralltext").html(monitoralltext);
+           if (hr<60||hr>100) {
+                $("#monitorall_hr").addClass("highlight_monitorall");
+           }
+           if (stress>0){
+               $("#monitorall_stress").addClass("highlight_monitorall");
+           }
+
+
 
             var tsmsg="身心监测加载中...";
             var tscss={"color":" #31708f","background-color": "#d9edf7"," border-color": "#bce8f1"};
-            if (isNotEmpty(hr_snr)&&hr_snr>=0.1){
+            if (null!=hr_snr&&hr_snr>=0.1){
                 tsmsg="身心准确监测中";
                 tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
             }else{

@@ -9,8 +9,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 //服务器启动的时候会执行一次
-@Component
-@Order(value = 1)
+/*@Component
+@Order(value = 1)*/
 public class TimeConfig implements ApplicationRunner {
 
     @Autowired

@@ -6,7 +6,9 @@ import com.avst.trm.v1.common.conf.type.*;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -37,12 +39,14 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPH
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +71,9 @@ public class OutService  extends BaseService {
     @Autowired
     private ZkControl zkControl;
 
+    @Autowired
+    private Police_recordMapper police_recordMapper;
+
 
     private Gson gson = new Gson();
 
@@ -81,13 +88,18 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return result;
         }
+
+        String recordssid=startRercordParam.getRecordssid();
+        String mtmodelssid=null;//会议模板ssid
+
         //判断是否开过会议
         Police_arraignment police_arraignment=new Police_arraignment();
-        if (StringUtils.isNotBlank(startRercordParam.getRecordssid())){
-            police_arraignment.setRecordssid(startRercordParam.getRecordssid());
+        if (StringUtils.isNotBlank(recordssid)){
+            police_arraignment.setRecordssid(recordssid);
             police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
             if (null!=police_arraignment){
                 String mtssid=police_arraignment.getMtssid();
+                mtmodelssid=police_arraignment.getMtmodelssid();
                 if (StringUtils.isNotBlank(mtssid)){
                     result.setData(-1);
                     result.setMessage("该案件已开启过会议");
@@ -96,16 +108,18 @@ public class OutService  extends BaseService {
             }
         }
 
-
-        //获取
-        Base_type base_type=new Base_type();
-        base_type.setType(CommonCache.getCurrentServerType());
-        base_type=base_typeMapper.selectOne(base_type);
-
+        if (StringUtils.isBlank(mtmodelssid)){
+            Base_type base_type=new Base_type();
+            base_type.setType(CommonCache.getCurrentServerType());
+            base_type=base_typeMapper.selectOne(base_type);
+            if (null!=base_type){
+                mtmodelssid=base_type.getMtmodelssid();
+            }
+        }
         StartMCParam_out startMCParam_out=new StartRercordParam();
         startMCParam_out.setMcType(MCType.AVST);
         startMCParam_out.setModelbool(1);
-        startMCParam_out.setMtmodelssid(base_type.getMtmodelssid());//查询会议模板ssid
+        startMCParam_out.setMtmodelssid(mtmodelssid);//查询会议模板ssid
         startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
 
 
@@ -135,7 +149,18 @@ public class OutService  extends BaseService {
                         int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
                         LogUtil.intoLog(this.getClass(),"arraignmentupdateById_bool__"+arraignmentupdateById_bool);
                     }
-                    LogUtil.intoLog(this.getClass(),"startMC开启成功__");
+
+                //修改笔录状态为进行中1
+                if (StringUtils.isNotBlank(recordssid)){
+                    EntityWrapper recordew=new EntityWrapper();
+                    recordew.eq("ssid",recordssid);
+                    Police_record record=new Police_record();
+                    record.setRecordbool(1);
+                    int record_updatebool= police_recordMapper.update(record,recordew);
+                    LogUtil.intoLog(this.getClass(),"record_updatebool__"+record_updatebool);
+                }
+
+                 LogUtil.intoLog(this.getClass(),"startMC开启成功__");
 
                 result.setData(startMCVO);
                 changeResultToSuccess(result);
@@ -709,6 +734,29 @@ public class OutService  extends BaseService {
         }
         return;
     }
+
+    public void getMc_model(RResult result, ReqParam<GetMc_modelParam_out> param){
+        GetMc_modelParam_out getMc_modelParam_out=param.getParam();
+        getMc_modelParam_out.setMcType(MCType.AVST);
+
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(getMc_modelParam_out);
+
+        try {
+            RResult rr = meetingControl.getMc_model(reqParam);
+            if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                result.setData(rr.getData());
+                changeResultToSuccess(result);
+                LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+            }else{
+                LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
 
     public void getClient(RResult rresult,ReqParam param){
         RResult zk_rr = zkControl.getControlInfoAll();

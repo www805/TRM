@@ -141,18 +141,7 @@ public class MainAction extends BaseAction {
         return result;
     }
 
-    /**
-     * 获取全部单位pp
-     * @return
-     */
-    @RequestMapping(value = "/getWorkunits")
-    @ResponseBody
-    public RResult getWorkunits(){
-        RResult result=createNewResultOfFail();
-        userService.getWorkunits(result);
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
+
 
     /**
      * 修改服务器配置
@@ -281,6 +270,47 @@ public class MainAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
             mainService.getAdminList(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取默认的会议模板类型
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getDefaultMtModelssid")
+    @ResponseBody
+    public RResult getDefaultMtModelssid(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getDefaultMtModelssid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 获取全部单位
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getWorkunits")
+    @ResponseBody
+    public RResult getWorkunits(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getWorkunits(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

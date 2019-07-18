@@ -1,13 +1,16 @@
-var cases=null;//案件数据
+var cases=null;//全部案件数据
 var otheruserinfos=null;//其他询问人员数据
 var cards=null;//全部证件类型
-
+var workunits=null;//全部的工作单位
+var modelList=null;//全部模板列表
 
 var dquserssid=null;//当前用户的ssid
 var dqcasessid=null;//当前案件ssid
+var dqmodelssid=null;//当前所选的会议模板ssid
+var dqotheruserinfossid=null;//当前询问人(新增询问人回显)
+var dqotherworkssid=null;//当前询问人对应的工作单位
 
 
-var dqotheruserinfo=null;//当前询问人(新增询问人回显)
 
 //开始笔录按钮
 function addCaseToArraignment(obj) {
@@ -46,11 +49,6 @@ function addCaseToArraignment(obj) {
         return;
     }
 
-    var otheradminssid=$("#otheruserinfos  option:selected").val();
-    if (!isNotEmpty(otheradminssid)){
-        parent.layer.msg("询问人二不能为空");
-        return;
-    }
 
     var recordadminssid=$("#recordadmin  option:selected").val();
     if (!isNotEmpty(recordadminssid)){
@@ -58,7 +56,7 @@ function addCaseToArraignment(obj) {
         return;
     }
     var recordplace=$("#recordplace").val();
-    var askobj=$("#askobj  option:selected").val();
+    var askobj=$("#askobj").val();
     if (!isNotEmpty(askobj)){
         parent.layer.msg("询问对象不能为空");
         return;
@@ -110,7 +108,7 @@ function addCaseToArraignment(obj) {
     }
 
 
-    //收集人员信息
+    //收集案件信息
     var cause=$("#cause").val();
     var casenum=$("#casenum").val();
     var occurrencetime=$("#occurrencetime").val();
@@ -149,22 +147,30 @@ function addCaseToArraignment(obj) {
         }
     });
 
+    //收集询问人二和对应工作单位等信息
+    var otheruserinfoname=$("#otheruserinfos").val();
+    var otherworkname=$("#otherworkname").val();
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
             userssid:dquserssid,
             casessid:dqcasessid,
             adminssid:sessionadminssid,
-            otheradminssid:otheradminssid,
+            otheradminssid:dqotheruserinfossid,
+            otherworkssid:dqotherworkssid,
             recordadminssid:recordadminssid,
             recordplace:recordplace,
             askobj:askobj,
             asknum:asknum,
             recordtypessid:recordtypessid,
             recordname:recordname,
+            mtmodelssid:dqmodelssid,
             usertos:usertos,
             addUserInfo:addUserInfo,
             addPolice_case:addPolice_case,
+            otheruserinfoname:otheruserinfoname,
+            otherworkname:otherworkname,
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
@@ -226,7 +232,26 @@ function gettree(data){
             if (l.police_recordtypes.length>0){
                 for (var j = 0; j < l.police_recordtypes.length; j++) {
                     var ls = l.police_recordtypes[j];
-                    html+=' <tr><td recordtype='+ls.ssid+' recordtypebool="false">'+ls.typename+'</td></tr>';
+                    var spanhtml='';
+                    if (isNotEmpty(ls.wordTemplates)){
+                        var defaultbool=0;
+                        for (let k = 0; k < ls.wordTemplates.length; k++) {
+                            const words = ls.wordTemplates[k];
+                            if (words.defaultbool==1){
+                                defaultbool++;
+                            }
+                        }
+                        if (defaultbool>0){
+                            spanhtml+=' <span class="layui-badge layui-bg-blue" title="word模板数：'+ls.wordTemplates.length+'|已设置默认"> <i class="layui-icon layui-icon-vercode"></i> </span>';
+                        } else {
+                            spanhtml+=' <span class="layui-badge layui-bg-orange" title="word模板数：'+ls.wordTemplates.length+'|未设置默认"> <i class="layui-icon layui-icon-tips"></i> </span>';
+                        }
+
+                    }else {
+                        spanhtml+=' <span class="layui-badge layui-bg-gray" title="word模板数：0"> <i class="layui-icon layui-icon-tips"></i>  </span>';
+                    }
+
+                    html+=' <tr><td recordtype='+ls.ssid+' recordtypebool="false">'+ls.typename+''+spanhtml+'</td></tr>';
                 }
             }
             html+='</table> </div></div>';
@@ -269,6 +294,12 @@ function gettree(data){
             $("iframe").prop("src",url);
         }
     });
+    $('#recotdtypes span').mouseover(function(){
+        var title = $(this).attr("title");
+        layer.tips(title, this);
+    });
+
+
     layui.use(['element','form'], function(){
         var element = layui.element;
         var form=layui.form;
@@ -394,15 +425,6 @@ function callbackgetAdminList(data) {
                     $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                 }
             }
-            if (isNotEmpty(dqotheruserinfo)){
-                $("#otheruserinfos").val(dqotheruserinfo);
-                for (var i = 0; i < otheruserinfos.length; i++) {
-                    var u = otheruserinfos[i];
-                    if (dqotheruserinfo==u.ssid){
-                        $("#otherworkname").val(u.workname);
-                    }
-                }
-            }
         }
     }else{
         parent.layer.msg(data.message);
@@ -418,14 +440,28 @@ function callbackgetAdminList(data) {
  * 获取人员信息
  */
 function getUserByCard(){
+
     var cardnum =  $("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();
     var cardtypesssid=$("#cards option:selected").val();
-     init_form();//初始化表单
+
+    dquserssid=null;//当前用户的ssid
+    dqcasessid=null;//当前案件ssid
+    cases=null;
+    var form=layui.form;
+    $("#casename_ssid").html("");
+    /* $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
+    $("#casename,#recordname").val("");
+    $("#asknum").val(0);
+    $("#casename_ssid").html("");
+
+    /* init_form();//初始化表单*/
     var bool=checkout_cardnum(cardnum,cardtypetext);
     if (!bool){
         return;
     }
+
+
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
 
     var data={
@@ -508,7 +544,7 @@ function setcases(cases){
                         var casename=$("#casename").find("option:selected").text();
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
                         var username=$("#username").val();
-                        var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
@@ -686,57 +722,6 @@ function tab_reset(obj){
     });
 }
 
-$(function () {
-    layui.use(['form','jquery','laydate'], function() {
-        var form=layui.form;
-
-        form.on('select(change_card)', function(data){
-            dquserssid=null;//当前用户的ssid
-            dqcasessid=null;//当前案件ssid
-            cases=null;
-                var form=layui.form;
-                var laydate=layui.laydate;
-                $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
-                $('select').not("#cards").prop('selectedIndex', 0);
-                $("#casename_ssid").html("");
-
-                laydate.render({
-                    elem: '#occurrencetime' //指定元素
-                    ,type:"datetime"
-                    ,value: new Date(Date.parse(new Date()))
-                    ,format: 'yyyy-MM-dd HH:mm:ss'
-                });
-                laydate.render({
-                    elem: '#starttime' //指定元素
-                    ,type:"datetime"
-                    ,value: new Date(Date.parse(new Date()))
-                    ,format: 'yyyy-MM-dd HH:mm:ss'
-                });
-                laydate.render({
-                    elem: '#endtime' //指定元素
-                    ,type:"datetime"
-                    ,value: new Date(Date.parse(new Date()))
-                    ,format: 'yyyy-MM-dd HH:mm:ss'
-                });
-
-                getUserByCard();
-
-                form.render('select');
-        });
-
-        form.on('select(change_otheruserinfos)', function(data){
-            var adminssid=data.value;
-                for (var i = 0; i < otheruserinfos.length; i++) {
-                    var u = otheruserinfos[i];
-                    if (adminssid==u.ssid){
-                        $("#otherworkname").val(u.workname);
-                    }
-                }
-            form.render('select','change_otheruserinfos');
-        });
-
-    });
-});
 
 
 
@@ -760,6 +745,39 @@ function callbakegetCaseById(data) {
                 cases=casesdata;
                 if (isNotEmpty(cases)){
                     setcases(cases);
+                }
+            }
+        }
+    }else{
+        parent.layer.msg(data.message);
+    }
+}
+
+
+/**
+ * 获取单位列表
+ */
+function getWorkunits() {
+    var url=getActionURL(getactionid_manage().addCaseToUser_getWorkunits);
+    var userssid=dquserssid;
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+           
+        }
+    };
+    ajaxSubmitByJson(url,data,callbakegetWorkunits) ;
+}
+function callbakegetWorkunits(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+            $("#otherworkname_text").html("");
+            if (isNotEmpty(data)){
+                workunits=data;
+                for (let i = 0; i < workunits.length; i++) {
+                    const l = workunits[i];
+                    $("#otherworkname_text").append("<dd lay-value='"+l.ssid+"' >"+l.workname+"</dd>");
                 }
             }
         }
@@ -822,6 +840,7 @@ function select_cardnum(obj) {
     $("#cardnum_ssid").css("display","none");
     var cardnum=$(obj).attr("lay-value");
     $("#cardnum").val(cardnum);
+    $(obj).focus();
     getUserByCard();
     $("#cardnum_ssid").html("");
 }
@@ -861,6 +880,7 @@ function select_case(obj) {
     var casename=$(obj).attr("lay-value");
     dqcasessid=casename;
     $("#casename").val($(obj).text());
+    $(obj).focus();
     if (isNotEmpty(dqcasessid)){
         $("#cause").val("");
         $("#casenum").val("");
@@ -875,7 +895,7 @@ function select_case(obj) {
                     var username=$("#username").val();
                     var casename=$("#casename").val();
                     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                    var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+                    var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
@@ -915,7 +935,7 @@ function select_caseblur() {
             var c = cases[i];
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
-                var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(c.asknum)+1)+"版";
+                var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -938,7 +958,7 @@ function select_caseblur() {
     }
     if (isNotEmpty(casename)&&!isNotEmpty(dqcasessid)){
         var asknum=$("#asknum").val();
-        var recordname=""+username+"《"+casename+"》"+recordtypename+"_第"+(parseInt(asknum)+1)+"版";
+        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
         $("#recordname").val(recordname);
         layui.use(['form','laydate'], function(){
             var form=layui.form;
@@ -994,6 +1014,7 @@ function select_cause(obj) {
     $("#cause_text").css("display","none");
     var cause=$(obj).attr("lay-value");
     $("#cause").val(cause);
+    $(obj).focus();
     $("#cause_text").html("");
 }
 function select_causeblur() {
@@ -1026,11 +1047,127 @@ function select_caseway(obj) {
     $("#caseway_text").css("display","none");
     var caseway=$(obj).attr("lay-value");
     $("#caseway").val(caseway);
+    $(obj).focus();
     $("#caseway_text").html("");
 }
 function select_casewayblur() {
     $("#caseway_text").css("display","none");
 }
+
+//询问对象
+function getAskObjList() {
+    $("#askobj_text").html("");
+    var askobjlike=[];
+    var askobj = $("#askobj").val();
+    var askobjList=["被害人","证人"];
+    if (isNotEmpty(askobjList)){
+        for (var i = 0; i < askobjList.length; i++) {
+            var a = askobjList[i];
+            if (a.indexOf(askobj) >= 0) {
+                askobjlike.push(a);
+            }
+        }
+        if (isNotEmpty(askobjlike)){
+            for (var j = 0; j < askobjlike.length; j++) {
+                var al=askobjlike[j];
+                $("#askobj_text").append("<dd lay-value='"+al+"' onmousedown='select_askobj(this);'>"+al+"</dd>");
+            }
+        }
+        $("#askobj_text").css("display","block");
+    }
+}
+function select_askobj(obj) {
+    $("#askobj_text").css("display","none");
+    var askobj=$(obj).attr("lay-value");
+    $("#askobj").val(askobj);
+    $(obj).focus();
+    $("#askobj_text").html("");
+}
+function select_askobjblur() {
+    $("#askobj_text").css("display","none");
+}
+
+//全部的工作单位
+function getOtherworknameList() {
+    $("#otherworkname_text").html("");
+    dqotherworkssid=null;
+    var otherworknamelike=[];
+    var otherworkname = $("#otherworkname").val();
+    if (isNotEmpty(workunits)){
+        for (var i = 0; i < workunits.length; i++) {
+            var w = workunits[i];
+            if (w.workname.indexOf(otherworkname) >= 0) {
+                otherworknamelike.push(w);
+            }
+        }
+        if (isNotEmpty(otherworknamelike)){
+            for (let i = 0; i < otherworknamelike.length; i++) {
+                const l = otherworknamelike[i];
+                $("#otherworkname_text").append("<dd lay-value='"+l.ssid+"' onmousedown='select_otherworkname(this);'>"+l.workname+"</dd>");
+            }
+        }
+        $("#otherworkname_text").css("display","block");
+    }
+}
+function select_otherworkname(obj) {
+    $("#otherworkname_text").css("display","none");
+    var otherworkssid=$(obj).attr("lay-value");
+    dqotherworkssid=otherworkssid;
+    $("#otherworkname").val($(obj).text());
+    $(obj).focus();
+    $("#otherworkname_text").html("");
+}
+function select_otherworknameblur() {
+    $("#otherworkname_text").css("display","none");
+}
+
+
+//询问人2
+function getOtheruserinfosList() {
+    $("#otheruserinfos_text").html("");
+    dqotheruserinfossid=null;
+    var otheruserinfoslike=[];
+    var otheruserinfosval = $("#otheruserinfos").val();
+    if (isNotEmpty(otheruserinfos)){
+        for (var i = 0; i < otheruserinfos.length; i++) {
+            var o = otheruserinfos[i];
+            if (o.username.indexOf(otheruserinfosval) >= 0) {
+                otheruserinfoslike.push(o);
+            }
+        }
+        if (isNotEmpty(otheruserinfoslike)){
+            for (var j = 0; j < otheruserinfoslike.length; j++) {
+                var ol=otheruserinfoslike[j];
+                if (ol.ssid!=sessionadminssid) {
+                    $("#otheruserinfos_text").append("<dd lay-value='"+ol.ssid+"' onmousedown='select_otheruserinfos(this);'>"+ol.username+"</dd>");
+                }
+            }
+        }
+        $("#otheruserinfos_text").css("display","block");
+    }
+}
+function select_otheruserinfos(obj) {
+    $("#otheruserinfos_text").css("display","none");
+    $("#otheruserinfos").val($(obj).text());
+    $(obj).focus();
+    $("#otheruserinfos_text").html("");
+    dqotheruserinfossid=$(obj).attr("lay-value");
+    for (var i = 0; i < otheruserinfos.length; i++) {
+        var u = otheruserinfos[i];
+        if (dqotheruserinfossid==u.ssid){
+            $("#otherworkname").val(u.workname);
+            dqotherworkssid=u.workunitssid;
+        }
+    }
+}
+function select_otheruserinfosblur() {
+    $("#otheruserinfos_text").css("display","none");
+}
+
+
+
+
+
 
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
@@ -1038,7 +1175,7 @@ function checkout_cardnum(cardnum,cardtypetext) {
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
             parent.layer.msg("身份证输入不合法");
-            init_form();
+            /*init_form();*/
             return false;
         }
         //解析身份证
@@ -1077,130 +1214,169 @@ function checkout_cardnum(cardnum,cardtypetext) {
 
 //初始化页面
 function init_form() {
-     dquserssid=null;//当前用户的ssid
-     dqcasessid=null;//当前案件ssid
-     cases=null;
-    layui.use(['form','laydate'], function(){
+    layer.confirm('数据将会清空，确定要重置吗？', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+
+        dquserssid=null;//当前用户的ssid
+        dqcasessid=null;//当前案件ssid
+        cases=null;
+         dqotheruserinfossid=null;//当前询问人(新增询问人回显)
+         dqotherworkssid=null;//当前询问人对应的工作单位
+        layui.use(['form','laydate'], function(){
+            var form=layui.form;
+            var laydate=layui.laydate;
+            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#modelssid')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
+            $("#asknum").val(0);
+            $('select').not("#cards").prop('selectedIndex', 0);
+            $("#casename_ssid").html("");
+
+            laydate.render({
+                elem: '#occurrencetime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#starttime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#endtime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+
+            form.render('select');
+        });
+
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+
+
+//获取会议模板
+function getMc_model(){
+    var url=getUrl_manage().getMc_model;
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetMc_model);
+}
+function callbackgetMc_model(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+       var data=data.data;
+       if (isNotEmpty(data)){
+           modelList=data;
+           if (isNotEmpty(modelList)&&isNotEmpty(model_index)){
+               $("#modelList").html("");
+               for (let i = 0; i < modelList.length; i++) {
+                   var model = modelList[i];
+                   var meetingtypehtml=model.meetingtype==null?"":(model.meetingtype==1?"<i class='layui-icon layui-icon-video'></i>视频":(model.meetingtype==2?"<i class='layui-icon layui-icon-headset'></i>音频":"未知"));
+                   var userecordhtml=model.userecord==null?"":(model.userecord==1?"录制":(model.userecord==-1?"不录制":"未知"));
+                   var html="<tr>\
+                                       <td>"+(i+1)+"</td>\
+                                       <td>"+meetingtypehtml+"</td>\
+                                       <td>"+model.explain+"</td>\
+                                       <td>"+model.usernum+"</td>\
+                                       <td>"+userecordhtml+"</td>\
+                                      <td style='padding-bottom: 0;'>\
+                                          <div class='layui-btn-container'>\
+                                          <button  class='layui-btn layui-btn-warm layui-btn-sm' onclick='select_Model(\""+model.ssid+"\",\""+model.explain+"\")'>选定</button>\
+                                          </div>\
+                                          </td>\
+                                 </tr>";
+                   $("#modelList").append(html);
+               }
+           }
+
+           if (isNotEmpty(dqmodelssid)&&isNotEmpty(modelList)){
+               for (let i = 0; i < modelList.length; i++) {
+                   var model = modelList[i];
+                   if (dqmodelssid==model.ssid){
+                       $("#modelssid").val(model.explain);
+                   }
+               }
+           }
+       }
+    }else {
+        console.log("获取会议模板"+data.message)
+    }
+}
+function select_Model(ssid,explain){
+    if (isNotEmpty(ssid)){
+        dqmodelssid=ssid;
+        $("#modelssid").val(explain);
+        layer.close(model_index);
+    }
+}
+function open_model(){
+    var html= '<table class="layui-table"  lay-skin="nob" style="margin-bottom: 30px;">\
+       <thead>\
+        <tr>\
+        <th>序号</th>\
+        <th>会议类型</th>\
+        <th>模板名称</th>\
+        <th>人员数量</th>\
+        <th>是否录制</th>\
+        <th>操作</th>\
+        </tr>\
+        </thead>\
+        <tbody id="modelList">\
+        </tbody>\
+        </table>';
+    model_index= layer.open({
+        type:1,
+        title: '选择场景模板',
+        shade: 0.3,
+        resize:false,
+        area: ['800px', '500px'],
+        content: html,
+        success: function(layero,index){
+            getMc_model();
+        }
+    });
+}
+
+//获取默认模板
+function getDefaultMtModelssid(){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getDefaultMtModelssid);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+        }
+    };
+   ajaxSubmitByJson(url,data,callbackgetDefaultMtModelssid);
+}
+function callbackgetDefaultMtModelssid(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            dqmodelssid=data;
+        }
+    }else {
+        console.log("获取会议默认模板ssid"+data.message)
+    }
+}
+
+
+
+$(function () {
+    layui.use(['form','jquery','laydate'], function() {
         var form=layui.form;
-        var laydate=layui.laydate;
-        $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
-        $('select').not("#cards").prop('selectedIndex', 0);
-        $("#casename_ssid").html("");
 
-        laydate.render({
-            elem: '#occurrencetime' //指定元素
-            ,type:"datetime"
-            ,value: new Date(Date.parse(new Date()))
-            ,format: 'yyyy-MM-dd HH:mm:ss'
+        form.on('select(change_card)', function(data){
+            getUserByCard();
+            form.render('select');
         });
-        laydate.render({
-            elem: '#starttime' //指定元素
-            ,type:"datetime"
-            ,value: new Date(Date.parse(new Date()))
-            ,format: 'yyyy-MM-dd HH:mm:ss'
-        });
-        laydate.render({
-            elem: '#endtime' //指定元素
-            ,type:"datetime"
-            ,value: new Date(Date.parse(new Date()))
-            ,format: 'yyyy-MM-dd HH:mm:ss'
-        });
-
-        form.render('select');
     });
-}
-
-/**
- * 添加询问人
- */
-function open_addUser() {
-    dqotheruserinfo=null;
-    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">询问人名称</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="usernamem" id="usernamem"   lay-verify="required" placeholder="请输入询问人名称" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-            </form>';
-
-    var index = parent.layer.open({
-        type:1,
-        title:'添加临时询问人',
-        content:html,
-        area: ['500px', '200px'],
-        btn: ['确定', '取消'],
-        yes:function(index, layero){
-            var url= url=getActionURL(getactionid_manage().addCaseToUser_addUser);
-            var username=$("#usernamem",parent.document).val();
-
-            if (!isNotEmpty(username)){
-                parent.layer.msg("请输入询问人名称");
-                return;
-            }
-            var data={
-                token:INIT_CLIENTKEY,
-                param:{
-                    username:username,
-                }
-            };
-            ajaxSubmitByJson(url,data,function (data) {
-                if(null!=data&&data.actioncode=='SUCCESS'){
-                    if (isNotEmpty(data)){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            dqotheruserinfo=data;
-                            getAdminList();
-                        }
-                    }
-                }else{
-                    parent.layer.msg(data.message);
-                }
-            });
-            parent.layer.close(index);
-        },
-        btn2:function(index, layero){
-            parent.layer.close(index);
-        }
-    });
-}
-
-function open_addAskobj() {
-    var html='<form class="layui-form  layui-form-pane site-inline" action="" style="margin: 30px;">\
-                <div class="layui-form-item">\
-                    <label class="layui-form-label">询问对象</label>\
-                    <div class="layui-input-block">\
-                        <input type="text" name="askobjm" id="askobjm"   lay-verify="required" placeholder="请输入询问对象" autocomplete="off" class="layui-input">\
-                    </div>\
-                </div>\
-            </form>';
-
-    var index = parent.layer.open({
-        type:1,
-        title:'添加询问对象',
-        content:html,
-        area: ['500px', '200px'],
-        btn: ['确定', '取消'],
-        yes:function(index, layero){
-            var askobjm=$("#askobjm",parent.document).val();
-
-            if (!isNotEmpty(askobjm)){
-                parent.layer.msg("请输入询问对象");
-                return;
-            }
-
-            $("#askobj").append("<option value='"+askobjm+"' >"+askobjm+"</option>");
-            layui.use('form', function(){
-                var $ = layui.$;
-                var form = layui.form;
-                $("#askobj").val(askobjm);
-                form.render();
-            });
-            parent.layer.close(index);
-        },
-        btn2:function(index, layero){
-            parent.layer.close(index);
-        }
-    });
-
-}
+});

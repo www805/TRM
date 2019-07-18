@@ -18,6 +18,7 @@
 
         var setinterval1;
         var totaltime;
+        var mouseoverbool=-1;//是否滚动1滚2不滚
 
         SewisePlayer.setup({
             server: "vod",
@@ -78,17 +79,34 @@
                     if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
                         $("#recordreals span").css("color","#fff").removeClass("highlight_left");
                         $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                        var top=$(this).position().top;
-                        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+
+
+
+                        $("#recordreals").hover(
+                            function(){
+                                mouseoverbool=1
+                            } ,
+                            function(){
+                                mouseoverbool=-1;
+                            });
+
+
+                        if (mouseoverbool==-1){
+                            var top=$(this).position().top;
+                            $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                        }
+
+
                     }
                 });
 
                 //中间
                 var arrph=[];
+                var dq_phdataback=null;
                 if (isNotEmpty(phdatabackList)){
                     locationtime=currenttime; //时间戳转秒
                     for (var i = 0; i < phdatabackList.length; i++) {
-                        var phdataback = phdatabackList[i];
+                         var phdataback = phdatabackList[i];
                         var num=phdataback.num;
                         var startph=num;
                         var endph=0;
@@ -98,12 +116,18 @@
                             endph=phdatabackList[i+1].num;
                         }
                         if (locationtime>=startph&&locationtime<=endph) {
-                            var start_i=i<0?0:i;
+                            dq_phdataback = phdatabackList[i];
+                           /* var start_i=i<0?0:i;
                             var end_i=(i+50)>=phdatabackList.length?phdatabackList.length:(i+50);
+                            arrph= phdatabackList.slice(start_i,end_i);*/
+
+                           var start_i=(i-26)<0?0:(i-26);
+                           var end_i=(i+25)>=phdatabackList.length?phdatabackList.length:(i+25);
                             arrph= phdatabackList.slice(start_i,end_i);
+                            console.log("开始时间__"+start_i+"__结束时间__"+end_i);
                         }
                     }
-                    phdata(arrph);
+                    phdata(arrph,dq_phdataback);
                 }
             }
 

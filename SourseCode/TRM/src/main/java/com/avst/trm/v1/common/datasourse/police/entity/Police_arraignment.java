@@ -74,6 +74,11 @@ public class Police_arraignment extends Model<Police_arraignment> {
      */
     private String mtssid;
 
+    /**
+     *会议模板ssid
+     */
+    private String mtmodelssid;
+
     private String ssid;
 
     private String string1;
@@ -83,6 +88,15 @@ public class Police_arraignment extends Model<Police_arraignment> {
     private Integer integer1;
 
     private Integer integer2;
+
+
+    public String getMtmodelssid() {
+        return mtmodelssid;
+    }
+
+    public void setMtmodelssid(String mtmodelssid) {
+        this.mtmodelssid = mtmodelssid;
+    }
 
     public Integer getId() {
         return id;

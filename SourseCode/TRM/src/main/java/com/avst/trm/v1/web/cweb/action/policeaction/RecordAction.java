@@ -202,14 +202,14 @@ public class RecordAction extends BaseAction {
     }
 
     @RequestMapping(value = "/addCaseToArraignment")
-    public RResult addCaseToArraignment(@RequestBody ReqParam<AddCaseToArraignmentParam> param){
+    public RResult addCaseToArraignment(@RequestBody ReqParam<AddCaseToArraignmentParam> param, HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.addCaseToArraignment(result,param);
+            recordService.addCaseToArraignment(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

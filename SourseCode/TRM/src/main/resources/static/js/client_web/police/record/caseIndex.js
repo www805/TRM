@@ -121,8 +121,12 @@ function callbackgetRecordByCasessid(data) {
                 var bool="";
                 if (datum.recordbool==1){
                     bool="<span style='color: red ' bool='1'>进行中</span>";
-                }else{
+                }else  if (datum.recordbool==2){
                     bool="<span style='color: #00FF00 ' bool='2'>已完成</span>";
+                }else  if (datum.recordbool==0){
+                    bool="<span style='color: #cccccc ' bool='2'>未开始</span>";
+                }else {
+                    bool="未知";
                 }
                 datum["bool"]=bool;
             }
@@ -229,11 +233,11 @@ function towaitRecord(recordssid,recordbool) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
-    if (recordbool==1){
-        var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
+    if (recordbool==2){
+        var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;
     } else{
-        var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
+        var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
         window.location.href=url+"?ssid="+recordssid;
     }
 }

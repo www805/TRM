@@ -6,12 +6,11 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_templateMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfoMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
+import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
@@ -78,10 +77,11 @@ public class MainService extends BaseService {
     private Police_userinfoMapper police_userinfoMapper;
 
     @Autowired
-    private Base_serverconfigMapper serverconfigMapper;
+    private Base_typeMapper base_typeMapper;
 
     @Autowired
-    private Base_filesaveMapper filesaveMapper;
+    private Police_workunitMapper police_workunitMapper;
+
 
     @Value("${spring.images.filePath}")
     private String imagesfilePath;
@@ -489,6 +489,33 @@ public class MainService extends BaseService {
         return;
     }
 
+    public void getDefaultMtModelssid(RResult result,ReqParam param){
+        String modelssid=null;
+        Base_type base_type=new Base_type();
+        base_type.setType(CommonCache.getCurrentServerType());
+        base_type=base_typeMapper.selectOne(base_type);
+        if (null!=base_type){
+            modelssid=base_type.getMtmodelssid();
+            result.setData(modelssid);
+            changeResultToSuccess(result);
+            LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
+        }
+        return;
+    }
+
+    public void getWorkunits(RResult result,ReqParam param){
+        try {
+            EntityWrapper ew=new EntityWrapper();
+            List<Police_workunit> list=police_workunitMapper.selectList(ew);
+            if (null!=list&&list.size()>0){
+                result.setData(list);
+            }
+            changeResultToSuccess(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void updatePassWord(RResult result, ReqParam<updatePassWordParam> param) {
 
         updatePassWordParam paramParam = param.getParam();
@@ -590,12 +617,12 @@ public class MainService extends BaseService {
         if(null == cacheParam.getData()){
             FileInputStream fis = null;
             try {
-                Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
+                Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
 
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
                     Base_filesave filesaveSyslogo = new Base_filesave();
                     filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
-                    Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
+                    Base_filesave syslogo = base_filesaveMapper.selectOne(filesaveSyslogo);
                     if (null!=syslogo){
                         cacheParam.setSyslogoimage(syslogo.getRecorddownurl());
                     }
@@ -604,7 +631,7 @@ public class MainService extends BaseService {
                 if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
                     Base_filesave filesaveClientlogo = new Base_filesave();
                     filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
-                    Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
+                    Base_filesave clientlogo = base_filesaveMapper.selectOne(filesaveClientlogo);
                     if (null!=clientlogo){
                         cacheParam.setClientimage(clientlogo.getRecorddownurl());
                     }

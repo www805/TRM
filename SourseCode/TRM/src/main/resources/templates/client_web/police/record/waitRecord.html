@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title  th:text="${waitRecordModel.title}">智能提讯系统</title>
     <link rel="stylesheet" href="/layui/css/layui.css">
-    <link rel="stylesheet" href="/uimaker/css/admin.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
     <link rel="stylesheet" href="/layui/css/layui.mobile.css">
 
@@ -187,6 +186,15 @@
         text-align: center;
     }
 
+    .highlight_all{
+        color: #156b4b !important ;font-weight: bold;
+        background-color: #FFFF00;
+    }
+    .highlight_dq{
+        color: rgba(34, 214, 61, 0.85) !important ;font-weight: bold;
+        background-color: #FFFF00;
+    }
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -226,9 +234,9 @@
             <!---->
             <div class="layui-col-md12 layui-collapse"  lay-accordion style="border: 0" >
                 <div class="layui-colla-item">
-                    <h2 class=" layui-card-header" ><!--layui-colla-title-->
+                    <h2 class=" layui-card-header " onclick="initcase_header();"><!--layui-colla-title-->
                         问答模板<span style="color: red;font-weight: normal">（提示;双击模板内容自动新增到中文区域）</span>
-                        <a class="layui-a-tips" onclick="opneModal_1();">变更模板</a>
+                        <a class="layui-a-tips" onclick="opneModal_1();" style="float: right;">变更模板</a>
                     </h2>
                     <div id="initheart_click" class="layui-colla-content  layui-card-body layui-row layui-show" style="padding: 0;" >
                         <div class="layui-col-lg12">
@@ -244,13 +252,34 @@
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="initec">
                     <ul class="layui-tab-title">
                         <li onclick="initasr()" id="asr"   class="layui-this">语音识别</li>
-                        <li onclick="initliving()"id="fd" >录音录像</li>
+                        <li onclick="initliving()"id="fd" >设备控制</li>
                         <li onclick="initheart();"id="ph" >身心监测</li>
-                        <li onclick="initcase()" > 案件信息</li>
+                        <li onclick="initcase()" id="case" > 案件信息</li>
                     </ul>
-                    <div class="layui-tab-content"  style="height: 450px; overflow-x: hidden; overflow-y: scroll;" id="leftdiv">
+                    <div class="layui-tab-content" id="leftdiv">
                         <div class="layui-tab-item  layui-show"  id="asritem" >
-                            <div style="height: 350px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">
+                            <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal">
+                                <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
+                                    <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
+                                </div>
+                                <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
+                                    <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
+                                        <i class="layui-icon">&#xe619;</i>
+                                    </button>
+                                    <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
+                                        <i class="layui-icon">&#xe61a;</i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="layui-card">
+                               <!-- <div style="height: 300px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">-->
+                                <div style="height:400px;  overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                                    <div class="layui-card-body" >
+                                        <div class="talk_show"  id="recordreals" style="margin-bottom: 100px;">
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-tab-item"  id="fditem">
@@ -296,7 +325,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="layui-tab-item ">
+                        <div class="layui-tab-item " id="caseitem">
                                 <div style="height:100%; overflow-x: hidden; overflow-y: scroll; " >
                                     <div class="layui-card-body">
                                         <table class="layui-table" lay-skin="line" style="table-layout: fixed">
@@ -306,7 +335,7 @@
                                                 <td></td>
                                             </tr>
                                             <tr>
-                                                <td>案件人</td>
+                                                <td>被询(讯)问人</td>
                                                 <td></td>
                                             </tr>
                                             <tr>
@@ -377,7 +406,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;">
+                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;" id="recorddetail_scrollhtml">
                             <div class="layui-card-body layui-row "  >
                                 <div class="layui-col-lg12 ">
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
@@ -481,11 +510,21 @@
         main1();
         getClient();
         togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
+        var templates= JSON.parse(sessionStorage.getItem(recordssid)||null)
+        if (isNotEmpty(templates)) {
+            $("#templatetoproblem_html").html("");
+            for (var i = 0; i < templates.length; i++) {
+                var templateToProblem = templates[i];
+                var html="<tr> <td ondblclick='copy_problems(this);'referanswer='"+templateToProblem.referanswer+"'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
+                $("#templatetoproblem_html").append(html);
+            }
+        }
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         var form=layui.form;
+
 
         //使用模块
         var html='<table class="layui-table"  lay-skin="nob" lay-size="sm">\
