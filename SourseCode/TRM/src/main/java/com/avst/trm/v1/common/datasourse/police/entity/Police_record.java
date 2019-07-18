@@ -67,6 +67,12 @@ public class Police_record extends Model<Police_record> {
 
 
     /**
+     * 点播压缩地址的iid
+     */
+    private String gz_iid;
+
+
+    /**
      * 笔录类型
      */
     private  String recordtypessid;
@@ -94,6 +100,17 @@ public class Police_record extends Model<Police_record> {
 
     private Integer integer2;
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getGz_iid() {
+        return gz_iid;
+    }
+
+    public void setGz_iid(String gz_iid) {
+        this.gz_iid = gz_iid;
+    }
 
     public String getWord_filesavessid() {
         return word_filesavessid;

@@ -5,12 +5,15 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
+import com.avst.trm.v1.feignclient.ec.req.GetSavePathParam;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
 import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
+import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
+import com.avst.trm.v1.feignclient.ec.vo.SaveFile_localParam;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,12 +33,21 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult<GetURLToPlayVO> getURLToPlay(@RequestBody GetURLToPlayParam param);
 
+    @RequestMapping("/ss/v1/getSavePath")
+    @ResponseBody
+    public RResult<GetSavepathVO> getSavePath(@RequestBody GetSavePathParam  param);
+
+    @RequestMapping("/ss/v1/saveFile_local")
+    @ResponseBody
+    public RResult saveFile_local(@RequestBody SaveFile_localParam param);
+
+//设备
     @RequestMapping("/flushbonading/v1/getFDListByFdid")
     @ResponseBody
     public RResult getFDListByFdid(@RequestBody GetFDListByFdidParam param);
 
-
 //ph测谎仪
+
     /**
      * 检测测谎仪状态
      * @param param

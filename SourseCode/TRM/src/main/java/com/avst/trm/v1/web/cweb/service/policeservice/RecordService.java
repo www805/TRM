@@ -2,12 +2,12 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.conf.MCType;
-import com.avst.trm.v1.common.conf.SSType;
+import com.avst.trm.v1.common.conf.GZVodThread;
+import com.avst.trm.v1.common.conf.type.MCType;
+import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
@@ -26,16 +26,11 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
-import com.avst.trm.v1.common.util.poiwork.param.Answer;
-import com.avst.trm.v1.common.util.poiwork.param.Talk;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
-import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
-import com.avst.trm.v1.feignclient.mc.req.StartMCParam_out;
-import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
@@ -48,11 +43,8 @@ import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -531,11 +523,29 @@ public class RecordService extends BaseService {
                     Object msg=getphdataback_rr==null?getphdataback_rr:getphdataback_rr.getMessage();
                     LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求失败__"+msg);
                 }
+                //获取实时数据
+                result.setData(getRecordByIdVO);
+                changeResultToSuccess(result);
+
+                String gz=record.getGz_iid();
+                //检测有没有下载包，没有就打包
+                if(StringUtils.isEmpty(gz)){
+                    //调用打包线程
+                    try {
+                        Police_record police_record=record;
+                        GZVodThread thread=new GZVodThread(result,police_recordMapper,police_record);
+                        thread.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }else{
+                result.setMessage("笔录查询为空");
+                LogUtil.intoLog(this.getClass()," police_recordMapper.getRecordBySsid，recordssid："+recordssid);
             }
 
-        //获取实时数据
-        result.setData(getRecordByIdVO);
-        changeResultToSuccess(result);
+
         return;
     }
 

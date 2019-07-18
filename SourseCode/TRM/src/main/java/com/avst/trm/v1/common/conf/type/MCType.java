@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.conf;
+package com.avst.trm.v1.common.conf.type;
 
 /**
  * 会议服务器的类型

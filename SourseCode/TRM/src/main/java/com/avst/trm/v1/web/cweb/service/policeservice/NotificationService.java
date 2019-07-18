@@ -110,7 +110,8 @@ public class NotificationService extends BaseService {
                 !".pdf".equalsIgnoreCase(suffix) &&
                 !".png".equalsIgnoreCase(suffix) &&
                 !".jpg".equalsIgnoreCase(suffix) &&
-                !".jpeg".equalsIgnoreCase(suffix) ){
+                !".jpeg".equalsIgnoreCase(suffix)&&
+                !".gz".equalsIgnoreCase(suffix)){
             rResult.setMessage("上传失败，只能上传doc/docx/pdf/png/jpg/jpeg文件");
             return;
         }

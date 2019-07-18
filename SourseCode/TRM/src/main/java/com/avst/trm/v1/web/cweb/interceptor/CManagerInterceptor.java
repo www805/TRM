@@ -60,6 +60,11 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             LogUtil.intoLog(this.getClass(),url+":url，跳过进入登录页面的拦截");
             return true;
         }
+        if( url.endsWith("/uploadNotification")){//测试上传接口
+            LogUtil.intoLog(this.getClass(),url+":url，测试上传接口");
+            return true;
+        }
+
 
         String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
         String firstinterface=basepath+"/gotologin";

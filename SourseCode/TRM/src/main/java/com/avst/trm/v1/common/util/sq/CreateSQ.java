@@ -48,12 +48,12 @@ public class CreateSQ {
         //授权的UnitCode一定是有规则的，例如：最上面的服务器是hb,下一级hb_wh,hb_wh_hk,最下级的客户端服务器也是hb_wh_hk；
         // 当前的节点服务器和该节点的下级服务器（客户端服务器）UnitCode一致，只是SortNum不同，节点是0，其他自动在上一个数值上加1
         sqEntity.setUnitCode("avst");
-        sqEntity.setSqDay(1000);
-        sqEntity.setSortNum(7);
+        sqEntity.setSqDay(100);
+        sqEntity.setSortNum(2);
         sqEntity.setServerType("police");
-        sqEntity.setForeverBool(true);//是否永久授权
-        sqEntity.setClientName("测试客户端服务器");
-        sqEntity.setCpuCode("414176424574474941464274");
+        sqEntity.setForeverBool(false);//是否永久授权
+        sqEntity.setClientName("庄杰麟测试客户端服务器");
+        sqEntity.setCpuCode("4645767648464A7242727274");
         sqEntity.setGnlist("record|asr|tts|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 

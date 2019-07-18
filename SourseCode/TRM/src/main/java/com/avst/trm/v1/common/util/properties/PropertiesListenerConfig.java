@@ -89,7 +89,10 @@ public class PropertiesListenerConfig {
 //            loadAllProperties("application.properties");
 //        }
 
-        new PropertiesListener("application.properties","trm.properties");
+        if(null==propertiesMap||null==propertiesMap.entrySet()||propertiesMap.entrySet().size()==0){
+            new PropertiesListener("application.properties","trm.properties");
+        }
+
         return propertiesMap.get(name);
     }
 

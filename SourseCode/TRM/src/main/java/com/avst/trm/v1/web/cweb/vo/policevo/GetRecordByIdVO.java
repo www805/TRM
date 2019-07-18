@@ -9,18 +9,18 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPla
 import java.util.List;
 
 public class GetRecordByIdVO {
-    private Record record;//笔录信息
+    private Record record;//笔录信息 //有Word/PDF地址
 
-    private CaseAndUserInfo caseAndUserInfo;//案件信息
+    private CaseAndUserInfo caseAndUserInfo;//案件信息 //没有文件和地址
 
 
 
     //以下对接外部的返回
-    private GetMCVO getMCVO;//asr识别回放sql
+    private GetMCVO getMCVO;//asr识别回放sql  //没有文件和地址
 
-    private GetPlayUrlVO getPlayUrlVO;//直播地址
+    private GetPlayUrlVO getPlayUrlVO;//点播地址 //有文件地址
 
-    private List<PHDataBackVoParam> phDataBackVoParams;//审讯检测数据
+    private List<PHDataBackVoParam> phDataBackVoParams;//审讯检测数据 //没有文件和地址
 
     public GetPlayUrlVO getGetPlayUrlVO() {
         return getPlayUrlVO;

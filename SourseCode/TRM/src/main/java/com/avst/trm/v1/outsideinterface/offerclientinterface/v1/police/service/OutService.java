@@ -1,8 +1,8 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.conf.*;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
+import com.avst.trm.v1.common.conf.type.*;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
@@ -31,7 +31,6 @@ import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.*;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
-import com.avst.trm.v1.feignclient.mc.vo.param.TdAndUserAndOtherCacheParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
