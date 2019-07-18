@@ -617,6 +617,27 @@ public class DateUtil {
 		return day;
 
 	}
+
+	public static String getHH(Date date) {
+		String currentTime = DateUtil.getDefaultDateFormat(date.getTime());
+		String day = currentTime.substring(11, 13);
+		return day;
+
+	}
+
+	public static String getMM(Date date) {
+		String currentTime = DateUtil.getDefaultDateFormat(date.getTime());
+		String day = currentTime.substring(14, 16);
+		return day;
+
+	}
+
+	public static String getSS(Date date) {
+		String currentTime = DateUtil.getDefaultDateFormat(date.getTime());
+		String day = currentTime.substring(17);
+		return day;
+
+	}
 	
 	public static int getMaxDayByMonth(int year,int month){
 		if(year !=0&&month!=0){
@@ -837,8 +858,8 @@ public class DateUtil {
     	      return format.format(calendar.getTime());
     	}
     public static void main(String[] args) {
-		
-			LogUtil.intoLog(DateUtil.class,fromToday(new Date()));
+
+		System.out.println(getHH(new Date()));
 			
 	}
  

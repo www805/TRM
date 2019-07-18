@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.conf;
+package com.avst.trm.v1.common.conf.type;
 
 /**
  * 语音服务器的类型

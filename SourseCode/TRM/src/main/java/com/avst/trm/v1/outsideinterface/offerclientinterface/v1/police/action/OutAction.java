@@ -134,7 +134,7 @@ public class OutAction extends BaseAction {
 
 
     /**
-     * 会议实时回放sql，
+     * 会议asr实时回放sql，
      * @param param
      * @return
      */

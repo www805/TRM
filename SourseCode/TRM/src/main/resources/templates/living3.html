@@ -15,11 +15,20 @@
     <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
     <script type="text/javascript" src="/swfplayer/vt_js/swfobject.js"></script>
     <script type="text/javascript">
-        var asrwh=$("#recordreals").width();
-        var asrht=asrwh*2.5/4;
+        var playerwh=$("#recordreals").width();
+        var playerwhht=playerwh*2.5/4;
 
-
+        $(function(){
+            initplayer();
+        });
         function play(strusr,strpass){
+
+            playerwh=$("#phitem").width();
+            if(!isNotEmpty(playerwh)||playerwh==0){
+                playerwh=$("#fditem").width();
+            }
+            playerwhht=playerwh*2.5/4;
+            // alert(playerwh+":playerwh");
 
             var player = document.getElementById("player");
             player_div = null;
@@ -35,8 +44,8 @@
             player_div.id = "player_div";
 
             // generate player.
-            var width = asrwh;
-            var height = asrht;
+            var width = playerwh-10;//10px是给一个边界
+            var height = playerwhht;
 
             // set new style
             var main = document.getElementById("view");
@@ -44,7 +53,6 @@
             main.style.width = Math.max(min_width, width);
 
             var flashvars = {};
-            var dev_ip   = "192.168.17.154";
             var url = liveurl+"?usr="+strusr+"_pwd="+strpass;
             //alert(url);
             flashvars.src = url;

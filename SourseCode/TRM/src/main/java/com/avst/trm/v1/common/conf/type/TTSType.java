@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.conf;
+package com.avst.trm.v1.common.conf.type;
 
 /**
  *文字转语音服务

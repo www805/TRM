@@ -285,6 +285,30 @@ public class OpenUtil {
 		}
 		 return path;
 	}
+
+	/**
+	 * 获取以日期格式为目录结构的文件夹
+	 * @param basepath
+	 * @return
+	 */
+	public static String getpath_fileByBasepath(String basepath){
+
+		Date dd=new Date();
+		String path=basepath+DateUtil.getYear(dd)+"/"+DateUtil.getMonth(dd)+"/"+DateUtil.getDay(dd)+"/";
+		return path;
+	}
+
+	/**
+	 * 获取以日期格式为目录结构的文件夹,y,m,d,h,m,s
+	 * @param basepath
+	 * @return
+	 */
+	public static String getpath_fileByBasepath2(String basepath){
+
+		Date dd=new Date();
+		String path=basepath+DateUtil.getYear(dd)+"/"+DateUtil.getMonth(dd)+"/"+DateUtil.getDay(dd)+"/"+DateUtil.getHH(dd)+"/"+DateUtil.getMM(dd)+"/"+DateUtil.getSS(dd)+"/";
+		return path;
+	}
 	
 
 	/**

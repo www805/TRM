@@ -68,7 +68,7 @@ public class RecordAction extends BaseAction {
     }
 
     /**
-     * 添查看单个笔录
+     * 查看单个笔录
      * @param param
      * @return
      */

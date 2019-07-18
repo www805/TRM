@@ -7,8 +7,11 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -152,6 +155,7 @@ public class HttpRequest {
 		OutputStream out=null;
 		InputStream inputStream = null;
 		InputStreamReader inputStreamReader = null;
+		DataInputStream dataIn=null;
 		BufferedReader reader = null;
 		StringBuffer resultBuffer = new StringBuffer();
 		String tempLine = null;
@@ -257,7 +261,7 @@ public class HttpRequest {
 				// 文件正文部分
 				// 把文件已流文件的方式 推入到url中
 				inputStream = new FileInputStream(file);
-				DataInputStream dataIn = new DataInputStream(inputStream);
+				dataIn = new DataInputStream(inputStream);
 				int bytes = 0;
 				byte[] bufferOut = new byte[1024];
 				while ((bytes = dataIn.read(bufferOut)) != -1) {
@@ -306,6 +310,7 @@ public class HttpRequest {
 				// 设置请求内容类型
 				httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 
+				httpURLConnection.setRequestProperty("Accept", "text/xml,text/javascript,text/html,application/json");
 
 				// 请求正文信息
 				// 第一部分：
@@ -329,9 +334,9 @@ public class HttpRequest {
 				sb.append(twoHyphens); // 必须多两道线
 				sb.append(boundary);
 				sb.append(end);
-				sb.append("Content-Disposition: form-data;name=\"file\";filename=\"" + filename + "\""+end);
+				sb.append("Content-Disposition: form-data;name=\"filebinary\";filename=\"" + filename + "\""+end);
 				//未知文件类型，以流的方式上传
-				sb.append("Content-Type:application/octet-stream"+end+end);
+				sb.append("Content-Type:multipart/form-data; charset=utf-8"+end+end);
 				byte[] head = sb.toString().getBytes("utf-8");
 				// 获得输出流
 				out = new DataOutputStream(httpURLConnection.getOutputStream());
@@ -340,13 +345,13 @@ public class HttpRequest {
 				// 文件正文部分
 				// 把文件已流文件的方式 推入到url中
 				inputStream = new FileInputStream(file);
-				DataInputStream dataIn = new DataInputStream(inputStream);
+				dataIn = new DataInputStream(inputStream);
 				int bytes = 0;
 				byte[] bufferOut = new byte[1024];
 				while ((bytes = dataIn.read(bufferOut)) != -1) {
 					out.write(bufferOut, 0, bytes);
 				}
-				inputStream.close();
+
 				// 结尾部分
 				byte[] foot = (end+twoHyphens + boundary + twoHyphens+end).getBytes("utf-8");// 定义最后数据分隔线
 				out.write(foot);
@@ -379,12 +384,10 @@ public class HttpRequest {
 			closecon(httpURLConnection,httpsURLConnection,reader, null,inputStream,inputStreamReader);
 
 
-			if(null!=out){
-				try{
-					out.close();
-				}catch (Exception e){
-					e.printStackTrace();
-				}
+			try {
+				dataIn.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
 			if(null!=urlConnection){
@@ -465,6 +468,28 @@ public class HttpRequest {
 		
 		
 	}
+
+
+
+
+
+	public static void main(String[] args) {
+
+		String uuid=OpenUtil.getUUID_32();
+		String actionUrl="http://192.168.17.159:80/uploadService/httpFileUpload?token="+uuid;
+//		String actionUrl="http://192.168.17.175:8080/cweb/police/notification/uploadNotification";
+		String uploadFilePath="D:\\ftpdata\\gz\\2019\\07\\17\\18\\19\\15\\client.tar.gz";
+		Map<String,String> map=new HashMap<String,String>();
+		map.put("upload_task_id",uuid);
+		map.put("dstPath","/tmp/hd0/2019-07-16/a534d4088e354603851dc4418f5944da_sxsba2/");
+		map.put("fileName","client.tar.gz");
+		map.put("linkaction","burn");
+		map.put("discFileName","client.tar.gz");
+		map.put("action","upload_file");
+		String rr=uploadFile(actionUrl,uploadFilePath,map);
+		System.out.println(rr);
+	}
+
 
 
 

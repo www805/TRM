@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -37,45 +38,73 @@ public class XwpfTUtil {
     public static  void main(String[] args) {
         Map<String, String> params = new HashMap<>();
 
-        params.put("${time}", "152315455");
-        params.put("${date}", "2019-6-25 11:57:12");
-        params.put("${age}", "");
+        params.put("${recordstarttime}", "152315455");
+        params.put("${recordendtime}", "2019-6-25 11:57:12");
+        params.put("${age}", "27");
         params.put("${username}", "吴斌");
 
-        String path="C:\\Users\\admin\\Desktop\\ceshi.docx";
-        String newfilepath="C:\\Users\\admin\\Desktop\\ceshi2.docx";
+        String path="C:\\Users\\Administrator\\Desktop\\ceshi.docx";
+        String newfilepath="C:\\Users\\Administrator\\Desktop\\ceshi2.docx";
 
-     /*    List<Talk> talkList=new ArrayList<>();
+        List<Talk> talkList=new ArrayList<>();
         Talk talk=new Talk();
-        talk.setAnswer("答1");
+        List<Answer> list=new ArrayList<Answer>();
+        Answer answer=new Answer();
+        answer.setAnswer("答1");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问1");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答2");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答2");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问2");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答3");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答3");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问3");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答4");
-        talk.setQuestion("问4");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答4");
+        list.add(answer);
+        talk.setAnswers(list);
+        talk.setQuestion("问411111111111111111111111111111111112222电饭锅电饭锅大股东电饭锅电饭锅十多个电饭锅电饭锅电饭锅电饭锅的");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答5");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答5");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问5");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答6");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答6");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问6");
         talkList.add(talk);
         talk=new Talk();
-        talk.setAnswer("答7");
+        list=new ArrayList<Answer>();
+        answer=new Answer();
+        answer.setAnswer("答7");
+        list.add(answer);
+        talk.setAnswers(list);
         talk.setQuestion("问7");
-        talkList.add(talk);*/
+        talkList.add(talk);
         System.out.println((new Date()).getTime());
-       replaceAndGenerateWord(path,newfilepath,params,null);
+       replaceAndGenerateWord(path,newfilepath,params,talkList);
         System.out.println((new Date()).getTime());
 
 
@@ -162,19 +191,26 @@ public class XwpfTUtil {
                         }
                         run.setText(oneparaString, 0);
                     }
+
                 }
 
                 //组合谈话
                 if(null!=talkList&&talkList.size() > 0){
 
                     XWPFParagraph xwpfParagraph=document.createParagraph();
+
+                    boolean thelastone=true;//最后一个的时候一定不要回车
                     for(int i=talkList.size()-1;i>-1;i--){//必须反着来不然就会出现问答倒序排列
                         Talk talk=talkList.get(i);
                         if (null!=talk.getAnswers()&&talk.getAnswers().size()>0){
                             for (Answer answer : talk.getAnswers()) {
                                 XWPFRun xwpfRun2=xwpfParagraph.insertNewRun(0);
                                 xwpfRun2.setText(answer.getAnswer());//必须先写入答，在写入问，反着来
-                                xwpfRun2.addCarriageReturn();//硬回车
+                                if(thelastone){
+                                    thelastone=false;
+                                }else{
+                                    xwpfRun2.addCarriageReturn();//硬回车
+                                }
                             }
                         }
                         XWPFRun xwpfRun=xwpfParagraph.insertNewRun(0);
@@ -221,6 +257,10 @@ public class XwpfTUtil {
                                 talkstr+=answer.getAnswer()+"\r\n";
                             }
                         }
+                    }
+                    if(talkstr.endsWith("\r\n")){
+
+                        talkstr=talkstr.substring(0,talkstr.lastIndexOf("\r\n"));
                     }
                     map.put(talkspace,talkstr);
                 }
