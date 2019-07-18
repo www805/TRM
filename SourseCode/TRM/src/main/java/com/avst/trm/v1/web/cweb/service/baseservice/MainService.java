@@ -89,10 +89,12 @@ public class MainService extends BaseService {
     private String uploadbasepath;
     @Value("${nav.file.client}")
     private String cwebFile;
-
+    @Value("${spring.application.name}")
+    private String application_name;
+    @Value("${nav.file.name}")
+    private String nav_file_name;
 
     public InitVO initClient(InitVO initvo){
-
         return  CommonCache.getinit_CLIENT();
     }
 
@@ -595,8 +597,8 @@ public class MainService extends BaseService {
     public void getNavList(RResult result) {
 
         AppCacheParam cacheParam = AppCache.getAppCacheParam();
+        String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
-            String path = OpenUtil.getXMSoursePath() + "\\" + cwebFile + ".yml";
             FileInputStream fis = null;
             try {
                 Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
@@ -634,10 +636,14 @@ public class MainService extends BaseService {
 
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
-                cacheParam.setData(map);
+
+                Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
+                Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(cwebFile);
+
+                cacheParam.setData(fileYml);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
             }finally {
                 if(null != fis){
                     try {

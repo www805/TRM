@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -70,6 +71,10 @@ public class HomeService extends BaseService {
 
     @Value("${nav.file.service}")
     private String swebFile;
+    @Value("${spring.application.name}")
+    private String application_name;
+    @Value("${nav.file.name}")
+    private String nav_file_name;
 
     public void getAllCount(RResult rResult, Model model) {
 
@@ -134,8 +139,8 @@ public class HomeService extends BaseService {
     public void getNavList(RResult result) {
 
         AppCacheParam cacheParam = AppServiceCache.getAppServiceCache();
+        String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
-            String path = OpenUtil.getXMSoursePath() + "\\" + swebFile + ".yml";
             FileInputStream fis = null;
             try {
 
@@ -174,10 +179,14 @@ public class HomeService extends BaseService {
 
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
-                cacheParam.setData(map);
+
+                Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
+                Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(swebFile);
+
+                cacheParam.setData(fileYml);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
             }finally {
                 if(null != fis){
                     try {
