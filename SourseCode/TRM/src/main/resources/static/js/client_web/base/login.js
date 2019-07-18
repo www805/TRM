@@ -48,14 +48,14 @@ function callgetNavList(data) {
             // $("#clientimage").css("background-image", "url(\"" + appCache.clientimage + "\")");
             $("#clientimage").attr('src',appCache.clientimage);
 
-
-
-            //页脚
-            var bottom_name = appCache.data.bottom.name;
-            var bottom_declaration = appCache.data.bottom.declaration;
-            var bottom_url = appCache.data.bottom.url;
-            var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
-            $("#bottom_mian").html(bottom_html);
+            if (isNotEmpty(appCache.data)) {
+                //页脚
+                var bottom_name = appCache.data.bottom.name;
+                var bottom_declaration = appCache.data.bottom.declaration;
+                var bottom_url = appCache.data.bottom.url;
+                var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+                $("#bottom_mian").html(bottom_html);
+            }
         }
         layui.use('element', function(){
             var element =  layui.element;

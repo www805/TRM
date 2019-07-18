@@ -15,7 +15,7 @@ function getNavList() {
 function callgetNavList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
 
-        if (isNotEmpty(data.data)) {
+        if (isNotEmpty(data.data.data)) {
             var appCache = data.data;
             var nav_list_HTML = "";
             var nav_list = appCache.data.nav;
