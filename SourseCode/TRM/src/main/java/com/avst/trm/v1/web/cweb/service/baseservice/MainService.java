@@ -308,21 +308,10 @@ public class MainService extends BaseService {
         List<ServerconfigAndFilesave> list=base_serverconfigMapper.getServerconfig(ew);
         if (null!=list&&list.size()>0){
 
-            //获取本机ip地址
-            String hostAddress = "localhost";
-            try {
-                InetAddress addr = InetAddress.getLocalHost();
-                hostAddress = addr.getHostAddress();
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-
             if (list.size()==1){
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
-                String syslogo_downurl = "http://" + hostAddress + ":80" + serverconfig.getSyslogo_downurl();
-                String client_downurl = "http://" + hostAddress + ":80" + serverconfig.getClient_downurl();
-                serverconfig.setSyslogo_downurl(syslogo_downurl);
-                serverconfig.setClient_downurl(client_downurl);
+                serverconfig.setSyslogo_downurl(serverconfig.getSyslogo_downurl());
+                serverconfig.setClient_downurl(serverconfig.getClient_downurl());
                 getServerconfigVO.setServerconfigAndFilesave(serverconfig);
                 result.setData(getServerconfigVO);
                 changeResultToSuccess(result);
@@ -603,22 +592,12 @@ public class MainService extends BaseService {
             try {
                 Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
-                //获取本机ip地址
-                String hostAddress = "localhost";
-                try {
-                    InetAddress addr = InetAddress.getLocalHost();
-                    hostAddress = addr.getHostAddress();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
                     Base_filesave filesaveSyslogo = new Base_filesave();
                     filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
                     Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
                     if (null!=syslogo){
-                        String recorddownurl = "http://" + hostAddress + ":80" + syslogo.getRecorddownurl();
-                        cacheParam.setSyslogoimage(recorddownurl);
+                        cacheParam.setSyslogoimage(syslogo.getRecorddownurl());
                     }
                 }
 
@@ -627,8 +606,7 @@ public class MainService extends BaseService {
                     filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
                     Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
                     if (null!=clientlogo){
-                        String recorddownurl = "http://" + hostAddress + ":80" + clientlogo.getRecorddownurl();
-                        cacheParam.setClientimage(recorddownurl);
+                        cacheParam.setClientimage(clientlogo.getRecorddownurl());
                     }
                 }
 

@@ -53,22 +53,12 @@ public class ServerConfigService extends BaseService {
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
-        //获取本机ip地址
-        String hostAddress = "localhost";
-        try {
-            InetAddress addr = InetAddress.getLocalHost();
-            hostAddress = addr.getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
             Base_filesave filesaveSyslogo = new Base_filesave();
             filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
             Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
             if (null!=syslogo){
-                String recorddownurl = "http://" + hostAddress + ":80" + syslogo.getRecorddownurl();
-                serverConfigByIdVO.setSyslogoimage(recorddownurl);
+                serverConfigByIdVO.setSyslogoimage(syslogo.getRecorddownurl());
             }
         }
 
@@ -77,8 +67,7 @@ public class ServerConfigService extends BaseService {
             filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
             Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
             if (null!=clientlogo){
-                String recorddownurl = "http://" + hostAddress + ":80" + clientlogo.getRecorddownurl();
-                serverConfigByIdVO.setClientimage(recorddownurl);
+                serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
             }
         }
 

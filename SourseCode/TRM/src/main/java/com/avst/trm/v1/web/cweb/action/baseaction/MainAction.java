@@ -76,6 +76,7 @@ public class MainAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
             mainService.userloginout(result,param,httpSession);
+            AppCache.delAppCacheParam();
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

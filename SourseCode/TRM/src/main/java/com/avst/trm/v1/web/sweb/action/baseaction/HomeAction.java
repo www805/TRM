@@ -117,7 +117,7 @@ public class HomeAction extends BaseAction{
     public RResult checklogin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult result=createNewResultOfFail();
         loginService.gotologin(result,request,loginParam);
-        AppServiceCache.delAppServiceCache();
+        AppServiceCache.delAppServiceCache();//清空logo导航栏缓存
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -127,6 +127,7 @@ public class HomeAction extends BaseAction{
     public RResult logout(Model model,HttpServletRequest request) {
         RResult rResult=createNewResultOfFail();
         this.changeResultToSuccess(rResult);
+        AppServiceCache.delAppServiceCache();//清空logo导航栏缓存
         rResult.setMessage("退出成功");
         request.getSession().setAttribute(Constant.MANAGE_WEB,null);
         Subject subject = SecurityUtils.getSubject();
