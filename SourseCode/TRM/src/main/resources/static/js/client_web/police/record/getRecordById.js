@@ -530,11 +530,16 @@ var option = {
         itemStyle : {
             normal : {
                 color:'#00FF00',
-                lineStyle:{
-                    color:'#00FF00'
-                }
             }
         },
+        markLine: {//警戒线标识
+            silent: true,
+            lineStyle: {
+                normal: {
+                    color: 'red'                   // 这儿设置安全基线颜色
+                }
+            },
+        }
     }]
 };
 
@@ -701,12 +706,17 @@ function main1() {
             itemStyle : {
                 normal : {
                     color:'#00FF00',
-                    lineStyle:{
-                        color:'#00FF00'
-                    }
                 }
             },
             data: data1,
+            markLine: {//警戒线标识
+                silent: true,
+                lineStyle: {
+                    normal: {
+                        color: 'red'                   // 这儿设置安全基线颜色
+                    }
+                },
+            }
         }]
     };
     myChart.setOption(option);
@@ -1060,10 +1070,7 @@ function phdata(datad,dqdata) {
             }
             //将本次时间戳位置放中间--end--
 
-
-
             var status=0;//状态
-
             var hr=0;//心率
             var br=0;//呼吸次数
             var relax=0;//轻松值
@@ -1071,10 +1078,12 @@ function phdata(datad,dqdata) {
             var bp=0;//血压变化
             var spo2=0;//血氧
             var hrv=0;//心率变异
-
             var hr_snr=0;
             var fps=0;
             var stress_snr=0;
+
+
+
             //数据收集
             var date_hr2 = [];
             var data_hr2 = [];
@@ -1116,25 +1125,25 @@ function phdata(datad,dqdata) {
                 }
 
                 date_hr2.push(num);
-                data_hr2.push(hr);
+                data_hr2.push(parseFloat(hr));
 
                 date_br2.push(num);
-                data_br2.push(br);
+                data_br2.push(parseFloat(br));
 
                 date_relax2.push(num);
-                data_relax2.push(relax);
+                data_relax2.push(parseFloat(relax));
 
                 date_stress2.push(num);
-                data_stress2.push(stress);
+                data_stress2.push(parseFloat(stress));
 
                 date_bp2.push(num);
-                data_bp2.push(bp);
+                data_bp2.push(parseFloat(bp));
 
                 date_spo22.push(num);
-                data_spo22.push(spo2);
+                data_spo22.push(parseFloat(spo2));
 
                 date_hrv2.push(num);
-                data_hrv2.push(hrv);
+                data_hrv2.push(parseFloat(hrv));
             }
 
             //开始赋值
@@ -1154,6 +1163,7 @@ function phdata(datad,dqdata) {
             data_hrv=data_hrv2;
 
 
+            //当前数据
             if (isNotEmpty(dqobj)){
                 status=dqobj.status;
 
@@ -1170,9 +1180,11 @@ function phdata(datad,dqdata) {
                 stress_snr=dqobj.stress_snr.toFixed(1);
             }
 
+
+            //图标规划
             var dqx=dqnum;
             var dqy=0;
-            var itemStyle_color="#00FF00";
+            var itemStyle_color="red";
             var itemStyle_color_hr=itemStyle_color;
             var itemStyle_color_hrv=itemStyle_color;
             var itemStyle_color_br=itemStyle_color;
@@ -1180,6 +1192,34 @@ function phdata(datad,dqdata) {
             var itemStyle_color_stress=itemStyle_color;
             var itemStyle_color_bp=itemStyle_color;
             var itemStyle_color_spo2=itemStyle_color;
+
+            /*变色，有误弃用
+             visualMap: {
+                    pieces:dqpieces,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+            var dqpieces=[];
+            var pieces_hr=[{gt:60,lte: 100,color: '#00FF00'}];
+            var pieces_hrv=[{ gt: -10,lte: 10,color: '#00FF00'}];
+            var pieces_br=[{ gt: 12,lte: 20,color: '#00FF00'}];
+            var pieces_relax=[{ gt: -Infinity,lte: Infinity,color: '#00FF00'}];
+            var pieces_stress=[{ gte: 0,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: 'red'}];
+            var pieces_bp=[{ gt: -10,lte: 10,color: '#00FF00'}];
+            var pieces_spo2=[{ gte: 94,lte: Infinity,color: '#00FF00'}];*/
+
+            var dqmarkLinedata=[];
+            var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
+            var dqmarkLinedata_hrv=[{yAxis: -10}, { yAxis: 10 }];
+            var dqmarkLinedata_br=[{yAxis: 12}, { yAxis: 20 }];
+            var dqmarkLinedata_relax=[];
+            var dqmarkLinedata_stress=[{yAxis: 30}, { yAxis: 50 }, { yAxis: 70 }, { yAxis: 100 }];
+            var dqmarkLinedata_bp=[{yAxis: -10}, { yAxis: 10 }];
+            var dqmarkLinedata_spo2=[{yAxis: 94}];
+
+
+
 
 
             $("#monitor_btn span").each(function (e) {
@@ -1191,22 +1231,25 @@ function phdata(datad,dqdata) {
                         date1=date_hr;
                         data1=data_hr;
                         dqy=hr;
-                        if (dqy<60||dqy>100){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_hr;
+                        if (dqy>60&&dqy<=100){
+                            itemStyle_color="#00FF00";
                         }
                     }else if (type=="hrv") {
                         date1=date_hrv;
                         data1=data_hrv;
                         dqy=hrv;
-                        if (dqy<-10||dqy>10){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_hrv;
+                        if (dqy>-10&&dqy<=10){
+                            itemStyle_color="#00FF00";
                         }
                     }else if (type=="br") {
                         date1=date_br;
                         data1=data_br;
                         dqy=br;
-                        if (dq<12||dqy>20){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_br;
+                        if (dqy>12&&dqy<=20){
+                            itemStyle_color="#00FF00";
                         }
                     }else if (type=="relax") {
                         date1=date_relax;
@@ -1216,22 +1259,25 @@ function phdata(datad,dqdata) {
                         date1=date_stress;
                         data1=data_stress;
                         dqy=stress;
-                        if (dqy<0||dqy>30){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_stress;
+                        if (dqy>=0&&dqy<=30){
+                            itemStyle_color="#00FF00";
                         }
                     }else if (type=="bp") {
                         date1=date_bp;
                         data1=data_bp;
                         dqy=bp;
-                        if (dqy<-10||dqy>10){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_bp;
+                        if (dqy>-10&&dqy<=10){
+                            itemStyle_color="#00FF00";
                         }
                     }else if (type=="spo2") {
                         date1=date_spo2;
                         data1=data_spo2;
                         dqy=spo2;
-                        if (dqy<94){
-                            itemStyle_color="red";
+                        dqmarkLinedata=dqmarkLinedata_spo2;
+                        if (dqy>=94){
+                            itemStyle_color="#00FF00";
                         }
                     }
                 }
@@ -1249,6 +1295,9 @@ function phdata(datad,dqdata) {
                         itemStyle:{
                             color:itemStyle_color,
                         }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata
                     }
                 }]
             });
@@ -1256,25 +1305,26 @@ function phdata(datad,dqdata) {
 
 
 
-
-
-            var redcolor="red";
-            if (hr<60||hr>100){
+            var redcolor="#00FF00";
+            if (hr>60&&hr<=100){
                 itemStyle_color_hr=redcolor;
             }
-            if (hrv<-10||hrv>10){
+            if (hrv>-10&&hrv<=10){
                 itemStyle_color_hrv=redcolor;
             }
-            if (br<12||br>20){
+            if (br>12&&br<=20){
                 itemStyle_color_br=redcolor;
             }
-            if (stress<0||stress>30){
+            if (null!=relax){
+                itemStyle_color_relax=redcolor;
+            }
+            if (stress>=0&&stress<=30){
                 itemStyle_color_stress=redcolor;
             }
-            if (bp<-10||bp>10){
+            if (bp>-10&&bp<=10){
                 itemStyle_color_bp=redcolor;
             }
-            if (spo2<94){
+            if (spo2>=94){
                 itemStyle_color_spo2=redcolor;
             }
 
@@ -1294,6 +1344,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_hr,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_hr
                         }
                     }]
                 });
@@ -1310,6 +1363,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_hrv,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_hrv
                         }
                     }]
                 });
@@ -1326,6 +1382,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_br,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_br
                         }
                     }]
                 });
@@ -1342,6 +1401,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_relax,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_relax
                         }
                     }]
                 });
@@ -1358,6 +1420,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_stress,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_stress
                         }
                     }]
                 });
@@ -1374,6 +1439,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_bp,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_bp
                         }
                     }]
                 });
@@ -1390,6 +1458,9 @@ function phdata(datad,dqdata) {
                             itemStyle:{
                                 color:itemStyle_color_spo2,
                             }
+                        },
+                        markLine: {
+                            data: dqmarkLinedata_spo2
                         }
                     }]
                 });
@@ -1441,22 +1512,23 @@ function phdata(datad,dqdata) {
                                                                 <span  id=\"monitorall_spo2\">血氧： "+spo2+"</span>";
             $("#monitorall_stressstate,#monitorall_hr,#monitorall_hrv,#monitorall_br,#monitorall_relax,#monitorall_stress,#monitorall_bp,#monitorall_spo2").removeClass("highlight_monitorall");
            $("#monitoralltext").html(monitoralltext);
-            if (hr<60||hr>100){
+
+            if (!(hr>60&&hr<=100)){
                 $("#monitorall_hr").addClass("highlight_monitorall");
-        }
-            if (hrv<-10||hrv>10){
+            }
+            if (!(hrv>-10&&hrv<=10)){
                 $("#monitorall_hrv").addClass("highlight_monitorall");
             }
-            if (br<12||br>20){
+            if (!(br>12&&br<=20)){
                 $("#monitorall_br").addClass("highlight_monitorall");
             }
-            if (stress<0||stress>30){
+            if (!(stress>=0&&stress<=30)){
                 $("#monitorall_stress").addClass("highlight_monitorall");
             }
-            if (bp<-10||bp>10){
+            if (!(bp>-10&&bp<=10)){
                 $("#monitorall_bp").addClass("highlight_monitorall");
             }
-            if (spo2<94){
+            if (!(spo2>=94)){
                 $("#monitorall_spo2").addClass("highlight_monitorall");
             }
 

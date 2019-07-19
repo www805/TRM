@@ -1222,6 +1222,32 @@ function callbackgetPolygraphdata(data) {
                 addData_bp(true,bp);
                 addData_spo2(true,spo2);
 
+              /*  markLine: {//警戒线标识
+                    symbol:"none",               //去掉警戒线最后面的箭头
+                        silent: true,
+                        lineStyle: {
+                        normal: {
+                            color: 'red'                   // 这儿设置安全基线颜色
+                        }
+                    },
+                    data: [{
+                        yAxis: 0.75//安全值
+                    }],
+                        label: {
+                        normal: {
+                            formatter: '心率安全值'           // 这儿设置安全基线
+                        }
+                    },
+                }*/
+
+                var dqmarkLinedata=[];
+                var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
+                var dqmarkLinedata_hrv=[{yAxis: -10}, { yAxis: 10 }];
+                var dqmarkLinedata_br=[{yAxis: 12}, { yAxis: 20 }];
+                var dqmarkLinedata_relax=[];
+                var dqmarkLinedata_stress=[{yAxis: 30}, { yAxis: 50 }, { yAxis: 70 }, { yAxis: 100 }];
+                var dqmarkLinedata_bp=[{yAxis: -10}, { yAxis: 10 }];
+                var dqmarkLinedata_spo2=[{yAxis: 94}];
 
                 $("#monitor_btn span").each(function (e) {
                     var type=$(this).attr("type");
@@ -1231,24 +1257,35 @@ function callbackgetPolygraphdata(data) {
                         if (type=="hr") {
                             date1=date_hr;
                             data1=data_hr;
+                            dqmarkLinedata=dqmarkLinedata_hr;
+
                         }else if (type=="hrv") {
                             date1=date_hrv;
                             data1=data_hrv;
+                            dqmarkLinedata=dqmarkLinedata_hrv;
+
                         }else if (type=="br") {
                             date1=date_br;
                             data1=data_br;
+                            dqmarkLinedata=dqmarkLinedata_br;
+
                         }else if (type=="relax") {
                             date1=date_relax;
                             data1=data_relax;
                         }else if (type=="stress") {
                             date1=date_stress;
                             data1=data_stress;
+                            dqmarkLinedata=dqmarkLinedata_stress;
+
                         }else if (type=="bp") {
                             date1=date_bp;
                             data1=data_bp;
+                            dqmarkLinedata=dqmarkLinedata_bp;
+
                         }else if (type=="spo2") {
                             date1=date_spo2;
                             data1=data_spo2;
+                            dqmarkLinedata=dqmarkLinedata_spo2;
                         }
                     }
                 });
@@ -1261,6 +1298,18 @@ function callbackgetPolygraphdata(data) {
                     }]
                 });
 
+                myChart.setOption({
+                    xAxis: {
+                        data: date1
+                    },
+                    series: [{
+                        data: data1,
+                        markLine: {
+                            data: dqmarkLinedata
+                        }
+                    }]
+                });
+
                 if (null!=select_monitorall_iframe){
                     select_monitorall_iframe.myMonitorall.setOption({
                         xAxis: {
@@ -1268,6 +1317,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_hr
+                            ,markLine: {
+                                data: dqmarkLinedata_hr
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall2.setOption({
@@ -1276,6 +1328,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_hrv
+                            ,markLine: {
+                                data: dqmarkLinedata_hrv
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall3.setOption({
@@ -1284,6 +1339,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_br
+                            ,markLine: {
+                                data: dqmarkLinedata_br
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall4.setOption({
@@ -1292,6 +1350,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_relax
+                            , markLine: {
+                                data: dqmarkLinedata_relax
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall5.setOption({
@@ -1300,6 +1361,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_stress
+                            , markLine: {
+                                data: dqmarkLinedata_stress
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall6.setOption({
@@ -1308,6 +1372,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_bp
+                            ,markLine: {
+                                data: dqmarkLinedata_bp
+                            }
                         }]
                     });
                     select_monitorall_iframe.myMonitorall7.setOption({
@@ -1316,6 +1383,9 @@ function callbackgetPolygraphdata(data) {
                         },
                         series: [{
                             data: data_spo2
+                            ,markLine: {
+                                data: dqmarkLinedata_spo2
+                            }
                         }]
                     });
                 }
@@ -1385,11 +1455,16 @@ var option = {
         itemStyle : {
             normal : {
                 color:'#00FF00',
-                lineStyle:{
-                    color:'#00FF00'
-                }
             }
         },
+        markLine: {//警戒线标识
+            silent: true,
+            lineStyle: {
+                normal: {
+                    color: 'red'                   // 这儿设置安全基线颜色
+                }
+            },
+        }
     }]
 };
 
@@ -1675,26 +1750,14 @@ function main1() {
             itemStyle : {
                 normal : {
                     color:'#00FF00',
-                    lineStyle:{
-                        color:'#00FF00'
-                    }
                 }
             },
             data: data1,
             markLine: {//警戒线标识
-                symbol:"none",               //去掉警戒线最后面的箭头
                 silent: true,
                 lineStyle: {
                     normal: {
                         color: 'red'                   // 这儿设置安全基线颜色
-                    }
-                },
-                data: [{
-                    yAxis: 0.75//安全值
-                }],
-                label: {
-                    normal: {
-                        formatter: '心率安全值'           // 这儿设置安全基线
                     }
                 },
             }
