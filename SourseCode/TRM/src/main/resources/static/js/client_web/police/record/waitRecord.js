@@ -846,7 +846,7 @@ function exportPdf(obj) {
 
 
 /**
- * 获取会议实时数据
+ * 获取会议asr实时数据
  */
 function getRecordrealing() {
     if (isNotEmpty(mtssid)) {
@@ -969,8 +969,6 @@ function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
 }
 
 
-
-
 /**
  * 视频地址切换 type 1主麦 type 2副麦
  */
@@ -1052,8 +1050,6 @@ function setFocus(el) {
         }else {
             console.log("语音识别非未开启状态~")
         }
-
-
         var range = document.createRange();
         range.selectNodeContents(el);
         range.collapse(false);
@@ -1169,7 +1165,273 @@ function initliving() {
     }
     //initplayer();
 }
-//*******************************************************************点击start****************************************************************//
+//*******************************************************************点击end****************************************************************//
+
+
+
+//获取各个状态
+function  getEquipmentsState() {
+    $("#MtState").text("加载中");
+    $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#AsrState").text("加载中");
+    $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#LiveState").text("加载中");
+    $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#PolygraphState").text("加载中");
+    $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+
+    if (isNotEmpty(mtssid)){
+        var url=getUrl_manage().getEquipmentsState;
+        var data = {
+            token: INIT_CLIENTKEY,
+            param: {
+                mtssid: mtssid,
+                fdrecord:fdrecord,
+                usepolygraph:usepolygraph,
+                useasr:useasr,
+                asrRun:asrRun
+            }
+        };
+
+        ajaxSubmitByJson(url, data, callbackgetEquipmentsState);
+    }else{
+        console.log("设备状态信息位置未找到__"+mtssid);
+    }
+}
+function callbackgetEquipmentsState(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        var data = data.data;
+        if (isNotEmpty(data)) {
+            //状态： -1异常  0未启动 1正常
+            var MtText = "加载中";
+            var AsrText = "加载中";
+            var LiveText = "加载中";
+            var PolygraphText = "加载中";
+            var MtClass = "ayui-badge layui-bg-gray";
+            var AsrClass = "ayui-badge layui-bg-gray";
+            var LiveClass = "ayui-badge layui-bg-gray";
+            var PolygraphClass = "ayui-badge layui-bg-gray";
+
+            var MtState = data.mtState;
+            if (MtState == 0) {
+                MtText = "未启动";
+                MtClass = "ayui-badge layui-bg-gray";
+            } else if (MtState == 1) {
+                MtText = "正常";
+                MtClass = "layui-badge layui-bg-green";
+            } else if (MtState == -1) {
+                MtText = "异常";
+                MtClass = "layui-badge";
+            }
+            var AsrState = data.asrState;
+            if (AsrState == 0) {
+                AsrText = "未启动";
+                AsrClass = "ayui-badge layui-bg-gray";
+            } else if (AsrState == 1) {
+                AsrText = "正常";
+                AsrClass = "layui-badge layui-bg-green";
+            } else if (AsrState == -1) {
+                AsrText = "异常";
+                AsrClass = "layui-badge";
+            }
+            var LiveState = data.liveState;
+            if (LiveState == 0) {
+                LiveText = "未启动";
+                LiveClass = "ayui-badge layui-bg-gray";
+            } else if (LiveState == 1) {
+                LiveText = "正常";
+                LiveClass = "layui-badge layui-bg-green";
+            } else if (LiveState == -1) {
+                LiveText = "异常";
+                LiveClass = "layui-badge";
+            }
+            var PolygraphState = data.polygraphState;
+            if (PolygraphState == 0) {
+                PolygraphText = "未启动";
+                PolygraphClass = "ayui-badge layui-bg-gray";
+            } else if (PolygraphState == 1) {
+                PolygraphText = "正常";
+                PolygraphClass = "layui-badge layui-bg-green";
+            } else if (PolygraphState == -1) {
+                PolygraphText = "异常";
+                PolygraphClass = "layui-badge";
+            }
+
+
+            $("#MtState").text(MtText);
+            $("#MtState").attr({"MtState": MtState, "class": MtClass});
+            $("#AsrState").text(AsrText);
+            $("#AsrState").attr({"AsrState": AsrState, "class": AsrClass});
+            $("#LiveState").text(LiveText);
+            $("#LiveState").attr({"LiveState": LiveState, "class": LiveClass});
+            $("#PolygraphState").text(PolygraphText);
+            $("#PolygraphState").attr({"PolygraphState": PolygraphState, "class": PolygraphClass});
+
+        }
+    }
+}
+
+
+//默认问答
+var trtd_html='<tr>\
+        <td style="padding: 0;width: 90%;" class="onetd">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
+               <div  id="btnadd"></div>\
+                </td>\
+                <td style="float: right;">\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                   </div>\
+                </td>\
+                </tr>';
+
+//lable focus 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
+function focuslable(html,type,qw) {
+    if (!isNotEmpty(html)) {html=trtd_html}
+    var qwfocus=null;
+
+    if (null!=td_lastindex["key"]&&type==1){
+        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+        if (isNotEmpty(qw)){
+            qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
+            td_lastindex["key"]=td_lastindex["key"]+1;
+        }
+    }  else if (type==0) {
+        $("#recorddetail").prepend(html);
+        if (isNotEmpty(qw)){
+            qwfocus =  $('#recorddetail tr:eq(0) label[name="'+qw+'"]');
+            td_lastindex["key"]=$('#recorddetail tr:eq(0)').index();
+        }
+    }else {
+        $("#recorddetail").append(html);
+        $("#recorddetail").hover(
+            function(){
+                mouseoverbool_right=1
+            } ,
+            function(){
+                mouseoverbool_right=-1;
+        });
+        if (mouseoverbool_right==-1){
+            var div = document.getElementById('recorddetail_scrollhtml');
+            div.scrollTop = div.scrollHeight;
+        }
+        if (isNotEmpty(qw)){
+            qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
+            td_lastindex["key"]=$('#recorddetail tr:last').index();
+        }
+     }
+
+     if (isNotEmpty(qw)){
+         setFocus(qwfocus);
+         td_lastindex["value"]=qw;
+     }
+    addbtn();
+}
+//最后一行添加按钮初始化
+function addbtn() {
+    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
+    $("#recorddetail tr").each(function () {
+        $("#btnadd",this).html("");
+    });
+  $('#recorddetail tr:last #btnadd').html(btnhtml);
+
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
+
+    setRecordreal();
+    $('#recorddetail label').bind('input', function() {
+        setRecordreal();
+    });
+
+}
+
+/***************************************笔录实时问答start*************************************************/
+/*笔录实时保存*/
+function setRecordreal() {
+    var url=getActionURL(getactionid_manage().waitRecord_setRecordreal);
+
+    var recordToProblems=[];//题目集合
+    $("#recorddetail td.onetd").each(function (i) {
+        var arr={};
+        var answers=[];//答案集合
+        var q=$(this).find("label[name='q']").text();
+        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
+        q=q.replace(/\s/g,'');
+        //经过筛选的q
+        var ws=$(this).find("label[name='w']");
+        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
+        if (isNotEmpty(q)){
+            if (null!=ws&&ws.length>0){
+                for (var j = 0; j < ws.length; j++) {
+                    var w =ws.eq(j).text();
+                    w=w.replace(/\s/g,'');
+                    //经过筛选的w
+                    if (isNotEmpty(w)) {
+                        answers.push({
+                            answer:w,
+                            starttime:w_starttime,
+                        });
+                    }
+                }
+            }
+            recordToProblems.push({
+                problem:q,
+                starttime:q_starttime,
+                answers:answers
+            });
+        }
+    });
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+            recordToProblems:recordToProblems
+        }
+    };
+    ajaxSubmitByJson(url, data, callbacksetRecordreal);
+}
+function callbacksetRecordreal(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log("笔录实时保存成功__"+data);
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+//获取缓存实时问答
+function getRecordrealByRecordssid() {
+    var url=getActionURL(getactionid_manage().waitRecord_getRecordrealByRecordssid);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid:recordssid
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
+}
+function callbackgetRecordrealByRecordssid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var problems=data;
+            $("#recorddetail").html("");
+            if (isNotEmpty(problems)) {
+              var problemhtml= setqw(problems);
+                focuslable(problemhtml,2,'w');
+            }
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
 
 //重置模板
 function clearRecord() {
@@ -1276,33 +1538,7 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
         if (isNotEmpty(data)){
             var problems=data;
             if (isNotEmpty(problems)) {
-                var problemhtml=null;
-                for (var z = 0; z< problems.length;z++) {
-                    var problem = problems[z];
-                    var problemtext=problem.problem==null?"未知":problem.problem;
-                    problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 90%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
-                    var answers=problem.answers;
-                    if (isNotEmpty(answers)){
-                        for (var j = 0; j < answers.length; j++) {
-                            var answer = answers[j];
-                            var answertext=answer.answer==null?"未知":answer.answer;
-                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
-                        }
-                    }else{
-                        problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
-                    }
-                    problemhtml+=' <div  id="btnadd"></div></td>\
-                        <td style="float: right;">\
-                            <div class="layui-btn-group">\
-                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                         </div>\
-                        </td>\
-                        </tr>';
-                }
+                var problemhtml= setqw(problems);
                 var qw_location=2; //1当前光标加一行 2尾部追加 0首部
                 layer.open({
                     content:"已获取重置问答，请选择要插入的笔录位置"
@@ -1330,310 +1566,29 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
         layer.msg(data.message);
     }
 }
+/***************************************笔录实时问答end*************************************************/
 
-
-
-
-
-
-//获取各个状态
-function  getEquipmentsState() {
-    $("#MtState").text("加载中");
-    $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#AsrState").text("加载中");
-    $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#LiveState").text("加载中");
-    $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#PolygraphState").text("加载中");
-    $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
-
-    if (isNotEmpty(mtssid)){
-        var url=getUrl_manage().getEquipmentsState;
-        var data = {
-            token: INIT_CLIENTKEY,
-            param: {
-                mtssid: mtssid,
-                fdrecord:fdrecord,
-                usepolygraph:usepolygraph,
-                useasr:useasr,
-                asrRun:asrRun
-            }
-        };
-
-        ajaxSubmitByJson(url, data, callbackgetEquipmentsState);
-    }else{
-        console.log("设备状态信息位置未找到__"+mtssid);
-    }
-}
-
-function callbackgetEquipmentsState(data) {
-    if (null != data && data.actioncode == 'SUCCESS') {
-        var data = data.data;
-        if (isNotEmpty(data)) {
-            //状态： -1异常  0未启动 1正常
-            var MtText = "加载中";
-            var AsrText = "加载中";
-            var LiveText = "加载中";
-            var PolygraphText = "加载中";
-            var MtClass = "ayui-badge layui-bg-gray";
-            var AsrClass = "ayui-badge layui-bg-gray";
-            var LiveClass = "ayui-badge layui-bg-gray";
-            var PolygraphClass = "ayui-badge layui-bg-gray";
-
-            var MtState = data.mtState;
-            if (MtState == 0) {
-                MtText = "未启动";
-                MtClass = "ayui-badge layui-bg-gray";
-            } else if (MtState == 1) {
-                MtText = "正常";
-                MtClass = "layui-badge layui-bg-green";
-            } else if (MtState == -1) {
-                MtText = "异常";
-                MtClass = "layui-badge";
-            }
-            var AsrState = data.asrState;
-            if (AsrState == 0) {
-                AsrText = "未启动";
-                AsrClass = "ayui-badge layui-bg-gray";
-            } else if (AsrState == 1) {
-                AsrText = "正常";
-                AsrClass = "layui-badge layui-bg-green";
-            } else if (AsrState == -1) {
-                AsrText = "异常";
-                AsrClass = "layui-badge";
-            }
-            var LiveState = data.liveState;
-            if (LiveState == 0) {
-                LiveText = "未启动";
-                LiveClass = "ayui-badge layui-bg-gray";
-            } else if (LiveState == 1) {
-                LiveText = "正常";
-                LiveClass = "layui-badge layui-bg-green";
-            } else if (LiveState == -1) {
-                LiveText = "异常";
-                LiveClass = "layui-badge";
-            }
-            var PolygraphState = data.polygraphState;
-            if (PolygraphState == 0) {
-                PolygraphText = "未启动";
-                PolygraphClass = "ayui-badge layui-bg-gray";
-            } else if (PolygraphState == 1) {
-                PolygraphText = "正常";
-                PolygraphClass = "layui-badge layui-bg-green";
-            } else if (PolygraphState == -1) {
-                PolygraphText = "异常";
-                PolygraphClass = "layui-badge";
-            }
-
-
-            $("#MtState").text(MtText);
-            $("#MtState").attr({"MtState": MtState, "class": MtClass});
-            $("#AsrState").text(AsrText);
-            $("#AsrState").attr({"AsrState": AsrState, "class": AsrClass});
-            $("#LiveState").text(LiveText);
-            $("#LiveState").attr({"LiveState": LiveState, "class": LiveClass});
-            $("#PolygraphState").text(PolygraphText);
-            $("#PolygraphState").attr({"PolygraphState": PolygraphState, "class": PolygraphClass});
-
-        }
-    }
-}
-
-
-/**
- * 获取各个客户端的状态
- */
-function getClient() {
-    var url=getUrl_manage().getClient;
-    var data={
-        token:INIT_CLIENTKEY,
-         param:{
-          
-        }
-    };
-    /*ajaxSubmitByJson(url, data, callbackgetClient);*/
-}
-function callbackgetClient(data) {
-    if (null != data && data.actioncode == 'SUCCESS') {
-        var data=data.data;
-        if (isNotEmpty(data)){
-            console.log(data)
-        }
-    }
-}
-
-var trtd_html='<tr>\
-        <td style="padding: 0;width: 90%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
-               <div  id="btnadd"></div>\
-                </td>\
-                <td style="float: right;">\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                   </div>\
-                </td>\
-                </tr>';
-
-//lable focus 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
-function focuslable(html,type,qw) {
-    if (!isNotEmpty(html)) {html=trtd_html}
-    var qwfocus=null;
-
-    if (null!=td_lastindex["key"]&&type==1){
-        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-        if (isNotEmpty(qw)){
-            qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
-            td_lastindex["key"]=td_lastindex["key"]+1;
-        }
-    }  else if (type==0) {
-        $("#recorddetail").prepend(html);
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:eq(0) label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:eq(0)').index();
-        }
-    }else {
-        $("#recorddetail").append(html);
-
-        $("#recorddetail").hover(
-            function(){
-                mouseoverbool_right=1
-            } ,
-            function(){
-                mouseoverbool_right=-1;
-        });
-
-        if (mouseoverbool_right==-1){
-            var div = document.getElementById('recorddetail_scrollhtml');
-            div.scrollTop = div.scrollHeight;
-        }
-
-
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:last').index();
-        }
-     }
-
-     if (isNotEmpty(qw)){
-         setFocus(qwfocus);
-         td_lastindex["value"]=qw;
-     }
-    addbtn();
-}
-//最后一行添加按钮初始化
-function addbtn() {
-    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
-    $("#recorddetail tr").each(function () {
-        $("#btnadd",this).html("");
-    });
-  $('#recorddetail tr:last #btnadd').html(btnhtml);
-
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
-
-    setRecordreal();
-    $('#recorddetail label').bind('input', function() {
-        setRecordreal();
-    });
-
-}
-
-/*笔录实时保存*/
-function setRecordreal() {
-    var url=getActionURL(getactionid_manage().waitRecord_setRecordreal);
-
-    var recordToProblems=[];//题目集合
-    $("#recorddetail td.onetd").each(function (i) {
-        var arr={};
-        var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").text();
-        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-        q=q.replace(/\s/g,'');
-        //经过筛选的q
-        var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
-        if (isNotEmpty(q)){
-            if (null!=ws&&ws.length>0){
-                for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).text();
-                    w=w.replace(/\s/g,'');
-                    //经过筛选的w
-                    if (isNotEmpty(w)) {
-                        answers.push({
-                            answer:w,
-                            starttime:w_starttime,
-                        });
-                    }
-                }
-            }
-            recordToProblems.push({
-                problem:q,
-                starttime:q_starttime,
-                answers:answers
-            });
-        }
-    });
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-            recordToProblems:recordToProblems
-        }
-    };
-    ajaxSubmitByJson(url, data, callbacksetRecordreal);
-}
-
-function callbacksetRecordreal(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            console.log(data);
-        }
-    }else{
-        layer.msg(data.message);
-    }
-}
-
-function getRecordrealByRecordssid() {
-    var url=getActionURL(getactionid_manage().waitRecord_getRecordrealByRecordssid);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid:recordssid
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
-}
-
-function callbackgetRecordrealByRecordssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var problems=data;
-            $("#recorddetail").html("");
-            if (isNotEmpty(problems)) {
-                for (var z = 0; z< problems.length;z++) {
-                    var problem = problems[z];
-                    var problemtext=problem.problem==null?"未知":problem.problem;
-                    var problemhtml= '<tr>\
+//整合问答笔录html
+function setqw(problems){
+    if (isNotEmpty(problems)) {
+        var problemhtml=null;
+        for (var z = 0; z< problems.length;z++) {
+            var problem = problems[z];
+            var problemtext=problem.problem==null?"未知":problem.problem;
+             problemhtml+= '<tr>\
                         <td style="padding: 0;width: 90%;" class="onetd">\
                             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
-                    var answers=problem.answers;
-                    if (isNotEmpty(answers)){
-                        for (var j = 0; j < answers.length; j++) {
-                            var answer = answers[j];
-                            var answertext=answer.answer==null?"未知":answer.answer;
-                            problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
-                        }
-                    }else{
-                        problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
-                    }
-                    problemhtml+=' <div  id="btnadd"></div></td>\
+            var answers=problem.answers;
+            if (isNotEmpty(answers)){
+                for (var j = 0; j < answers.length; j++) {
+                    var answer = answers[j];
+                    var answertext=answer.answer==null?"未知":answer.answer;
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                }
+            }else{
+                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
+            }
+            problemhtml+=' <div  id="btnadd"></div></td>\
                         <td style="float: right;">\
                             <div class="layui-btn-group">\
                             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
@@ -1642,16 +1597,11 @@ function callbackgetRecordrealByRecordssid(data) {
                          </div>\
                         </td>\
                         </tr>';
-                    focuslable(problemhtml,2,'w');
-                }
-            }
         }
-    }else{
-        layer.msg(data.message);
+        return problemhtml;
     }
+    return null;
 }
-
-
 
 
 
