@@ -1,13 +1,13 @@
 package com.avst.trm.v1.web.cweb.req.basereq;
 
 public class GetHomeParam {
-    private Integer yearstype;//年类型 1今年，2去年
+    private String yearstype;//年
 
-    public Integer getYearstype() {
+    public String getYearstype() {
         return yearstype;
     }
 
-    public void setYearstype(Integer yearstype) {
+    public void setYearstype(String yearstype) {
         this.yearstype = yearstype;
     }
 }

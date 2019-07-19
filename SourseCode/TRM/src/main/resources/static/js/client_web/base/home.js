@@ -3,8 +3,7 @@ function getHome(yearstype) {
     myChart.showLoading();
     myChart2.showLoading();
     var url=getActionURL(getactionid_manage().home_getHome);
-    var loginaccount =$("#loginaccount").val();
-    var password =$("#password").val();
+
     var data={
         token:INIT_CLIENTKEY,
         param:{

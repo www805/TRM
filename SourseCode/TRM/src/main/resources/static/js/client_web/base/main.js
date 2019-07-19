@@ -78,14 +78,16 @@ function callgetNavList(data) {
     }
 }
 
-// layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload'], function(){
-//     var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
-//         ,form = layui.form
-//         ,layer = layui.layer
-//         ,layedit = layui.layedit
-//         ,laydate = layui.laydate
-//         ,laypage = layui.laypage
-//         ,element = layui.element;
-//
-//     form.render();
-// });
+$(function () {
+    /* var _t;
+       window.onbeforeunload = function(){
+           setTimeout(function(){_t = setTimeout(onunloadcancel, 0)}, 0);
+           return "真的离开?";
+       }
+       window.onunloadcancel = function(){
+           clearTimeout(_t);
+           alert("取消离开");
+       }
+ */
+
+})

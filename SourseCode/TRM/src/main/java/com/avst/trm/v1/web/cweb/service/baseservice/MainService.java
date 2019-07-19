@@ -352,19 +352,13 @@ public class MainService extends BaseService {
         SimpleDateFormat df = new SimpleDateFormat("yyyy");//设置日期格式
         Calendar c = Calendar.getInstance();
 
-        String years=null;
-        Integer yearstype=getHomeParam.getYearstype();
-        if (null==yearstype){
-            yearstype=1;
-        }
-        if (yearstype==1){
+        String years=getHomeParam.getYearstype();
+        System.out.println(years);
+        if (!StringUtils.isNotBlank(years)){
             years=df.format(new Date());
-        }else if (yearstype==2){
-            c.setTime(new Date());
-            c.add(Calendar.YEAR, -1);
-            Date y = c.getTime();
-            years=df.format(y);
         }
+
+
 
         Integer record_num=police_recordMapper.selectCount(null);
         Integer case_num= police_caseMapper.selectCount(null);

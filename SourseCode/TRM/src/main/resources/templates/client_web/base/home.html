@@ -106,11 +106,17 @@
         <div class="layui-col-sm12">
             <div class="layui-card">
                 <div class="layui-card-header">
-                    案件量
-                    <div class="layui-btn-group layuiadmin-btn-group">
+                    <div class="layui-col-sm6"> 案件量</div>
+                    <div class="layui-col-sm6" >
+                        <div style="float: right;display: inline">
+                       当前选择： <input type="button"  class="layui-btn layui-btn-primary layui-btn-sm" name="yearstype" id="yearstype" > 年
+                        </div>
+                    </div>
+
+                    <!--<div class="layui-btn-group layuiadmin-btn-group">
                         <button class="layui-btn layui-btn-primary layui-btn-xs" onclick="getHome(1);">今年</button>
                         <button class="layui-btn layui-btn-primary layui-btn-xs" onclick="getHome(2);">去年</button>
-                    </div>
+                    </div>-->
                 </div>
                 <div class="layui-card-body">
                     <div class="layui-row">
@@ -144,12 +150,21 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/home");
-        getHome(1);
+        getHome();
     });
-    layui.use(['layer','element'], function(){
+    layui.use(['layer','element','laydate'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
+        var laydate=layui.laydate;
         //使用模块
+        laydate.render({
+            elem: '#yearstype'
+            ,type: 'year'
+            ,value: new Date()
+            ,done: function(value, date, endDate){
+              getHome(value)
+        }
+        });
     });
 </script>
 </body>
