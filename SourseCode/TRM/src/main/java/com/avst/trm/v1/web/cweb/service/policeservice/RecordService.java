@@ -1317,13 +1317,9 @@ public class RecordService extends BaseService {
             ew.orderBy("p.ordernum", true);
             ew.orderBy("p.createtime", true);
             List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
-            /* List<Talk> talks = new ArrayList<>();//问答*/
             String talk="";
             if (null != questionandanswer && questionandanswer.size() > 0) {
                 for (RecordToProblem problem : questionandanswer) {
-                  /*  Talk talk = new Talk();
-                    List<Answer> as = new ArrayList<>();//答集合
-                    talk.setQuestion("问：" + problem.getProblem());*/
                     talk+="问："+problem.getProblem()+"\r";
                     String problemssid = problem.getSsid();
                     if (StringUtils.isNotBlank(problemssid)) {
@@ -1334,23 +1330,38 @@ public class RecordService extends BaseService {
                         List<Police_answer> answers = police_answerMapper.selectList(answerParam);
                         if (null != answers && answers.size() > 0) {
                             for (Police_answer answer : answers) {
-                              /*  Answer a = new Answer();
-                                a.setAnswer("答：" + answer.getAnswer());
-                                as.add(a);*/
                                 talk+="答："+answer.getAnswer()+"\r";
                             }
                             problem.setAnswers(answers);
                         } else {
-                          /*  Answer a = new Answer();
-                            a.setAnswer("答：");
-                            as.add(a);*/
                             talk+="答：\r";
                         }
                     }
-                   /* talk.setAnswers(as);
-                    talks.add(talk);*/
                 }
             }
+
+            //根据笔录ssid获取案件信息
+            CaseAndUserInfo caseAndUserInfo =new CaseAndUserInfo();
+            try {
+                EntityWrapper caseParam=new EntityWrapper();
+                caseParam.eq("r.ssid",recordssid);
+                 caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
+                if (null!=caseAndUserInfo){
+                    caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
+                    record.setCaseAndUserInfo(caseAndUserInfo);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String casename=caseAndUserInfo.getCasename();
+            String cause=caseAndUserInfo.getCause();
+            String casenum=caseAndUserInfo.getCasenum();
+            String occurrencetime=caseAndUserInfo.getOccurrencetime_format().toString();
+            String starttime=caseAndUserInfo.getStarttime().toString();
+            String endtime=caseAndUserInfo.getEndtime().toString();
+            String caseway=caseAndUserInfo.getCaseway();
+
 
             /**
              *   获取提讯人和被询问人
@@ -1443,6 +1454,13 @@ public class RecordService extends BaseService {
             dataMap.put("${both}", both == null ? "" : both);
             dataMap.put("${talk}", talk == null ? "" : talk);
             dataMap.put("${nationality}", nationality == null ? "" : nationality);
+            dataMap.put("${casename}", casename == null ? "" : casename);
+            dataMap.put("${cause}", cause == null ? "" : cause);
+            dataMap.put("${casenum}", casenum == null ? "" : casenum);
+            dataMap.put("${occurrencetime}", occurrencetime == null ? "" : occurrencetime);
+            dataMap.put("${starttime}", starttime == null ? "" : starttime);
+            dataMap.put("${endtime}", endtime == null ? "" : endtime);
+            dataMap.put("${caseway}", caseway == null ? "" : caseway);
 
         }
         return dataMap;
@@ -1720,6 +1738,9 @@ public class RecordService extends BaseService {
         Page<WordTemplate> page=new Page<>(getWordTemplateListParam.getCurrPage(),getWordTemplateListParam.getPageSize());
         List<WordTemplate> pagelist=police_wordtemplateMapper.getWordTemplateList(page,ew);
 
+         String wordtemplate_explaindownurl=null;//word模板说明制作下载地址
+         String wordtemplate_explaindownurl_html=null;//word模板说明制作下载地址转html地址
+         String wordtemplate_explaindownssid=null;
         //检测html文件是否存在-------------------------------------start----------------------------
         for (WordTemplate wordTemplate : pagelist) {
             String wordtemplate_downurl_html=null;
@@ -1742,10 +1763,25 @@ public class RecordService extends BaseService {
                     }
                 }
             }
+            if (wordTemplate.getWordtype()==2){
+                 wordtemplate_explaindownurl=downurl;
+                 wordtemplate_explaindownurl_html=wordtemplate_downurl_html;
+                 wordtemplate_explaindownssid=wordTemplate.getSsid();
+            }
             wordTemplate.setWordtemplate_downurl_html(wordtemplate_downurl_html);
         }
         //检测html文件是否存在-------------------------------------end----------------------------
-        vo.setPagelist(pagelist);
+
+        List<WordTemplate>  pagelist2=new ArrayList<>();
+        for (WordTemplate wordTemplate : pagelist) {
+            if (wordTemplate.getWordtype()!=2){
+                pagelist2.add(wordTemplate);
+            }
+        }
+        vo.setWordtemplate_explaindownurl(wordtemplate_explaindownurl);
+        vo.setWordtemplate_explaindownurl_html(wordtemplate_explaindownurl_html);
+        vo.setWordtemplate_explaindownssid(wordtemplate_explaindownssid);
+        vo.setPagelist(pagelist2);
         vo.setPageparam(getWordTemplateListParam);
 
 
@@ -1766,13 +1802,18 @@ public class RecordService extends BaseService {
         String recordtypessid=uploadWordTemplateParam.getRecordtypessid();
         Integer defaultbool=uploadWordTemplateParam.getDefaultbool();
         String wordtemplatename=uploadWordTemplateParam.getWordtemplatename();
+        Integer wordtype=uploadWordTemplateParam.getWordtype();
 
+        if (null!=wordtype&&wordtype==2){
+            wordtemplatename="笔录word模板制作说明";
+        }
 
 
         Police_wordtemplate police_wordtemplate=new Police_wordtemplate();
         police_wordtemplate.setDefaultbool(defaultbool);
         police_wordtemplate.setRecordtypessid(recordtypessid);
         police_wordtemplate.setWordtemplatename(wordtemplatename);
+        police_wordtemplate.setWordtype(wordtype);
 
         String wordtemplate_filesavessid=null;
         if(StringUtils.isNotBlank(ssid)){
@@ -1882,10 +1923,13 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
             }
         }else {
+
+
             //新增
             police_wordtemplate.setSsid(OpenUtil.getUUID_32());
             police_wordtemplate.setCreatetime(new Date());
             police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
+            police_wordtemplate.setWordtype(wordtype);
             int police_wordtemplateMapper_insertbool =  police_wordtemplateMapper.insert(police_wordtemplate);
             LogUtil.intoLog(this.getClass(),"police_wordtemplateMapper_insertbool__"+police_wordtemplateMapper_insertbool);
             ssid=police_wordtemplate.getSsid();
@@ -1955,7 +1999,7 @@ public class RecordService extends BaseService {
             }
         }
 
-        if (defaultbool==1){
+        if (null!=defaultbool&&defaultbool==1){
             //获取该模板的类型，并且将该类型的处理ssi全部1改为-1
             EntityWrapper updateew=new EntityWrapper();
             updateew.eq("recordtypessid",recordtypessid);

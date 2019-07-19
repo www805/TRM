@@ -1,5 +1,9 @@
 var recordtypes=null;//全部笔录类型
 
+var explaindownurl_html=null;//word模板制作说明html地址
+var explaindownurl=null;//word模板说明制作下载地址
+var explaindownssid=null;
+
 function getWordTemplateList_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().wordTemplateList_getWordTemplateList);
     var wordtemplatename=$("#wordtemplatename").val();
@@ -34,6 +38,12 @@ function callbackgetWordTemplateList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
+            var data=data.data;
+            if (isNotEmpty(data)){
+                explaindownurl=data.wordtemplate_explaindownurl;
+                explaindownurl_html=data.wordtemplate_explaindownurl_html;
+                explaindownssid=data.wordtemplate_explaindownssid;
+            }
         }
     }else{
         layer.msg(data.message);
@@ -199,15 +209,42 @@ function open_uploadword(ssid) {
         content: html,
         btn: ['确定', '取消'],
         yes:function(index, layero){
-            if (!isNotEmpty(ssid)){
-                var file = document.getElementById("wordfile").files[0];
-                if (!isNotEmpty(file)) {
+            var file = document.getElementById("wordfile").files[0];
+            if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
                     layer.msg("请选择文件进行上传");
                     return;
-                }
             }
 
-            uploadWordTemplate(ssid);
+            var recordtypessid=$("#recordtypessidm").val();
+            var wordtemplatename=$("#wordtemplatenamem").val();
+            var defaultboolm=$("#defaultboolm").prop("checked");
+            var defaultbool;
+            if (defaultboolm){
+                defaultbool=1;
+            } else{
+                defaultbool=-1;
+            }
+
+            if (!isNotEmpty(recordtypessid)) {
+                layer.msg("请选择笔录类型");
+                $("#recordtypessidm").focus();
+                return;
+            }
+
+            if (!isNotEmpty(wordtemplatename)) {
+                layer.msg("请输入word模板名称");
+                $("#wordtemplatenamem").focus();
+                return;
+            }
+
+            var data={
+                recordtypessid:recordtypessid,
+                wordtemplatename:wordtemplatename,
+                defaultbool:defaultbool,
+                word:1,
+                ssid:ssid,
+            };
+            uploadWordTemplate(data,file);
         },
         btn2:function(index, layero){
             layer.close(index);
@@ -268,45 +305,15 @@ function wordfileclick() {
     $("#wordfile").click();
 }
 
-
-function uploadWordTemplate(ssid) {
+//word 模板类型1 word笔录 word笔录说明
+function uploadWordTemplate(data,file) {
     $("[lay-filter='progress_demo']").css("visibility","visible");
     $("[lay-filter='progress_demo'] .layui-progress-text").text("0%");
     $("[lay-filter='progress_demo'] .layui-progress-bar").width("0%");
 
     var url=getActionURL(getactionid_manage().wordTemplateList_uploadWordTemplate);
 
-    var recordtypessid=$("#recordtypessidm").val();
-    var wordtemplatename=$("#wordtemplatenamem").val();
-    var defaultboolm=$("#defaultboolm").prop("checked");
-    var defaultbool;
-    if (defaultboolm){
-        defaultbool=1;
-    } else{
-        defaultbool=-1;
-    }
-
-    if (!isNotEmpty(recordtypessid)) {
-        layer.msg("请选择笔录类型");
-        $("#recordtypessidm").focus();
-        return;
-    }
-
-    if (!isNotEmpty(wordtemplatename)) {
-        layer.msg("请输入word模板名称");
-        $("#wordtemplatenamem").focus();
-        return;
-    }
-
-    var data={
-        recordtypessid:recordtypessid,
-        wordtemplatename:wordtemplatename,
-        defaultbool:defaultbool,
-        ssid:ssid,
-    };
-
     var formData = new FormData();
-    var file = document.getElementById("wordfile").files[0];
     formData.append("param", JSON.stringify(data));
     formData.append("token", INIT_CLIENTKEY);
     formData.append("wordfile", file);
@@ -427,4 +434,42 @@ function exportWord(worddownurl) {
     }else {
         layer.msg("导出失败");
     }
+}
+
+
+//word模板制作说明--------------------------start---------------------------------------------//
+function open_getWordexplain() {
+    if (!isNotEmpty(explaindownurl_html)){
+        layer.msg("请先上传word模板制作说明");
+        return;
+    }
+
+    if (isNotEmpty(explaindownurl_html)) {
+        layer.open({
+            type:2,
+            title:'预览笔录word模板',
+            content:explaindownurl_html,
+            shadeClose:true,
+            area: ['50%', '700px'],
+        });
+    }
+}
+
+
+function open_uploadWordexplain() {
+    $("#wordexplainfile").click();
+}
+
+function uploadWordexplain() {
+    var file = document.getElementById("wordexplainfile").files[0];
+    if (!isNotEmpty(file)){
+        layer.msg("请选择文件进行上传");
+        return;
+    }
+
+    var data={
+        wordtype:2,
+        ssid:explaindownssid,
+    };
+    uploadWordTemplate(data,file);
 }

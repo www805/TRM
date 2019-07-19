@@ -34,9 +34,13 @@
                 </select>
             </div>
 
-
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,10);" >
             <input type="button" class="layui-btn layui-btn-normal" value="上传模板" onclick="open_uploadword(null)" >
+            <div style="display: inline;float: right">
+                <input type="button" class="layui-btn layui-btn-primary" value="查看模板制作说明" onclick="open_getWordexplain()" >
+                <input type="button" class="layui-btn layui-btn-primary" value="上传模板制作" onclick="open_uploadWordexplain()" >
+                <input id="wordexplainfile" type="file" style="display: none;" onchange="uploadWordexplain();">
+            </div>
         </div>
     </form>
     <div th:replace="page :: page">...</div>

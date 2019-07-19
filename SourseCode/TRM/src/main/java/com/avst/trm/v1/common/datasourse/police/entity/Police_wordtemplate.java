@@ -59,6 +59,17 @@ public class Police_wordtemplate extends Model<Police_wordtemplate> {
 
     private Integer defaultbool;//是否为默认word模板1是 -1不是
 
+    private Integer wordtype;//word笔录模板类型1笔录模板2笔录制作说明只允许一个笔录模板制作说明存在
+
+
+    public Integer getWordtype() {
+        return wordtype;
+    }
+
+    public void setWordtype(Integer wordtype) {
+        this.wordtype = wordtype;
+    }
+
     public Integer getDefaultbool() {
         return defaultbool;
     }
