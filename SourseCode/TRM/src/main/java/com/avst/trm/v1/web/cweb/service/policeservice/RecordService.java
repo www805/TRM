@@ -1923,21 +1923,8 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
             }
         }else {
-
-
-            //新增
-            police_wordtemplate.setSsid(OpenUtil.getUUID_32());
-            police_wordtemplate.setCreatetime(new Date());
-            police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
-            police_wordtemplate.setWordtype(wordtype);
-            int police_wordtemplateMapper_insertbool =  police_wordtemplateMapper.insert(police_wordtemplate);
-            LogUtil.intoLog(this.getClass(),"police_wordtemplateMapper_insertbool__"+police_wordtemplateMapper_insertbool);
-            ssid=police_wordtemplate.getSsid();
-
-
             if (null!=multipartfile){
                 //开始进行文件上传
-
                 try {
                     String uploadpath=uploadbasepath;
                     String savePath=filewordtemplate;
@@ -1975,14 +1962,7 @@ public class RecordService extends BaseService {
                             base_filesave.setSsid(OpenUtil.getUUID_32());
                             int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
                             LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
-                            if (filesaveinsert_bool>0){
-                                //存在文件开始上传，回填上传文件的ssid
-                                wordtemplate_filesavessid=base_filesave.getSsid();
-                                police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
-                                EntityWrapper updateew=new EntityWrapper();
-                                updateew.eq("ssid",ssid);
-                                int police_wordtemplateMapper_updatebool =  police_wordtemplateMapper.update(police_wordtemplate,updateew);
-                            }
+                            wordtemplate_filesavessid=base_filesave.getSsid();
                         }
                     }else {
                         result.setMessage("请选择doc或者docx的word文档进行上传");
@@ -1993,7 +1973,25 @@ public class RecordService extends BaseService {
                     e.printStackTrace();
                 }
             }
+
+            //新增
+            police_wordtemplate.setSsid(OpenUtil.getUUID_32());
+            police_wordtemplate.setCreatetime(new Date());
+            police_wordtemplate.setWordtemplate_filesavessid(wordtemplate_filesavessid);
+            police_wordtemplate.setWordtype(wordtype);
+            int police_wordtemplateMapper_insertbool =  police_wordtemplateMapper.insert(police_wordtemplate);
+            LogUtil.intoLog(this.getClass(),"police_wordtemplateMapper_insertbool__"+police_wordtemplateMapper_insertbool);
+            ssid=police_wordtemplate.getSsid();
             if (police_wordtemplateMapper_insertbool>0){
+                    //文件上传后回填datassid
+                if (null!=wordtemplate_filesavessid){
+                    Base_filesave base_filesave=new Base_filesave();
+                    base_filesave.setDatassid(ssid);
+                    EntityWrapper updateew=new EntityWrapper();
+                    updateew.eq("ssid",wordtemplate_filesavessid);
+                    int base_filesaveMapper_updatebool =  base_filesaveMapper.update(base_filesave,updateew);
+                    LogUtil.intoLog(this.getClass(),"base_filesaveMapper_updatebool__"+base_filesaveMapper_updatebool);
+                }
                 result.setData(1);
                 changeResultToSuccess(result);
             }
