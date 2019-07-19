@@ -38,6 +38,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.O
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
+import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -47,6 +48,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -2151,11 +2153,47 @@ public class RecordService extends BaseService {
         }
         String recordssid=setRecordrealParam.getRecordssid();
         List<RecordToProblem> recordToProblems=setRecordrealParam.getRecordToProblems();
-        RecordrealingCache.setRecordreal(recordssid,recordToProblems);
-        changeResultToSuccess(result);
-        result.setData(1);
+        boolean bool=RecordrealingCache.setRecordreal(recordssid,recordToProblems);
+        if (bool){
+            changeResultToSuccess(result);
+            result.setData(1);
+        }
         return;
     }
+
+    public void getRecordreal_LastByRecordssid(RResult result, ReqParam<GetRecordreal_LastByRecordssidParam>param){
+        GetRecordreal_LastByRecordssidParam getRecordreal_lastByRecordssidParam=param.getParam();
+        if (null==getRecordreal_lastByRecordssidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=getRecordreal_lastByRecordssidParam.getRecordssid();
+        if (null==recordssid){
+            result.setMessage("参数为空");
+            return;
+        }
+        List<RecordToProblem> recordToProblems = Recordrealing_LastCache.getRecordreal_LastByRecordssid(recordssid);
+        changeResultToSuccess(result);
+        result.setData(recordToProblems);
+        return;
+    }
+
+    public void setRecordreal_Last(RResult result, ReqParam<SetRecordreal_LastParam>param){
+        SetRecordreal_LastParam setRecordreal_lastParam=param.getParam();
+        if (null==setRecordreal_lastParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=setRecordreal_lastParam.getRecordssid();
+        List<RecordToProblem> recordToProblems=setRecordreal_lastParam.getRecordToProblems();
+        boolean bool= Recordrealing_LastCache.setRecordreal_Last(recordssid,recordToProblems);
+        if (bool){
+            changeResultToSuccess(result);
+            result.setData(1);
+        }
+        return;
+    }
+
     /***************************笔录问答实时缓存****end***************************/
 
 

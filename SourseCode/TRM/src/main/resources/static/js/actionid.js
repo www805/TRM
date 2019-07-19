@@ -156,6 +156,8 @@ function getactionid_manage() {
         waitRecord_setRecordreal:"waitRecord_setRecordreal",
         waitRecord_gnlist:"waitRecord_gnlist",
         waitRecord_uploadNotification:"waitRecord_uploadNotification",
+        waitRecord_setRecordreal_Last:"waitRecord_setRecordreal_Last",
+        waitRecord_getRecordreal_LastByRecordssid:"waitRecord_getRecordreal_LastByRecordssid",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",

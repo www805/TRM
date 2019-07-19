@@ -614,6 +614,11 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 实时保存
+     * @param param
+     * @return
+     */
     @RequestMapping("/setRecordreal")
     public  RResult setRecordreal(@RequestBody ReqParam<SetRecordrealParam> param){
         RResult result=this.createNewResultOfFail();
@@ -627,6 +632,42 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+    @RequestMapping("/getRecordreal_LastByRecordssid")
+    public  RResult getRecordreal_LastByRecordssid(@RequestBody ReqParam<GetRecordreal_LastByRecordssidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            recordService.getRecordreal_LastByRecordssid(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 笔录重置保存
+     * @param param
+     * @return
+     */
+    @RequestMapping("/setRecordreal_Last")
+    public  RResult setRecordreal_Last(@RequestBody ReqParam<SetRecordreal_LastParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            recordService.setRecordreal_Last(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 
