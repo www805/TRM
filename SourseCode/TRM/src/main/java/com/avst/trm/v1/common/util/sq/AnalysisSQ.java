@@ -190,7 +190,8 @@ public class AnalysisSQ {
             String[] sqcodearr= DeCodeUtil.decoderByDES(sqcode).split(";");
             String foreverBool=sqcodearr[1];
             String cpuCode=sqcodearr[3];
-            String localcpuCode=NetTool.getLocalMac();
+//            String localcpuCode=NetTool.getLocalMac();
+            String localcpuCode=NetTool.getCPUCode();//不使用网卡，使用CPU序列号
             if(!localcpuCode.equals(cpuCode)){
                 LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
                 LogUtil.intoLog(AnalysisSQ.class,"授权机器码不一致");

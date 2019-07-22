@@ -1,21 +1,24 @@
 package com.avst.trm.v1.common.util.sq;
+import java.io.*;
 
 import com.avst.trm.v1.common.util.LogUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-public class NetTool{  
+import java.util.Scanner;
+
+public class NetTool{
   
 public static void main( String[] args){  
  
 	try {
 
-		LogUtil.intoLog(NetTool.class,getLocalMac());
+//		LogUtil.intoLog(NetTool.class,getLocalMac());
+		LogUtil.intoLog(NetTool.class,getCPUCode());
+
+
 	} catch (Exception e) {
 		
 		e.printStackTrace();
@@ -148,5 +151,205 @@ public static String getLocalMac() {
 
     return address;
 }
+
+
+	/**
+	 * 获取CPU序列号
+	 * @return
+	 */
+	public static String getCPUCode(){
+
+		String cpuCode="";
+		String os = getOsName();
+		if (os.startsWith("Win")) {
+			try {
+				cpuCode= getCPUCode_win();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if (os.startsWith("Linux")) {
+			cpuCode= getCPUID_linux();
+		}else{
+			LogUtil.intoLog(4,NetTool.class,"getCPUID is error ，os："+os);
+		}
+		if(null!=cpuCode&&!cpuCode.trim().equals("")){
+			cpuCode=AnalysisSQ.encode_uid(cpuCode);
+		}
+		return cpuCode;
+	}
+
+
+	/**
+	 * Linux系统获取CPU序列号，没有验证过
+	 * @return
+	 * @throws InterruptedException
+	 */
+	private static String getCPUID_linux()  {
+		String result = "";
+		String CPU_ID_CMD = "dmidecode";
+		BufferedReader bufferedReader = null;
+		Process p = null;
+		InputStream in2=null;
+		InputStream in=null;
+		try {
+			p = Runtime.getRuntime().exec(new String[]{ "sh", "-c", CPU_ID_CMD });// 管道
+			in=p.getInputStream();
+			in2=p.getErrorStream();
+			bufferedReader = new BufferedReader(new InputStreamReader(in));
+			String line = null;
+			int index = -1;
+			while ((line = bufferedReader.readLine()) != null) {
+				// 寻找标示字符串[hwaddr]
+				index = line.toLowerCase().indexOf("uuid");
+				if (index >= 0) {// 找到了
+					// 取出mac地址并去除2边空格
+					result = line.substring(index + "uuid".length() + 1).trim();
+					break;
+				}
+			}
+
+			int exitvalue=p.waitFor();
+			if(exitvalue!=0){
+				throw new Exception("exitvalue is not 0, 说明代码有错");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+
+			printMessage(in2);
+
+			try {
+				if(null!=bufferedReader){
+					bufferedReader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=in){
+					in.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=p){
+					p.destroy();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result.trim();
+	}
+
+	/**
+	 * 获取win CPU序列号
+	 * @return
+	 */
+	private static String getCPUCode_win(){
+
+		OutputStream os = null;
+		InputStream in=null;
+		InputStream in2=null;
+		Process process=null;
+		Scanner sc=null;
+		try {
+			long start = System.currentTimeMillis();
+			process = Runtime.getRuntime().exec(
+					new String[] { "wmic", "cpu", "get", "ProcessorId" });
+			os=process.getOutputStream();
+			in=process.getInputStream();
+			in2=process.getErrorStream();
+			sc = new Scanner(in);
+			String property = sc.next();
+			String serial = sc.next();
+
+			int exitvalue=process.waitFor();
+			if(exitvalue!=0){
+				throw new Exception("exitvalue is not 0, 说明代码有错");
+			}
+
+			System.out.println(property + "::::::: " + serial);
+			return serial;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+
+			printMessage(in2);
+
+			try {
+				if(null!=os){
+					os.flush();
+					os.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=sc){
+					sc.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=process){
+					process.destroy();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=in){
+					in.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+
+	}
+
+
+	private static void printMessage(final InputStream input) {
+		new Thread(new Runnable() {
+       	public void run() {
+        	Reader reader = new InputStreamReader(input);
+			BufferedReader bf = new BufferedReader(reader);
+        	String line = null;
+        	  try {
+					while((line=bf.readLine())!=null) {
+						System.out.println(line);
+					}
+         		} catch (IOException e) {
+            		e.printStackTrace();
+         	 	}finally {
+				  try {
+					  if(null!=bf){
+						bf.close();
+					}
+				  } catch (Exception e) {
+					  e.printStackTrace();
+				  }
+				  try {
+					  if(null!=reader){
+						  reader.close();
+					  }
+				  } catch (Exception e) {
+					  e.printStackTrace();
+				  }
+			  }
+        	}
+    	}).start();
+	}
 
 }  

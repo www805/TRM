@@ -19,8 +19,10 @@ public class SQEntity {
 
     /**
      * 绑定CPU编码
+     * 不使用网卡，使用CPU序列号
      */
-    private String cpuCode=NetTool.getLocalMac();
+//    private String cpuCode=NetTool.getLocalMac();
+    private String cpuCode=NetTool.getCPUCode();
 
     /**
      * 授权总天数
