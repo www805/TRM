@@ -301,6 +301,7 @@ public class CommonCache {
         if(bool){
             init_CLIENT=null;
             actionListMap=null;
+            initbool=true;//本次属于初始化
             LogUtil.intoLog(1,CommonCache.class,"重置客户端页面动作");
         }
         return getinit_CLIENT();
@@ -313,7 +314,6 @@ public class CommonCache {
     public static synchronized com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO getinit_CLIENT(){
 
         if(null==init_CLIENT){
-            initbool=true;
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }

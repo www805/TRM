@@ -36,7 +36,9 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             disbool=false;
             initVO=CommonCache.getinit_CLIENT();
             session.setAttribute(Constant.INIT_CLIENT,initVO);
-            CommonCache.initbool=false;
+            if(null!=session.getAttribute(Constant.INIT_CLIENT)){
+                CommonCache.initbool=false;//只能用一次初始化判断
+            }
         }else{
             initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
         }

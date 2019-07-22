@@ -129,6 +129,10 @@ public class Scheduler {
     public void testTasks() {
 
         InitVO initVO_WEB = CommonCache.getinit_WEB();
+        if(null==initVO_WEB||null==initVO_WEB.getPageList()||initVO_WEB.getPageList().size() == 0){
+            LogUtil.intoLog(4,this.getClass(),"查看授权是否出问题了，CommonCache.getinit_WEB() is null");
+            return ;
+        }
         ko: //跳出两层循环标号
         for (PageVO pageVO : initVO_WEB.getPageList()) {
             if("server_web/base/login".equals(pageVO.getPageid())){
