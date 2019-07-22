@@ -45,10 +45,8 @@ import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -137,7 +135,7 @@ public class RecordService extends BaseService {
 
     private boolean addRecordbool=false;
 
-    public void getRecords(RResult result, ReqParam<GetRecordsParam> param){
+    public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
 
         //请求参数转换
@@ -160,6 +158,11 @@ public class RecordService extends BaseService {
         if (null!=recordbool){
             recordparam.eq("r.recordbool",recordbool);
         }
+
+
+       /* AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        recordparam.eq("c.creator",user.getSsid());*/
+
 
         int count = police_recordMapper.countgetRecords(recordparam);
         getRecordsParam.setRecordCount(count);
@@ -200,6 +203,21 @@ public class RecordService extends BaseService {
                         record.setProblems(problems);
                     }
                 }
+
+                //根据笔录ssid获取案件信息
+                try {
+                    EntityWrapper caseParam=new EntityWrapper();
+                    caseParam.eq("r.ssid",recordssid);
+                    CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
+                    if (null!=caseAndUserInfo){
+                        caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
+                        record.setCaseAndUserInfo(caseAndUserInfo);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         }
         getRecordsVO.setPagelist(records);
@@ -738,9 +756,45 @@ public class RecordService extends BaseService {
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
+        String adminssid=addCaseToArraignmentParam.getAdminssid();//询问人一
+        Integer asknum=addCaseToArraignmentParam.getAsknum();
+        String askobj=addCaseToArraignmentParam.getAskobj();
+        String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();
+        String recordplace=addCaseToArraignmentParam.getRecordplace();
+
+        if (StringUtils.isBlank(mtmodelssid)){
+            //会议模板为空，直接取默认的
+            Base_type base_type=new Base_type();
+            base_type.setType(CommonCache.getCurrentServerType());
+            base_type=base_typeMapper.selectOne(base_type);
+            if (null!=base_type){
+                mtmodelssid=base_type.getMtmodelssid();
+            }
+        }
 
         UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
         Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
+
+        String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
+        String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
+        String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
+        String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
+
+
+        List<String> adminssids=new ArrayList<>();
+        adminssids.add(otheradminssid);
+        adminssids.add(adminssid);
+        CheckStartRecordParam checkStartRecordParam=new CheckStartRecordParam();
+        checkStartRecordParam.setMtmodel_ssid(mtmodelssid);
+        checkStartRecordParam.setUserinfo_ssid(userssid);
+        checkStartRecordParam.setAdmininfos_ssid(adminssids);
+        boolean bool = checkRecordForUser(result,checkStartRecordParam);
+        if (!bool){
+            CheckStartRecordVO vo=gson.fromJson(gson.toJson(result.getData()),CheckStartRecordVO.class);
+            result.setData(vo);
+            return;
+        }
+
 
 
 
@@ -780,7 +834,7 @@ public class RecordService extends BaseService {
                 addPolice_case.setOrdernum(0);
                 addPolice_case.setUserssid(userssid);
                 addPolice_case.setCasebool(0);
-                addPolice_case.setCreator(addCaseToArraignmentParam.getAdminssid());
+                addPolice_case.setCreator(adminssid);
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
                 LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
                 if (insertcase_bool>0){
@@ -801,10 +855,6 @@ public class RecordService extends BaseService {
             return;
         }
 
-        String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
-        String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
-        String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
-        String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
 
         if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
             LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
@@ -855,23 +905,14 @@ public class RecordService extends BaseService {
 
 
        //添加提讯数据
-        if (StringUtils.isBlank(mtmodelssid)){
-            //会议模板为空，直接取默认的
-            Base_type base_type=new Base_type();
-            base_type.setType(CommonCache.getCurrentServerType());
-            base_type=base_typeMapper.selectOne(base_type);
-            if (null!=base_type){
-                mtmodelssid=base_type.getMtmodelssid();
-            }
-        }
         Police_arraignment arraignment=new Police_arraignment();
         arraignment.setSsid(OpenUtil.getUUID_32());
         arraignment.setCreatetime(new Date());
-        arraignment.setAdminssid(addCaseToArraignmentParam.getAdminssid());
-        arraignment.setAsknum(addCaseToArraignmentParam.getAsknum()+1);
-        arraignment.setAskobj(addCaseToArraignmentParam.getAskobj());
-        arraignment.setRecordadminssid(addCaseToArraignmentParam.getRecordadminssid());
-        arraignment.setRecordplace(addCaseToArraignmentParam.getRecordplace());
+        arraignment.setAdminssid(adminssid);
+        arraignment.setAsknum(asknum+1);
+        arraignment.setAskobj(askobj);
+        arraignment.setRecordadminssid(recordadminssid);
+        arraignment.setRecordplace(recordplace);
         arraignment.setOtheradminssid(otheradminssid);
         arraignment.setRecordssid(record.getSsid());
         arraignment.setMtmodelssid(mtmodelssid);//会议模板ssid
@@ -1546,7 +1587,7 @@ public class RecordService extends BaseService {
                     Base_admininfo base_admininfo = new Base_admininfo();
                     base_admininfo.setSsid(recordAndCase.getCreator());
                     Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
-                    recordAndCase.setCreator(admininfo.getUsername());
+                    recordAndCase.setCreatorname(admininfo.getUsername());
                 }
             }
             getCasesVO.setPagelist(list);
@@ -1732,15 +1773,15 @@ public class RecordService extends BaseService {
             ew.eq("w.recordtypessid",recordtypessid);
         }
 
+
+        ew.eq("w.wordtype",1);//查询word模板为1
         int count=police_wordtemplateMapper.countgetWordTemplateList(ew);
         getWordTemplateListParam.setRecordCount(count);
 
         Page<WordTemplate> page=new Page<>(getWordTemplateListParam.getCurrPage(),getWordTemplateListParam.getPageSize());
         List<WordTemplate> pagelist=police_wordtemplateMapper.getWordTemplateList(page,ew);
 
-         String wordtemplate_explaindownurl=null;//word模板说明制作下载地址
-         String wordtemplate_explaindownurl_html=null;//word模板说明制作下载地址转html地址
-         String wordtemplate_explaindownssid=null;
+
         //检测html文件是否存在-------------------------------------start----------------------------
         for (WordTemplate wordTemplate : pagelist) {
             String wordtemplate_downurl_html=null;
@@ -1763,25 +1804,51 @@ public class RecordService extends BaseService {
                     }
                 }
             }
-            if (wordTemplate.getWordtype()==2){
-                 wordtemplate_explaindownurl=downurl;
-                 wordtemplate_explaindownurl_html=wordtemplate_downurl_html;
-                 wordtemplate_explaindownssid=wordTemplate.getSsid();
-            }
             wordTemplate.setWordtemplate_downurl_html(wordtemplate_downurl_html);
         }
         //检测html文件是否存在-------------------------------------end----------------------------
 
-        List<WordTemplate>  pagelist2=new ArrayList<>();
-        for (WordTemplate wordTemplate : pagelist) {
-            if (wordTemplate.getWordtype()!=2){
-                pagelist2.add(wordTemplate);
+        //获取模板说明
+        String wordtemplate_explaindownurl=null;//word模板说明制作下载地址
+        String wordtemplate_explaindownurl_html=null;//word模板说明制作下载地址转html地址
+        String wordtemplate_explaindownssid=null;
+        EntityWrapper word2=new EntityWrapper();
+        word2.eq("wordtype",2);
+        List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word2);
+        if (null!=wordTemplates&&wordTemplates.size()==1){
+            WordTemplate wordTemplate2=wordTemplates.get(0);
+            if (wordTemplate2.getWordtype()==2){
+                String wordtemplate_downurl_html=null;
+                String realurl=wordTemplate2.getWordtemplate_realurl();
+                String downurl=wordTemplate2.getWordtemplate_downurl();
+                if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                    if(realurl.endsWith(".doc")){
+                        String replace = realurl.replace(".doc", ".html");
+                        File f = new File(replace);
+                        if (f.exists()) {
+                            LogUtil.intoLog(this.getClass(),"word模板doc转html文件存在:"+replace);
+                            wordtemplate_downurl_html=downurl.replace(".doc", ".html");
+                        }
+                    }else if(realurl.endsWith(".docx")){
+                        String replace = realurl.replace(".docx", ".html");
+                        File f = new File(replace);
+                        if (f.exists()) {
+                            LogUtil.intoLog(this.getClass(),"word模板docx转html文件存在:"+replace);
+                            wordtemplate_downurl_html=downurl.replace(".docx", ".html");
+                        }
+                    }
+                }
+                wordtemplate_explaindownurl=downurl;
+                wordtemplate_explaindownurl_html=wordtemplate_downurl_html;
+                wordtemplate_explaindownssid=wordTemplate2.getSsid();
             }
         }
+        //获取模板说明
+
         vo.setWordtemplate_explaindownurl(wordtemplate_explaindownurl);
         vo.setWordtemplate_explaindownurl_html(wordtemplate_explaindownurl_html);
         vo.setWordtemplate_explaindownssid(wordtemplate_explaindownssid);
-        vo.setPagelist(pagelist2);
+        vo.setPagelist(pagelist);
         vo.setPageparam(getWordTemplateListParam);
 
 
@@ -2166,6 +2233,124 @@ public class RecordService extends BaseService {
         result.setData(vo);
         changeResultToSuccess(result);
         return;
+    }
+
+    public boolean checkRecordForUser(RResult result,CheckStartRecordParam param){
+        CheckStartRecordVO vo=new CheckStartRecordVO();
+
+        if (null==param){
+            result.setMessage("参数为空");
+            LogUtil.intoLog(this.getClass(),"checkRecordForUser__参数为空");
+            return false;
+        }
+
+        //当前
+        String mtmodelssid=param.getMtmodel_ssid();//会议模板
+        List<String> admininfos=param.getAdmininfos_ssid();//询问人集合
+        String userinfo=param.getUserinfo_ssid();//被询问人
+
+
+
+        //已参与
+        List<String> userssidList=new ArrayList<>();//全部被询问人
+        List<String> adminssidList=new ArrayList<>();//全部询问人
+        List<String> mtmodelssidList=new ArrayList<>();//全部会议模板
+
+
+        //开始收集所有正在参与制作笔录的人员（询问人和被询问人，记录人员暂不计算）
+        EntityWrapper recordparam=new EntityWrapper();
+        recordparam.eq("recordbool",1).or().eq("recordbool",0);//获取进行中的笔录或者未开始的笔录
+        List<Police_record> list=police_recordMapper.selectList(recordparam);
+        if (null!=list&&list.size()>0){
+            for (Police_record police_record : list) {
+                String recordssid=police_record.getSsid();
+                //收集被询问人
+                try {
+                    EntityWrapper caseParam=new EntityWrapper();
+                    caseParam.eq("r.ssid",recordssid);
+                    CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
+                    if (null!=caseAndUserInfo&&null!=caseAndUserInfo.getUserssid()){
+                        userssidList.add(caseAndUserInfo.getUserssid());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                //收集询问人
+                try {
+                    Police_arraignment police_arraignment=new Police_arraignment();
+                    police_arraignment.setRecordssid(recordssid);
+                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+                    if (null!=police_arraignment){
+                        adminssidList.add(police_arraignment.getAdminssid());
+                        adminssidList.add(police_arraignment.getOtheradminssid());
+                        mtmodelssidList.add(police_arraignment.getMtmodelssid());
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            //开始检测被询问人是否已经被使用
+            if (null!=userinfo){
+                if (null!=userssidList&&userssidList.size()>0){
+                    LogUtil.intoLog(this.getClass(),"userssidList__"+userssidList.toString());
+                    for (String s : userssidList) {
+                        if(s.equals(userinfo)){
+                            vo.setUserinfo_ssid(userinfo);
+                            result.setData(vo);
+                            result.setMessage("该被询问人正在被讯问中");
+                            LogUtil.intoLog(this.getClass(),"该被询问人已在笔录中__"+userinfo);
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            //开始检测询问人是否已经被使用
+            if (null!=admininfos&&admininfos.size()>0){
+                if (null!=adminssidList&&adminssidList.size()>0){
+                    LogUtil.intoLog(this.getClass(),"adminssidList__"+adminssidList.toString());
+                    List<String> admininfos_ssid=new ArrayList<>();
+                    for (String s : adminssidList) {
+                        for (String admininfo : admininfos) {
+                            if(s.equals(admininfo)){
+                                admininfos_ssid.add(admininfo);
+                                vo.setAdmininfos_ssid(admininfos_ssid);
+                                result.setData(vo);
+                                result.setMessage("所选询问人已被选用");
+                                LogUtil.intoLog(this.getClass(),"该询问人已在笔录中__"+admininfo);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            //开始检测会议模板是否已经被使用
+            if (null!=mtmodelssid){
+                if (null!=mtmodelssidList&&mtmodelssidList.size()>0){
+                    LogUtil.intoLog(this.getClass(),"mtmodelssidList__"+mtmodelssidList.toString());
+                    for (String s : mtmodelssidList) {
+                        if(s.equals(mtmodelssid)){
+                            vo.setMtmodel_ssid(mtmodelssid);
+                            result.setData(vo);
+                            result.setMessage("所选模板已被使用");
+                            LogUtil.intoLog(this.getClass(),"该模板已在笔录中__"+mtmodelssid);
+                            return false;
+                        }
+                    }
+                }
+            }
+        }else {
+            return true;
+        }
+
+
+
+
+        return true;
     }
 
 

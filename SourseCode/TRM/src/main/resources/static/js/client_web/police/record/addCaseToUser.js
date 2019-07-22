@@ -13,7 +13,7 @@ var dqotherworkssid=null;//当前询问人对应的工作单位
 
 
 //开始笔录按钮
-function addCaseToArraignment(obj) {
+function addCaseToArraignment() {
     var  addUserInfo={};//新增人员的信息
     var  addPolice_case={};//新增案件的信息
 
@@ -69,7 +69,7 @@ function addCaseToArraignment(obj) {
         return;
     }
 
-    $(obj).attr("onclick","");
+    $("#startrecord_btn").attr("onclick","");
 
     //收集人员信息
     var cardtypessid=$("#cards option:selected").val();
@@ -191,7 +191,27 @@ function callbackaddCaseToArraignment(data) {
             });
         }
     }else{
-        parent.layer.msg(data.message);
+        $("#startrecord_btn").attr("onclick","addCaseToArraignment();");
+        var data2=data.data;
+        if (isNotEmpty(data2)){
+            var admininfos_ssid=data2.admininfos_ssid;
+            if (isNotEmpty(admininfos_ssid)) {
+                for (let i = 0; i < admininfos_ssid.length; i++) {
+                    const ssid = admininfos_ssid[i];
+                    if (ssid==sessionadminssid) {
+                        parent.layer.msg("您有一份笔录正在制作中，请先结束上一份笔录");
+                    }else if (ssid==dqotheruserinfossid) {
+                        parent.layer.msg("询问人二已被选用");
+                    }else {
+                        parent.layer.msg(data.message);
+                    }
+                }
+            }else {
+                parent.layer.msg(data.message);
+            }
+        }else {
+            parent.layer.msg(data.message);
+        }
     }
 }
 
@@ -445,6 +465,8 @@ function getUserByCard(){
     var cardtypetext=$("#cards option:selected").text();
     var cardtypesssid=$("#cards option:selected").val();
 
+
+
     dquserssid=null;//当前用户的ssid
     dqcasessid=null;//当前案件ssid
     cases=null;
@@ -456,6 +478,9 @@ function getUserByCard(){
     $("#casename_ssid").html("");
 
     /* init_form();//初始化表单*/
+    if (!isNotEmpty(cardnum)){
+        return;
+    }
     var bool=checkout_cardnum(cardnum,cardtypetext);
     if (!bool){
         return;

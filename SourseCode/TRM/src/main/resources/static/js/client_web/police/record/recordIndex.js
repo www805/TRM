@@ -189,13 +189,18 @@ function showpagetohtml(){
 }
 
 //跳转笔录编辑页
-function towaitRecord(recordssid,recordbool) {
+function towaitRecord(recordssid,recordbool,creator) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
+
     if (recordbool!=2){
-        var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
-        window.location.href=url+"?ssid="+recordssid;
+        if (isNotEmpty(creator)&&creator==sessionadminssid){
+            var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
+            window.location.href=url+"?ssid="+recordssid;
+        }else {
+            layer.msg("笔录正在制作中...")
+        }
     } else{
         var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;

@@ -124,14 +124,12 @@
         {{#  var recordbool=value.recordbool;var recordbooltext; }}
         {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
 
-        {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   }}
-        <tr onclick="setproblems('{{value.ssid}}',this)"   ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}');" style="background-color: {{backgroundcolor}}">
+        {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var caseAndUserInfo=value.caseAndUserInfo;var creator=null; if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator;}  }}
+        <tr onclick="setproblems('{{value.ssid}}',this)"   ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}');" style="background-color: {{backgroundcolor}}">
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td >{{recordbooltext}}</td>
         </tr>
-
         {{#  }); }}
-
         </tbody>
     </table>
 
@@ -147,6 +145,7 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

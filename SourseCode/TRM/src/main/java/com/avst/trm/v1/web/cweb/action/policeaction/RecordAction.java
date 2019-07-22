@@ -35,14 +35,14 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping(value = "/getRecords")
-    public RResult getRecords(@RequestBody ReqParam<GetRecordsParam> param){
+    public RResult getRecords(@RequestBody ReqParam<GetRecordsParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getRecords(result,param);
+            recordService.getRecords(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -590,8 +590,6 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
-
-
 
 
 

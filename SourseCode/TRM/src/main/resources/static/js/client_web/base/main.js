@@ -85,7 +85,7 @@ function callgetNavList(data) {
 }
 
 $(function () {
-    /* var _t;
+       /*var _t;
        window.onbeforeunload = function(){
            setTimeout(function(){_t = setTimeout(onunloadcancel, 0)}, 0);
            return "真的离开?";
@@ -93,7 +93,5 @@ $(function () {
        window.onunloadcancel = function(){
            clearTimeout(_t);
            alert("取消离开");
-       }
- */
-
+       }*/
 })

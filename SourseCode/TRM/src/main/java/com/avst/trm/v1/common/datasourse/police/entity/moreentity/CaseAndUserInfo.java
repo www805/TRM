@@ -16,10 +16,21 @@ public class CaseAndUserInfo extends Police_case {
 
     private Integer asknum;//询问次数
 
+    private String creatorname;//创建人名称
+
     @JsonFormat(pattern="yyyy年MM月dd日HH时mm分ss秒",timezone="GMT+8")
     private Date occurrencetime_format;//案发时间换格式
 
     private List<ArraignmentAndRecord> arraignments;//多次提讯数据
+
+
+    public String getCreatorname() {
+        return creatorname;
+    }
+
+    public void setCreatorname(String creatorname) {
+        this.creatorname = creatorname;
+    }
 
     @Override
     public String getUserssid() {

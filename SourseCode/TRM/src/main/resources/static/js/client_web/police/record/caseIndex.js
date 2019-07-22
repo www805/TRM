@@ -73,7 +73,7 @@ function showpagetohtml(){
 }
 
 
-function open_RecordsByCasessid(casessid,arraignmentslength) {
+function open_RecordsByCasessid(casessid,arraignmentslength,creator) {
     if (null==arraignmentslength||arraignmentslength<1){
         layer.msg("该案件没有笔录");
         return;
@@ -81,7 +81,7 @@ function open_RecordsByCasessid(casessid,arraignmentslength) {
 
 
     if (isNotEmpty(casessid)) {
-        var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 15px;"><table class="layui-hide" lay-filter="openModelhtml" id="openModelhtml" style="table-layout:fixed"></table></form>';
+        var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 15px;"><table creator="'+creator+'"  class="layui-hide" lay-filter="openModelhtml" id="openModelhtml" style="table-layout:fixed"></table></form>';
 
         var url=getActionURL(getactionid_manage().caseIndex_getRecordByCasessid);
         var data={
@@ -160,7 +160,8 @@ function callbackgetRecordByCasessid(data) {
                     if (isNotEmpty(arraignment)){
                         var recordssid=arraignment.recordssid;
                         var recordbool=arraignment.recordbool;
-                        towaitRecord(recordssid,recordbool);
+                        var creator=$("#openModelhtml").attr("creator");
+                        towaitRecord(recordssid,recordbool,creator);
                     }
                 });
 
@@ -229,16 +230,21 @@ function toaddOupdateurl(ssid,casebool) {
 
 
 //跳转笔录编辑页
-function towaitRecord(recordssid,recordbool) {
+function towaitRecord(recordssid,recordbool,creator) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
+
     if (recordbool==2){
-        var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
-        window.location.href=url+"?ssid="+recordssid;
+            var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
+            window.location.href=url+"?ssid="+recordssid;
     } else{
+    if (isNotEmpty(creator)&&creator==sessionadminssid){
         var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
         window.location.href=url+"?ssid="+recordssid;
+     }else {
+        layer.msg("笔录正在制作中...")
+    }
     }
 }
 
