@@ -49,6 +49,9 @@ function callgetNavList(data) {
             $("#clientimage").attr('src',appCache.clientimage);
 
             if (isNotEmpty(appCache.data)) {
+                if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) || !isNotEmpty(appCache.data.bottom.url)) {
+                    return;
+                }
                 //页脚
                 var bottom_name = appCache.data.bottom.name;
                 var bottom_declaration = appCache.data.bottom.declaration;

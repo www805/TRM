@@ -100,6 +100,7 @@
         color: #FFFFFF;background-color: red;
         -webkit-animation: fade 1s infinite ease-in-out;
     }
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -301,7 +302,8 @@
         getRecordById();//获取笔录案件等信息
         main1();//身心统计回放
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
-
+        console.log(togetPolygraphurl);
+        alert(togetPolygraphurl);
     });
     layui.use(['layer','element','slider','form'], function(){
         var layer = layui.layer; //获得layer模块

@@ -16,7 +16,7 @@ public class CInterceptorConfig implements WebMvcConfigurer {
         InterceptorRegistration registration = registry.addInterceptor(new CManagerInterceptor());     //拦截的对象会进入这个类中进行判断
         registration.addPathPatterns("/cweb/base/**");
         registration.addPathPatterns("/cweb/");
-        registration.excludePathPatterns("/login", "/error", "/static/**", "/logout", "/cweb/base/main/getNavList");       //添加不拦截路径
+        registration.excludePathPatterns("/login", "/error", "/static/**", "/static/layui/iconz", "/logout", "/cweb/base/main/getNavList");       //添加不拦截路径
 
         //权限拦截的管理器
     }
