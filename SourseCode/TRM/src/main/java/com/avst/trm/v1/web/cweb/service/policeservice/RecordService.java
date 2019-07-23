@@ -127,7 +127,6 @@ public class RecordService extends BaseService {
     @Value("${file.recordwordOrpdf}")
     private String filerecordwordOrpdf; //笔录word或者pdf路径
 
-    private boolean addRecordbool=false;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -258,14 +257,6 @@ public class RecordService extends BaseService {
 
     public void addRecord(RResult result, ReqParam<AddRecordParam> param){
 
-        if (addRecordbool){
-            LogUtil.intoLog(this.getClass(),"---addRecordbool---Start---");
-            result.setMessage("保存处理中,请稍等重试...");
-            return;
-        }
-        addRecordbool=true;
-
-
         //请求参数转换
         AddRecordParam addRecordParam = param.getParam();
         if (null==addRecordParam){
@@ -358,7 +349,6 @@ public class RecordService extends BaseService {
             LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
         }
 
-        addRecordbool=false;
         result.setData(recordssid);
         changeResultToSuccess(result);
         return;
@@ -450,11 +440,11 @@ public class RecordService extends BaseService {
 
                 //根据笔录ssid获取提讯数据
                 String mtssid=null;
+                Integer mtstate=null;
                 try {
                     Police_arraignment police_arraignment=new Police_arraignment();
                     police_arraignment.setRecordssid(recordssid);
                     police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
-                    Integer mtstate=null;
                     if (null!=police_arraignment){
                         if (StringUtils.isNotBlank(police_arraignment.getMtssid())){
                             mtssid=police_arraignment.getMtssid();
@@ -475,67 +465,73 @@ public class RecordService extends BaseService {
                     e.printStackTrace();
                 }
 
+                if (null!=mtssid&&null!=record.getRecordbool()&&record.getRecordbool()==2){
+                    //回放数据，笔录制作中的时候不需要检测
 
-                String iid=null;
-                //getRecord：获取会议asr识别数据
-                GetMCVO getMCVO=new GetMCVO();
-                ReqParam getrecord_param=new ReqParam<>();
-                GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
-                getPhssidByMTssidParam_out.setMcType(MCType.AVST);
-                getPhssidByMTssidParam_out.setMtssid(mtssid);
-                getrecord_param.setParam(getPhssidByMTssidParam_out);
-                RResult getrecord_rr=new RResult();
-                getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
-                if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
-                    getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
-                    if (null!=getMCVO){
-                        iid=getMCVO.getIid();
-                        getRecordByIdVO.setGetMCVO(getMCVO);
-                    }
-                    LogUtil.intoLog(this.getClass()," outService.getRecord__请求成功");
-                }else {
-                    Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
-                    LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
-                }
 
-                //getPlayUrl:获取直播地址
-                if (StringUtils.isNotBlank(iid)){
-                    GetPlayUrlVO getPlayUrlVO =new GetPlayUrlVO();
-                    GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
-                    getURLToPlayParam.setSsType(SSType.AVST);
-                    getURLToPlayParam.setIid(iid);
-                    RResult getplayurl_rr=new RResult();
-                    outService.getPlayUrl(getplayurl_rr,getURLToPlayParam);
-                    if (null!=getplayurl_rr&&getplayurl_rr.getActioncode().equals(Code.SUCCESS.toString())){
-                        getPlayUrlVO=gson.fromJson(gson.toJson(getplayurl_rr.getData()),GetPlayUrlVO.class);
+                    String iid=null;
+                    //getRecord：获取会议asr识别数据
+                    GetMCVO getMCVO=new GetMCVO();
+                    ReqParam getrecord_param=new ReqParam<>();
+                    GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                    getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                    getPhssidByMTssidParam_out.setMtssid(mtssid);
+                    getrecord_param.setParam(getPhssidByMTssidParam_out);
+                    RResult getrecord_rr=new RResult();
+                    getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                    if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                        getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
                         if (null!=getMCVO){
-                            getRecordByIdVO.setGetPlayUrlVO(getPlayUrlVO);
+                            iid=getMCVO.getIid();
+                            getRecordByIdVO.setGetMCVO(getMCVO);
                         }
-                        LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求成功");
+                        LogUtil.intoLog(this.getClass()," outService.getRecord__请求成功");
                     }else {
-                        Object msg=getplayurl_rr==null?getplayurl_rr:getplayurl_rr.getMessage();
-                        LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求失败__"+msg);
+                        Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
+                        LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
+                    }
+
+                    //getPlayUrl:获取直播地址
+                    if (StringUtils.isNotBlank(iid)){
+                        GetPlayUrlVO getPlayUrlVO =new GetPlayUrlVO();
+                        GetURLToPlayParam getURLToPlayParam=new GetURLToPlayParam();
+                        getURLToPlayParam.setSsType(SSType.AVST);
+                        getURLToPlayParam.setIid(iid);
+                        RResult getplayurl_rr=new RResult();
+                        outService.getPlayUrl(getplayurl_rr,getURLToPlayParam);
+                        if (null!=getplayurl_rr&&getplayurl_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                            getPlayUrlVO=gson.fromJson(gson.toJson(getplayurl_rr.getData()),GetPlayUrlVO.class);
+                            if (null!=getMCVO){
+                                getRecordByIdVO.setGetPlayUrlVO(getPlayUrlVO);
+                            }
+                            LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求成功");
+                        }else {
+                            Object msg=getplayurl_rr==null?getplayurl_rr:getplayurl_rr.getMessage();
+                            LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求失败__"+msg);
+                        }
+                    }
+
+                    //getPHDataBack：获取身心回放
+                    List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();
+                    ReqParam getphdataback_param=new ReqParam<>();
+                    GetPHDataBackParam getPHDataBackParam=new GetPHDataBackParam();
+                    getPHDataBackParam.setMtssid(mtssid);
+                    getphdataback_param.setParam(getPHDataBackParam);
+                    RResult getphdataback_rr=new RResult();
+                    outService.getPHDataBack(getphdataback_rr,getphdataback_param);
+                    if (null!=getphdataback_rr&&getphdataback_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                        phDataBackVoParams=gson.fromJson(gson.toJson(getphdataback_rr.getData()), new TypeToken<List<PHDataBackVoParam>>(){}.getType());
+                        if (null!=phDataBackVoParams){
+                            getRecordByIdVO.setPhDataBackVoParams(phDataBackVoParams);
+                        }
+                        LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求成功");
+                    }else {
+                        Object msg=getphdataback_rr==null?getphdataback_rr:getphdataback_rr.getMessage();
+                        LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求失败__"+msg);
                     }
                 }
 
-                //getPHDataBack：获取身心回放
-                List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();
-                ReqParam getphdataback_param=new ReqParam<>();
-                GetPHDataBackParam getPHDataBackParam=new GetPHDataBackParam();
-                getPHDataBackParam.setMtssid(mtssid);
-                getphdataback_param.setParam(getPHDataBackParam);
-                RResult getphdataback_rr=new RResult();
-                outService.getPHDataBack(getphdataback_rr,getphdataback_param);
-                if (null!=getphdataback_rr&&getphdataback_rr.getActioncode().equals(Code.SUCCESS.toString())){
-                    phDataBackVoParams=gson.fromJson(gson.toJson(getphdataback_rr.getData()), new TypeToken<List<PHDataBackVoParam>>(){}.getType());
-                    if (null!=phDataBackVoParams){
-                        getRecordByIdVO.setPhDataBackVoParams(phDataBackVoParams);
-                    }
-                    LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求成功");
-                }else {
-                    Object msg=getphdataback_rr==null?getphdataback_rr:getphdataback_rr.getMessage();
-                    LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求失败__"+msg);
-                }
+
                 //获取实时数据
                 result.setData(getRecordByIdVO);
                 changeResultToSuccess(result);
@@ -1429,13 +1425,21 @@ public class RecordService extends BaseService {
             //工作单位
             Police_workunit police_workunit1 = new Police_workunit();
             police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
-            police_workunit1 = police_workunitMapper.selectOne(police_workunit1);
+            if (null!=recordUserInfos.getWorkunitssid1()){
+                police_workunit1 = police_workunitMapper.selectOne(police_workunit1);
+            }
             Police_workunit police_workunit2 = new Police_workunit();
             police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
-            police_workunit2 = police_workunitMapper.selectOne(police_workunit2);
+            if (null!=recordUserInfos.getWorkunitssid2()){
+                police_workunit2 = police_workunitMapper.selectOne(police_workunit2);
+            }
+
             Police_workunit police_workunit3 = new Police_workunit();
             police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
-            police_workunit3 = police_workunitMapper.selectOne(police_workunit3);
+            if (null!=recordUserInfos.getWorkunitssid3()){
+                police_workunit3 = police_workunitMapper.selectOne(police_workunit3);
+            }
+
 
             String workname1 = police_workunit1.getWorkname();
             String workname2 = police_workunit2.getWorkname();

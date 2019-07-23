@@ -694,6 +694,7 @@ function addRecord() {
                 recordToProblems:recordToProblems
             }
         };
+        $("#overRecord_btn").attr("click","");
         ajaxSubmitByJson(url, data, calladdRecord);
       /*  $.ajax({
             url : url,
@@ -789,6 +790,7 @@ function calladdRecord(data) {
     }else{
         layer.msg(data.message);
     }
+    $("#overRecord_btn").attr("click","overRecord();");
 }
 
 //结束笔录按钮
@@ -1727,7 +1729,6 @@ $(function () {
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
 
-                        console.log("translatext_"+translatext)
 
                             //实时会议数据
                             if (usertype==1){
@@ -1752,7 +1753,7 @@ $(function () {
                                 dqselec_left= txt.toString();
                             })
 
-                            $("#recordreals").hover(
+                            $("#asritem").hover(
                                 function(){
                                     mouseoverbool_left=1
                                 } ,
