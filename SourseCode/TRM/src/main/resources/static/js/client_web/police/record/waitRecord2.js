@@ -936,9 +936,12 @@ function recordreals_select() {
     var likerealtxt = $("#recordreals_select").val();
     dqindex_realtxt=0;
     likerealtxtarr=[];
+   var recordrealshtml= $("#recordreals").html();
+    recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
+    $("#recordreals").html(recordrealshtml);
+
     $("#recordreals div").each(function (i,e) {
         var spantxt=$(this).find("span").text();
-        $(this).find("span").html(spantxt);
         if (isNotEmpty(likerealtxt)){
             if (spantxt.indexOf(likerealtxt) >= 0) {
                 var html=$(this).find("span").html();
@@ -1007,6 +1010,28 @@ function callbackgnlist(data) {
 //*******************************************************************左侧授权模块显示endt****************************************************************//
 
 
+//*******************************************************************关键字start****************************************************************//
+//未使用，在后头执行了
+function checkKeyword(txt) {
+    var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            txt:txt
+        }
+    };
+    ajaxSubmitByJson(url, data,callbackcheckKeyword);
+}
 
-
+function callbackcheckKeyword(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var vo=data.data;
+        if (isNotEmpty(vo)){
+            dq_newtxt=vo.txt;
+        }
+    }else {
+        console.log(data.message);
+    }
+}
+//*******************************************************************关键字end****************************************************************//
 

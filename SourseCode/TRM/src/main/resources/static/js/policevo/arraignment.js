@@ -39,7 +39,7 @@ function getArraignmentListByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getArraignmentList_init(currPage,pageSize);
     }else if (len==2){
         getArraignmentList('',arguments[0],arguments[1]);

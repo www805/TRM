@@ -101,7 +101,7 @@ function getArraignment_countByParam(){
     // alert(len);
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getArraignment_count_init(currPage,pageSize);
     }else if (len==2){
         getArraignment_countList('',arguments[0],arguments[1]);

@@ -230,7 +230,7 @@ function getProblemTypesParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 11;//测试
+        var pageSize = 10;//测试
         getProblems_init(currPage, pageSize);
     }  else if (len == 2) {
         getProblems('', arguments[0], arguments[1]);

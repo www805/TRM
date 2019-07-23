@@ -554,7 +554,7 @@
     var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
 
     var recordstate_index=null;//笔录状态栏的下标
-    /*var dq_newtxt=null;*/
+    var dq_newtxt="";//当前关键字文本
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -566,8 +566,6 @@
         getTime();
         main1();
 
-        /*checkKeyword("打我们就是雅虎鸡肤鹤发哈哈多少积你有很多富士康较好的复合大师开机复合大师");
-        console.log(dq_newtxt)*/
         togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
         var templates= JSON.parse(sessionStorage.getItem(recordssid)||null)
         if (isNotEmpty(templates)) {

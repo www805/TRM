@@ -51,7 +51,7 @@ function ggetRecordsByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getRecords_init(currPage,pageSize);
     }else if (len==2){
         getRecords('',arguments[0],arguments[1]);
@@ -949,9 +949,12 @@ function recordreals_select() {
     var likerealtxt = $("#recordreals_select").val();
     dqindex_realtxt=0;
     likerealtxtarr=[];
+
+    var recordrealshtml= $("#recordreals").html();
+    recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
+    $("#recordreals").html(recordrealshtml);
     $("#recordreals div").each(function (i,e) {
         var spantxt=$(this).find("span").text();
-        $(this).find("span").html(spantxt);
         if (isNotEmpty(likerealtxt)){
             if (spantxt.indexOf(likerealtxt) >= 0) {
                 var html=$(this).find("span").html();

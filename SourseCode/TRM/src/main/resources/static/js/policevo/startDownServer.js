@@ -37,7 +37,7 @@ function getdataInfosByParam(){
 
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getdataInfos_init(currPage,pageSize);
     }else if (len==2){
         getdataInfos('',arguments[0],arguments[1]);

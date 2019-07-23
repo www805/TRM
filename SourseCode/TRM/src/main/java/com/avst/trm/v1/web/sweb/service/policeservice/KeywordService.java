@@ -230,10 +230,10 @@ public class KeywordService extends BaseService {
             rResult.setMessage("关键字名称 或 替换字符不能为空");
             return false;
         }
-        if(StringUtils.isEmpty(keyword.getColor()) || StringUtils.isEmpty(keyword.getBackgroundcolor())){
+      /* 可以为空 if(StringUtils.isEmpty(keyword.getColor()) || StringUtils.isEmpty(keyword.getBackgroundcolor())){
             rResult.setMessage("字体颜色 或 背景颜色不能为空");
             return false;
-        }
+        }*/
         return true;
     }
 

@@ -123,7 +123,7 @@ function getTmplateTypesParams() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 13;//测试
+        var pageSize = 10;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);

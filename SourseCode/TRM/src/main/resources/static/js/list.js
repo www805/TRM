@@ -44,7 +44,7 @@ function getAdminInfoPageByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getAdminInfoPageByParam_init(currPage,pageSize);
     }else if (len==2){
         getAdminInfoPage('',arguments[0],arguments[1]);

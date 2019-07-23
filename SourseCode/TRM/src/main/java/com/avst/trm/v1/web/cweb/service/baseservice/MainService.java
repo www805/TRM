@@ -684,7 +684,7 @@ public class MainService extends BaseService {
             {
                 for (Base_keyword keyword : keywords) {
                     String keywordtext=keyword.getText();
-                    if (txt.indexOf(keywordtext)>0){
+                    if (txt.indexOf(keywordtext)>=0){
                          String color=keyword.getColor();
                          String backgroundcolor=keyword.getBackgroundcolor();
                          String replacetext=keyword.getReplacetext();
@@ -698,15 +698,13 @@ public class MainService extends BaseService {
                          if (null!=shieldbool&&shieldbool==1){
                              //文本替换
                              if (null!=replacetext){
-                                 replacetext="<a style='"+style+"'>"+replacetext+"</a>";
+                                 replacetext="<text style='"+style+"'>"+replacetext+"</text>";
                              }
-                             LogUtil.intoLog(this.getClass(),replacetext+"该文本需要屏蔽__"+txt);
                          }else {
                              //文本替换
                              if (null!=replacetext){
-                                 replacetext="<a style='"+style+"'>"+keywordtext+"</a>";
+                                 replacetext="<text style='"+style+"'>"+keywordtext+"</text>";
                              }
-                             LogUtil.intoLog(this.getClass(),keywordtext+"该文本不需要屏蔽__"+txt);
                          }
                         txt=txt.replaceAll(keywordtext,replacetext);
                         LogUtil.intoLog(this.getClass(),"关键字过滤后的文本__"+txt);

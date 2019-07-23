@@ -38,7 +38,7 @@ function getKeyWordByParam() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 3;//测试
+        var pageSize = 10;//测试
         getKeyword_init(currPage, pageSize);
     }  else if (len == 2) {
         getKeyWordPage('', arguments[0], arguments[1]);

@@ -1565,6 +1565,8 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
                 });
 
             }
+        }else {
+            focuslable(null,2,'q');//重置保存的内容为空时添加一行自定义问答
         }
     }else{
         layer.msg(data.message);
@@ -1611,26 +1613,6 @@ function setqw(problems){
 
 
 
-function checkKeyword(txt) {
-    var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            txt:txt
-        }
-    };
-    ajaxSubmitByJson(url, data, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var vo=data.data;
-            if (isNotEmpty(vo)){
-                dq_newtxt=vo.txt;
-                console.log("dq_newtxt_"+dq_newtxt)
-            }
-        }else {
-            console.log(data.message);
-        }
-    });
-}
 
 
 
@@ -1740,15 +1722,13 @@ $(function () {
                         if (data.userssid==userssid){
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var translatext=data.txt==null?"":data.txt;//翻译文本
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
 
-                       /*  checkKeyword(translatext);
-                         console.log("translatext__"+translatext+"__dq_newtxt__"+dq_newtxt)
-                            translatext=dq_newtxt;
-                            dq_newtxt=null*/;
+                        console.log("translatext_"+translatext)
+
                             //实时会议数据
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
