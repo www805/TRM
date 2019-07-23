@@ -5,15 +5,9 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.GZVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
+import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_nationalityMapper;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -2346,12 +2340,10 @@ public class RecordService extends BaseService {
         }else {
             return true;
         }
-
-
-
-
         return true;
     }
+
+
 
 
 

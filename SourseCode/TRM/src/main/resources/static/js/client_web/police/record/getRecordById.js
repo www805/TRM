@@ -221,6 +221,8 @@ function callbackgetRecordById(data) {
     }
 }
 
+
+
 //数据渲染
 function set_getRecord(data){
     if (isNotEmpty(data.list)){

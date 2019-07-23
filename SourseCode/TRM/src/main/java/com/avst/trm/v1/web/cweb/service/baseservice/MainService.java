@@ -14,6 +14,7 @@ import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -22,10 +23,13 @@ import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.vo.basevo.GetHomeVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.GetServerconfigVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.UpdateServerconfigVO;
 import com.avst.trm.v1.web.cweb.vo.basevo.UserloginVO;
+import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
+import com.baomidou.mybatisplus.MybatisSqlSessionTemplate;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
@@ -81,6 +85,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private Police_workunitMapper police_workunitMapper;
+
+    @Autowired
+    private Base_keywordMapper base_keywordMapper;
 
 
     @Value("${spring.images.filePath}")
@@ -656,4 +663,68 @@ public class MainService extends BaseService {
         result.setData(cacheParam);
         changeResultToSuccess(result);
     }
+
+
+    public  void checkKeyword(RResult result, ReqParam<CheckKeywordParam> param){
+
+        CheckKeywordVO vo=new CheckKeywordVO();
+        CheckKeywordParam checkKeywordParam=param.getParam();
+        if(null==checkKeywordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String txt=checkKeywordParam.getTxt();
+        if (StringUtils.isNotBlank(txt)){
+            //开始检测文本
+            //1、获取关键字列表
+            EntityWrapper keywords_ew=new EntityWrapper();
+            List<Base_keyword> keywords= base_keywordMapper.selectList(keywords_ew);
+            if (null!=keywords&&keywords.size()>0)
+            {
+                for (Base_keyword keyword : keywords) {
+                    String keywordtext=keyword.getText();
+                    if (txt.indexOf(keywordtext)>0){
+                         String color=keyword.getColor();
+                         String backgroundcolor=keyword.getBackgroundcolor();
+                         String replacetext=keyword.getReplacetext();
+                         Integer shieldbool=keyword.getShieldbool(); // 是否屏蔽：1屏蔽/-1不屏蔽；默认-1
+
+                        //需要屏蔽
+                        String style="";//样式css
+                        if(null!=color&&null!=backgroundcolor){
+                            style+="color:"+color+";background-color:"+backgroundcolor;
+                        }
+                         if (null!=shieldbool&&shieldbool==1){
+                             //文本替换
+                             if (null!=replacetext){
+                                 replacetext="<a style='"+style+"'>"+replacetext+"</a>";
+                             }
+                             LogUtil.intoLog(this.getClass(),replacetext+"该文本需要屏蔽__"+txt);
+                         }else {
+                             //文本替换
+                             if (null!=replacetext){
+                                 replacetext="<a style='"+style+"'>"+keywordtext+"</a>";
+                             }
+                             LogUtil.intoLog(this.getClass(),keywordtext+"该文本不需要屏蔽__"+txt);
+                         }
+                        txt=txt.replaceAll(keywordtext,replacetext);
+                        LogUtil.intoLog(this.getClass(),"关键字过滤后的文本__"+txt);
+                    }
+                }
+                vo.setTxt(txt);
+                result.setData(vo);
+                changeResultToSuccess(result);
+                return;
+            }
+        }else {
+            LogUtil.intoLog(this.getClass(),"关键字检测：没有要检测的文本__");
+        }
+        return;
+    }
+
+
+
+
+
 }

@@ -16,6 +16,8 @@ var  mouseoverbool_right=-1;//同上
 var dqselec_left="";//当前左侧鼠标选择的文本
 var dqselec_right="";//当前左侧鼠标选择的文本
 
+var tdanduserandothercacheparam=null;//用户通道关联其他的参数的集合
+
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -892,6 +894,7 @@ function callbackgetgetRecordrealing(data) {
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
+
                             //实时会议数据
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
@@ -947,6 +950,7 @@ function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
             if(null!=data&&data.actioncode=='SUCCESS'){
                 var data=data.data;
                 if (isNotEmpty(data)){
+                    tdanduserandothercacheparam=data;
                       fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
                       fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
                       usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
@@ -1606,6 +1610,33 @@ function setqw(problems){
 
 
 
+
+function checkKeyword(txt) {
+    var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            txt:txt
+        }
+    };
+    ajaxSubmitByJson(url, data, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var vo=data.data;
+            if (isNotEmpty(vo)){
+                dq_newtxt=vo.txt;
+                console.log("dq_newtxt_"+dq_newtxt)
+            }
+        }else {
+            console.log(data.message);
+        }
+    });
+}
+
+
+
+
+
+
 //自动甄别初始化
 var datadata={};
 
@@ -1714,7 +1745,10 @@ $(function () {
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
 
-
+                       /*  checkKeyword(translatext);
+                         console.log("translatext__"+translatext+"__dq_newtxt__"+dq_newtxt)
+                            translatext=dq_newtxt;
+                            dq_newtxt=null*/;
                             //实时会议数据
                             if (usertype==1){
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
@@ -1873,3 +1907,6 @@ $(function () {
         addRecord();
     });
 });
+
+
+

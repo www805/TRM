@@ -3,17 +3,22 @@ package com.avst.trm.v1.web.cweb.action.baseaction;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,12 +28,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 @RequestMapping("/cweb/base/main")
 public class MainAction extends BaseAction {
     @Autowired
-    private MainService mainService;
+    private  MainService mainService;
 
     @Autowired
     private UserService userService;
@@ -317,6 +323,29 @@ public class MainAction extends BaseAction {
     }
 
 
+
+
+    /***
+     * 检测关键字
+     */
+    @RequestMapping("/checkKeyword")
+    @ResponseBody
+    public  RResult checkKeyword(@RequestBody ReqParam<CheckKeywordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            mainService.checkKeyword(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+
+
+
     /**
      * 跳转==》修改个人信息页面
      * @param model
@@ -412,4 +441,8 @@ public class MainAction extends BaseAction {
     }
 
 
+
 }
+
+
+
