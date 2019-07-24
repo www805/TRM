@@ -629,7 +629,11 @@ public class OutService  extends BaseService {
         Integer fdrecord=getEquipmentsStateParam.getFdrecord();//是否需要录像，1使用，-1 不使用
         Integer usepolygraph=getEquipmentsStateParam.getUsepolygraph();//是否使用测谎仪，1使用，-1 不使用
         Integer useasr=getEquipmentsStateParam.getUseasr();//是否使用语言识别，1使用，-1 不使用
-        Integer asrRun=getEquipmentsStateParam.getAsrRun();//语音识别服务是否启动 1开启 -1不开起
+
+        Integer recordnum=getEquipmentsStateParam.getRecordnum();//本次会议开启的录音/像个数
+        Integer asrnum=getEquipmentsStateParam.getAsrnum();//本次会议开启的语音识别个数
+        Integer polygraphnum=getEquipmentsStateParam.getPolygraphnum();//本次会议开启的测谎仪个数
+
 
 
         //状态： -1异常 1正常  0未启动
@@ -650,23 +654,35 @@ public class OutService  extends BaseService {
             mt_rr=meetingControl.getMCState(mt_param);
             if (null != mt_rr && mt_rr.getActioncode().equals(Code.SUCCESS.toString())) {
                 MtState= 1;
-                LiveState=1;
-                AsrState=1;
+                if(null!=asrnum&&asrnum.intValue()>0&&null!=useasr&&useasr.intValue()==1){
+                    AsrState=1;
+                }
+                if(null!=recordnum&&recordnum.intValue()>0&&null!=fdrecord&&fdrecord.intValue()==1){
+                    LiveState=1;
+                }
                 //设置状态
                 LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__成功"+MtState);
             }else{
                 //设置状态
                 MtState= -1;
-                LiveState=-1;
-                AsrState=-1;
+                if(null!=asrnum&&asrnum.intValue()>0&&null!=useasr&&useasr.intValue()==1){
+                    AsrState=-1;
+                }
+                if(null!=recordnum&&recordnum.intValue()>0&&null!=fdrecord&&fdrecord.intValue()==1){
+                    LiveState=-1;
+                }
                 LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+
+
+
         //获取身心检测的状态
-        if (null!=usepolygraph&&usepolygraph==1){//为使用状态时
+        if (null!=usepolygraph&&usepolygraph.intValue()==1&&null!=polygraphnum&&polygraphnum.intValue()>0){
+            //为使用状态时
             String polygraphssid=null;//身心检测的ssid
             ReqParam<GetPhssidByMTssidParam_out> MCdata_param=new ReqParam<>();
             GetPhssidByMTssidParam_out getMCdataParam_out=new GetPhssidByMTssidParam_out();
@@ -718,7 +734,6 @@ public class OutService  extends BaseService {
         }
 
 
-
         getEquipmentsStateVO.setAsrState(AsrState);
         getEquipmentsStateVO.setPolygraphState(PolygraphState);
         getEquipmentsStateVO.setLiveState(LiveState);
@@ -762,37 +777,6 @@ public class OutService  extends BaseService {
     }
 
 
-    public void getTdAndUserAndOtherCacheParamByMTssid(RResult result,ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param){
-        GetTdAndUserAndOtherCacheParamByMTssidPara_out getTdAndUserAndOtherCacheParamByMTssidPara_out = param.getParam();
-        if (null==getTdAndUserAndOtherCacheParamByMTssidPara_out){
-            LogUtil.intoLog(this.getClass(),"参数为空");
-            result.setMessage("参数为空");
-            return;
-        }
-        String mtssid=getTdAndUserAndOtherCacheParamByMTssidPara_out.getMtssid();
-        String userssid=getTdAndUserAndOtherCacheParamByMTssidPara_out.getUserssid();
-        if (StringUtils.isBlank(mtssid)||StringUtils.isBlank(userssid)){
-            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid参数为空mtssid____");
-            result.setMessage("参数为空");
-            return ;
-        }
-
-        ReqParam reqParam=new ReqParam();
-        getTdAndUserAndOtherCacheParamByMTssidPara_out.setMcType(MCType.AVST);
-        getTdAndUserAndOtherCacheParamByMTssidPara_out.setMtssid(mtssid);
-        getTdAndUserAndOtherCacheParamByMTssidPara_out.setUserssid(userssid);
-        reqParam.setParam(getTdAndUserAndOtherCacheParamByMTssidPara_out);
-        RResult rr = meetingControl.getTdAndUserAndOtherCacheParamByMTssid(reqParam);
-        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
-            GetTdAndUserAndOtherCacheParamByMTssidVO vo=gson.fromJson(gson.toJson(rr.getData()),GetTdAndUserAndOtherCacheParamByMTssidVO.class );
-            result.setData(vo);
-            changeResultToSuccess(result);
-            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid请求__成功");
-        }else {
-            LogUtil.intoLog(this.getClass(),"getTdAndUserAndOtherCacheParamByMTssid请求__出错");
-        }
-        return;
-    }
 
     public void getMc_model(RResult result, ReqParam<GetMc_modelParam_out> param){
         GetMc_modelParam_out getMc_modelParam_out=param.getParam();

@@ -28,7 +28,6 @@ function getUrl_manage() {
 		ceshi2:getPath()+getinterface_service().ceshi2,
         startRercord:getPath()+getinterface_service().startRercord,
         overRercord:getPath()+getinterface_service().overRercord,
-        getClient:getPath()+getinterface_service().getClient,
         getRecord:getPath()+getinterface_service().getRecord,
         getPlayUrl:getPath()+getinterface_service().getPlayUrl,
         getRecordrealing:getPath()+getinterface_service().getRecordrealing,
@@ -36,7 +35,6 @@ function getUrl_manage() {
         getEquipmentsState:getPath()+getinterface_service().getEquipmentsState,
         getPHDataBack:getPath()+getinterface_service().getPHDataBack,
         str2Tts:getPath()+getinterface_service().str2Tts,
-        getTdAndUserAndOtherCacheParamByMTssid:getPath()+getinterface_service().getTdAndUserAndOtherCacheParamByMTssid,
         getMc_model:getPath()+getinterface_service().getMc_model,
         getMCCacheParamByMTssid:getPath()+getinterface_service().getMCCacheParamByMTssid,
 	};
@@ -54,7 +52,6 @@ function getinterface_service() {
 
         startRercord:"/v1/police/out/startRercord",//开始会议
         overRercord:"/v1/police/out/overRercord",//结束会议
-        getClient:"/v1/police/out/getClient",//获取各个服务器状态：暂时未启用
         getRecord:"/v1/police/out/getRecord",//获取笔录回访
         getPlayUrl:"/v1/police/out/getPlayUrl",//获取播放地址
         getRecordrealing:"/v1/police/out/getRecordrealing",//获取缓存中的实时笔录
@@ -62,7 +59,6 @@ function getinterface_service() {
         getEquipmentsState:"/v1/police/out/getEquipmentsState",//获取设备状态
         getPHDataBack:"/v1/police/out/getPHDataBack",
         str2Tts:"/v1/police/out/str2Tts",
-        getTdAndUserAndOtherCacheParamByMTssid:"/v1/police/out/getTdAndUserAndOtherCacheParamByMTssid",
         getMc_model:"/v1/police/out/getMc_model",
         getMCCacheParamByMTssid:"/v1/police/out/getMCCacheParamByMTssid",
 	};

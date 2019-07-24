@@ -1,25 +1,26 @@
-var templatessid=null;//模板ssid
-var td_lastindex={};//td的上一个光标位置  为0需要处理一下
-var recorduser=[];//会议用户集合
+var templatessid=null;//当前选择的模板ssid
+var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
 
+var recorduser=[];//会议用户集合：副麦主麦
+var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
-var recordbool=null;//笔录状态
+var recordbool=null;//笔录状态 3 4暂时用于导出判断
 
-
-var fdrecordstarttime=0;//直播开始时间戳（用于计算笔录时间锚点）
+var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
+var  fdrecord=null;//是否需要录像，1使用，-1 不使用
+var  usepolygraph=null;//是否使用测谎仪，1使用，-1 不使用
+var  useasr=null;//是否使用语言识别，1使用，-1 不使用
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
-
 var dqselec_left="";//当前左侧鼠标选择的文本
 var dqselec_right="";//当前左侧鼠标选择的文本
 
-var tdanduserandothercacheparam=null;//用户通道关联其他的参数的集合
 var MCCache=null;//会议缓存数据
 
 
-var getRecordById_data=null;//
+var getRecordById_data=null;//单份笔录返回的全部数据
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -431,9 +432,8 @@ function callbackgetRecordById(data) {
                     };
                     recorduser.push(user1);
                     recorduser.push(user2);
+                    dq_recorduser=recordUserInfosdata.userssid;
                 }
-
-                getTdAndUserAndOtherCacheParamByMTssid(recordUserInfosdata.userssid);
                 getMCCacheParamByMTssid();//获取缓存
 
                 //案件信息
@@ -580,8 +580,6 @@ function startMC() {
         });
     }
 }
-
-
 function callbackstartMC(data) {
     layer.close(startMC_index);
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -596,7 +594,7 @@ function callbackstartMC(data) {
             var mtssiddata=data.mtssid;
              useretlist=data.useretlist;
 
-             var mcuserssid2=null;
+
             if (isNotEmpty(useretlist)){
                 for (var i = 0; i < useretlist.length; i++) {
                     var useret = useretlist[i];
@@ -611,7 +609,7 @@ function callbackstartMC(data) {
                                 console.log("liveurl_____"+liveurl+"_______"+grade);
                                 break;
                             }else if (grade==2){
-                                mcuserssid2=userssid1;
+                                dq_recorduser=userssid2;
                             }
                         }
                     }
@@ -619,10 +617,9 @@ function callbackstartMC(data) {
             }
             mtssid=mtssiddata;
             mcbool=1;//正常开启
-            getTdAndUserAndOtherCacheParamByMTssid(mcuserssid2);
 
             getMCCacheParamByMTssid();//获取缓存
-          /*  updateArraignment();*/
+
             var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
         }
@@ -680,6 +677,7 @@ function callbackoverMC(data) {
     }
 }
 
+//获取会议缓存
 function getMCCacheParamByMTssid() {
     if (isNotEmpty(mtssid)){
         var url=getUrl_manage().getMCCacheParamByMTssid;
@@ -697,12 +695,27 @@ function callbackgetMCCacheParamByMTssid(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             MCCache=data;
+            var tds=MCCache.tdList;
+            if (isNotEmpty(tds)){
+                for (let i = 0; i < tds.length; i++) {
+                    const td = tds[i];
+                    if (td.userssid==dq_recorduser) {
+                        fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
+                        fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
+                        usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
+                        useasr=data.useasr==null?-1:data.useasr;//是否使用语言识别，1使用，-1 不使用
+                        //第一行上时间
+                        var lable=  $('#first_originaltr label[name="q"]');
+                        setFocus(lable);
+                    }
+                }
+            }
         }
     }
 }
 
 //保存按钮
-//recordbool 1进行中 2已结束
+//recordbool 1进行中 2已结束 0初始化
 function addRecord() {
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
@@ -851,7 +864,7 @@ function calladdRecord(data) {
 //结束笔录按钮
 var overRecord_index=null;
 var overRecord_loadindex =null;
-    function overRecord() {
+ function overRecord() {
     layer.confirm('是否结束笔录?<br/><span style="color: red">*确保笔录类型存在对应模板否则导出功能失效</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
@@ -892,7 +905,6 @@ function exportWord(obj){
         shade: [0.1, 'transparent']
     });
 }
-
 function exportPdf(obj) {
     recordbool=4; //不存在数据库
     addRecord();
@@ -986,47 +998,6 @@ function callbackgetgetRecordrealing(data) {
     }
 }
 
-//获取
-var  fdrecord=null;//是否需要录像，1使用，-1 不使用
-var  usepolygraph=null;//是否使用测谎仪，1使用，-1 不使用
-var  useasr=null;//是否使用语言识别，1使用，-1 不使用
-var  asrRun=null;//语音识别服务是否启动 1开启 -1不开起
-//暂时没有区分副麦主麦，后期需要修改
-function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
-    if (isNotEmpty(mtssid)&&(isNotEmpty(mcbool)&&mcbool==1)) {//会议正常的时候
-        var url=getUrl_manage().getTdAndUserAndOtherCacheParamByMTssid;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid,
-                userssid:userssid,
-            }
-        };
-
-        ajaxSubmitByJson(url, data, function (data) {
-            if(null!=data&&data.actioncode=='SUCCESS'){
-                var data=data.data;
-                if (isNotEmpty(data)){
-                    tdanduserandothercacheparam=data;
-                      fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
-                      fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
-                      usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-                      useasr=data.useasr==null?-1:data.useasr;//是否使用语言识别，1使用，-1 不使用
-
-                    //第一行上时间
-                    var lable=  $('#first_originaltr label[name="q"]');
-                    setFocus(lable);
-
-                    if (null!=data.asrRun&&data.asrRun) {
-                        asrRun=1;//语音识别服务是否启动 1开启 -1不开起
-                    }else {
-                        asrRun=-1;//语音识别服务是否启动 1开启 -1不开起
-                    }
-                }
-            }
-        });
-    }
-}
 
 
 /**
@@ -1088,21 +1059,22 @@ function setFocus(el) {
 
 
         console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
-        if ((isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid))||(isNotEmpty(MCCache)&&MCCache.asrnum<1&&isNotEmpty(mtssid))){
-            console.log("不适用语音识别~")
+        if ((isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid))||(isNotEmpty(MCCache)&&MCCache.asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+            console.log("使用直播时间~")
             var dqtime=new Date().getTime();
             var qw_type=el.getAttribute("name");
-            if (isNotEmpty(qw_type)){
+            if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                console.log("开始使用直播时间~")
                 if (qw_type=="w"){
                     var w_starttime=el.getAttribute("w_starttime");
-                    if ((!isNotEmpty(w_starttime)||w_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    if ((!isNotEmpty(w_starttime)||w_starttime<0)){
                         //计算时间戳
                         w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
                         el.setAttribute("w_starttime",w_starttime);
                     }
                 }else  if (qw_type=="q"){
                     var q_starttime=el.getAttribute("q_starttime");
-                    if ((!isNotEmpty(q_starttime)||q_starttime<0)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    if ((!isNotEmpty(q_starttime)||q_starttime<0)){
                         //计算时间戳
                         q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
                         el.setAttribute("q_starttime",q_starttime);
@@ -1110,7 +1082,7 @@ function setFocus(el) {
                 }
             }
         }else {
-            console.log("使用语音识别状态~")
+            console.log("使用语音识别时间~")
         }
         var range = document.createRange();
         range.selectNodeContents(el);
@@ -1231,107 +1203,6 @@ function initliving() {
 
 
 
-//获取各个状态
-function  getEquipmentsState() {
-    $("#MtState").text("加载中");
-    $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#AsrState").text("加载中");
-    $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#LiveState").text("加载中");
-    $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#PolygraphState").text("加载中");
-    $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
-
-    if (isNotEmpty(mtssid)){
-        var url=getUrl_manage().getEquipmentsState;
-        var data = {
-            token: INIT_CLIENTKEY,
-            param: {
-                mtssid: mtssid,
-                fdrecord:fdrecord,
-                usepolygraph:usepolygraph,
-                useasr:useasr,
-                asrRun:asrRun
-            }
-        };
-
-        ajaxSubmitByJson(url, data, callbackgetEquipmentsState);
-    }else{
-        console.log("设备状态信息位置未找到__"+mtssid);
-    }
-}
-function callbackgetEquipmentsState(data) {
-    if (null != data && data.actioncode == 'SUCCESS') {
-        var data = data.data;
-        if (isNotEmpty(data)) {
-            //状态： -1异常  0未启动 1正常
-            var MtText = "加载中";
-            var AsrText = "加载中";
-            var LiveText = "加载中";
-            var PolygraphText = "加载中";
-            var MtClass = "ayui-badge layui-bg-gray";
-            var AsrClass = "ayui-badge layui-bg-gray";
-            var LiveClass = "ayui-badge layui-bg-gray";
-            var PolygraphClass = "ayui-badge layui-bg-gray";
-
-            var MtState = data.mtState;
-            if (MtState == 0) {
-                MtText = "未启动";
-                MtClass = "ayui-badge layui-bg-gray";
-            } else if (MtState == 1) {
-                MtText = "正常";
-                MtClass = "layui-badge layui-bg-green";
-            } else if (MtState == -1) {
-                MtText = "异常";
-                MtClass = "layui-badge";
-            }
-            var AsrState = data.asrState;
-            if (AsrState == 0) {
-                AsrText = "未启动";
-                AsrClass = "ayui-badge layui-bg-gray";
-            } else if (AsrState == 1) {
-                AsrText = "正常";
-                AsrClass = "layui-badge layui-bg-green";
-            } else if (AsrState == -1) {
-                AsrText = "异常";
-                AsrClass = "layui-badge";
-            }
-            var LiveState = data.liveState;
-            if (LiveState == 0) {
-                LiveText = "未启动";
-                LiveClass = "ayui-badge layui-bg-gray";
-            } else if (LiveState == 1) {
-                LiveText = "正常";
-                LiveClass = "layui-badge layui-bg-green";
-            } else if (LiveState == -1) {
-                LiveText = "异常";
-                LiveClass = "layui-badge";
-            }
-            var PolygraphState = data.polygraphState;
-            if (PolygraphState == 0) {
-                PolygraphText = "未启动";
-                PolygraphClass = "ayui-badge layui-bg-gray";
-            } else if (PolygraphState == 1) {
-                PolygraphText = "正常";
-                PolygraphClass = "layui-badge layui-bg-green";
-            } else if (PolygraphState == -1) {
-                PolygraphText = "异常";
-                PolygraphClass = "layui-badge";
-            }
-
-
-            $("#MtState").text(MtText);
-            $("#MtState").attr({"MtState": MtState, "class": MtClass});
-            $("#AsrState").text(AsrText);
-            $("#AsrState").attr({"AsrState": AsrState, "class": AsrClass});
-            $("#LiveState").text(LiveText);
-            $("#LiveState").attr({"LiveState": LiveState, "class": LiveClass});
-            $("#PolygraphState").text(PolygraphText);
-            $("#PolygraphState").attr({"PolygraphState": PolygraphState, "class": PolygraphClass});
-
-        }
-    }
-}
 
 
 //默认问答
@@ -1409,41 +1280,6 @@ function addbtn() {
     $('#recorddetail label').bind('input', function() {
         setRecordreal();
     });
-   /* layui.use(['mouseRightMenu','layer','jquery'],function(){
-        var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
-        $('#recorddetail label').mouseup(function(){
-            var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-            dqselec_right= txt.toString();
-        })
-
-        //右键监听
-        $('#recorddetail label').bind("contextmenu",function(e){
-            var data = {content:dqselec_right}
-            var menu_data=[
-                {'data':data,'type':1,'title':'标记'}
-            ]
-            mouseRightMenu.open(menu_data,false,function(d){
-                if (isNotEmpty(d)){
-                    var data=d.data;
-                    if (isNotEmpty(data)){
-                        var content=data.content;
-                        if (isNotEmpty(content)){
-                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                                var $html=$label.html();
-                                $html = $html.split(content).join('<a class="highlight_all">'+ content +'</a>');
-                                $label.html($html);
-                                $label.append("&nbsp;");
-                                var $txt=$label.text();
-                                $txt.replace(' ','')
-                            }
-                        }
-                    }
-                }
-            })
-            return false;
-        });
-    })*/
 }
 
 /***************************************笔录实时问答start*************************************************/
@@ -1738,7 +1574,7 @@ $(function () {
    //初始化第一行的焦点
 
 
-  /*  layui.use(['mouseRightMenu','layer','jquery'],function(){
+    /*layui.use(['mouseRightMenu','layer','jquery'],function(){
         var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
         $('#recorddetail label').mouseup(function(){
             var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
@@ -1828,8 +1664,8 @@ $(function () {
             })
             return false;
         });
-    })*/
-
+    })
+*/
 
 
 
