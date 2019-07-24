@@ -141,6 +141,14 @@ public class OutService  extends BaseService {
             }
             startMCParam_out.setTdList(tdList);
         }
+
+        StartRecordAndCaseParam startRecordAndCaseParam=startRercordParam.getStartRecordAndCaseParam();
+        if (null!=startRecordAndCaseParam){
+            startMCParam_out.setStartRecordAndCaseParam(startRecordAndCaseParam);
+        }
+
+
+
         ReqParam<StartMCParam_out> param1=new ReqParam<>();
         param1.setParam(startMCParam_out);
         try {
@@ -807,6 +815,74 @@ public class OutService  extends BaseService {
         }
         return;
     }
+
+    public void getTdByModelSsid(RResult result,ReqParam<GetTdByModelSsidParam_out> param){
+        GetTdByModelSsidParam_out getTdByModelSsidParam_out=param.getParam();
+        if (null==getTdByModelSsidParam_out){
+            LogUtil.intoLog(this.getClass(),"getTdByModelSsid参数为空getTdByModelSsidParam_out____");
+            result.setMessage("参数为空");
+            return ;
+        }
+        String modelssid=getTdByModelSsidParam_out.getModelssid();
+        if (StringUtils.isBlank(modelssid)){
+            LogUtil.intoLog(this.getClass(),"getTdByModelSsid参数为空modelssid____");
+            result.setMessage("参数为空");
+            return ;
+        }
+        getTdByModelSsidParam_out.setMcType(MCType.AVST);
+        getTdByModelSsidParam_out.setModelssid(modelssid);
+        ReqParam reqParam=new ReqParam<>();
+        reqParam.setParam(getTdByModelSsidParam_out);
+        RResult rr =  meetingControl.getTdByModelSsid(reqParam);
+        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+            GetTdByModelSsidVO vo=gson.fromJson(gson.toJson(rr.getData()),GetTdByModelSsidVO.class);
+            if (null!=vo){
+                result.setData(vo);
+                changeResultToSuccess(result);
+                return;
+            }
+            LogUtil.intoLog(this.getClass(),"getTdByModelSsid请求meetingControl.getTdByModelSsid___请求成功");
+        }else {
+            String msg=rr.getMessage()==null?"":rr.getMessage();
+            LogUtil.intoLog(this.getClass(),"getTdByModelSsid请求meetingControl.getTdByModelSsid___请求失败"+msg);
+        }
+            return;
+    }
+
+    public void getMCCacheParamByMTssid(RResult result,ReqParam<GetMCCacheParamByMTssidParam_out> param){
+        GetMCCacheParamByMTssidParam_out out=param.getParam();
+        if (null==out){
+            LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid参数为空GetMCCacheParamByMTssidParam_out____");
+            result.setMessage("参数为空");
+            return ;
+        }
+        String mtssid=out.getMtssid();
+        if (StringUtils.isBlank(mtssid)){
+            LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid参数为空mtssid____");
+            result.setMessage("参数为空");
+            return ;
+        }
+        out.setMcType(MCType.AVST);
+        out.setMtssid(mtssid);
+        ReqParam reqParam=new ReqParam<>();
+        reqParam.setParam(out);
+        RResult rr =  meetingControl.getMCCacheParamByMTssid(reqParam);
+        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+            MCCacheParam mcCacheParam=gson.fromJson(gson.toJson(rr.getData()),MCCacheParam.class);
+            if (null!=mcCacheParam){
+                result.setData(mcCacheParam);
+                changeResultToSuccess(result);
+                return;
+            }
+            LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid请求meetingControl.getMCCacheParamByMTssid___请求成功");
+        }else {
+            String msg=rr.getMessage()==null?"":rr.getMessage();
+            LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid请求meetingControl.getMCCacheParamByMTssid___请求失败");
+        }
+        return;
+    }
+
+
 
 
     public void getClient(RResult rresult,ReqParam param){

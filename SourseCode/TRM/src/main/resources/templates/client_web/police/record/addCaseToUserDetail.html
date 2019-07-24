@@ -505,15 +505,21 @@
                             </div>
                         </div>
                         <div class="layui-col-lg6">
-                            <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">场景模板</label>
+                            <label class="layui-form-label">办案部门</label>
                             <div class="layui-input-block">
-                                    <input type="text" name="modelssid" id="modelssid" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
+                                <input type="text" name="department" id="department" lay-verify="required" placeholder="" autocomplete="off" class="layui-input"  >
                             </div>
                         </div>
                         <div class="layui-col-lg6 ">
                             <div class="layui-input-block">
                                 <button class=" layui-btn layui-btn-danger   layui-btn-lg"  onclick="init_form();">重置信息</button>
                                 <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right" onclick="addCaseToArraignment();" id="startrecord_btn">开始笔录</button>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">场景模板</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="modelssid" id="modelssid" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
                             </div>
                         </div>
                     </div>

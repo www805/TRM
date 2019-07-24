@@ -31,6 +31,16 @@ public class Record extends Police_record {
 
     private Integer mcbool;//会议状态
 
+    private String recordtypename;//案件类型名称
+
+    public String getRecordtypename() {
+        return recordtypename;
+    }
+
+    public void setRecordtypename(String recordtypename) {
+        this.recordtypename = recordtypename;
+    }
+
     public String getWorddownurl() {
         return worddownurl;
     }

@@ -115,6 +115,7 @@ function addCaseToArraignment() {
     var caseway=$("#caseway").val();
     var starttime=$("#starttime").val();
     var endtime=$("#endtime").val();
+    var department=$("#department").val();
     addPolice_case={
         casename:casename,
         cause:cause,
@@ -122,7 +123,8 @@ function addCaseToArraignment() {
         occurrencetime:occurrencetime,
         starttime:starttime,
         endtime:endtime,
-        caseway:caseway
+        caseway:caseway,
+        department:department
     }
 
     //其他人

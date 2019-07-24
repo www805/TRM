@@ -16,6 +16,16 @@ public class StartMCParam_out extends BaseReqParam{
 
     private String ywSystemType;//业务系统类型，TRM_AVST AVst版本的笔录系统
 
+    private StartRecordAndCaseParam startRecordAndCaseParam;//案件笔录参数
+
+    public StartRecordAndCaseParam getStartRecordAndCaseParam() {
+        return startRecordAndCaseParam;
+    }
+
+    public void setStartRecordAndCaseParam(StartRecordAndCaseParam startRecordAndCaseParam) {
+        this.startRecordAndCaseParam = startRecordAndCaseParam;
+    }
+
     public String getYwSystemType() {
         return ywSystemType;
     }

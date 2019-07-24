@@ -89,6 +89,8 @@ public class Police_case extends Model<Police_case> {
      */
     private Integer casebool;
 
+    private String department;//办案部门
+
     private String ssid;
 
     private String string1;
@@ -98,6 +100,14 @@ public class Police_case extends Model<Police_case> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public Integer getCasebool() {
         return casebool;

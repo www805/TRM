@@ -1,5 +1,4 @@
 var templatessid=null;//模板ssid
-var recordUserInfos;//询问人和被询问人数据
 var td_lastindex={};//td的上一个光标位置  为0需要处理一下
 var recorduser=[];//会议用户集合
 
@@ -17,7 +16,10 @@ var dqselec_left="";//当前左侧鼠标选择的文本
 var dqselec_right="";//当前左侧鼠标选择的文本
 
 var tdanduserandothercacheparam=null;//用户通道关联其他的参数的集合
+var MCCache=null;//会议缓存数据
 
+
+var getRecordById_data=null;//
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -274,38 +276,6 @@ function copy_text(obj,event) {
            }
        }
    }
-
-
-
-    //字典定位问答
-    /* if (classc=="btalk") {
-         var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="w"]');
-         var old= $html.attr("w_starttime");
-         var h=$html.html();
-         $html.append(copy_text_html);
-         if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-             $html.attr("w_starttime",starttime);//直接使用最后追加的时间点
-         }
-     }else if(classc=="atalk"){
-        var $html= $('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
-         var old= $html.attr("q_starttime");
-         var h=$html.html();
-         $html.append(copy_text_html);
-         if (!isNotEmpty(old)||!isNotEmpty(h)) {
-             $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
-         }
-     }*/
-
-
-    //当前下标问答
-    /* $("#recorddetail label").each(function(){
-         var lastindex=$(this).closest("tr").index();
-         var value=$(this).attr("name");
-         //当前下标问答
-         if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-             $(this).append(copy_text_html);
-         }
-    });*/
     copy_text_html="";
     setRecordreal();
     return false;
@@ -405,9 +375,11 @@ function getRecordById() {
     ajaxSubmitByJson(url,data,callbackgetRecordById);
 }
 function callbackgetRecordById(data) {
+    getRecordById_data=null;
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
+            getRecordById_data=data;
             var record=data.record;
             if (isNotEmpty(record)){
                 //获取提讯会议ssid
@@ -432,7 +404,14 @@ function callbackgetRecordById(data) {
                         $("#pauserecord").attr("onclick","");
                         layer.closeAll("tips");
                         }else {
-                        layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                        layui.use(['layer','element','form'], function(){
+                            var layer=layui.layer;
+                            layui.use(['layer','element','form'], function(){
+                                var layer=layui.layer;
+                                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                            });
+                        });
+
                     }
 
                 }
@@ -440,7 +419,6 @@ function callbackgetRecordById(data) {
                 //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
-                    recordUserInfos=recordUserInfosdata;
                     var user1={
                         username:recordUserInfosdata.username
                         ,userssid:recordUserInfosdata.userssid
@@ -456,28 +434,32 @@ function callbackgetRecordById(data) {
                 }
 
                 getTdAndUserAndOtherCacheParamByMTssid(recordUserInfosdata.userssid);
-            }
-            //案件信息
-            var caseAndUserInfo=data.caseAndUserInfo;
-            $("#caseAndUserInfo_html").html("");
-            if (isNotEmpty(caseAndUserInfo)){
-                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
-                var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
-                var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
-                var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                getMCCacheParamByMTssid();//获取缓存
+
+                //案件信息
+                var caseAndUserInfo=record.caseAndUserInfo;
+                $("#caseAndUserInfo_html").html("");
+                if (isNotEmpty(caseAndUserInfo)){
+                    var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
+                    var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
+                    var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
+                    var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
+                    var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                    var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
+                    var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
+                    var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
+                    var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>";
-                $("#caseAndUserInfo_html").html(init_casehtml);
+                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                    $("#caseAndUserInfo_html").html(init_casehtml);
+                }
             }
         }
     }else{
@@ -490,7 +472,7 @@ function callbackgetRecordById(data) {
 var mtssid=null;//会议ssid
 var useretlist=null;
 function startMC() {
-    if (isNotEmpty(recordUserInfos)){
+    if (isNotEmpty(getRecordById_data)){
         $("#MtState").text("加载中");
         $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
         $("#AsrState").text("加载中");
@@ -501,38 +483,90 @@ function startMC() {
         $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
 
-        var tdList=[];
-        var user1={
-            username:recordUserInfos.username
-            ,userssid:recordUserInfos.userssid
-            ,grade:2 //1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
-        };
-        var user2={
-            username:recordUserInfos.adminname
-            ,userssid:recordUserInfos.adminssid
-            ,grade:1
-        };
+        var casenum=null;
+        var casename=null;
+        var cause=null;
+        var department=null;
+        var askedname=null;
+        var askname=null;
+        var recordername=null;
+        var askplace=null;
+        var casetypename=null;
+        var recordtypename=null;
+        var recordname=null;
 
-        tdList.push(user1);
-        tdList.push(user2);
+        var record=getRecordById_data.record;
+        if (isNotEmpty(record)){
+            var caseAndUserInfo=record.caseAndUserInfo;
+            var recordUserInfos=record.recordUserInfos;
+            var police_arraignment=record.police_arraignment;
+            casenum=caseAndUserInfo.casenum;
+            casename=caseAndUserInfo.casename;
+            cause=caseAndUserInfo.cause;
+            department=caseAndUserInfo.department;
+            askedname=recordUserInfos.userssid;
+            askname=recordUserInfos.adminname;
+            recordername=recordUserInfos.recordadminname;
+            askplace=police_arraignment.recordplace;
+            casetypename=record.recordtypename;
+            recordtypename=record.recordtypename;
+            recordname=record.recordname;
 
-        var url=getUrl_manage().startRercord;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                meetingtype: 2       //会议类型，1视频/2音频
-                ,tdList:tdList
-                ,recordssid:recordssid
+
+
+            var startRecordAndCaseParam={
+                casenum:casenum,
+                casename:casename,
+                cause:cause,
+                department:department,
+                askedname:askedname,
+                askname:askname,
+                recordername:recordername,
+                askplace:askplace,
+                casetypename:casetypename,
+                recordtypename:recordtypename,
+                recordname:recordname
             }
-        };
-        ajaxSubmitByJson(url, data, callbackstartMC);
+
+
+            var tdList=[];
+            var user1={
+                username:recordUserInfos.username
+                ,userssid:recordUserInfos.userssid
+                ,grade:2 //1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
+            };
+            var user2={
+                username:recordUserInfos.adminname
+                ,userssid:recordUserInfos.adminssid
+                ,grade:1
+            };
+
+            tdList.push(user1);
+            tdList.push(user2);
+
+
+            var url=getUrl_manage().startRercord;
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    meetingtype: 2       //会议类型，1视频/2音频
+                    ,tdList:tdList
+                    ,startRecordAndCaseParam:startRecordAndCaseParam
+                    ,recordssid:recordssid
+                }
+            };
+            ajaxSubmitByJson(url, data, callbackstartMC);
+        }
     }else {
         layer.close(startMC_index);
         layer.msg("请稍等",{time:1000},function () {
             getRecordById();
             $("#record_img img").css("display","none");
             $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
-            layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+            layui.use(['layer','element','form'], function(){
+                var layer=layui.layer;
+                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+            });
         });
     }
 }
@@ -576,6 +610,8 @@ function callbackstartMC(data) {
             mtssid=mtssiddata;
             mcbool=1;//正常开启
             getTdAndUserAndOtherCacheParamByMTssid(mcuserssid2);
+
+            getMCCacheParamByMTssid();//获取缓存
           /*  updateArraignment();*/
             var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
@@ -588,7 +624,10 @@ function callbackstartMC(data) {
         }else {
             $("#record_img img").css("display","none");
             $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
-            layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+            layui.use(['layer','element','form'], function(){
+                var layer=layui.layer;
+                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+            });
         }
 
         $("#MtState").text("未启动");
@@ -614,21 +653,6 @@ function overMC() {
                 mtssid:mtssid
             }
         };
-        /*$.ajax({
-            url : url,
-            type : "POST",
-            async : false,
-            dataType : "json",
-            contentType: "application/json",
-            data : JSON.stringify(data),
-            timeout : 60000,
-            success : callbackoverMC,
-            error : function () {
-                parent.layer.msg("网络异常,请稍后重试---!", {
-                    icon : 1
-                },1);
-            }
-        });*/
         ajaxSubmitByJson(url, data, callbackoverMC);
     }
 }
@@ -643,6 +667,29 @@ function callbackoverMC(data) {
         }
     }else{
        /* layer.msg(data.message);*/
+    }
+}
+
+function getMCCacheParamByMTssid() {
+    if (isNotEmpty(mtssid)){
+        var url=getUrl_manage().getMCCacheParamByMTssid;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid:mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetMCCacheParamByMTssid);
+    }
+}
+function callbackgetMCCacheParamByMTssid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            MCCache=data;
+        }
+    }else{
+        console.log(data);
     }
 }
 
@@ -1033,7 +1080,7 @@ function setFocus(el) {
         //回车加锚点：先判断语音识别是否开启
         console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
         if (isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid)){
-            console.log("语音识别未开启~")
+            console.log("不适用语音识别~")
             var dqtime=new Date().getTime();
             var qw_type=el.getAttribute("name");
             if (isNotEmpty(qw_type)){
@@ -1054,7 +1101,7 @@ function setFocus(el) {
                 }
             }
         }else {
-            console.log("语音识别非未开启状态~")
+            console.log("使用语音识别状态~")
         }
         var range = document.createRange();
         range.selectNodeContents(el);
@@ -1353,7 +1400,41 @@ function addbtn() {
     $('#recorddetail label').bind('input', function() {
         setRecordreal();
     });
+   /* layui.use(['mouseRightMenu','layer','jquery'],function(){
+        var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
+        $('#recorddetail label').mouseup(function(){
+            var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+            dqselec_right= txt.toString();
+        })
 
+        //右键监听
+        $('#recorddetail label').bind("contextmenu",function(e){
+            var data = {content:dqselec_right}
+            var menu_data=[
+                {'data':data,'type':1,'title':'标记'}
+            ]
+            mouseRightMenu.open(menu_data,false,function(d){
+                if (isNotEmpty(d)){
+                    var data=d.data;
+                    if (isNotEmpty(data)){
+                        var content=data.content;
+                        if (isNotEmpty(content)){
+                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                                var $html=$label.html();
+                                $html = $html.split(content).join('<a class="highlight_all">'+ content +'</a>');
+                                $label.html($html);
+                                $label.append("&nbsp;");
+                                var $txt=$label.text();
+                                $txt.replace(' ','')
+                            }
+                        }
+                    }
+                }
+            })
+            return false;
+        });
+    })*/
 }
 
 /***************************************笔录实时问答start*************************************************/
@@ -1617,7 +1698,8 @@ function setqw(problems){
 
 
 
-
+//右侧标记的文本：当前
+var dqtag_right=[];//{key:0,value:"q",txt:["哈哈","哈哈"]}
 
 
 
@@ -1645,6 +1727,103 @@ $(function () {
         setRecordreal();
     });
    //初始化第一行的焦点
+
+
+  /*  layui.use(['mouseRightMenu','layer','jquery'],function(){
+        var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
+        $('#recorddetail label').mouseup(function(){
+            var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+            dqselec_right= txt.toString();
+        })
+
+        //右键监听
+        $('#recorddetail label').bind("contextmenu",function(e){
+            var data = {content:dqselec_right}
+            var menu_data=[
+                {'data':data,'type':1,'title':'标记'},
+                {'data':data,'type':2,'title':'取消标记'}
+            ]
+            mouseRightMenu.open(menu_data,false,function(d){
+                if (isNotEmpty(d)){
+                    var data=d.data;
+                    if (isNotEmpty(data)){
+                        var content=data.content;
+                        var type=d.type;
+                        if (isNotEmpty(content)&&type==1){
+                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                                 var h=$label.html();
+                                 var txt=[];
+                                 $("a",$label).each(function () {
+                                     var t=$(this).text();
+                                     if(isNotEmpty(t)){
+                                         txt.push(t);
+                                     }
+                                 })
+                                txt=Array.from(new Set(txt));
+                                 var shuju={
+                                     key:td_lastindex["key"],
+                                     value:td_lastindex["value"],
+                                     txt:txt
+                                 }
+                                 dqtag_right=[];
+                                for (let i = 0; i < dqtag_right.length; i++) {
+                                    const tag = dqtag_right[i];
+                                    if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
+                                        dqtag_right.push(tag);
+                                    }
+                                }
+
+                                dqtag_right.push(shuju);
+
+                                var $txt = $label.text();
+                                $label.html($txt);
+                                var $html = $label.html();
+                                $html = $html.split(content).join('<a class="highlight_all" >'+ content +'</a>');
+                                $label.html($html);
+
+                                for (let i = 0; i < dqtag_right.length; i++) {
+                                    const tag = dqtag_right[i];
+                                    if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                        var txt=tag.txt;
+                                        if(isNotEmpty(txt)){
+                                            for (let j = 0; j < txt.length; j++) {
+                                                const shujuElement = txt[j];
+                                                var $html=$label.html();
+                                                $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                                $label.html($html);
+                                            }
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+                        }
+
+                        if (isNotEmpty(content)&&type==2){
+                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                                var $label = $('#recorddetail tr:eq("' + td_lastindex["key"] + '") label[name="' + td_lastindex["value"] + '"]');
+                                var $txt = $label.text();
+                                $label.html($txt);
+                                var $html = $label.html();
+                                $html = $html.split(content).join('<a class="highlight_all" >'+ content +'</a>');
+                                $label.html($html);
+                            }
+                        }
+                    }
+                }
+
+
+            })
+            return false;
+        });
+    })*/
+
+
+
+
 
 
     $(document).keypress(function (e) {

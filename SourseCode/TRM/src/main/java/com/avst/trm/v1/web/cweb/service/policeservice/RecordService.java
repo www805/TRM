@@ -26,6 +26,9 @@ import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetTdByModelSsidParam_out;
+import com.avst.trm.v1.feignclient.mc.vo.GetTdByModelSsidVO;
+import com.avst.trm.v1.feignclient.mc.vo.param.Avstmt_modeltd;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
@@ -376,6 +379,7 @@ public class RecordService extends BaseService {
             Record record=police_recordMapper.getRecordBySsid(recordParam);
 
             if (null!=record){
+                Integer recordbool=record.getRecordbool();
                 try {
                     /**
                      *  获取题目答案
@@ -431,7 +435,6 @@ public class RecordService extends BaseService {
                     if (null!=caseAndUserInfo){
                         caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
                         record.setCaseAndUserInfo(caseAndUserInfo);
-                        getRecordByIdVO.setCaseAndUserInfo(caseAndUserInfo);
                     }
 
                 } catch (Exception e) {
@@ -441,13 +444,16 @@ public class RecordService extends BaseService {
                 //根据笔录ssid获取提讯数据
                 String mtssid=null;
                 Integer mtstate=null;
+                String modelssid=null;
                 try {
                     Police_arraignment police_arraignment=new Police_arraignment();
                     police_arraignment.setRecordssid(recordssid);
                     police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
                     if (null!=police_arraignment){
-                        if (StringUtils.isNotBlank(police_arraignment.getMtssid())){
-                            mtssid=police_arraignment.getMtssid();
+                        mtssid=police_arraignment.getMtssid();
+                        modelssid=police_arraignment.getMtmodelssid();
+                        //笔录为进行中的时候
+                        if (StringUtils.isNotBlank(mtssid)&&null!=recordbool&&recordbool.intValue()==1){//笔录状态为进行中
                             ReqParam<GetMCStateParam_out> getMCStateParam_outReqParam=new ReqParam<>();
                             GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
                             getMCStateParam_out.setMcType(MCType.AVST);
@@ -459,13 +465,33 @@ public class RecordService extends BaseService {
                                 record.setMcbool(mtstate);
                             }
                         }
+                        //获取模板通道：笔录制作过程中获取
+                        if (StringUtils.isNotBlank(modelssid)&&null!=recordbool&&recordbool.intValue()!=2){
+                            RResult getTdByModelSsid__rr=new RResult();
+                            GetTdByModelSsidParam_out getTdByModelSsidParam_out=new GetTdByModelSsidParam_out();
+                            getTdByModelSsidParam_out.setModelssid(modelssid);
+                            getTdByModelSsidParam_out.setMcType(MCType.AVST);
+                            ReqParam reqParam=new ReqParam();
+                            reqParam.setParam(getTdByModelSsidParam_out);
+                            outService.getTdByModelSsid(getTdByModelSsid__rr,reqParam);
+                            if (null!=getTdByModelSsid__rr&&getTdByModelSsid__rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                Object data=getTdByModelSsid__rr.getData();
+                                if (null!=data){
+                                    GetTdByModelSsidVO vo=gson.fromJson(gson.toJson(getTdByModelSsid__rr.getData()),GetTdByModelSsidVO.class);
+                                    List<Avstmt_modeltd> modeltds=vo.getModeltds();
+                                    if (null!=modeltds&&modeltds.size()>0){
+                                        getRecordByIdVO.setModeltds(modeltds);
+                                    }
+                                }
+                            }
+                        }
                         record.setPolice_arraignment(police_arraignment);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                if (null!=mtssid&&null!=record.getRecordbool()&&record.getRecordbool()==2){
+                if (null!=mtssid&&null!=recordbool&&recordbool.intValue()==2){
                     //回放数据，笔录制作中的时候不需要检测
 
 
@@ -537,7 +563,6 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
 
                 String gz=record.getGz_iid();
-                Integer recordbool=record.getRecordbool();
                 //检测有没有下载包，没有就打包
                 if(StringUtils.isEmpty(gz)&&null!=recordbool&&recordbool.intValue()==2){//只有在完成状态下才会需要打包
                     //调用打包线程

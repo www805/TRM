@@ -76,6 +76,15 @@ public interface MeetingControl {
     @ResponseBody
     public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param);
 
+    /**
+     * 根据会议ssid获取会议缓存
+     * @param param
+     * @return
+     */
+    @RequestMapping("/mt/v1/getMCCacheParamByMTssid")
+    @ResponseBody
+    public RResult getMCCacheParamByMTssid(@RequestBody ReqParam<GetMCCacheParamByMTssidParam_out> param);
+
 
     /**
      * 获取全部会议模板
@@ -85,5 +94,13 @@ public interface MeetingControl {
     @RequestMapping(value = "/mt/v1/getMc_model")
     @ResponseBody
     public RResult getMc_model(@RequestBody ReqParam<GetMc_modelParam_out> param);
+
+
+    @RequestMapping(value = "/mt/v1/getTdByModelSsid")
+    @ResponseBody
+    public RResult getTdByModelSsid(@RequestBody ReqParam<GetTdByModelSsidParam_out> param);
+
+
+
 
 }

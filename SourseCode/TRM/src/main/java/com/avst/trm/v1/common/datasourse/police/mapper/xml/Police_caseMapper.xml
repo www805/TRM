@@ -18,6 +18,7 @@
         <result column="ssid" property="ssid" />
         <result column="creator" property="creator" />
         <result column="casebool" property="casebool" />
+        <result column="department" property="department" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />

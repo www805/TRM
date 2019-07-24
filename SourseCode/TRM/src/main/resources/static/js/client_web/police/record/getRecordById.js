@@ -148,7 +148,6 @@ function callbackgetRecordById(data) {
             /*getPHDataBack();//身心回放获取*/
 
 
-            var caseAndUserInfo=data.caseAndUserInfo;
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
 
@@ -176,28 +175,31 @@ function callbackgetRecordById(data) {
                         recorduser.push(user1);
                         recorduser.push(user2);
                     }
-            }
 
-            //案件信息
-            $("#caseAndUserInfo_html").html("");
-            if (isNotEmpty(caseAndUserInfo)){
-                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
-                var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
-                var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
-                var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                //案件信息
+                var caseAndUserInfo=record.caseAndUserInfo;
+                $("#caseAndUserInfo_html").html("");
+                if (isNotEmpty(caseAndUserInfo)){
+                    var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
+                    var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
+                    var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
+                    var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
+                    var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                    var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
+                    var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
+                    var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
+                    var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>";
-                $("#caseAndUserInfo_html").html(init_casehtml);
+                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                    $("#caseAndUserInfo_html").html(init_casehtml);
+                }
             }
 
             //左侧asr识别数据

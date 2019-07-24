@@ -299,6 +299,41 @@ public class OutAction extends BaseAction {
     }
 
 
+    @RequestMapping("/getTdByModelSsid")
+    public RResult getTdByModelSsid(@RequestBody  ReqParam<GetTdByModelSsidParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getTdByModelSsid(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     *获取会议缓存
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getMCCacheParamByMTssid")
+    public RResult getMCCacheParamByMTssid(@RequestBody  ReqParam<GetMCCacheParamByMTssidParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getMCCacheParamByMTssid(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
+
 
 
 
