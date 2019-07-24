@@ -274,17 +274,6 @@ public class OutAction extends BaseAction {
         return result;
     }
 
-    @RequestMapping("/getTdAndUserAndOtherCacheParamByMTssid")
-    public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody  ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            outService.getTdAndUserAndOtherCacheParamByMTssid(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
 
     @RequestMapping("/getMc_model")
     public RResult getMc_model(@RequestBody  ReqParam<GetMc_modelParam_out> param){
@@ -331,22 +320,6 @@ public class OutAction extends BaseAction {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * 获取各个设备的状态
      * @param param
@@ -365,7 +338,7 @@ public class OutAction extends BaseAction {
     }
 
     /**
-     * 获取各个客户端的状态
+     * 获取各个客户端的状态:未使用==
      * @param param
      * @return
      */

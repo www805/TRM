@@ -71,11 +71,6 @@ public interface MeetingControl {
     public RResult getPHDataBack(@RequestBody ReqParam<GetPHDataParam_out> param);
 
 
-
-    @RequestMapping("/mt/v1/getTdAndUserAndOtherCacheParamByMTssid")
-    @ResponseBody
-    public RResult getTdAndUserAndOtherCacheParamByMTssid(@RequestBody ReqParam<GetTdAndUserAndOtherCacheParamByMTssidPara_out> param);
-
     /**
      * 根据会议ssid获取会议缓存
      * @param param

@@ -151,6 +151,7 @@ public class RecordService extends BaseService {
         if (StringUtils.isNotBlank(recordname)){
             recordparam.like("r.recordname",recordname);
         }
+        recordparam.ne("r.recordbool",-1);
         if (null!=recordbool){
             recordparam.eq("r.recordbool",recordbool);
         }

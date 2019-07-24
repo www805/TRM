@@ -7,15 +7,18 @@
  * 监测数据
  */
 function getPolygraphdata() {
-    if (isNotEmpty(mtssid)) {
-        var url=getUrl_manage().getPolygraphdata;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetPolygraphdata);
+    if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
+        var polygraphnum=MCCache.polygraphnum;//本次会议开启的测谎仪个数
+        if (null!=polygraphnum&&polygraphnum>0){
+            var url=getUrl_manage().getPolygraphdata;
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    mtssid: mtssid
+                }
+            };
+            ajaxSubmitByJson(url, data, callbackgetPolygraphdata);
+        }
     }else{
         console.log("身心监测信息未找到__"+mtssid);
     }
@@ -1011,7 +1014,7 @@ function callbackgnlist(data) {
 
 
 //*******************************************************************关键字start****************************************************************//
-//未使用，在后头执行了
+//未使用==后台执行了
 function checkKeyword(txt) {
     var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
     var data={
@@ -1035,3 +1038,111 @@ function callbackcheckKeyword(data) {
 }
 //*******************************************************************关键字end****************************************************************//
 
+//*******************************************************************获取各个状态start****************************************************************//
+function  getEquipmentsState() {
+    $("#MtState").text("加载中");
+    $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#AsrState").text("加载中");
+    $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#LiveState").text("加载中");
+    $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+    $("#PolygraphState").text("加载中");
+    $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+
+    if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
+        var recordnum=MCCache.recordnum;//本次会议开启的录音/像个数
+        var asrnum=MCCache.asrnum;//本次会议开启的语音识别个数
+        var polygraphnum=MCCache.polygraphnum;//本次会议开启的测谎仪个数
+
+        var url=getUrl_manage().getEquipmentsState;
+        var data = {
+            token: INIT_CLIENTKEY,
+            param: {
+                mtssid: mtssid,
+                fdrecord:fdrecord,
+                usepolygraph:usepolygraph,
+                useasr:useasr,
+                recordnum:recordnum,
+                asrnum:asrnum,
+                polygraphnum:polygraphnum
+            }
+        };
+
+        ajaxSubmitByJson(url, data, callbackgetEquipmentsState);
+    }else{
+        console.log("设备状态信息位置未找到__"+mtssid);
+    }
+}
+function callbackgetEquipmentsState(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        var data = data.data;
+        if (isNotEmpty(data)) {
+            //状态： -1异常  0未启动 1正常
+            var MtText = "加载中";
+            var AsrText = "加载中";
+            var LiveText = "加载中";
+            var PolygraphText = "加载中";
+            var MtClass = "ayui-badge layui-bg-gray";
+            var AsrClass = "ayui-badge layui-bg-gray";
+            var LiveClass = "ayui-badge layui-bg-gray";
+            var PolygraphClass = "ayui-badge layui-bg-gray";
+
+            var MtState = data.mtState;
+            if (MtState == 0) {
+                MtText = "未启动";
+                MtClass = "ayui-badge layui-bg-gray";
+            } else if (MtState == 1) {
+                MtText = "正常";
+                MtClass = "layui-badge layui-bg-green";
+            } else if (MtState == -1) {
+                MtText = "异常";
+                MtClass = "layui-badge";
+            }
+            var AsrState = data.asrState;
+            if (AsrState == 0) {
+                AsrText = "未启动";
+                AsrClass = "ayui-badge layui-bg-gray";
+            } else if (AsrState == 1) {
+                AsrText = "正常";
+                AsrClass = "layui-badge layui-bg-green";
+            } else if (AsrState == -1) {
+                AsrText = "异常";
+                AsrClass = "layui-badge";
+            }
+            var LiveState = data.liveState;
+            if (LiveState == 0) {
+                LiveText = "未启动";
+                LiveClass = "ayui-badge layui-bg-gray";
+            } else if (LiveState == 1) {
+                LiveText = "正常";
+                LiveClass = "layui-badge layui-bg-green";
+            } else if (LiveState == -1) {
+                LiveText = "异常";
+                LiveClass = "layui-badge";
+            }
+            var PolygraphState = data.polygraphState;
+            if (PolygraphState == 0) {
+                PolygraphText = "未启动";
+                PolygraphClass = "ayui-badge layui-bg-gray";
+            } else if (PolygraphState == 1) {
+                PolygraphText = "正常";
+                PolygraphClass = "layui-badge layui-bg-green";
+            } else if (PolygraphState == -1) {
+                PolygraphText = "异常";
+                PolygraphClass = "layui-badge";
+            }
+
+
+            $("#MtState").text(MtText);
+            $("#MtState").attr({"MtState": MtState, "class": MtClass});
+            $("#AsrState").text(AsrText);
+            $("#AsrState").attr({"AsrState": AsrState, "class": AsrClass});
+            $("#LiveState").text(LiveText);
+            $("#LiveState").attr({"LiveState": LiveState, "class": LiveClass});
+            $("#PolygraphState").text(PolygraphText);
+            $("#PolygraphState").attr({"PolygraphState": PolygraphState, "class": PolygraphClass});
+
+        }
+    }
+}
+//*******************************************************************获取各个状态end****************************************************************//

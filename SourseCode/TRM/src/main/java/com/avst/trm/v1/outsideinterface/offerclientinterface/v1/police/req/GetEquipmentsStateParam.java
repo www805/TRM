@@ -5,7 +5,34 @@ public class GetEquipmentsStateParam {
     private Integer fdrecord;//是否需要录像，1使用，-1 不使用
     private Integer usepolygraph;//是否使用测谎仪，1使用，-1 不使用
     private Integer useasr;//是否使用语言识别，1使用，-1 不使用
-    private Integer asrRun;//语音识别服务是否启动 1开启 -1不开起
+
+    private int recordnum=0;//本次会议开启的录音/像个数
+    private int asrnum=0;//本次会议开启的语音识别个数
+    private int polygraphnum=0;//本次会议开启的测谎仪个数
+
+    public int getRecordnum() {
+        return recordnum;
+    }
+
+    public void setRecordnum(int recordnum) {
+        this.recordnum = recordnum;
+    }
+
+    public int getAsrnum() {
+        return asrnum;
+    }
+
+    public void setAsrnum(int asrnum) {
+        this.asrnum = asrnum;
+    }
+
+    public int getPolygraphnum() {
+        return polygraphnum;
+    }
+
+    public void setPolygraphnum(int polygraphnum) {
+        this.polygraphnum = polygraphnum;
+    }
 
     public Integer getFdrecord() {
         return fdrecord;
@@ -29,14 +56,6 @@ public class GetEquipmentsStateParam {
 
     public void setUseasr(Integer useasr) {
         this.useasr = useasr;
-    }
-
-    public Integer getAsrRun() {
-        return asrRun;
-    }
-
-    public void setAsrRun(Integer asrRun) {
-        this.asrRun = asrRun;
     }
 
     public String getMtssid() {
