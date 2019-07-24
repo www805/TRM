@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备直播</title>
+</head>
+<body>
+<div  data-th-fragment="living">
+
+    <div id="view" >
+        <div id="player" class="player"></div>
+    </div>
+
+    <!--播放器/代码开始-->
+    <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/flowplayer/flowplayer-3.2.13.min.js"></script>
+    <script type="text/javascript">
+        var playerwh=$("#recordreals").width();
+        var playerwhht=playerwh*2.5/4;
+
+        var viode_w;
+        var video_h;
+
+        $(function(){
+            initplayer();
+        });
+        function play(){
+
+            playerwh=$("#phitem").width();
+            if(!isNotEmpty(playerwh)||playerwh==0){
+                playerwh=$("#fditem").width();
+            }
+            playerwhht=playerwh*2.5/4;
+
+            //播放器加载
+            var swfurl = "/flowplayer/flowplayer-3.2.18.swf";
+
+            var myplayer = $f("player", swfurl, {
+                clip: {
+                    url: liveurl,
+                    autoPlay: true,
+                    autoBuffering: true,
+
+                    onMetaDataChange: function () {
+                        var clip = myplayer.getClip()
+                        viode_w = clip.metaData.width;
+                        video_h = clip.metaData.height;
+                        resize(viode_w, video_h);
+                    },
+                    onMetaData: function () {
+                        var clip = myplayer.getClip()
+                        viode_w = clip.metaData.width;
+                        video_h = clip.metaData.height;
+                        resize(viode_w, video_h);
+                    }
+                },
+                plugins: {
+                    controls: null
+                },
+                onLoad: function () {
+
+                }
+            });
+            window.onresize = function () {
+                if (viode_w!=0)
+                    resize(viode_w, video_h);
+            }
+        }
+
+        function initplayer(){
+            play();
+        }
+
+        //根据浏览器可视大小和视频原始大小来调整，让其自动填充
+        function resize(viode_w, video_h) {
+            var window_w = playerwh;
+            var window_h = playerwhht;
+
+            var scale_w = (window_w / viode_w);
+            var scale_h = (window_h / video_h);
+            var scale = Math.min(scale_w, scale_h);
+            var now_w = scale * viode_w -6;
+            var now_h = scale * video_h - 6;
+            var playerdom = document.getElementById("player");
+            playerdom.style.width = now_w + "px";
+            playerdom.style.height = now_h + "px";
+        }
+
+    </script>
+
+    <!--播放器/代码结束-->
+
+
+</div>
+</body>
+</html>
