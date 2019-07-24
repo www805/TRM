@@ -688,8 +688,6 @@ function callbackgetMCCacheParamByMTssid(data) {
         if (isNotEmpty(data)){
             MCCache=data;
         }
-    }else{
-        console.log(data);
     }
 }
 
@@ -1078,8 +1076,10 @@ function setFocus(el) {
         el.focus();
 
         //回车加锚点：先判断语音识别是否开启
+
+
         console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
-        if (isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid)){
+        if ((isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid))||(isNotEmpty(MCCache)&&MCCache.asrnum<1&&isNotEmpty(mtssid))){
             console.log("不适用语音识别~")
             var dqtime=new Date().getTime();
             var qw_type=el.getAttribute("name");
