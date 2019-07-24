@@ -62,7 +62,11 @@ function callgetNavList(data) {
             var appCache = data.data;
 
             //替换logo图标
-            $("#systemlogo").css("background-image", "url(\"" + appCache.syslogoimage + "\")");
+            if (isNotEmpty(appCache.syslogoimage)) {
+                $("#systemlogo").css("background-image", "url(\"" + appCache.syslogoimage + "\")");
+            }else{
+                $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");
+            }
 
             if (isNotEmpty(appCache.data)) {
 

@@ -922,8 +922,8 @@ function next_realtxt() {
 function set_dqrealtxt(){
     mouseoverbool_left=1;//不滚动
     if (isNotEmpty(likerealtxtarr)) {
-        for (let i = 0; i < likerealtxtarr.length; i++) {
-            const all = likerealtxtarr[i];
+        for (var i = 0; i < likerealtxtarr.length; i++) {
+            var all = likerealtxtarr[i];
             all.find("a").removeClass("highlight_dq");
         }
         likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
@@ -986,7 +986,7 @@ function callbackgnlist(data) {
                     })
                 }
                 //控制显示
-                for (let i = 0; i < gnlist.length; i++) {
+                for (var i = 0; i < gnlist.length; i++) {
                     var list = gnlist[i];
                     if (list=="asr") {
                         /*  $("#asr").show();

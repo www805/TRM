@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.PtdjiniCache;
 import com.avst.trm.v1.common.conf.GZVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
@@ -22,7 +23,8 @@ import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
-import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
@@ -117,6 +119,8 @@ public class RecordService extends BaseService {
     @Autowired
     private OutService outService;
 
+    @Autowired
+    private EquipmentControl equipmentControl;
 
     @Value("${file.basepath}")
     private String filePath;
@@ -130,6 +134,8 @@ public class RecordService extends BaseService {
     @Value("${file.recordwordOrpdf}")
     private String filerecordwordOrpdf; //笔录word或者pdf路径
 
+    @Value("${pfconfigName}")
+    private String pfconfigName;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -2375,6 +2381,165 @@ public class RecordService extends BaseService {
 
 
 
+    public void getFDState(RResult result, ReqParam param) {
+
+        try {
+            RResult fdState = equipmentControl.getFDState(param);
+
+            result.setData(fdState.getData());
+            changeResultToSuccess(result);
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getFDState  获取设备状态信息失败...");
+            result.setMessage("设备状态请求失败!");
+        }
+
+    }
+
+    public void getdvdOutOrIn(RResult result, ReqParam<DvdOutOrInParam_out> param) {
+
+        try {
+            RResult fdState = equipmentControl.dvdOutOrIn(param);
+
+            result.setData(fdState.getData());
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  光盘出仓/进仓 请求错误...");
+        }
+
+
+    }
+
+    public void getstartRec_Rom(RResult result, ReqParam<StartRec_RomParam_out> param) {
+
+        try {
+            RResult fdState = equipmentControl.startRec_Rom(param);
+
+            result.setData(fdState.getData());
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getstartRec_Rom  开始光盘刻录 请求错误...");
+        }
+
+    }
+
+    public void getstopRec_Rom(RResult result, ReqParam<StopRec_RomParam_out> param) {
+
+        try {
+            RResult fdState = equipmentControl.stopRec_Rom(param);
+
+            result.setData(fdState.getData());
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  结束光盘刻录 请求错误...");
+        }
+
+    }
+
+    public void getyuntaiControl(RResult result, ReqParam<YuntaiControlParam_out> param) {
+
+        try {
+            RResult fdState = equipmentControl.yuntaiControl(param);
+
+            result.setData(fdState.getData());
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getyuntaiControl  云台控制 请求错误...");
+        }
+
+    }
+
+    public void getptdjconst(RResult result, ReqParam param) {
+
+        try {
+            RResult fdState = equipmentControl.getptdjconst(param);
+
+            HashMap<String, Object> map = new HashMap<>();
+
+            //从缓存中获取，如果没有就从外部获取
+            Properties ptdjinis = PtdjiniCache.getPtdjiniCache();
+            if (null == ptdjinis) {
+                ptdjinis = ptdjini();
+                PtdjiniCache.setPtdjiniCache(ptdjinis);
+            }
+
+            map.put("ptdjinis", ptdjinis);
+            map.put("ptdjtitles", fdState.getData());
+
+            result.setData(map);
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getptdjconst  获取当前配置片头字段 请求错误...");
+        }
+
+    }
+
+    public void ptdj(RResult result, ReqParam<PtdjParam_out> param) {
+
+        try {
+            RResult fdState = equipmentControl.ptdj(param);
+
+            result.setData(fdState.getData());
+            result.setMessage(fdState.getMessage());
+            result.setEndtime(fdState.getEndtime());
+            result.setActioncode(fdState.getActioncode());
+            result.setNextpageid(fdState.getNextpageid());
+            result.setVersion(fdState.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.addptdj  片头叠加 请求错误...");
+        }
+
+    }
+
+    /**
+     * 获取片头叠加外部文件
+     * @return
+     */
+    private Properties ptdjini() {
+
+        //获取片头叠加外部文件路径
+        String filepath = OpenUtil.getXMSoursePath() + "\\" + pfconfigName + ".ini";
+
+        //创建Properties属性对象用来接收ini文件中的属性
+        Properties pps = null;
+
+        try {
+            //创建文件输入流
+            FileInputStream fis = new FileInputStream(filepath);
+            InputStreamReader reader = new InputStreamReader(fis,"GBK");
+
+            pps = new Properties();
+            //从文件流中加载属性
+            pps.load(reader);
+
+            reader.close();
+            fis.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return pps;
+    }
 
 
     /***************************笔录问答实时缓存****start***************************/
@@ -2444,6 +2609,7 @@ public class RecordService extends BaseService {
     }
 
     /***************************笔录问答实时缓存****end***************************/
+
 
 
 }

@@ -7,8 +7,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
-import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
-import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
@@ -380,5 +379,8 @@ public class OutAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
+
 
 }

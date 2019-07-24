@@ -3,10 +3,7 @@ package com.avst.trm.v1.feignclient.ec;
 
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
-import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
-import com.avst.trm.v1.feignclient.ec.req.GetSavePathParam;
-import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphAnalysisParam;
 import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
@@ -80,5 +77,66 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param);
 
+    /**
+     * 获取设备状态信息
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getFDState")
+    @ResponseBody
+    public RResult getFDState(@RequestBody ReqParam<GetFDStateParam> param);
 
+    /**
+     * 获取当前配置片头字段
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getptdjconst")
+    @ResponseBody
+    public RResult getptdjconst(@RequestBody ReqParam<GetptdjconstParam_out> param);
+
+    /**
+     * 光盘出仓/进仓
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/dvdOutOrIn")
+    @ResponseBody
+    public RResult dvdOutOrIn(@RequestBody ReqParam<DvdOutOrInParam_out> param);
+
+    /**
+     * 开始光盘刻录
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/startRec_Rom")
+    @ResponseBody
+    public RResult startRec_Rom(@RequestBody ReqParam<StartRec_RomParam_out> param);
+
+    /**
+     * 结束光盘刻录
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/stopRec_Rom")
+    @ResponseBody
+    public RResult stopRec_Rom(@RequestBody ReqParam<StopRec_RomParam_out> param);
+
+    /**
+     * 云台控制
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/yuntaiControl")
+    @ResponseBody
+    public RResult yuntaiControl(@RequestBody ReqParam<YuntaiControlParam_out> param);
+
+    /**
+     * 片头叠加
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/ptdj")
+    @ResponseBody
+    public RResult ptdj(@RequestBody ReqParam<PtdjParam_out> param);
 }

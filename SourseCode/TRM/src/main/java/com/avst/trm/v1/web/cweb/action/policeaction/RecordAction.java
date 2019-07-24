@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
@@ -665,10 +666,124 @@ public class RecordAction extends BaseAction {
     }
 
 
+    /**
+     * 获取设备状态信息
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getFDState")
+    public RResult getFDState(@RequestBody  ReqParam param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getFDState(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 获取当前配置片头字段
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getptdjconst")
+    public RResult getptdjconst(@RequestBody  ReqParam param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getptdjconst(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 光盘出仓/进仓
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getdvdOutOrIn")
+    public RResult getdvdOutOrIn(@RequestBody  ReqParam<DvdOutOrInParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getdvdOutOrIn(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 开始光盘刻录
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getstartRec_Rom")
+    public RResult getstartRec_Rom(@RequestBody  ReqParam<StartRec_RomParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getstartRec_Rom(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 结束光盘刻录
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getstopRec_Rom")
+    public RResult getstopRec_Rom(@RequestBody  ReqParam<StopRec_RomParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getstopRec_Rom(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 云台控制
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getyuntaiControl")
+    public RResult getyuntaiControl(@RequestBody  ReqParam<YuntaiControlParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getyuntaiControl(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 片头叠加
+     * @param param
+     * @return
+     */
+    @RequestMapping("/ptdj")
+    public RResult ptdj(@RequestBody  ReqParam<PtdjParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.ptdj(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

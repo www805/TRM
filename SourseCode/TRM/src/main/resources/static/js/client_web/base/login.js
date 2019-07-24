@@ -46,7 +46,9 @@ function callgetNavList(data) {
 
             //替换logo图标
             // $("#clientimage").css("background-image", "url(\"" + appCache.clientimage + "\")");
-            $("#clientimage").attr('src',appCache.clientimage);
+            if (isNotEmpty(appCache.clientimage)) {
+                $("#clientimage").attr('src',appCache.clientimage);
+            }
 
             if (isNotEmpty(appCache.data)) {
                 if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) || !isNotEmpty(appCache.data.bottom.url)) {

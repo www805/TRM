@@ -6,8 +6,7 @@ import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class Test {
@@ -18,10 +17,46 @@ public class Test {
 //
 //      yaxml();
 
-      String xmSoursePath = OpenUtil.getXMSoursePath();
-      System.out.println(xmSoursePath);
+//      String xmSoursePath = OpenUtil.getXMSoursePath();
+//      System.out.println(xmSoursePath);
+
+      getini();
    }
 
+
+   public static void getini(){
+      try {
+         //ini文件的存放位置
+//            String filepath = "D:\\initest.ini";
+         String filepath = OpenUtil.getXMSoursePath() + "\\pfconfig.ini";
+         //创建文件输入流
+         FileInputStream fis = new FileInputStream(filepath);
+
+         InputStreamReader reader = new InputStreamReader(fis,"GBK");
+         //创建文件输出流
+//         OutputStream opt = null;
+         //创建Properties属性对象用来接收ini文件中的属性
+         Properties pps = new Properties();
+         //从文件流中加载属性
+         pps.load(reader);
+         System.out.println(pps);
+//            //通过getProperty("属性名")获取key对应的值
+//            System.out.println(pps.getProperty("url1"));
+//            System.out.println(pps.getProperty("url11"));
+//            //加载读取文件流
+//            opt = new FileOutputStream(filepath);
+//            //通过setProperty(key,value)赋值，会覆盖相同key的值
+//            pps.setProperty("url2", "v2");
+//            pps.setProperty("url1", "v1");
+//            //修改值 (必不可少)
+//            pps.store(opt, null);
+         reader.close();
+         fis.close();
+      }
+      catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
 
    public static void yaxml(){
 

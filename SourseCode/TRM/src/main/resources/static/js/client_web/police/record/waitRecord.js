@@ -461,6 +461,16 @@ function callbackgetRecordById(data) {
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
             }
+
+
+            //开始获取设备状态
+            getFDState();
+
+            setInterval(function () {
+                console.log("刷新，获取设备状态");
+                getFDState();
+            }, 10000);
+
         }
     }else{
         layer.msg(data.message);
@@ -1006,7 +1016,6 @@ function getTdAndUserAndOtherCacheParamByMTssid(userssid) {
                     //第一行上时间
                     var lable=  $('#first_originaltr label[name="q"]');
                     setFocus(lable);
-
 
                     if (null!=data.asrRun&&data.asrRun) {
                         asrRun=1;//语音识别服务是否启动 1开启 -1不开起

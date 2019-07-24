@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -16,9 +17,7 @@ import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
-import com.avst.trm.v1.feignclient.ec.req.CheckRecordFileStateParam;
-import com.avst.trm.v1.feignclient.ec.req.GetFDListByFdidParam;
-import com.avst.trm.v1.feignclient.ec.req.GetURLToPlayParam;
+import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
 import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
 import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
@@ -45,6 +44,7 @@ import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
+import com.ctc.wstx.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -900,4 +900,6 @@ public class OutService  extends BaseService {
         }
           return;
     }
+
+
 }

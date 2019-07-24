@@ -160,6 +160,14 @@ function getactionid_manage() {
         waitRecord_getRecordreal_LastByRecordssid:"waitRecord_getRecordreal_LastByRecordssid",
         waitRecord_checkKeyword:"waitRecord_checkKeyword",
 
+        waitRecord_getFDState:"waitRecord_getFDState",
+        waitRecord_getptdjconst:"waitRecord_getptdjconst",
+        waitRecord_getdvdOutOrIn:"waitRecord_getdvdOutOrIn",
+        waitRecord_getstartRec_Rom:"waitRecord_getstartRec_Rom",
+        waitRecord_getstopRec_Rom:"waitRecord_getstopRec_Rom",
+        waitRecord_getyuntaiControl:"waitRecord_getyuntaiControl",
+        waitRecord_ptdj:"waitRecord_ptdj",
+
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
 
