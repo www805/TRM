@@ -208,6 +208,8 @@ public static String getLocalMac() {
 				}
 			}
 
+			printMessage(in2);
+
 			int exitvalue=p.waitFor();
 			if(exitvalue!=0){
 				throw new Exception("exitvalue is not 0, 说明代码有错");
@@ -216,8 +218,6 @@ public static String getLocalMac() {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-
-			printMessage(in2);
 
 			try {
 				if(null!=bufferedReader){
@@ -268,6 +268,8 @@ public static String getLocalMac() {
 			String property = sc.next();
 			String serial = sc.next();
 
+			printMessage(in2);
+
 			int exitvalue=process.waitFor();
 			if(exitvalue!=0){
 				throw new Exception("exitvalue is not 0, 说明代码有错");
@@ -278,8 +280,6 @@ public static String getLocalMac() {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-
-			printMessage(in2);
 
 			try {
 				if(null!=os){

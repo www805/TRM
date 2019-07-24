@@ -43,11 +43,17 @@ public class GZVodThread extends Thread{
         police_record=police_record_;
     }
 
+boolean  bool=true;
 
     @Override
     public void run() {
 
         try {
+
+            if(bool){
+                System.out.println("------------------------打包暂时不使用，等对接设备光盘刻录成功再开启------------------------");
+                return;
+            }
 
             GetRecordByIdVO getRecordByIdVO=(GetRecordByIdVO)result.getData();
             if(null==getRecordByIdVO||null==getRecordByIdVO.getGetPlayUrlVO()){

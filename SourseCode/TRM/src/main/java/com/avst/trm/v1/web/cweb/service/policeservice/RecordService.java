@@ -537,8 +537,9 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
 
                 String gz=record.getGz_iid();
+                Integer recordbool=record.getRecordbool();
                 //检测有没有下载包，没有就打包
-                if(StringUtils.isEmpty(gz)){
+                if(StringUtils.isEmpty(gz)&&null!=recordbool&&recordbool.intValue()==2){//只有在完成状态下才会需要打包
                     //调用打包线程
                     try {
                         Police_record police_record=record;
