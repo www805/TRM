@@ -37,6 +37,7 @@ function getUrl_manage() {
         str2Tts:getPath()+getinterface_service().str2Tts,
         getMc_model:getPath()+getinterface_service().getMc_model,
         getMCCacheParamByMTssid:getPath()+getinterface_service().getMCCacheParamByMTssid,
+        getTDCacheParamByMTssid:getPath()+getinterface_service().getTDCacheParamByMTssid,
 	};
 }
 
@@ -61,6 +62,7 @@ function getinterface_service() {
         str2Tts:"/v1/police/out/str2Tts",
         getMc_model:"/v1/police/out/getMc_model",
         getMCCacheParamByMTssid:"/v1/police/out/getMCCacheParamByMTssid",
+        getTDCacheParamByMTssid:"/v1/police/out/getTDCacheParamByMTssid",
 	};
 }
 

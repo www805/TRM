@@ -294,7 +294,7 @@
                     </ul>
                     <div class="layui-tab-content" id="leftdiv">
                         <div class="layui-tab-item  layui-show"  id="asritem" >
-                            <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal">
+                            <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                                 <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
                                     <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
                                 </div>
@@ -412,7 +412,7 @@
                                 </div>
                         </div>
                         <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                            <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">
+                           <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;"  onclick="img_bool(this,1);" id="pauserecord">
                             <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,2);" id="startrecord">
                             <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto"  onclick="img_bool(this,-1);" id="endrecord">
                         </div>

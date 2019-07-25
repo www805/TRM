@@ -317,6 +317,20 @@ public class OutAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping("/getTDCacheParamByMTssid")
+    public RResult getTDCacheParamByMTssid(@RequestBody  ReqParam<GetTDCacheParamByMTssidParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            outService.getTDCacheParamByMTssid(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
 
 
     /**

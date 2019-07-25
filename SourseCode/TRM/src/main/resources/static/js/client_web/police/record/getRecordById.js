@@ -228,6 +228,7 @@ function callbackgetRecordById(data) {
 //数据渲染
 function set_getRecord(data){
     if (isNotEmpty(data.list)){
+        $("#recordreals_selecthtml").show();
         var list=data.list;
         for (var i = 0; i < list.length; i++) {
             var data=list[i];

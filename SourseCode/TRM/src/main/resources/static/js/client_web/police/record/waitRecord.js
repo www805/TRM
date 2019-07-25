@@ -7,10 +7,6 @@ var dq_recorduser=null;//当前被询问人ssid
 var mcbool=null;//会议状态
 var recordbool=null;//笔录状态 3 4暂时用于导出判断
 
-var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
-var  fdrecord=null;//是否需要录像，1使用，-1 不使用
-var  usepolygraph=null;//是否使用测谎仪，1使用，-1 不使用
-var  useasr=null;//是否使用语言识别，1使用，-1 不使用
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
@@ -18,7 +14,8 @@ var dqselec_left="";//当前左侧鼠标选择的文本
 var dqselec_right="";//当前左侧鼠标选择的文本
 
 var MCCache=null;//会议缓存数据
-
+var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
+var  fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
@@ -434,7 +431,7 @@ function callbackgetRecordById(data) {
                     recorduser.push(user2);
                     dq_recorduser=recordUserInfosdata.userssid;
                 }
-                getMCCacheParamByMTssid();//获取缓存
+
 
                 //案件信息
                 var caseAndUserInfo=record.caseAndUserInfo;
@@ -460,6 +457,8 @@ function callbackgetRecordById(data) {
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
+                getMCCacheParamByMTssid();//获取缓存
+                getTDCacheParamByMTssid();
             }
 
 
@@ -619,6 +618,7 @@ function callbackstartMC(data) {
             mcbool=1;//正常开启
 
             getMCCacheParamByMTssid();//获取缓存
+            getTDCacheParamByMTssid();
 
             var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
@@ -679,40 +679,52 @@ function callbackoverMC(data) {
 
 //获取会议缓存
 function getMCCacheParamByMTssid() {
-    if (isNotEmpty(mtssid)){
+    if (mcbool==1){
         var url=getUrl_manage().getMCCacheParamByMTssid;
-        var data={
+        var d={
             token:INIT_CLIENTKEY,
             param:{
                 mtssid:mtssid
             }
         };
-        ajaxSubmitByJson(url, data, callbackgetMCCacheParamByMTssid);
-    }
-}
-function callbackgetMCCacheParamByMTssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            MCCache=data;
-            var tds=MCCache.tdList;
-            if (isNotEmpty(tds)){
-                for (let i = 0; i < tds.length; i++) {
-                    const td = tds[i];
-                    if (td.userssid==dq_recorduser) {
-                        fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
-                        fdrecord=data.fdrecord==null?-1:data.fdrecord;//是否需要录像，1使用，-1 不使用
-                        usepolygraph=data.usepolygraph==null?-1:data.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-                        useasr=data.useasr==null?-1:data.useasr;//是否使用语言识别，1使用，-1 不使用
-                        //第一行上时间
-                        var lable=  $('#first_originaltr label[name="q"]');
-                        setFocus(lable);
-                    }
+        ajaxSubmitByJson(url, d, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    MCCache=data;
                 }
             }
-        }
+        });
     }
 }
+
+function getTDCacheParamByMTssid() {
+    if (mcbool==1&&isNotEmpty(dq_recorduser)) {//会议正常的时候
+        var url=getUrl_manage().getTDCacheParamByMTssid;
+        var d={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid,
+                userssid:dq_recorduser,
+            }
+        };
+
+        ajaxSubmitByJson(url, d, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    TDCache=data;
+                    fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
+
+                    //第一行上时间
+                    var lable=  $('#first_originaltr label[name="q"]');
+                    setFocus(lable);
+                }
+            }
+        });
+    }
+}
+
 
 //保存按钮
 //recordbool 1进行中 2已结束 0初始化
@@ -950,6 +962,7 @@ function callbackgetgetRecordrealing(data) {
         if (isNotEmpty(list)) {
             layer.close(loadindex);
             $("#recordreals").html("");
+            $("#recordreals_selecthtml").show();
             for (var i = 0; i < list.length; i++) {
                 var data=list[i];
                 if (isNotEmpty(recorduser)){
@@ -997,6 +1010,7 @@ function callbackgetgetRecordrealing(data) {
         layer.msg(data.message);
     }
 }
+
 
 
 
@@ -1056,34 +1070,37 @@ function setFocus(el) {
         el.focus();
 
         //回车加锚点：先判断语音识别是否开启
-
-
-        console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
-        if ((isNotEmpty(useasr)&&useasr==-1&&isNotEmpty(mtssid))||(isNotEmpty(MCCache)&&MCCache.asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-            console.log("使用直播时间~")
-            var dqtime=new Date().getTime();
-            var qw_type=el.getAttribute("name");
-            if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                console.log("开始使用直播时间~")
-                if (qw_type=="w"){
-                    var w_starttime=el.getAttribute("w_starttime");
-                    if ((!isNotEmpty(w_starttime)||w_starttime<0)){
-                        //计算时间戳
-                        w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                        el.setAttribute("w_starttime",w_starttime);
-                    }
-                }else  if (qw_type=="q"){
-                    var q_starttime=el.getAttribute("q_starttime");
-                    if ((!isNotEmpty(q_starttime)||q_starttime<0)){
-                        //计算时间戳
-                        q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                        el.setAttribute("q_starttime",q_starttime);
+        if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
+            var useasr=TDCache.TDCache==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
+            var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
+            console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
+            if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                console.log("使用直播时间~")
+                var dqtime=new Date().getTime();
+                var qw_type=el.getAttribute("name");
+                if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    console.log("开始使用直播时间~")
+                    if (qw_type=="w"){
+                        var w_starttime=el.getAttribute("w_starttime");
+                        if ((!isNotEmpty(w_starttime)||w_starttime<0)){
+                            //计算时间戳
+                            w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                            el.setAttribute("w_starttime",w_starttime);
+                        }
+                    }else  if (qw_type=="q"){
+                        var q_starttime=el.getAttribute("q_starttime");
+                        if ((!isNotEmpty(q_starttime)||q_starttime<0)){
+                            //计算时间戳
+                            q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                            el.setAttribute("q_starttime",q_starttime);
+                        }
                     }
                 }
+            }else {
+                console.log("使用语音识别时间~")
             }
-        }else {
-            console.log("使用语音识别时间~")
         }
+
         var range = document.createRange();
         range.selectNodeContents(el);
         range.collapse(false);
@@ -1574,7 +1591,7 @@ $(function () {
    //初始化第一行的焦点
 
 
-    /*layui.use(['mouseRightMenu','layer','jquery'],function(){
+    layui.use(['mouseRightMenu','layer','jquery'],function(){
         var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
         $('#recorddetail label').mouseup(function(){
             var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
@@ -1586,7 +1603,7 @@ $(function () {
             var data = {content:dqselec_right}
             var menu_data=[
                 {'data':data,'type':1,'title':'标记'},
-                {'data':data,'type':2,'title':'取消标记'}
+                {'data':data,'type':2,'title':'取消全部标记'}
             ]
             mouseRightMenu.open(menu_data,false,function(d){
                 if (isNotEmpty(d)){
@@ -1634,27 +1651,50 @@ $(function () {
                                         if(isNotEmpty(txt)){
                                             for (let j = 0; j < txt.length; j++) {
                                                 const shujuElement = txt[j];
-                                                var $html=$label.html();
-                                                $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                                $label.html($html);
+                                                if(content.indexOf(shujuElement)<0){
+                                                    var $html=$label.html();
+                                                    $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                                    $label.html($html);
+                                                }
+                                            }
+                                        }
+                                    }get
+                                }
+                            }
+                        }
+
+                        if (type==2){
+                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                                var $txt = $label.text();
+                                $label.html($txt);
+                               /* dqtag_right=[];*/
+
+                              var newtxt=[];
+                              for (let i = 0; i < dqtag_right.length; i++) {
+                                    const tag = dqtag_right[i];
+                                    if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                        var txt=tag.txt;
+                                        if(isNotEmpty(txt)){
+                                            for (let j = 0; j < txt.length; j++) {
+                                                const shujuElement = txt[j];
+                                                if(content!=shujuElement){
+                                                    newtxt.push(shujuElement);
+                                                    var $html=$label.html();
+                                                    $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                                    $label.html($html);
+                                                }
                                             }
                                         }
                                     }
                                 }
-
-
-
-                            }
-                        }
-
-                        if (isNotEmpty(content)&&type==2){
-                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                                var $label = $('#recorddetail tr:eq("' + td_lastindex["key"] + '") label[name="' + td_lastindex["value"] + '"]');
-                                var $txt = $label.text();
-                                $label.html($txt);
-                                var $html = $label.html();
-                                $html = $html.split(content).join('<a class="highlight_all" >'+ content +'</a>');
-                                $label.html($html);
+                                newtxt=Array.from(new Set(newtxt));
+                                var shuju={
+                                    key:td_lastindex["key"],
+                                    value:td_lastindex["value"],
+                                    txt:newtxt
+                                }
+                                dqtag_right.push(shuju);
                             }
                         }
                     }
@@ -1665,7 +1705,7 @@ $(function () {
             return false;
         });
     })
-*/
+
 
 
 
@@ -1713,7 +1753,8 @@ $(function () {
         }
 
 
-        if (isNotEmpty(mtssid)) {
+        if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
+            var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
             if (usepolygraph==1){//使用测谎仪开启获取
                 getPolygraphdata();
             }
@@ -1789,6 +1830,7 @@ $(function () {
                                 var div = document.getElementById('recordreals_scrollhtml');
                                 div.scrollTop = div.scrollHeight;
                             }
+                            $("#recordreals_selecthtml").show();
 
 
                             //检测自动上墙是否开启

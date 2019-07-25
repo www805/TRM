@@ -1050,9 +1050,13 @@ function  getEquipmentsState() {
     $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
     if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
-        var recordnum=MCCache.recordnum;//本次会议开启的录音/像个数
-        var asrnum=MCCache.asrnum;//本次会议开启的语音识别个数
-        var polygraphnum=MCCache.polygraphnum;//本次会议开启的测谎仪个数
+        var recordnum=MCCache.recordnum==null?0:MCCache.recordnum;//本次会议开启的录音/像个数
+        var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;//本次会议开启的语音识别个数
+        var polygraphnum=MCCache.polygraphnum==null?0:MCCache.polygraphnum;//本次会议开启的测谎仪个数
+
+        var fdrecord=TDCache.fdrecord==null?-1:TDCache.fdrecord;//是否需要录像，1使用，-1 不使用
+        var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
+        var useasr=TDCache.TDCache==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
 
         var url=getUrl_manage().getEquipmentsState;
         var data = {

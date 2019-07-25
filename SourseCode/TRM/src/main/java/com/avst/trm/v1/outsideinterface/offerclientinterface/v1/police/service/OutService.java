@@ -834,6 +834,8 @@ public class OutService  extends BaseService {
     }
 
     public void getMCCacheParamByMTssid(RResult result,ReqParam<GetMCCacheParamByMTssidParam_out> param){
+        GetMCCacheParamByMTssidVO vo=new GetMCCacheParamByMTssidVO();
+
         GetMCCacheParamByMTssidParam_out out=param.getParam();
         if (null==out){
             LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid参数为空GetMCCacheParamByMTssidParam_out____");
@@ -852,9 +854,9 @@ public class OutService  extends BaseService {
         reqParam.setParam(out);
         RResult rr =  meetingControl.getMCCacheParamByMTssid(reqParam);
         if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
-            MCCacheParam mcCacheParam=gson.fromJson(gson.toJson(rr.getData()),MCCacheParam.class);
-            if (null!=mcCacheParam){
-                result.setData(mcCacheParam);
+            vo=gson.fromJson( gson.toJson(rr.getData()),GetMCCacheParamByMTssidVO.class);
+            if (null!=vo){
+                result.setData(vo);
                 changeResultToSuccess(result);
                 return;
             }
@@ -866,6 +868,37 @@ public class OutService  extends BaseService {
         return;
     }
 
+    public void getTDCacheParamByMTssid(RResult result,ReqParam<GetTDCacheParamByMTssidParam_out> param){
+        GetTDCacheParamByMTssidParam_out out = param.getParam();
+        if (null==out){
+            LogUtil.intoLog(this.getClass(),"参数为空");
+            result.setMessage("参数为空");
+            return;
+        }
+        String mtssid=out.getMtssid();
+        String userssid=out.getUserssid();
+        if (StringUtils.isBlank(mtssid)||StringUtils.isBlank(userssid)){
+            LogUtil.intoLog(this.getClass(),"getTDCacheParamByMTssid参数为空mtssid____");
+            result.setMessage("参数为空");
+            return ;
+        }
+
+        ReqParam reqParam=new ReqParam();
+        out.setMcType(MCType.AVST);
+        out.setMtssid(mtssid);
+        out.setUserssid(userssid);
+        reqParam.setParam(out);
+        RResult rr = meetingControl.getTDCacheParamByMTssid(reqParam);
+        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+            GetTDCacheParamByMTssidVO vo=gson.fromJson(gson.toJson(rr.getData()),GetTDCacheParamByMTssidVO.class );
+            result.setData(vo);
+            changeResultToSuccess(result);
+            LogUtil.intoLog(this.getClass(),"getTDCacheParamByMTssid请求__成功");
+        }else {
+            LogUtil.intoLog(this.getClass(),"getTDCacheParamByMTssid请求__出错");
+        }
+        return;
+    }
 
 
 

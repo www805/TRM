@@ -95,6 +95,12 @@ public interface MeetingControl {
     @ResponseBody
     public RResult getTdByModelSsid(@RequestBody ReqParam<GetTdByModelSsidParam_out> param);
 
+    @RequestMapping(value = "/mt/v1/getTDCacheParamByMTssid")
+    @ResponseBody
+    public RResult getTDCacheParamByMTssid(@RequestBody ReqParam<GetTdByModelSsidParam_out> param);
+
+
+
 
 
 
