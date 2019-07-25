@@ -11,8 +11,16 @@
     html{
         background-color: #FFFFFF;
     }
-    #monitorall li:not(0){height: 130px}
-    #monitorall a{height: 100px;text-align: center;vertical-align:middle;}
+    #monitorall li:not(0){height: 190px}
+    #monitorall a{height: 160px;text-align: center;vertical-align:middle;}
+    @-webkit-keyframes fade{	/*透明度由0到1*/
+        0%{opacity:0; }
+        100%{ opacity:1;}
+    }
+    .highlight_monitorall {
+        color: #FFFFFF !important;background-color: red !important;
+        -webkit-animation: fade 1s infinite ease-in-out;
+    }
 </style>
 <body>
 <div class="layui-form" style="margin: 15px;">
@@ -46,7 +54,7 @@
                         <div style="width: 98%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext2">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall1" style="height:120px;width:100%;"></div>
+                        <div id="monitorall1" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a class="layadmin-backlog-body">
@@ -55,7 +63,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall2" style="height:120px;width:100%;"></div>
+                        <div id="monitorall2" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a class="layadmin-backlog-body">
@@ -64,7 +72,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall3" style="height:120px;width:100%;"></div>
+                        <div id="monitorall3" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/content/comment" class="layadmin-backlog-body">
@@ -73,7 +81,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall4" style="height:120px;width:100%;"></div>
+                        <div id="monitorall4" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">
@@ -82,7 +90,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall5" style="height:120px;width:100%;"></div>
+                        <div id="monitorall5" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/content/comment" class="layadmin-backlog-body">
@@ -91,7 +99,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall6" style="height:120px;width:100%;"></div>
+                        <div id="monitorall6" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">
@@ -100,7 +108,7 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <div id="monitorall7" style="height:120px;width:100%;"></div>
+                        <div id="monitorall7" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">

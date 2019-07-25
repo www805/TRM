@@ -230,6 +230,14 @@
         color: #2d2d2d;
 
     }
+    @-webkit-keyframes fade{	/*透明度由0到1*/
+        0%{opacity:0; }
+        100%{ opacity:1;}
+    }
+    .highlight_monitorall {
+        color: #FFFFFF;background-color: red;
+        -webkit-animation: fade 1s infinite ease-in-out;
+    }
 
 </style>
 <body>
@@ -340,8 +348,8 @@
                                 <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
                                 <!--<button onclick="location.reload();">刷新</button>-->
                             </div>
-                            <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>
-                            <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">副麦</span>
+                            <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
+                            <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
                             <div id="living3_2">
                                 <!--视频直播区域-->
                                <div th:replace="living4 :: living"  >...</div>
@@ -544,9 +552,6 @@
 <script th:src="@{/js/socket.io.js}" type="text/javascript"></script>
 <script th:src="@{/layui/layui.js}"type="text/javascript"></script>
 <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
-<!--
-<script th:src="@{/mouseRightMenu/mouseRightMenu.js}"type="text/javascript"></script>
--->
 <script th:src="@{/js/client_web/police/record/waitRecord.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/record/waitRecord2.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/record/recordSettings.js}" type="text/javascript"></script>

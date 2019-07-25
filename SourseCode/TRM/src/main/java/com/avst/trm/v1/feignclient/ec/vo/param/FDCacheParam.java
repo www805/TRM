@@ -8,6 +8,8 @@ public class FDCacheParam {
 
     private String livingUrl;//该设备的直播地址；
 
+    private String previewurl;//该设备的直播预览地址；
+
     private int port;//开放接口的端口
 
     private String ip;
@@ -18,7 +20,7 @@ public class FDCacheParam {
 
     private int useRecord;//录音状态，0未开始，1录音中，2录音结束，3录音异常
 
-    private String recordStartTime;//录音开始时间 long ms
+    private long recordStartTime;//录音开始时间 long ms
 
     private String recordFileiid;//录音文件的唯一识别码
 
@@ -94,11 +96,19 @@ public class FDCacheParam {
         this.useRecord = useRecord;
     }
 
-    public String getRecordStartTime() {
+    public long getRecordStartTime() {
         return recordStartTime;
     }
 
-    public void setRecordStartTime(String recordStartTime) {
+    public void setRecordStartTime(long recordStartTime) {
         this.recordStartTime = recordStartTime;
+    }
+
+    public String getPreviewurl() {
+        return previewurl;
+    }
+
+    public void setPreviewurl(String previewurl) {
+        this.previewurl = previewurl;
     }
 }

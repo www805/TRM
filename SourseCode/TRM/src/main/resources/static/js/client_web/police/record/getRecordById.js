@@ -304,96 +304,6 @@ function  set_getPlayUrl(data) {
     }
 }
 
-
-/**
- * 获取会议实时数据
- */
-/*function getRecord() {
-    $("#recordreals").html("");
-    if (isNotEmpty(mtssid)) {
-        var url=getUrl_manage().getRecord;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetRecord);
-    }else{
-       console.log("会议未找到__"+mtssid);
-    }
-}
-function callbackgetRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS') {
-        var datas = data.data;
-        var loadindex = layer.msg("加载中，请稍等...", {
-            icon: 16,
-            time:1000
-        });
-        if (isNotEmpty(datas)) {
-            layer.close(loadindex);
-            var list=datas.list;
-
-            iid=datas.iid;
-            if (iidno==0){
-                getPlayUrl();
-                iidno=1;
-            }
-            for (var i = 0; i < list.length; i++) {
-                var data=list[i];
-                if (isNotEmpty(recorduser)){
-                    for (var j = 0; j < recorduser.length; j++) {
-                        var user = recorduser[j];
-                        var userssid=user.userssid;
-                        if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"...":data.txt;//翻译文本
-                            var asrtime=data.asrtime;//时间
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var subtractime=data.subtractime;//时间差
-                            //实时会议数据
-                            var recordrealshtml="";
-
-
-                            //实时会议数据
-                            if (usertype==1){
-                                subtractime_q=subtractime;
-                                starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+'</p>\
-                                                            <span>'+translatext+'</span> \
-                                                      </div >';
-                            }else if (usertype==2){
-                                subtractime_w=subtractime;
-                                starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
-                                                           <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span>'+translatext+'</span> \
-                                                      </div >';
-                            }
-
-
-
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"]:last").remove();
-                            }
-                            $("#recordreals").append(recordrealshtml);
-                            var div = document.getElementById('recordreals');
-                            div.scrollTop = div.scrollHeight;
-                        }
-                    }
-                }
-            }
-            setqw();//重新setqw
-        }
-    }else{
-        layer.msg(data.message);
-    }
-}*/
-
 function btn(obj) {
     var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
     if (isNotEmpty(selected)&&selected=="false"){
@@ -433,76 +343,11 @@ function exportPdf(obj) {
       btn(obj);
 }
 
-//获取直播地址
-/*
-function getPlayUrl() {
-    if (isNotEmpty(iid)) {
-        var url=getUrl_manage().getPlayUrl;
-        var data={
-            iid: iid
-        };
-        ajaxSubmitByJson(url, data, callbackgetPlayUrl);
-    }else{
-        console.log("直播信息未找到__"+iid);
-    }
-}
-function callbackgetPlayUrl(data) {
-    if(null!=data&&data.actioncode=='SUCCESS') {
-    var data=data.data;
-        if (isNotEmpty(data)){
-            var iiddata=data.iid;
-            var recordFileParams=data.recordFileParams;
-            var recordPlayParams=data.recordPlayParams;
-            var state;
-            if (isNotEmpty(recordFileParams)){
-                for (var i = 0; i < recordFileParams.length; i++) {
-                    var recordFile = recordFileParams[i];
-                    state=recordFile.state;
-                }
-                if (isNotEmpty(recordPlayParams)&&state==2){
-                    for (var i = 0; i < recordPlayParams.length; i++) {
-                        var recordPlay = recordPlayParams[i];
-                        videourl=recordPlay.playUrl;
-                    }
-                    initplayer();
-                }
-            }
-        }
-    }else{
-        layer.msg(data.message);
-    }
-}
-*/
-
-
-//**身心统计回放
-/*function getPHDataBack() {
-    if (isNotEmpty(mtssid)) {
-        var url=getUrl_manage().getPHDataBack;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetPHDataBack);
-    }else {
-        console.log("会议未找到__"+mtssid);
-    }
-}
-function callbackgetPHDataBack(data) {
-    if(null!=data&&data.actioncode=='SUCCESS') {
-        var datas = data.data;
-        if (isNotEmpty(datas)){
-            phdatabackList=datas;
-        }
-    }else {
-      layer.msg(data.message);
-    }
-}*/
-
 
 var option = {
+    title: {
+        text: '心率',
+    },
     tooltip: {
         trigger: 'axis',
         formatter: '{a}: {c}'
@@ -513,6 +358,7 @@ var option = {
             show: false
         },
         show: false,
+        data: date1
     },
     yAxis: {
         type: 'value',
@@ -529,6 +375,7 @@ var option = {
         y2:10,
     },
     series: [{
+        name: '心率',
         type: 'line',
         showSymbol: false,
         hoverAnimation: false,
@@ -537,6 +384,7 @@ var option = {
                 color:'#00FF00',
             }
         },
+        data: data1,
         markLine: {//警戒线标识
             silent: true,
             lineStyle: {
@@ -673,57 +521,6 @@ function main1() {
         myChart.resize();
     });
     myChart = echarts.init(document.getElementById('main1'),'dark');
-    var option = {
-        title: {
-            text: '心率',
-        },
-        tooltip: {
-            trigger: 'axis',
-            formatter: '{a}: {c}'
-        },
-        xAxis: {
-            type: 'category',
-            splitLine: {
-                show: false
-            },
-            show: false,
-            data: date1
-        },
-        yAxis: {
-            type: 'value',
-            boundaryGap: [0, '100%'],
-            splitLine: {
-                show: false
-            },
-            show: true
-        },
-        grid: {
-            x:30,
-            y:45,
-            x2:30,
-            y2:10,
-        },
-        series: [{
-            name: '心率',
-            type: 'line',
-            showSymbol: false,
-            hoverAnimation: false,
-            itemStyle : {
-                normal : {
-                    color:'#00FF00',
-                }
-            },
-            data: data1,
-            markLine: {//警戒线标识
-                silent: true,
-                lineStyle: {
-                    normal: {
-                        color: 'red'                   // 这儿设置安全基线颜色
-                    }
-                },
-            }
-        }]
-    };
     myChart.setOption(option);
 }
 
@@ -1201,21 +998,13 @@ function phdata(datad,dqdata) {
             var itemStyle_color_bp=itemStyle_color;
             var itemStyle_color_spo2=itemStyle_color;
 
-            /*变色，有误弃用
-             visualMap: {
-                    pieces:dqpieces,
-                    outOfRange: {
-                        color: 'red'
-                    }
-                },
             var dqpieces=[];
             var pieces_hr=[{gt:60,lte: 100,color: '#00FF00'}];
             var pieces_hrv=[{ gt: -10,lte: 10,color: '#00FF00'}];
             var pieces_br=[{ gt: 12,lte: 20,color: '#00FF00'}];
-            var pieces_relax=[{ gt: -Infinity,lte: Infinity,color: '#00FF00'}];
             var pieces_stress=[{ gte: 0,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: 'red'}];
             var pieces_bp=[{ gt: -10,lte: 10,color: '#00FF00'}];
-            var pieces_spo2=[{ gte: 94,lte: Infinity,color: '#00FF00'}];*/
+            var pieces_spo2=[{ gt: 0,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
 
             var dqmarkLinedata=[];
             var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
@@ -1229,9 +1018,10 @@ function phdata(datad,dqdata) {
 
 
 
-
+            var dq_type=null;
             $("#monitor_btn span").each(function (e) {
                 var type=$(this).attr("type");
+                dq_type=type;
                 var name=$(this).text();
                 var isn=$(this).attr("isn");
                 if (isn==1){
@@ -1240,6 +1030,7 @@ function phdata(datad,dqdata) {
                         data1=data_hr;
                         dqy=hr;
                         dqmarkLinedata=dqmarkLinedata_hr;
+                        dqpieces=pieces_hr;
                         if (dqy>60&&dqy<=100){
                             itemStyle_color="#00FF00";
                         }
@@ -1248,6 +1039,7 @@ function phdata(datad,dqdata) {
                         data1=data_hrv;
                         dqy=hrv;
                         dqmarkLinedata=dqmarkLinedata_hrv;
+                        dqpieces=pieces_hrv;
                         if (dqy>-10&&dqy<=10){
                             itemStyle_color="#00FF00";
                         }
@@ -1256,6 +1048,7 @@ function phdata(datad,dqdata) {
                         data1=data_br;
                         dqy=br;
                         dqmarkLinedata=dqmarkLinedata_br;
+                        dqpieces=pieces_br;
                         if (dqy>12&&dqy<=20){
                             itemStyle_color="#00FF00";
                         }
@@ -1268,6 +1061,7 @@ function phdata(datad,dqdata) {
                         data1=data_stress;
                         dqy=stress;
                         dqmarkLinedata=dqmarkLinedata_stress;
+                        dqpieces=pieces_stress;
                         if (dqy>=0&&dqy<=30){
                             itemStyle_color="#00FF00";
                         }
@@ -1276,6 +1070,7 @@ function phdata(datad,dqdata) {
                         data1=data_bp;
                         dqy=bp;
                         dqmarkLinedata=dqmarkLinedata_bp;
+                        dqpieces=pieces_bp;
                         if (dqy>-10&&dqy<=10){
                             itemStyle_color="#00FF00";
                         }
@@ -1284,6 +1079,7 @@ function phdata(datad,dqdata) {
                         data1=data_spo2;
                         dqy=spo2;
                         dqmarkLinedata=dqmarkLinedata_spo2;
+                        dqpieces=pieces_spo2;
                         if (dqy>=94){
                             itemStyle_color="#00FF00";
                         }
@@ -1293,6 +1089,13 @@ function phdata(datad,dqdata) {
             myChart.setOption({
                 xAxis: {
                     data: date1
+                },
+                visualMap: dq_type=="relax"?false:{
+                    show:false,
+                    pieces:dqpieces,
+                    outOfRange: {
+                        color: 'red'
+                    }
                 },
                 series: [{
                     data: data1,
@@ -1343,6 +1146,13 @@ function phdata(datad,dqdata) {
                     xAxis: {
                         data: date_hr
                     },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_hr,
+                        outOfRange: {
+                            color: 'red'
+                        }
+                    },
                     series: [{
                         data: data_hr,
                         markPoint: {
@@ -1362,6 +1172,13 @@ function phdata(datad,dqdata) {
                     xAxis: {
                         data: date_hrv
                     },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_hrv,
+                        outOfRange: {
+                            color: 'red'
+                        }
+                    },
                     series: [{
                         data: data_hrv,
                         markPoint: {
@@ -1380,6 +1197,13 @@ function phdata(datad,dqdata) {
                 select_monitorall_iframe.myMonitorall3.setOption({
                     xAxis: {
                         data: date_br
+                    },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_br,
+                        outOfRange: {
+                            color: 'red'
+                        }
                     },
                     series: [{
                         data: data_br,
@@ -1419,6 +1243,13 @@ function phdata(datad,dqdata) {
                     xAxis: {
                         data: date_stress
                     },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_stress,
+                        outOfRange: {
+                            color: 'red'
+                        }
+                    },
                     series: [{
                         data: data_stress,
                         markPoint: {
@@ -1438,6 +1269,13 @@ function phdata(datad,dqdata) {
                     xAxis: {
                         data: date_bp
                     },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_bp,
+                        outOfRange: {
+                            color: 'red'
+                        }
+                    },
                     series: [{
                         data: data_bp,
                         markPoint: {
@@ -1456,6 +1294,13 @@ function phdata(datad,dqdata) {
                 select_monitorall_iframe.myMonitorall7.setOption({
                     xAxis: {
                         data: date_spo2
+                    },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_spo2,
+                        outOfRange: {
+                            color: 'red'
+                        }
                     },
                     series: [{
                         data: data_spo2,

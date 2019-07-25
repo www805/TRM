@@ -19,6 +19,9 @@ var  fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时�
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
+var dq_livingurl=null;//当前直播地址
+var dq_previewurl=null;//当前预览地址
+
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -401,14 +404,16 @@ function callbackgetRecordById(data) {
                         $("#record_img img").css("display","none");
                         $("#startrecord").css("display","block");
                         $("#pauserecord").attr("onclick","");
-                        layer.closeAll("tips");
+                        layui.use(['layer','element','form'], function(){
+                            var layer=layui.layer;
+                            layer.closeAll("tips");
+                        });
+
                         }else {
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
-                            layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
-                            });
                         });
 
                     }
@@ -556,6 +561,8 @@ function startMC() {
             tdList.push(user1);
             tdList.push(user2);
 
+            var ptdjParam_out=getptdjinfo();
+
 
             var url=getUrl_manage().startRercord;
             var data={
@@ -564,7 +571,8 @@ function startMC() {
                     meetingtype: 2       //会议类型，1视频/2音频
                     ,tdList:tdList
                     ,startRecordAndCaseParam:startRecordAndCaseParam
-                    ,recordssid:recordssid
+                    ,recordssid:recordssid,
+                    ptdjParam_out:ptdjParam_out,
                 }
             };
             ajaxSubmitByJson(url, data, callbackstartMC);
@@ -597,25 +605,18 @@ function callbackstartMC(data) {
              useretlist=data.useretlist;
 
 
-            if (isNotEmpty(useretlist)){
+            if (isNotEmpty(useretlist)) {
                 for (var i = 0; i < useretlist.length; i++) {
                     var useret = useretlist[i];
-                    var userssid1=useret.userssid;
-                    for (var j = 0; j < recorduser.length; j++) {
-                        var u = recorduser[j];
-                        var userssid2=u.userssid;
-                        if (userssid1==userssid2) {
-                            var grade=u.grade;
-                            if (1==grade){
-                                liveurl=useret.livingurl;
-                                console.log("liveurl_____"+liveurl+"_______"+grade);
-                                break;
-                            }else if (grade==2){
-                                dq_recorduser=userssid2;
-                            }
-                        }
+                    var userssid1 = useret.userssid;
+                    if (userssid1 == dq_recorduser) {
+                        liveurl = useret.previewurl;//开始会议后默认使用副麦预览地址
+                        dq_livingurl=useret.livingurl;//当前直播地址
+                        dq_previewurl=useret.previewurl;//当前预览地址
+                        console.log("当前liveurl————"+liveurl)
                     }
                 }
+                initplayer();//初始化地址
             }
             mtssid=mtssiddata;
             mcbool=1;//正常开启
@@ -959,8 +960,12 @@ function callbackgetgetRecordrealing(data) {
         if (isNotEmpty(fdCacheParams)){
             for (var i = 0; i < fdCacheParams.length; i++) {
                 var fdCacheParam = fdCacheParams[i];
-                liveurl=fdCacheParam.livingUrl;
+                    liveurl=fdCacheParam.previewurl;//开始会议后默认使用副麦预览地址
+                    dq_livingurl= fdCacheParam.livingUrl;
+                    dq_previewurl= fdCacheParam.previewurl;
+                    console.log("当前liveurl————"+liveurl)
             }
+            initplayer();
         }
         if (isNotEmpty(list)) {
             layer.close(loadindex);
@@ -1024,22 +1029,15 @@ function callbackgetgetRecordrealing(data) {
 function select_liveurl(obj,type){
     $(obj).removeClass("layui-bg-gray");
     $(obj).siblings().addClass("layui-bg-gray");
-    if (isNotEmpty(useretlist)){
-        for (var i = 0; i < useretlist.length; i++) {
-            var useret = useretlist[i];
-            var userssid1=useret.userssid;
-            for (var j = 0; j < recorduser.length; j++) {
-                var u = recorduser[j];
-                var userssid2=u.userssid;
-                if (userssid1==userssid2) {
-                    var grade=u.grade;
-                    if (type==grade){
-                        liveurl=useret.livingurl;
-                        console.log("liveurl_____"+liveurl+"______"+grade)
-                        break;
-                    }
-                }
+    for (let i = 0; i < recorduser.length; i++) {
+        const user = recorduser[i];
+        if (user.userssid==dq_recorduser){
+            if (type==2){
+                liveurl=dq_livingurl;//开始会议后默认使用副麦预览地址
+            } else {
+                liveurl=dq_previewurl;//开始会议后默认使用副麦预览地址
             }
+            console.log("当前liveurl————"+liveurl)
         }
     }
     initplayer();
@@ -1157,21 +1155,13 @@ function initheart() {
     if (isNotEmpty($("#living3_2").html())) {
         $("#living3_1").html($("#living3_2").html());
         $("#living3_2").html("");
-        if (isNotEmpty(useretlist)){
-            for (var i = 0; i < useretlist.length; i++) {
-                var useret = useretlist[i];
+        if (isNotEmpty(recorduser)){
+            for (var i = 0; i < recorduser.length; i++) {
+                var useret = recorduser[i];
                 var userssid1=useret.userssid;
-                for (var j = 0; j < recorduser.length; j++) {
-                    var u = recorduser[j];
-                    var userssid2=u.userssid;
-                    if (userssid1==userssid2) {
-                        var grade=u.grade;
-                        if (2==grade){//只播放被询问人的
-                            liveurl=useret.livingurl;
-                            console.log("liveurled_____"+liveurl+"_______"+grade)
-                            break;
-                        }
-                    }
+                if (userssid1==dq_recorduser){
+                    liveurl=dq_livingurl;
+                    console.log("当前liveurl————"+liveurl)
                 }
             }
         }
@@ -1183,7 +1173,7 @@ function initheart() {
         //使用模块
         element.render();
     });
-    // initplayer();
+    initplayer();
     main1();
 
 }

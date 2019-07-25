@@ -40,6 +40,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.Start
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -80,6 +81,9 @@ public class OutService  extends BaseService {
     @Autowired
     private MainService mainService;
 
+    @Autowired
+    private RecordService recordService;
+
 
     private Gson gson = new Gson();
 
@@ -94,6 +98,25 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return result;
         }
+
+        //开始进行片头叠加
+        PtdjParam_out ptdjParam_out=startRercordParam.getPtdjParam_out();
+        if (null!=ptdjParam_out){
+            ptdjParam_out.setFdType(FDType.FD_AVST);
+            RResult ptdj_rr=new RResult();
+            ReqParam ptdj_param=new ReqParam();
+            ptdj_param.setParam(ptdjParam_out);
+            recordService.ptdj(ptdj_rr,ptdj_param);
+            if (null!=ptdj_rr&&ptdj_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求成功__");
+            }else {
+                    String msg=ptdj_rr==null?"":ptdj_rr.getMessage();
+                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求失败__"+msg);
+            }
+        }
+
+
+
 
         String recordssid=startRercordParam.getRecordssid();
         String mtmodelssid=null;//会议模板ssid
@@ -414,7 +437,7 @@ public class OutService  extends BaseService {
                 fdCacheParams=gson.fromJson(gson.toJson(rr2.getData()), new TypeToken<List<FDCacheParam>>(){}.getType());
                 getRecordrealingVO.setFdCacheParams(fdCacheParams);
             }else{
-                LogUtil.intoLog(this.getClass(),"请求getMCaLLUserAsrTxtList__出错");
+                LogUtil.intoLog(this.getClass(),"请求getFDListByFdid__出错");
             }
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
