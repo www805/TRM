@@ -53,7 +53,7 @@ public class CreateSQ {
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(false);//是否永久授权
         sqEntity.setClientName("销售客户端服务器");
-        sqEntity.setCpuCode("414176424574474941464274");
+        sqEntity.setCpuCode("414176414574474941417641");
         sqEntity.setGnlist("record|asr|tts|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
