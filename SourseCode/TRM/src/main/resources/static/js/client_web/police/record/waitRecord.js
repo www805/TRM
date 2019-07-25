@@ -1598,7 +1598,7 @@ $(function () {
             dqselec_right= txt.toString();
         })
 
-        //右键监听
+      /*  //右键监听
         $('#recorddetail label').bind("contextmenu",function(e){
             var data = {content:dqselec_right}
             var menu_data=[
@@ -1724,7 +1724,7 @@ $(function () {
 
             })
             return false;
-        });
+        });*/
     })
 
 
