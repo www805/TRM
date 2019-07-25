@@ -9,6 +9,7 @@ var ptjsonArr = [];
 var ptjsonValues = [];
 var setintervalKey;
 var outcang;
+var workunitssid;
 
 function recordSet() {
 
@@ -200,7 +201,7 @@ function addptdj() {
         }
     }
 
-    var workunitssid = $("#workunitssid").val();
+    workunitssid = $("#workunitssid").val();
 
     // console.log(ptjsonValues);
 
@@ -389,6 +390,17 @@ function callptdj(data){
     }
 }
 
+function getptdjinfo() {
+    if (!isNotEmpty(workunitssid)) {
+        workunitssid = 90;
+    }
+    return {
+        fdType: "FD_AVST",
+        ct: parseInt(workunitssid),
+        lineList: ptjsonValues,
+        flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid
+    };
+}
 
 function callgetdvdOutOrIn(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
