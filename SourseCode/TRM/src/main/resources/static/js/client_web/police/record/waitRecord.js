@@ -1172,7 +1172,7 @@ function initheart() {
                 }
             }
         }
-        // initplayer();
+        initplayer();//启动设备画面预览
     }
 
     layui.use(['element'], function(){
@@ -1214,7 +1214,7 @@ function initliving() {
         $("#living3_2").html($("#living3_1").html());
         $("#living3_1").html("");
     }
-    //initplayer();
+    initplayer();//启动设备画面预览
 }
 //*******************************************************************点击end****************************************************************//
 
