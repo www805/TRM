@@ -208,6 +208,7 @@ function tr_downn(obj) {
 //录音按钮显示隐藏 type:1开始录音
 var startMC_index;
 function img_bool(obj,type){
+
     if (type==1){
         //开始会议
         console.log("开始会议")
@@ -461,6 +462,8 @@ function callbackgetRecordById(data) {
                 getTDCacheParamByMTssid();
             }
 
+            //获取默认的片头信息
+            getptdjconst(1);
 
             //开始获取设备状态
             getFDState();

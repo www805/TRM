@@ -336,7 +336,8 @@
                                     <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
                                     <p class="biaoti_cu">开始时间: <span class="biaoti" id="diskrec_begintime">00:00</span> 录像时间: <span class="biaoti" id="diskrec_continuettime">00:00</span> </p>
                                 </div>
-                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="recordSet" onclick="recordSet();">刻录设置</button>
+                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="recordSet" onclick="recordSet();">设备操作</button>
+                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
                                 <!--<button onclick="location.reload();">刷新</button>-->
                             </div>
                             <span class="layui-badge" onclick="select_liveurl(this,1);">主麦</span>
@@ -571,6 +572,7 @@
         getRecordrealByRecordssid();
         getTime();
         main1();
+
 
         togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
         var templates= JSON.parse(sessionStorage.getItem(recordssid)||null)

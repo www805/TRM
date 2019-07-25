@@ -34,16 +34,15 @@ function recordSet() {
         '    <div style="margin-bottom: 20px;">\n' +
         '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
         '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom()">光盘开始</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstopRec_Rom()">光盘结束</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="yuntaikz()">云台控制</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘开始</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘结束</button>\n' +
         '    </div>\n' +
         '</div>';
-
+//getstopRec_Rom()光盘结束   getstartRec_Rom()光盘开始
     recordSet_index = layer.open({
         type: 1,
         id: "layer_recordSet",
-        title: '刻录设置',
+        title: '设备操作',
         closeBtn: 1,
         skin: 'layui-layer-lan',
         shade: 0,
@@ -191,6 +190,8 @@ function addptdj() {
         return;
     }
 
+    ptjsonValues = [];
+
     var params = getFormData("caseInfoModelYes");
 
     for (var i = 0; i < params.length; i++) {
@@ -236,7 +237,7 @@ function getFDState() {
 }
 
 //获取当前配置片头字段
-function getptdjconst() {
+function getptdjconst(qidong) {
     var url=getActionURL(getactionid_manage().waitRecord_getptdjconst);
     // var url = "/cweb/police/record/getptdjconst";
 
@@ -253,7 +254,11 @@ function getptdjconst() {
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
     };
-    ajaxSubmitByJson(url,data,callgetptdjconst);
+    if (!isNotEmpty(qidong)) {
+        ajaxSubmitByJson(url,data,callgetptdjconst);
+    }else{
+        ajaxSubmitByJson(url,data,callgetbiluptdjconst);
+    }
 }
 
 //光盘出仓/进仓
@@ -427,7 +432,30 @@ function callgetptdjconst(data){
     }
 }
 
-//修改问题答案返回
+function callgetbiluptdjconst(data){
+    // console.log("==================================");
+    // console.log(data);
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)) {
+            var ptdjmaps = data.data.ptdjmaps;
+            ptjsonArr = data.data.ptdjtitles;
+            for (var i = 0; i < ptjsonArr.length; i++) {
+                var ptjsonName = ptjsonArr[i];
+                var ptjsonValue = "";
+                if (isNotEmpty(ptdjmaps)) {
+                    ptjsonValue = matchPtdjKey(ptdjmaps[ptjsonName]);
+                }
+
+                ptjsonValues.push(ptjsonValue);
+            }
+        }
+
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+//实时设备刻录状态显示
 function callFDState(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data.data)) {
