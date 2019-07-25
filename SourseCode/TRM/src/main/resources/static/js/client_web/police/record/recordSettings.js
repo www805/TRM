@@ -1,26 +1,21 @@
 var layer;
 var recordSet_index;
 var recordCaseInfo_index;
+var yuntaikz_index;
 var diskrec_continuettime;
 var inOrOut = 0;
 var PtFormHTML = "";
 var ptjsonArr = [];
 var ptjsonValues = [];
 var setintervalKey;
+var outcang;
 
 function recordSet() {
 
     //使用模块
     var html=
         '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
-        '    <div style="margin-bottom: 20px;">\n' +
-        '        <input type="button" class="layui-btn layui-btn-normal" onclick="getdvdOutOrIn(this)" value="光盘进仓" />\n' +
-        '        <button class="layui-btn layui-btn-normal" onclick="getptdjconst();">案件信息</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" onclick="getstartRec_Rom()">光盘开始</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" onclick="getstopRec_Rom()">光盘结束</button>\n' +
-        '    </div>\n' +
-        '\n' +
-        '    <div style="margin-bottom: 20px;z-index: 88;">\n' +
+        '    <div style="z-index: 88;">\n' +
         '        <div class="layui-inline">\n' +
         '            <label class="layui-form-label" style="width: auto;padding-left: 0;">刻录选时</label>\n' +
         '            <div class="layui-input-inline" style="width: 100px;">\n' +
@@ -35,47 +30,13 @@ function recordSet() {
         '                </select>\n' +
         '            </div>\n' +
         '        </div>\n' +
-        '\n' +
-        '        <div class="layui-inline">\n' +
-        '            <label class="layui-form-label" style="width: auto;">通道1</label>\n' +
-        '            <div class="layui-input-inline" style="width: 60px;">\n' +
-        '                <select name="ptzch" id="ptzch">\n' +
-        '                    <option value="1">1</option>\n' +
-        '                    <option value="2">2</option>\n' +
-        '                    <option value="3">3</option>\n' +
-        '                    <option value="4">4</option>\n' +
-        '                    <option value="5">5</option>\n' +
-        '                    <option value="6">6</option>\n' +
-        '                    <option value="7">7</option>\n' +
-        '                    <option value="8">8</option>\n' +
-        '                </select>\n' +
-        '            </div>\n' +
-        '        </div>\n' +
         '    </div>\n' +
-        '\n' +
-        '    <div style="float: left;margin-top: 30px;margin-right: 50px;">\n' +
-        '        <div style="padding-left: 55px;">\n' +
-        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'up\');">&#xeb9b;</button>\n' +
-        '        </div>\n' +
-        '        <div class="layui-btn-group">\n' +
-        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'left\');">&#xe604;</button>\n' +
-        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'down\');">&#xeb9c;</button>\n' +
-        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'right\');">&#xeb9d;</button>\n' +
-        '        </div>\n' +
-        '    </div>\n' +
-        '\n' +
-        '    <div style="float: left;">\n' +
-        '        <div class="layui-form-item" style="margin-bottom: 5px;">\n' +
-        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'focus_decrease\');" >&#xe611;</button>\n' +
-        '            <label class="layui-form-label" style="width: auto;float: left;">聚焦</label>\n' +
-        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'focus_increase\');" >&#xe638;</button>\n' +
-        '        </div>\n' +
-        '\n' +
-        '        <div class="layui-form-item" style="margin-bottom: 5px;">\n' +
-        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'depth_near\');" >&#xe611;</button>\n' +
-        '            <label class="layui-form-label" style="width: auto;float: left;">镜头</label>\n' +
-        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'depth_far\');" >&#xe638;</button>\n' +
-        '        </div>\n' +
+        '    <div style="margin-bottom: 20px;">\n' +
+        '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom()">光盘开始</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstopRec_Rom()">光盘结束</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="yuntaikz()">云台控制</button>\n' +
         '    </div>\n' +
         '</div>';
 
@@ -87,7 +48,7 @@ function recordSet() {
         skin: 'layui-layer-lan',
         shade: 0,
         offset: ['130px', '450px'],
-        area: ['460px', '400px'],
+        area: ['450px', '360px'],
         content: html,
         success: function (layero, index) {
             // layer.min(index);
@@ -105,76 +66,6 @@ function recordCaseInfo() {
 
     //使用模块
     var html= '<form id="caseInfoModelYes" name="caseInfoModelYes" class="layui-form layui-main site-inline" action="" style="margin-top: 30px;width: 800px;">\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">案件编号</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="loginaccount" id="loginaccount"   lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">案件名称</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">案件类型</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="loginaccount" id="loginaccount"   lay-verify="required" placeholder="请输入案件类型" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">案 &nbsp;&nbsp;由</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入案由" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">审讯类型</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="loginaccount" id="loginaccount"   lay-verify="required" placeholder="请输入审讯类型" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">办案部门</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入办案部门" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">被询(讯)问人</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="loginaccount" id="loginaccount"   lay-verify="required" placeholder="请输入被询(讯)问人" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">询(讯)问人</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入询(讯)问人" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label" style="width: 100px;padding-left: 0;padding-right: 10px;">录制(记录)问人</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入录制(记录)问人" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
-        // '            <div class="layui-form-item">\n' +
-        // '                <label class="layui-form-label">询(讯)问地址</label>\n' +
-        // '                <div class="layui-input-block">\n' +
-        // '                    <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入询(讯)问地址" autocomplete="off" class="layui-input">\n' +
-        // '                </div>\n' +
-        // '            </div>\n' +
-        // '\n' +
         PtFormHTML +
         '            <div class="layui-form-item">\n' +
         '                <label class="layui-form-label">叠加时间</label>\n' +
@@ -207,6 +98,77 @@ function recordCaseInfo() {
         shade: 0,
         offset: 'auto',
         area: ['900px', 'auto'],
+        content: html,
+        success: function (layero, index) {
+            // layer.min(index);
+            layui.use('form', function() {
+                var form = layui.form;
+                form.render();
+            });
+        }
+    });
+
+}
+
+
+function yuntaikz() {
+
+    //使用模块
+    var html=
+        '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
+        '    <div style="margin-bottom: 20px;z-index: 88;">\n' +
+        '        <div class="layui-inline">\n' +
+        '            <label class="layui-form-label" style="width: auto;">通道1</label>\n' +
+        '            <div class="layui-input-inline" style="width: 60px;">\n' +
+        '                <select name="ptzch" id="ptzch">\n' +
+        '                    <option value="1">1</option>\n' +
+        '                    <option value="2">2</option>\n' +
+        '                    <option value="3">3</option>\n' +
+        '                    <option value="4">4</option>\n' +
+        '                    <option value="5">5</option>\n' +
+        '                    <option value="6">6</option>\n' +
+        '                    <option value="7">7</option>\n' +
+        '                    <option value="8">8</option>\n' +
+        '                </select>\n' +
+        '            </div>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '\n' +
+        '    <div style="float: left;margin-right: 50px;">\n' +
+        '        <div style="padding-left: 55px;">\n' +
+        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'up\');">&#xeb9b;</button>\n' +
+        '        </div>\n' +
+        '        <div class="layui-btn-group">\n' +
+        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'left\');">&#xe604;</button>\n' +
+        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'down\');">&#xeb9c;</button>\n' +
+        '            <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl(\'right\');">&#xeb9d;</button>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '\n' +
+        '    <div style="float: left;">\n' +
+        '        <div class="layui-form-item" style="margin-bottom: 5px;">\n' +
+        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'focus_decrease\');" >&#xe611;</button>\n' +
+        '            <label class="layui-form-label" style="width: auto;float: left;">聚焦</label>\n' +
+        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'focus_increase\');" >&#xe638;</button>\n' +
+        '        </div>\n' +
+        '\n' +
+        '        <div class="layui-form-item" style="margin-bottom: 5px;">\n' +
+        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'depth_near\');" >&#xe611;</button>\n' +
+        '            <label class="layui-form-label" style="width: auto;float: left;">镜头</label>\n' +
+        '            <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl(\'depth_far\');" >&#xe638;</button>\n' +
+        '        </div>\n' +
+        '    </div>\n' +
+        '</div>';
+
+    yuntaikz_index = layer.open({
+        type: 1,
+        id: "layer_yuntaikz",
+        title: '云台控制',
+        closeBtn: 1,
+        skin: 'layui-layer-lan',
+        shade: 0,
+        offset: ['310px', '490px'],
+        area: ['420px', '300px'],
         content: html,
         success: function (layero, index) {
             // layer.min(index);
@@ -258,13 +220,10 @@ function getFDState() {
     var url=getActionURL(getactionid_manage().waitRecord_getFDState);
     // var url = "/cweb/police/record/getFDState";
 
-    console.log(getRecordById_data);
     if(!isNotEmpty(getRecordById_data)){
-
         layer.msg("笔录尚未开始，无法获取设备状态",{icon: 2});
         return;
     }
-    console.log(getRecordById_data.record.caseAndUserInfo);
 
     var data={
         token:INIT_CLIENTKEY,
@@ -307,6 +266,7 @@ function getdvdOutOrIn(obj) {
         return;
     }
 
+    clearTimeout(outcang);
 
     $("#cd_hint").show();
     $("#cd2_hint").show();
@@ -333,7 +293,7 @@ function getdvdOutOrIn(obj) {
     };
     ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
 
-    setTimeout(function () {
+    outcang = setTimeout(function () {
         $("#cd_hint").hide();
         $("#cd2_hint").hide();
     }, 20000);
@@ -440,14 +400,17 @@ function callgetptdjconst(data){
     // console.log(data);
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)) {
-            var ptdjinis = data.data.ptdjinis;
+            var ptdjmaps = data.data.ptdjmaps;
             ptjsonArr = data.data.ptdjtitles;
 
             PtFormHTML = "";
 
             for (var i = 0; i < ptjsonArr.length; i++) {
                 var ptjsonName = ptjsonArr[i];
-                var ptjsonValue = matchPtdjKey(ptdjinis[ptjsonName]);
+                var ptjsonValue = "";
+                if (isNotEmpty(ptdjmaps)) {
+                    ptjsonValue = matchPtdjKey(ptdjmaps[ptjsonName]);
+                }
 
                 PtFormHTML += '<div class="layui-form-item">\n' +
                     '   <label class="layui-form-label">' + ptjsonName + '</label>\n' +

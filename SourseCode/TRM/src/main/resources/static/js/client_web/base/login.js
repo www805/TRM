@@ -48,6 +48,8 @@ function callgetNavList(data) {
             // $("#clientimage").css("background-image", "url(\"" + appCache.clientimage + "\")");
             if (isNotEmpty(appCache.clientimage)) {
                 $("#clientimage").attr('src',appCache.clientimage);
+            }else{
+                $("#clientimage").attr('src',"/uimaker/images/login-img.png");
             }
 
             if (isNotEmpty(appCache.data)) {

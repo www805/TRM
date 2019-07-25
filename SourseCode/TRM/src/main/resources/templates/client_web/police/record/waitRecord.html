@@ -219,7 +219,7 @@
     .biaoti {
         font-size: 14px;
         font-weight: normal;
-        margin: 0px 25px 0px 3px;
+        margin: 0px 20px 0px 3px;
         color: #2c5572;
     }
 
@@ -328,9 +328,9 @@
                                 </div>
                                 <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
                                     <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
-                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" id="roma_setburntime">无</span></div>
+                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
                                     <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
-                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" id="romb_setburntime">无</span> </div>
+                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
                                 </div>
                                 <div style="padding: 5px;">
                                     <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
@@ -571,8 +571,6 @@
         getRecordrealByRecordssid();
         getTime();
         main1();
-
-        console.log(recorduser);
 
         togetPolygraphurl= getActionURL(getactionid_manage().waitRecord_togetPolygraph);
         var templates= JSON.parse(sessionStorage.getItem(recordssid)||null)

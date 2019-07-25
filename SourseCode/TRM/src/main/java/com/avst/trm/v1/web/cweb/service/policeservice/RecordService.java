@@ -2,7 +2,7 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.cache.PtdjiniCache;
+import com.avst.trm.v1.common.cache.PtdjmapCache;
 import com.avst.trm.v1.common.conf.GZVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
@@ -50,6 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -134,8 +135,8 @@ public class RecordService extends BaseService {
     @Value("${file.recordwordOrpdf}")
     private String filerecordwordOrpdf; //笔录word或者pdf路径
 
-    @Value("${pfconfigName}")
-    private String pfconfigName;
+    @Value("${nav.file.name}")
+    private String nav_file_name;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -2473,13 +2474,13 @@ public class RecordService extends BaseService {
             HashMap<String, Object> map = new HashMap<>();
 
             //从缓存中获取，如果没有就从外部获取
-            Properties ptdjinis = PtdjiniCache.getPtdjiniCache();
-            if (null == ptdjinis) {
-                ptdjinis = ptdjini();
-                PtdjiniCache.setPtdjiniCache(ptdjinis);
+            Map<String, Object> ptdjmaps = PtdjmapCache.getPtdjmapCache();
+            if (null == ptdjmaps) {
+                ptdjmaps = ptdjmap();
+                PtdjmapCache.setPtdjmapCache(ptdjmaps);
             }
 
-            map.put("ptdjinis", ptdjinis);
+            map.put("ptdjmaps", ptdjmaps);
             map.put("ptdjtitles", fdState.getData());
 
             result.setData(map);
@@ -2515,31 +2516,39 @@ public class RecordService extends BaseService {
      * 获取片头叠加外部文件
      * @return
      */
-    private Properties ptdjini() {
+    private Map<String, Object> ptdjmap() {
 
         //获取片头叠加外部文件路径
-        String filepath = OpenUtil.getXMSoursePath() + "\\" + pfconfigName + ".ini";
+        String filepath = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
 
         //创建Properties属性对象用来接收ini文件中的属性
-        Properties pps = null;
+        Map<String, Object> ptdj = null;
+        FileInputStream fis = null;
 
         try {
             //创建文件输入流
-            FileInputStream fis = new FileInputStream(filepath);
-            InputStreamReader reader = new InputStreamReader(fis,"GBK");
+            fis = new FileInputStream(filepath);
 
-            pps = new Properties();
-            //从文件流中加载属性
-            pps.load(reader);
+            Yaml yaml = new Yaml();
+            Map<String,Object> map = yaml.load(fis);
 
-            reader.close();
-            fis.close();
+            Map<String,Object> trm = (Map<String, Object>) map.get("trm");
+            Map<String,Object> cweb = (Map<String, Object>) trm.get("cweb");
+            ptdj = (Map<String, Object>) cweb.get("ptdj");
         }
         catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.ptdjini  获取片头叠加外部文件错误...");
+        }finally {
+            if (null != fis) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
-        return pps;
+        return ptdj;
     }
 
 

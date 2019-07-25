@@ -32,6 +32,16 @@ public class Test {
          //创建文件输入流
          FileInputStream fis = new FileInputStream(filepath);
 
+         String path = OpenUtil.getXMSoursePath() + "\\avst.yml";
+         FileInputStream fis2 = new FileInputStream(path);
+         Yaml yaml = new Yaml();
+         Map<String,Object> map = yaml.load(fis2);
+
+         Map<String,Object> trm = (Map<String, Object>) map.get("trm");
+         Map<String,Object> cweb = (Map<String, Object>) trm.get("cweb");
+         Map<String, Object> ptdj = (Map<String, Object>) cweb.get("ptdj");
+
+
          InputStreamReader reader = new InputStreamReader(fis,"GBK");
          //创建文件输出流
 //         OutputStream opt = null;
