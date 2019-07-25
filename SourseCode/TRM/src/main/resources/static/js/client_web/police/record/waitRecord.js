@@ -1660,6 +1660,21 @@ $(function () {
                                         }
                                     }
                                 }
+                                var newtxt=[];
+                                $("a",$label).each(function () {
+                                    var t=$(this).text();
+                                    if(isNotEmpty(t)){
+                                        newtxt.push(t);
+                                    }
+                                })
+                                newtxt=Array.from(new Set(newtxt));
+                                 shuju={
+                                    key:td_lastindex["key"],
+                                    value:td_lastindex["value"],
+                                    txt:newtxt
+                                }
+                                dqtag_right=[];
+                                dqtag_right.push(shuju);
                             }
                         }
 
@@ -1668,7 +1683,6 @@ $(function () {
                                 var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
                                 var $txt = $label.text();
                                 $label.html($txt);
-                               /* dqtag_right=[];*/
 
                               var newtxt=[];
                               for (let i = 0; i < dqtag_right.length; i++) {
@@ -1679,7 +1693,6 @@ $(function () {
                                             for (let j = 0; j < txt.length; j++) {
                                                 const shujuElement = txt[j];
                                                 if(content!=shujuElement){
-                                                    newtxt.push(shujuElement);
                                                     var $html=$label.html();
                                                     $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
                                                     $label.html($html);
@@ -1688,12 +1701,20 @@ $(function () {
                                         }
                                     }
                                 }
+                                var newtxt=[];
+                                $("a",$label).each(function () {
+                                    var t=$(this).text();
+                                    if(isNotEmpty(t)){
+                                        newtxt.push(t);
+                                    }
+                                })
                                 newtxt=Array.from(new Set(newtxt));
                                 var shuju={
                                     key:td_lastindex["key"],
                                     value:td_lastindex["value"],
                                     txt:newtxt
                                 }
+                                dqtag_right=[];
                                 dqtag_right.push(shuju);
                             }
                         }
