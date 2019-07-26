@@ -38,8 +38,8 @@ function callbackgetHome(data) {
                 sqEntityHTML += "<p>授权总天数：" + sqEntity.sqDay + "</p>";//授权已用天数
             }
 
-            sqEntityHTML += "<p>单位代码：" + sqEntity.unitCode + "</p>";//单位机器码
-            sqEntityHTML += "<p>客户端序号：" + sqEntity.sortNum + "</p>";//排序
+            // sqEntityHTML += "<p>单位代码：" + sqEntity.unitCode + "</p>";//单位机器码
+            // sqEntityHTML += "<p>客户端序号：" + sqEntity.sortNum + "</p>";//排序
 
             var sqgnListHTML = "";
             for (var i = 0; i < sqgnList.length; i++) {

@@ -23,7 +23,7 @@ function getWorkunits() {
 
         }
     };
-    ajaxSubmit(url,data,callbackgetWorkunits);
+    ajaxSubmitByJson(url,data,callbackgetWorkunits);
 }
 
 

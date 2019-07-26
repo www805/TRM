@@ -257,23 +257,30 @@ public class Arraignment_countService extends BaseService {
         cell = row.createCell((short) 4);
         cell.setCellValue("笔录总时长");
         cell.setCellStyle(style);
-        cell = row.createCell((short) 5);
-        cell.setCellValue("录音时长");
-        cell.setCellStyle(style);
-        cell = row.createCell((short) 6);
-        cell.setCellValue("笔录字数");
-        cell.setCellStyle(style);
+//        cell = row.createCell((short) 5);
+//        cell.setCellValue("录音时长");
+//        cell.setCellStyle(style);
+//        cell = row.createCell((short) 6);
+//        cell.setCellValue("笔录字数");
+//        cell.setCellStyle(style);
 
         for (int i = 0; i < list.size(); i++) {
 
+            Base_arraignmentCount base_arraignmentCount = list.get(i);
+
             row = sheet.createRow((int) i + 1);
             row.createCell((short) 0).setCellValue((double) (i + 1)); // 序号
-            row.createCell((short) 1).setCellValue(list.get(i).getUsername()); // 人员名称
-            row.createCell((short) 2).setCellValue(list.get(i).getRecordCount());// 笔录总量
-            row.createCell((short) 3).setCellValue(list.get(i).getRecordrealCount());// 语音笔录总量
-            row.createCell((short) 4).setCellValue(list.get(i).getRecordtimeCount());// 笔录总时长
-            row.createCell((short) 5).setCellValue(list.get(i).getTimeCount());// 录音时长
-            row.createCell((short) 6).setCellValue(list.get(i).getTranslatextCount());// 笔录字数
+            if (null != base_arraignmentCount) {
+                /*Integer timeCount = base_arraignmentCount.getTimeCount();
+                Integer translatextCount = base_arraignmentCount.getTranslatextCount();*/
+
+                row.createCell((short) 1).setCellValue(base_arraignmentCount.getUsername()); // 人员名称
+                row.createCell((short) 2).setCellValue(base_arraignmentCount.getRecordCount());// 笔录总量
+                row.createCell((short) 3).setCellValue(base_arraignmentCount.getRecordrealCount());// 语音笔录总量
+                row.createCell((short) 4).setCellValue(base_arraignmentCount.getRecordtimeCount());// 笔录总时长
+                /*row.createCell((short) 5).setCellValue(timeCount == null ? 0 : timeCount);// 录音时长
+                row.createCell((short) 6).setCellValue(translatextCount == null ? 0 : translatextCount);// 笔录字数*/
+            }
 
         }
 

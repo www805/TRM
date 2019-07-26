@@ -25,12 +25,12 @@ public class Base_arraignmentCount extends Base_admininfo{
     /**
      * 笔录总量
      */
-    private String recordCount;
+    private Integer recordCount;
 
     /**
      * 语音笔录总量
      */
-    private String recordrealCount;
+    private Integer recordrealCount;
 
     /**
      * 笔录总时长
@@ -52,19 +52,19 @@ public class Base_arraignmentCount extends Base_admininfo{
      */
     private Integer loginCount;
 
-    public String getRecordCount() {
+    public Integer getRecordCount() {
         return recordCount;
     }
 
-    public void setRecordCount(String recordCount) {
+    public void setRecordCount(Integer recordCount) {
         this.recordCount = recordCount;
     }
 
-    public String getRecordrealCount() {
+    public Integer getRecordrealCount() {
         return recordrealCount;
     }
 
-    public void setRecordrealCount(String recordrealCount) {
+    public void setRecordrealCount(Integer recordrealCount) {
         this.recordrealCount = recordrealCount;
     }
 

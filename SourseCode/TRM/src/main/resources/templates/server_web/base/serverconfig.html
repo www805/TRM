@@ -37,7 +37,7 @@
 
             <button type="button" class="layui-btn layui-btn-normal" id="test1"><i class="layui-icon"></i>上传图片</button>
             <div class="layui-inline layui-word-aux">
-                这里以限制 512kB
+                图片大小不能超过2MB
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
                 <img class="layui-upload-img" th:src="${configModel?.RResult?.data?.syslogoimage}" th:title="客户端logo" id="demo1" style="width: 300px;">
@@ -60,7 +60,7 @@
 
             <button type="button" class="layui-btn layui-btn-normal" id="test2"><i class="layui-icon"></i>上传图片</button>
             <div class="layui-inline layui-word-aux">
-                这里以限制 512kB
+                图片大小不能超过2MB
             </div>
             <div class="layui-upload-list" style="margin-left: 110px;">
                 <img th:src="${configModel?.RResult?.data?.clientimage}" th:title="客户端logo" class="layui-upload-img" id="demo2" style="width: 300px;">
@@ -70,14 +70,14 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">服务器IP</label>
+            <label class="layui-form-label">服务器IP   (暂无用)</label>
             <div class="layui-input-block">
                 <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="required" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">服务器端口</label>
+            <label class="layui-form-label">服务器端口(暂无用)</label>
             <div class="layui-input-block">
                 <input type="text" name="serverport" required th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="required" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
             </div>
@@ -156,7 +156,7 @@
             elem: elem
             ,url: url
             ,exts: 'jpg|png' //只允许上传图片文件
-            ,size: 512 //限制文件大小，单位 KB
+            ,size: 2048 //限制文件大小，单位 KB
             ,before: function(obj){
 
                 //预读本地文件示例，不支持ie8
