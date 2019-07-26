@@ -645,6 +645,7 @@ public class MainService extends BaseService {
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
                 Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(cwebFile);
+                fileYml.put("bottom", map.get("bottom"));
 
                 cacheParam.setData(fileYml);
 

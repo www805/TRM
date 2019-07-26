@@ -9,7 +9,7 @@ var ptjsonArr = [];
 var ptjsonValues = [];
 var setintervalKey;
 var outcang;
-var workunitssid;
+var ptdjct;
 
 function recordSet() {
 
@@ -70,7 +70,7 @@ function recordCaseInfo() {
         '            <div class="layui-form-item">\n' +
         '                <label class="layui-form-label">叠加时间</label>\n' +
         '                <div class="layui-input-block">\n' +
-        '                    <select name="workunitssid" id="workunitssid">\n' +
+        '                    <select name="ptdjct" id="ptdjct">\n' +
         '                        <option value="5">5秒</option>\n' +
         '                        <option value="15">15秒</option>\n' +
         '                        <option value="30">30秒</option>\n' +
@@ -201,7 +201,7 @@ function addptdj() {
         }
     }
 
-    workunitssid = $("#workunitssid").val();
+    ptdjct = $("#ptdjct").val();
 
     // console.log(ptjsonValues);
 
@@ -209,7 +209,7 @@ function addptdj() {
         token:INIT_CLIENTKEY,
         param:{
             fdType:"FD_AVST",
-            ct: workunitssid,
+            ct: ptdjct,
             lineList: ptjsonValues,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
@@ -391,12 +391,12 @@ function callptdj(data){
 }
 
 function getptdjinfo() {
-    if (!isNotEmpty(workunitssid)) {
-        workunitssid = 90;
+    if (!isNotEmpty(ptdjct)) {
+        ptdjct = 90;
     }
     return {
         fdType: "FD_AVST",
-        ct: parseInt(workunitssid),
+        ct: parseInt(ptdjct),
         lineList: ptjsonValues,
         flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid
     };
