@@ -563,11 +563,6 @@ function startMC() {
 
             var ptdjParam_out=getptdjinfo();
 
-
-
-            var dadadada = getptdjinfo();
-            console.log(dadadada);
-
             var url=getUrl_manage().startRercord;
             var data={
                 token:INIT_CLIENTKEY,

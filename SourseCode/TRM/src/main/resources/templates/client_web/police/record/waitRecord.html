@@ -348,11 +348,13 @@
                                 <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
                                 <!--<button onclick="location.reload();">刷新</button>-->
                             </div>
-                            <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
-                            <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
-                            <div id="living3_2">
-                                <!--视频直播区域-->
-                               <div th:replace="living4 :: living"  >...</div>
+                            <div>
+                                <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
+                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
+                                <div id="living3_2">
+                                    <!--视频直播区域-->
+                                    <div th:replace="living4 :: living"  >...</div>
+                                </div>
                             </div>
                         </div>
                         <div class="layui-tab-item"  id="phitem">

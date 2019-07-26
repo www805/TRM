@@ -41,8 +41,6 @@ function getNavList() {
 function callgetNavList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
 
-        console.log(data);
-
         if (isNotEmpty(data.data)) {
             var appCache = data.data;
 
