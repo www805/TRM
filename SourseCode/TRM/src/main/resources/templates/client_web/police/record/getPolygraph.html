@@ -21,6 +21,10 @@
         color: #FFFFFF !important;background-color: red !important;
         -webkit-animation: fade 1s infinite ease-in-out;
     }
+    .layadmin-backlog-body div:nth-child(2){
+        position: absolute;bottom: 15px;left: 0;
+        color: red;
+    }
 </style>
 <body>
 <div class="layui-form" style="margin: 15px;">
@@ -39,10 +43,16 @@
                         </a>
                     </li>
                     <li class="layui-col-xs6">
-                        <a class="layadmin-backlog-body">
-                            <p class="layuiadmin-big-font">生理状态</p>
-                            <p><cite id="xt1">加载中</cite></p>
-                        </a>
+                            <a class="layadmin-backlog-body ">
+                                <span class="layui-col-xs6">
+                                    <h3>状态</h3>
+                                    <p><cite id="xt1">加载中</cite></p>
+                                </span>
+                                <span class="layui-col-xs6">
+                                    <h3>情绪</h3>
+                                   <img src="/uimaker/images/emojis/6.png" id="mood" style="height: 100px;width: 100px" title="平静">
+                                </span>
+                            </a>
                     </li>
                     <li class="layui-col-xs6">
                         <a class="layadmin-backlog-body">
@@ -57,9 +67,14 @@
                         <div id="monitorall1" style="height:180px;width:100%;"></div>
                     </li>
                     <li class="layui-col-xs6">
-                        <a class="layadmin-backlog-body">
-                            <h3>心率</h3>
-                            <p><cite id="xt6">0</cite></p>
+                        <a class="layadmin-backlog-body ">
+                            <div class="layui-col-xs12">
+                                <h3>心率</h3>
+                                <p><cite id="xt6">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                 <h4>*正常范围：【60-100】</h4>
+                             </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -67,8 +82,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a class="layadmin-backlog-body">
-                            <h3>心率变异</h3>
-                            <p><cite id="xt7">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>心率变异</h3>
+                                <p><cite id="xt7">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*正常范围：【-10-10】</h4>
+                            </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -76,8 +96,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/content/comment" class="layadmin-backlog-body">
-                            <h3>呼吸次数</h3>
-                            <p><cite id="xt8">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>呼吸次数</h3>
+                                <p><cite id="xt8">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*正常范围：【12-20】</h4>
+                            </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -85,8 +110,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">
-                            <h3>放松值</h3>
-                            <p><cite id="xt2">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>放松值</h3>
+                                <p><cite id="xt2">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*正常范围：/</h4>
+                            </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -94,8 +124,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/content/comment" class="layadmin-backlog-body">
-                            <h3>紧张值</h3>
-                            <p><cite id="xt3">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>紧张值</h3>
+                                <p><cite id="xt3">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*【0-30】正常<br/>【30-50】轻度紧张<br/>【50-70】中度紧张<br/>【70-100】高度紧张</h4>
+                            </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -103,8 +138,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">
-                            <h3>血压变化</h3>
-                            <p><cite id="xt4">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>血压变化</h3>
+                                <p><cite id="xt4">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*正常范围：【-10-10】</h4>
+                            </div>
                         </a>
                     </li>
                     <li class="layui-col-xs6">
@@ -112,8 +152,13 @@
                     </li>
                     <li class="layui-col-xs6">
                         <a lay-href="app/forum/list" class="layadmin-backlog-body">
-                            <h3>血氧</h3>
-                            <p><cite id="xt5">0</cite></p>
+                            <div class="layui-col-xs12">
+                                <h3>血氧</h3>
+                                <p><cite id="xt5">0</cite></p>
+                            </div>
+                            <div class="layui-col-xs12">
+                                <h4>*正常范围：≥ 94</h4>
+                            </div>
                         </a>
                     </li>
                 </ul>

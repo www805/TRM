@@ -379,17 +379,12 @@ var option = {
         type: 'line',
         showSymbol: false,
         hoverAnimation: false,
-        itemStyle : {
-            normal : {
-                color:'#00FF00',
-            }
-        },
         data: data1,
         markLine: {//警戒线标识
             silent: true,
             lineStyle: {
                 normal: {
-                    color: 'red'                   // 这儿设置安全基线颜色
+                    color: '#00FF00'                   // 这儿设置安全基线颜色
                 }
             },
         }
@@ -887,6 +882,8 @@ function phdata(datad,dqdata) {
             var fps=0;
             var stress_snr=0;
 
+            var emotion=-1;
+
 
 
             //数据收集
@@ -926,6 +923,8 @@ function phdata(datad,dqdata) {
                          bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
                          spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
                          hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
+
+                        emotion=obj.emotion.toFixed(0)==null?0:obj.emotion.toFixed(0);
                     }
                 }
 
@@ -983,6 +982,8 @@ function phdata(datad,dqdata) {
                 hr_snr=dqobj.hr_snr.toFixed(1);
                 fps=dqobj.fps.toFixed(1);
                 stress_snr=dqobj.stress_snr.toFixed(1);
+
+                emotion=dqobj.emotion==null?6:dqobj.emotion;//为空默认表情：平静
             }
 
 
@@ -997,14 +998,15 @@ function phdata(datad,dqdata) {
             var itemStyle_color_stress=itemStyle_color;
             var itemStyle_color_bp=itemStyle_color;
             var itemStyle_color_spo2=itemStyle_color;
-
             var dqpieces=[];
-            var pieces_hr=[{gt:60,lte: 100,color: '#00FF00'}];
-            var pieces_hrv=[{ gt: -10,lte: 10,color: '#00FF00'}];
-            var pieces_br=[{ gt: 12,lte: 20,color: '#00FF00'}];
-            var pieces_stress=[{ gte: 0,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: 'red'}];
-            var pieces_bp=[{ gt: -10,lte: 10,color: '#00FF00'}];
-            var pieces_spo2=[{ gt: 0,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
+            var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00FF00'}];
+            var pieces_hrv=[{ gt: -11,lte: 10,color: '#00FF00'}];
+            var pieces_br=[{ gt: 11,lte: 20,color: '#00FF00'}];
+            var pieces_relax=[{ gt: -2,lte: -1,color: '#00FF00'},{gt:-1,color: '#00FF00'}];
+            var pieces_stress=[{ gt: -1,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
+            var pieces_bp=[{ gt: -11,lte: 10,color: '#00FF00'}];
+            var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
+
 
             var dqmarkLinedata=[];
             var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
@@ -1021,17 +1023,17 @@ function phdata(datad,dqdata) {
             var dq_type=null;
             $("#monitor_btn span").each(function (e) {
                 var type=$(this).attr("type");
-                dq_type=type;
                 var name=$(this).text();
                 var isn=$(this).attr("isn");
                 if (isn==1){
+                    dq_type=type;
                     if (type=="hr") {
                         date1=date_hr;
                         data1=data_hr;
                         dqy=hr;
                         dqmarkLinedata=dqmarkLinedata_hr;
                         dqpieces=pieces_hr;
-                        if (dqy>60&&dqy<=100){
+                        if (hr>=60&&hr<=100){
                             itemStyle_color="#00FF00";
                         }
                     }else if (type=="hrv") {
@@ -1040,7 +1042,7 @@ function phdata(datad,dqdata) {
                         dqy=hrv;
                         dqmarkLinedata=dqmarkLinedata_hrv;
                         dqpieces=pieces_hrv;
-                        if (dqy>-10&&dqy<=10){
+                        if (hrv>=-10&&hrv<=10){
                             itemStyle_color="#00FF00";
                         }
                     }else if (type=="br") {
@@ -1049,20 +1051,25 @@ function phdata(datad,dqdata) {
                         dqy=br;
                         dqmarkLinedata=dqmarkLinedata_br;
                         dqpieces=pieces_br;
-                        if (dqy>12&&dqy<=20){
+                        if (br>=12&&br<=20){
                             itemStyle_color="#00FF00";
                         }
                     }else if (type=="relax") {
                         date1=date_relax;
                         data1=data_relax;
                         dqy=relax;
+                        dqmarkLinedata=dqmarkLinedata_relax;
+                        dqpieces=pieces_relax;
+                        if (null!=relax){
+                            itemStyle_color="#00FF00";
+                        }
                     }else if (type=="stress") {
                         date1=date_stress;
                         data1=data_stress;
                         dqy=stress;
                         dqmarkLinedata=dqmarkLinedata_stress;
                         dqpieces=pieces_stress;
-                        if (dqy>=0&&dqy<=30){
+                        if (stress>=0&&stress<=30){
                             itemStyle_color="#00FF00";
                         }
                     }else if (type=="bp") {
@@ -1071,7 +1078,7 @@ function phdata(datad,dqdata) {
                         dqy=bp;
                         dqmarkLinedata=dqmarkLinedata_bp;
                         dqpieces=pieces_bp;
-                        if (dqy>-10&&dqy<=10){
+                        if (bp>=-10&&bp<=10){
                             itemStyle_color="#00FF00";
                         }
                     }else if (type=="spo2") {
@@ -1080,17 +1087,20 @@ function phdata(datad,dqdata) {
                         dqy=spo2;
                         dqmarkLinedata=dqmarkLinedata_spo2;
                         dqpieces=pieces_spo2;
-                        if (dqy>=94){
+                        if (spo2>=94){
                             itemStyle_color="#00FF00";
                         }
                     }
                 }
             });
+
+
+
             myChart.setOption({
                 xAxis: {
                     data: date1
                 },
-                visualMap: dq_type=="relax"?false:{
+                visualMap:{
                     show:false,
                     pieces:dqpieces,
                     outOfRange: {
@@ -1114,16 +1124,14 @@ function phdata(datad,dqdata) {
             });
 
 
-
-
             var redcolor="#00FF00";
-            if (hr>60&&hr<=100){
+            if (hr>=60&&hr<=100){
                 itemStyle_color_hr=redcolor;
             }
-            if (hrv>-10&&hrv<=10){
+            if (hrv>=-10&&hrv<=10){
                 itemStyle_color_hrv=redcolor;
             }
-            if (br>12&&br<=20){
+            if (br>=12&&br<=20){
                 itemStyle_color_br=redcolor;
             }
             if (null!=relax){
@@ -1132,7 +1140,7 @@ function phdata(datad,dqdata) {
             if (stress>=0&&stress<=30){
                 itemStyle_color_stress=redcolor;
             }
-            if (bp>-10&&bp<=10){
+            if (bp>=-10&&bp<=10){
                 itemStyle_color_bp=redcolor;
             }
             if (spo2>=94){
@@ -1223,6 +1231,13 @@ function phdata(datad,dqdata) {
                 select_monitorall_iframe.myMonitorall4.setOption({
                     xAxis: {
                         data: date_relax
+                    },
+                    visualMap: {
+                        show:false,
+                        pieces:pieces_relax,
+                        outOfRange: {
+                            color: 'red'
+                        }
                     },
                     series: [{
                         data: data_relax,
@@ -1320,18 +1335,18 @@ function phdata(datad,dqdata) {
             }
 
             //开始填数据
-            var status_text="未知";
-            if (status==0){
-                status_text="正常";
-            }else if (status==1){
-                status_text="紧张";
-            }else if (status==2){
-                status_text="生理疲劳";
-            }else if (status==3){
-                status_text="昏昏欲睡";
+            var stress_text="未知";
+            if (stress>=0&&stress<=30){
+                stress_text="<span style='color: #00FF00'>正常</span>";
+            }else if (stress>30&&stress<=50){
+                stress_text="<span style='color: #e4e920'>轻度紧张</span>";
+            }else if (stress>50&&stress<=70){
+                stress_text="<span style='color: #ff840f'>中度紧张</span>";
+            }else if (stress>70&&stress<=100){
+                stress_text="<span style='color: #e90717'>高度紧张</span>";
             }
 
-            $("#xthtml #xt1").html(' '+status_text+'   ');
+            $("#xthtml #xt1").html(' '+stress_text+'   ');
             $("#xthtml #xt2").html(' '+relax+'  ');
             $("#xthtml #xt3").html(' '+stress+'  ');
             $("#xthtml #xt4").html(' '+bp+'  ');
@@ -1341,7 +1356,7 @@ function phdata(datad,dqdata) {
             $("#xthtml #xt8").html(' '+br+'  ');
 
             if (isNotEmpty(select_monitorall_iframe_body)) {
-                select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+status_text+'   ');
+                select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
                 select_monitorall_iframe_body.find("#monitorall #xt2").html(' '+relax+'  ');
                 select_monitorall_iframe_body.find("#monitorall #xt3").html(' '+stress+'  ');
                 select_monitorall_iframe_body.find("#monitorall #xt4").html(' '+bp+'  ');
@@ -1355,7 +1370,7 @@ function phdata(datad,dqdata) {
             snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
             $("#snrtext").html(snrtext);
 
-            var monitoralltext=" 生理状态： "+status_text+"\
+            var monitoralltext="状态： "+stress_text+"\
                                                                 <span  id=\"monitorall_hr\">心率： "+hr+"</span>\
                                                                 <span  id=\"monitorall_hrv\">心率变异： "+hrv+"</span>\
                                                                <span  id=\"monitorall_br\">呼吸次数： "+br+"</span>\
@@ -1365,26 +1380,47 @@ function phdata(datad,dqdata) {
                                                                 <span  id=\"monitorall_spo2\">血氧： "+spo2+"</span>";
             $("#monitorall_stressstate,#monitorall_hr,#monitorall_hrv,#monitorall_br,#monitorall_relax,#monitorall_stress,#monitorall_bp,#monitorall_spo2").removeClass("highlight_monitorall");
            $("#monitoralltext").html(monitoralltext);
-
-            if (!(hr>60&&hr<=100)){
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt1,#xt2,#xt3,#xt4,#xt5,#xt6,#xt7,#xt8").removeClass("highlight_monitorall");
+            if (!(hr>=60&&hr<=100)){
                 $("#monitorall_hr").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt6").addClass("highlight_monitorall");
             }
-            if (!(hrv>-10&&hrv<=10)){
+            if (!(hrv>=-10&&hrv<=10)){
                 $("#monitorall_hrv").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt7").addClass("highlight_monitorall");
             }
-            if (!(br>12&&br<=20)){
+            if (!(br>=12&&br<=20)){
                 $("#monitorall_br").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt8").addClass("highlight_monitorall");
             }
             if (!(stress>=0&&stress<=30)){
                 $("#monitorall_stress").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
             }
-            if (!(bp>-10&&bp<=10)){
+            if (!(bp>=-10&&bp<=10)){
                 $("#monitorall_bp").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt4").addClass("highlight_monitorall");
             }
             if (!(spo2>=94)){
                 $("#monitorall_spo2").addClass("highlight_monitorall");
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt5").addClass("highlight_monitorall");
             }
 
+
+            //表情
+            var moodsrc="/uimaker/images/emojis/6.png";
+            var moodtitle="平静";
+            if(emotion!=null){
+                moodsrc="/uimaker/images/emojis/"+emotion+".png";
+                if (emotion==0){moodtitle="生气";}
+                else  if(emotion==1){moodtitle="厌恶";}
+                else  if(emotion==2){moodtitle="恐惧";}
+                else  if(emotion==3){moodtitle="高兴";}
+                else  if(emotion==4){moodtitle="伤心";}
+                else  if(emotion==5){moodtitle="惊讶";}
+                else  if(emotion==6){moodtitle="平静";}
+            }
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#mood").attr({"src":moodsrc},{"title":moodtitle});
 
 
 

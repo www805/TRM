@@ -33,16 +33,6 @@ function callbackgetPolygraphdata(data) {
                 var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
                 var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
                 var  status=obj.status;
-                var status_text="未知";
-                if (status==0){
-                    status_text="正常";
-                }else if (status==1){
-                    status_text="紧张";
-                }else if (status==2){
-                    status_text="生理疲劳";
-                }else if (status==3){
-                    status_text="昏昏欲睡";
-                }
                 var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
                 var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
                 var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
@@ -51,8 +41,21 @@ function callbackgetPolygraphdata(data) {
                 var hr_snr=obj.hr_snr.toFixed(1)==null?0:obj.hr_snr.toFixed(1);
                 var fps=obj.fps.toFixed(1)==null?0:obj.fps.toFixed(1);
                 var stress_snr=obj.stress_snr.toFixed(1)==null?0:obj.stress_snr.toFixed(1);
+                //开始填数据
+                var stress_text="未知";
+                if (stress>=0&&stress<=30){
+                    stress_text="<span style='color: #00FF00'>正常</span>";
+                }else if (stress>30&&stress<=50){
+                    stress_text="<span style='color: #e4e920'>轻度紧张</span>";
+                }else if (stress>50&&stress<=70){
+                    stress_text="<span style='color: #ff840f'>中度紧张</span>";
+                }else if (stress>70&&stress<=100){
+                    stress_text="<span style='color: #e90717'>高度紧张</span>";
+                }
 
-                $("#xthtml #xt1").html(' '+status_text+'   ');
+                var emotion=obj.emotion==null?6:obj.emotion;//为空默认表情：平静
+
+                $("#xthtml #xt1").html(' '+stress_text+'   ');
                 $("#xthtml #xt2").html(' '+relax+'  ');
                 $("#xthtml #xt3").html(' '+stress+'  ');
                 $("#xthtml #xt4").html(' '+bp+'  ');
@@ -64,7 +67,7 @@ function callbackgetPolygraphdata(data) {
 
 
                 if (isNotEmpty(select_monitorall_iframe_body)) {
-                    select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+status_text+'   ');
+                    select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
                     select_monitorall_iframe_body.find("#monitorall #xt2").html(' '+relax+'  ');
                     select_monitorall_iframe_body.find("#monitorall #xt3").html(' '+stress+'  ');
                     select_monitorall_iframe_body.find("#monitorall #xt4").html(' '+bp+'  ');
@@ -73,6 +76,21 @@ function callbackgetPolygraphdata(data) {
                     select_monitorall_iframe_body.find("#monitorall #xt7").html(' '+hrv+'  ');
                     select_monitorall_iframe_body.find("#monitorall #xt8").html(' '+br+'  ');
                 }
+
+                //表情
+                var moodsrc="/uimaker/images/emojis/6.png";
+                var moodtitle="平静";
+                if(emotion!=null){
+                    moodsrc="/uimaker/images/emojis/"+emotion+".png";
+                    if (emotion==0){moodtitle="生气";}
+                    else  if(emotion==1){moodtitle="厌恶";}
+                    else  if(emotion==2){moodtitle="恐惧";}
+                    else  if(emotion==3){moodtitle="高兴";}
+                    else  if(emotion==4){moodtitle="伤心";}
+                    else  if(emotion==5){moodtitle="惊讶";}
+                    else  if(emotion==6){moodtitle="平静";}
+                }
+                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#mood").attr({"src":moodsrc},{"title":moodtitle});
 
 
                 var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
@@ -108,8 +126,6 @@ function callbackgetPolygraphdata(data) {
 
 
                 //图标规划
-                var dqx=0;//基本上七个一样;
-                var dqy=0;
                 var itemStyle_color="red";
                 var itemStyle_color_hr=itemStyle_color;
                 var itemStyle_color_hrv=itemStyle_color;
@@ -130,91 +146,92 @@ function callbackgetPolygraphdata(data) {
                 var dqmarkLinedata_spo2=[{yAxis: 94}];
 
                 var dqpieces=[];
-                var pieces_hr=[{gt:60,lte: 100,color: '#00FF00'}];
-                var pieces_hrv=[{ gt: -10,lte: 10,color: '#00FF00'}];
-                var pieces_br=[{ gt: 12,lte: 20,color: '#00FF00'}];
-                var pieces_stress=[{ gte: 0,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: 'red'}];
-                var pieces_bp=[{ gt: -10,lte: 10,color: '#00FF00'}];
-                var pieces_spo2=[{ gt: 0,lte: 94,color: 'red'},{ gte: 94,color: '#00FF00'}];
+                var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00FF00'}];
+                var pieces_hrv=[{ gt: -11,lte: 10,color: '#00FF00'}];
+                var pieces_br=[{ gt: 11,lte: 20,color: '#00FF00'}];
+                var pieces_relax=[{ gt: -2,lte: -1,color: '#00FF00'},{gt:-1,color: '#00FF00'}];
+                var pieces_stress=[{ gt: -1,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
+                var pieces_bp=[{ gt: -11,lte: 10,color: '#00FF00'}];
+                var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
 
                 var dq_type=null;
                 $("#monitor_btn span").each(function (e) {
                     var type=$(this).attr("type");
-                    dq_type=type;
                     var name=$(this).text();
                     var isn=$(this).attr("isn");
                     if (isn==1){
+                        dq_type=type;
                         if (type=="hr") {
                             date1=date_hr;
                             data1=data_hr;
-                            dqy=hr;
                             dqmarkLinedata=dqmarkLinedata_hr;
                             dqpieces=pieces_hr;
-                            if (dqy>60&&dqy<=100){
+                            if (hr>=60&&hr<=100){
                                 itemStyle_color="#00FF00";
                             }
                         }else if (type=="hrv") {
                             date1=date_hrv;
                             data1=data_hrv;
-                            dqy=hrv;
                             dqmarkLinedata=dqmarkLinedata_hrv;
                             dqpieces=pieces_hrv;
-                            if (dqy>-10&&dqy<=10){
+                            if (hrv>=-10&&hrv<=10){
                                 itemStyle_color="#00FF00";
                             }
                         }else if (type=="br") {
                             date1=date_br;
                             data1=data_br;
-                            dqy=br;
                             dqmarkLinedata=dqmarkLinedata_br;
                             dqpieces=pieces_br;
-                            if (dqy>12&&dqy<=20){
+                            if (br>=12&&br<=20){
                                 itemStyle_color="#00FF00";
                             }
                         }else if (type=="relax") {
                             date1=date_relax;
                             data1=data_relax;
-                            dqy=relax;
+                            dqmarkLinedata=dqmarkLinedata_relax;
+                            dqpieces=pieces_relax;
+                            if (null!=relax){
+                                itemStyle_color="#00FF00";
+                            }
                         }else if (type=="stress") {
                             date1=date_stress;
                             data1=data_stress;
-                            dqy=stress;
                             dqmarkLinedata=dqmarkLinedata_stress;
                             dqpieces=pieces_stress;
-                            if (dqy>=0&&dqy<=30){
+                            if (stress>=0&&stress<=30){
                                 itemStyle_color="#00FF00";
                             }
                         }else if (type=="bp") {
                             date1=date_bp;
                             data1=data_bp;
-                            dqy=bp;
                             dqmarkLinedata=dqmarkLinedata_bp;
                             dqpieces=pieces_bp;
-                            if (dqy>-10&&dqy<=10){
+                            if (bp>=-10&&bp<=10){
                                 itemStyle_color="#00FF00";
                             }
                         }else if (type=="spo2") {
                             date1=date_spo2;
                             data1=data_spo2;
-                            dqy=spo2;
                             dqmarkLinedata=dqmarkLinedata_spo2;
                             dqpieces=pieces_spo2;
-                            if (dqy>=94){
+                            if (spo2>=94){
                                 itemStyle_color="#00FF00";
                             }
                         }
                     }
                 });
 
-                console.log(date1)
 
-                dqx=date1[date1.length-1];
-                console.log(dqx)
+            /*    console.log(date1)
+                console.log(date1[date1.length-1])
+                console.log(data1)
+                console.log(data1[data1.length-1])*/
+
                 myChart.setOption({
                     xAxis: {
                         data: date1
                     },
-                    visualMap: dq_type=="relax"?false:{
+                    visualMap:{
                         show:false,
                         pieces:dqpieces,
                         outOfRange: {
@@ -225,7 +242,7 @@ function callbackgetPolygraphdata(data) {
                         data: data1,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
+                                {name: '当前值', value:data1[data1.length-1], xAxis:date1[date1.length-1], yAxis: data1[data1.length-1]}
                             ],
                             itemStyle:{
                                 color:itemStyle_color,
@@ -241,19 +258,19 @@ function callbackgetPolygraphdata(data) {
                 select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt1,#xt2,#xt3,#xt4,#xt5,#xt6,#xt7,#xt8").removeClass("highlight_monitorall");
                 $("#xthtml span").removeClass("highlight_monitorall");
                 var redcolor="#00FF00";
-                if (hr>60&&hr<=100){
+                if (hr>=60&&hr<=100){
                     itemStyle_color_hr=redcolor;
                 }else {
                     $("#xthtml #xt6").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt6").addClass("highlight_monitorall");
                 }
-                if (hrv>-10&&hrv<=10){
+                if (hrv>=-10&&hrv<=10){
                     itemStyle_color_hrv=redcolor;
                 }else {
                     $("#xthtml #xt7").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt7").addClass("highlight_monitorall");
                 }
-                if (br>12&&br<=20){
+                if (br>=12&&br<=20){
                     itemStyle_color_br=redcolor;
                 }else {
                     $("#xthtml #xt8").addClass("highlight_monitorall");
@@ -268,7 +285,7 @@ function callbackgetPolygraphdata(data) {
                     $("#xthtml #xt3").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
                 }
-                if (bp>-10&&bp<=10){
+                if (bp>=-10&&bp<=10){
                     itemStyle_color_bp=redcolor;
                 }else {
                     $("#xthtml #xt4").addClass("highlight_monitorall");
@@ -296,7 +313,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hr,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:hr, xAxis:init_hr, yAxis: hr}
+                                    {name: '当前值', value:hr, xAxis:date_hr[date_hr.length-1], yAxis: hr}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_hr,
@@ -322,7 +339,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hrv,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:hrv, xAxis:init_hrv, yAxis: hrv}
+                                    {name: '当前值', value:hrv, xAxis:date_hrv[date_hrv.length-1], yAxis: hrv}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_hrv,
@@ -348,7 +365,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_br,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:br, xAxis:init_br, yAxis: br}
+                                    {name: '当前值', value:br, xAxis:date_hrv[date_hrv.length-1], yAxis: br}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_br,
@@ -363,11 +380,18 @@ function callbackgetPolygraphdata(data) {
                         xAxis: {
                             data: date_relax
                         },
+                        visualMap: {
+                            show:false,
+                            pieces:pieces_relax,
+                            outOfRange: {
+                                color: 'red'
+                            }
+                        },
                         series: [{
                             data: data_relax,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:relax, xAxis:init_relax, yAxis: relax}
+                                    {name: '当前值', value:relax, xAxis:date_relax[date_relax.length-1], yAxis: relax}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_relax,
@@ -393,7 +417,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_stress,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:stress, xAxis:init_stress, yAxis: stress}
+                                    {name: '当前值', value:stress, xAxis:date_stress[date_stress.length-1], yAxis: stress}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_stress,
@@ -419,7 +443,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_bp,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:bp, xAxis:init_bp, yAxis: bp}
+                                    {name: '当前值', value:bp, xAxis:date_stress[date_stress.length-1], yAxis: bp}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_bp,
@@ -445,7 +469,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_spo2,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:spo2, xAxis:init_spo2, yAxis: spo2}
+                                    {name: '当前值', value:spo2, xAxis:date_stress[date_stress.length-1], yAxis: spo2}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_spo2,
@@ -457,7 +481,6 @@ function callbackgetPolygraphdata(data) {
                         }]
                     });
                 }
-
             }
         }
     }else{
@@ -525,11 +548,6 @@ var option = {
         type: 'line',
         showSymbol: false,
         hoverAnimation: false,
-        itemStyle : {
-            normal : {
-                color:'#00FF00',
-            }
-        },
         data: data1,
         markLine: {//警戒线标识
             silent: true,
@@ -843,41 +861,39 @@ function getNotifications() {
                                  </tr>";
                         $("#notificationList").append(l_html);
                     }
-
-
-                    layui.use(['layer','element','upload'], function(){
-                        var layer = layui.layer; //获得layer模块
-                        var element = layui.element;
-                        var upload = layui.upload;
-                        //使用模块
-
-                        var url=getActionURL(getactionid_manage().waitRecord_uploadNotification);
-
-                        //执行实例
-                        var uploadInst = upload.render({
-                            elem: "#uploadFile" //绑定元素
-                            ,url: url //上传接口
-                            , acceptMime: '.doc, .docx' //只允许上传图片文件
-                            ,exts: 'doc|docx' //只允许上传压缩文件
-                            ,before: function(obj){
-                            }
-                            ,done: function(res){
-                                if("SUCCESS" == res.actioncode){
-                                    layer.msg(res.message,{time:500},function () {
-                                        getNotifications();
-                                    });
-                                }
-                            }
-                            ,error: function(res){
-                                console.log("请求异常回调");
-                            }
-                        });
-                    });
                 }
             }
         }else{
             layer.msg(data.message);
         }
+        layui.use(['layer','element','upload'], function(){
+            var layer = layui.layer; //获得layer模块
+            var element = layui.element;
+            var upload = layui.upload;
+            //使用模块
+
+            var url=getActionURL(getactionid_manage().waitRecord_uploadNotification);
+
+            //执行实例
+            var uploadInst = upload.render({
+                elem: "#uploadFile" //绑定元素
+                ,url: url //上传接口
+                , acceptMime: '.doc, .docx' //只允许上传图片文件
+                ,exts: 'doc|docx' //只允许上传压缩文件
+                ,before: function(obj){
+                }
+                ,done: function(res){
+                    if("SUCCESS" == res.actioncode){
+                        layer.msg(res.message,{time:500},function () {
+                            getNotifications();
+                        });
+                    }
+                }
+                ,error: function(res){
+                    console.log("请求异常回调");
+                }
+            });
+        });
     })
 }
 
