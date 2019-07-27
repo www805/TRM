@@ -463,7 +463,7 @@ function callgetbiluptdjconst(data){
         }
 
     }else{
-        layer.msg(data.message,{icon: 2});
+        // layer.msg(data.message,{icon: 2});
     }
 }
 
