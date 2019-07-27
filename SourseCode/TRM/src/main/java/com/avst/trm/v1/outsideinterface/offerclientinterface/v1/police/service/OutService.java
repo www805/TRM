@@ -1,8 +1,7 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
-import com.avst.trm.v1.common.conf.socketio.NettySocketConfig;
+import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.*;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
@@ -10,7 +9,6 @@ import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
-import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -45,13 +43,10 @@ import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
-import com.ctc.wstx.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.ocsp.Req;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,9 +82,6 @@ public class OutService  extends BaseService {
 
 
     private Gson gson = new Gson();
-
-    public static SocketIOServer socketIoServer;
-
 
 
     public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
@@ -279,7 +271,7 @@ public class OutService  extends BaseService {
                     }
                 }
 
-                List<SocketIOClient> clients = NettySocketConfig.clients;
+                List<SocketIOClient> clients = SocketIOConfig.clients;
                 if (null!=clients&&clients.size()>0){
                     for (SocketIOClient client : clients) {
                         client.sendEvent("getback", setMCAsrTxtBackVO);
