@@ -67,11 +67,6 @@ public class TemplateService extends BaseService {
     @Autowired
     private Police_problemtotypeMapper policeProblemtotypeMapper;
 
-    @Value("${file.template}")
-    private String filePath;
-
-    @Value("${upload.basepath}")
-    private String uploadbasepath;
 
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
@@ -929,7 +924,7 @@ public class TemplateService extends BaseService {
 
             //以utf-8的编码读取ftl文件
             freemarker.template.Template templateDamo = configuration.getTemplate("template_word.ftl","UTF-8");
-
+            String filePath=PropertiesListenerConfig.getProperty("file.template");
             String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
 
             File fileMkdir = new File(filePathNew);
@@ -947,6 +942,7 @@ public class TemplateService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
             result.setData(uploadbasepath + uploadpath);
 
             changeResultToSuccess(result);
@@ -1037,6 +1033,7 @@ public class TemplateService extends BaseService {
         try {
             //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
             // 创建目录
+            String filePath=PropertiesListenerConfig.getProperty("file.template");
             String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {
@@ -1050,6 +1047,7 @@ public class TemplateService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
             result.setData(uploadbasepath + uploadpath);
 
             this.changeResultToSuccess(result);

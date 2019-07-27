@@ -13,6 +13,7 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import org.apache.commons.lang.StringUtils;
@@ -69,12 +70,6 @@ public class HomeService extends BaseService {
     @Autowired
     private Base_serverconfigMapper serverconfigMapper;
 
-    @Value("${nav.file.service}")
-    private String swebFile;
-    @Value("${spring.application.name}")
-    private String application_name;
-    @Value("${nav.file.name}")
-    private String nav_file_name;
 
     public void getAllCount(RResult rResult, Model model) {
 
@@ -139,6 +134,7 @@ public class HomeService extends BaseService {
     public void getNavList(RResult result) {
 
         AppCacheParam cacheParam = AppServiceCache.getAppServiceCache();
+        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
             FileInputStream fis = null;
@@ -168,6 +164,9 @@ public class HomeService extends BaseService {
 
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
+
+                String application_name= PropertiesListenerConfig.getProperty("spring.application.name");
+                String swebFile=PropertiesListenerConfig.getProperty("nav.file.service");
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
                 Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(swebFile);

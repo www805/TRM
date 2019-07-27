@@ -41,11 +41,6 @@ public class NotificationService extends BaseService {
     @Autowired
     private Base_filesaveMapper filesaveMapper;
 
-    @Value("${file.notification}")
-    private String filePath;
-
-    @Value("${upload.basepath}")
-    private String uploadbasepath;
 
     /**
      * 获取告知书列表
@@ -116,6 +111,7 @@ public class NotificationService extends BaseService {
             return;
         }
 
+        String filePath=PropertiesListenerConfig.getProperty("file.notification");
         String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
 
         String realpath = filePathNew + imageName;
@@ -179,6 +175,7 @@ public class NotificationService extends BaseService {
             return;
         }
         try {
+            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
 
             Base_filesave filesave = new Base_filesave();
             filesave.setDatassid(getNotificationParam.getSsid());

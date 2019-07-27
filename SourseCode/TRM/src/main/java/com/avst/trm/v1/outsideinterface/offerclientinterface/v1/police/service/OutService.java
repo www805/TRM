@@ -2,6 +2,7 @@ package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.socketio.MessageEventHandler;
+import com.avst.trm.v1.common.conf.socketio.NettySocketConfig;
 import com.avst.trm.v1.common.conf.type.*;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
@@ -278,7 +279,7 @@ public class OutService  extends BaseService {
                     }
                 }
 
-                List<SocketIOClient> clients = MessageEventHandler.clients;
+                List<SocketIOClient> clients = NettySocketConfig.clients;
                 if (null!=clients&&clients.size()>0){
                     for (SocketIOClient client : clients) {
                         client.sendEvent("getback", setMCAsrTxtBackVO);

@@ -3,6 +3,7 @@ package com.avst.trm.v1.outsideinterface.conf;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
@@ -25,12 +26,6 @@ public class ZkTimeConfig {
 
     @Autowired
     private ZkControl zkControl;
-
-    @Value("${control.servser.date}")
-    private Integer servserDate;
-
-    @Value("${control.servser.formulas}")
-    private String formulas;
 
     //获取总控时间进行比对
     public void compare() {
@@ -56,13 +51,15 @@ public class ZkTimeConfig {
 
                     //计算公式转换成整数
                     JexlEngine jexlEngine = new JexlBuilder().create();
+                    String formulas=PropertiesListenerConfig.getProperty("control.servser.formulas");
                     JexlExpression expression = jexlEngine.createExpression(formulas);
                     Integer evaluate = (Integer) expression.evaluate(null);
 
                     long intervalDay = (newday.getTime() - oldDay.getTime())/(evaluate);
 
                     //如果时间差过1小时以上，就修改系统时间
-                    if (Math.abs(intervalDay) >= servserDate) {
+                    String servserDate= PropertiesListenerConfig.getProperty("control.servser.date");
+                    if (Math.abs(intervalDay) >= Integer.valueOf(servserDate)) {
 
                         //修改系统时间
                         String osName = System.getProperty("os.name");

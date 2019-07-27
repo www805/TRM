@@ -32,8 +32,6 @@ public class Arraignment_countService extends BaseService {
     @Autowired
     private Base_admininfoMapper arraignmentCountMapper;
 
-    @Value("${file.basepath}")
-    private String filePath;
 
     /**
      * 通过id查询关键字
@@ -288,6 +286,7 @@ public class Arraignment_countService extends BaseService {
         try {
             //String zipspath = OutsideDataRead.getproperty(OutsideDataRead.sys_pro, "zipspath");
             // 创建目录
+            String filePath=PropertiesListenerConfig.getProperty("file.basepath");
             String filePathNew = filePath + "/zips";
             File fileMkdir = new File(filePathNew);
             if (!fileMkdir.exists()) {

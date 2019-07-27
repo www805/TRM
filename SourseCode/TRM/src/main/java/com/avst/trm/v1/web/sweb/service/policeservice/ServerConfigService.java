@@ -36,8 +36,6 @@ public class ServerConfigService extends BaseService {
     @Autowired
     private Base_filesaveMapper filesaveMapper;
 
-    @Value("${spring.images.filePath}")
-    private String filePath;
 
     /**
      * 通过id查询配置项
@@ -145,6 +143,8 @@ public class ServerConfigService extends BaseService {
 //            //如果不存在，就创建该目录
 //            fileMkdir.mkdirs();
 //        }
+
+        String filePath=PropertiesListenerConfig.getProperty("spring.images.filePath");
 
         String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
 

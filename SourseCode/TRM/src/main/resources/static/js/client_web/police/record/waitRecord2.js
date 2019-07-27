@@ -222,7 +222,7 @@ function callbackgetPolygraphdata(data) {
                 });
 
 
-            /*    console.log(date1)
+        /*      console.log(date1)
                 console.log(date1[date1.length-1])
                 console.log(data1)
                 console.log(data1[data1.length-1])*/

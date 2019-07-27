@@ -13,6 +13,7 @@ import java.io.File;
  * 配置文件监听器，用来加载自定义配置文件
  *
  * */
+
 public class PropertiesListener implements ApplicationListener<ApplicationStartedEvent> {
 
     private String propertyFileName;

@@ -46,12 +46,6 @@ public class Scheduler {
     @Autowired
     private Base_admininfoMapper base_admininfoMapper;
 
-    @Value("${spring.application.name}")
-    private String servername;
-
-    @Value("${server.port}")
-    private String port;
-
     private String url;
 
     private String urltow;
@@ -174,6 +168,9 @@ public class Scheduler {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
+        String servername=PropertiesListenerConfig.getProperty("spring.application.name");
+        String port=PropertiesListenerConfig.getProperty("server.port");
 
         ControlInfoParamVO controlInfoParamVO = new ControlInfoParamVO();
         controlInfoParamVO.setServername(servername);//服务器注册名

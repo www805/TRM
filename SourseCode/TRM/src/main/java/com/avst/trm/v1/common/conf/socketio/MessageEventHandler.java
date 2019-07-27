@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * MessageEventHandler消息处理类实现
+ * MessageEventHandler消息处理类实现:已经弃用
  */
-@Component
+/*@Component*/
 public class MessageEventHandler {
     public static SocketIOServer socketIoServer;
     public static List<SocketIOClient> clients = new ArrayList<SocketIOClient>();//用于保存所有客户端

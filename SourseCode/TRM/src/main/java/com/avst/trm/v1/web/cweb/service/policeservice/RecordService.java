@@ -38,6 +38,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCV
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
+import com.avst.trm.v1.web.cweb.conf.AddRecord_Thread;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -123,20 +124,8 @@ public class RecordService extends BaseService {
     @Autowired
     private EquipmentControl equipmentControl;
 
-    @Value("${file.basepath}")
-    private String filePath;
-
-    @Value("${upload.basepath}")
-    private String uploadbasepath;
-
-    @Value("${file.wordtemplate}")
-    private String filewordtemplate; //word模板存储位置
-
-    @Value("${file.recordwordOrpdf}")
-    private String filerecordwordOrpdf; //笔录word或者pdf路径
-
-    @Value("${nav.file.name}")
-    private String nav_file_name;
+    @Autowired
+    private RecordService recordService;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -284,6 +273,25 @@ public class RecordService extends BaseService {
             return;
         }
 
+        //判断笔录状态，如果等于2或者0（已完成或者已删除）不进行下一步
+        Police_record police_record=new Police_record();
+        police_record.setSsid(recordssid);
+        police_record=police_recordMapper.selectOne(police_record);
+        if (null==police_record){
+            result.setMessage("系统异常");
+            LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：未找到该笔录__");
+            return;
+        }
+
+        if (police_record.getRecordbool()==2||police_record.getRecordbool()==4){
+            //2已完成或者4已删除状态
+            result.setMessage("该笔录已结束...");
+            LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
+            return;
+        }
+
+
+
 
         //获取该笔录下的全部题目答案
         EntityWrapper recordToProblemsParam=new EntityWrapper();
@@ -335,20 +343,13 @@ public class RecordService extends BaseService {
 
         //修改笔录状态
         Integer recordbool=addRecordParam.getRecordbool();
+        String mtssid=addRecordParam.getMtssid();
         LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
         if (null!=recordbool&&recordbool==2){
-            //生成word 和pdf
-            RResult exportPdf_rr=new RResult();
-            ExportPdfParam exportPdfParam=new ExportPdfParam();
-            exportPdfParam.setRecordssid(recordssid);
-            ReqParam reqParam=new ReqParam();
-            reqParam.setParam(exportPdfParam);
-            exportPdf_rr=exportPdf(exportPdf_rr, reqParam);
-            if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__成功__保存问答");
-            }else{
-                LogUtil.intoLog(this.getClass(),"笔录结束时exportPdf__出错__"+exportPdf_rr.getMessage());
-            }
+
+            //导出笔录pdf和word并且关闭会议
+            AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,mtssid,outService);
+            addRecord_thread.start();
 
 
             EntityWrapper updaterecordParam=new EntityWrapper();
@@ -1166,8 +1167,8 @@ public class RecordService extends BaseService {
             }
 
             try {
-                String uploadpath=uploadbasepath;
-                String savePath=filerecordwordOrpdf;
+                String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                String savePath=PropertiesListenerConfig.getProperty("file.recordwordOrpdf");
                 String qg=PropertiesListenerConfig.getProperty("file.qg");
 
                 //获取生成的真实地址
@@ -1301,8 +1302,8 @@ public class RecordService extends BaseService {
            }
 
             try {
-                String uploadpath=uploadbasepath;
-                String savePath=filerecordwordOrpdf;
+                String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                String savePath=PropertiesListenerConfig.getProperty("file.recordwordOrpdf");
                 String qg=PropertiesListenerConfig.getProperty("file.qg");
 
                 //获取生成的真实地址
@@ -1929,8 +1930,8 @@ public class RecordService extends BaseService {
              wordtemplate_filesavessid=oldwordTemplate.getWordtemplate_filesavessid();
             try {
                 if (null!=multipartfile){
-                    String uploadpath=uploadbasepath;
-                    String savePath=filewordtemplate;
+                    String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                    String savePath=PropertiesListenerConfig.getProperty("file.wordtemplate");
                     String qg=PropertiesListenerConfig.getProperty("file.qg");
                     String oldwordtemplate_realurl=oldwordTemplate.getWordtemplate_realurl();//旧真实地址
 
@@ -2025,8 +2026,8 @@ public class RecordService extends BaseService {
             if (null!=multipartfile){
                 //开始进行文件上传
                 try {
-                    String uploadpath=uploadbasepath;
-                    String savePath=filewordtemplate;
+                    String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                    String savePath=PropertiesListenerConfig.getProperty("file.wordtemplate");
                     String qg=PropertiesListenerConfig.getProperty("file.qg");
 
                     String oldfilename=multipartfile.getOriginalFilename();
@@ -2519,6 +2520,7 @@ public class RecordService extends BaseService {
     private Map<String, Object> ptdjmap() {
 
         //获取片头叠加外部文件路径
+        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
         String filepath = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
 
         //创建Properties属性对象用来接收ini文件中的属性

@@ -116,6 +116,7 @@ function callsetAllproblem(data) {
                 }
                 //第一行去掉-----------------------------end
                 if (isNotEmpty(templateToProblems)) {
+                    sessionStorage.setItem(recordssid,JSON.stringify(templateToProblems));//存储最后当前打开模板
                     for (var i = 0; i < templateToProblems.length; i++) {
                         var templateToProblem = templateToProblems[i];
                         var html="<tr> <td ondblclick='copy_problems(this);'referanswer='"+templateToProblem.referanswer+"'>问：<span >"+templateToProblem.problem+"</span></td></tr>";
@@ -653,33 +654,6 @@ function callbackstartMC(data) {
     }
 }
 
-//结束会议
-function overMC() {
-    if (isNotEmpty(recordssid)){
-        var url=getUrl_manage().overRercord;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid:mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackoverMC);
-    }
-}
-function callbackoverMC(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            console.log("overMC(返回结果_"+data);
-            if (data){
-                mtssid=null;//会议ssid
-            }
-        }
-    }else{
-       /* layer.msg(data.message);*/
-    }
-}
-
 //获取会议缓存
 function getMCCacheParamByMTssid() {
     if (mcbool==1){
@@ -774,26 +748,12 @@ function addRecord() {
             param:{
                 recordssid: recordssid,
                 recordbool:recordbool,
-                recordToProblems:recordToProblems
+                recordToProblems:recordToProblems,
+                mtssid:mtssid //会议ssid用于笔录结束时关闭会议
             }
         };
         $("#overRecord_btn").attr("click","");
         ajaxSubmitByJson(url, data, calladdRecord);
-      /*  $.ajax({
-            url : url,
-            type : "POST",
-            async : false,
-            dataType : "json",
-            contentType: "application/json",
-            data : JSON.stringify(data),
-            timeout : 60000,
-            success : calladdRecord,
-            error : function () {
-                parent.layer.msg("网络异常,请稍后重试---!", {
-                    icon : 1
-                },1);
-            }
-        });*/
     }else{
         layer.msg("系统异常");
     }
@@ -895,9 +855,6 @@ var overRecord_loadindex =null;
 
         overRecord_index=index;
         recordbool=2;
-        if (recordbool==2&&mtssid!=null) {
-            overMC();//结束会议
-        }
         addRecord();
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
             typy:1,
@@ -1784,10 +1741,10 @@ $(function () {
 
         socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
         socket.on('connect', function (data) {
-            console.log("连接成功__");
+            console.log("socket连接成功__");
         });
         socket.on('disconnect', function (data) {
-            console.log("断开连接__");
+            console.log("socket断开连接__");
         });
 
 

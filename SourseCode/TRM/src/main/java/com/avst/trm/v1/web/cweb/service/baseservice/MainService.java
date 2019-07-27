@@ -89,18 +89,6 @@ public class MainService extends BaseService {
     @Autowired
     private Base_keywordMapper base_keywordMapper;
 
-
-    @Value("${spring.images.filePath}")
-    private String imagesfilePath;
-    @Value("${upload.basepath}")
-    private String uploadbasepath;
-    @Value("${nav.file.client}")
-    private String cwebFile;
-    @Value("${spring.application.name}")
-    private String application_name;
-    @Value("${nav.file.name}")
-    private String nav_file_name;
-
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
     }
@@ -229,8 +217,8 @@ public class MainService extends BaseService {
             try {
 
                 String oldfilepath=serverconfig.getClient_realurl();//旧地址
-                String uploadpath=uploadbasepath;
-                String savePath=imagesfilePath;
+                String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                String savePath=PropertiesListenerConfig.getProperty("spring.images.filePath");
                 String qg=PropertiesListenerConfig.getProperty("file.qg");
 
                 //D:/trmfile/upload/server/{sortnum}/2019/4/13  拼接地址
@@ -612,6 +600,7 @@ public class MainService extends BaseService {
     }
 
     public void getNavList(RResult result) {
+        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
 
         AppCacheParam cacheParam = AppCache.getAppCacheParam();
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
@@ -642,6 +631,9 @@ public class MainService extends BaseService {
 
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
+
+                String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
+                String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
                 Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(cwebFile);

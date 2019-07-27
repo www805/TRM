@@ -13,7 +13,6 @@ import com.wb.deencode.EncodeUtil;
  */
 public class CreateSQ {
 
-//    @Value("${Javakeyname}")
     private static String javakeyname="javatrm.ini";
 
     /**
@@ -53,7 +52,7 @@ public class CreateSQ {
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(false);//是否永久授权
         sqEntity.setClientName("销售客户端服务器");
-        sqEntity.setCpuCode("414176414574474941417641");
+        sqEntity.setCpuCode("414176414574477447464242");
         sqEntity.setGnlist("record|asr|tts|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
