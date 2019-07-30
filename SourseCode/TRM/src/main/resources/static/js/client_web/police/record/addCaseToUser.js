@@ -10,6 +10,9 @@ var dqmodelssid=null;//当前所选的会议模板ssid
 var dqotheruserinfossid=null;//当前询问人(新增询问人回显)
 var dqotherworkssid=null;//当前询问人对应的工作单位
 
+var skipCheckbool=-1;//是否跳过检测：默认-1
+var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
+
 
 
 //开始笔录按钮
@@ -72,7 +75,7 @@ function addCaseToArraignment() {
     $("#startrecord_btn").attr("onclick","");
 
     //收集人员信息
-    var cardtypessid=$("#cards option:selected").val();
+    var  cardtypessid=$("#cards option:selected").val();
     var  beforename=$("#beforename").val();
     var  nickname= $("#nickname").val();
     var  age=$("#age").val();
@@ -173,39 +176,69 @@ function addCaseToArraignment() {
             addPolice_case:addPolice_case,
             otheruserinfoname:otheruserinfoname,
             otherworkname:otherworkname,
+            skipCheckbool:skipCheckbool,
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
+    $("#startrecord_btn").attr("onclick","addCaseToArraignment();");
     if(null!=data&&data.actioncode=='SUCCESS'){
-        var ssid=data.data;
-        if (isNotEmpty(ssid)){
-            var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
-            },function () {
-                var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-                if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                    setpageAction(INIT_CLIENT,nextparam.nextPageId);
-                    var url=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-                    parent.location.href=url+"?ssid="+ssid;
-                }
-                parent.layer.close(index);
-            });
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var recordssid=data.recordssid;
+            if (isNotEmpty(recordssid)&&toUrltype==1){
+                //跳转笔录制作
+                var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
+                },function () {
+                    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+                    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                        setpageAction(INIT_CLIENT,nextparam.nextPageId);
+                        var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+                        parent.location.href=toUrl+"?ssid="+recordssid;
+                    }
+                });
+            }else if(toUrltype==2){
+                //跳转笔录查看列表
+                /* $("#record_select", window.parent.document).click();*///获取不到直接跳页面
+                setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
+                var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
+                parent.location.href = url;
+            }
         }
     }else{
-        $("#startrecord_btn").attr("onclick","addCaseToArraignment();");
         var data2=data.data;
         if (isNotEmpty(data2)){
-            var admininfos_ssid=data2.admininfos_ssid;
-            if (isNotEmpty(admininfos_ssid)) {
-                for (let i = 0; i < admininfos_ssid.length; i++) {
-                    const ssid = admininfos_ssid[i];
-                    if (ssid==sessionadminssid) {
-                        parent.layer.msg("您有一份笔录正在制作中，请先结束上一份笔录");
-                    }else if (ssid==dqotheruserinfossid) {
-                        parent.layer.msg("询问人二已被选用");
-                    }else {
-                        parent.layer.msg(data.message);
+            var recordingbool=data2.recordingbool
+            var recordssid=data2.recordssid;
+            var checkStartRecordVO=data2.checkStartRecordVO;
+
+            if (null!=recordingbool&&recordingbool==true){
+                //存在笔录正在进行中，跳转笔录列表，给出提示：建议他先结束制作中的
+                if (isNotEmpty(checkStartRecordVO)){
+                    var msg=checkStartRecordVO.msg;
+                    if (isNotEmpty(msg)){
+                        parent.layer.confirm("<span style='color:red'>"+msg+"</span>", {
+                            btn: ['开始笔录',"查看笔录列表","取消"], //按钮
+                            shade: [0.1,'#fff'], //不显示遮罩
+                             btn1:function(index) {
+                                 console.log("跳转笔录制作中");
+                                 //保存
+                                 skipCheckbool = 1;
+                                 addCaseToArraignment();
+                                 parent.layer.close(index);
+                             },
+                            btn2: function(index) {
+                                console.log("跳转笔录列表")
+                                toUrltype=2;
+                                skipCheckbool =1;
+                                addCaseToArraignment();
+                                parent.layer.close(index);
+                            },
+                             btn3: function(index) {
+                                 parent.layer.close(index);
+                             }
+                         });
                     }
                 }
             }else {
@@ -1120,11 +1153,18 @@ function getOtherworknameList() {
     dqotherworkssid=null;
     var otherworknamelike=[];
     var otherworkname = $("#otherworkname").val();
+
+    otherworkname = otherworkname.replace(/\s*/g,"");
+
+
     if (isNotEmpty(workunits)){
         for (var i = 0; i < workunits.length; i++) {
             var w = workunits[i];
             if (w.workname.indexOf(otherworkname) >= 0) {
                 otherworknamelike.push(w);
+            }
+            if (w.workname==otherworkname) {
+                dqotherworkssid=w.ssid;
             }
         }
         if (isNotEmpty(otherworknamelike)){
@@ -1155,11 +1195,15 @@ function getOtheruserinfosList() {
     dqotheruserinfossid=null;
     var otheruserinfoslike=[];
     var otheruserinfosval = $("#otheruserinfos").val();
+    otheruserinfosval = otheruserinfosval.replace(/\s*/g,"");
     if (isNotEmpty(otheruserinfos)){
         for (var i = 0; i < otheruserinfos.length; i++) {
             var o = otheruserinfos[i];
             if (o.username.indexOf(otheruserinfosval) >= 0) {
                 otheruserinfoslike.push(o);
+            }
+            if (otheruserinfosval==o.username){
+                dqotheruserinfossid=o.ssid;
             }
         }
         if (isNotEmpty(otheruserinfoslike)){
@@ -1304,6 +1348,7 @@ function callbackgetMc_model(data){
        var data=data.data;
        if (isNotEmpty(data)){
            modelList=data;
+           console.log(modelList)
            if (isNotEmpty(modelList)&&isNotEmpty(model_index)){
                $("#modelList").html("");
                for (let i = 0; i < modelList.length; i++) {

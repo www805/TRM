@@ -572,6 +572,21 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    //改变笔录状态
+    @RequestMapping("/changeboolRecord")
+    public  RResult changeboolRecord(@RequestBody ReqParam<ChangeboolRecordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.changeboolRecord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
     /**
      * 授权客户端的功能列表

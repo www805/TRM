@@ -124,7 +124,7 @@ function callbackgetRecordByCasessid(data) {
                 }else  if (datum.recordbool==2){
                     bool="<span style='color: #00FF00 ' bool='2'>已完成</span>";
                 }else  if (datum.recordbool==0){
-                    bool="<span style='color: #cccccc ' bool='2'>未开始</span>";
+                    bool="<span style='color: #cccccc ' bool='0'>未开始</span>";
                 }else {
                     bool="未知";
                 }

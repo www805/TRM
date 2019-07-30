@@ -90,8 +90,8 @@ function getactionid_manage() {
         main_gotoupdateServerconfig:"main_gotoupdateServerconfig",
         main_getNavList:"main_getNavList",
 
-        addCaseToUser_addCaseToArraignment:"addCaseToUser_addCaseToArraignment",
-        addCaseToUser_towaitRecord:"addCaseToUser_towaitRecord",
+
+
 
         updateServerconfig_getServerconfig:"updateServerconfig_getServerconfig",
         updateServerconfig_updateServerconfig:"updateServerconfig_updateServerconfig",
@@ -102,6 +102,8 @@ function getactionid_manage() {
         recordTypeList_updateRecordtype:"recordTypeList_updateRecordtype",
         recordTypeList_addRecordtype:"recordTypeList_addRecordtype",
 
+        addCaseToUser_addCaseToArraignment:"addCaseToUser_addCaseToArraignment",
+        addCaseToUser_towaitRecord:"addCaseToUser_towaitRecord",
         addCaseToUser_getRecordtypes:"addCaseToUser_getRecordtypes",
         addCaseToUser_getNationalitys:"addCaseToUser_getNationalitys",
         addCaseToUser_getNationals:"addCaseToUser_getNationals",
@@ -115,6 +117,7 @@ function getactionid_manage() {
         addCaseToUser_addUser:"addCaseToUser_addUser",//已废弃
         addCaseToUser_getDefaultMtModelssid:"addCaseToUser_getDefaultMtModelssid",
         addCaseToUser_getWorkunits:"addCaseToUser_getWorkunits",
+        addCaseToUser_torecordIndex:"addCaseToUser_torecordIndex",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

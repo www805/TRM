@@ -29,6 +29,15 @@ public class AddCaseToArraignmentParam {
     private String otheruserinfoname;//新增询问人二的名称
     private String otherworkname;//新增询问人二的对应的工作单位
 
+    private Integer skipCheckbool;//是否跳过检测1跳过-1不跳过
+
+    public Integer getSkipCheckbool() {
+        return skipCheckbool;
+    }
+
+    public void setSkipCheckbool(Integer skipCheckbool) {
+        this.skipCheckbool = skipCheckbool;
+    }
 
     public String getOtherworkssid() {
         return otherworkssid;

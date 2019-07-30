@@ -9,6 +9,8 @@ public class CheckStartRecordVO {
 
     private String userinfo_ssid;//被占用的被询问人
 
+    private String msg;//检测返回提示
+
     public String getMtmodel_ssid() {
         return mtmodel_ssid;
     }
@@ -31,5 +33,13 @@ public class CheckStartRecordVO {
 
     public void setUserinfo_ssid(String userinfo_ssid) {
         this.userinfo_ssid = userinfo_ssid;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

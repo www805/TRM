@@ -54,19 +54,22 @@ function getRecords_init(currPage,pageSize) {
     var recordtypessid=$("#recordtypessid option:selected").val();
     var recordname=$("#recordname").val();
     var recordbool=$("#recordbool option:selected").val();
+    var creatorbool=$("#creatorbool").prop("checked");
     var data={
         token:INIT_CLIENTKEY,
         param:{
             recordtypessid:recordtypessid,
             recordname:recordname,
             recordbool:recordbool,
+            creatorbool:creatorbool,
             currPage:currPage,
             pageSize:pageSize
         }
     };
     ajaxSubmitByJson(url,data,callbackgetRecords);
 }
-function getRecords(recordtypessid,recordname,recordbool,currPage,pageSize){
+function getRecords(recordtypessid,recordname,recordbool,creatorbool,currPage,pageSize){
+     recordbool=$("#recordbool option:selected").val();//等于0的时候后台没有返回
     var url=getActionURL(getactionid_manage().recordIndex_getRecords);
     var data={
         token:INIT_CLIENTKEY,
@@ -74,6 +77,7 @@ function getRecords(recordtypessid,recordname,recordbool,currPage,pageSize){
             recordtypessid:recordtypessid,
             recordname:recordname,
             recordbool:recordbool,
+            creatorbool:creatorbool,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -85,6 +89,7 @@ function callbackgetRecords(data) {
         if (isNotEmpty(data)){
             records=data.data.pagelist;
             pageshow(data);
+
             $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
             var bool= $("#recordtitle").attr("recordtitle_first");
@@ -165,7 +170,7 @@ function ggetRecordsByParam(){
     }else if (len==2){
         getRecords('',arguments[0],arguments[1]);
     }else if(len>2){
-        getRecords(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6],arguments[7]);
+        getRecords(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5]);
     }
 
 }
@@ -178,18 +183,20 @@ function showpagetohtml(){
         var recordtypessid=pageparam.recordtypessid;
         var recordname=pageparam.recordname;
         var recordbool=pageparam.recordbool;
+        var creatorbool=pageparam.creatorbool;
 
         var arrparam=new Array();
         arrparam[0]=recordtypessid;
         arrparam[1]=recordname;
         arrparam[2]=recordbool;
+        arrparam[3]=creatorbool;
         showpage("paging",arrparam,'ggetRecordsByParam',currPage,pageCount,pageSize);
     }
 
 }
 
 //跳转笔录编辑页
-function towaitRecord(recordssid,recordbool,creator) {
+function towaitRecord(recordssid,recordbool,creator,creatorname) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
@@ -199,12 +206,14 @@ function towaitRecord(recordssid,recordbool,creator) {
             var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
             window.location.href=url+"?ssid="+recordssid;
         }else {
-            layer.msg("笔录正在制作中...")
+            layer.msg(creatorname+"正在制作笔录...")
         }
     } else{
         var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;
     }
 }
+
+
 
 

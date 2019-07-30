@@ -547,32 +547,15 @@ function startMC() {
             }
 
 
-            var tdList=[];
-            var user1={
-                username:recordUserInfos.username
-                ,userssid:recordUserInfos.userssid
-                ,grade:2 //1主麦，2副麦，有时需要一些特殊的处理(主麦只有一个)
-            };
-            var user2={
-                username:recordUserInfos.adminname
-                ,userssid:recordUserInfos.adminssid
-                ,grade:1
-            };
-
-            tdList.push(user1);
-            tdList.push(user2);
-
             var ptdjParam_out=getptdjinfo();
 
             var url=getUrl_manage().startRercord;
             var data={
                 token:INIT_CLIENTKEY,
                 param:{
-                    meetingtype: 2       //会议类型，1视频/2音频
-                    ,tdList:tdList
-                    ,startRecordAndCaseParam:startRecordAndCaseParam
-                    ,recordssid:recordssid,
-                    ptdjParam_out:ptdjParam_out,
+                     startRecordAndCaseParam:startRecordAndCaseParam
+                    ,recordssid:recordssid
+                    ,ptdjParam_out:ptdjParam_out,
                 }
             };
             ajaxSubmitByJson(url, data, callbackstartMC);
@@ -590,6 +573,7 @@ function startMC() {
         });
     }
 }
+
 function callbackstartMC(data) {
     layer.close(startMC_index);
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -597,14 +581,13 @@ function callbackstartMC(data) {
         $("#startrecord").css("display","block");
         var data=data.data;
         if (isNotEmpty(data)){
-            var polygraphnum=data.polygraphnum==null?0:data.polygraphnum;
-            var recordnum=data.recordnum==null?0:data.recordnum;
-            var asrnum=data.asrnum==null?0:data.asrnum;
+            var startMCVO=data.startMCVO;
+            var polygraphnum=startMCVO.polygraphnum==null?0:startMCVO.polygraphnum;
+            var recordnum=startMCVO.recordnum==null?0:startMCVO.recordnum;
+            var asrnum=startMCVO.asrnum==null?0:startMCVO.asrnum;
 
-            var mtssiddata=data.mtssid;
-             useretlist=data.useretlist;
-
-
+            var mtssiddata=startMCVO.mtssid;
+             useretlist=startMCVO.useretlist;
             if (isNotEmpty(useretlist)) {
                 for (var i = 0; i < useretlist.length; i++) {
                     var useret = useretlist[i];
@@ -628,19 +611,6 @@ function callbackstartMC(data) {
             layer.msg(con, {time: 2000});
         }
     }else{
-        if (null!=data.data&&data.data==-1){
-            $("#record_img img").css("display","none");
-            $("#endrecord").css("display","block");
-            $("#pauserecord").attr("onclick","");
-        }else {
-            $("#record_img img").css("display","none");
-            $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
-            layui.use(['layer','element','form'], function(){
-                var layer=layui.layer;
-                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
-            });
-        }
-
         $("#MtState").text("未启动");
         $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
         $("#AsrState").text("未启动");
@@ -650,7 +620,41 @@ function callbackstartMC(data) {
         $("#PolygraphState").text("未启动");
         $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
 
+
+        var data2=data.data;
+        if (isNotEmpty(data2)){
+            var checkStartRecordVO=data2.checkStartRecordVO;
+            var recordbool=data2.recordbool; //笔录开始状态
+            if (null!=recordbool&&recordbool==true){
+                $("#record_img img").css("display","none");
+                $("#endrecord").css("display","block");
+                $("#pauserecord").attr("onclick","");
+            }else {
+                $("#record_img img").css("display","none");
+                $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+                layui.use(['layer','element','form'], function(){
+                    var layer=layui.layer;
+                    layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                });
+            }
+
+            if (null!=checkStartRecordVO){
+                var msg=checkStartRecordVO.msg;
+                parent.layer.confirm("笔录开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的笔录", {
+                    btn: ['好的'], //按钮
+                    shade: [0.1,'#fff'], //不显示遮罩
+                    closeBtn:0,
+                    shade: [0.1,'#fff'], //不显示遮罩
+                }, function(index){
+                    parent.layer.close(index);
+                });
+                return;
+            }
+        }
+
+
         layer.msg("笔录开启失败");
+
     }
 }
 

@@ -60,16 +60,16 @@
                <div style="margin-top: 5px">
                    <label class="layui-form-label" style="width: auto;">关键字</label>
                    <div class="layui-input-inline" style="float: left; ">
-                       <input  type="text" name="recordname" id="recordname" style="width: 100px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
+                       <input  type="text" name="recordname" id="recordname" style="width: 80px;" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
                    </div>
                    <label class="layui-form-label" style="width: auto;">类型</label>
-                   <div class="layui-input-inline" style="width: 100px;float: left;margin-right: 10px;">
+                   <div class="layui-input-inline" style="width: 80px;float: left;margin-right: 10px;">
                        <select name="recordtypessid" lay-verify="" id="recordtypessid"  lay-filter="change_recordtypessid">
                            <option value="">全部</option>
                        </select>
                    </div>
                    <label class="layui-form-label" style="width: auto;">状态</label>
-                   <div class="layui-input-inline" style="width: 100px;float: left;margin-right: 20px;">
+                   <div class="layui-input-inline" style="width: 80px;float: left;margin-right: 20px;">
                        <select name="recordbool" lay-verify="" id="recordbool" lay-filter="change_recordbool" >
                            <option value="">全部</option>
                            <option value="0">未开始</option>
@@ -77,8 +77,9 @@
                            <option value="2">已完成</option>
                        </select>
                    </div>
+                   <input type="checkbox" style="width: 80px;" name="creatorbool" lay-skin="primary" title="只看自己"  id="creatorbool" lay-filter="change_creatorbool">
 
-                   <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,15);">
+                   <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,10);">
                </div>
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
                【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
@@ -124,10 +125,12 @@
         {{#  var recordbool=value.recordbool;var recordbooltext; }}
         {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
 
-        {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var caseAndUserInfo=value.caseAndUserInfo;var creator=null; if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator;}  }}
-        <tr onclick="setproblems('{{value.ssid}}',this)"   ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}');" style="background-color: {{backgroundcolor}}">
+        {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var caseAndUserInfo=value.caseAndUserInfo;var creator=null;var creatorname="";var sessionssid="[[${session.MANAGE_CLIENT.ssid}]]";var showname=""; if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator;creatorname=caseAndUserInfo.creatorname; if(sessionssid!=creator){showname=creatorname+"：";} }  }}
+
+        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}');" style="background-color: {{backgroundcolor}}">
             <td >{{value.recordname==null?"":value.recordname}}</td>
-            <td >{{recordbooltext}}</td>
+            <td title="创建人：{{creatorname}}" style="text-align: right;padding-right: 0">{{showname}}</td>
+            <td style="text-align: left;padding-left: 0">{{recordbooltext}}</td>
         </tr>
         {{#  }); }}
         </tbody>
@@ -146,6 +149,7 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var sessionusername=[[${session.MANAGE_CLIENT.username}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -164,6 +168,9 @@
             ggetRecordsByParam();
         });
         form.on('select(change_recordbool)', function(data){
+            ggetRecordsByParam();
+        });
+        form.on('checkbox(change_creatorbool)', function(data){
             ggetRecordsByParam();
         });
     });

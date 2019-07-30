@@ -87,12 +87,12 @@ public class OutAction extends BaseAction {
      * @return
      */
     @RequestMapping("/startRercord")
-    public RResult startRercord(@RequestBody ReqParam<StartRercordParam> param) {
+    public RResult startRercord(@RequestBody ReqParam<StartRercordParam> param,HttpSession session) {
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");
         } else {
-            result = outService.startRercord(result, param);
+            result = outService.startRercord(result, param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

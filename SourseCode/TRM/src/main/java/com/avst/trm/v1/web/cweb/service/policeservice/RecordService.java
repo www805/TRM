@@ -46,6 +46,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.sun.net.httpserver.HttpsConfigurator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -139,6 +140,7 @@ public class RecordService extends BaseService {
          Integer recordbool=getRecordsParam.getRecordbool();//状态
          String recordname=getRecordsParam.getRecordname();//笔录名
          String recordtypessid=getRecordsParam.getRecordtypessid();//笔录类型
+         boolean creatorbool=getRecordsParam.isCreatorbool();
 
         EntityWrapper recordparam=new EntityWrapper();
         if (StringUtils.isNotBlank(recordtypessid)){
@@ -152,9 +154,11 @@ public class RecordService extends BaseService {
             recordparam.eq("r.recordbool",recordbool);
         }
 
+        if (creatorbool){
+            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+            recordparam.eq("c.creator",user.getSsid());
+        }
 
-       /* AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
-        recordparam.eq("c.creator",user.getSsid());*/
 
 
         int count = police_recordMapper.countgetRecords(recordparam);
@@ -204,6 +208,13 @@ public class RecordService extends BaseService {
                     CaseAndUserInfo caseAndUserInfo = police_caseMapper.getCaseByRecordSsid(caseParam);
                     if (null!=caseAndUserInfo){
                         caseAndUserInfo.setOccurrencetime_format(caseAndUserInfo.getOccurrencetime());
+                        if(StringUtils.isNotEmpty(caseAndUserInfo.getCreator())){
+                            //查出创建人的名称ew
+                            Base_admininfo base_admininfo = new Base_admininfo();
+                            base_admininfo.setSsid(caseAndUserInfo.getCreator());
+                            Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
+                            caseAndUserInfo.setCreatorname(admininfo.getUsername());
+                        }
                         record.setCaseAndUserInfo(caseAndUserInfo);
                     }
 
@@ -283,8 +294,8 @@ public class RecordService extends BaseService {
             return;
         }
 
-        if (police_record.getRecordbool()==2||police_record.getRecordbool()==4){
-            //2已完成或者4已删除状态
+        if (police_record.getRecordbool()==2||police_record.getRecordbool()==-1){
+            //2已完成或者-1已删除状态
             result.setMessage("该笔录已结束...");
             LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
             return;
@@ -769,12 +780,15 @@ public class RecordService extends BaseService {
     }
 
     public void addCaseToArraignment(RResult result, ReqParam<AddCaseToArraignmentParam> param, HttpSession session){
+        AddCaseToArraignmentVO addCaseToArraignmentVO=new AddCaseToArraignmentVO();
+
+
         AddCaseToArraignmentParam addCaseToArraignmentParam=param.getParam();
         if (null==addCaseToArraignmentParam){
             result.setMessage("参数为空");
             return;
         }
-
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
         String recordname=addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
@@ -786,6 +800,16 @@ public class RecordService extends BaseService {
         String askobj=addCaseToArraignmentParam.getAskobj();
         String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();
         String recordplace=addCaseToArraignmentParam.getRecordplace();
+        Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();
+
+        UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
+        Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
+
+        String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
+        String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
+        String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
+        String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
+
 
         if (StringUtils.isBlank(mtmodelssid)){
             //会议模板为空，直接取默认的
@@ -797,29 +821,30 @@ public class RecordService extends BaseService {
             }
         }
 
-        UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
-        Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
 
-        String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
-        String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
-        String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
-        String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
-
-
-        List<String> adminssids=new ArrayList<>();
-        adminssids.add(otheradminssid);
-        adminssids.add(adminssid);
-        CheckStartRecordParam checkStartRecordParam=new CheckStartRecordParam();
-        checkStartRecordParam.setMtmodel_ssid(mtmodelssid);
-        checkStartRecordParam.setUserinfo_ssid(userssid);
-        checkStartRecordParam.setAdmininfos_ssid(adminssids);
-        boolean bool = checkRecordForUser(result,checkStartRecordParam);
-        if (!bool){
-            CheckStartRecordVO vo=gson.fromJson(gson.toJson(result.getData()),CheckStartRecordVO.class);
-            result.setData(vo);
-            return;
+        if (skipCheckbool==-1){
+            List<String> adminssids=new ArrayList<>();
+            if (StringUtils.isNotBlank(otheradminssid)){
+                adminssids.add(otheradminssid);
+            }
+            if (StringUtils.isNotBlank(adminssid)){
+                adminssids.add(adminssid);
+            }
+            CheckStartRecordParam checkStartRecordParam=new CheckStartRecordParam();
+            checkStartRecordParam.setMtmodel_ssid(mtmodelssid);
+            checkStartRecordParam.setUserinfo_ssid(userssid);
+            checkStartRecordParam.setAdmininfos_ssid(adminssids);
+            RResult checkrecordforuser_rr=new RResult();
+            Integer[] recordbools=new Integer[]{1,0};
+            boolean bool = checkRecordForUser(checkrecordforuser_rr,checkStartRecordParam,user.getSsid(),recordbools);
+            if (!bool){
+                CheckStartRecordVO vo=gson.fromJson(gson.toJson(checkrecordforuser_rr.getData()),CheckStartRecordVO.class);
+                addCaseToArraignmentVO.setCheckStartRecordVO(vo);
+                addCaseToArraignmentVO.setRecordingbool(true);
+                result.setData(addCaseToArraignmentVO);
+                 return;
+            }
         }
-
 
 
 
@@ -899,7 +924,6 @@ public class RecordService extends BaseService {
             Base_admininfo base_admininfo=new Base_admininfo();
             base_admininfo.setSsid(OpenUtil.getUUID_32());
             base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
-            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
             base_admininfo.setCreator(user.getSsid());
             base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
             base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
@@ -917,7 +941,7 @@ public class RecordService extends BaseService {
         Police_record record=new Police_record();
         record.setSsid(OpenUtil.getUUID_32());
         record.setCreatetime(new Date());
-        record.setRecordbool(0);//1进行中2未开始
+        record.setRecordbool(0);//1进行中0未开始
         record.setRecordtypessid(recordtypessid);
         record.setRecordname(recordname);
         int insertrecord_bool=police_recordMapper.insert(record);
@@ -987,8 +1011,9 @@ public class RecordService extends BaseService {
             }
         }
 
+        addCaseToArraignmentVO.setRecordssid(record.getSsid());
+         result.setData(addCaseToArraignmentVO);//返回开始笔录的ssid
 
-         result.setData(record.getSsid());//返回开始笔录的ssid
         changeResultToSuccess(result);
         return;
     }
@@ -2226,7 +2251,7 @@ public class RecordService extends BaseService {
             List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
             if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                 for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
-                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())!=2){//未完成的
+                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1||Integer.valueOf(arraignmentAndRecord.getRecordbool())==2){//未完成的
                         ingsize++;
                     }
                 }
@@ -2252,6 +2277,44 @@ public class RecordService extends BaseService {
         return;
     }
 
+    public void changeboolRecord(RResult result,ReqParam<ChangeboolRecordParam> param){
+        ChangeboolRecordParam changeboolRecordParam=param.getParam();
+        if (null==changeboolRecordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=changeboolRecordParam.getRecordssid();
+        Integer recordbool=changeboolRecordParam.getRecordbool();
+        LogUtil.intoLog(this.getClass(),"changeboolRecord__参数：recordssid__"+recordssid+"__recordbool__"+recordbool);
+        if (StringUtils.isBlank(recordssid)||null==recordbool){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        Police_record record=new Police_record();
+        record.setSsid(recordssid);
+        record=police_recordMapper.selectOne(record);
+        if (null!=record){
+            Integer oldrecordbool=record.getRecordbool();
+            if (oldrecordbool==2){
+                result.setMessage("该笔录正在进行中，请先结束");
+                return;
+            }
+
+            EntityWrapper entityWrapper=new EntityWrapper();
+            entityWrapper.eq("ssid",recordssid);
+            record.setSsid(recordssid);
+            record.setRecordbool(recordbool);
+            int  police_recordMapper_updatebool=police_recordMapper.update(record,entityWrapper);
+            if (police_recordMapper_updatebool>0){
+                result.setData(police_recordMapper_updatebool);
+                changeResultToSuccess(result);
+            }
+        }
+        return;
+    }
+
 
 
     public void gnlist(RResult result,ReqParam param){
@@ -2268,7 +2331,7 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public boolean checkRecordForUser(RResult result,CheckStartRecordParam param){
+    public boolean checkRecordForUser(RResult result, CheckStartRecordParam param, String session_adminssid,Integer[] recordbools ){
         CheckStartRecordVO vo=new CheckStartRecordVO();
 
         if (null==param){
@@ -2292,7 +2355,12 @@ public class RecordService extends BaseService {
 
         //开始收集所有正在参与制作笔录的人员（询问人和被询问人，记录人员暂不计算）
         EntityWrapper recordparam=new EntityWrapper();
-        recordparam.eq("recordbool",1).or().eq("recordbool",0);//获取进行中的笔录或者未开始的笔录
+        if (null!=recordbools&&recordbools.length==1){
+            recordparam.eq("recordbool",recordbools[0]);
+         }else if(null!=recordbools&&recordbools.length==2){
+        recordparam.eq("recordbool",recordbools[0]).or().eq("recordbool",recordbools[1]);
+         }
+
         List<Police_record> list=police_recordMapper.selectList(recordparam);
         if (null!=list&&list.size()>0){
             for (Police_record police_record : list) {
@@ -2331,8 +2399,8 @@ public class RecordService extends BaseService {
                     for (String s : userssidList) {
                         if(s.equals(userinfo)){
                             vo.setUserinfo_ssid(userinfo);
+                            vo.setMsg("*该被询问人正在被讯问中");
                             result.setData(vo);
-                            result.setMessage("该被询问人正在被讯问中");
                             LogUtil.intoLog(this.getClass(),"该被询问人已在笔录中__"+userinfo);
                             return false;
                         }
@@ -2347,11 +2415,15 @@ public class RecordService extends BaseService {
                     List<String> admininfos_ssid=new ArrayList<>();
                     for (String s : adminssidList) {
                         for (String admininfo : admininfos) {
-                            if(s.equals(admininfo)){
+                            if(null!=admininfo&&s!=null&&s.equals(admininfo)){
+                                if (session_adminssid==admininfo){
+                                    vo.setMsg("*您有一份笔录正在制作中");
+                                }else {
+                                    vo.setMsg("*询问人二已被选用");
+                                }
                                 admininfos_ssid.add(admininfo);
                                 vo.setAdmininfos_ssid(admininfos_ssid);
                                 result.setData(vo);
-                                result.setMessage("所选询问人已被选用");
                                 LogUtil.intoLog(this.getClass(),"该询问人已在笔录中__"+admininfo);
                                 return false;
                             }
@@ -2368,8 +2440,8 @@ public class RecordService extends BaseService {
                     for (String s : mtmodelssidList) {
                         if(s.equals(mtmodelssid)){
                             vo.setMtmodel_ssid(mtmodelssid);
+                            vo.setMsg("*所选模板已被占用");
                             result.setData(vo);
-                            result.setMessage("所选模板已被使用");
                             LogUtil.intoLog(this.getClass(),"该模板已在笔录中__"+mtmodelssid);
                             return false;
                         }

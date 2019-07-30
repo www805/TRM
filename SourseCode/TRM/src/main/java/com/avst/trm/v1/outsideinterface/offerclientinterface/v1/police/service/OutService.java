@@ -1,12 +1,16 @@
 package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.*;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordUserInfos;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.JacksonUtil;
@@ -38,14 +42,17 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPo
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
+import com.avst.trm.v1.web.cweb.req.policereq.CheckStartRecordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
+import com.avst.trm.v1.web.cweb.vo.policevo.CheckStartRecordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.netflix.ribbon.proxy.annotation.Http;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -84,121 +91,218 @@ public class OutService  extends BaseService {
     private Gson gson = new Gson();
 
 
-    public RResult startRercord(RResult result, ReqParam<StartRercordParam> param) {
+    public RResult startRercord(RResult result, ReqParam<StartRercordParam> param, HttpSession session) {
+        StartRercordVO vo=new StartRercordVO();
+
+
         StartRercordParam startRercordParam=gson.fromJson(gson.toJson(param.getParam()), StartRercordParam.class);
         if (null == startRercordParam) {
             LogUtil.intoLog(this.getClass(),"参数为空__");
             result.setMessage("参数为空");
             return result;
         }
-
-        //开始进行片头叠加
-        PtdjParam_out ptdjParam_out=startRercordParam.getPtdjParam_out();
-        if (null!=ptdjParam_out){
-            ptdjParam_out.setFdType(FDType.FD_AVST);
-            RResult ptdj_rr=new RResult();
-            ReqParam ptdj_param=new ReqParam();
-            ptdj_param.setParam(ptdjParam_out);
-            recordService.ptdj(ptdj_rr,ptdj_param);
-            if (null!=ptdj_rr&&ptdj_rr.getActioncode().equals(Code.SUCCESS.toString())){
-                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求成功__");
-            }else {
-                    String msg=ptdj_rr==null?"":ptdj_rr.getMessage();
-                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求失败__"+msg);
-            }
-        }
-
-
-
-
+        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
         String recordssid=startRercordParam.getRecordssid();
         String mtmodelssid=null;//会议模板ssid
+        StartRecordAndCaseParam startRecordAndCaseParam=startRercordParam.getStartRecordAndCaseParam();
 
-        //判断是否开过会议
-        Police_arraignment police_arraignment=new Police_arraignment();
+
+        RecordUserInfos recordUserInfos=new RecordUserInfos();
         if (StringUtils.isNotBlank(recordssid)){
+            EntityWrapper recorduserinfosParam = new EntityWrapper();
+            recorduserinfosParam.eq("a.recordssid", recordssid);
+            recordUserInfos = police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+        }
+
+        if (null!=recordUserInfos){
+            //判断是否开过会议
+            Police_arraignment police_arraignment=new Police_arraignment();
             police_arraignment.setRecordssid(recordssid);
             police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
-            if (null!=police_arraignment){
-                String mtssid=police_arraignment.getMtssid();
-                mtmodelssid=police_arraignment.getMtmodelssid();
-                if (StringUtils.isNotBlank(mtssid)){
-                    result.setData(-1);
-                    result.setMessage("该案件已开启过会议");
-                    return result;
+                if (null!=police_arraignment){
+                    String mtssid=police_arraignment.getMtssid();
+                    mtmodelssid=police_arraignment.getMtmodelssid();
+                    if (StringUtils.isNotBlank(mtssid)){
+                        vo.setRecordbool(true);
+                        result.setData(vo);
+                        result.setMessage("该案件已开启过会议");
+                        return result;
+                    }
+                }
+
+            //未指定模板使用默认模板
+            if (StringUtils.isBlank(mtmodelssid)){
+                Base_type base_type=new Base_type();
+                base_type.setType(CommonCache.getCurrentServerType());
+                base_type=base_typeMapper.selectOne(base_type);
+                if (null!=base_type){
+                    mtmodelssid=base_type.getMtmodelssid();
                 }
             }
-        }
 
-        if (StringUtils.isBlank(mtmodelssid)){
-            Base_type base_type=new Base_type();
-            base_type.setType(CommonCache.getCurrentServerType());
-            base_type=base_typeMapper.selectOne(base_type);
-            if (null!=base_type){
-                mtmodelssid=base_type.getMtmodelssid();
+
+            //先检测是否可以开始笔录
+            List<String> adminssids=new ArrayList<>();
+            adminssids.add(recordUserInfos.getOtheradminssid());
+            adminssids.add(recordUserInfos.getAdminssid());
+            CheckStartRecordParam checkStartRecordParam=new CheckStartRecordParam();
+            checkStartRecordParam.setMtmodel_ssid(mtmodelssid);
+            checkStartRecordParam.setUserinfo_ssid(recordUserInfos.getUserssid());
+            checkStartRecordParam.setAdmininfos_ssid(adminssids);
+            RResult checkrecordforuser_rr=new RResult();
+            Integer[] recordbools=new Integer[]{1};
+            boolean bool = recordService.checkRecordForUser(checkrecordforuser_rr,checkStartRecordParam,user.getSsid(),recordbools);
+            if (!bool){
+                CheckStartRecordVO checkStartRecordVO=gson.fromJson(gson.toJson(checkrecordforuser_rr.getData()),CheckStartRecordVO.class);
+                vo.setCheckStartRecordVO(checkStartRecordVO);
+                result.setData(vo);
+                return result;
             }
-        }
-        StartMCParam_out startMCParam_out=new StartRercordParam();
-        startMCParam_out.setMcType(MCType.AVST);
-        startMCParam_out.setModelbool(1);
-        startMCParam_out.setMtmodelssid(mtmodelssid);//查询会议模板ssid
-        startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
 
 
-        List<TdAndUserAndOtherParam> tdList=startRercordParam.getTdList();
-        if (null!=tdList&&tdList.size()>0){
-            for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
-                tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
-                tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
-                tdAndUserAndOtherParam.setPolygraphtype(PHType.CMCROSS);
-                tdAndUserAndOtherParam.setUserecord(1);//使用录像
-                tdAndUserAndOtherParam.setUsepolygraph(1);//使用测谎仪
-                tdAndUserAndOtherParam.setUseasr(1);//使用语音识别
+            //开始进行片头叠加
+            PtdjParam_out ptdjParam_out=startRercordParam.getPtdjParam_out();
+            if (null!=ptdjParam_out){
+                ptdjParam_out.setFdType(FDType.FD_AVST);
+                RResult ptdj_rr=new RResult();
+                ReqParam ptdj_param=new ReqParam();
+                ptdj_param.setParam(ptdjParam_out);
+                recordService.ptdj(ptdj_rr,ptdj_param);
+                if (null!=ptdj_rr&&ptdj_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求成功__");
+                }else {
+                    String msg=ptdj_rr==null?"":ptdj_rr.getMessage();
+                    LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求失败__"+msg);
+                }
             }
-            startMCParam_out.setTdList(tdList);
-        }
 
-        StartRecordAndCaseParam startRecordAndCaseParam=startRercordParam.getStartRecordAndCaseParam();
-        if (null!=startRecordAndCaseParam){
+            //收集参数进行笔录
+            //根据模板获取模板信息
+            List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+            GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+            getMc_modelParam_out.setMcType(MCType.AVST);
+            getMc_modelParam_out.setModelssid(mtmodelssid);
+            ReqParam reqParam=new ReqParam();
+            reqParam.setParam(getMc_modelParam_out);
+            try {
+                RResult rr = meetingControl.getMc_model(reqParam);
+                if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                }else{
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            Integer userecord=-1;
+
+            Integer useasr1=-1;
+            Integer usepolygraph1=-1;
+            Integer useasr2=-1;
+            Integer usepolygraph2=-1;
+            if (null!=modelAlls&&modelAlls.size()==1){
+                Avstmt_modelAll modelAll=modelAlls.get(0);
+                userecord=modelAll.getUserecord();
+                List<Avstmt_modeltdAll> avstmt_modeltdAlls=modelAll.getAvstmt_modeltdAlls(); 
+                if (null!=avstmt_modeltdAlls&&avstmt_modeltdAlls.size()>0){
+                    for (Avstmt_modeltdAll avstmt_modeltdAll : avstmt_modeltdAlls) {
+                        if (avstmt_modeltdAll.getGrade()==1){
+                            useasr1=avstmt_modeltdAll.getUseasr();
+                            usepolygraph1=avstmt_modeltdAll.getUsepolygraph();
+                        }else if (avstmt_modeltdAll.getGrade()==2){
+                            useasr2=avstmt_modeltdAll.getUseasr();
+                            usepolygraph2=avstmt_modeltdAll.getUsepolygraph();
+                        }
+                    }
+                }
+            }
+
+
+
+
+
+            StartMCParam_out startMCParam_out=new StartMCParam_out();
+            startMCParam_out.setMcType(MCType.AVST);
+            startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
+            startMCParam_out.setAsrtype(ASRType.AVST);
+            startMCParam_out.setModelbool(1);//默认使用模板
+            startMCParam_out.setMeetingtype(2);//会议类型，1视频/2音频
+            startMCParam_out.setMtmodelssid(mtmodelssid);//查询会议模板ssid
             startMCParam_out.setStartRecordAndCaseParam(startRecordAndCaseParam);
-        }
+
+            List<TdAndUserAndOtherParam> tdList=new ArrayList<>();
+            TdAndUserAndOtherParam tdAndUserAndOtherParam1=new TdAndUserAndOtherParam();
+            tdAndUserAndOtherParam1.setGrade(1);//主麦：默认询问人一
+            tdAndUserAndOtherParam1.setUserssid(recordUserInfos.getAdminssid());
+            tdAndUserAndOtherParam1.setUsername(recordUserInfos.getAdminname());
+            tdAndUserAndOtherParam1.setUsepolygraph(usepolygraph1);//使用测谎仪
+            tdAndUserAndOtherParam1.setUseasr(useasr1);//使用语音识别
+
+            TdAndUserAndOtherParam tdAndUserAndOtherParam2=new TdAndUserAndOtherParam();
+            tdAndUserAndOtherParam2.setGrade(2);//副麦：默认被询问人
+            tdAndUserAndOtherParam2.setUserssid(recordUserInfos.getUserssid());
+            tdAndUserAndOtherParam2.setUsername(recordUserInfos.getUsername());
+            tdAndUserAndOtherParam2.setUsepolygraph(usepolygraph2);//使用测谎仪
+            tdAndUserAndOtherParam2.setUseasr(useasr2);//使用语音识别
+
+
+            tdList.add(tdAndUserAndOtherParam1);
+            tdList.add(tdAndUserAndOtherParam2);
 
 
 
-        ReqParam<StartMCParam_out> param1=new ReqParam<>();
-        param1.setParam(startMCParam_out);
-        try {
-           RResult rr = meetingControl.startMC(param1);
-            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                StartMCVO startMCVO=gson.fromJson(gson.toJson(rr.getData()), StartMCVO.class);
-                String mtssid=startMCVO.getMtssid();
+            if (null!=tdList&&tdList.size()>0){
+                for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
+                    tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
+                    tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
+                    tdAndUserAndOtherParam.setPolygraphtype(PHType.CMCROSS);
+                    tdAndUserAndOtherParam.setUserecord(userecord);//使用录像
+                }
+                startMCParam_out.setTdList(tdList);
+            }
 
-                //根据recordssid获取提讯
+            ReqParam<StartMCParam_out> param1=new ReqParam<>();
+            param1.setParam(startMCParam_out);
+            try {
+                RResult rr = meetingControl.startMC(param1);
+                if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                    StartMCVO startMCVO=gson.fromJson(gson.toJson(rr.getData()), StartMCVO.class);
+                    String mtssid=startMCVO.getMtssid();
+
+                    //根据recordssid获取提讯
                     if (null!=police_arraignment){
                         police_arraignment.setMtssid(mtssid);
                         int arraignmentupdateById_bool = police_arraignmentMapper.updateById(police_arraignment);
                         LogUtil.intoLog(this.getClass(),"arraignmentupdateById_bool__"+arraignmentupdateById_bool);
                     }
 
-                //修改笔录状态为进行中1
-                if (StringUtils.isNotBlank(recordssid)){
-                    EntityWrapper recordew=new EntityWrapper();
-                    recordew.eq("ssid",recordssid);
-                    Police_record record=new Police_record();
-                    record.setRecordbool(1);
-                    int record_updatebool= police_recordMapper.update(record,recordew);
-                    LogUtil.intoLog(this.getClass(),"record_updatebool__"+record_updatebool);
+                    //修改笔录状态为进行中1
+                    if (StringUtils.isNotBlank(recordssid)){
+                        EntityWrapper recordew=new EntityWrapper();
+                        recordew.eq("ssid",recordssid);
+                        Police_record record=new Police_record();
+                        record.setRecordbool(1);
+                        int record_updatebool= police_recordMapper.update(record,recordew);
+                        LogUtil.intoLog(this.getClass(),"record_updatebool__"+record_updatebool);
+                    }
+
+                    LogUtil.intoLog(this.getClass(),"startMC开启成功__");
+
+                    vo.setStartMCVO(startMCVO);
+                    result.setData(vo);
+                    changeResultToSuccess(result);
+                }else{
+                    LogUtil.intoLog(this.getClass(),"startMC开启失败__");
                 }
-
-                 LogUtil.intoLog(this.getClass(),"startMC开启成功__");
-
-                result.setData(startMCVO);
-                changeResultToSuccess(result);
-            }else{
-                LogUtil.intoLog(this.getClass(),"startMC开启失败__");
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        }else {
+            //笔录用户信息未获取
+            LogUtil.intoLog(this.getClass(),"startRercord__RecordUserInfos__笔录用户信息未获取到__");
         }
         return result;
     }
@@ -804,7 +908,8 @@ public class OutService  extends BaseService {
         try {
             RResult rr = meetingControl.getMc_model(reqParam);
             if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
-                result.setData(rr.getData());
+                List<Avstmt_modelAll> modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                result.setData(modelAlls);
                 changeResultToSuccess(result);
                 LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
             }else{

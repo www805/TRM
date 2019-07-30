@@ -9,6 +9,16 @@ public class GetRecordsParam extends Page {
 
     private Integer recordbool;//笔录状态
 
+    private boolean creatorbool=false;//是否只看创建人的
+
+    public boolean isCreatorbool() {
+        return creatorbool;
+    }
+
+    public void setCreatorbool(boolean creatorbool) {
+        this.creatorbool = creatorbool;
+    }
+
     public Integer getRecordbool() {
         return recordbool;
     }
