@@ -1062,6 +1062,7 @@ public class RecordService extends BaseService {
                         //提讯数据
                         EntityWrapper ewarraignment=new EntityWrapper();
                         ewarraignment.eq("cr.casessid",c.getSsid());
+                        ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
                         ewarraignment.orderBy("a.createtime",false);
                         List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                         if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
@@ -1112,6 +1113,7 @@ public class RecordService extends BaseService {
                 //提讯数据
                 EntityWrapper ewarraignment=new EntityWrapper();
                 ewarraignment.eq("cr.casessid",c.getSsid());
+                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
                 ewarraignment.orderBy("a.createtime",false);
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
@@ -1635,6 +1637,7 @@ public class RecordService extends BaseService {
             for (CaseAndUserInfo recordAndCase : list) {
                 EntityWrapper ewarraignment=new EntityWrapper();
                 ewarraignment.eq("cr.casessid",recordAndCase.getSsid());
+                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
                 ewarraignment.orderBy("a.createtime",false);
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
@@ -1801,6 +1804,7 @@ public class RecordService extends BaseService {
 
         EntityWrapper caseparam=new EntityWrapper();
         caseparam.eq("cr.casessid",casessid);
+        caseparam.ne("r.recordbool",-1);//笔录状态不为删除状态
         caseparam.orderBy("a.createtime",false);
         List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(caseparam);
         if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
@@ -2247,11 +2251,12 @@ public class RecordService extends BaseService {
             //归档，判断下面是否有进行中的笔录
             EntityWrapper ewarraignment=new EntityWrapper();
             ewarraignment.eq("cr.casessid",ssid);
+            ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
             ewarraignment.orderBy("a.createtime",false);
             List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
             if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                 for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
-                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1||Integer.valueOf(arraignmentAndRecord.getRecordbool())==2){//未完成的
+                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1||Integer.valueOf(arraignmentAndRecord.getRecordbool())==0){//未完成的
                         ingsize++;
                     }
                 }
@@ -2297,7 +2302,7 @@ public class RecordService extends BaseService {
         record=police_recordMapper.selectOne(record);
         if (null!=record){
             Integer oldrecordbool=record.getRecordbool();
-            if (oldrecordbool==2){
+            if (oldrecordbool==1){
                 result.setMessage("该笔录正在进行中，请先结束");
                 return;
             }
@@ -2311,6 +2316,8 @@ public class RecordService extends BaseService {
                 result.setData(police_recordMapper_updatebool);
                 changeResultToSuccess(result);
             }
+        }else {
+            LogUtil.intoLog(this.getClass(),"changeboolRecord__police_recordMapper.selectOne__未找到笔录信息__recordssid__"+recordssid);
         }
         return;
     }
@@ -2416,7 +2423,7 @@ public class RecordService extends BaseService {
                     for (String s : adminssidList) {
                         for (String admininfo : admininfos) {
                             if(null!=admininfo&&s!=null&&s.equals(admininfo)){
-                                if (session_adminssid==admininfo){
+                                if (session_adminssid.equals(admininfo)){
                                     vo.setMsg("*您有一份笔录正在制作中");
                                 }else {
                                     vo.setMsg("*询问人二已被选用");

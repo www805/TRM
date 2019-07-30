@@ -146,6 +146,7 @@ function callbackgetRecordByCasessid(data) {
                         ,{field: 'recordplace', title: '询问地点'}
                         ,{field: 'recordadminname', title: '记录人'}
                         ,{field: 'createtime', title: '记录时间',sort:true,width:180}
+                        ,{fixed: 'right', title:'操作', toolbar: '#operation', width:150}
                     ]]
                     ,data: data
                     ,even: true
@@ -163,6 +164,36 @@ function callbackgetRecordByCasessid(data) {
                         var creator=$("#openModelhtml").attr("creator");
                         towaitRecord(recordssid,recordbool,creator);
                     }
+                });
+                //监听行工具事件
+                table.on('tool(openModelhtml)', function(obj){
+                    var tooldata = obj.data;
+                    var recordssid=tooldata.recordssid;
+                    if(obj.event === 'del'&&isNotEmpty(recordssid)){
+                        layer.confirm('确定要删除该笔录吗', function(index){
+                            var url=getActionURL(getactionid_manage().caseIndex_changeboolRecord);
+                            var d={
+                                token:INIT_CLIENTKEY,
+                                param:{
+                                    recordssid:recordssid,
+                                    recordbool:-1 //状态为删除-1
+                                }
+                            };
+                            ajaxSubmitByJson(url,d,function (data) {
+                                if(null!=data&&data.actioncode=='SUCCESS'){
+                                    if (isNotEmpty(data)) {
+                                        layer.msg("删除成功", {time: 500}, function () {
+                                            obj.del();
+                                            getCasesByParam();
+                                        });
+                                    }
+                                }else{
+                                    layer.msg(data.message);
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    } 
                 });
 
             });
@@ -247,4 +278,5 @@ function towaitRecord(recordssid,recordbool,creator) {
     }
     }
 }
+
 

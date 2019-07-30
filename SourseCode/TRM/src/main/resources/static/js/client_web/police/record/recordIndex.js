@@ -125,10 +125,26 @@ function callbackgetRecords(data) {
     }else{
         layer.msg(data.message);
     }
+
+    var time = setInterval(function () {
+        var trlen=$("#pagelisttemplates_tbody tr").length;
+        if (null!=records&&trlen>0) {
+            $("#pagelisttemplates_tbody tr").hover(function(){
+                $("#hoverspan2",this).show();
+                $("#hoverspan1",this).hide();
+            },function(){
+                $("#hoverspan2",this).hide();
+                $("#hoverspan1",this).show();
+            });
+            clearInterval(time)
+        }
+    },100)
+
 }
 function setproblems(recordssid,obj) {
     $('#recorddetail').html("");
     $("#pagelisttemplates_tbody tr").css({"background-color":" #fff"});
+
     if (isNotEmpty(recordssid)&&isNotEmpty(records)) {
         for (var i = 0; i < records.length; i++) {
             var l = records[i];
@@ -212,6 +228,39 @@ function towaitRecord(recordssid,recordbool,creator,creatorname) {
         var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;
     }
+}
+
+
+
+function changeboolRecord(obj) {
+    var recordssid=$(obj).closest("tr").attr("ssid");
+    var $tr=$(obj).closest("tr");
+
+    if (isNotEmpty(recordssid)){
+        layer.confirm('确定要删除该笔录吗', function(index){
+            var url=getActionURL(getactionid_manage().recordIndex_changeboolRecord);
+            var d={
+                token:INIT_CLIENTKEY,
+                param:{
+                    recordssid:recordssid,
+                    recordbool:-1 //状态为删除-1
+                }
+            };
+            ajaxSubmitByJson(url,d,function (data) {
+                if(null!=data&&data.actioncode=='SUCCESS'){
+                    if (isNotEmpty(data)) {
+                        layer.msg("删除成功", {time: 500}, function () {
+                            ggetRecordsByParam();
+                        });
+                    }
+                }else{
+                    layer.msg(data.message);
+                }
+            });
+            layer.close(index);
+        });
+    }
+
 }
 
 

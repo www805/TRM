@@ -823,15 +823,7 @@ function calladdRecord(data) {
                     }
                 });
             } else {
-                layer.msg('保存成功', {
-                    btn: ['去查看', '继续编辑'],
-                    yes:function(index){
-                        parent.document.getElementById("record_select").click();
-                        layer.close(index);
-                    }, btn2:function(index){
-                        layer.close(index);
-                        return false;
-                    }});
+                layer.msg('保存成功');
             }
         }
     }else{

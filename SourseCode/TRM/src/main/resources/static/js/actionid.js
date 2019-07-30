@@ -132,6 +132,7 @@ function getactionid_manage() {
         recordIndex_getRecordtypes:"recordIndex_getRecordtypes",
         recordIndex_togetRecordById:"recordIndex_togetRecordById",
         recordIndex_towaitRecord:"recordIndex_towaitRecord",
+        recordIndex_changeboolRecord:"recordIndex_changeboolRecord",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
@@ -219,6 +220,7 @@ function getactionid_manage() {
         caseIndex_towaitRecord:"caseIndex_towaitRecord",
         caseIndex_togetRecordById:"caseIndex_togetRecordById",
         caseIndex_changeboolCase:"caseIndex_changeboolCase",
+        caseIndex_changeboolRecord:"caseIndex_changeboolRecord",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

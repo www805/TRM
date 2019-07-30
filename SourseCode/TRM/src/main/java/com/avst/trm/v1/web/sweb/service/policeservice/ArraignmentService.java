@@ -67,6 +67,7 @@ public class ArraignmentService extends BaseService {
             for (CaseAndUserInfo recordAndCase : list) {
                 EntityWrapper ewarraignment=new EntityWrapper();
                 ewarraignment.eq("cr.casessid",recordAndCase.getSsid());
+                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
                 ewarraignment.orderBy("a.createtime",false);
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
@@ -84,6 +85,7 @@ public class ArraignmentService extends BaseService {
         try {
             EntityWrapper ewarraignment=new EntityWrapper();
             ewarraignment.eq("cr.casessid",caseSsid);
+            ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
             ewarraignment.orderBy("a.createtime",false);
             List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
             if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
