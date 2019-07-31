@@ -1753,24 +1753,24 @@ $(function () {
                             var recordrealshtml="";
 
 
+                            var p_span_HTML="";
                             //实时会议数据
                             if (usertype==1){
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)"  >'+translatext+'</span> \
-                                                      </div >';
-                            }else if (usertype==2){
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                            }
+                                p_span_HTML='<p>【'+username+'】 '+asrstartime+' </p>\
+                                            <span onmousedown="copy_text(this,event)"  >'+translatext+'</span>';
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
 
+                            }else if (usertype==2){
+                                p_span_HTML= '<p>'+asrstartime+' 【'+username+'】 </p>\
+                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> ';
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                            }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
+                                $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
+                            }else {
+                                $("#recordreals").append(recordrealshtml);
                             }
-                            $("#recordreals").append(recordrealshtml);
                             $('#recordreals span').mouseup(function(){
                                 var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
                                 dqselec_left= txt.toString();

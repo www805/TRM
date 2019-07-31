@@ -46,10 +46,8 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sun.net.httpserver.HttpsConfigurator;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
@@ -302,67 +300,16 @@ public class RecordService extends BaseService {
         }
 
 
-
-
-        //获取该笔录下的全部题目答案
-        EntityWrapper recordToProblemsParam=new EntityWrapper();
-        recordToProblemsParam.eq("recordssid",recordssid);
-        List<Police_recordtoproblem> recordToProblems=police_recordtoproblemMapper.selectList(recordToProblemsParam);
-        if (null!=recordToProblems&&recordToProblems.size()>0){
-            for (Police_recordtoproblem recordToProblem : recordToProblems) {
-                //删除所有题目
-                EntityWrapper answersParam=new EntityWrapper();
-                answersParam.eq("recordtoproblemssid",recordToProblem.getSsid());
-                int answerdelete_bool=police_answerMapper.delete(answersParam);
-                LogUtil.intoLog(this.getClass(),"answerdelete_bool__"+answerdelete_bool);
-            }
-             int recordtoproblemdelete_bool=police_recordtoproblemMapper.delete(recordToProblemsParam);
-             LogUtil.intoLog(this.getClass(),"recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
-        }else{
-            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__1");
-        }
-
-        //根据参数笔录题目包括答案，新增笔录题目答案
-        if (null!=recordToProblems1&&recordToProblems1.size()>0){
-            for (int i = 0; i < recordToProblems1.size(); i++) {
-                RecordToProblem problem=recordToProblems1.get(i);
-                problem.setCreatetime(new Date());
-                problem.setSsid(OpenUtil.getUUID_32());
-                problem.setOrdernum(Integer.valueOf(i+1));
-                problem.setRecordssid(recordssid);
-                int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
-                LogUtil.intoLog(this.getClass(),"recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
-                if (recordtoprobleminsert_bool>0){
-                    List<Police_answer> answers=problem.getAnswers();
-                    if (null!=answers&&answers.size()>0){
-                        for (int j = 0; j < answers.size(); j++) {
-                            Police_answer answer  = answers.get(j);
-                            answer.setSsid(OpenUtil.getUUID_32());
-                            answer.setCreatetime(new Date());
-                            answer.setOrdernum(Integer.valueOf(j+1));
-                            answer.setRecordtoproblemssid(problem.getSsid());
-                          int answerinsert_bool =  police_answerMapper.insert(answer);
-                            LogUtil.intoLog(this.getClass(),"answerinsert_bool__"+answerinsert_bool);
-                        }
-                    }
-                }
-            }
-        }else{
-            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
-        }
-
-
         //修改笔录状态
         Integer recordbool=addRecordParam.getRecordbool();
         String mtssid=addRecordParam.getMtssid();
+
+        //导出笔录pdf和word并且关闭会议
+        AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,mtssid,outService,recordToProblems1,police_recordtoproblemMapper,police_answerMapper,recordbool);
+        addRecord_thread.start();
+
         LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
         if (null!=recordbool&&recordbool==2){
-
-            //导出笔录pdf和word并且关闭会议
-            AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,mtssid,outService);
-            addRecord_thread.start();
-
-
             EntityWrapper updaterecordParam=new EntityWrapper();
             updaterecordParam.eq("ssid",recordssid);
             Police_record record=new Police_record();
