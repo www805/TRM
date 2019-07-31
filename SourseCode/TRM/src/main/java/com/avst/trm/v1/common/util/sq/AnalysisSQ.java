@@ -193,7 +193,7 @@ public class AnalysisSQ {
 //            String localcpuCode=NetTool.getLocalMac();
             String localcpuCode=NetTool.getCPUCode();//不使用网卡，使用CPU序列号
             if(!localcpuCode.equals(cpuCode)){
-                LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
+//                LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
                 LogUtil.intoLog(AnalysisSQ.class,"授权机器码不一致");
 
                 updateServiceConfig(null,-1);

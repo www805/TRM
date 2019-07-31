@@ -87,7 +87,16 @@ public class ServerConfigService extends BaseService {
         if(!checkKeyword(rResult, serverconfig)){
             return;
         }
-        Integer update = serverconfigMapper.updateById(serverconfig);
+
+        Base_serverconfig baseserverconfig = serverconfigMapper.selectById(1);
+        baseserverconfig.setClientname(serverconfig.getClientname());
+        baseserverconfig.setClient_filesavessid(serverconfig.getClient_filesavessid());
+        baseserverconfig.setSyslogo_filesavessid(serverconfig.getSyslogo_filesavessid());
+        baseserverconfig.setServerip(serverconfig.getServerip());
+        baseserverconfig.setSysname(serverconfig.getSysname());
+        baseserverconfig.setServerport(serverconfig.getServerport());
+
+        Integer update = serverconfigMapper.updateById(baseserverconfig);
         if (update > 0) {
             rResult.setData(update);
             this.changeResultToSuccess(rResult);

@@ -66,8 +66,8 @@ public class PropertiesListenerConfig {
                         }
                         String[] arr=pro.split("=");
                         if(null!=arr&&arr.length==2){
-                            LogUtil.intoLog(PropertiesListenerConfig.class,arr[0]+":key----val:"+arr[1]);
-                            propertiesMap.put(arr[0],arr[1]);
+//                            LogUtil.intoLog(PropertiesListenerConfig.class,arr[0]+":key----val:"+arr[1]);
+                            propertiesMap.put(arr[0].trim(),arr[1].trim());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

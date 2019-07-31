@@ -55,22 +55,26 @@ public class Scheduler {
     /**
      * 需要验证
      */
-    @Scheduled(cron = "0 5 1/1 * * *")
+    @Scheduled(cron = "0 1/1 * * * *")
     public void testTasks2() {
 
         LogUtil.intoLog(this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
 
-        SQEntity sqEntity=AnalysisSQ.getSQEntity();
-        if(null==sqEntity){
-            LogUtil.intoLog(1,this.getClass(),"sqEntity==null,testTasks2 is over");
-            return ;
-        }
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         //检测授权
         int authorizebool=serverconfig.getAuthorizebool();
         if(authorizebool!=1){//还没有生成隐性授权文件
             boolean bool= AnalysisSQ.createClientini(serverconfig);
             LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
+            return;
+        }
+
+        SQEntity sqEntity=AnalysisSQ.getSQEntity();
+        if(null==sqEntity){
+            LogUtil.intoLog(4,this.getClass(),"sqEntity==null,testTasks2 is over");
+            boolean bool= AnalysisSQ.createClientini(serverconfig);
+            LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
+            return ;
         }
 
         Date date=serverconfig.getWorkstarttime();//数据库的开始时间
@@ -79,12 +83,9 @@ public class Scheduler {
         String sqfiletime=sqEntity.getStartTime();//授权文件中的开始时间
         LogUtil.intoLog(this.getClass(),databasetime+":databasetime:DateUtil.format(date)----sqEntity.getStartTime():sqfiletime:"+sqfiletime);
         if(!databasetime.equals(sqfiletime)){//对比数据库和ini的开始时间，以防篡改
-            CommonCache.clientSQbool=false;//时间不对直接不允许用
-            LogUtil.intoLog(1,this.getClass(),"CommonCache.clientSQbool=false--时间不对授权直接不允许用");
-            return ;
-        }else{
-            CommonCache.getSQEntity=sqEntity;
-            CommonCache.clientSQbool=true;
+            boolean bool= AnalysisSQ.createClientini(serverconfig);
+            LogUtil.intoLog(this.getClass(),"时间不对授权重新初始化授权initClient authorizebool:"+bool);
+            serverconfig=base_serverconfigMapper.selectById(1);
         }
 
         //更新最外面的使用时间
@@ -110,6 +111,7 @@ public class Scheduler {
                 //重新授权
                 CommonCache.clientSQbool=AnalysisSQ.createClientini(serverconfig);
             }
+            LogUtil.intoLog(4,this.getClass(),"授权异常，异常码:"+bool);
         }
 
 
@@ -190,6 +192,7 @@ public class Scheduler {
             zkControl.getHeartbeat(param);
         } catch (Exception e) {
             LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败");
+            e.printStackTrace();
         }
     }
 
