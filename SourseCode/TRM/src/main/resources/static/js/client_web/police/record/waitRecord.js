@@ -1028,7 +1028,6 @@ function setFocus(el) {
             var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
             console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
             if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                console.log("使用直播时间~")
                 var dqtime=new Date().getTime();
                 var qw_type=el.getAttribute("name");
                 if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
@@ -1224,6 +1223,7 @@ function focuslable(html,type,qw) {
          td_lastindex["value"]=qw;
      }
     addbtn();
+    contextMenu();
 }
 //最后一行添加按钮初始化
 function addbtn() {
@@ -1499,6 +1499,131 @@ function setqw(problems){
     return null;
 }
 
+function contextMenu() {
+    $('#recorddetail label').mouseup(function(){
+        var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+        dqselec_right= txt.toString();
+    })
+    $.contextMenu({
+        selector: "#recorddetail label" ,
+        callback: function (key, options) {
+            if (isNotEmpty(key)){
+                if (key=="type1"){
+                    //标记
+                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                        var h=$label.html();
+                        var txt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                txt.push(t);
+                            }
+                        })
+                        txt=Array.from(new Set(txt));
+                        var shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:txt
+                        }
+                        dqtag_right=[];
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
+                                dqtag_right.push(tag);
+                            }
+                        }
+
+                        dqtag_right.push(shuju);
+
+                        var $txt = $label.text();
+                        $label.html($txt);
+                        var $html = $label.html();
+                        $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
+                        $label.html($html);
+
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                var txt=tag.txt;
+                                if(isNotEmpty(txt)){
+                                    for (let j = 0; j < txt.length; j++) {
+                                        const shujuElement = txt[j];
+                                        if(dqselec_right.indexOf(shujuElement)<0){
+                                            var $html=$label.html();
+                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                            $label.html($html);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var newtxt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                newtxt.push(t);
+                            }
+                        })
+                        newtxt=Array.from(new Set(newtxt));
+                        shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:newtxt
+                        }
+                        dqtag_right=[];
+                        dqtag_right.push(shuju);
+                    }
+                } else if (key=="type2"){
+                    //取消标记
+                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                        var $txt = $label.text();
+                        $label.html($txt);
+
+                        var newtxt=[];
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                var txt=tag.txt;
+                                if(isNotEmpty(txt)){
+                                    for (let j = 0; j < txt.length; j++) {
+                                        const shujuElement = txt[j];
+                                        if(dqselec_right.indexOf(shujuElement)<0){
+                                            var $html=$label.html();
+                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                            $label.html($html);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var newtxt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                newtxt.push(t);
+                            }
+                        })
+                        newtxt=Array.from(new Set(newtxt));
+                        var shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:newtxt
+                        }
+                        dqtag_right=[];
+                        dqtag_right.push(shuju);
+                    }
+                }
+            }
+        },
+        items: {
+            "type1": { name: "标记",},
+            "type2": { name: "取消标记"},
+        }
+    });
+}
+
 
 
 
@@ -1526,6 +1651,11 @@ var www="";
 var setinterval1=null;
 $(function () {
 
+    /*对于trm.exe不适应会卡死
+     $(window).bind('beforeunload',function(){
+          return '确定要离开当前页面吗';
+      });*/
+
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
@@ -1536,145 +1666,7 @@ $(function () {
    //初始化第一行的焦点
 
 
-    layui.use(['mouseRightMenu','layer','jquery'],function(){
-        var mouseRightMenu = layui.mouseRightMenu,layer = layui.layer,$=layui.jquery;
-        $('#recorddetail label').mouseup(function(){
-            var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-            dqselec_right= txt.toString();
-        })
-
-      /*  //右键监听
-        $('#recorddetail label').bind("contextmenu",function(e){
-            var data = {content:dqselec_right}
-            var menu_data=[
-                {'data':data,'type':1,'title':'标记'},
-                {'data':data,'type':2,'title':'取消全部标记'}
-            ]
-            mouseRightMenu.open(menu_data,false,function(d){
-                if (isNotEmpty(d)){
-                    var data=d.data;
-                    if (isNotEmpty(data)){
-                        var content=data.content;
-                        var type=d.type;
-                        if (isNotEmpty(content)&&type==1){
-                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                                 var h=$label.html();
-                                 var txt=[];
-                                 $("a",$label).each(function () {
-                                     var t=$(this).text();
-                                     if(isNotEmpty(t)){
-                                         txt.push(t);
-                                     }
-                                 })
-                                txt=Array.from(new Set(txt));
-                                 var shuju={
-                                     key:td_lastindex["key"],
-                                     value:td_lastindex["value"],
-                                     txt:txt
-                                 }
-                                 dqtag_right=[];
-                                for (let i = 0; i < dqtag_right.length; i++) {
-                                    const tag = dqtag_right[i];
-                                    if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
-                                        dqtag_right.push(tag);
-                                    }
-                                }
-
-                                dqtag_right.push(shuju);
-
-                                var $txt = $label.text();
-                                $label.html($txt);
-                                var $html = $label.html();
-                                $html = $html.split(content).join('<a class="highlight_all" >'+ content +'</a>');
-                                $label.html($html);
-
-                                for (let i = 0; i < dqtag_right.length; i++) {
-                                    const tag = dqtag_right[i];
-                                    if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                        var txt=tag.txt;
-                                        if(isNotEmpty(txt)){
-                                            for (let j = 0; j < txt.length; j++) {
-                                                const shujuElement = txt[j];
-                                                if(content.indexOf(shujuElement)<0){
-                                                    var $html=$label.html();
-                                                    $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                                    $label.html($html);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                var newtxt=[];
-                                $("a",$label).each(function () {
-                                    var t=$(this).text();
-                                    if(isNotEmpty(t)){
-                                        newtxt.push(t);
-                                    }
-                                })
-                                newtxt=Array.from(new Set(newtxt));
-                                 shuju={
-                                    key:td_lastindex["key"],
-                                    value:td_lastindex["value"],
-                                    txt:newtxt
-                                }
-                                dqtag_right=[];
-                                dqtag_right.push(shuju);
-                            }
-                        }
-
-                        if (type==2){
-                            if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                                var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                                var $txt = $label.text();
-                                $label.html($txt);
-
-                              var newtxt=[];
-                              for (let i = 0; i < dqtag_right.length; i++) {
-                                    const tag = dqtag_right[i];
-                                    if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                        var txt=tag.txt;
-                                        if(isNotEmpty(txt)){
-                                            for (let j = 0; j < txt.length; j++) {
-                                                const shujuElement = txt[j];
-                                                if(content!=shujuElement){
-                                                    var $html=$label.html();
-                                                    $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                                    $label.html($html);
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                var newtxt=[];
-                                $("a",$label).each(function () {
-                                    var t=$(this).text();
-                                    if(isNotEmpty(t)){
-                                        newtxt.push(t);
-                                    }
-                                })
-                                newtxt=Array.from(new Set(newtxt));
-                                var shuju={
-                                    key:td_lastindex["key"],
-                                    value:td_lastindex["value"],
-                                    txt:newtxt
-                                }
-                                dqtag_right=[];
-                                dqtag_right.push(shuju);
-                            }
-                        }
-                    }
-                }
-
-
-            })
-            return false;
-        });*/
-    })
-
-
-
-
+    contextMenu();
 
 
     $(document).keypress(function (e) {

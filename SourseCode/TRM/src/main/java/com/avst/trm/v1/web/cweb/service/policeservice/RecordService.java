@@ -1843,13 +1843,15 @@ public class RecordService extends BaseService {
         Page<WordTemplate> page=new Page<>(getWordTemplateListParam.getCurrPage(),getWordTemplateListParam.getPageSize());
         List<WordTemplate> pagelist=police_wordtemplateMapper.getWordTemplateList(page,ew);
 
-
+        String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
         //检测html文件是否存在-------------------------------------start----------------------------
         for (WordTemplate wordTemplate : pagelist) {
             String wordtemplate_downurl_html=null;
             String realurl=wordTemplate.getWordtemplate_realurl();
             String downurl=wordTemplate.getWordtemplate_downurl();
             if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                downurl=uploadpath+downurl;
+                wordTemplate.setWordtemplate_downurl(downurl);
                 if(realurl.endsWith(".doc")){
                     String replace = realurl.replace(".doc", ".html");
                     File f = new File(replace);
@@ -1884,6 +1886,8 @@ public class RecordService extends BaseService {
                 String realurl=wordTemplate2.getWordtemplate_realurl();
                 String downurl=wordTemplate2.getWordtemplate_downurl();
                 if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                    downurl=uploadpath+downurl;
+                    wordTemplate2.setWordtemplate_downurl(downurl);
                     if(realurl.endsWith(".doc")){
                         String replace = realurl.replace(".doc", ".html");
                         File f = new File(replace);
@@ -1959,7 +1963,6 @@ public class RecordService extends BaseService {
              wordtemplate_filesavessid=oldwordTemplate.getWordtemplate_filesavessid();
             try {
                 if (null!=multipartfile){
-                    String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
                     String savePath=PropertiesListenerConfig.getProperty("file.wordtemplate");
                     String qg=PropertiesListenerConfig.getProperty("file.qg");
                     String oldwordtemplate_realurl=oldwordTemplate.getWordtemplate_realurl();//旧真实地址
@@ -1997,7 +2000,7 @@ public class RecordService extends BaseService {
                         String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
                         LogUtil.intoLog(this.getClass(),"笔录word模板真实地址："+realurl);
                         multipartfile.transferTo(new File(realurl));
-                        String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
+                        String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;
                         LogUtil.intoLog(this.getClass(),"笔录word模板下载地址："+downurl);
 
                         if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
@@ -2055,7 +2058,6 @@ public class RecordService extends BaseService {
             if (null!=multipartfile){
                 //开始进行文件上传
                 try {
-                    String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
                     String savePath=PropertiesListenerConfig.getProperty("file.wordtemplate");
                     String qg=PropertiesListenerConfig.getProperty("file.qg");
 
@@ -2067,7 +2069,7 @@ public class RecordService extends BaseService {
                         String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
                         LogUtil.intoLog(this.getClass(),"笔录word模板真实地址："+realurl);
                         multipartfile.transferTo(new File(realurl));
-                        String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
+                        String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;
                         LogUtil.intoLog(this.getClass(),"笔录word模板下载地址："+downurl);
 
                         if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){

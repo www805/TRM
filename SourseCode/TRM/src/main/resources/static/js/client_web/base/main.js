@@ -85,13 +85,18 @@ function callgetNavList(data) {
 }
 
 $(function () {
-       /*var _t;
-       window.onbeforeunload = function(){
-           setTimeout(function(){_t = setTimeout(onunloadcancel, 0)}, 0);
-           return "真的离开?";
+    /*  var _t;
+      window.onbeforeunload = function(){
+        setTimeout(function(){_t = setTimeout(onunloadcancel, 0)}, 0);
+           return "确定要关闭吗?";
        }
-       window.onunloadcancel = function(){
+      window.onunloadcancel = function(){
            clearTimeout(_t);
            alert("取消离开");
        }*/
+
+   /* 对于trm.exe不适应会卡死
+   $(window).bind('beforeunload',function(){
+        return '确定要离开当前页面吗';
+    });*/
 })

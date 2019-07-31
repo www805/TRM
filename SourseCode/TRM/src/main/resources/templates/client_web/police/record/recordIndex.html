@@ -121,6 +121,8 @@
 </div>
 <script id="pagelisttemplates" type="text/html">
     <table class="layui-table" lay-skin="line">
+        <colgroup width="80%"></colgroup>
+        <colgroup width="20%"></colgroup>
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
         {{#  var recordbool=value.recordbool;var recordbooltext; }}
@@ -129,7 +131,7 @@
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
         <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}');" style="background-color: {{backgroundcolor}}">
             <td >{{value.recordname==null?"":value.recordname}}</td>
-            <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1">{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
+            <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
         </tr>
         {{#  }); }}
 
