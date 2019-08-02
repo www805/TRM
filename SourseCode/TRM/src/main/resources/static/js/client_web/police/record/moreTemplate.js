@@ -123,6 +123,12 @@ function showpagetohtml(){
 }
 
 function getTemplateById(id) {
+    $("#pagelisttemplates_tbody").find("tr").each(function (i, val) {
+        $(this).css("background-color", "#fff");
+        if (i == id) {
+            $(this).css("background-color", "#f2f2f2");
+        }
+    });
     if (pagelist[id]) {
         editSsid = pagelist[id].ssid;
         templateTypeId = pagelist[id].templatetypessid;

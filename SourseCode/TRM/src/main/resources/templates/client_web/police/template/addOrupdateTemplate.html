@@ -124,7 +124,7 @@
             </div>
 
             <div style="float: left;">
-                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,11);" >
+                <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,10);" >
                 <input type="button" class="layui-btn layui-btn-normal" value="添加问题" onclick="addUpdateinfo('',0,1);" >
             </div>
 
@@ -193,6 +193,9 @@
                         </colgroup>
                         <tbody id="dataTable"></tbody>
                     </table>
+                    <div style="text-align: center;">
+                        <button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="addTr('','','');"><i class="layui-icon" style="font-size: 45px"></i></button>
+                    </div>
                 </div>
 
             </div>
@@ -269,16 +272,9 @@
             alert(index);
         });
 
-        // console.log($("p[contenteditable=true]").html());
-        //
-        // $("p[contenteditable='true']").click(function(){
-        //     alert(26666);
-        //     trObj = null;
-        // });
-
-        // $("p").on('keyup',function () {
-        //     alert(26666);
-        // });
+        $('#keyword').on('input propertychange', function() {
+            getProblems_init(1,10);
+        });
 
         document.onkeydown = function (event) {
             var e = event || window.event;

@@ -188,18 +188,6 @@ function btn(obj) {
 }
 
 function modelbanUpdateTemplate() {
-    // var problem = "";
-    // var referanswer = "";
-    // var id = "";
-    //
-    // if (isNotEmpty(problemV)){
-    //     problem = problemV.problem;
-    //     referanswer = problemV.referanswer;
-    //     id = problemV.id;
-    // }
-
-    //  problemV
-
     var templateTypes = "";
     var templateType = {};
     for (var i = 0; i < list.length; i++) {
@@ -210,7 +198,8 @@ function modelbanUpdateTemplate() {
         templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
     }
 
-    var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
+    var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 0px;padding-right: 20px;'>\n" +
+        "            <div style='margin:10px 0 5px 40px;color: red;'>（请选择xls格式的文件上传）</div>\n" +
         "            <label class=\"layui-form-label\">模板类型</label>\n" +
         "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
         "                <select name=\"problemtypessid\" onchange='updateTemplateType = this[selectedIndex].value;' lay-verify=\"\" style=\"margin-top: 5px;width: 120px;height: 30px;\">\n"
@@ -229,7 +218,7 @@ function modelbanUpdateTemplate() {
     layer.open({
         type: 1,
         title: "导入模板",
-        area: ['420px', '220px'], //宽高
+        area: ['420px', '225px'], //宽高
         shadeClose: true,
         content: content
     });
@@ -371,6 +360,12 @@ function exportEcxcel(obj){
 }
 
 function getTemplateById(id) {
+    $("#pagelisttemplates_tbody").find("tr").each(function (i, val) {
+        $(this).css("background-color", "#fff");
+        if (i == id) {
+            $(this).css("background-color", "#f2f2f2");
+        }
+    });
 
     if (null != pagelist && pagelist.length > 0) {
         $("#zhuangtai").show();

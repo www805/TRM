@@ -190,6 +190,7 @@ function getactionid_manage() {
         addOrupdateTemplateType_getProblemTypes:"addOrupdateTemplateType_getProblemTypes",
         addOrupdateTemplateType_getProblemById:"addOrupdateTemplateType_getProblemById",
 
+        templateIndex_templateIndex: "templateIndex_templateIndex",
         templateIndex_getTemplates: "templateIndex_getTemplates",
         templateIndex_getTemplateTypes: "templateIndex_getTemplateTypes",
         templateIndex_exportWord: "templateIndex_exportWord",

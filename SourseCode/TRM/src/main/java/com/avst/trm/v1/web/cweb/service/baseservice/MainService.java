@@ -39,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
@@ -560,7 +561,7 @@ public class MainService extends BaseService {
         changeResultToSuccess(result);
     }
 
-    public void updatePersonInfo(RResult result, ReqParam<updatePersonInfoParam> param) {
+    public void updatePersonInfo(RResult result, ReqParam<updatePersonInfoParam> param, HttpServletRequest request) {
 
         updatePersonInfoParam paramParam = param.getParam();
 
@@ -592,6 +593,10 @@ public class MainService extends BaseService {
         Integer update = base_admininfoMapper.update(admininfo, ew);
         if (update != 1) {
             result.setMessage("修改错误");
+        } else {
+            AdminAndWorkunit user = (AdminAndWorkunit) request.getSession().getAttribute(Constant.MANAGE_CLIENT);
+            user.setUsername(paramParam.getUsername());
+            request.getSession().setAttribute(Constant.MANAGE_CLIENT, user);
         }
 
         result.setData(update);

@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -110,22 +111,23 @@ public class MainAction extends BaseAction {
 
     /**
      * 修改个人信息
+     *
      * @param param
      * @return
      */
     @RequestMapping(value = "/updatePersonInfo")
     @ResponseBody
-    public RResult updatePersonInfo(@RequestBody ReqParam<updatePersonInfoParam> param){
-        RResult result=this.createNewResultOfFail();
-        if(null==param){
+    public RResult updatePersonInfo(@RequestBody ReqParam<updatePersonInfoParam> param, HttpServletRequest request) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
             result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
+        } else if (!checkToken(param.getToken())) {
             result.setMessage("授权异常");
-        }else{
-            mainService.updatePersonInfo(result,param);
+        } else {
+            mainService.updatePersonInfo(result, param, request);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
-        return  result;
+        return result;
     }
 
 
