@@ -1567,6 +1567,10 @@ public class RecordService extends BaseService {
             ew.like(true,"u.username",getCasesParam.getUsername().trim());
         }
 
+        if(StringUtils.isNotEmpty(getCasesParam.getOccurrencetime_start()) && StringUtils.isNotEmpty(getCasesParam.getOccurrencetime_end())){
+            ew.between("c.occurrencetime", getCasesParam.getOccurrencetime_start(), getCasesParam.getOccurrencetime_end());
+        }
+
         AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
         ew.eq("c.creator",user.getSsid());
 

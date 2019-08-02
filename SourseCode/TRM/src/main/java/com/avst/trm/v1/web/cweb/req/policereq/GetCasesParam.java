@@ -9,6 +9,25 @@ public class GetCasesParam extends Page {
 
     private String username;//案件人员名称
 
+    private String occurrencetime_start;//案发时间开始
+
+    private String occurrencetime_end;//案发结束时间
+
+    public String getOccurrencetime_start() {
+        return occurrencetime_start;
+    }
+
+    public void setOccurrencetime_start(String occurrencetime_start) {
+        this.occurrencetime_start = occurrencetime_start;
+    }
+
+    public String getOccurrencetime_end() {
+        return occurrencetime_end;
+    }
+
+    public void setOccurrencetime_end(String occurrencetime_end) {
+        this.occurrencetime_end = occurrencetime_end;
+    }
 
     public String getCasename() {
         return casename;

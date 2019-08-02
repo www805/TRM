@@ -52,6 +52,9 @@ public class ArraignmentService extends BaseService {
         if (StringUtils.isNotBlank(param.getUsername())){
             ew.like(true,"u.username",param.getUsername().trim());
         }
+      if(StringUtils.isNotEmpty(param.getOccurrencetime_start()) && StringUtils.isNotEmpty(param.getOccurrencetime_end())){
+          ew.between("c.occurrencetime", param.getOccurrencetime_start(), param.getOccurrencetime_end());
+      }
 
         int count = police_caseMapper.countgetArraignmentList(ew);
         param.setRecordCount(count);

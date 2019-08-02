@@ -1,14 +1,28 @@
+var occurrencetime=null;
 function getCases_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().caseIndex_getCases);
     var casename=$("#casename").val();
     var casenum=$("#casenum").val();
     var username=$("#username").val();
+
+    var occurrencetime_start=null;//案发时间开始
+    var occurrencetime_end=null;//案发结束时间
+
+    if (isNotEmpty(occurrencetime)){
+        var arr = occurrencetime.split("~");
+        occurrencetime_start=arr[0].trim();
+        occurrencetime_end=arr[1].trim();
+    }
+
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
             casename:casename,
             casenum:casenum,
             username:username,
+            occurrencetime_start:occurrencetime_start,
+            occurrencetime_end:occurrencetime_end,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -16,7 +30,7 @@ function getCases_init(currPage,pageSize) {
     ajaxSubmitByJson(url,data,callbackgetCases);
 }
 
-function getCases(casename,casenum,username,currPage,pageSize) {
+function getCases(casename,casenum,username,occurrencetime_start,occurrencetime_end,currPage,pageSize) {
     var url=getActionURL(getactionid_manage().caseIndex_getCases);
     var data={
         token:INIT_CLIENTKEY,
@@ -24,6 +38,8 @@ function getCases(casename,casenum,username,currPage,pageSize) {
             casename:casename,
             casenum:casenum,
             username:username,
+            occurrencetime_start:occurrencetime_start,
+            occurrencetime_end:occurrencetime_end,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -50,7 +66,8 @@ function getCasesByParam(){
     }else if (len==2){
         getCases('',arguments[0],arguments[1]);
     }else if(len>2){
-        getCases(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]);
+        getCases(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
+
     }
 }
 

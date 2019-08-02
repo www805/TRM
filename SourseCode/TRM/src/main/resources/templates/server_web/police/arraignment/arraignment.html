@@ -41,6 +41,11 @@
                 <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入案件人名称" autocomplete="off" class="layui-input">
             </div>
 
+            <label class="layui-form-label" style="width: auto;">案发时间</label>
+            <div class="layui-input-inline">
+                <input type="text" name="occurrencetime" id="occurrencetime" lay-verify="required" placeholder="请输入案发时间" autocomplete="off" class="layui-input" >
+            </div>
+
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getArraignmentList_init(1,3);" >
         </div>
     </form>
@@ -109,7 +114,24 @@
     $(function(){
         setpageAction([[${session.INIT_WEB}]],"server_web/police/arraignment/arraignment");
         getArraignmentListByParam();
-});
+    });
+    layui.use(['layer','element','laydate'], function(){
+        var layer = layui.layer; //获得layer模块
+        var element = layui.element;
+        var laydate=layui.laydate;
+        //使用模块
+        laydate.render({
+            elem: '#occurrencetime'
+            ,type: 'datetime'
+            ,range: "~"
+            ,done: function(value, date, endDate){
+                occurrencetime=value;
+            getArraignmentListByParam();
+        }
+        });
+    });
+
+
 </script>
 
 </html>

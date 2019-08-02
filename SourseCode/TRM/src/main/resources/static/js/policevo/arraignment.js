@@ -1,24 +1,39 @@
+var occurrencetime=null;
+
 function getArraignmentList_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
     var casename=$("#casename").val();
     var casenum=$("#casenum").val();
     var username=$("#username").val();
+    var occurrencetime_start=null;//案发时间开始
+    var occurrencetime_end=null;//案发结束时间
+
+    if (isNotEmpty(occurrencetime)){
+        var arr = occurrencetime.split("~");
+        occurrencetime_start=arr[0].trim();
+        occurrencetime_end=arr[1].trim();
+    }
+
     var data={
         casename:casename,
         casenum:casenum,
         username:username,
+        occurrencetime_start:occurrencetime_start,
+        occurrencetime_end:occurrencetime_end,
         currPage:currPage,
         pageSize:pageSize
     };
   ajaxSubmit(url,data,callbackgetArraignmentList);
 }
 
-function getArraignmentList(casename,casenum,username,currPage,pageSize) {
+function getArraignmentList(casename,casenum,username,occurrencetime_start,occurrencetime_end,currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
     var data={
         casename:casename,
         casenum:casenum,
         username:username,
+        occurrencetime_start:occurrencetime_start,
+        occurrencetime_end:occurrencetime_end,
         currPage:currPage,
         pageSize:pageSize
     };
@@ -44,7 +59,7 @@ function getArraignmentListByParam(){
     }else if (len==2){
         getArraignmentList('',arguments[0],arguments[1]);
     }else if(len>2){
-        getArraignmentList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4]);
+        getArraignmentList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
     }
 }
 
