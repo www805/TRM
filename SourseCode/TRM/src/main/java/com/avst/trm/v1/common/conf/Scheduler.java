@@ -55,7 +55,7 @@ public class Scheduler {
     /**
      * 需要验证
      */
-    @Scheduled(cron = "0 1/1 * * * *")
+    @Scheduled(cron = "0 1/5 * * * ?")
     public void testTasks2() {
 
         LogUtil.intoLog(this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
