@@ -673,6 +673,7 @@ function showrecord(times,usertype,obj) {
                 $("td",this).addClass("highlight_right");
                 var top=$(this).position().top;
                 $("#recorddetail_scrollhtml").animate({scrollTop:top},500);
+                 return false;
             }
             /***-------------------手写笔录时间戳顺序正确的话可以使用-------------------***/
             /*
@@ -691,12 +692,14 @@ function showrecord(times,usertype,obj) {
              }*/
             /***-------------------手写笔录时间戳顺序正确的话可以使用-------------------***/
         });
+
       $("#recordreals div").each(function (i,e) {
             var t2=$(this).attr("times");
                 if (t2==times) {
                     $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
                     var top=$(this).position().top;
                     $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                    return false;
                 }
         });
     }

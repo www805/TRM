@@ -93,12 +93,12 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateUser")
-    @RequestMapping(value = "/getAddOrUpdateUser")
+    @RequiresPermissions("toAddOrUpdateUser")
+    @RequestMapping(value = "/toAddOrUpdateUser")
     public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
         model.addAttribute("ssid", ssid);
         model.addAttribute("title", "添加/修改用户");
-        return new ModelAndView("server_web/base/users/AddOrUpdateUser", "userModel", model);
+        return new ModelAndView("server_web/base/users/addOrUpdateUser", "userModel", model);
     }
 
     /**

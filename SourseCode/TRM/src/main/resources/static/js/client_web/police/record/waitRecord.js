@@ -475,7 +475,7 @@ function callbackgetRecordById(data) {
             getFDState();
 
             setInterval(function () {
-                console.log("刷新，获取设备状态");
+              /*  console.log("刷新，获取设备状态");*/
                 getFDState();
             }, 10000);
 
@@ -1024,7 +1024,7 @@ function setFocus(el) {
 
         //回车加锚点：先判断语音识别是否开启
         if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
-            var useasr=TDCache.TDCache==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
+            var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
             var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
             console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
             if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
@@ -1071,8 +1071,8 @@ function setrecord_html() {
     $("#recorddetail tr").attr("automaticbool","");
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 90%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  >'+datadata["q"]+'</label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" >'+datadata["w"]+'</label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  ></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" ></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td style="float: right;">\
@@ -1293,7 +1293,7 @@ function callbacksetRecordreal(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            console.log("笔录实时保存成功__"+data);
+           /* console.log("笔录实时保存成功__"+data);*/
         }
     }else{
         layer.msg(data.message);
@@ -1636,15 +1636,20 @@ var dqtag_right=[];//{key:0,value:"q",txt:["哈哈","哈哈"]}
 
 
 //自动甄别初始化
-var datadata={};
 
-var laststarttime_qq=-1;
-var laststarttime_ww=-1;
-var last_type=-1;//上一个是1问题 2是答案
+
+var laststarttime_qq=-1;//上一个问时间
+var laststarttime_ww=-1;//上一个答时间
+var last_type=-1;//上一个是 1问题 2是答案
 var qq="";
 var qqq="";
 var ww="";
 var www="";
+
+/*var q_prevstarttime=-1;
+var qq_prev="";*/
+var w_prevstarttime=-1;
+var ww_prev="";
 
 
 //定时器关闭
@@ -1666,7 +1671,128 @@ $(function () {
    //初始化第一行的焦点
 
 
-    contextMenu();
+    $('#recorddetail label').mouseup(function(){
+        var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+        dqselec_right= txt.toString();
+    })
+    $.contextMenu({
+        selector: "#recorddetail label" ,
+        callback: function (key, options) {
+            if (isNotEmpty(key)){
+                if (key=="type1"){
+                    //标记
+                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                        var h=$label.html();
+                        var txt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                txt.push(t);
+                            }
+                        })
+                        txt=Array.from(new Set(txt));
+                        var shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:txt
+                        }
+                        dqtag_right=[];
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
+                                dqtag_right.push(tag);
+                            }
+                        }
+
+                        dqtag_right.push(shuju);
+
+                        var $txt = $label.text();
+                        $label.html($txt);
+                        var $html = $label.html();
+                        $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
+                        $label.html($html);
+
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                var txt=tag.txt;
+                                if(isNotEmpty(txt)){
+                                    for (let j = 0; j < txt.length; j++) {
+                                        const shujuElement = txt[j];
+                                        if(dqselec_right.indexOf(shujuElement)<0){
+                                            var $html=$label.html();
+                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                            $label.html($html);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var newtxt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                newtxt.push(t);
+                            }
+                        })
+                        newtxt=Array.from(new Set(newtxt));
+                        shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:newtxt
+                        }
+                        dqtag_right=[];
+                        dqtag_right.push(shuju);
+                    }
+                } else if (key=="type2"){
+                    //取消标记
+                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                        var $txt = $label.text();
+                        $label.html($txt);
+
+                        var newtxt=[];
+                        for (let i = 0; i < dqtag_right.length; i++) {
+                            const tag = dqtag_right[i];
+                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                                var txt=tag.txt;
+                                if(isNotEmpty(txt)){
+                                    for (let j = 0; j < txt.length; j++) {
+                                        const shujuElement = txt[j];
+                                        if(dqselec_right.indexOf(shujuElement)<0){
+                                            var $html=$label.html();
+                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                            $label.html($html);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var newtxt=[];
+                        $("a",$label).each(function () {
+                            var t=$(this).text();
+                            if(isNotEmpty(t)){
+                                newtxt.push(t);
+                            }
+                        })
+                        newtxt=Array.from(new Set(newtxt));
+                        var shuju={
+                            key:td_lastindex["key"],
+                            value:td_lastindex["value"],
+                            txt:newtxt
+                        }
+                        dqtag_right=[];
+                        dqtag_right.push(shuju);
+                    }
+                }
+            }
+        },
+        items: {
+            "type1": { name: "标记",},
+            "type2": { name: "取消标记"},
+        }
+    });
 
 
     $(document).keypress(function (e) {
@@ -1795,68 +1921,84 @@ $(function () {
                             var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (record_switch_bool==1){
                                 if (last_type==-1){
-                                    //初始化
+                                    //初始化，开始有问就开始追加一行
                                     if (usertype==1){
-                                        qq+=translatext;
+                                        qq=translatext;
                                         last_type=usertype;
                                         laststarttime_qq=starttime;
-                                        datadata["q"]=qq;
-                                        datadata["w"]=ww;
                                         setrecord_html();
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
                                     }
                                 }else  if (last_type==1){
                                     //最后是问
+                                    var last_type2=last_type;
                                     last_type=usertype;
                                     if (usertype==1){
                                         //最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
                                         if (laststarttime_qq==starttime||laststarttime_qq==-1){
-                                            qq="";//清空q
-                                            qq+=translatext;
+                                            qq=translatext;
                                             laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").text(qqq+qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
                                         }else{
-                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text();
-                                            qqq=labletext;
-                                            qq=qqq+translatext;
+                                            qqq+=qq;
+                                            qq=translatext;
                                             laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
                                         }
                                     }else if (usertype==2){
                                         //最后是问，本次是答，开始拼接答案
-                                        ww+=translatext;
-                                        laststarttime_ww=starttime;
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
+                                        if (w_prevstarttime==starttime){
+                                            last_type=last_type2;//还原
+                                            console.log("修改即可————————————————————————————w")
+                                            console.log("ww_prev_______________________________"+ww_prev)
+                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").text(ww_prev+translatext);
+                                        }else {
+                                            ww=translatext;
+                                            laststarttime_ww=starttime;
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
+                                            ww_prev=ww;
+                                            console.log("ww_prev3_____________________________"+ww_prev)
+                                        }
                                     }
                                 }else  if (last_type==2){
                                     //最后是答
                                     last_type=usertype;
                                     if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
                                         if (laststarttime_ww==starttime||laststarttime_ww==-1){
-                                            ww="";
-                                            ww+=translatext;
+                                            ww=translatext;
                                             laststarttime_ww=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
                                         }else{
-                                            var labletext= $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text();
-                                            www=labletext;
-                                            ww=www+translatext;
+                                            www+=ww;
+                                            ww=translatext;
                                             laststarttime_ww=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
                                         }
-
+                                        ww_prev=www;
+                                        console.log("ww_prev2_________________________"+ww_prev)
                                     }else if (usertype==1){//最后是答，本次为问
                                         //判断本次问是否和上一次问相同时间，相同改变否则追加一行
                                         if (laststarttime_qq==starttime||laststarttime_qq==-1){
-                                            console.log("修改即可————————————————————————————")
-                                            qq="";//清空q
-                                            qq+=translatext;
+                                            console.log("修改即可————————————————————————————q")
+                                            qq=translatext;
                                             laststarttime_qq=starttime;
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").text(qqq+qq);
-                                        }else{
-                                            console.log("从这里开始追加新的一行")
+                                        }else {
+                                            console.log("从这里开始追加新的一行_________")
+                                            w_prevstarttime=laststarttime_ww;
+
+                                           /* if (isNotEmpty(www)){
+                                                ww_prev=www;
+                                                console.log("ww_prev2____"+ww_prev)
+                                            }else {
+                                              var txt=  $("#recorddetail tr[automaticbool='1']").find("td:first label[name='w']").text();
+                                                ww_prev=txt;
+                                                console.log("ww_prev3____"+ww_prev)
+                                            }*/
+
+
                                             //2.初始化问答
                                             laststarttime_qq=-1;
                                             laststarttime_ww=-1;
@@ -1865,11 +2007,10 @@ $(function () {
                                             qqq="";
                                             ww="";
                                             www="";
-                                            qq+=translatext;
+
+                                            qq=translatext;
                                             last_type=usertype;
                                             laststarttime_qq=starttime;
-                                            datadata["q"]=qq;
-                                            datadata["w"]=ww;
                                             setrecord_html();
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
