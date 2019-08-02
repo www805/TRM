@@ -128,7 +128,6 @@ function open_RecordsByCasessid(casessid,arraignmentslength,creator) {
         });
     }
 }
-
 function callbackgetRecordByCasessid(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){

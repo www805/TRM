@@ -188,6 +188,7 @@ function open_uploadword(ssid) {
                     <button type="button" class="layui-btn layui-btn-normal layui-input" id="test1" style="background-color: #1e9fff" onclick="wordfileclick();"><i class="layui-icon"></i>上传word模板</button>\
                     <input id="wordfile" type="file" style="display: none;">\
                 </div>\
+                <div class="layui-form-mid layui-word-aux">*请选择doc或者docx问答进行上传</div>\
             </div>\
             <div class="layui-form-item">\
                 <label class="layui-form-label">是否为默认</label>\
