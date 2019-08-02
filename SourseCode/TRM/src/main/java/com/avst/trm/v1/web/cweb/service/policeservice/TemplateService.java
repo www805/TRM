@@ -360,10 +360,9 @@ public class TemplateService extends BaseService {
 
                         Integer insert = police_problemMapper.insert(problem);
 
-                        Police_problem one = police_problemMapper.selectOne(problem);
-                        templatetoproblem.setProblemssid(one.getId() + "");
+                        templatetoproblem.setProblemssid(problem.getId() + "");
 
-                        problem.setId(one.getId());
+                        problem.setId(problem.getId());
 
                         Police_problemtotype problemtotype = new Police_problemtotype();
                         problemtotype.setProblemssid(problem.getId()+"");
@@ -699,9 +698,7 @@ public class TemplateService extends BaseService {
         addProblemParam.setCreatetime(new Date());
         addProblemParam.setSsid(OpenUtil.getUUID_32());
         int insert_bool = police_problemMapper.insert(addProblemParam);
-
-        Police_problem police_problem = police_problemMapper.selectOne(addProblemParam);
-        problemtotype.setProblemssid(police_problem.getId() + "");
+        problemtotype.setProblemssid(addProblemParam.getId() + "");
         problemtotype.setProblemtypessid(addProblemParam.getProblemtypessid());
         problemtotype.setSsid(OpenUtil.getUUID_32());
         problemtotype.setCreatetime(new Date());
