@@ -140,6 +140,8 @@
             <div class="">
                 <button class="layui-btn layui-btn-normal" onclick="window.location.href = '/cweb/police/policePage/totemplateIndex';return false;"><i class="layui-icon layui-icon-left"></i></button>
                 <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" onclick="getDataAll();">保存</button>
+                <button class="layui-btn layui-btn-warm" style="margin-left: 0px;" onclick="trObj=null;addTr('','','');">添加自定义问答</button>
+                <span style="margin-left: 10px;color: #9F9F9F;">（以下问答红色是问题，灰色是参考答案）</span>
                 <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
                 <!--<button class="layui-btn layui-btn-normal" onclick="alert(trObj)" style="margin-left: 0px;">导入</button>-->
 
@@ -194,15 +196,13 @@
                         <tbody id="dataTable"></tbody>
                     </table>
                     <div style="text-align: center;">
-                        <button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="addTr('','','');"><i class="layui-icon" style="font-size: 45px"></i></button>
+                        <button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="trObj=null;addTr('','','');"><i class="layui-icon" style="font-size: 45px"></i></button>
                     </div>
                 </div>
 
             </div>
         </div>
     </div>
-
-
 
 </div>
 <div th:replace="footer :: footer">...</div>

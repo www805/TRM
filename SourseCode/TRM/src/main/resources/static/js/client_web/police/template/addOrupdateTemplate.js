@@ -106,7 +106,24 @@ function callAddOrUpdate(data){
             setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        if (data.message.search("存在")) {
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['继续','取消'] //按钮
+            }, function(){
+                var title = $("#problem").val();
+                $("#problem").val(title + "副本");
+                if (data.message.search("修改")) {
+                    AddOrUpdateProblem("");
+                }else{
+                    AddOrUpdateProblem("1");
+                }
+
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
     }
 }
 
@@ -222,7 +239,20 @@ function callAddTmplate(data){
             },1500);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        if (data.message.search("存在")) {
+
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['新增','取消'] //按钮
+            }, function(){
+                var title = $("#templateTitle").val();
+                $("#templateTitle").val(title + "副本");
+                getDataAll();
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
     }
 }
 
@@ -237,7 +267,19 @@ function callUpdateTmplate(data){
             // alert("chengg")
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        if (data.message.search("存在")) {
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['修改','取消'] //按钮
+            }, function(){
+                var title = $("#templateTitle").val();
+                $("#templateTitle").val(title + "副本");
+                getDataAll();
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
     }
 }
 
@@ -433,6 +475,12 @@ function addTemplateProblem(obj, id) {
         }
     }
 
+    $("#pagelisttemplates_tbody").find("tr").each(function (i, val) {
+        $(this).css("background-color", "#fff");
+        if (i == id) {
+            $(this).css("background-color", "#f2f2f2");
+        }
+    });
     addTr(text, all[id].referanswer, all[id].id);
     huoqu();
 }
@@ -512,6 +560,10 @@ function getDataAll() {
 
     $("#testTable").find("td.onetd").each(function(i) {
 
+        // console.log($(this).html());
+        // console.log($(this).find("p.table_td_tt.content.text").attr('placeholder'));
+
+
         var str = $(this).text();
         str = str.replace(/\s/g,'');
         str = str.replace('问：','');
@@ -524,6 +576,10 @@ function getDataAll() {
             tiaochu = false;
             layer.msg("新增的问题不能为空", {icon: 2});
             return;
+        }
+
+        if (!isNotEmpty(arr[1])) {
+            arr[1] = $(this).find("p.table_td_tt.content.text").attr('placeholder');
         }
 
         problem = {

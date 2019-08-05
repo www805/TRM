@@ -123,7 +123,7 @@ function getTmplateTypesParams() {
 
     if (len == 0) {
         var currPage = 1;
-        var pageSize = 10;//测试
+        var pageSize = 15;//测试
         getTmplates_init(currPage, pageSize);
     }  else if (len == 2) {
         getTmplates('', arguments[0], arguments[1]);
@@ -163,7 +163,7 @@ layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload']
         // var text = $("#keyword").val();
         // if(text.replace(/\s*/g,"") == ""){
         // }
-        getTmplates_init(1,13);
+        getTmplates_init(1,15);
     });
 
 
