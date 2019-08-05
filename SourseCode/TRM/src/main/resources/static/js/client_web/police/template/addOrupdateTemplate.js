@@ -560,10 +560,6 @@ function getDataAll() {
 
     $("#testTable").find("td.onetd").each(function(i) {
 
-        // console.log($(this).html());
-        // console.log($(this).find("p.table_td_tt.content.text").attr('placeholder'));
-
-
         var str = $(this).text();
         str = str.replace(/\s/g,'');
         str = str.replace('问：','');
