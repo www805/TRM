@@ -139,7 +139,7 @@ function getTemplateById(id) {
         var templatedetail = '';
         $('#templatedetail').html(templatedetail);
 
-        if (templateToProblems.length > 1) {
+        if (isNotEmpty(templateToProblems)) {
             for (var i = 0; i < templateToProblems.length; i++) {
                 var Problem = templateToProblems[i];
 
