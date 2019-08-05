@@ -189,6 +189,7 @@ function callbackgetRecordById(data) {
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
                     var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
                     var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var recordtypename=record.recordtypename==null?"":record.recordtypename;
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
@@ -197,7 +198,8 @@ function callbackgetRecordById(data) {
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
                                   <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>\
+                                  <tr><td>笔录类型</td><td>"+recordtypename+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
             }
