@@ -1500,126 +1500,117 @@ function setqw(problems){
 }
 
 function contextMenu() {
-    $('#recorddetail label').mouseup(function(){
+    $('#recorddetail label').mousedown(function (e) {
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         dqselec_right= txt.toString();
-    })
-    $.contextMenu({
-        selector: "#recorddetail label" ,
-        callback: function (key, options) {
-            if (isNotEmpty(key)){
-                if (key=="type1"){
-                    //标记
-                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                        var h=$label.html();
-                        var txt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                txt.push(t);
-                            }
-                        })
-                        txt=Array.from(new Set(txt));
-                        var shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:txt
-                        }
-                        dqtag_right=[];
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
-                                dqtag_right.push(tag);
-                            }
-                        }
+        if (isNotEmpty(dqselec_right)) {
+            if (3 == e.which) {
+                console.log("右键")
+                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                    var $txt = $label.text();
+                    $label.html($txt);
 
-                        dqtag_right.push(shuju);
-
-                        var $txt = $label.text();
-                        $label.html($txt);
-                        var $html = $label.html();
-                        $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
-                        $label.html($html);
-
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                var txt=tag.txt;
-                                if(isNotEmpty(txt)){
-                                    for (let j = 0; j < txt.length; j++) {
-                                        const shujuElement = txt[j];
-                                        if(dqselec_right.indexOf(shujuElement)<0){
-                                            var $html=$label.html();
-                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                            $label.html($html);
-                                        }
+                    var newtxt=[];
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                            var txt=tag.txt;
+                            if(isNotEmpty(txt)){
+                                for (let j = 0; j < txt.length; j++) {
+                                    const shujuElement = txt[j];
+                                    if(dqselec_right.indexOf(shujuElement)<0){
+                                        var $html=$label.html();
+                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                        $label.html($html);
                                     }
                                 }
                             }
                         }
-                        var newtxt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                newtxt.push(t);
-                            }
-                        })
-                        newtxt=Array.from(new Set(newtxt));
-                        shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:newtxt
-                        }
-                        dqtag_right=[];
-                        dqtag_right.push(shuju);
                     }
-                } else if (key=="type2"){
-                    //取消标记
-                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                        var $txt = $label.text();
-                        $label.html($txt);
+                    var newtxt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            newtxt.push(t);
+                        }
+                    })
+                    newtxt=Array.from(new Set(newtxt));
+                    var shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:newtxt
+                    }
+                    dqtag_right=[];
+                    dqtag_right.push(shuju);
+                }
+            } else if (1 == e.which) {
+                console.log("左键")
+                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                    var h=$label.html();
+                    var txt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            txt.push(t);
+                        }
+                    })
+                    txt=Array.from(new Set(txt));
+                    var shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:txt
+                    }
+                    dqtag_right=[];
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
+                            dqtag_right.push(tag);
+                        }
+                    }
 
-                        var newtxt=[];
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                var txt=tag.txt;
-                                if(isNotEmpty(txt)){
-                                    for (let j = 0; j < txt.length; j++) {
-                                        const shujuElement = txt[j];
-                                        if(dqselec_right.indexOf(shujuElement)<0){
-                                            var $html=$label.html();
-                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                            $label.html($html);
-                                        }
+                    dqtag_right.push(shuju);
+
+                    var $txt = $label.text();
+                    $label.html($txt);
+                    var $html = $label.html();
+                    $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
+                    $label.html($html);
+
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                            var txt=tag.txt;
+                            if(isNotEmpty(txt)){
+                                for (let j = 0; j < txt.length; j++) {
+                                    const shujuElement = txt[j];
+                                    if(dqselec_right.indexOf(shujuElement)<0){
+                                        var $html=$label.html();
+                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                        $label.html($html);
                                     }
                                 }
                             }
                         }
-                        var newtxt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                newtxt.push(t);
-                            }
-                        })
-                        newtxt=Array.from(new Set(newtxt));
-                        var shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:newtxt
-                        }
-                        dqtag_right=[];
-                        dqtag_right.push(shuju);
                     }
+                    var newtxt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            newtxt.push(t);
+                        }
+                    })
+                    newtxt=Array.from(new Set(newtxt));
+                    shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:newtxt
+                    }
+                    dqtag_right=[];
+                    dqtag_right.push(shuju);
                 }
             }
-        },
-        items: {
-            "type1": { name: "标记",},
-            "type2": { name: "取消标记"},
         }
     });
 }
@@ -1671,126 +1662,117 @@ $(function () {
    //初始化第一行的焦点
 
 
-    $('#recorddetail label').mouseup(function(){
+    $('#recorddetail label').mousedown(function (e) {
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         dqselec_right= txt.toString();
-    })
-    $.contextMenu({
-        selector: "#recorddetail label" ,
-        callback: function (key, options) {
-            if (isNotEmpty(key)){
-                if (key=="type1"){
-                    //标记
-                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                        var h=$label.html();
-                        var txt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                txt.push(t);
-                            }
-                        })
-                        txt=Array.from(new Set(txt));
-                        var shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:txt
-                        }
-                        dqtag_right=[];
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
-                                dqtag_right.push(tag);
-                            }
-                        }
+        if (isNotEmpty(dqselec_right)) {
+            if (3 == e.which) {
+                console.log("右键")
+                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
+                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                    var $txt = $label.text();
+                    $label.html($txt);
 
-                        dqtag_right.push(shuju);
-
-                        var $txt = $label.text();
-                        $label.html($txt);
-                        var $html = $label.html();
-                        $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
-                        $label.html($html);
-
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                var txt=tag.txt;
-                                if(isNotEmpty(txt)){
-                                    for (let j = 0; j < txt.length; j++) {
-                                        const shujuElement = txt[j];
-                                        if(dqselec_right.indexOf(shujuElement)<0){
-                                            var $html=$label.html();
-                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                            $label.html($html);
-                                        }
+                    var newtxt=[];
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                            var txt=tag.txt;
+                            if(isNotEmpty(txt)){
+                                for (let j = 0; j < txt.length; j++) {
+                                    const shujuElement = txt[j];
+                                    if(dqselec_right.indexOf(shujuElement)<0){
+                                        var $html=$label.html();
+                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                        $label.html($html);
                                     }
                                 }
                             }
                         }
-                        var newtxt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                newtxt.push(t);
-                            }
-                        })
-                        newtxt=Array.from(new Set(newtxt));
-                        shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:newtxt
-                        }
-                        dqtag_right=[];
-                        dqtag_right.push(shuju);
                     }
-                } else if (key=="type2"){
-                    //取消标记
-                    if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                        var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                        var $txt = $label.text();
-                        $label.html($txt);
+                    var newtxt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            newtxt.push(t);
+                        }
+                    })
+                    newtxt=Array.from(new Set(newtxt));
+                    var shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:newtxt
+                    }
+                    dqtag_right=[];
+                    dqtag_right.push(shuju);
+                }
+            } else if (1 == e.which) {
+                console.log("左键")
+                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
+                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
+                    var h=$label.html();
+                    var txt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            txt.push(t);
+                        }
+                    })
+                    txt=Array.from(new Set(txt));
+                    var shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:txt
+                    }
+                    dqtag_right=[];
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
+                            dqtag_right.push(tag);
+                        }
+                    }
 
-                        var newtxt=[];
-                        for (let i = 0; i < dqtag_right.length; i++) {
-                            const tag = dqtag_right[i];
-                            if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                                var txt=tag.txt;
-                                if(isNotEmpty(txt)){
-                                    for (let j = 0; j < txt.length; j++) {
-                                        const shujuElement = txt[j];
-                                        if(dqselec_right.indexOf(shujuElement)<0){
-                                            var $html=$label.html();
-                                            $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                            $label.html($html);
-                                        }
+                    dqtag_right.push(shuju);
+
+                    var $txt = $label.text();
+                    $label.html($txt);
+                    var $html = $label.html();
+                    $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
+                    $label.html($html);
+
+                    for (let i = 0; i < dqtag_right.length; i++) {
+                        const tag = dqtag_right[i];
+                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
+                            var txt=tag.txt;
+                            if(isNotEmpty(txt)){
+                                for (let j = 0; j < txt.length; j++) {
+                                    const shujuElement = txt[j];
+                                    if(dqselec_right.indexOf(shujuElement)<0){
+                                        var $html=$label.html();
+                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
+                                        $label.html($html);
                                     }
                                 }
                             }
                         }
-                        var newtxt=[];
-                        $("a",$label).each(function () {
-                            var t=$(this).text();
-                            if(isNotEmpty(t)){
-                                newtxt.push(t);
-                            }
-                        })
-                        newtxt=Array.from(new Set(newtxt));
-                        var shuju={
-                            key:td_lastindex["key"],
-                            value:td_lastindex["value"],
-                            txt:newtxt
-                        }
-                        dqtag_right=[];
-                        dqtag_right.push(shuju);
                     }
+                    var newtxt=[];
+                    $("a",$label).each(function () {
+                        var t=$(this).text();
+                        if(isNotEmpty(t)){
+                            newtxt.push(t);
+                        }
+                    })
+                    newtxt=Array.from(new Set(newtxt));
+                    shuju={
+                        key:td_lastindex["key"],
+                        value:td_lastindex["value"],
+                        txt:newtxt
+                    }
+                    dqtag_right=[];
+                    dqtag_right.push(shuju);
                 }
             }
-        },
-        items: {
-            "type1": { name: "标记",},
-            "type2": { name: "取消标记"},
         }
     });
 
