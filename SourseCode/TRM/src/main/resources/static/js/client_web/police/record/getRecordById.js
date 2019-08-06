@@ -354,15 +354,17 @@ function exportWord(obj){
 function exportPdf(obj) {
      if (isNotEmpty(pdfdownurl)){
             layer.open({
+                id:"pdfid",
                 type: 2,
                 title: '导出PDF笔录',
                 shadeClose: true,
                 shade: false,
                 maxmin: true, //开启最大化最小化按钮
                 area: ['893px', '600px'],
-                content: pdfdownurl
             });
-            layer.msg("导出成功,等待下载中...");
+
+           showPDF("pdfid",pdfdownurl);
+           layer.msg("导出成功,等待下载中...");
         }else{
          //调用导出方法
          layer.msg("导出中，请稍等...", {
@@ -382,13 +384,15 @@ function exportPdf(obj) {
                  if (isNotEmpty(data)){
                      //window.location.href = data;
                      layer.open({
+                         id:"pdfid",
                          type: 2,
                          title: '导出PDF笔录',
                          shadeClose: true,
+                         shade: false,
                          maxmin: true, //开启最大化最小化按钮
                          area: ['893px', '600px'],
-                         content: data
                      });
+                     showPDF("pdfid",pdfdownurl);
                      layer.msg("导出成功,等待下载中...");
                  }
              }else{
@@ -402,7 +406,7 @@ function exportPdf(obj) {
 
 var option = {
     title: {
-        text: '心率',
+        text: '紧张值',
     },
     tooltip: {
         trigger: 'axis',
@@ -431,7 +435,7 @@ var option = {
         y2:10,
     },
     series: [{
-        name: '心率',
+        name: '紧张值',
         type: 'line',
         showSymbol: false,
         hoverAnimation: false,
@@ -604,7 +608,7 @@ function select_monitorall(obj) {
         type: 2
         , skin: 'layui-layer-lan' //样式类名
         ,title: "身心检测"
-        ,area: ['40%','98%']
+        ,area: ['40%','100%']
         ,shade: 0
         ,id: 'layer_monitorall' //设定一个id，防止重复弹出
         ,offset: 'l'
@@ -842,7 +846,13 @@ $(function () {
         var hour=( hours < 10 ? "0" : "" ) + hours;
 
         if (isNotEmpty(select_monitorall_iframe_body)) {
-            select_monitorall_iframe_body.find("#dqtime").html(date+ hour + "：" + min + "：" + sec);
+          /*  select_monitorall_iframe_body.find("#dqtime").html(date+ hour + "：" + min + "：" + sec);*/
+
+            var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ';
+            var week=dayNames[newDate.getDay()];
+            var time=hour + "：" + min + "：" + sec;
+            select_monitorall_iframe_body.find("#dqtime1").html(date);
+            select_monitorall_iframe_body.find("#dqtime2").html(week+time);
         }
 
     },1000);
@@ -1048,6 +1058,7 @@ function phdata(datad,dqdata) {
 
             //图标规划
             var dqx=dqnum;
+            dqx=dqx.toString();
             var dqy=0;
             var itemStyle_color="red";
             var itemStyle_color_hr=itemStyle_color;
@@ -1416,13 +1427,13 @@ function phdata(datad,dqdata) {
 
             if (isNotEmpty(select_monitorall_iframe_body)) {
                 select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
-                select_monitorall_iframe_body.find("#monitorall #xt2").html(' '+relax+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt3").html(' '+stress+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt4").html(' '+bp+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt5").html(' '+spo2+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt6").html(' '+hr+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt7").html(' '+hrv+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt8").html(' '+br+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt2").html('放松值：'+relax+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt3").html('紧张值：'+stress+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt4").html('血压变化：'+bp+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt5").html('血氧：'+spo2+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt6").html('心率：'+hr+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt7").html('心率变异：'+hrv+'  ');
+                select_monitorall_iframe_body.find("#monitorall #xt8").html('呼吸：'+br+'  ');
             }
 
             var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";

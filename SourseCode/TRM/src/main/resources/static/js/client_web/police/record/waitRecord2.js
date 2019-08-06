@@ -67,14 +67,14 @@ function callbackgetPolygraphdata(data) {
 
 
                 if (isNotEmpty(select_monitorall_iframe_body)) {
-                    select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
-                    select_monitorall_iframe_body.find("#monitorall #xt2").html(' '+relax+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt3").html(' '+stress+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt4").html(' '+bp+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt5").html(' '+spo2+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt6").html(' '+hr+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt7").html(' '+hrv+'  ');
-                    select_monitorall_iframe_body.find("#monitorall #xt8").html(' '+br+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt1").html(''+stress_text+'   ');
+                    select_monitorall_iframe_body.find("#monitorall #xt2").html('放松值：'+relax+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt3").html('紧张值：'+stress+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt4").html('血压变化：'+bp+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt5").html('血氧：'+spo2+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt6").html('心率：'+hr+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt7").html('心率变异：'+hrv+'  ');
+                    select_monitorall_iframe_body.find("#monitorall #xt8").html('呼吸：'+br+'  ');
                 }
 
                 //表情
@@ -154,6 +154,7 @@ function callbackgetPolygraphdata(data) {
                 var pieces_bp=[{ gt: -11,lte: 10,color: '#00FF00'}];
                 var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
 
+                var dqy=0;
                 var dq_type=null;
                 $("#monitor_btn span").each(function (e) {
                     var type=$(this).attr("type");
@@ -164,6 +165,7 @@ function callbackgetPolygraphdata(data) {
                         if (type=="hr") {
                             date1=date_hr;
                             data1=data_hr;
+                            dqy=hr;
                             dqmarkLinedata=dqmarkLinedata_hr;
                             dqpieces=pieces_hr;
                             if (hr>=60&&hr<=100){
@@ -172,6 +174,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="hrv") {
                             date1=date_hrv;
                             data1=data_hrv;
+                            dqy=hrv;
                             dqmarkLinedata=dqmarkLinedata_hrv;
                             dqpieces=pieces_hrv;
                             if (hrv>=-10&&hrv<=10){
@@ -180,6 +183,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="br") {
                             date1=date_br;
                             data1=data_br;
+                            dqy=br;
                             dqmarkLinedata=dqmarkLinedata_br;
                             dqpieces=pieces_br;
                             if (br>=12&&br<=20){
@@ -188,6 +192,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="relax") {
                             date1=date_relax;
                             data1=data_relax;
+                            dqy=relax;
                             dqmarkLinedata=dqmarkLinedata_relax;
                             dqpieces=pieces_relax;
                             if (null!=relax){
@@ -196,6 +201,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="stress") {
                             date1=date_stress;
                             data1=data_stress;
+                            dqy=stress;
                             dqmarkLinedata=dqmarkLinedata_stress;
                             dqpieces=pieces_stress;
                             if (stress>=0&&stress<=30){
@@ -204,6 +210,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="bp") {
                             date1=date_bp;
                             data1=data_bp;
+                            dqy=bp;
                             dqmarkLinedata=dqmarkLinedata_bp;
                             dqpieces=pieces_bp;
                             if (bp>=-10&&bp<=10){
@@ -212,6 +219,7 @@ function callbackgetPolygraphdata(data) {
                         }else if (type=="spo2") {
                             date1=date_spo2;
                             data1=data_spo2;
+                            dqy=spo2;
                             dqmarkLinedata=dqmarkLinedata_spo2;
                             dqpieces=pieces_spo2;
                             if (spo2>=94){
@@ -222,10 +230,9 @@ function callbackgetPolygraphdata(data) {
                 });
 
 
-        /*      console.log(date1)
-                console.log(date1[date1.length-1])
-                console.log(data1)
-                console.log(data1[data1.length-1])*/
+
+                var dqx=date1[date1.length-1];
+                dqx=dqx.toString();
 
                 myChart.setOption({
                     xAxis: {
@@ -242,7 +249,7 @@ function callbackgetPolygraphdata(data) {
                         data: data1,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:data1[data1.length-1], xAxis:date1[date1.length-1], yAxis: data1[data1.length-1]}
+                                {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
                             ],
                             itemStyle:{
                                 color:itemStyle_color,
@@ -313,7 +320,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hr,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:hr, xAxis:date_hr[date_hr.length-1], yAxis: hr}
+                                    {name: '当前值', value:hr, xAxis:date_hr[date_hr.length-1].toString(), yAxis: hr}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_hr,
@@ -339,7 +346,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_hrv,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:hrv, xAxis:date_hrv[date_hrv.length-1], yAxis: hrv}
+                                    {name: '当前值', value:hrv, xAxis:date_hrv[date_hrv.length-1].toString(), yAxis: hrv}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_hrv,
@@ -365,7 +372,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_br,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:br, xAxis:date_hrv[date_hrv.length-1], yAxis: br}
+                                    {name: '当前值', value:br, xAxis:date_hrv[date_hrv.length-1].toString(), yAxis: br}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_br,
@@ -391,7 +398,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_relax,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:relax, xAxis:date_relax[date_relax.length-1], yAxis: relax}
+                                    {name: '当前值', value:relax, xAxis:date_relax[date_relax.length-1].toString(), yAxis: relax}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_relax,
@@ -417,7 +424,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_stress,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:stress, xAxis:date_stress[date_stress.length-1], yAxis: stress}
+                                    {name: '当前值', value:stress, xAxis:date_stress[date_stress.length-1].toString(), yAxis: stress}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_stress,
@@ -443,7 +450,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_bp,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:bp, xAxis:date_stress[date_stress.length-1], yAxis: bp}
+                                    {name: '当前值', value:bp, xAxis:date_stress[date_stress.length-1].toString(), yAxis: bp}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_bp,
@@ -469,7 +476,7 @@ function callbackgetPolygraphdata(data) {
                             data: data_spo2,
                             markPoint: {
                                 data: [
-                                    {name: '当前值', value:spo2, xAxis:date_stress[date_stress.length-1], yAxis: spo2}
+                                    {name: '当前值', value:spo2, xAxis:date_stress[date_stress.length-1].toString(), yAxis: spo2}
                                 ],
                                 itemStyle:{
                                     color:itemStyle_color_spo2,
@@ -515,7 +522,7 @@ function select_monitor(obj) {
 //显示全部图表
 var option = {
     title: {
-        text: '心率',
+        text: '紧张值',
     },
     tooltip: {
         trigger: 'axis',
@@ -544,7 +551,7 @@ var option = {
         y2:10,
     },
     series: [{
-        name: '心率',
+        name: '紧张值',
         type: 'line',
         showSymbol: false,
         hoverAnimation: false,
@@ -567,7 +574,7 @@ function select_monitorall(obj) {
         type: 2
         , skin: 'layui-layer-lan' //样式类名
         ,title: "身心检测"
-        ,area: ['40%','98%']
+        ,area: ['40%','100%']
         ,shade: 0
         ,id: 'layer_monitorall' //设定一个id，防止重复弹出
         ,offset: 'l'

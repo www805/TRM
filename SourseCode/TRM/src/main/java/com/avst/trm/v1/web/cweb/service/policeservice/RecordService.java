@@ -153,7 +153,7 @@ public class RecordService extends BaseService {
         }
 
         if (creatorbool){
-            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+            AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
             recordparam.eq("c.creator",user.getSsid());
         }
 
@@ -735,7 +735,7 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
-        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
         String recordname=addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
@@ -1571,7 +1571,7 @@ public class RecordService extends BaseService {
             ew.between("c.occurrencetime", getCasesParam.getOccurrencetime_start(), getCasesParam.getOccurrencetime_end());
         }
 
-        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         ew.eq("c.creator",user.getSsid());
 
         int count = police_caseMapper.countgetArraignmentList(ew);
@@ -1724,7 +1724,7 @@ public class RecordService extends BaseService {
         Base_admininfo base_admininfo=new Base_admininfo();
         base_admininfo.setSsid(OpenUtil.getUUID_32());
         base_admininfo.setTemporaryaskbool(1);
-        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         base_admininfo.setCreator(user.getSsid());
         base_admininfo.setWorkunitssid(user.getWorkunitssid());
         base_admininfo.setLoginaccount(OpenUtil.getUUID_32());

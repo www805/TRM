@@ -179,7 +179,9 @@ public class UserService extends BaseService {
             Base_admininfo admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
             admininfo.setSsid(OpenUtil.getUUID_32());
             admininfo.setRegistertime(new Date());
-            AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_WEB);
+
+            AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_WEB)), AdminAndWorkunit.class);
+
             admininfo.setCreator(user.getSsid());
             admininfo.setTemporaryaskbool(-1);//非临时询问人
             int insert_bool=base_admininfoMapper.insert(admininfo);

@@ -101,7 +101,7 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return result;
         }
-        AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         String recordssid=startRercordParam.getRecordssid();
         String mtmodelssid=null;//会议模板ssid
         StartRecordAndCaseParam startRecordAndCaseParam=startRercordParam.getStartRecordAndCaseParam();

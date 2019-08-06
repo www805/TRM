@@ -1820,7 +1820,12 @@ $(function () {
         $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
 
         if (isNotEmpty(select_monitorall_iframe_body)) {
-            select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());
+           /* select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());*/
+            var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ';
+            var week=dayNames[newDate.getDay()];
+            var time=$("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html();
+            select_monitorall_iframe_body.find("#dqtime1").html(date);
+            select_monitorall_iframe_body.find("#dqtime2").html(week+time);
         }
 
 
