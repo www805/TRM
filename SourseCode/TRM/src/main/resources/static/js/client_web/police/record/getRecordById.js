@@ -444,7 +444,7 @@ var option = {
             silent: true,
             lineStyle: {
                 normal: {
-                    color: '#00FF00'                   // 这儿设置安全基线颜色
+                    color: '#00CD68'                   // 这儿设置安全基线颜色
                 }
             },
         }
@@ -1069,13 +1069,13 @@ function phdata(datad,dqdata) {
             var itemStyle_color_bp=itemStyle_color;
             var itemStyle_color_spo2=itemStyle_color;
             var dqpieces=[];
-            var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00FF00'}];
-            var pieces_hrv=[{ gt: -11,lte: 10,color: '#00FF00'}];
-            var pieces_br=[{ gt: 11,lte: 20,color: '#00FF00'}];
-            var pieces_relax=[{ gt: -2,lte: -1,color: '#00FF00'},{gt:-1,color: '#00FF00'}];
-            var pieces_stress=[{ gt: -1,lte: 30,color: '#00FF00'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
-            var pieces_bp=[{ gt: -11,lte: 10,color: '#00FF00'}];
-            var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00FF00'}];
+            var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00CD68'}];
+            var pieces_hrv=[{ gt: -11,lte: 10,color: '#00CD68'}];
+            var pieces_br=[{ gt: 11,lte: 20,color: '#00CD68'}];
+            var pieces_relax=[{ gt: -2,lte: -1,color: '#00CD68'},{gt:-1,color: '#00CD68'}];
+            var pieces_stress=[{ gt: -1,lte: 30,color: '#00CD68'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
+            var pieces_bp=[{ gt: -11,lte: 10,color: '#00CD68'}];
+            var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00CD68'}];
 
 
             var dqmarkLinedata=[];
@@ -1104,7 +1104,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_hr;
                         dqpieces=pieces_hr;
                         if (hr>=60&&hr<=100){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="hrv") {
                         date1=date_hrv;
@@ -1113,7 +1113,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_hrv;
                         dqpieces=pieces_hrv;
                         if (hrv>=-10&&hrv<=10){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="br") {
                         date1=date_br;
@@ -1122,7 +1122,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_br;
                         dqpieces=pieces_br;
                         if (br>=12&&br<=20){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="relax") {
                         date1=date_relax;
@@ -1131,7 +1131,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_relax;
                         dqpieces=pieces_relax;
                         if (null!=relax){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="stress") {
                         date1=date_stress;
@@ -1140,7 +1140,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_stress;
                         dqpieces=pieces_stress;
                         if (stress>=0&&stress<=30){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="bp") {
                         date1=date_bp;
@@ -1149,7 +1149,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_bp;
                         dqpieces=pieces_bp;
                         if (bp>=-10&&bp<=10){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }else if (type=="spo2") {
                         date1=date_spo2;
@@ -1158,7 +1158,7 @@ function phdata(datad,dqdata) {
                         dqmarkLinedata=dqmarkLinedata_spo2;
                         dqpieces=pieces_spo2;
                         if (spo2>=94){
-                            itemStyle_color="#00FF00";
+                            itemStyle_color="#00CD68";
                         }
                     }
                 }
@@ -1194,7 +1194,7 @@ function phdata(datad,dqdata) {
             });
 
 
-            var redcolor="#00FF00";
+            var redcolor="#00CD68";
             if (hr>=60&&hr<=100){
                 itemStyle_color_hr=redcolor;
             }
@@ -1407,7 +1407,7 @@ function phdata(datad,dqdata) {
             //开始填数据
             var stress_text="未知";
             if (stress>=0&&stress<=30){
-                stress_text="<span style='color: #00FF00'>正常</span>";
+                stress_text="<span style='color: #00CD68'>正常</span>";
             }else if (stress>30&&stress<=50){
                 stress_text="<span style='color: #e4e920'>轻度紧张</span>";
             }else if (stress>50&&stress<=70){
