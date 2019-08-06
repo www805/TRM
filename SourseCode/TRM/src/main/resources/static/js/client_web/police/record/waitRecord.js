@@ -811,13 +811,16 @@ function calladdRecord(data) {
                         if (isNotEmpty(data)){
                             //window.location.href = data;
                             layer.open({
-                                type: 2,
+                                id:"pdfid",
+                                type: 1,
                                 title: '导出PDF笔录',
                                 shadeClose: true,
                                 maxmin: true, //开启最大化最小化按钮
                                 area: ['893px', '600px'],
-                                content: data
                             });
+
+
+                            showPDF("pdfid",data);
                             layer.msg("导出成功,等待下载中...");
                         }
                     }else{

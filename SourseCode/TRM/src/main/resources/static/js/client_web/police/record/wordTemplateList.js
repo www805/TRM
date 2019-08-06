@@ -291,6 +291,9 @@ function open_uploadword(ssid) {
                         $("#defaultboolm").prop("checked", true);
                         form.render("checkbox");
                     }
+                }else {
+                    $("#defaultboolm").prop("checked", true);
+                    form.render("checkbox");
                 }
             });
         }
