@@ -189,6 +189,7 @@ function callbackgetRecordById(data) {
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
                     var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
                     var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var recordtypename=record.recordtypename==null?"":record.recordtypename;
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
@@ -197,7 +198,8 @@ function callbackgetRecordById(data) {
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
                                   <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>\
+                                  <tr><td>笔录类型</td><td>"+recordtypename+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
             }
@@ -321,7 +323,31 @@ function exportWord(obj){
         window.location.href = worddownurl;
         layer.msg("导出成功,等待下载中...");
     }else {
-        layer.msg("未找到笔录类型对应模板");
+        //调用导出方法
+        layer.msg("导出中，请稍等...", {
+            icon: 16,
+            shade: [0.1, 'transparent']
+        });
+        var url=getActionURL(getactionid_manage().getRecordById_exportWord);
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+            }
+        };
+        ajaxSubmitByJson(url, paramdata, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    var word_htmlpath=data.word_htmlpath;//预览html地址
+                    var word_path=data.word_path;//下载地址
+                    window.location.href = word_path;
+                    layer.msg("导出成功,等待下载中...");
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        });
     }
     btn(obj);
 }
@@ -338,7 +364,37 @@ function exportPdf(obj) {
             });
             layer.msg("导出成功,等待下载中...");
         }else{
-         layer.msg("未找到笔录类型对应模板");
+         //调用导出方法
+         layer.msg("导出中，请稍等...", {
+             icon: 16,
+             shade: [0.1, 'transparent']
+         });
+         var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
+         var paramdata={
+             token:INIT_CLIENTKEY,
+             param:{
+                 recordssid: recordssid,
+             }
+         };
+         ajaxSubmitByJson(url, paramdata, function (data) {
+             if(null!=data&&data.actioncode=='SUCCESS'){
+                 var data=data.data;
+                 if (isNotEmpty(data)){
+                     //window.location.href = data;
+                     layer.open({
+                         type: 2,
+                         title: '导出PDF笔录',
+                         shadeClose: true,
+                         maxmin: true, //开启最大化最小化按钮
+                         area: ['893px', '600px'],
+                         content: data
+                     });
+                     layer.msg("导出成功,等待下载中...");
+                 }
+             }else{
+                 layer.msg(data.message);
+             }
+         });
         }
       btn(obj);
 }

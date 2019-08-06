@@ -5,6 +5,7 @@ var arrayProblem = [];
 var problemtypessidV;
 var trObj;
 var NoDelele = false;
+var modelban_index;
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -102,10 +103,27 @@ function callAddOrUpdate(data){
             // window.location.reload();
             // console.log(data);
             layer.msg("操作成功",{icon: 1});
-            setTimeout("window.location.reload()",1500);
+            setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        if (data.message.search("存在")) {
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['继续','取消'] //按钮
+            }, function(){
+                var title = $("#problem").val();
+                $("#problem").val(title + "副本");
+                if (data.message.search("修改")) {
+                    AddOrUpdateProblem("");
+                }else{
+                    AddOrUpdateProblem("1");
+                }
+
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
     }
 }
 
@@ -206,7 +224,39 @@ function callTmplateTypes(data){
     }
 }
 
-function callAddOrUpdateTmplate(data){
+function callAddTmplate(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            layer.msg("操作成功！",{icon: 1});
+
+            setTimeout(function () {
+                setpageAction(INIT_CLIENT, "client_web/base/main");
+                var url=getActionURL(getactionid_manage().main_toTemplateIndex);
+                setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateTemplate");
+
+                window.location.href = url;
+
+            },1500);
+        }
+    }else{
+        if (data.message.search("存在")) {
+
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['新增','取消'] //按钮
+            }, function(){
+                var title = $("#templateTitle").val();
+                $("#templateTitle").val(title + "副本");
+                getDataAll();
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
+    }
+}
+
+function callUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             layer.msg("操作成功！",{icon: 1});
@@ -217,7 +267,19 @@ function callAddOrUpdateTmplate(data){
             // alert("chengg")
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        if (data.message.search("存在")) {
+            //询问框
+            layer.confirm(data.message, {
+                btn: ['修改','取消'] //按钮
+            }, function(){
+                var title = $("#templateTitle").val();
+                $("#templateTitle").val(title + "副本");
+                getDataAll();
+            });
+
+        }else{
+            layer.msg(data.message,{icon: 2});
+        }
     }
 }
 
@@ -393,6 +455,36 @@ function addUpdateinfo(ssid, problemtypessid, type) {
     }
 }
 
+function addTemplateProblem(obj, id) {
+    var text = $(obj).find("td").eq(0).text();
+    if (text == "") {
+        text = $(obj).parents('tr').find("td").eq(0).text();
+    }
+    text = text.replace('问：','');
+
+    var onetd = $("#dataTable").find("td.onetd");
+    if (onetd.length == 1) {
+        var str = $(onetd).text();
+        str = str.replace(/\s/g,'');
+        str = str.replace('问：','');
+        var arr = str.split('答：');
+
+        if (arr[0] == "") {
+            trObj = null;
+            $("#dataTable").html("");
+        }
+    }
+
+    $("#pagelisttemplates_tbody").find("tr").each(function (i, val) {
+        $(this).css("background-color", "#fff");
+        if (i == id) {
+            $(this).css("background-color", "#f2f2f2");
+        }
+    });
+    addTr(text, all[id].referanswer, all[id].id);
+    huoqu();
+}
+
 function modelban(problemV) {
     var problem = "";
     var referanswer = "";
@@ -424,24 +516,13 @@ function modelban(problemV) {
         "        </div>";
 
     //弹窗层
-    layer.open({
+    modelban_index = layer.open({
         type: 1,
         title: version,
         area: ['620px', '390px'], //宽高
         shadeClose: true,
         content: content
     });
-}
-
-function addTemplateProblem(obj, id) {
-    var text = $(obj).find("td").eq(0).text();
-    if (text == "") {
-        text = $(obj).parents('tr').find("td").eq(0).text();
-    }
-    text = text.replace('问：','');
-
-    addTr(text, all[id].referanswer, all[id].id);
-    huoqu();
 }
 
 function DeleteProblem(obj) {
@@ -454,6 +535,7 @@ function getDataAll() {
     // addArrProblem();
 
     var templatetoproblemids = [];
+    var arr = [];
     var problem = {};
     var templateType = $("#templateType").val();
     var tableLength = $("#testTable tr").length;
@@ -492,6 +574,10 @@ function getDataAll() {
             return;
         }
 
+        if (!isNotEmpty(arr[1])) {
+            arr[1] = $(this).find("p.table_td_tt.content.text").attr('placeholder');
+        }
+
         problem = {
             id:parseInt($(this).attr("name")),
             problem:arr[0],
@@ -526,9 +612,11 @@ function getDataAll() {
         }
     };
 
-    // console.log(url);
-
-    ajaxSubmitByJson(url, data, callAddOrUpdateTmplate);
+    if(ssid){
+        ajaxSubmitByJson(url, data, callUpdateTmplate);
+    }else{
+        ajaxSubmitByJson(url, data, callAddTmplate);
+    }
 }
 
 function huoqu() {
@@ -542,10 +630,10 @@ function huoqu() {
         text = text.replace(/答：/g, "");
 
         problem = {
-            id:id,
-            va:va,
-            text:text
-        }
+            id: id,
+            va: va,
+            text: text
+        };
 
         arrayProblem.push(problem);
 

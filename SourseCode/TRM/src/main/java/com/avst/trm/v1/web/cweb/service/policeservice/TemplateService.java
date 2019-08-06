@@ -65,7 +65,7 @@ public class TemplateService extends BaseService {
     private Police_templatetotypeMapper police_templatetotypeMapper;
 
     @Autowired
-    private Police_problemtotypeMapper policeProblemtotypeMapper;
+    private Police_problemtotypeMapper police_problemtotypeMapper;
 
 
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
@@ -79,6 +79,7 @@ public class TemplateService extends BaseService {
         }
 
         EntityWrapper ew = new EntityWrapper();
+        ew.orderBy("t.createtime", false);
 
         if (StringUtils.isNotBlank(getTemplatesParam.getKeyword())){
             ew.like("t.title", getTemplatesParam.getKeyword().trim());
@@ -148,13 +149,25 @@ public class TemplateService extends BaseService {
             return;
         }
 
-//        Police_template template1 = new Police_template();
-//        template1.setTitle(template.getTitle());
-//        Police_template one = police_templateMapper.selectOne(template1);
-//        if(null != one){
-//            result.setMessage("模板名称不能重复");
-//            return;
-//        }
+        //判断该模板是否已经存在
+        EntityWrapper<Police_template> ewww = new EntityWrapper<>();
+        ewww.eq("title", template.getTitle());
+        ewww.ne("id", template.getId());
+        List<Police_template> selectList = police_templateMapper.selectList(ewww);
+
+        if (null != selectList) {
+            for (Police_template police_template : selectList) {
+                Police_templatetotype templatetotype1 = new Police_templatetotype();
+                templatetotype1.setTemplatessid(police_template.getId() + "");
+                templatetotype1.setTemplatetypessid(template.getTemplatetypeid() + "");
+
+                Police_templatetotype police_templatetotype = police_templatetotypeMapper.selectOne(templatetotype1);
+                if (null != police_templatetotype) {
+                    result.setMessage("该模板名已经存在，是否继续修改？");
+                    return;
+                }
+            }
+        }
 
         //删除关联题目
         EntityWrapper ew=new EntityWrapper();
@@ -215,7 +228,7 @@ public class TemplateService extends BaseService {
                             problemtotype.setProblemtypessid("1");
                             problemtotype.setSsid(OpenUtil.getUUID_32());
                             problemtotype.setCreatetime(new Date());
-                            policeProblemtotypeMapper.insert(problemtotype);//问题类型中间表
+                            police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
                         }
 
                     }else{
@@ -327,6 +340,26 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        //判断该模板是否已经存在
+        EntityWrapper<Police_template> ewww = new EntityWrapper<>();
+        ewww.eq("title", addTemplateParam.getTitle());
+        List<Police_template> selectList = police_templateMapper.selectList(ewww);
+
+        if (null != selectList) {
+            for (Police_template police_template : selectList) {
+                Police_templatetotype templatetotype1 = new Police_templatetotype();
+                templatetotype1.setTemplatessid(police_template.getId() + "");
+                templatetotype1.setTemplatetypessid(addTemplateParam.getTemplatetypeid() + "");
+
+                Police_templatetotype police_templatetotype = police_templatetotypeMapper.selectOne(templatetotype1);
+                if (null != police_templatetotype) {
+                    result.setMessage("该模板名已经存在，是否继续新增？");
+                    return;
+                }
+            }
+        }
+        //如果新增就改个名字，如果是覆盖就直接覆盖了
+
         //添加模板数据
         addTemplateParam.setCreatetime(new Date());
         addTemplateParam.setSsid(OpenUtil.getUUID_32());
@@ -351,30 +384,36 @@ public class TemplateService extends BaseService {
                 //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
                 if(StringUtils.isNotEmpty(problem.getProblem())){
 
+                    String referanswer = problem.getReferanswer();
+                    Integer ordernum = problem.getOrdernum();
+                    problem.setOrdernum(null);
+                    problem.setReferanswer(null);
                     Police_problem selectOne = police_problemMapper.selectOne(problem);
+                    problem.setOrdernum(ordernum);
 
                     if(null == problem.getId() || null == selectOne){
                         problem.setSsid(OpenUtil.getUUID_32());
                         problem.setCreatetime(new Date());
+                        problem.setOrdernum(0);
                         problem.setId(null);
 
                         Integer insert = police_problemMapper.insert(problem);
 
-                        Police_problem one = police_problemMapper.selectOne(problem);
-                        templatetoproblem.setProblemssid(one.getId() + "");
+                        templatetoproblem.setProblemssid(problem.getId() + "");
 
-                        problem.setId(one.getId());
+                        problem.setId(problem.getId());
 
                         Police_problemtotype problemtotype = new Police_problemtotype();
                         problemtotype.setProblemssid(problem.getId()+"");
                         problemtotype.setProblemtypessid("1");
                         problemtotype.setSsid(OpenUtil.getUUID_32());
                         problemtotype.setCreatetime(new Date());
-                        policeProblemtotypeMapper.insert(problemtotype);//问题类型中间表
+                        police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
 
                     }else{
                         EntityWrapper ewProblem=new EntityWrapper();
                         ewProblem.eq("id",problem.getId());
+                        problem.setReferanswer(referanswer);
                         Integer update = police_problemMapper.update(problem, ewProblem);//修改问题
                     }
 
@@ -582,9 +621,6 @@ public class TemplateService extends BaseService {
             result.setMessage("问题不能为空");
             return;
         }
-
-
-
         if (null==updateProblemParam.getId()){
             result.setMessage("参数为空");
             return;
@@ -593,6 +629,23 @@ public class TemplateService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+
+        EntityWrapper<Police_problem> wrapper = new EntityWrapper<Police_problem>();
+        wrapper.eq("problem", updateProblemParam.getProblem());
+        List<Police_problem> police_problems = police_problemMapper.selectList(wrapper);
+
+        for (Police_problem police_problem : police_problems) {
+            Police_problemtotype problemtotype1 = new Police_problemtotype();
+            problemtotype1.setProblemssid(updateProblemParam.getProblemtypessid());
+            problemtotype1.setProblemtypessid(updateProblemParam.getId() + "");
+
+            Police_problemtotype problemtotype2 = police_problemtotypeMapper.selectOne(problemtotype1);
+            if (null == problemtotype2) {
+                result.setMessage("该问题已经存在，是否继续修改？");
+                return;
+            }
+        }
+
 
         EntityWrapper ew=new EntityWrapper();
         if (null!=updateProblemParam.getId()){
@@ -617,20 +670,20 @@ public class TemplateService extends BaseService {
             problemtotype.setProblemssid(updateProblemParam.getId() + "");
 
             //problemtypessidV
-            Police_problemtotype problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
+            Police_problemtotype problemtotype1 = police_problemtotypeMapper.selectOne(problemtotype);
             if(null != problemtotype1 && null != problemtotype1.getId()){
                 problemtotype1.setProblemtypessid(updateProblemParam.getProblemtypessid());
 
-                int updateType_bool = policeProblemtotypeMapper.updateById(problemtotype1);
+                int updateType_bool = police_problemtotypeMapper.updateById(problemtotype1);
                 LogUtil.intoLog(this.getClass(),"updateType_bool "+updateType_bool);
             }else{
                 //根据原版如果有就修改，没有就新增，新增的如果有了就不添加到关联表
                 problemtotype.setProblemtypessid(updateProblemParam.getProblemtypessid());
-                problemtotype1 = policeProblemtotypeMapper.selectOne(problemtotype);
+                problemtotype1 = police_problemtotypeMapper.selectOne(problemtotype);
                 if(null == problemtotype1){
                     problemtotype.setCreatetime(new Date());
                     problemtotype.setSsid(OpenUtil.getUUID_32());
-                    policeProblemtotypeMapper.insert(problemtotype);
+                    police_problemtotypeMapper.insert(problemtotype);
                 }
             }
 
@@ -695,18 +748,32 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        EntityWrapper<Police_problem> wrapper = new EntityWrapper<Police_problem>();
+        wrapper.eq("problem", addProblemParam.getProblem());
+        List<Police_problem> police_problems = police_problemMapper.selectList(wrapper);
+
+        for (Police_problem police_problem : police_problems) {
+            Police_problemtotype problemtotype1 = new Police_problemtotype();
+            problemtotype1.setProblemssid(addProblemParam.getProblemtypessid());
+            problemtotype1.setProblemtypessid(addProblemParam.getId() + "");
+
+            Police_problemtotype problemtotype2 = police_problemtotypeMapper.selectOne(problemtotype1);
+            if (null == problemtotype2) {
+                result.setMessage("该问题已经存在，是否继续添加？");
+                return;
+            }
+        }
+
         //添加问题类型
         addProblemParam.setCreatetime(new Date());
         addProblemParam.setSsid(OpenUtil.getUUID_32());
         int insert_bool = police_problemMapper.insert(addProblemParam);
-
-        Police_problem police_problem = police_problemMapper.selectOne(addProblemParam);
-        problemtotype.setProblemssid(police_problem.getId() + "");
+        problemtotype.setProblemssid(addProblemParam.getId() + "");
         problemtotype.setProblemtypessid(addProblemParam.getProblemtypessid());
         problemtotype.setSsid(OpenUtil.getUUID_32());
         problemtotype.setCreatetime(new Date());
 
-        int insert_totype = policeProblemtotypeMapper.insert(problemtotype);
+        int insert_totype = police_problemtotypeMapper.insert(problemtotype);
         LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");

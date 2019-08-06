@@ -49,6 +49,7 @@ function recordSet() {
         shade: 0,
         offset: ['130px', '450px'],
         area: ['450px', '360px'],
+        shadeClose: true,
         content: html,
         success: function (layero, index) {
             // layer.min(index);
@@ -98,6 +99,7 @@ function recordCaseInfo() {
         shade: 0,
         offset: 'auto',
         area: ['900px', 'auto'],
+        shadeClose: true,
         content: html,
         success: function (layero, index) {
             // layer.min(index);

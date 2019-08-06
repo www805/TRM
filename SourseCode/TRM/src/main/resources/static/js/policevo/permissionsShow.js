@@ -1,8 +1,8 @@
+
 function getRoles() {
     var url=getActionURL(getactionid_manage().permissionsShow_getRoles);
     ajaxSubmit(url,null,callbackgetRoles);
 }
-
 function callbackgetRoles(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -28,7 +28,6 @@ function getPermissions() {
     var url=getActionURL(getactionid_manage().permissionsShow_getPermissions);
     ajaxSubmit(url,null,callgetPermissions);
 }
-
 function callgetPermissions(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -40,14 +39,14 @@ function callgetPermissions(data){
                 if (isNotEmpty(permissionsVOParams)) {
                     for (var i = 0; i < permissionsVOParams.length; i++) {
                         var datum = permissionsVOParams[i];
-                        var Bodyhtml=' <fieldset class="layui-elem-field ">\
-                                                            <legend><input type="checkbox"  title="'+datum.name+'" value="'+datum.ssid+'" ></legend>\
+                        var Bodyhtml=' <fieldset class="layui-elem-field " >\
+                                                            <legend><input type="checkbox"  title="'+datum.name+'" value="'+datum.ssid+'" id="allChoose" lay-filter="allChoose" ></legend>\
                                                             <div class="layui-field-box">';
                         var permissionsList=datum.permissionsList;
                         if (isNotEmpty(permissionsList)) {
                             for (var j = 0; j < permissionsList.length; j++) {
                                 var fun = permissionsList[j];
-                                Bodyhtml+=' <input type="checkbox" lay-skin="primary" title="'+fun.name+'"  value="'+fun.ssid+'" onclick="checkboxlist(this);">';
+                                Bodyhtml+=' <input type="checkbox" lay-skin="primary" title="'+fun.name+'"  value="'+fun.ssid+'" onclick="checkboxlist(this);" id="oneChoose"  lay-filter="oneChoose">';
                             }
                         }
 
@@ -58,8 +57,9 @@ function callgetPermissions(data){
                             $("#funBody").append(Bodyhtml);
                         }
                     }
+                    getPermissionsByRoleSsid();//根据角色ssid获取全部权限
                 }
-                getPermissionsByRoleSsid();//根据角色ssid获取全部权限
+
             }
         }
     }else{
@@ -68,6 +68,32 @@ function callgetPermissions(data){
     layui.use('form', function(){
         var form =  layui.form;
         form.render();
+
+        form.on('checkbox(allChoose)', function (data) {
+            var $dq_html=$(this).closest("fieldset").find(".layui-field-box");
+            $("input",$dq_html).each(function () {
+                this.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+        });
+
+        form.on('checkbox(oneChoose)', function (data) {
+            var $dq_allChoosehtml=$(this).closest("fieldset").find("#allChoose");
+            var $dq_html=$(this).closest("fieldset").find(".layui-field-box");
+            var i = 0;
+            var j = 0;
+            $("input",$dq_html).each(function () {
+                if( this.checked === true ) { i++; }j++;
+            });
+            if( i == j ){
+                $($dq_allChoosehtml).prop("checked",true);
+                form.render('checkbox');
+            }else{
+                //不需要设置：左侧菜单例如用户管理是一级目录类型   右侧权限例如：用户管理只是标题没有实际权限
+               /* $($dq_allChoosehtml).removeAttr("checked");
+                form.render('checkbox');*/
+            }
+        });
     });
 }
 

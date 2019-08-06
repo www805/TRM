@@ -212,6 +212,10 @@
                 getTmplates_init(1,15);
             }
         };
+
+        $('#keyword').on('input propertychange', function() {
+            getTmplates_init(1,15);
+        });
     });
 
     // layui.use(['element', 'upload', "layer", "form"], function () {

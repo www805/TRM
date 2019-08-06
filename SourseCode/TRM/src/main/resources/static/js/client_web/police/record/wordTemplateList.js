@@ -4,6 +4,8 @@ var explaindownurl_html=null;//word模板制作说明html地址
 var explaindownurl=null;//word模板说明制作下载地址
 var explaindownssid=null;
 
+var wordtemplatelist=null;//模板word数据
+
 function getWordTemplateList_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().wordTemplateList_getWordTemplateList);
     var wordtemplatename=$("#wordtemplatename").val();
@@ -40,6 +42,7 @@ function callbackgetWordTemplateList(data){
             pageshow(data);
             var data=data.data;
             if (isNotEmpty(data)){
+                wordtemplatelist=data.pagelist;
                 explaindownurl=data.wordtemplate_explaindownurl;
                 explaindownurl_html=data.wordtemplate_explaindownurl_html;
                 explaindownssid=data.wordtemplate_explaindownssid;
@@ -188,6 +191,7 @@ function open_uploadword(ssid) {
                     <button type="button" class="layui-btn layui-btn-normal layui-input" id="test1" style="background-color: #1e9fff" onclick="wordfileclick();"><i class="layui-icon"></i>上传word模板</button>\
                     <input id="wordfile" type="file" style="display: none;">\
                 </div>\
+                <div class="layui-form-mid layui-word-aux">*请选择doc或者docx问答进行上传</div>\
             </div>\
             <div class="layui-form-item">\
                 <label class="layui-form-label">是否为默认</label>\
@@ -211,8 +215,8 @@ function open_uploadword(ssid) {
         yes:function(index, layero){
             var file = document.getElementById("wordfile").files[0];
             if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
-                    layer.msg("请选择文件进行上传");
-                    return;
+                layer.msg("请选择文件进行上传");
+                return;
             }
 
             var recordtypessid=$("#recordtypessidm").val();
@@ -275,6 +279,19 @@ function open_uploadword(ssid) {
             form.on('select(recordtypessidm_filter)', function(data){
                 var recordtypename= $("#recordtypessidm").find("option[value='"+data.value+"']").text();
                 $("#wordtemplatenamem").val(recordtypename);
+                if (isNotEmpty(wordtemplatelist)) {
+                    var defaultnum=0;//默认模板数量
+                    for (let i = 0; i < wordtemplatelist.length; i++) {
+                        const wordtemplate = wordtemplatelist[i];
+                        if ((null!=wordtemplate.recordtypessid&&wordtemplate.recordtypessid==data.value)&&(null!=wordtemplate.defaultbool&&wordtemplate.defaultbool==1)){
+                            defaultnum++;
+                        }
+                    }
+                    if (defaultnum==0){
+                        $("#defaultboolm").prop("checked", true);
+                        form.render("checkbox");
+                    }
+                }
             });
         }
     });
@@ -282,16 +299,16 @@ function open_uploadword(ssid) {
 
 function callbackgetWordTemplateByssid(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                $("#wordtemplatenamem").val(data.wordtemplatename);
-                $("#recordtypessidm").val(data.recordtypessid);
-                if (data.defaultbool==1) {
-                    $("#defaultboolm").prop("checked", true);
-                }else {
-                    $("#defaultboolm").prop("checked", false);
-                }
+        var data=data.data;
+        if (isNotEmpty(data)){
+            $("#wordtemplatenamem").val(data.wordtemplatename);
+            $("#recordtypessidm").val(data.recordtypessid);
+            if (data.defaultbool==1) {
+                $("#defaultboolm").prop("checked", true);
+            }else {
+                $("#defaultboolm").prop("checked", false);
             }
+        }
     }else{
         layer.msg(data.message,{icon: 2});
     }
@@ -391,7 +408,7 @@ $(function () {
                         {
                             token:INIT_CLIENTKEY,
                             param:{ ssid:ssid,
-                                     defaultbool:defaultbool
+                                defaultbool:defaultbool
                             }
                         };
                     ajaxSubmitByJson(url,data,function (data) {

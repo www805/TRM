@@ -137,6 +137,8 @@ function getactionid_manage() {
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
         getRecordById_togetPolygraph:"getRecordById_togetPolygraph",
+        getRecordById_exportWord:"getRecordById_exportWord",
+        getRecordById_exportPdf:"getRecordById_exportPdf",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -190,6 +192,7 @@ function getactionid_manage() {
         addOrupdateTemplateType_getProblemTypes:"addOrupdateTemplateType_getProblemTypes",
         addOrupdateTemplateType_getProblemById:"addOrupdateTemplateType_getProblemById",
 
+        templateIndex_templateIndex: "templateIndex_templateIndex",
         templateIndex_getTemplates: "templateIndex_getTemplates",
         templateIndex_getTemplateTypes: "templateIndex_getTemplateTypes",
         templateIndex_exportWord: "templateIndex_exportWord",

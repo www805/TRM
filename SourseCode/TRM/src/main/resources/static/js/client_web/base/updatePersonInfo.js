@@ -105,7 +105,7 @@ function callupdatePersonInfo(data){
         if (isNotEmpty(data)){
             if(data.data == 1){
                 layer.msg("修改成功",{icon: 1});
-                setTimeout("window.location.reload()",1500);
+                setTimeout("window.parent.location.reload();",1500);
             }else{
                 layer.msg(data.message,{icon: 2});
             }

@@ -192,7 +192,6 @@ public class Scheduler {
             zkControl.getHeartbeat(param);
         } catch (Exception e) {
             LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败");
-            e.printStackTrace();
         }
     }
 

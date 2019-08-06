@@ -1,6 +1,8 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
@@ -38,6 +40,9 @@ public class ArraignmentService extends BaseService {
     @Autowired
     private Police_recordtoproblemMapper police_recordtoproblemMapper;
 
+    @Autowired
+    private Base_admininfoMapper base_admininfoMapper;
+
   public void  getArraignmentList(RResult result, GetArraignmentListParam param){
         GetArraignmentListVO getArraignmentListVO=new GetArraignmentListVO();
 
@@ -52,6 +57,9 @@ public class ArraignmentService extends BaseService {
         if (StringUtils.isNotBlank(param.getUsername())){
             ew.like(true,"u.username",param.getUsername().trim());
         }
+      if(StringUtils.isNotEmpty(param.getOccurrencetime_start()) && StringUtils.isNotEmpty(param.getOccurrencetime_end())){
+          ew.between("c.occurrencetime", param.getOccurrencetime_start(), param.getOccurrencetime_end());
+      }
 
         int count = police_caseMapper.countgetArraignmentList(ew);
         param.setRecordCount(count);
@@ -72,6 +80,13 @@ public class ArraignmentService extends BaseService {
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                     recordAndCase.setArraignments(arraignmentAndRecords);
+                }
+                if(StringUtils.isNotEmpty(recordAndCase.getCreator())){
+                    //查出创建人的名称ew
+                    Base_admininfo base_admininfo = new Base_admininfo();
+                    base_admininfo.setSsid(recordAndCase.getCreator());
+                    Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
+                    recordAndCase.setCreatorname(admininfo.getUsername());
                 }
             }
             getArraignmentListVO.setPagelist(list);
