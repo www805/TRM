@@ -137,6 +137,8 @@ function getactionid_manage() {
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
         getRecordById_togetPolygraph:"getRecordById_togetPolygraph",
+        getRecordById_exportWord:"getRecordById_exportWord",
+        getRecordById_exportPdf:"getRecordById_exportPdf",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",

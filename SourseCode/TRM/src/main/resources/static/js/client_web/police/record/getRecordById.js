@@ -323,7 +323,31 @@ function exportWord(obj){
         window.location.href = worddownurl;
         layer.msg("导出成功,等待下载中...");
     }else {
-        layer.msg("导出失败");
+        //调用导出方法
+        layer.msg("导出中，请稍等...", {
+            icon: 16,
+            shade: [0.1, 'transparent']
+        });
+        var url=getActionURL(getactionid_manage().getRecordById_exportWord);
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+            }
+        };
+        ajaxSubmitByJson(url, paramdata, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    var word_htmlpath=data.word_htmlpath;//预览html地址
+                    var word_path=data.word_path;//下载地址
+                    window.location.href = word_path;
+                    layer.msg("导出成功,等待下载中...");
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        });
     }
     btn(obj);
 }
@@ -340,7 +364,37 @@ function exportPdf(obj) {
             });
             layer.msg("导出成功,等待下载中...");
         }else{
-         layer.msg("导出失败");
+         //调用导出方法
+         layer.msg("导出中，请稍等...", {
+             icon: 16,
+             shade: [0.1, 'transparent']
+         });
+         var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
+         var paramdata={
+             token:INIT_CLIENTKEY,
+             param:{
+                 recordssid: recordssid,
+             }
+         };
+         ajaxSubmitByJson(url, paramdata, function (data) {
+             if(null!=data&&data.actioncode=='SUCCESS'){
+                 var data=data.data;
+                 if (isNotEmpty(data)){
+                     //window.location.href = data;
+                     layer.open({
+                         type: 2,
+                         title: '导出PDF笔录',
+                         shadeClose: true,
+                         maxmin: true, //开启最大化最小化按钮
+                         area: ['893px', '600px'],
+                         content: data
+                     });
+                     layer.msg("导出成功,等待下载中...");
+                 }
+             }else{
+                 layer.msg(data.message);
+             }
+         });
         }
       btn(obj);
 }

@@ -1483,32 +1483,32 @@ public class RecordService extends BaseService {
                 }
             }
 
-            dataMap.put("${recordtypename}", recordtypename == null ? "" : recordtypename);
-            dataMap.put("${recordstarttime}", recordstarttime == null ? "" : recordstarttime);
-            dataMap.put("${recordendtime}", recordendtime == null ? "" : recordendtime);
-            dataMap.put("${recordplace}", recordplace == null ? "" : recordplace);
-            dataMap.put("${workname1}", workname1 == null ? "" : workname1);
-            dataMap.put("${workname2}", workname2 == null ? "" : workname2);
-            dataMap.put("${workname3}", workname3 == null ? "" : workname3);
-            dataMap.put("${username}", username == null ? "" : username);
-            dataMap.put("${sex}", sex == null ? "" : sex);
-            dataMap.put("${age}", age == null ? "" : age);
-            dataMap.put("${cardnum}", cardnum == null ? "" : cardnum);
-            dataMap.put("${politicsstatus}", politicsstatus == null ? "" : politicsstatus);
-            dataMap.put("${workunits}", workunits == null ? "" : workunits);
-            dataMap.put("${residence}", residence == null ? "" : residence);
-            dataMap.put("${phone}", phone == null ? "" : phone);
-            dataMap.put("${domicile}", domicile == null ? "" : domicile);
-            dataMap.put("${both}", both == null ? "" : both);
-            dataMap.put("${talk}", talk == null ? "" : talk);
-            dataMap.put("${nationality}", nationality == null ? "" : nationality);
-            dataMap.put("${casename}", casename == null ? "" : casename);
-            dataMap.put("${cause}", cause == null ? "" : cause);
-            dataMap.put("${casenum}", casenum == null ? "" : casenum);
-            dataMap.put("${occurrencetime}", occurrencetime == null ? "" : occurrencetime);
-            dataMap.put("${starttime}", starttime == null ? "" : starttime);
-            dataMap.put("${endtime}", endtime == null ? "" : endtime);
-            dataMap.put("${caseway}", caseway == null ? "" : caseway);
+            dataMap.put("${笔录标题}", recordtypename == null ? "" : recordtypename);
+            dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
+            dataMap.put("${结束时间}", recordendtime == null ? "" : recordendtime);
+            dataMap.put("${地点}", recordplace == null ? "" : recordplace);
+            dataMap.put("${工作单位1}", workname1 == null ? "" : workname1);
+            dataMap.put("${工作单位2}", workname2 == null ? "" : workname2);
+            dataMap.put("${工作单位3}", workname3 == null ? "" : workname3);
+            dataMap.put("${被询问人}", username == null ? "" : username);
+            dataMap.put("${性别}", sex == null ? "" : sex);
+            dataMap.put("${年龄}", age == null ? "" : age);
+            dataMap.put("${身份证件及号码}", cardnum == null ? "" : cardnum);
+            dataMap.put("${政治面貌}", politicsstatus == null ? "" : politicsstatus);
+            dataMap.put("${工作单位}", workunits == null ? "" : workunits);
+            dataMap.put("${现住址}", residence == null ? "" : residence);
+            dataMap.put("${联系方式}", phone == null ? "" : phone);
+            dataMap.put("${户籍所在地}", domicile == null ? "" : domicile);
+            dataMap.put("${出生日期}", both == null ? "" : both);
+            dataMap.put("${问答}", talk == null ? "" : talk);
+            dataMap.put("${国籍}", nationality == null ? "" : nationality);
+            dataMap.put("${案件名称}", casename == null ? "" : casename);
+            dataMap.put("${案由}", cause == null ? "" : cause);
+            dataMap.put("${案件编号}", casenum == null ? "" : casenum);
+            dataMap.put("${案发时间}", occurrencetime == null ? "" : occurrencetime);
+            dataMap.put("${案件开始时间}", starttime == null ? "" : starttime);
+            dataMap.put("${案发结束时间}", endtime == null ? "" : endtime);
+            dataMap.put("${到案方式}", caseway == null ? "" : caseway);
 
         }
         return dataMap;
