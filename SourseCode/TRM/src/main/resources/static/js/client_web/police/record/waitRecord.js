@@ -819,7 +819,6 @@ function calladdRecord(data) {
                                 area: ['893px', '600px'],
                             });
 
-
                             showPDF("pdfid",data);
                             layer.msg("导出成功,等待下载中...");
                         }

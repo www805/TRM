@@ -231,14 +231,12 @@
 
     }
     @-webkit-keyframes fade{	/*透明度由0到1*/
-        0%{opacity:0; }
-        100%{ opacity:1;}
+        0%{ color: #FFFFFF; background-color: red;}
+        100%{ background-color: #FFFFFF;}
     }
     .highlight_monitorall {
-        color: #FFFFFF;background-color: red;
         -webkit-animation: fade 1s infinite ease-in-out;
     }
-
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -257,7 +255,7 @@
                 心率变异：<span id="xt7"> 0.0  </span>
                 血压变化：<span id="xt4"> 0.0  </span>
                 呼吸次数：<span id="xt8"> 0.0  </span>
-                放松值：<span id="xt2"> 0.0  </span>
+                放松值：<span id="xt2">  0.0  </span>
                <span class="layui-badge layui-bg-black" id="snrtext3">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span>
             </div>
         </div>
@@ -370,13 +368,13 @@
                                 </div>
                                 <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >
                                     <div  id="monitor_btn" style="display:inline">
-                                        <span class="layui-badge " isn="1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1" type='hr' onclick="select_monitor(this);">心率</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
-                                        <span class="layui-badge layui-bg-gray" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
+                                        <span class="layui-badge layui-btn" isn="1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hr' onclick="select_monitor(this);">心率</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
+                                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
                                     </div>
                                     <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
                                     <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
@@ -404,9 +402,9 @@
                                 </div>
                         </div>
                         <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                           <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;"  onclick="img_bool(this,1);" id="pauserecord">
-                            <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,2);" id="startrecord">
-                            <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,-1);" id="endrecord">
+                           <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行笔录制作">
+                            <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,2);" id="startrecord" title="笔录制作中">
+                            <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,-1);" id="endrecord"title="已开过笔录">
                         </div>
                     </div>
                 </div>

@@ -578,7 +578,7 @@ function select_monitorall(obj) {
         ,shade: 0
         ,id: 'layer_monitorall' //设定一个id，防止重复弹出
         ,offset: 'l'
-        ,resize: true
+        ,resize: false
         ,content: togetPolygraphurl
         ,success:function (layero,index) {
             select_monitorall_iframe = window['layui-layer-iframe' + index];
@@ -818,6 +818,7 @@ function main1() {
 function shrink(obj) {
     var shrink_bool=$(obj).attr("shrink_bool");
     if (shrink_bool==1){
+        layer.closeAll('tips');
         $("#shrink_html").hide();
         $(obj).attr("shrink_bool","-1");
         $("i",obj).attr("class","layui-icon layui-icon-spread-left");

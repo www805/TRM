@@ -355,7 +355,7 @@ function exportPdf(obj) {
      if (isNotEmpty(pdfdownurl)){
             layer.open({
                 id:"pdfid",
-                type: 2,
+                type: 1,
                 title: '导出PDF笔录',
                 shadeClose: true,
                 shade: false,
