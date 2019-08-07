@@ -209,7 +209,8 @@ public class NotificationService extends BaseService {
                 try {
                     URL url = new URL(recorddownurl_html);
                     InputStream in =url.openStream();
-                    InputStreamReader isr = new InputStreamReader(in);
+                    InputStreamReader isr = new InputStreamReader(in,"UTF-8");
+
                     BufferedReader bufr = new BufferedReader(isr);
                     String str;
                     while ((str = bufr.readLine()) != null) {

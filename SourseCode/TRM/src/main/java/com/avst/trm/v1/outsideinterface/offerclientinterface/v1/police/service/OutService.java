@@ -880,6 +880,8 @@ public class OutService  extends BaseService {
             return ;
         }
 
+        LogUtil.intoLog(this.getClass(),"tts文本____"+text);
+
         ReqParam reqParam=new ReqParam();
         str2TtsParam.setTtsType(TTSType.AVST);
         reqParam.setParam(str2TtsParam);

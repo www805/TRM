@@ -1091,6 +1091,7 @@ function previewgetNotifications(ssid) {
 //告知书朗读
 function str2Tts(text) {
     if (isNotEmpty(text)){
+        text=text.replace(/<[^>]+>/g,"").replace(/&nbsp;/ig,'').replace(/&ensp;/ig,'').replace(/&emsp;/ig,'').replace(/&thinsp;/ig,'').replace(/&zwnj;/ig,'').replace(/&zwj;/ig,'');
         var url=getUrl_manage().str2Tts;
         var data={
             token:INIT_CLIENTKEY,

@@ -138,7 +138,7 @@ public class XwpfTUtil {
 
             String talkspace=PropertiesListenerConfig.getProperty("talkspace");
             if(StringUtils.isEmpty(talkspace)){
-                talkspace="${talk}";
+                talkspace="${问答}";
             }
 
             String[] sp = srcPath.split("\\.");
