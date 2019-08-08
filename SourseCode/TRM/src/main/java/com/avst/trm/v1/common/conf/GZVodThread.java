@@ -61,6 +61,7 @@ boolean  bool=true;
                 return ;
             }
             GetPlayUrlVO getPlayUrlVO=getRecordByIdVO.getGetPlayUrlVO();
+            List<RecordPlayParam>  recordPlayParams=getPlayUrlVO.getRecordPlayParams();
 
             List<RecordFileParam> statelist = getPlayUrlVO.getRecordFileParams();
             if(null!=statelist&&statelist.size() > 0){
@@ -75,6 +76,7 @@ boolean  bool=true;
                     LogUtil.intoLog(4,this.getClass(),"state is not 2,播放文件的状态异常，不允许打包");
                     return ;
                 }
+
             }else{
                 LogUtil.intoLog(4,this.getClass(),"statelist is null,播放文件没有找到状态，不允许打包");
                 return ;
@@ -131,6 +133,7 @@ boolean  bool=true;
                 resultfilename="result.txt";
             }
             String resultpath=outfile+"/"+resultfilename;
+            //需要对result字符串进行部分处理
             ReadWriteFile.writeTxtFile(str,resultpath);//写入TXT文件
 
             //调用压缩生成文件

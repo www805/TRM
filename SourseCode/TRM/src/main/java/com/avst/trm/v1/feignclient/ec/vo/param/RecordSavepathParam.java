@@ -12,6 +12,29 @@ public class RecordSavepathParam {
 
     private String datatype;//文件类型
 
+    private int filenum;//第几个播放文件
+
+    /**
+     * 如果存储的是视频，并且几个视频是相关联的，就需要确认2个视频的重叠时间，S（秒数）
+     */
+    private Integer repeattime=0;
+
+    public int getFilenum() {
+        return filenum;
+    }
+
+    public void setFilenum(int filenum) {
+        this.filenum = filenum;
+    }
+
+    public Integer getRepeattime() {
+        return repeattime;
+    }
+
+    public void setRepeattime(Integer repeattime) {
+        this.repeattime = repeattime;
+    }
+
     public String getSoursedatapath() {
         return soursedatapath;
     }

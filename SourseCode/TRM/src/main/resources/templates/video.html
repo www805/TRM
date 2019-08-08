@@ -168,6 +168,11 @@
         });
 
 
+     var currentplaynum;//当前播放的文件是第几个
+     var Frontvideoestotals;//前面播放视频使用的秒数总和，不计当前播放文件
+     var currentrecordstarttime;//当前播放文件的系统开始时间，用于进度跳转同步asr和ph
+     //asr开始时间知道，定位record时间，(asrstarttime-currentrecordstarttime)+asrtime(秒数) + = record视频定位(秒数)
+     //asr开始时间知道，定位record时间，(phstarttime-currentrecordstarttime)+phtime (秒数) =record视频定位(秒数)
 
     </script>
     <!--播放器/代码结束-->

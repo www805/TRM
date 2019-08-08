@@ -16,7 +16,9 @@ public static void main( String[] args){
 	try {
 
 //		LogUtil.intoLog(NetTool.class,getLocalMac());
-		LogUtil.intoLog(NetTool.class,getCPUCode());
+//		LogUtil.intoLog(NetTool.class,getCPUCode());
+
+		System.out.println(getSQCode_win());
 
 
 	} catch (Exception e) {
@@ -25,16 +27,35 @@ public static void main( String[] args){
 	}
 
   
-}  
+}
+
+
+	/**
+	 * 获取本地设备的授权码
+	 * 现阶段用CPU序列号+硬盘序列号加密一层
+	 * @return
+	 */
+	public static String getSQCode_win(){
+		String cpuCode=getCPUCode_win();
+		String ypCode=getHdSerialInfo();
+		String sqcode="";
+		if(null!=cpuCode&&!cpuCode.trim().equals("")){
+			sqcode=cpuCode;
+		}
+		if(null!=ypCode&&!ypCode.trim().equals("")){
+			sqcode+=ypCode;
+		}
+		return AnalysisSQ.encode_uid(sqcode);
+	}
   
 //取得LOCALHOST的IP地址  
-public static InetAddress getMyIP() {  
+public static String getMyIP() {
 	InetAddress myIPaddress=null;
 try { 
 	myIPaddress=InetAddress.getLocalHost();
-	}  
-catch (UnknownHostException e) {}  
-return (myIPaddress);  
+	}
+catch (Exception e) {}
+return (myIPaddress.getHostAddress());
 }  
 //取得 www.baidu.com 的IP地址  
 public static String getServerIP(String url){ 
@@ -317,6 +338,29 @@ public static String getLocalMac() {
 
 		return null;
 
+	}
+
+	public static String getHdSerialInfo() {
+
+		String line = "";
+		String HdSerial = "";//定义变量 硬盘序列号
+		try {
+			Process proces = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
+			BufferedReader buffreader = new BufferedReader(new InputStreamReader(proces.getInputStream(),"gbk"));
+
+			while ((line = buffreader.readLine()) != null) {
+				if (line.indexOf("卷的序列号是 ") != -1) {  //读取参数并获取硬盘序列号
+
+					HdSerial = line.substring(line.indexOf("卷的序列号是 ") + "卷的序列号是 ".length(), line.length());
+					break;
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return HdSerial;
 	}
 
 

@@ -112,7 +112,7 @@ public class GZIPUtil {
         }catch(FileNotFoundException e)
         {
             System.out.println(e);
-        }catch(IOException e)
+        }catch(Exception e)
         {
             System.out.println(e);
         }

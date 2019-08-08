@@ -885,6 +885,7 @@ function exportPdf(obj) {
         icon: 16,
         shade: [0.1, 'transparent']
     });
+
 }
 
 
