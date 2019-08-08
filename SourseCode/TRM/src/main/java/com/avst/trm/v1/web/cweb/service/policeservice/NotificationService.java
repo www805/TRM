@@ -19,6 +19,14 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.POIXMLDocument;
+import org.apache.poi.POIXMLTextExtractor;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -26,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -187,12 +196,31 @@ public class NotificationService extends BaseService {
                 filesave.setRecorddownurl(downurl);
                 downloadNotificationVO.setBase_filesave(filesave);
 
+                String txts="";//读文本
                 if(realurl.endsWith(".doc")){
                     String replace = realurl.replace(".doc", ".html");
                     File f = new File(replace);
                     if (f.exists()) {
                         LogUtil.intoLog(this.getClass(),"文件存在:"+replace);
                         recorddownurl_html=downurl.replace(".doc", ".html");
+
+                        if (StringUtils.isNotBlank(recorddownurl_html)){
+                            try {
+                                InputStream fis = new FileInputStream(realurl);
+                                WordExtractor wordExtractor = new WordExtractor(fis);
+                                String[] text = wordExtractor.getParagraphText();
+                                if (null!=text&&text.length>0){
+                                    for (String s : text) {
+                                        if(StringUtils.isNotBlank(s))
+                                            txts+=","+s;
+                                    }
+                                }
+                                fis.close();
+                                wordExtractor.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }else if(realurl.endsWith(".docx")){
                     String replace = realurl.replace(".docx", ".html");
@@ -200,48 +228,39 @@ public class NotificationService extends BaseService {
                     if (f.exists()) {
                         LogUtil.intoLog(this.getClass(),"文件存在:"+replace);
                         recorddownurl_html=downurl.replace(".docx", ".html");
+
+                        if (StringUtils.isNotBlank(recorddownurl_html)){
+                            try {
+                                InputStream is = new FileInputStream(realurl);
+                                XWPFDocument doc = new XWPFDocument(is);
+                                List<XWPFParagraph> paras = doc.getParagraphs();
+                                if (null!=paras&&paras.size()>0){
+                                    for (XWPFParagraph para : paras) {
+                                        txts+=","+para.getText();
+                                    }
+                                }
+                                is.close();
+                                doc.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
                 LogUtil.intoLog(this.getClass(),"文件转换完成的html:"+recorddownurl_html);
                 downloadNotificationVO.setRecorddownurl_html(recorddownurl_html);
 
-                String htmlstr="";//需要转换的值
-                try {
-                    URL url = new URL(recorddownurl_html);
-                    InputStream in =url.openStream();
-                    InputStreamReader isr = new InputStreamReader(in,"UTF-8");
-
-                    BufferedReader bufr = new BufferedReader(isr);
-                    String str;
-                    while ((str = bufr.readLine()) != null) {
-                        htmlstr+=","+str;
+                List<String> recorddownurl_htmlreads=new ArrayList<>();
+                txts=txts.replaceAll("\\s*", "");
+                String[] t= txts.split(",|，");
+                if (null!=t&&t.length>0){
+                    for (String s : t) {
+                        if (null!=s&&s.length()!=0){
+                            recorddownurl_htmlreads.add(s);
+                        }
                     }
-                    bufr.close();
-                    isr.close();
-                    in.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
-                //过滤文本
-                String regEx_script="<script[^>]*?>[\\s\\S]*?<\\/script>"; //定义script的正则表达式
-                String regEx_style="<style[^>]*?>[\\s\\S]*?<\\/style>"; //定义style的正则表达式
-                String regEx_html="<[^>]+>"; //定义HTML标签的正则表达式
-
-                Pattern p_script=Pattern.compile(regEx_script,Pattern.CASE_INSENSITIVE);
-                Matcher m_script=p_script.matcher(htmlstr);
-                htmlstr=m_script.replaceAll(""); //过滤script标签
-
-                Pattern p_style=Pattern.compile(regEx_style,Pattern.CASE_INSENSITIVE);
-                Matcher m_style=p_style.matcher(htmlstr);
-                htmlstr=m_style.replaceAll(""); //过滤style标签
-
-                Pattern p_html=Pattern.compile(regEx_html,Pattern.CASE_INSENSITIVE);
-                Matcher m_html=p_html.matcher(htmlstr);
-                htmlstr=m_html.replaceAll(""); //过滤html标签
-
-                htmlstr=htmlstr.replaceAll("\\s*", "");
-                downloadNotificationVO.setRecorddownurl_htmlread(htmlstr);
-
+                downloadNotificationVO.setRecorddownurl_htmlreads(recorddownurl_htmlreads);
                 result.setData(downloadNotificationVO);
                 changeResultToSuccess(result);
             }else{

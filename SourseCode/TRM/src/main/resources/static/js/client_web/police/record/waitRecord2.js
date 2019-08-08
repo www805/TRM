@@ -959,7 +959,7 @@ function downloadNotification(ssid) {
 
 //打开告知书
 var previewgetNotifications_index=null;
-var dqrecorddownurl_htmlread=null;//读取阅读txt
+var dqrecorddownurl_htmlreads=null;//读取阅读txt
 
 var t1=null;
 var len=0;
@@ -1028,23 +1028,11 @@ function previewgetNotifications(ssid) {
 
 
                             //点击了
-                            dqrecorddownurl_htmlread=data.recorddownurl_htmlread;
-                            if (isNotEmpty(dqrecorddownurl_htmlread)){
-
-
-
-
-                                var arr=new Array();
-                                arr=dqrecorddownurl_htmlread.split(/[，|,]/);//注split可以用字符或字符串分割
-                                for (var i = 0; i < arr.length; i++) {
-                                    if(!isNotEmpty(arr[i])){
-                                        arr.splice(i,1);
-                                        i = i-1;
-                                    }
-                                }
+                            dqrecorddownurl_htmlreads=data.recorddownurl_htmlreads;
+                            if (isNotEmpty(dqrecorddownurl_htmlreads)){
                                 t1 = window.setInterval(function (args) {
-                                    var text=arr[len];
-                                    if (audioplay==null){
+                                    var text=dqrecorddownurl_htmlreads[len];
+                                    if (!isNotEmpty(audioplay)&&len==0){
                                         str2Tts(text);
                                         len++;
                                     } else if (audioplay.ended) {
@@ -1092,7 +1080,6 @@ function previewgetNotifications(ssid) {
 //告知书朗读
 function str2Tts(text) {
     if (isNotEmpty(text)){
-        text=text.replace(/<[^>]+>/g,"").replace(/&nbsp;/ig,'').replace(/&ensp;/ig,'').replace(/&emsp;/ig,'').replace(/&thinsp;/ig,'').replace(/&zwnj;/ig,'').replace(/&zwj;/ig,'');
         var url=getUrl_manage().str2Tts;
         var data={
             token:INIT_CLIENTKEY,
