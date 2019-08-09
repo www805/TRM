@@ -710,7 +710,7 @@ function getTDCacheParamByMTssid() {
 
 
 //保存按钮
-//recordbool 1进行中 2已结束 0初始化
+//recordbool 1进行中 2已结束 0初始化 3导出word 4导出pdf
 function addRecord() {
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
@@ -2056,6 +2056,7 @@ $(function () {
     });
 
     $("#baocun").click(function () {
+        recordbool=1;
         addRecord();
     });
 });
