@@ -1,6 +1,8 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
 
+import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
@@ -87,6 +89,9 @@ public class ServerConfigService extends BaseService {
         if(!checkKeyword(rResult, serverconfig)){
             return;
         }
+
+        AppCache.delAppCacheParam();//清空客户端缓存
+        AppServiceCache.delAppServiceCache();//清空服务器缓存
 
         Base_serverconfig baseserverconfig = serverconfigMapper.selectById(1);
         baseserverconfig.setClientname(serverconfig.getClientname());

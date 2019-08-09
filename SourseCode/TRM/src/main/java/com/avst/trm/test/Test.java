@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -20,9 +21,8 @@ public class Test {
 //      String xmSoursePath = OpenUtil.getXMSoursePath();
 //      System.out.println(xmSoursePath);
 
-      getini();
+//      getini();
    }
-
 
    public static void getini(){
       try {
@@ -175,6 +175,5 @@ public class Test {
       LogUtil.intoLog(Test.class,HttpRequest.uploadFile(actionUrl,uploadFilePath,map));
 
    }
-
 
 }
