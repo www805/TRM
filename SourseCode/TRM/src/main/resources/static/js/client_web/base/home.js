@@ -184,7 +184,8 @@ $(function () {
                 type:'pie',
                 selectedMode: 'single',
                 radius: [0, '30%'],
-
+                minAngle: 5,
+                avoidLabelOverlap:true,
                 label: {
                     normal: {
                         position: 'inner'
@@ -201,7 +202,7 @@ $(function () {
                 name:'详情来源',
                 type:'pie',
                 radius: ['40%', '55%'],
-                label: {
+                /*label: {
                     normal: {
                         formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                         backgroundColor: '#eee',
@@ -230,6 +231,29 @@ $(function () {
                                 padding: [2, 4],
                                 borderRadius: 2
                             }
+                        }
+                    }
+                },*/
+                label:{
+                    align: 'left',
+                    normal:{
+                        formatter(v) {
+                            let text = Math.round(v.percent)+'%' + '' + v.name
+                            if(text.length <= 8)
+                            {
+                                return text;
+                            }else if(text.length > 8 && text.length <= 16){
+                                return text = `${text.slice(0,8)}\n${text.slice(8)}`
+                            }else if(text.length > 16 && text.length <= 24){
+                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16)}`
+                            }else if(text.length > 24 && text.length <= 30){
+                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16,24)}\n${text.slice(24)}`
+                            }else if(text.length > 30){
+                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16,24)}\n${text.slice(24,30)}\n${text.slice(30)}`
+                            }
+                        },
+                        textStyle : {
+                            fontSize : 8
                         }
                     }
                 },

@@ -5,7 +5,7 @@
     <title>视频点播</title>
 </head>
 <body>
-<div  data-th-fragment="video">
+<div  data-th-fragment="video" style="height: 100%">
     <div id="view" >
         <div id="player" class="player"></div>
     </div>
@@ -30,8 +30,12 @@
             buffer:'5',
             skin: "vodWhite",
         });
-        function initplayer(){
-            SewisePlayer.toPlay(videourl, recordnameshow, 0, false);
+        function initplayer(time){
+            var starttime=0;
+            if (isNotEmpty(time)){
+                starttime=time;//因为多个视频定位不能及时定位所以当time不为空是将time赋值为开始播放秒数
+            }
+            SewisePlayer.toPlay(videourl, recordnameshow,starttime, false);
             /*初始化总时间*/
             totaltime=SewisePlayer.duration();
             if(isNumber(totaltime)){
@@ -63,8 +67,9 @@
             $("#progrssBar").append(progrssBarstr);
 
             if (isNotEmpty(currenttime)&&currenttime>0){
-                var locationtime=currenttime;
-                locationtime=locationtime*1000<0?0:locationtime*1000; //秒转时间戳
+                var locationtime=currenttime*1000<0?0:currenttime*1000; //秒转时间戳
+                 locationtime=locationtime+dq_play.recordstarttime-first_playstarttime;
+
                 //左侧
                 var recordrealsdivlen=$("#recordreals div").length;//识别长度
                 $("#recordreals div").each(function (i,e) {
@@ -80,8 +85,6 @@
                         $("#recordreals span").css("color","#fff").removeClass("highlight_left");
                         $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
 
-
-
                         $("#record_hoverhtml").hover(
                             function(){
                                 mouseoverbool=1
@@ -90,13 +93,12 @@
                                 mouseoverbool=-1;
                             });
 
-
                         if (mouseoverbool==-1){
                             var top=$(this).position().top;
                             $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                        }else {
+                            $("#recordreals_scrollhtml").stop();
                         }
-
-
                     }
                 });
 
@@ -104,7 +106,8 @@
                 var arrph=[];
                 var dq_phdataback=null;
                 if (isNotEmpty(phdatabackList)){
-                    locationtime=currenttime; //时间戳转秒
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //秒转时间戳//时间戳转秒
+                    console.log("locationtime_ph__"+locationtime)
                     for (var i = 0; i < phdatabackList.length; i++) {
                          var phdataback = phdatabackList[i];
                         var num=phdataback.num;
@@ -115,12 +118,14 @@
                         }else {
                             endph=phdatabackList[i+1].num;
                         }
-                        if (locationtime>=startph&&locationtime<=endph) {
+                       if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
+
+                                console.log("locationtime___"+locationtime+"__in__["+startph+","+endph+"]");
+
                             dq_phdataback = phdatabackList[i];
                            /* var start_i=i<0?0:i;
                             var end_i=(i+50)>=phdatabackList.length?phdatabackList.length:(i+50);
                             arrph= phdatabackList.slice(start_i,end_i);*/
-
                            var start_i=(i-26)<0?0:(i-26);
                            var end_i=(i+25)>=phdatabackList.length?phdatabackList.length:(i+25);
                             arrph= phdatabackList.slice(start_i,end_i);
