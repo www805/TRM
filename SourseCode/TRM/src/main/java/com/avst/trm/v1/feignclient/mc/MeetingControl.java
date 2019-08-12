@@ -23,6 +23,10 @@ public interface MeetingControl {
     @ResponseBody
     public RResult startMC(@RequestBody ReqParam<StartMCParam_out> param);
 
+    @RequestMapping("/mt/v1/pauseOrContinueMC")
+    @ResponseBody
+    public RResult pauseOrContinueMC(@RequestBody ReqParam<PauseOrContinueMCParam_out> param);
+
     @RequestMapping("/mt/v1/overMC")
     @ResponseBody
     public RResult overMC(@RequestBody ReqParam<OverMCParam_out> param);

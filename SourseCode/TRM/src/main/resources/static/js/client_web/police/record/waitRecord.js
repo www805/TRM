@@ -5,7 +5,7 @@ var recorduser=[];//会议用户集合：副麦主麦
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
-var recordbool=null;//笔录状态 3 4暂时用于导出判断
+var recordbool=null;//笔录状态 3 4暂时用于导出判断不存在数据库
 
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
@@ -212,25 +212,50 @@ function tr_downn(obj) {
 //录音按钮显示隐藏 type:1开始录音
 var startMC_index;
 function img_bool(obj,type){
-
+    $("#record_img img").css("display","none");
+    layer.closeAll('tips');
     if (type==1){
-        //开始会议
-        console.log("开始会议")
-         startMC_index = layer.msg("笔录开启中，请稍等...", {
-            icon: 16,
-            time:-1
-        });
-        $("#record_img img").css("display","none");
-        $("#startrecord").css("display","block");
-        layer.closeAll('tips');
-        $("#pauserecord").attr("onclick","");
-        startMC();
+        if (mtssid==null){
+            //开始会议
+            startMC_index = layer.msg("笔录开启中，请稍等...", {
+                icon: 16,
+                time:-1,
+                shade: [0.1,'#fff'], //不显示遮罩
+            });
+            $("#startrecord").css("display","block");
+            $("#pauserecord").attr("onclick","");
+            console.log("开始会议")
+            startMC();
+        } else {
+            //继续会议
+            startMC_index = layer.msg("笔录重启中，请稍等...", {
+                icon: 16,
+                time:-1,
+                shade: [0.1,'#fff'], //不显示遮罩
+            });
+            $("#startrecord").css("display","block");
+            $("#pauserecord").attr("onclick","img_bool(this,1);");
+            console.log("继续会议");
+            pauseOrContinueRercord(2);
+        }
     }else if (type==2) {
-       //暂停录音
+        startMC_index = layer.msg("笔录暂停中，请稍等...", {
+            icon: 16,
+            time:-1,
+            shade: [0.1,'#fff'], //不显示遮罩
+        });
+        //暂停录音
+        $("#pauserecord").css("display","block");
+        $("#pauserecord").attr("onclick","img_bool(this,1);");
         console.log("暂停会议")
+        if (null!=mtssid) {
+            pauseOrContinueRercord(1);
+        }
     }else if(type==-1) {
+        $("#endrecord").css("display","block");
         console.log("会议已结束")
         layer.msg("该案件已开启过笔录");
+
     }
 }
 
@@ -253,6 +278,7 @@ function copy_text(obj,event) {
 
     //鼠标双击事件
    if( new Date().getTime() - touchtime < 300 ){
+       console.log("现在是双击事件")
        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
        var old= $html.attr(qw+"_starttime");
        var h=$html.html();
@@ -260,9 +286,10 @@ function copy_text(obj,event) {
        if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
            $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
        }
+       dqselec_left="";//为双击的时候清空值
     }else{
         touchtime = new Date().getTime();
-       if (3 == event.which&&isNotEmpty(dqselec_left)){
+       if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1){
            if (classc=="btalk") {
                qw="w";
            }else if(classc=="atalk"){
@@ -395,28 +422,30 @@ function callbackgetRecordById(data) {
                         getRecordrealing();
                     }
 
-                    if ((!isNotEmpty(mcbool)||mcbool!=1)&&isNotEmpty(mtssiddata)){
-                        //存在会议但是状态为空或者1
+                    if ((!isNotEmpty(mcbool)||!(mcbool==1||mcbool==3))&&isNotEmpty(mtssiddata)){
+                        //存在会议但是状态为空或者不等于1
                         $("#record_img img").css("display","none");
                         $("#endrecord").css("display","block");
                         $("#pauserecord").attr("onclick","");
-                    }else if (null!=mcbool&&mcbool==1){
+                    }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
                         //存在会议状态正常
                         $("#record_img img").css("display","none");
-                        $("#startrecord").css("display","block");
-                        $("#pauserecord").attr("onclick","");
+                        if (mcbool==1){
+                            $("#startrecord").css("display","block");
+                            $("#pauserecord").attr("onclick","");
+                        } else if (mcbool==3) {
+                            $("#pauserecord").css("display","block");
+                        }
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
                             layer.closeAll("tips");
                         });
-
-                        }else {
-                        layui.use(['layer','element','form'], function(){
-                            var layer=layui.layer;
+                    }else {
+                            layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
-                        });
-
+                                    var layer=layui.layer;
+                                    layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                            });
                     }
 
                 }
@@ -575,7 +604,6 @@ function startMC() {
         });
     }
 }
-
 function callbackstartMC(data) {
     layer.close(startMC_index);
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -653,16 +681,67 @@ function callbackstartMC(data) {
                 return;
             }
         }
-
-
         layer.msg("笔录开启失败");
 
     }
 }
 
+
+/*
+会议暂停或者继续 pauseOrContinue 1请求暂停，2请求继续
+*/
+function pauseOrContinueRercord(pauseOrContinue) {
+    if (isNotEmpty(mtssid)){
+        var url=getUrl_manage().pauseOrContinueRercord;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid:mtssid
+                ,pauseOrContinue:pauseOrContinue
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackpauseOrContinueRercord);
+    }
+}
+
+function callbackpauseOrContinueRercord(data) {
+    layer.close(startMC_index);
+    getMCCacheParamByMTssid();//获取缓存
+    getTDCacheParamByMTssid();
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            //1请求暂停，2请求继续
+            var pauseOrContinue=data.pauseOrContinue;
+            var msg=pauseOrContinue==null?"":(pauseOrContinue==1?"暂停":"继续");
+            var recordnum=data.recordnum;//录音设备暂停/停止个数
+            var asrnum=data.asrnum;//语音识别服务暂停/停止个数
+            var polygraphnum=data.polygraphnum;//测谎仪服务暂停/停止个数
+            var con="笔录"+msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
+            layer.msg(con, {time: 2000});
+        }
+    }else {
+        var data2=data.data;
+        if (isNotEmpty(data2)){
+            var pauseOrContinue=data2.pauseOrContinue;
+            $("#record_img img").css("display","none");
+            if (pauseOrContinue==1){//请求暂停
+                $("#startrecord").css("display","block");
+            } else if (pauseOrContinue==2){//请求继续
+                $("#pauserecord").css("display","block");
+            }
+        }
+        console.log(data)
+        layer.msg(data.message);
+    }
+}
+
+
+
+
 //获取会议缓存
 function getMCCacheParamByMTssid() {
-    if (mcbool==1){
+    if (mcbool==1||mcbool==3){
         var url=getUrl_manage().getMCCacheParamByMTssid;
         var d={
             token:INIT_CLIENTKEY,
@@ -682,7 +761,7 @@ function getMCCacheParamByMTssid() {
 }
 
 function getTDCacheParamByMTssid() {
-    if (mcbool==1&&isNotEmpty(dq_recorduser)) {//会议正常的时候
+    if ((mcbool==1||mcbool==3)&&isNotEmpty(dq_recorduser)) {//会议正常的时候
         var url=getUrl_manage().getTDCacheParamByMTssid;
         var d={
             token:INIT_CLIENTKEY,
@@ -1834,7 +1913,7 @@ $(function () {
             if (usepolygraph==1){//使用测谎仪开启获取
                 getPolygraphdata();
             }
-            if ((isNotEmpty(mcbool)&&mcbool==1)){
+            if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){
                 getEquipmentsState();
             }
         }
@@ -1892,6 +1971,7 @@ $(function () {
                             $('#recordreals span').mouseup(function(){
                                 var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
                                 dqselec_left= txt.toString();
+                              
                             })
 
                             $("#asritem").hover(

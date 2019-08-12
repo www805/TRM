@@ -14,10 +14,7 @@ import com.avst.trm.v1.feignclient.ec.req.ph.GetPolygraphRealTimeImageParam;
 import com.avst.trm.v1.feignclient.ec.req.tts.Str2TtsParam;
 import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.SetMCAsrTxtBackVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.*;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -97,6 +94,24 @@ public class OutAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 会议暂停或者继续
+     * @param param
+     * @return
+     */
+    @RequestMapping("/pauseOrContinueRercord")
+    public RResult pauseOrContinueRercord(@RequestBody ReqParam<PauseOrContinueRercordParam> param) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+           outService.pauseOrContinueRercord(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
     /**
      * 结束会议

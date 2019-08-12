@@ -36,10 +36,7 @@ import com.avst.trm.v1.feignclient.mc.req.*;
 import com.avst.trm.v1.feignclient.mc.vo.*;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetEquipmentsStateParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPHDataBackParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPolygraphdataParam;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.StartRercordParam;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.*;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckStartRecordParam;
@@ -221,9 +218,6 @@ public class OutService  extends BaseService {
             }
 
 
-
-
-
             StartMCParam_out startMCParam_out=new StartMCParam_out();
             startMCParam_out.setMcType(MCType.AVST);
             startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
@@ -306,6 +300,48 @@ public class OutService  extends BaseService {
         }
         return result;
     }
+
+
+    public void pauseOrContinueRercord(RResult result, ReqParam<PauseOrContinueRercordParam> param){
+        PauseOrContinueRercordVO vo=new  PauseOrContinueRercordVO();
+
+        PauseOrContinueRercordParam pauseOrContinueRercordParam=gson.fromJson(gson.toJson(param.getParam()), PauseOrContinueRercordParam.class);
+        if (null == pauseOrContinueRercordParam) {
+            LogUtil.intoLog(this.getClass(),"pauseOrContinueRercord__参数为空__");
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String mtssid=pauseOrContinueRercordParam.getMtssid();
+        Integer pauseOrContinue=pauseOrContinueRercordParam.getPauseOrContinue();
+        if (StringUtils.isBlank(mtssid)||null==pauseOrContinue){
+            result.setMessage("参数为空");
+            return;
+        }
+
+
+        PauseOrContinueMCParam_out pauseOrContinueMCParam_out=new PauseOrContinueMCParam_out();
+        pauseOrContinueMCParam_out.setMcType(MCType.AVST);
+        pauseOrContinueMCParam_out.setMtssid(mtssid);
+        pauseOrContinueMCParam_out.setPauseOrContinue(pauseOrContinue);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(pauseOrContinueMCParam_out);
+        RResult rr=meetingControl.pauseOrContinueMC(reqParam);
+        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+            LogUtil.intoLog(this.getClass(),"会议暂停或者继续识别__meetingControl.pauseOrContinueMC请求成功");
+            vo=gson.fromJson(gson.toJson(rr.getData()), PauseOrContinueRercordVO.class);
+            changeResultToSuccess(result);
+        }else{
+            String msg=rr==null?"":rr.getMessage();
+            LogUtil.intoLog(this.getClass(),"会议暂停或者继续识别__meetingControl.pauseOrContinueMC请求失败__"+msg);
+            msg=pauseOrContinue==1?"笔录暂停失败":"笔录重启失败";
+            result.setMessage(msg);
+        }
+        vo.setPauseOrContinue(pauseOrContinue);
+        result.setData(vo);
+        return;
+    }
+
 
     public RResult overRercord(RResult result, ReqParam<OverMCParam_out> param) {
         OverMCParam_out overMCParam_out=gson.fromJson(gson.toJson(param.getParam()), OverMCParam_out.class);
@@ -773,7 +809,8 @@ public class OutService  extends BaseService {
         try {
             mt_rr=meetingControl.getMCState(mt_param);
             if (null != mt_rr && mt_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                MtState= 1;
+                Integer mtstate2=(Integer) mt_rr.getData();
+                MtState=mtstate2==3?3:1;
                 if(null!=asrnum&&asrnum.intValue()>0&&null!=useasr&&useasr.intValue()==1){
                     AsrState=1;
                 }

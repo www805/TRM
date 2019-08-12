@@ -1309,6 +1309,7 @@ function callbackgetEquipmentsState(data) {
             var PolygraphClass = "ayui-badge layui-bg-gray";
 
             var MtState = data.mtState;
+            $("#mtbool_txt").html("正常检测");
             if (MtState == 0) {
                 MtText = "未启动";
                 MtClass = "ayui-badge layui-bg-gray";
@@ -1318,6 +1319,12 @@ function callbackgetEquipmentsState(data) {
             } else if (MtState == -1) {
                 MtText = "异常";
                 MtClass = "layui-badge";
+            }else if (MtState == 3) {
+                //==3 是真实的
+                MtText = "暂停中";
+                MtClass = "ayui-badge layui-bg-gray";
+                mcbool=MtState;
+                $("#mtbool_txt").html(MtText)
             }
             var AsrState = data.asrState;
             if (AsrState == 0) {

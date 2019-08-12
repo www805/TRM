@@ -297,7 +297,6 @@ function  set_getPlayUrl(data) {
                         }else {
                             play["end_range"]=recordPlayParams[i+1].recordstarttime-play.recordstarttime+play["start_range"];
                         }
-                        console.log(play["start_range"]+"___"+play["end_range"])
                         recordPlayParams[i]=play;
                         //时间毫秒区域计算结束------
                     }
@@ -898,6 +897,27 @@ $(function () {
         }
 
     },1000);
+
+    /*检测视频是否播完，播完自动进入下一个视频*/
+    SewisePlayer.onPlayTime(function(time, id){
+        var totaltime=SewisePlayer.duration()==null?0:SewisePlayer.duration();
+        if (parseFloat(time)==parseFloat(totaltime)&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)) {
+            var dqfilenum=dq_play.filenum; //1
+            if (dqfilenum<recordPlayParams.length){  //3
+                dq_play=recordPlayParams[dqfilenum];
+                videourl=dq_play.playUrl;
+                initplayer();
+                //样式跟着改变
+                $("#videos span").each(function () {
+                    var filenum=$(this).attr("filenum");
+                    if (filenum==dq_play.filenum){
+                        $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                        return false;
+                    }
+                });
+            }
+        }
+    });
 
 
 });
