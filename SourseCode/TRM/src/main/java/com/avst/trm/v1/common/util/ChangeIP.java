@@ -2,6 +2,7 @@ package com.avst.trm.v1.common.util;
 
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 
 import java.util.List;
 
@@ -100,9 +101,20 @@ public class ChangeIP {
 
     //替换IP,笔录服务器IP、嵌入式设备IP、测谎仪IP、语音识别模型IP
     //数据库中修改IP，系统中的文件修改IP
+
+    /**
+     *
+     * @param blip 笔录客户端IP
+     * @param fdip 录像主机（嵌入式 ）ip
+     * @param phip 测谎仪IP
+     * @param asrip 语音识别模型IP
+     * @param fileBasepath 安装主目录地址
+     * @return
+     */
     public static boolean updateIp(String blip,String fdip,String phip,String asrip,String fileBasepath ){
 
         //先修改数据库数据
+        EquipmentControl ec=SpringUtil.getBean(EquipmentControl.class);
 
         fileBasepath=fileBasepath.endsWith("/")?fileBasepath:(fileBasepath+"/");
         //系统文件修改
