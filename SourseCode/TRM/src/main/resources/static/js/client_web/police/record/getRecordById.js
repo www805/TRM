@@ -789,7 +789,7 @@ function showrecord(times,usertype,obj) {
             if (t1==times) {
                 $("td",this).addClass("highlight_right");
                 var top=$(this).position().top;
-                $("#recorddetail_scrollhtml").animate({scrollTop:top},500);
+                $("#recorddetail_scrollhtml").animate({scrollTop:top});
                 return false;
             }
         });
@@ -799,7 +799,7 @@ function showrecord(times,usertype,obj) {
             if (t2==times) {
                 $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
                 var top=$(this).position().top;
-                $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                $("#recordreals_scrollhtml").animate({scrollTop:top});
                 return false;
             }
         });
@@ -839,7 +839,7 @@ function set_dqrealtxt(){
         }
         likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
         var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
-        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+        $("#recordreals_scrollhtml").animate({scrollTop:top});
     }
 }
 

@@ -96,12 +96,13 @@
                                 mouseoverbool=-1;
                             });
 
-                        if (mouseoverbool==-1){
+                        if (parseInt(mouseoverbool)==-1&&parseInt(mouseoverbool)!=1){
                             var top=$(this).position().top;
-                            $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                            $("#recordreals_scrollhtml").animate({scrollTop:top});
                         }else {
                             $("#recordreals_scrollhtml").stop();
                         }
+                        return false;
                     }
                 });
 
