@@ -1,8 +1,6 @@
 var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
-/*var iid=null;*/
 var videourl=null;//视频地址
-/*var iidno=0;//是否第一次获取iid*/
 
 var recordnameshow="";
 
@@ -17,32 +15,11 @@ var worddownurl=null;//word下载地址
 var problems=null;//问答
 var phdatabackList=null;//身心回放数据
 
-/*弹出框数据*/
-/*
-function opneModal_1() {
-    var url=getActionURL(getactionid_manage().getRecordById_tomoreRecord);
+var first_playstarttime=0;//第一个视频的开始时间
+var dq_play=null;//当前视频数据
+var recordPlayParams=[];//全部视频数据集合
 
-    var index = layer.open({
-        type: 2,
-        title:'笔录选择',
-        content:url,
-        area: ['1000px', '680px'],
-        btn: ['确定', '取消'],
-        yes:function(index, layero){
-            var recordssid_go = $(window.frames["layui-layer-iframe"+index])[0].recordssid_go;
-            recordssid=recordssid_go;
-            iid=null;
-            videourl=null;
-            iidno=0;
-            getRecordById();
-            layer.close(index);
-        },
-        btn2:function(index, layero){
-            layer.close(index);
-        }
-    });
-}
-*/
+
 
 /**
  * 局部刷新
@@ -129,8 +106,8 @@ function callbackgetRecordById(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var record=data.record;
-             pdfdownurl=record.pdfdownurl;//pdf下载地址
-             worddownurl=record.worddownurl;//word下载地址
+            pdfdownurl=record.pdfdownurl;//pdf下载地址
+            worddownurl=record.worddownurl;//word下载地址
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
@@ -151,30 +128,30 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
 
-                    //问题答案
-                    var problems1=record.problems;
-                    $("#recorddetail").html("");
-                    if (isNotEmpty(problems1)) {
-                        problems=problems1;
-                        setqw();
-                    }
+                //问题答案
+                var problems1=record.problems;
+                $("#recorddetail").html("");
+                if (isNotEmpty(problems1)) {
+                    problems=problems1;
+                    setqw();
+                }
 
-                    //会议人员
-                    var recordUserInfosdata=record.recordUserInfos;
-                    if (isNotEmpty(recordUserInfosdata)){
-                        var user1={
-                            username:recordUserInfosdata.username
-                            ,userssid:recordUserInfosdata.userssid
-                            ,grade:2
-                        };
-                        var user2={
-                            username:recordUserInfosdata.adminname
-                            ,userssid:recordUserInfosdata.adminssid
-                            ,grade:1
-                        };
-                        recorduser.push(user1);
-                        recorduser.push(user2);
-                    }
+                //会议人员
+                var recordUserInfosdata=record.recordUserInfos;
+                if (isNotEmpty(recordUserInfosdata)){
+                    var user1={
+                        username:recordUserInfosdata.username
+                        ,userssid:recordUserInfosdata.userssid
+                        ,grade:2
+                    };
+                    var user2={
+                        username:recordUserInfosdata.adminname
+                        ,userssid:recordUserInfosdata.adminssid
+                        ,grade:1
+                    };
+                    recorduser.push(user1);
+                    recorduser.push(user2);
+                }
 
                 //案件信息
                 var caseAndUserInfo=record.caseAndUserInfo;
@@ -284,24 +261,76 @@ function set_getRecord(data){
     }
 }
 
+function sortPlayUrl(a, b) {
+    return a.filenum - b.filenum;//由低到高
+}
+
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
         var iiddata=data.iid;
         var recordFileParams=data.recordFileParams;
-        var recordPlayParams=data.recordPlayParams;
+        recordPlayParams=data.recordPlayParams;
         var state;
-        if (isNotEmpty(recordFileParams)){
-            for (var i = 0; i < recordFileParams.length; i++) {
-                var recordFile = recordFileParams[i];
-                state=recordFile.state;
-            }
-            if (isNotEmpty(recordPlayParams)&&state==2){
-                for (var i = 0; i < recordPlayParams.length; i++) {
-                    var recordPlay = recordPlayParams[i];
-                    videourl=recordPlay.playUrl;
+        $("#videos").html("");
+        if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
+            recordPlayParams.sort(sortPlayUrl);//重新排序一边
+            for (let i = 0; i < recordPlayParams.length; i++) {
+                var play=recordPlayParams[i];
+                var playname=play.filename;
+                for (let j = 0; j < recordFileParams.length; j++) {
+                    const file = recordFileParams[j];
+                    var filename= file.filename;
+                    if (filename==playname){
+                        var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/logo.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
+                        $("#videos").append(VIDEO_HTML);
+
+                        //计算开始时间戳和结束时间戳区间范围 start_range开始区间时间毫秒值  end_range结束时间毫秒值 -1等于无穷大
+
+                        if (i<1){
+                            //第一个文件
+                            play["start_range"]=0;
+                        }else {
+                            play["start_range"]=recordPlayParams[i-1].end_range;
+                        }
+                        if (i>= recordPlayParams.length-1) {
+                            play["end_range"]= play["start_range"];//无穷大
+                        }else {
+                            play["end_range"]=recordPlayParams[i+1].recordstarttime-play.recordstarttime+play["start_range"];
+                        }
+                        console.log(play["start_range"]+"___"+play["end_range"])
+                        recordPlayParams[i]=play;
+                        //时间毫秒区域计算结束------
+                    }
                 }
-                initplayer();
             }
+            dq_play=recordPlayParams[0];
+            var firststate= $("#videos span:eq(0)").attr("state");
+            first_playstarttime=parseFloat(dq_play.recordstarttime);
+            //文件状态,0文件未获取，等待中；1文件正常，生成请求地址中；2文件可以正常使用；-1文件未正常获取，需强制获取；-2文件请求地址有误，需重新生成
+            if (firststate==2) {
+                videourl=dq_play.playUrl;
+                initplayer();
+            }else {
+                layer.msg("文件获取中...")
+            }
+            $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
+            $("#videos span").click(function () {
+                $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                var filenum= $(this).attr("filenum");
+                var state= $(this).attr("state");
+                if (state==2) {
+                    for (let i = 0; i < recordPlayParams.length; i++) {
+                        const dqdata = recordPlayParams[i];
+                        if (dqdata.filenum==filenum){
+                            dq_play=dqdata;
+                        }
+                    }
+                    videourl=dq_play.playUrl;
+                    initplayer();
+                }else {
+                    layer.msg("文件获取中...")
+                }
+            });
         }
     }
 }
@@ -352,55 +381,55 @@ function exportWord(obj){
     btn(obj);
 }
 function exportPdf(obj) {
-     if (isNotEmpty(pdfdownurl)){
-            layer.open({
-                id:"pdfid",
-                type: 1,
-                title: '导出PDF笔录',
-                shadeClose: true,
-                shade: false,
-                maxmin: true, //开启最大化最小化按钮
-                area: ['893px', '600px'],
-            });
+    if (isNotEmpty(pdfdownurl)){
+        layer.open({
+            id:"pdfid",
+            type: 1,
+            title: '导出PDF笔录',
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['893px', '600px'],
+        });
 
-           showPDF("pdfid",pdfdownurl);
-           layer.msg("导出成功,等待下载中...");
-        }else{
-         //调用导出方法
-         layer.msg("导出中，请稍等...", {
-             icon: 16,
-             shade: [0.1, 'transparent']
-         });
-         var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
-         var paramdata={
-             token:INIT_CLIENTKEY,
-             param:{
-                 recordssid: recordssid,
-             }
-         };
-         ajaxSubmitByJson(url, paramdata, function (data) {
-             if(null!=data&&data.actioncode=='SUCCESS'){
-                 var data=data.data;
-                 if (isNotEmpty(data)){
-                     //window.location.href = data;
-                     layer.open({
-                         id:"pdfid",
-                         type: 2,
-                         title: '导出PDF笔录',
-                         shadeClose: true,
-                         shade: false,
-                         maxmin: true, //开启最大化最小化按钮
-                         area: ['893px', '600px'],
-                     });
-                     showPDF("pdfid",pdfdownurl);
-                     layer.msg("导出成功,等待下载中...");
-                 }
-             }else{
-                 layer.msg(data.message);
-             }
-         });
-        }
-      btn(obj);
+        showPDF("pdfid",pdfdownurl);
+        layer.msg("导出成功,等待下载中...");
+    }else{
+        //调用导出方法
+        layer.msg("导出中，请稍等...", {
+            icon: 16,
+            shade: [0.1, 'transparent']
+        });
+        var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+            }
+        };
+        ajaxSubmitByJson(url, paramdata, function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    //window.location.href = data;
+                    layer.open({
+                        id:"pdfid",
+                        type: 2,
+                        title: '导出PDF笔录',
+                        shadeClose: true,
+                        shade: false,
+                        maxmin: true, //开启最大化最小化按钮
+                        area: ['893px', '600px'],
+                    });
+                    showPDF("pdfid",pdfdownurl);
+                    layer.msg("导出成功,等待下载中...");
+                }
+            }else{
+                layer.msg(data.message);
+            }
+        });
+    }
+    btn(obj);
 }
 
 
@@ -721,10 +750,39 @@ function select_monitorall(obj) {
 function showrecord(times,usertype,obj) {
     $("#recorddetail td").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
-    if (isNotEmpty(times)&&times!=-1&&isNotEmpty(usertype)){
-        var locationtime=times;
+    if (isNotEmpty(times)&&times!=-1&&isNotEmpty(usertype)&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
+
+        var  newtimes=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime);//初始时间戳+当前点击毫秒值=当前点击时间戳  当前点击时间戳-当前视频时间戳  重复值不暂不需要计算
+        var locationtime=newtimes;
         locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-        changeProgrss(parseFloat(locationtime));
+        //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
+        for (let i = 0; i < recordPlayParams.length; i++) {
+            const recordPlayParam = recordPlayParams[i];
+            var start_range=recordPlayParam.start_range;
+            var end_range=recordPlayParam.end_range;
+            if (times>=parseFloat(start_range)&&(parseFloat(start_range)==parseFloat(end_range)||times<=parseFloat(end_range))) {
+                if (dq_play.filenum==recordPlayParam.filenum){
+                    changeProgrss(parseFloat(locationtime));
+                } else {
+                    //赋值新视频,计算新的时间
+                    dq_play=recordPlayParam;
+                    videourl=dq_play.playUrl;
+                    locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime);//重新计算时间
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    initplayer(parseFloat(locationtime));
+
+                    //样式跟着改变
+                    $("#videos span").each(function () {
+                        var filenum=$(this).attr("filenum");
+                        if (filenum==dq_play.filenum){
+                            $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                            return false;
+                        }
+                    });
+                }
+            }
+        }
+
 
         var recorddetailtrlen= $("#recorddetail tr").length;
         $("#recorddetail tr").each(function (i,e) {
@@ -733,34 +791,18 @@ function showrecord(times,usertype,obj) {
                 $("td",this).addClass("highlight_right");
                 var top=$(this).position().top;
                 $("#recorddetail_scrollhtml").animate({scrollTop:top},500);
-                 return false;
+                return false;
             }
-            /***-------------------手写笔录时间戳顺序正确的话可以使用-------------------***/
-            /*
-             var start=t1;
-             var end=0;
-             if (i>=recorddetailtrlen-1) {
-                 end= start;//下一个区间
-             }else {
-                 end= $("#recorddetail tr:eq("+(i+1)+")").attr("times");//下一个区间
-             }
-            if (times>=start&&times<end) {
-                 console.log(times+"start__"+start+"__end__"+end)
-                 $("td",this).addClass("highlight_right");
-                 var top=$("td",this).position().top;
-                 $("#recorddetail_scrollhtml").animate({scrollTop:top-100},500);
-             }*/
-            /***-------------------手写笔录时间戳顺序正确的话可以使用-------------------***/
         });
 
-      $("#recordreals div").each(function (i,e) {
+        $("#recordreals div").each(function (i,e) {
             var t2=$(this).attr("times");
-                if (t2==times) {
-                    $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                    var top=$(this).position().top;
-                    $("#recordreals_scrollhtml").animate({scrollTop:top},500);
-                    return false;
-                }
+            if (t2==times) {
+                $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                var top=$(this).position().top;
+                $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+                return false;
+            }
         });
     }
 }
@@ -836,7 +878,7 @@ $(function () {
     var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
     var newDate = new Date();
     newDate.setDate(newDate.getDate());
-   var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()];
+    var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()];
     setinterval1= setInterval( function() {
         var seconds = new Date().getSeconds();
         var sec=( seconds < 10 ? "0" : "" ) + seconds;
@@ -846,7 +888,7 @@ $(function () {
         var hour=( hours < 10 ? "0" : "" ) + hours;
 
         if (isNotEmpty(select_monitorall_iframe_body)) {
-          /*  select_monitorall_iframe_body.find("#dqtime").html(date+ hour + "：" + min + "：" + sec);*/
+            /*  select_monitorall_iframe_body.find("#dqtime").html(date+ hour + "：" + min + "：" + sec);*/
 
             var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ';
             var week=dayNames[newDate.getDay()];
@@ -858,589 +900,560 @@ $(function () {
     },1000);
 
 
-
-        //视频实时进度
-        SewisePlayer.onPlayTime(function(time, id){
-            //定位_____________________start_______________________
-             $("#recordreals span").css("color","#fff").removeClass("highlight");
-
-            var locationtime=time;
-            locationtime=locationtime*1000<0?0:locationtime*1000; //秒转时间戳
-
-
-              /*  //左侧
-                var recordrealsdivlen=$("#recordreals div").length;//识别长度
-                $("#recordreals div").each(function (i,e) {
-                    var t=$(this).attr("times");
-                    var start=t;
-                    var end=0;
-                    if (i>=recordrealsdivlen-1) {
-                        end= t;//下一个区间
-                    }else {
-                        end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
-                    }
-                    if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
-                        console.log(locationtime+"__start__"+start+"__end__"+end)
-                        $("#recordreals span").css("color","#fff").removeClass("highlight_left");
-                        $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                        var top=$(this).position().top;
-                        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
-                    }
-                });*/
-
-
-                //中间
-                /*var arrph=[];
-                if (isNotEmpty(phdatabackList)){
-                    locationtime=time; //时间戳转秒
-                    for (var i = 0; i < phdatabackList.length; i++) {
-                        var phdataback = phdatabackList[i];
-                        var num=phdataback.num;
-                        var startph=num;
-                        var endph=0;
-                        if (i>= phdatabackList.length-1) {
-                            endph= num;//下一个区间
-                        }else {
-                            endph=phdatabackList[i+1].num;
-                        }
-                        if (locationtime>=startph&&locationtime<=endph) {
-                            var start_i=i<0?0:i;
-                            var end_i=(i+50)>=phdatabackList.length?phdatabackList.length:(i+50);
-                            arrph= phdatabackList.slice(start_i,end_i);
-                        }
-                    }
-                    phdata(arrph);
-                }*/
-            //定位_____________________end_______________________
-        });
-
-        //回车搜索
-      /*  $("#recordreals_select").keypress(function (e) {
-            if (e.which == 13) {
-              recordreals_select();
-            }
-        });*/
-
-
-
 });
 
 //将数据传给统计图：datad全部数据，dqdata当前数据
 function phdata(datad,dqdata) {
-        if (isNotEmpty(datad)){
+    if (isNotEmpty(datad)){
 
-            //将本次时间戳位置放中间--start--
-            var dqnum=0;//当前序号
-            var dqobj=null;//当前json值
-            if(isNotEmpty(dqdata)){
-                dqnum=dqdata.num;
-                var dqphBataBackJson=dqdata.phBataBackJson;
-                dqobj=eval("(" + dqphBataBackJson + ")");
+        //将本次时间戳位置放中间--start--
+        var dqnum=0;//当前序号
+        var dqobj=null;//当前json值
+        if(isNotEmpty(dqdata)){
+            dqnum=dqdata.num;
+            var dqphBataBackJson=dqdata.phBataBackJson;
+            dqobj=eval("(" + dqphBataBackJson + ")");
+        }
+        //将本次时间戳位置放中间--end--
+
+        var status=0;//状态
+        var hr=0;//心率
+        var br=0;//呼吸次数
+        var relax=0;//轻松值
+        var stress=0;//紧张值
+        var bp=0;//血压变化
+        var spo2=0;//血氧
+        var hrv=0;//心率变异
+        var hr_snr=0;
+        var fps=0;
+        var stress_snr=0;
+
+        var emotion=-1;
+
+
+
+        //数据收集
+        var date_hr2 = [];
+        var data_hr2 = [];
+
+        var date_br2 = [];
+        var data_br2 = [];
+
+        var date_relax2 = [];
+        var data_relax2 = [];
+
+        var date_stress2 = [];
+        var data_stress2 = [];
+
+        var date_bp2 = [];
+        var data_bp2 = [];
+
+        var date_spo22 = [];
+        var data_spo22 = [];
+
+        var date_hrv2 = [];
+        var data_hrv2= [];
+
+        for (var i = 0; i < 50; i++) {
+            var num=0;//底部时间戳
+            var data = datad[i];
+            if(isNotEmpty(data)){
+                num=data.num;
+                var phBataBackJson=data.phBataBackJson;
+                var obj=eval("(" + phBataBackJson + ")");
+                if (isNotEmpty(obj)) {
+                    hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
+                    br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
+                    relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
+                    stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                    bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
+                    spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
+                    hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
+
+                    emotion=obj.emotion.toFixed(0)==null?0:obj.emotion.toFixed(0);
+                }
             }
-            //将本次时间戳位置放中间--end--
 
-            var status=0;//状态
-            var hr=0;//心率
-            var br=0;//呼吸次数
-            var relax=0;//轻松值
-            var stress=0;//紧张值
-            var bp=0;//血压变化
-            var spo2=0;//血氧
-            var hrv=0;//心率变异
-            var hr_snr=0;
-            var fps=0;
-            var stress_snr=0;
+            date_hr2.push(num);
+            data_hr2.push(parseFloat(hr));
 
-            var emotion=-1;
+            date_br2.push(num);
+            data_br2.push(parseFloat(br));
+
+            date_relax2.push(num);
+            data_relax2.push(parseFloat(relax));
+
+            date_stress2.push(num);
+            data_stress2.push(parseFloat(stress));
+
+            date_bp2.push(num);
+            data_bp2.push(parseFloat(bp));
+
+            date_spo22.push(num);
+            data_spo22.push(parseFloat(spo2));
+
+            date_hrv2.push(num);
+            data_hrv2.push(parseFloat(hrv));
+        }
+
+        //开始赋值
+        date_hr=date_hr2;
+        data_hr=data_hr2;
+        date_br=date_br2;
+        data_br=data_br2;
+        date_relax=date_relax2;
+        data_relax=data_relax2;
+        date_stress=date_stress2;
+        data_stress=data_stress2;
+        date_bp=date_bp2;
+        data_bp=data_bp2;
+        date_spo2=date_spo22;
+        data_spo2=data_spo22;
+        date_hrv=date_hrv2;
+        data_hrv=data_hrv2;
+
+
+        //当前数据
+        if (isNotEmpty(dqobj)){
+            status=dqobj.status;
+
+            relax=dqobj.relax.toFixed(0);
+            stress=dqobj.stress.toFixed(0);
+            bp=dqobj.bp.toFixed(0);
+            spo2=dqobj.spo2.toFixed(0);
+            hr=dqobj.hr.toFixed(0);
+            hrv=dqobj.hrv.toFixed(0);
+            br=dqobj.br.toFixed(0);
+
+            hr_snr=dqobj.hr_snr.toFixed(1);
+            fps=dqobj.fps.toFixed(1);
+            stress_snr=dqobj.stress_snr.toFixed(1);
+
+            emotion=dqobj.emotion==null?6:dqobj.emotion;//为空默认表情：平静
+        }
+
+
+        //图标规划
+        var dqx=dqnum;
+        dqx=dqx.toString();
+        var dqy=0;
+        var itemStyle_color="red";
+        var itemStyle_color_hr=itemStyle_color;
+        var itemStyle_color_hrv=itemStyle_color;
+        var itemStyle_color_br=itemStyle_color;
+        var itemStyle_color_relax=itemStyle_color;
+        var itemStyle_color_stress=itemStyle_color;
+        var itemStyle_color_bp=itemStyle_color;
+        var itemStyle_color_spo2=itemStyle_color;
+        var dqpieces=[];
+        var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00CD68'}];
+        var pieces_hrv=[{ gt: -11,lte: 10,color: '#00CD68'}];
+        var pieces_br=[{ gt: 11,lte: 20,color: '#00CD68'}];
+        var pieces_relax=[{ gt: -2,lte: -1,color: '#00CD68'},{gt:-1,color: '#00CD68'}];
+        var pieces_stress=[{ gt: -1,lte: 30,color: '#00CD68'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
+        var pieces_bp=[{ gt: -11,lte: 10,color: '#00CD68'}];
+        var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00CD68'}];
+
+
+        var dqmarkLinedata=[];
+        var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
+        var dqmarkLinedata_hrv=[{yAxis: -10}, { yAxis: 10 }];
+        var dqmarkLinedata_br=[{yAxis: 12}, { yAxis: 20 }];
+        var dqmarkLinedata_relax=[];
+        var dqmarkLinedata_stress=[{yAxis: 30}, { yAxis: 50 }, { yAxis: 70 }, { yAxis: 100 }];
+        var dqmarkLinedata_bp=[{yAxis: -10}, { yAxis: 10 }];
+        var dqmarkLinedata_spo2=[{yAxis: 94}];
 
 
 
-            //数据收集
-            var date_hr2 = [];
-            var data_hr2 = [];
 
-            var date_br2 = [];
-            var data_br2 = [];
-
-            var date_relax2 = [];
-            var data_relax2 = [];
-
-            var date_stress2 = [];
-            var data_stress2 = [];
-
-            var date_bp2 = [];
-            var data_bp2 = [];
-
-            var date_spo22 = [];
-            var data_spo22 = [];
-
-            var date_hrv2 = [];
-            var data_hrv2= [];
-
-            for (var i = 0; i < 50; i++) {
-                var num=0;//底部时间戳
-                var data = datad[i];
-                if(isNotEmpty(data)){
-                    num=data.num;
-                    var phBataBackJson=data.phBataBackJson;
-                    var obj=eval("(" + phBataBackJson + ")");
-                    if (isNotEmpty(obj)) {
-                         hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
-                         br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
-                         relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
-                         stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
-                         bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
-                         spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
-                         hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
-
-                        emotion=obj.emotion.toFixed(0)==null?0:obj.emotion.toFixed(0);
+        var dq_type=null;
+        $("#monitor_btn span").each(function (e) {
+            var type=$(this).attr("type");
+            var name=$(this).text();
+            var isn=$(this).attr("isn");
+            if (isn==1){
+                dq_type=type;
+                if (type=="hr") {
+                    date1=date_hr;
+                    data1=data_hr;
+                    dqy=hr;
+                    dqmarkLinedata=dqmarkLinedata_hr;
+                    dqpieces=pieces_hr;
+                    if (hr>=60&&hr<=100){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="hrv") {
+                    date1=date_hrv;
+                    data1=data_hrv;
+                    dqy=hrv;
+                    dqmarkLinedata=dqmarkLinedata_hrv;
+                    dqpieces=pieces_hrv;
+                    if (hrv>=-10&&hrv<=10){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="br") {
+                    date1=date_br;
+                    data1=data_br;
+                    dqy=br;
+                    dqmarkLinedata=dqmarkLinedata_br;
+                    dqpieces=pieces_br;
+                    if (br>=12&&br<=20){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="relax") {
+                    date1=date_relax;
+                    data1=data_relax;
+                    dqy=relax;
+                    dqmarkLinedata=dqmarkLinedata_relax;
+                    dqpieces=pieces_relax;
+                    if (null!=relax){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="stress") {
+                    date1=date_stress;
+                    data1=data_stress;
+                    dqy=stress;
+                    dqmarkLinedata=dqmarkLinedata_stress;
+                    dqpieces=pieces_stress;
+                    if (stress>=0&&stress<=30){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="bp") {
+                    date1=date_bp;
+                    data1=data_bp;
+                    dqy=bp;
+                    dqmarkLinedata=dqmarkLinedata_bp;
+                    dqpieces=pieces_bp;
+                    if (bp>=-10&&bp<=10){
+                        itemStyle_color="#00CD68";
+                    }
+                }else if (type=="spo2") {
+                    date1=date_spo2;
+                    data1=data_spo2;
+                    dqy=spo2;
+                    dqmarkLinedata=dqmarkLinedata_spo2;
+                    dqpieces=pieces_spo2;
+                    if (spo2>=94){
+                        itemStyle_color="#00CD68";
                     }
                 }
-
-                date_hr2.push(num);
-                data_hr2.push(parseFloat(hr));
-
-                date_br2.push(num);
-                data_br2.push(parseFloat(br));
-
-                date_relax2.push(num);
-                data_relax2.push(parseFloat(relax));
-
-                date_stress2.push(num);
-                data_stress2.push(parseFloat(stress));
-
-                date_bp2.push(num);
-                data_bp2.push(parseFloat(bp));
-
-                date_spo22.push(num);
-                data_spo22.push(parseFloat(spo2));
-
-                date_hrv2.push(num);
-                data_hrv2.push(parseFloat(hrv));
             }
-
-            //开始赋值
-            date_hr=date_hr2;
-            data_hr=data_hr2;
-            date_br=date_br2;
-            data_br=data_br2;
-            date_relax=date_relax2;
-            data_relax=data_relax2;
-            date_stress=date_stress2;
-            data_stress=data_stress2;
-            date_bp=date_bp2;
-            data_bp=data_bp2;
-            date_spo2=date_spo22;
-            data_spo2=data_spo22;
-            date_hrv=date_hrv2;
-            data_hrv=data_hrv2;
-
-
-            //当前数据
-            if (isNotEmpty(dqobj)){
-                status=dqobj.status;
-
-                relax=dqobj.relax.toFixed(0);
-                stress=dqobj.stress.toFixed(0);
-                bp=dqobj.bp.toFixed(0);
-                spo2=dqobj.spo2.toFixed(0);
-                hr=dqobj.hr.toFixed(0);
-                hrv=dqobj.hrv.toFixed(0);
-                br=dqobj.br.toFixed(0);
-
-                hr_snr=dqobj.hr_snr.toFixed(1);
-                fps=dqobj.fps.toFixed(1);
-                stress_snr=dqobj.stress_snr.toFixed(1);
-
-                emotion=dqobj.emotion==null?6:dqobj.emotion;//为空默认表情：平静
-            }
-
-
-            //图标规划
-            var dqx=dqnum;
-            dqx=dqx.toString();
-            var dqy=0;
-            var itemStyle_color="red";
-            var itemStyle_color_hr=itemStyle_color;
-            var itemStyle_color_hrv=itemStyle_color;
-            var itemStyle_color_br=itemStyle_color;
-            var itemStyle_color_relax=itemStyle_color;
-            var itemStyle_color_stress=itemStyle_color;
-            var itemStyle_color_bp=itemStyle_color;
-            var itemStyle_color_spo2=itemStyle_color;
-            var dqpieces=[];
-            var pieces_hr=[{ gt: -2,lte: -1,color: 'red'},{gt:60,lte: 100,color: '#00CD68'}];
-            var pieces_hrv=[{ gt: -11,lte: 10,color: '#00CD68'}];
-            var pieces_br=[{ gt: 11,lte: 20,color: '#00CD68'}];
-            var pieces_relax=[{ gt: -2,lte: -1,color: '#00CD68'},{gt:-1,color: '#00CD68'}];
-            var pieces_stress=[{ gt: -1,lte: 30,color: '#00CD68'},{ gt: 30,lte: 50,color: '#ffff33'},{ gt: 50,lte: 70,color: '#ff944d'},{ gt: 70,lte: 100,color: '#ff4c1e'}];
-            var pieces_bp=[{ gt: -11,lte: 10,color: '#00CD68'}];
-            var pieces_spo2=[{ gt: -1,lte: 94,color: 'red'},{ gt: 94,color: '#00CD68'}];
-
-
-            var dqmarkLinedata=[];
-            var dqmarkLinedata_hr=[{ yAxis: 60}, {yAxis: 100}];
-            var dqmarkLinedata_hrv=[{yAxis: -10}, { yAxis: 10 }];
-            var dqmarkLinedata_br=[{yAxis: 12}, { yAxis: 20 }];
-            var dqmarkLinedata_relax=[];
-            var dqmarkLinedata_stress=[{yAxis: 30}, { yAxis: 50 }, { yAxis: 70 }, { yAxis: 100 }];
-            var dqmarkLinedata_bp=[{yAxis: -10}, { yAxis: 10 }];
-            var dqmarkLinedata_spo2=[{yAxis: 94}];
+        });
 
 
 
-
-            var dq_type=null;
-            $("#monitor_btn span").each(function (e) {
-                var type=$(this).attr("type");
-                var name=$(this).text();
-                var isn=$(this).attr("isn");
-                if (isn==1){
-                    dq_type=type;
-                    if (type=="hr") {
-                        date1=date_hr;
-                        data1=data_hr;
-                        dqy=hr;
-                        dqmarkLinedata=dqmarkLinedata_hr;
-                        dqpieces=pieces_hr;
-                        if (hr>=60&&hr<=100){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="hrv") {
-                        date1=date_hrv;
-                        data1=data_hrv;
-                        dqy=hrv;
-                        dqmarkLinedata=dqmarkLinedata_hrv;
-                        dqpieces=pieces_hrv;
-                        if (hrv>=-10&&hrv<=10){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="br") {
-                        date1=date_br;
-                        data1=data_br;
-                        dqy=br;
-                        dqmarkLinedata=dqmarkLinedata_br;
-                        dqpieces=pieces_br;
-                        if (br>=12&&br<=20){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="relax") {
-                        date1=date_relax;
-                        data1=data_relax;
-                        dqy=relax;
-                        dqmarkLinedata=dqmarkLinedata_relax;
-                        dqpieces=pieces_relax;
-                        if (null!=relax){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="stress") {
-                        date1=date_stress;
-                        data1=data_stress;
-                        dqy=stress;
-                        dqmarkLinedata=dqmarkLinedata_stress;
-                        dqpieces=pieces_stress;
-                        if (stress>=0&&stress<=30){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="bp") {
-                        date1=date_bp;
-                        data1=data_bp;
-                        dqy=bp;
-                        dqmarkLinedata=dqmarkLinedata_bp;
-                        dqpieces=pieces_bp;
-                        if (bp>=-10&&bp<=10){
-                            itemStyle_color="#00CD68";
-                        }
-                    }else if (type=="spo2") {
-                        date1=date_spo2;
-                        data1=data_spo2;
-                        dqy=spo2;
-                        dqmarkLinedata=dqmarkLinedata_spo2;
-                        dqpieces=pieces_spo2;
-                        if (spo2>=94){
-                            itemStyle_color="#00CD68";
-                        }
-                    }
+        myChart.setOption({
+            xAxis: {
+                data: date1
+            },
+            visualMap:{
+                show:false,
+                pieces:dqpieces,
+                outOfRange: {
+                    color: 'red'
                 }
-            });
-
-
-
-            myChart.setOption({
-                xAxis: {
-                    data: date1
+            },
+            series: [{
+                data: data1,
+                markPoint: {
+                    data: [
+                        {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
+                    ],
+                    itemStyle:{
+                        color:itemStyle_color,
+                    }
                 },
-                visualMap:{
+                markLine: {
+                    data: dqmarkLinedata
+                }
+            }]
+        });
+
+
+        var redcolor="#00CD68";
+        if (hr>=60&&hr<=100){
+            itemStyle_color_hr=redcolor;
+        }
+        if (hrv>=-10&&hrv<=10){
+            itemStyle_color_hrv=redcolor;
+        }
+        if (br>=12&&br<=20){
+            itemStyle_color_br=redcolor;
+        }
+        if (null!=relax){
+            itemStyle_color_relax=redcolor;
+        }
+        if (stress>=0&&stress<=30){
+            itemStyle_color_stress=redcolor;
+        }
+        if (bp>=-10&&bp<=10){
+            itemStyle_color_bp=redcolor;
+        }
+        if (spo2>=94){
+            itemStyle_color_spo2=redcolor;
+        }
+
+
+
+        if (null!=select_monitorall_iframe){
+            select_monitorall_iframe.myMonitorall.setOption({
+                xAxis: {
+                    data: date_hr
+                },
+                visualMap: {
                     show:false,
-                    pieces:dqpieces,
+                    pieces:pieces_hr,
                     outOfRange: {
                         color: 'red'
                     }
                 },
                 series: [{
-                    data: data1,
+                    data: data_hr,
                     markPoint: {
                         data: [
-                            {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
+                            {name: '当前值', value:hr, xAxis:dqx, yAxis: hr}
                         ],
                         itemStyle:{
-                            color:itemStyle_color,
+                            color:itemStyle_color_hr,
                         }
                     },
                     markLine: {
-                        data: dqmarkLinedata
+                        data: dqmarkLinedata_hr
                     }
                 }]
             });
+            select_monitorall_iframe.myMonitorall2.setOption({
+                xAxis: {
+                    data: date_hrv
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_hrv,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_hrv,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:hrv, xAxis:dqx, yAxis: hrv}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_hrv,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_hrv
+                    }
+                }]
+            });
+            select_monitorall_iframe.myMonitorall3.setOption({
+                xAxis: {
+                    data: date_br
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_br,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_br,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:br, xAxis:dqx, yAxis: br}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_br,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_br
+                    }
+                }]
+            });
+            select_monitorall_iframe.myMonitorall4.setOption({
+                xAxis: {
+                    data: date_relax
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_relax,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_relax,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:relax, xAxis:dqx, yAxis: relax}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_relax,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_relax
+                    }
+                }]
+            });
+            select_monitorall_iframe.myMonitorall5.setOption({
+                xAxis: {
+                    data: date_stress
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_stress,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_stress,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:stress, xAxis:dqx, yAxis: stress}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_stress,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_stress
+                    }
+                }]
+            });
+            select_monitorall_iframe.myMonitorall6.setOption({
+                xAxis: {
+                    data: date_bp
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_bp,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_bp,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:bp, xAxis:dqx, yAxis: bp}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_bp,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_bp
+                    }
+                }]
+            });
+            select_monitorall_iframe.myMonitorall7.setOption({
+                xAxis: {
+                    data: date_spo2
+                },
+                visualMap: {
+                    show:false,
+                    pieces:pieces_spo2,
+                    outOfRange: {
+                        color: 'red'
+                    }
+                },
+                series: [{
+                    data: data_spo2,
+                    markPoint: {
+                        data: [
+                            {name: '当前值', value:spo2, xAxis:dqx, yAxis: spo2}
+                        ],
+                        itemStyle:{
+                            color:itemStyle_color_spo2,
+                        }
+                    },
+                    markLine: {
+                        data: dqmarkLinedata_spo2
+                    }
+                }]
+            });
+        }
+
+        //开始填数据
+        var stress_text="未知";
+        if (stress>=0&&stress<=30){
+            stress_text="<span style='color: #00CD68'>正常</span>";
+        }else if (stress>30&&stress<=50){
+            stress_text="<span style='color: #e4e920'>轻度紧张</span>";
+        }else if (stress>50&&stress<=70){
+            stress_text="<span style='color: #ff840f'>中度紧张</span>";
+        }else if (stress>70&&stress<=100){
+            stress_text="<span style='color: #e90717'>高度紧张</span>";
+        }
+
+        $("#xthtml #xt1").html(' '+stress_text+'   ');
+        $("#xthtml #xt2").html(' '+relax+'  ');
+        $("#xthtml #xt3").html(' '+stress+'  ');
+        $("#xthtml #xt4").html(' '+bp+'  ');
+        $("#xthtml #xt5").html(' '+spo2+'  ');
+        $("#xthtml #xt6").html(' '+hr+'  ');
+        $("#xthtml #xt7").html(' '+hrv+'  ');
+        $("#xthtml #xt8").html(' '+br+'  ');
+
+        if (isNotEmpty(select_monitorall_iframe_body)) {
+            select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
+            select_monitorall_iframe_body.find("#monitorall #xt2").html('放松值：'+relax+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt3").html('紧张值：'+stress+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt4").html('血压变化：'+bp+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt5").html('血氧：'+spo2+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt6").html('心率：'+hr+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt7").html('心率变异：'+hrv+'  ');
+            select_monitorall_iframe_body.find("#monitorall #xt8").html('呼吸：'+br+'  ');
+        }
+
+        var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
+        snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
+        $("#snrtext").html(snrtext);
+
+        //表情
+        var moodsrc="/uimaker/images/emojis/6.png";
+        var moodtitle="平静";
+        if(emotion!=null){
+            moodsrc="/uimaker/images/emojis/"+emotion+".png";
+            if (emotion==0){moodtitle="生气";}
+            else  if(emotion==1){moodtitle="厌恶";}
+            else  if(emotion==2){moodtitle="恐惧";}
+            else  if(emotion==3){moodtitle="高兴";}
+            else  if(emotion==4){moodtitle="伤心";}
+            else  if(emotion==5){moodtitle="惊讶";}
+            else  if(emotion==6){moodtitle="平静";}
+        }
+        select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#mood").attr({"src":moodsrc},{"title":moodtitle});
 
 
-            var redcolor="#00CD68";
-            if (hr>=60&&hr<=100){
-                itemStyle_color_hr=redcolor;
-            }
-            if (hrv>=-10&&hrv<=10){
-                itemStyle_color_hrv=redcolor;
-            }
-            if (br>=12&&br<=20){
-                itemStyle_color_br=redcolor;
-            }
-            if (null!=relax){
-                itemStyle_color_relax=redcolor;
-            }
-            if (stress>=0&&stress<=30){
-                itemStyle_color_stress=redcolor;
-            }
-            if (bp>=-10&&bp<=10){
-                itemStyle_color_bp=redcolor;
-            }
-            if (spo2>=94){
-                itemStyle_color_spo2=redcolor;
-            }
 
+        var tsmsg="身心监测加载中...";
+        var tsmsg_state=-1;
+        var tscss={"color":" #31708f","background-color": "#d9edf7"," border-color": "#bce8f1"};
+        if (null!=hr_snr&&hr_snr>=0.1){
+            tsmsg_state=1;
+            tsmsg="身心准确监测中";
+            tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
+        }else{
+            tsmsg="监测准确度较低，请调整光线，减少身体晃动";
+            tscss={"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"};
+        }
+        $("#showmsg,#open_showmsg").css(tscss);
+        $("#showmsg strong,#open_showmsg strong").text(tsmsg);
+        if (isNotEmpty(select_monitorall_iframe_body)) {
+            select_monitorall_iframe_body.find("#open_showmsg").css(tscss);
+            select_monitorall_iframe_body.find("#open_showmsg strong").text(tsmsg);
+            select_monitorall_iframe_body.find("#snrtext2").html(snrtext);
+        }
 
-
-            if (null!=select_monitorall_iframe){
-                select_monitorall_iframe.myMonitorall.setOption({
-                    xAxis: {
-                        data: date_hr
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_hr,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_hr,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:hr, xAxis:dqx, yAxis: hr}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_hr,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_hr
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall2.setOption({
-                    xAxis: {
-                        data: date_hrv
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_hrv,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_hrv,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:hrv, xAxis:dqx, yAxis: hrv}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_hrv,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_hrv
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall3.setOption({
-                    xAxis: {
-                        data: date_br
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_br,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_br,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:br, xAxis:dqx, yAxis: br}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_br,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_br
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall4.setOption({
-                    xAxis: {
-                        data: date_relax
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_relax,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_relax,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:relax, xAxis:dqx, yAxis: relax}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_relax,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_relax
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall5.setOption({
-                    xAxis: {
-                        data: date_stress
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_stress,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_stress,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:stress, xAxis:dqx, yAxis: stress}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_stress,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_stress
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall6.setOption({
-                    xAxis: {
-                        data: date_bp
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_bp,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_bp,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:bp, xAxis:dqx, yAxis: bp}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_bp,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_bp
-                        }
-                    }]
-                });
-                select_monitorall_iframe.myMonitorall7.setOption({
-                    xAxis: {
-                        data: date_spo2
-                    },
-                    visualMap: {
-                        show:false,
-                        pieces:pieces_spo2,
-                        outOfRange: {
-                            color: 'red'
-                        }
-                    },
-                    series: [{
-                        data: data_spo2,
-                        markPoint: {
-                            data: [
-                                {name: '当前值', value:spo2, xAxis:dqx, yAxis: spo2}
-                            ],
-                            itemStyle:{
-                                color:itemStyle_color_spo2,
-                            }
-                        },
-                        markLine: {
-                            data: dqmarkLinedata_spo2
-                        }
-                    }]
-                });
-            }
-
-            //开始填数据
-            var stress_text="未知";
-            if (stress>=0&&stress<=30){
-                stress_text="<span style='color: #00CD68'>正常</span>";
-            }else if (stress>30&&stress<=50){
-                stress_text="<span style='color: #e4e920'>轻度紧张</span>";
-            }else if (stress>50&&stress<=70){
-                stress_text="<span style='color: #ff840f'>中度紧张</span>";
-            }else if (stress>70&&stress<=100){
-                stress_text="<span style='color: #e90717'>高度紧张</span>";
-            }
-
-            $("#xthtml #xt1").html(' '+stress_text+'   ');
-            $("#xthtml #xt2").html(' '+relax+'  ');
-            $("#xthtml #xt3").html(' '+stress+'  ');
-            $("#xthtml #xt4").html(' '+bp+'  ');
-            $("#xthtml #xt5").html(' '+spo2+'  ');
-            $("#xthtml #xt6").html(' '+hr+'  ');
-            $("#xthtml #xt7").html(' '+hrv+'  ');
-            $("#xthtml #xt8").html(' '+br+'  ');
-
-            if (isNotEmpty(select_monitorall_iframe_body)) {
-                select_monitorall_iframe_body.find("#monitorall #xt1").html(' '+stress_text+'   ');
-                select_monitorall_iframe_body.find("#monitorall #xt2").html('放松值：'+relax+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt3").html('紧张值：'+stress+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt4").html('血压变化：'+bp+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt5").html('血氧：'+spo2+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt6").html('心率：'+hr+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt7").html('心率变异：'+hrv+'  ');
-                select_monitorall_iframe_body.find("#monitorall #xt8").html('呼吸：'+br+'  ');
-            }
-
-            var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
-            snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
-            $("#snrtext").html(snrtext);
-
-            var monitoralltext="状态： "+stress_text+"\
+        var monitoralltext="状态： "+stress_text+"\
                                                                 <span  id=\"monitorall_hr\">心率： "+hr+"</span>\
                                                                 <span  id=\"monitorall_hrv\">心率变异： "+hrv+"</span>\
                                                                <span  id=\"monitorall_br\">呼吸次数： "+br+"</span>\
@@ -1448,69 +1461,34 @@ function phdata(datad,dqdata) {
                                                                 <span  id=\"monitorall_stress\">紧张值： "+stress+"</span>\
                                                                 <span  id=\"monitorall_bp\">血压变化： "+bp+"</span>\
                                                                 <span  id=\"monitorall_spo2\">血氧： "+spo2+"</span>";
-            $("#monitorall_stressstate,#monitorall_hr,#monitorall_hrv,#monitorall_br,#monitorall_relax,#monitorall_stress,#monitorall_bp,#monitorall_spo2").removeClass("highlight_monitorall");
-           $("#monitoralltext").html(monitoralltext);
-            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt1,#xt2,#xt3,#xt4,#xt5,#xt6,#xt7,#xt8").removeClass("highlight_monitorall");
-            if (!(hr>=60&&hr<=100)){
-                $("#monitorall_hr").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt6").addClass("highlight_monitorall");
-            }
-            if (!(hrv>=-10&&hrv<=10)){
-                $("#monitorall_hrv").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt7").addClass("highlight_monitorall");
-            }
-            if (!(br>=12&&br<=20)){
-                $("#monitorall_br").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt8").addClass("highlight_monitorall");
-            }
-            if (!(stress>=0&&stress<=30)){
-                $("#monitorall_stress").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
-            }
-            if (!(bp>=-10&&bp<=10)){
-                $("#monitorall_bp").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt4").addClass("highlight_monitorall");
-            }
-            if (!(spo2>=94)){
-                $("#monitorall_spo2").addClass("highlight_monitorall");
-                select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt5").addClass("highlight_monitorall");
-            }
-
-
-            //表情
-            var moodsrc="/uimaker/images/emojis/6.png";
-            var moodtitle="平静";
-            if(emotion!=null){
-                moodsrc="/uimaker/images/emojis/"+emotion+".png";
-                if (emotion==0){moodtitle="生气";}
-                else  if(emotion==1){moodtitle="厌恶";}
-                else  if(emotion==2){moodtitle="恐惧";}
-                else  if(emotion==3){moodtitle="高兴";}
-                else  if(emotion==4){moodtitle="伤心";}
-                else  if(emotion==5){moodtitle="惊讶";}
-                else  if(emotion==6){moodtitle="平静";}
-            }
-            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#mood").attr({"src":moodsrc},{"title":moodtitle});
-
-
-
-
-
-            var tsmsg="身心监测加载中...";
-            var tscss={"color":" #31708f","background-color": "#d9edf7"," border-color": "#bce8f1"};
-            if (null!=hr_snr&&hr_snr>=0.1){
-                tsmsg="身心准确监测中";
-                tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
-            }else{
-                tsmsg="监测准确度较低，请调整光线，减少身体晃动";
-                tscss={"color": "#a94442","background-color":"#f2dede","border-color":"#ebccd1"};
-            }
-            $("#showmsg,#open_showmsg").css(tscss);
-            $("#showmsg strong,#open_showmsg strong").text(tsmsg);
-            if (isNotEmpty(select_monitorall_iframe_body)) {
-                select_monitorall_iframe_body.find("#open_showmsg").css(tscss);
-                select_monitorall_iframe_body.find("#open_showmsg strong").text(tsmsg);
-                select_monitorall_iframe_body.find("#snrtext2").html(snrtext);
-            }
+        $("#monitorall_stressstate,#monitorall_hr,#monitorall_hrv,#monitorall_br,#monitorall_relax,#monitorall_stress,#monitorall_bp,#monitorall_spo2").removeClass("highlight_monitorall");
+        $("#monitoralltext").html(monitoralltext);
+        select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt1,#xt2,#xt3,#xt4,#xt5,#xt6,#xt7,#xt8").removeClass("highlight_monitorall");
+        if (!(hr>=60&&hr<=100)&&tsmsg_state==1){
+            $("#monitorall_hr").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt6").addClass("highlight_monitorall");
         }
+        if (!(hrv>=-10&&hrv<=10)&&tsmsg_state==1){
+            $("#monitorall_hrv").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt7").addClass("highlight_monitorall");
+        }
+        if (!(br>=12&&br<=20)&&tsmsg_state==1){
+            $("#monitorall_br").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt8").addClass("highlight_monitorall");
+        }
+        if (!(stress>=0&&stress<=30)&&tsmsg_state==1){
+            $("#monitorall_stress").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
+        }
+        if (!(bp>=-10&&bp<=10)&&tsmsg_state==1){
+            $("#monitorall_bp").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt4").addClass("highlight_monitorall");
+        }
+        if (!(spo2>=94)&&tsmsg_state==1){
+            $("#monitorall_spo2").addClass("highlight_monitorall");
+            select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt5").addClass("highlight_monitorall");
+        }
+
+
+    }
 }

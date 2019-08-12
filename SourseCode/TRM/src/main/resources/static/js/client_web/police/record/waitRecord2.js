@@ -99,8 +99,10 @@ function callbackgetPolygraphdata(data) {
                 $("#snrtext3").html(snrtext);
 
                 var tsmsg="身心监测加载中...";
+                var tsmsg_state=-1;
                 var tscss={"color":" #31708f","background-color": "#d9edf7"," border-color": "#bce8f1"};
                 if (isNotEmpty(hr_snr)&&hr_snr>=0.1){
+                    tsmsg_state=1;
                     tsmsg="身心准确监测中";
                     tscss={"color": "#3c763d","background-color":"#dff0d8","border-color":"#d6e9c6"};
                 }else{
@@ -267,19 +269,19 @@ function callbackgetPolygraphdata(data) {
                 var redcolor="#00CD68";
                 if (hr>=60&&hr<=100){
                     itemStyle_color_hr=redcolor;
-                }else {
+                }else if (tsmsg_state==1) {
                     $("#xthtml #xt6").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt6").addClass("highlight_monitorall");
                 }
                 if (hrv>=-10&&hrv<=10){
                     itemStyle_color_hrv=redcolor;
-                }else {
+                }else  if (tsmsg_state==1) {
                     $("#xthtml #xt7").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt7").addClass("highlight_monitorall");
                 }
                 if (br>=12&&br<=20){
                     itemStyle_color_br=redcolor;
-                }else {
+                }else if (tsmsg_state==1)  {
                     $("#xthtml #xt8").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt8").addClass("highlight_monitorall");
                 }
@@ -288,7 +290,7 @@ function callbackgetPolygraphdata(data) {
                 }
                 if (stress>=0&&stress<=30){
                     itemStyle_color_stress=redcolor;
-                }else {
+                }else  if (tsmsg_state==1) {
                     $("#xthtml #xt3").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
                 }
@@ -300,7 +302,7 @@ function callbackgetPolygraphdata(data) {
                 }
                 if (spo2>=94){
                     itemStyle_color_spo2=redcolor;
-                }else {
+                }else  if (tsmsg_state==1) {
                     $("#xthtml #xt5").addClass("highlight_monitorall");
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#xt5").addClass("highlight_monitorall");
                 }
