@@ -1148,7 +1148,8 @@ function set_dqrealtxt(){
         }
         likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
         var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
-        $("#recordreals_scrollhtml").animate({scrollTop:top},500);
+        var div = document.getElementById('recordreals_scrollhtml');
+        div.scrollTop = top;
     }
 }
 function recordreals_select() {

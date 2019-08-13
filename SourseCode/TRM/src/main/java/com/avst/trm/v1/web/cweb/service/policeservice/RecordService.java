@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.PtdjmapCache;
@@ -512,7 +513,6 @@ public class RecordService extends BaseService {
 
                 if (null!=mtssid&&null!=recordbool&&recordbool.intValue()==2){
                     //回放数据，笔录制作中的时候不需要检测
-
 
                     String iid=null;
                     //getRecord：获取会议asr识别数据

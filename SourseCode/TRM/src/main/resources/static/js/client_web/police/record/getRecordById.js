@@ -281,7 +281,7 @@ function  set_getPlayUrl(data) {
                     const file = recordFileParams[j];
                     var filename= file.filename;
                     if (filename==playname){
-                        var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/logo.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
+                        var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
                         $("#videos").append(VIDEO_HTML);
 
                         //计算开始时间戳和结束时间戳区间范围 start_range开始区间时间毫秒值  end_range结束时间毫秒值 -1等于无穷大
@@ -299,6 +299,7 @@ function  set_getPlayUrl(data) {
                         }
                         recordPlayParams[i]=play;
                         //时间毫秒区域计算结束------
+                        console.log("["+play["start_range"]+","+play["end_range"]+"]");
                     }
                 }
             }
@@ -430,6 +431,190 @@ function exportPdf(obj) {
     }
     btn(obj);
 }
+
+
+
+
+//排行榜开始
+var RANKING_INDEX=null;
+function select_monitorallranking(obj) {
+    var RANKING_HTML='<div class="layui-row layui-form " > \
+        <div class="layui-col-md12 layui-form-item"  >\
+        <div  id="rank_btn" style="display:inline">\
+        <span class="layui-badge layui-btn" isn="1"  type="stress" >紧张值</span>\
+        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type="hr" >心率</span>\
+        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type="spo2" >血氧</span>\
+        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type="hrv" >心率变异</span>\
+        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type="bp">血压变化</span>\
+        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type="br">呼吸次数</span>\
+        </div>\
+        </div>\
+        <div class="layui-col-md12 layui-form-item"  >\
+        <table class="layui-table" lay-skin="nob">\
+         <tr >\
+            <th colspan="3" style="text-align: left" ><span style="color: red" id="rank_title">紧张值</span>异常排行榜(TOP20)\
+            <span class="layui-table-sort layui-inline"><i class="layui-edge layui-table-sort-asc" title="升序" onclick="set_phranking(null,1)"></i><i class="layui-edge layui-table-sort-desc" title="降序"  onclick="set_phranking(null,2)"></i></span></th>\
+        </tr>\
+        <tbody id="ranking_html">\
+        </tbody>\
+        </table>\
+        </div>\
+      </div>';
+    if (RANKING_INDEX==null){
+        RANKING_INDEX= layer.open({
+            title: '身心检测异常排行榜',
+            content: RANKING_HTML,
+            offset:'r', area:["20%", "100%"],
+            anim:2,
+            shade: 0,
+            closeBtn:0,
+            btn: [],
+            resize:false,
+            move: false,
+            success: function(layero, index){
+                set_phranking("stress",1);
+                $("#rank_btn span").click(function () {
+                    $("#rank_btn span").attr("isn","-1").addClass("layui-bg-gray");
+                    $(this).attr("isn","1").removeClass("layui-bg-gray");
+                    $("#rank_title").text($(this).text());
+                    var type= $(this).attr("type");
+                    set_phranking(type,1)
+                });
+            }
+        });
+    } else {
+        layer.close(RANKING_INDEX);
+        RANKING_INDEX=null;
+    }
+}
+
+function sortphranking_desc(a, b) {
+    return b.data - a.data;
+}
+function sortphranking_asc(a, b) {
+    return a.data - b.data;
+}
+//type 身心检测参数问题  sorttype排序类型默认1
+function set_phranking(type,sorttype) {
+    if (isNotEmpty(sorttype)){
+      if (!isNotEmpty(type)){
+           type= $("#rank_btn span[isn=1]").attr("type");
+      }
+      if (isNotEmpty(type)){
+          //筛选数据
+          var newphdata=[];
+          if (isNotEmpty(phdatabackList)){
+              for (let i = 0; i < phdatabackList.length; i++) {
+                  const ph = phdatabackList[i];
+                  var num=ph.num;
+                  var date=ph.phdate;
+                  var dqphBataBackJson=ph.phBataBackJson;
+                  dqphBataBackJson=eval("(" + dqphBataBackJson + ")");
+                  var newarr={};
+                  if (dqphBataBackJson.hr_snr>=0.1&&dqphBataBackJson[type]!=null){
+                      newarr["num"]=num;
+                      newarr["date"]=date;
+                      if (type=="stress") {
+                          if (!(dqphBataBackJson[type]>=0&&dqphBataBackJson[type]<=30)){
+                              newarr["data"]=dqphBataBackJson[type];
+
+                          }
+                      }
+                      if (type=="hr") {
+                          if (!(dqphBataBackJson[type]>=60&&dqphBataBackJson[type]<=100)){
+                              newarr["data"]=dqphBataBackJson[type];
+                          }
+                      }
+                      if (type=="spo2") {
+                          if (!(dqphBataBackJson[type]>=94)){
+                              newarr["data"]=dqphBataBackJson[type];
+                          }
+                      }
+                      if (type=="hrv") {
+                          if (!(dqphBataBackJson[type]>=-10&&dqphBataBackJson[type]<=10)){
+                              newarr["data"]=dqphBataBackJson[type];
+                          }
+                      }
+                      if (type=="bp") {
+                          if (!(dqphBataBackJson[type]>=-10&&dqphBataBackJson[type]<=10)){
+                              newarr["data"]=dqphBataBackJson[type];
+                          }
+                      }
+                      if (type=="br") {
+                          if (!(dqphBataBackJson[type]>=12&&dqphBataBackJson[type]<=20)){
+                              newarr["data"]=dqphBataBackJson[type];
+                          }
+                      }
+                      if (newarr["data"]!=null){
+                          newphdata.push(newarr);
+                      }
+                      //放松值不计算：没有范围
+                  }
+              }
+          }
+          if (sorttype==1){
+              newphdata.sort(sortphranking_desc);
+          } else {
+              newphdata.sort(sortphranking_asc);
+          }
+
+          $("#ranking_html").empty();
+          var morenHTML='<tr style="border-bottom: 1px solid #ccc">\
+                        <td colspan="2" style="text-align: center">暂无数据</td>\
+                        </tr>';
+          var HTML="";
+          if (isNotEmpty(newphdata)){
+              newphdata=newphdata.slice(0,20);
+              for (let i = 0; i <newphdata.length; i++) {
+                  var data=newphdata[i].data;
+                  var num=newphdata[i].num;
+                  var date=newphdata[i].date;
+                  var rankstyle="background-color: #8EB9F5 !important";
+                  var rankicon="";
+                  if (i<3) {
+                      if (i==0){
+                          rankstyle='background-color: red !important';
+                      } else if (i==1){
+                          rankstyle='background-color: #FF8547 !important';
+                      } else if (i==2){
+                          rankstyle='background-color: #FFAC38 !important';
+                      }
+                      rankicon='<i class="layui-icon layui-icon-fire" style="color: red;"></i>';
+                  }
+                  HTML+='<tr style="border-bottom: 1px solid #ccc" num="'+num+'">\
+                        <td style="text-align: left"><span class="layui-badge" style="'+rankstyle+'">'+(i+1)+'</span>&nbsp;'+data+' '+rankicon+'</td>\
+                        <td  style="text-align: right"><i class="layui-icon layui-icon-log"> '+date+'</i></td>\
+                        </tr>';
+              }
+          }
+          $("#ranking_html").html(HTML==""?morenHTML:HTML);
+
+          //开始定位视频和语音识别：提前5-8秒
+          $("#ranking_html tr").dblclick(function () {
+              var num=$(this).attr("num");//秒数
+              //定位视频和asr
+              showrecord(parseFloat(num*1000),null,null);
+              //身心检测显示
+            var type= $("#rank_btn span[isn=1]").attr("type");
+            var $tb=$('#monitor_btn span[type='+type+']');
+              $("#monitor_btn span").attr("isn","-1").addClass("layui-bg-gray");
+              $($tb).attr("isn","1").removeClass("layui-bg-gray");
+              var name=$($tb).text();
+              myChart.setOption({
+                  title: {
+                      text: name,
+                  },
+                  series: [{
+                      name:name,
+                  }]
+              });
+          });
+      }
+    }
+}
+//排行榜结束
+
+
 
 
 var option = {
@@ -749,36 +934,37 @@ function select_monitorall(obj) {
 function showrecord(times,usertype,obj) {
     $("#recorddetail td").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
-    if (isNotEmpty(times)&&times!=-1&&isNotEmpty(usertype)&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
-
-        var  newtimes=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime);//初始时间戳+当前点击毫秒值=当前点击时间戳  当前点击时间戳-当前视频时间戳  重复值不暂不需要计算
-        var locationtime=newtimes;
+    if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
+        var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//初始时间戳+当前点击毫秒值=当前点击时间戳  当前点击时间戳-当前视频时间戳  重复值不暂不需要计算
         locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+
+
         //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
         for (let i = 0; i < recordPlayParams.length; i++) {
             const recordPlayParam = recordPlayParams[i];
             var start_range=recordPlayParam.start_range;
             var end_range=recordPlayParam.end_range;
-            if (times>=parseFloat(start_range)&&(parseFloat(start_range)==parseFloat(end_range)||times<=parseFloat(end_range))) {
+            if (parseFloat(times)>=parseFloat(start_range)&&(parseFloat(start_range)==parseFloat(end_range)||parseFloat(times)<=parseFloat(end_range))) {
                 if (dq_play.filenum==recordPlayParam.filenum){
                     changeProgrss(parseFloat(locationtime));
                 } else {
                     //赋值新视频,计算新的时间
                     dq_play=recordPlayParam;
                     videourl=dq_play.playUrl;
-                    locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime);//重新计算时间
+                    locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     initplayer(parseFloat(locationtime));
+
 
                     //样式跟着改变
                     $("#videos span").each(function () {
                         var filenum=$(this).attr("filenum");
                         if (filenum==dq_play.filenum){
                             $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
-                            return false;
                         }
                     });
                 }
+                return false;
             }
         }
 
@@ -789,7 +975,8 @@ function showrecord(times,usertype,obj) {
             if (t1==times) {
                 $("td",this).addClass("highlight_right");
                 var top=$(this).position().top;
-                $("#recorddetail_scrollhtml").animate({scrollTop:top});
+                var div = document.getElementById('recorddetail_scrollhtml');
+                div.scrollTop = top;
                 return false;
             }
         });
@@ -799,7 +986,8 @@ function showrecord(times,usertype,obj) {
             if (t2==times) {
                 $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
                 var top=$(this).position().top;
-                $("#recordreals_scrollhtml").animate({scrollTop:top});
+                var div = document.getElementById('recordreals_scrollhtml');
+                div.scrollTop = top;
                 return false;
             }
         });
@@ -839,7 +1027,8 @@ function set_dqrealtxt(){
         }
         likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
         var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
-        $("#recordreals_scrollhtml").animate({scrollTop:top});
+        var div = document.getElementById('recordreals_scrollhtml');
+        div.scrollTop = top;
     }
 }
 
@@ -915,6 +1104,70 @@ $(function () {
                         return false;
                     }
                 });
+            }
+        }
+
+
+        /*此处开始定位*/
+        if (isNotEmpty(time)&&time>0){
+            var locationtime=time*1000<0?0:time*1000; //秒转时间戳
+            locationtime=locationtime+dq_play.recordstarttime-first_playstarttime;
+
+            //左侧
+            var recordrealsdivlen=$("#recordreals div").length;//识别长度
+            $("#recordreals div").each(function (i,e) {
+                var t=$(this).attr("times");
+                var start=t;
+                var end=0;
+                if (i>=recordrealsdivlen-1) {
+                    end= t;//下一个区间
+                }else {
+                    end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
+                }
+                if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
+                    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+                    $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+
+                    $("#record_hoverhtml").hover(
+                        function(){
+                            mouseoverbool=1
+                        } ,
+                        function(){
+                            mouseoverbool=-1;
+                        });
+
+                    if (parseInt(mouseoverbool)==-1&&parseInt(mouseoverbool)!=1){
+                        var top=$(this).position().top;
+                        var div = document.getElementById('recordreals_scrollhtml');
+                        div.scrollTop = top;
+                    }
+                    return false;
+                }
+            });
+
+            //中间
+            var arrph=[];
+            var dq_phdataback=null;
+            if (isNotEmpty(phdatabackList)){
+                locationtime=locationtime/1000<0?0:locationtime/1000; //秒转时间戳//时间戳转秒
+                for (var i = 0; i < phdatabackList.length; i++) {
+                    var phdataback = phdatabackList[i];
+                    var num=phdataback.num;
+                    var startph=num;
+                    var endph=0;
+                    if (i>= phdatabackList.length-1) {
+                        endph= num;//下一个区间
+                    }else {
+                        endph=phdatabackList[i+1].num;
+                    }
+                    if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
+                        dq_phdataback = phdatabackList[i];
+                        var start_i=(i-26)<0?0:(i-26);
+                        var end_i=(i+25)>=phdatabackList.length?phdatabackList.length:(i+25);
+                        arrph= phdatabackList.slice(start_i,end_i);
+                    }
+                }
+                phdata(arrph,dq_phdataback);
             }
         }
     });

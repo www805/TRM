@@ -5,6 +5,15 @@ public class PHDataBackVoParam {
 
     private String phBataBackJson;//身心检测数据
 
+    private String phdate;//时间日期
+
+    public String getPhdate() {
+        return phdate;
+    }
+
+    public void setPhdate(String phdate) {
+        this.phdate = phdate;
+    }
 
     public String getNum() {
         return num;

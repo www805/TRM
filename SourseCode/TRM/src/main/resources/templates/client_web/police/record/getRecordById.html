@@ -122,7 +122,9 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
         background-color: rgba(100, 100, 100, 0.7);
     }
-
+    .layui-btn+.layui-btn {
+        margin-left: 0px;
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -274,6 +276,7 @@
                                                 <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
                                             </div>
                                             <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
+                                            <span class="layui-badge layui-bg-black layui-btn" isn="-1"  type='allranking'  onclick="select_monitorallranking(this);">排行榜</span>
                                             <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
                                             <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6">
                                                 <span class="layui-badge-rim"  style="width: 100%;" id="monitoralltext">
@@ -307,6 +310,66 @@
                         </div>
                     </div>
             </div>
+           <!-- <div class="layui-col-md12 layui-form-item" style="margin: 10px" >
+                <div  id="rank_btn" style="display:inline">
+                    <span class="layui-badge layui-btn" isn="1"  type='stress' >紧张值</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hr' >心率</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='spo2' >血氧</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hrv' >心率变异</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='bp'>血压变化</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='br'>呼吸次数</span>
+                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'>放松值</span>
+                </div>
+            </div>
+            <div class="layui-col-md12 layui-form-item" style="margin: 10px" >
+                <table class="layui-table">
+                    <colgroup>
+                        <col align="right"  width="1%" />
+                        <col align="left"  width="5%" />
+                        <col align="right"/>
+                    </colgroup>
+                    <tbody>
+                    <tr >
+                        <th colspan="3" style="text-align: left">紧张值异常排行榜</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right"><span class="layui-badge">1</span></td>
+                        <td  style="text-align: left">22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td  style="text-align: right"><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge" style="background-color: rgba(255,111,25,0.7)">2</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge layui-bg-orange">3</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge layui-bg-blue">4</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge layui-bg-blue">5</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge layui-bg-blue">6</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    <tr>
+                        <td><span class="layui-badge layui-bg-blue">7</span></td>
+                        <td>22 <i class="layui-icon layui-icon-fire"></i></td>
+                        <td><i class="layui-icon layui-icon-log"> 11:20</i></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>-->
     </div>
     <div th:replace="footer :: footer">...</div>
 </div>
