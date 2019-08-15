@@ -53,6 +53,10 @@ function getactionid_manage() {
         serverconfig_getServerConfig: "serverconfig_getServerConfig",
         serverconfig_uploadByClientImg: "serverconfig_uploadByClientImg",
 
+        serverip_updateServerIp: "serverip_updateServerIp",
+        serverip_getServerIpList: "serverip_getServerIpList",
+        serverip_getServerIpALL: "serverip_getServerIpALL",
+
         arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
         arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint ",
 

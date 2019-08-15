@@ -103,9 +103,22 @@ public interface MeetingControl {
     @ResponseBody
     public RResult getTDCacheParamByMTssid(@RequestBody ReqParam<GetTdByModelSsidParam_out> param);
 
+    /**
+     * 获取单个通道，参数跟上面不一样
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/mt/v1/getTDCacheParamByssid")
+    @ResponseBody
+    public RResult getTDCacheParamByssid(@RequestBody ReqParam<GetTDCacheParamByMTssidParam_out> param);
 
-
-
-
+    /**
+     * 获取到模板-通道列表-单通道（所有信息）
+     * @param param
+     * @return
+     */
+    @RequestMapping("/mt/v1/getTDByMTList")
+    @ResponseBody
+    public RResult getTDByMTList(@RequestBody ReqParam<GetTDCacheParamByMTssidParam_out> param);
 
 }

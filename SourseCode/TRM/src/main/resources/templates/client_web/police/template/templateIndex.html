@@ -83,14 +83,16 @@
         .icon-diy{
             font-size: 14px;float: left;margin-top: 5px;
         }
-
+        .layui-bg-green {
+            background-color: #1970b1!important;
+        }
     </style>
 </head>
 <body>
 
 
 
-<div class="layui-form layui-row" style="margin-bottom: 100px;">
+<div class="layui-form layui-row" style="margin-bottom: 0px;">
 
 <div style="margin: 5px;" class="layui-form">
     <div th:replace="header :: header">...</div>
@@ -144,12 +146,11 @@
                         </dl>
                     </div>
                 </div>
-
-
             </div>
 
             <div class="layui-card-header" style="margin-top:5px;padding:0 8px 8px 8px;margin-bottom: 0px;">
-                <b style="padding-right: 20px; color: #113c11;" id="templateTitle">暂无模板</b>
+                <b style="color: #444;" >模板名称：</b>
+                <b style="padding-right: 20px; color: #a23939;" id="templateTitle">暂无模板</b>
                 <b style="margin-right: 10px;color: #3023d2;" id="leixing"></b>
                 <span id="zhuangtai" style="display:none;">
                 <i class="layui-icon layui-icon-list" style="font-size: 28px; color: #1E9FFF;"></i>

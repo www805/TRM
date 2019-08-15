@@ -12,12 +12,14 @@ import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -163,12 +165,9 @@ public class Scheduler {
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
 
         //获取本机ip地址
-        String hostAddress = "localhost";
-        try {
-            InetAddress addr = InetAddress.getLocalHost();
-            hostAddress = addr.getHostAddress();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        String hostAddress = NetTool.getMyIP();
+        if(StringUtils.isBlank(hostAddress)){
+            hostAddress = "localhost";
         }
 
         String servername=PropertiesListenerConfig.getProperty("spring.application.name");

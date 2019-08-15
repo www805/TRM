@@ -12,7 +12,10 @@ import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
 import com.avst.trm.v1.feignclient.ec.vo.SaveFile_localParam;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
+import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
+import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -76,6 +79,29 @@ public interface EquipmentControl {
     @RequestMapping("/tts/v1/str2Tts")
     @ResponseBody
     public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param);
+
+
+    /**
+     * 获取其他全部设备IP
+     * @param param
+     * @return
+     */
+    @RequestMapping("/base/v1/main/getServerIpALL")
+    @ResponseBody
+    public RResult getServerIpALL(@RequestBody ReqParam<GetServerIpALLParam> param);
+
+    /**
+     * 修改配置
+     * @return
+     */
+    @PostMapping(value = "/base/v1/main/updateServerIp")
+    @ResponseBody
+    public RResult updateServerIp(@RequestBody GetServerIpParam getServerIpParam);
+
+
+//    @RequestMapping("/flushbonading/v1/getFDState")
+//    @ResponseBody
+//    public RResult getFDState(@RequestBody ReqParam<GetFDStateParam> param);
 
     /**
      * 获取设备状态信息
