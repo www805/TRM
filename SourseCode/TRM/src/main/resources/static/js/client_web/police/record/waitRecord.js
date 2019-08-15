@@ -10,8 +10,6 @@ var recordbool=null;//笔录状态 3 4暂时用于导出判断不存在数据库
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
-var dqselec_left="";//当前左侧鼠标选择的文本
-var dqselec_right="";//当前左侧鼠标选择的文本
 
 var MCCache=null;//会议缓存数据
 var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
@@ -277,7 +275,7 @@ function copy_text(obj,event) {
 
 
     //鼠标双击事件
-   if( new Date().getTime() - touchtime < 300 ){
+   if( new Date().getTime() - touchtime < 350 ){
        console.log("现在是双击事件")
        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
        var old= $html.attr(qw+"_starttime");
@@ -286,10 +284,11 @@ function copy_text(obj,event) {
        if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
            $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
        }
-       dqselec_left="";//为双击的时候清空值
     }else{
-        touchtime = new Date().getTime();
-       if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1){
+       console.log("现在是单击事件")
+       var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+       var dqselec_left= txt.toString();
+       if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1&&new Date().getTime() - touchtime >700){
            if (classc=="btalk") {
                qw="w";
            }else if(classc=="atalk"){
@@ -305,6 +304,7 @@ function copy_text(obj,event) {
                $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
            }
        }
+       touchtime = new Date().getTime();
    }
     copy_text_html="";
     setRecordreal();
@@ -801,17 +801,15 @@ function addRecord() {
         $("#recorddetail td.onetd").each(function (i) {
             var arr={};
             var answers=[];//答案集合
-            var q=$(this).find("label[name='q']").text();
+            var q=$(this).find("label[name='q']").html();
             var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-            q=q.replace(/\s/g,'');
                     //经过筛选的q
                     var ws=$(this).find("label[name='w']");
                     var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
                     if (isNotEmpty(q)){
                         if (null!=ws&&ws.length>0){
                             for (var j = 0; j < ws.length; j++) {
-                                var w =ws.eq(j).text();
-                                w=w.replace(/\s/g,'');
+                                var w =ws.eq(j).html();
                                         //经过筛选的w
                                         if (isNotEmpty(w)) {
                                             answers.push({
@@ -1039,10 +1037,6 @@ function callbackgetgetRecordrealing(data) {
                             }
 
                             $("#recordreals").append(recordrealshtml);
-                            $('#recordreals span').mouseup(function(){
-                                var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-                                dqselec_left= txt.toString();
-                            })
                             var div = document.getElementById('recordreals_scrollhtml');
                             div.scrollTop = div.scrollHeight;
                         }
@@ -1337,17 +1331,15 @@ function setRecordreal() {
     $("#recorddetail td.onetd").each(function (i) {
         var arr={};
         var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").text();
+        var q=$(this).find("label[name='q']").html();
         var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-        q=q.replace(/\s/g,'');
         //经过筛选的q
         var ws=$(this).find("label[name='w']");
         var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
         if (isNotEmpty(q)){
             if (null!=ws&&ws.length>0){
                 for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).text();
-                    w=w.replace(/\s/g,'');
+                    var w =ws.eq(j).html();
                     //经过筛选的w
                     if (isNotEmpty(w)) {
                         answers.push({
@@ -1557,13 +1549,13 @@ function setqw(problems){
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 90%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="'+problemtext+'" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="\'+problemtext+\' " q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
                     var answer = answers[j];
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="'+answertext+'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="\'+answertext+\'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
                 }
             }else{
                 problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
@@ -1585,134 +1577,16 @@ function setqw(problems){
 
 function contextMenu() {
     $('#recorddetail label').mousedown(function (e) {
-        var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-        dqselec_right= txt.toString();
-        if (isNotEmpty(dqselec_right)) {
-            if (3 == e.which) {
-                console.log("右键")
-                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                    var $txt = $label.text();
-                    $label.html($txt);
-
-                    var newtxt=[];
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                            var txt=tag.txt;
-                            if(isNotEmpty(txt)){
-                                for (let j = 0; j < txt.length; j++) {
-                                    const shujuElement = txt[j];
-                                    if(dqselec_right.indexOf(shujuElement)<0){
-                                        var $html=$label.html();
-                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                        $label.html($html);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    var newtxt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            newtxt.push(t);
-                        }
-                    })
-                    newtxt=Array.from(new Set(newtxt));
-                    var shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:newtxt
-                    }
-                    dqtag_right=[];
-                    dqtag_right.push(shuju);
-                }
-            } else if (1 == e.which) {
-                console.log("左键")
-                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                    var h=$label.html();
-                    var txt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            txt.push(t);
-                        }
-                    })
-                    txt=Array.from(new Set(txt));
-                    var shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:txt
-                    }
-                    dqtag_right=[];
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
-                            dqtag_right.push(tag);
-                        }
-                    }
-
-                    dqtag_right.push(shuju);
-
-                    var $txt = $label.text();
-                    $label.html($txt);
-                    var $html = $label.html();
-                    $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
-                    $label.html($html);
-
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                            var txt=tag.txt;
-                            if(isNotEmpty(txt)){
-                                for (let j = 0; j < txt.length; j++) {
-                                    const shujuElement = txt[j];
-                                    if(dqselec_right.indexOf(shujuElement)<0){
-                                        var $html=$label.html();
-                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                        $label.html($html);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    var newtxt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            newtxt.push(t);
-                        }
-                    })
-                    newtxt=Array.from(new Set(newtxt));
-                    shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:newtxt
-                    }
-                    dqtag_right=[];
-                    dqtag_right.push(shuju);
-                }
-            }
+        if (3 == e.which) {
+            document.execCommand('removeFormat');
+        }  else if (1 == e.which) {
+            document.execCommand('backColor',false,'yellow');
         }
     });
 }
 
 
-
-
-
-
-
-//右侧标记的文本：当前
-var dqtag_right=[];//{key:0,value:"q",txt:["哈哈","哈哈"]}
-
-
-
 //自动甄别初始化
-
-
 var laststarttime_qq=-1;//上一个问时间
 var laststarttime_ww=-1;//上一个答时间
 var last_type=-1;//上一个是 1问题 2是答案
@@ -1744,121 +1618,7 @@ $(function () {
         setRecordreal();
     });
    //初始化第一行的焦点
-
-
-    $('#recorddetail label').mousedown(function (e) {
-        var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-        dqselec_right= txt.toString();
-        if (isNotEmpty(dqselec_right)) {
-            if (3 == e.which) {
-                console.log("右键")
-                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]) {
-                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                    var $txt = $label.text();
-                    $label.html($txt);
-
-                    var newtxt=[];
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                            var txt=tag.txt;
-                            if(isNotEmpty(txt)){
-                                for (let j = 0; j < txt.length; j++) {
-                                    const shujuElement = txt[j];
-                                    if(dqselec_right.indexOf(shujuElement)<0){
-                                        var $html=$label.html();
-                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                        $label.html($html);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    var newtxt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            newtxt.push(t);
-                        }
-                    })
-                    newtxt=Array.from(new Set(newtxt));
-                    var shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:newtxt
-                    }
-                    dqtag_right=[];
-                    dqtag_right.push(shuju);
-                }
-            } else if (1 == e.which) {
-                console.log("左键")
-                if (null!=td_lastindex["key"]&&null!=td_lastindex["value"]){
-                    var $label=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+td_lastindex["value"]+'"]');
-                    var h=$label.html();
-                    var txt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            txt.push(t);
-                        }
-                    })
-                    txt=Array.from(new Set(txt));
-                    var shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:txt
-                    }
-                    dqtag_right=[];
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if (!((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value))){
-                            dqtag_right.push(tag);
-                        }
-                    }
-
-                    dqtag_right.push(shuju);
-
-                    var $txt = $label.text();
-                    $label.html($txt);
-                    var $html = $label.html();
-                    $html = $html.split(dqselec_right).join('<a class="highlight_all" >'+ dqselec_right +'</a>');
-                    $label.html($html);
-
-                    for (let i = 0; i < dqtag_right.length; i++) {
-                        const tag = dqtag_right[i];
-                        if ((td_lastindex["key"]==tag.key)&&(td_lastindex["value"]==tag.value)){
-                            var txt=tag.txt;
-                            if(isNotEmpty(txt)){
-                                for (let j = 0; j < txt.length; j++) {
-                                    const shujuElement = txt[j];
-                                    if(dqselec_right.indexOf(shujuElement)<0){
-                                        var $html=$label.html();
-                                        $html = $html.split(shujuElement).join('<a class="highlight_all" >'+ shujuElement +'</a>');
-                                        $label.html($html);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    var newtxt=[];
-                    $("a",$label).each(function () {
-                        var t=$(this).text();
-                        if(isNotEmpty(t)){
-                            newtxt.push(t);
-                        }
-                    })
-                    newtxt=Array.from(new Set(newtxt));
-                    shuju={
-                        key:td_lastindex["key"],
-                        value:td_lastindex["value"],
-                        txt:newtxt
-                    }
-                    dqtag_right=[];
-                    dqtag_right.push(shuju);
-                }
-            }
-        }
-    });
+    contextMenu();
 
 
     $(document).keypress(function (e) {
@@ -1968,11 +1728,7 @@ $(function () {
                             }else {
                                 $("#recordreals").append(recordrealshtml);
                             }
-                            $('#recordreals span').mouseup(function(){
-                                var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-                                dqselec_left= txt.toString();
-                              
-                            })
+
 
                             $("#asritem").hover(
                                 function(){

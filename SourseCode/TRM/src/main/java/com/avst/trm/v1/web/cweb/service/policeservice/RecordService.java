@@ -1556,6 +1556,11 @@ public class RecordService extends BaseService {
                 }
             }
 
+            //talk 问答
+            talk = talk.replaceAll("\\<.*?>", "");
+
+
+
             dataMap.put("${笔录标题}", recordtypename == null ? "" : recordtypename);
             dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
             dataMap.put("${结束时间}", recordendtime == null ? "" : recordendtime);
@@ -2726,6 +2731,7 @@ public class RecordService extends BaseService {
     }
 
     /***************************笔录问答实时缓存****end***************************/
+
 
 
 

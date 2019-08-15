@@ -21,6 +21,19 @@ public class RecordPlayParam {
      */
     private long recordstarttime;
 
+    /**
+     * 这个视频文件录制的服务器结束时间：为了计算视频时间的区间
+     */
+    private long recordendtime;
+
+    public long getRecordendtime() {
+        return recordendtime;
+    }
+
+    public void setRecordendtime(long recordendtime) {
+        this.recordendtime = recordendtime;
+    }
+
     public long getRecordstarttime() {
         return recordstarttime;
     }

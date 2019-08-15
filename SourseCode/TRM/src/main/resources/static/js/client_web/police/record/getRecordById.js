@@ -274,6 +274,11 @@ function  set_getPlayUrl(data) {
         $("#videos").html("");
         if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
             recordPlayParams.sort(sortPlayUrl);//重新排序一边
+
+            dq_play=recordPlayParams[0];
+            first_playstarttime=parseFloat(dq_play.recordstarttime);
+
+
             for (let i = 0; i < recordPlayParams.length; i++) {
                 var play=recordPlayParams[i];
                 var playname=play.filename;
@@ -283,29 +288,16 @@ function  set_getPlayUrl(data) {
                     if (filename==playname){
                         var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
                         $("#videos").append(VIDEO_HTML);
-
-                        //计算开始时间戳和结束时间戳区间范围 start_range开始区间时间毫秒值  end_range结束时间毫秒值 -1等于无穷大
-
-                        if (i<1){
-                            //第一个文件
-                            play["start_range"]=0;
-                        }else {
-                            play["start_range"]=recordPlayParams[i-1].end_range;
-                        }
-                        if (i>= recordPlayParams.length-1) {
-                            play["end_range"]= play["start_range"];//无穷大
-                        }else {
-                            play["end_range"]=recordPlayParams[i+1].recordstarttime-play.recordstarttime+play["start_range"];
-                        }
+                        play["start_range"]=parseFloat(play.recordstarttime)-parseFloat(first_playstarttime);
+                        play["end_range"]=parseFloat(play.recordendtime)-parseFloat(first_playstarttime);
                         recordPlayParams[i]=play;
                         //时间毫秒区域计算结束------
                         console.log("["+play["start_range"]+","+play["end_range"]+"]");
                     }
                 }
             }
-            dq_play=recordPlayParams[0];
+
             var firststate= $("#videos span:eq(0)").attr("state");
-            first_playstarttime=parseFloat(dq_play.recordstarttime);
             //文件状态,0文件未获取，等待中；1文件正常，生成请求地址中；2文件可以正常使用；-1文件未正常获取，需强制获取；-2文件请求地址有误，需重新生成
             if (firststate==2) {
                 videourl=dq_play.playUrl;
@@ -313,6 +305,7 @@ function  set_getPlayUrl(data) {
             }else {
                 layer.msg("文件获取中...")
             }
+
             $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
             $("#videos span").click(function () {
                 $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
@@ -463,6 +456,7 @@ function select_monitorallranking(obj) {
     if (RANKING_INDEX==null){
         RANKING_INDEX= layer.open({
             title: '身心检测异常排行榜',
+             type: 1,
             content: RANKING_HTML,
             offset:'r', area:["20%", "100%"],
             anim:2,
@@ -592,22 +586,24 @@ function set_phranking(type,sorttype) {
           //开始定位视频和语音识别：提前5-8秒
           $("#ranking_html tr").dblclick(function () {
               var num=$(this).attr("num");//秒数
-              //定位视频和asr
-              showrecord(parseFloat(num*1000),null,null);
-              //身心检测显示
-            var type= $("#rank_btn span[isn=1]").attr("type");
-            var $tb=$('#monitor_btn span[type='+type+']');
-              $("#monitor_btn span").attr("isn","-1").addClass("layui-bg-gray");
-              $($tb).attr("isn","1").removeClass("layui-bg-gray");
-              var name=$($tb).text();
-              myChart.setOption({
-                  title: {
-                      text: name,
-                  },
-                  series: [{
-                      name:name,
-                  }]
-              });
+              if (null!=num){
+                  //定位视频和asr
+                  showrecord(parseFloat(num*1000),null,null);
+                  //身心检测显示
+                  var type= $("#rank_btn span[isn=1]").attr("type");
+                  var $tb=$('#monitor_btn span[type='+type+']');
+                  $("#monitor_btn span").attr("isn","-1").addClass("layui-bg-gray");
+                  $($tb).attr("isn","1").removeClass("layui-bg-gray");
+                  var name=$($tb).text();
+                  myChart.setOption({
+                      title: {
+                          text: name,
+                      },
+                      series: [{
+                          name:name,
+                      }]
+                  });
+              }
           });
       }
     }
@@ -935,26 +931,24 @@ function showrecord(times,usertype,obj) {
     $("#recorddetail td").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
     if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
-        var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//初始时间戳+当前点击毫秒值=当前点击时间戳  当前点击时间戳-当前视频时间戳  重复值不暂不需要计算
-        locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-
-
+        var isnvideo=0;
         //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
         for (let i = 0; i < recordPlayParams.length; i++) {
             const recordPlayParam = recordPlayParams[i];
             var start_range=recordPlayParam.start_range;
             var end_range=recordPlayParam.end_range;
-            if (parseFloat(times)>=parseFloat(start_range)&&(parseFloat(start_range)==parseFloat(end_range)||parseFloat(times)<=parseFloat(end_range))) {
+            if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
                 if (dq_play.filenum==recordPlayParam.filenum){
+                    var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     changeProgrss(parseFloat(locationtime));
                 } else {
                     //赋值新视频,计算新的时间
                     dq_play=recordPlayParam;
                     videourl=dq_play.playUrl;
-                    locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
+                   var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     initplayer(parseFloat(locationtime));
-
 
                     //样式跟着改变
                     $("#videos span").each(function () {
@@ -964,8 +958,12 @@ function showrecord(times,usertype,obj) {
                         }
                     });
                 }
+                isnvideo++;
                 return false;
             }
+        }
+        if (isnvideo==0){
+            layer.msg("没有找到视频定位点",{time:500})
         }
 
 
@@ -1111,7 +1109,7 @@ $(function () {
         /*此处开始定位*/
         if (isNotEmpty(time)&&time>0){
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
-            locationtime=locationtime+dq_play.recordstarttime-first_playstarttime;
+            locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
 
             //左侧
             var recordrealsdivlen=$("#recordreals div").length;//识别长度
