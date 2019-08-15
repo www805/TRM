@@ -108,6 +108,12 @@ public class PolicePageAction {
         return new ModelAndView("client_web/police/record/recordIndex", "recordIndexModel", model);
     }
 
+    @GetMapping("toconversationIndex")
+    public ModelAndView toconversationIndex(Model model){
+        model.addAttribute("title","谈话查看");
+        return new ModelAndView("client_web/police/conversation/conversationIndex", "conversationIndexModel", model);
+    }
+
     @GetMapping("torecordTypeList")
     public ModelAndView torecordTypeList(Model model){
         model.addAttribute("title","笔录类型查看");
