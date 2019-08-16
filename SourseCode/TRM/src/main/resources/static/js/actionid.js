@@ -246,12 +246,23 @@ function getactionid_manage() {
         main_getUserBySsid:"main_getUserBySsid",
 
         home_tostartConversation:"home_tostartConversation",
+        home_toconversationIndex:"home_toconversationIndex",
+        home_towaitconversation:"home_towaitconversation",
+        home_addCaseToArraignment:"home_addCaseToArraignment",
+
+
         startConversation_getUserinfoList:"startConversation_getUserinfoList",
         startConversation_getUserByCard:"startConversation_getUserByCard",
         startConversation_getCaseById:"startConversation_getCaseById",
         startConversation_getAdminList:"startConversation_getAdminList",
         startConversation_addCaseToArraignment:"startConversation_addCaseToArraignment",
         startConversation_getCards:"startConversation_getCards",
+        startConversation_towaitRecord:"startConversation_towaitRecord",
+
+        conversationIndex_getRecords:"conversationIndex_getRecords",
+
+        waitconversation_getRecordById:"waitconversation_getRecordById",
+        waitconversation_addRecord:"waitconversation_addRecord",
 
     };
 }

@@ -109,22 +109,14 @@ function callbackaddCaseToArraignment(data) {
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
-                //跳转笔录制作
-                var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
+                var index = parent.layer.msg('开始进行审讯', {shade:0.1,time:500
                 },function () {
-                    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-                    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                        setpageAction(INIT_CLIENT,nextparam.nextPageId);
-                        var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
-                        location.href=toUrl+"?ssid="+recordssid;
-                    }
+                    //跳转笔录制作
+                    var url=getActionURL(getactionid_manage().startConversation_towaitRecord);
+                    parent.location.href=url+"?ssid="+recordssid
                 });
             }else if(toUrltype==2){
-                //跳转笔录查看列表
-                /* $("#record_select", window.document).click();*///获取不到直接跳页面
-                setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
-                var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
-                location.href = url;
+                parent.location.href =  window.parent.conversationIndexURL;
             }
         }
     }else{

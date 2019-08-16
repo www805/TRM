@@ -264,7 +264,7 @@ $(function () {
     myChart2.setOption(option2);
 });
 
-
+//打开开始审讯弹出框
 function open_startConversation() {
     var HTML='';
     layer.open({
@@ -274,11 +274,83 @@ function open_startConversation() {
         shade: 0.3,
         resize:false,
         area: ['50%', '600px'],
-      /*  btn:['开始谈话'],*/
         skin: 'startconversation_btn', //样式类名
         content: startConversationURL,
-        success: function(layero,index){
-        }
     });
 
 }
+
+//一键谈话添加基础数据跳转审讯页面
+var skipCheckbool=-1;//是否跳过检测：默认-1
+var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
+function to_waitconversationURL() {
+    var url=getActionURL(getactionid_manage().home_addCaseToArraignment);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            skipCheckbool:skipCheckbool,
+            conversationbool:2,//一键谈话
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
+}
+
+function callbackaddCaseToArraignment(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var recordssid=data.recordssid;
+            if (isNotEmpty(recordssid)&&toUrltype==1){
+                var index = layer.msg('开始进行审讯', {shade:0.1,time:500
+                },function () {
+                    location.href=window.waitconversationURL+"?ssid="+recordssid
+                });
+            }else if(toUrltype==2){
+                location.href =  window.conversationIndexURL;
+            }
+        }
+    }else{
+        var data2=data.data;
+        if (isNotEmpty(data2)){
+            var recordingbool=data2.recordingbool
+            var recordssid=data2.recordssid;
+            var checkStartRecordVO=data2.checkStartRecordVO;
+
+            if (null!=recordingbool&&recordingbool==true){
+                //存在笔录正在进行中，跳转笔录列表，给出提示：建议他先结束制作中的
+                if (isNotEmpty(checkStartRecordVO)){
+                    var msg=checkStartRecordVO.msg;
+                    if (isNotEmpty(msg)){
+                        layer.confirm("<span style='color:red'>"+msg+"</span>", {
+                            btn: ['开始笔录',"查看笔录列表","取消"], //按钮
+                            shade: [0.1,'#fff'], //不显示遮罩
+                            btn1:function(index) {
+                                console.log("跳转笔录制作中");
+                                //保存
+                                skipCheckbool = 1;
+                                to_waitconversationURL();
+                                layer.close(index);
+                            },
+                            btn2: function(index) {
+                                console.log("跳转笔录列表")
+                                toUrltype=2;
+                                skipCheckbool =1;
+                                to_waitconversationURL();
+                                layer.close(index);
+                            },
+                            btn3: function(index) {
+                                layer.close(index);
+                            }
+                        });
+                    }
+                }
+            }else {
+                layer.msg(data.message);
+            }
+        }else {
+            layer.msg(data.message);
+        }
+    }
+}
+
+

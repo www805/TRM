@@ -795,7 +795,7 @@ public class RecordService extends BaseService {
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
-        String adminssid=addCaseToArraignmentParam.getAdminssid();//询问人一
+        String adminssid=addCaseToArraignmentParam.getAdminssid()==null?user.getSsid():addCaseToArraignmentParam.getAdminssid();//询问人一
         Integer asknum=addCaseToArraignmentParam.getAsknum()==null?0:addCaseToArraignmentParam.getAsknum();
         String askobj=addCaseToArraignmentParam.getAskobj();
         String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();
@@ -866,21 +866,25 @@ public class RecordService extends BaseService {
             //一键谈话
             //默认使用会议的谈话模板ssid
             mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
-            recordtypessid=PropertiesListenerConfig.getProperty("recordtypel_conversation");
+            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation");
+            String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");
 
             String conversationmsg="一键谈话_"+DateUtil.getDateAndMinute();
 
             //用户信息使用默认
+            addUserInfo=new UserInfo();
             addUserInfo.setUsername("用户_"+conversationmsg);
             addUserInfo.setCardnum("证件号码_"+conversationmsg);
+            addUserInfo.setCardtypessid(cardtypessid);
 
             //案件信息默认
+            addPolice_case=new Police_case();
             addPolice_case.setCasename("案件名_"+conversationmsg);
             addPolice_case.setOccurrencetime(new Date());
             addPolice_case.setStarttime(new Date());
 
             //笔录名称
-            recordname=addUserInfo.getUsername()+"《"+addPolice_case.getCasename()+"》谈话笔录【一键谈话】"+"_第"+Integer.valueOf(asknum+1)+"版";
+            recordname=conversationmsg+"谈话笔录【一键谈话】"+"_第"+Integer.valueOf(asknum+1)+"版_";
             askobj="询问对象_"+conversationmsg;
         }
 

@@ -42,11 +42,6 @@
         word-break: break-all;/*必须*/
         white-space: normal;
     }
-    #paging {
-        float: none;
-        margin-left: 20%;
-    }
-
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -80,29 +75,38 @@
             </div>
     </div>
 
-
     <div th:replace="footer :: footer">...</div>
 </div>
 <script id="pagelisttemplates" type="text/html">
-    <table class="layui-table" lay-skin="line">
-        <colgroup width="80%"></colgroup>
-        <colgroup width="20%"></colgroup>
+    <table class="layui-table" style="table-layout: fixed">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>审讯状态</th>
+            <th>审讯名</th>
+            <th>审讯时间</th>
+            <th>创建人</th>
+            <th>操作</th>
+        </tr>
+        </thead>
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
-        {{#  var recordbool=value.recordbool;var recordbooltext; }}
-        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
-        {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var caseAndUserInfo=value.caseAndUserInfo;var creator=null;var creatorname="";var sessionssid="[[${session.MANAGE_CLIENT.ssid}]]";var showname=""; if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator;creatorname=caseAndUserInfo.creatorname; if(sessionssid!=creator){showname=creatorname+"：";} }  }}
-        {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
-        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}');" style="background-color: {{backgroundcolor}}">
+        <tr>
+            <td>{{index+1}}</td>
+            {{#  var recordbool=value.recordbool;var recordbooltext; }}
+            {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
+            <td>{{recordbooltext}}</td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
-            <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
+            <td>审讯时间</td>
+            <th>创建人</th>
+            <td>
+                <span class='layui-badge' onclick='changeboolRecord(this)'>查看</span>
+                <span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>
+            </td>
         </tr>
         {{#  }); }}
-
-
         </tbody>
     </table>
-
 </script>
 
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
@@ -116,14 +120,11 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
 
-    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
-    var sessionusername=[[${session.MANAGE_CLIENT.username}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/conversation/conversationIndex");
-        // getRecordtypesindex();
-        // ggetRecordsByParam();
+        ggetRecordsByParam();
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

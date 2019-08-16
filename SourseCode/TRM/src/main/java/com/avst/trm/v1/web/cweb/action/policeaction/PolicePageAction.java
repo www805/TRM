@@ -115,8 +115,11 @@ public class PolicePageAction {
     }
 
     @GetMapping("towaitconversation")
-    public ModelAndView towaitconversation(Model model){
+    public ModelAndView towaitconversation(Model model,String ssid){
         model.addAttribute("title","审讯制作中");
+        if (StringUtils.isNotBlank(ssid)){
+            model.addAttribute("recordssid",ssid);
+        }
         return new ModelAndView("client_web/police/conversation/waitconversation", "waitconversationModel", model);
     }
 

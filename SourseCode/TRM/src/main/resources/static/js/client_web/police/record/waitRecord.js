@@ -798,34 +798,6 @@ function addRecord() {
         var url=getActionURL(getactionid_manage().waitRecord_addRecord);
         //需要收拾数据
         var recordToProblems=[];//题目集合
-        $("#recorddetail td.onetd").each(function (i) {
-            var arr={};
-            var answers=[];//答案集合
-            var q=$(this).find("label[name='q']").html();
-            var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-                    //经过筛选的q
-                    var ws=$(this).find("label[name='w']");
-                    var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
-                    if (isNotEmpty(q)){
-                        if (null!=ws&&ws.length>0){
-                            for (var j = 0; j < ws.length; j++) {
-                                var w =ws.eq(j).html();
-                                        //经过筛选的w
-                                        if (isNotEmpty(w)) {
-                                            answers.push({
-                                                answer:w,
-                                                starttime:w_starttime,
-                                            });
-                                        }
-                            }
-                        }
-                        recordToProblems.push({
-                            problem:q,
-                            starttime:q_starttime,
-                            answers:answers
-                        });
-                    }
-        });
         var data={
             token:INIT_CLIENTKEY,
             param:{

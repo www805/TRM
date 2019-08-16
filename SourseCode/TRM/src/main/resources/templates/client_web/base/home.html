@@ -38,7 +38,7 @@
     <div style="margin-bottom: 10px;" class=" layui-col-space15">
         <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
             <div class="layui-col-sm3 layui-col-md3">
-                <a href="/cweb/police/policePage/towaitconversation">
+                <a onclick="to_waitconversationURL();">
                     <div class="layui-card btn_color">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
@@ -62,7 +62,7 @@
             </div>
 
             <div class="layui-col-sm3 layui-col-md3">
-                <a href="/cweb/police/policePage/toconversationIndex">
+                <a onclick="window.location.href=conversationIndexURL">
                     <div class="layui-card btn_color">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
@@ -209,6 +209,8 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var startConversationURL;
+    var conversationIndexURL;
+    var waitconversationURL;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -216,6 +218,11 @@
         getHome();
 
         startConversationURL=getActionURL(getactionid_manage().home_tostartConversation);//跳转到开启谈话页面
+        conversationIndexURL=getActionURL(getactionid_manage().home_toconversationIndex);//跳转到开启谈话页面
+        waitconversationURL=getActionURL(getactionid_manage().home_towaitconversation);//跳转到开启谈话页面
+
+
+
     });
     layui.use(['layer','element','laydate'], function(){
         var layer = layui.layer; //获得layer模块

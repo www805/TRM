@@ -366,16 +366,19 @@
             <!---->
         </div>
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
-
-            <div>
+            <div class="layui-col-md12">
                 <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
                 <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
-                <div id="living3_2">
+                <div style="height: 760px;width: 100%">
                     <!--视频直播区域-->
                     <div th:replace="living4 :: living"  >...</div>
                 </div>
             </div>
-
+            <div class="layui-col-md12">
+                <div class="layui-inline" style="margin-bottom:0;float: right">
+                    <button class=" layui-btn layui-btn-warm "  onclick="overRecord();" id="overRecord_btn">结束笔录</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -389,25 +392,19 @@
 <script th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
 <script th:src="@{/layui/layui.js}"type="text/javascript"></script>
 <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
-<script th:src="@{/js/client_web/police/record/waitRecord.js}" type="text/javascript"></script>
-<script th:src="@{/js/client_web/police/record/waitRecord2.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/conversation/waitconversation.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/record/recordSettings.js}" type="text/javascript"></script>
 
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
-    var SOCKETIO_HOST;
-    var SOCKETIO_PORT;
+    var recordssid;//笔录ssid
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-        setpageAction(INIT_CLIENT,"client_web/police/conversation/conversationIndex");
-        // getgnlist();
-        // getRecordById();
-        // getRecordrealByRecordssid();
-        getTime();
-        // main1();
+        setpageAction(INIT_CLIENT,"client_web/police/conversation/waitconversation");
+        recordssid=[[${waitconversationModel.recordssid}]];
+        getRecordById();
     });
 
     layui.use(['layer','element','form'], function(){
@@ -415,7 +412,6 @@
         var element = layui.element;
         var form = layui.form;
         var $ = layui.$; //由于layer弹层依赖jQuery，所以可以直接得到
-        //使用模块
 
     });
 
