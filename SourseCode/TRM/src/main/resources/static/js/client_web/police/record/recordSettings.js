@@ -10,6 +10,7 @@ var ptjsonValues = [];
 var setintervalKey;
 var outcang;
 var ptdjct;
+var fdtype = "FD_AVST";
 
 function recordSet() {
 
@@ -185,7 +186,10 @@ function yuntaikz() {
 
 //片头叠加
 function addptdj() {
-    var url=getActionURL(getactionid_manage().waitRecord_ptdj);
+    var url=getActionURL(getactionid_manage().waitconversation_ptdj);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_ptdj);
+    }
     // var url = "/cweb/police/record/ptdj";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -210,7 +214,7 @@ function addptdj() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             ct: ptdjct,
             lineList: ptjsonValues,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
@@ -221,7 +225,11 @@ function addptdj() {
 
 //获取设备状态
 function getFDState() {
-    var url=getActionURL(getactionid_manage().waitRecord_getFDState);
+
+    var url=getActionURL(getactionid_manage().waitconversation_getFDState);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getFDState);
+    }
     // var url = "/cweb/police/record/getFDState";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -232,7 +240,7 @@ function getFDState() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
     };
@@ -241,7 +249,10 @@ function getFDState() {
 
 //获取当前配置片头字段
 function getptdjconst(qidong) {
-    var url=getActionURL(getactionid_manage().waitRecord_getptdjconst);
+    var url=getActionURL(getactionid_manage().waitconversation_getptdjconst);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getptdjconst);
+    }
     // var url = "/cweb/police/record/getptdjconst";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -253,7 +264,7 @@ function getptdjconst(qidong) {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
     };
@@ -266,7 +277,10 @@ function getptdjconst(qidong) {
 
 //光盘出仓/进仓
 function getdvdOutOrIn(obj) {
-    var url=getActionURL(getactionid_manage().waitRecord_getdvdOutOrIn);
+    var url=getActionURL(getactionid_manage().waitconversation_getdvdOutOrIn);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getdvdOutOrIn);
+    }
     // var url = "/cweb/police/record/getdvdOutOrIn";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -294,7 +308,7 @@ function getdvdOutOrIn(obj) {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             inOrOut:inOrOut,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
@@ -309,7 +323,10 @@ function getdvdOutOrIn(obj) {
 
 //开始光盘刻录
 function getstartRec_Rom() {
-    var url=getActionURL(getactionid_manage().waitRecord_getstartRec_Rom);
+    var url=getActionURL(getactionid_manage().waitconversation_getstartRec_Rom);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getstartRec_Rom);
+    }
     // var url = "/cweb/police/record/getstartRec_Rom";
 
     if(!isNotEmpty(getRecordById_data) || !isNotEmpty(getRecordById_data.record.police_arraignment.mtssid)){
@@ -326,7 +343,7 @@ function getstartRec_Rom() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             iid: getRecordById_data.record.police_arraignment.mtssid,
             burntime: burntime,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
@@ -337,7 +354,10 @@ function getstartRec_Rom() {
 
 //结束光盘刻录
 function getstopRec_Rom() {
-    var url=getActionURL(getactionid_manage().waitRecord_getstopRec_Rom);
+    var url=getActionURL(getactionid_manage().waitconversation_getstopRec_Rom);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getstopRec_Rom);
+    }
     // var url = "/cweb/police/record/getstopRec_Rom";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -348,7 +368,7 @@ function getstopRec_Rom() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType:"FD_AVST",
+            fdType: fdtype,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
     };
@@ -357,7 +377,10 @@ function getstopRec_Rom() {
 
 //云台控制
 function getyuntaiControl(ptzaction) {
-    var url=getActionURL(getactionid_manage().waitRecord_getyuntaiControl);
+    var url=getActionURL(getactionid_manage().waitconversation_getyuntaiControl);
+    if(!isNotEmpty(url)){
+        url=getActionURL(getactionid_manage().waitRecord_getyuntaiControl);
+    }
     // var url = "/cweb/police/record/getyuntaiControl";
 
     if(!isNotEmpty(getRecordById_data)){
@@ -372,7 +395,7 @@ function getyuntaiControl(ptzaction) {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            fdType: "FD_AVST",
+            fdType: fdtype,
             ptzaction: ptzaction,
             ptzch: ptzch,
             flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid
@@ -397,7 +420,7 @@ function getptdjinfo() {
         ptdjct = 90;
     }
     return {
-        fdType: "FD_AVST",
+        fdType: fdtype,
         ct: parseInt(ptdjct),
         lineList: ptjsonValues,
         flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid

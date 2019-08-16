@@ -38,6 +38,9 @@ function callgetNavList(data) {
                     if(isNotEmpty(nav.icon)){
                         nav_icon_HTML = "<i class=\"" + nav.icon + "\"></i>\n";
                     }
+                    if(isNotEmpty(nav.iconh)){
+                        nav_icon_HTML = "<span class='iconfont'>&#" + nav.iconh + "</span>\n";
+                    }
 
                     nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
                         "                <a target=\"option\" href=\"" + nav.url + "\">\n" + nav_icon_HTML+

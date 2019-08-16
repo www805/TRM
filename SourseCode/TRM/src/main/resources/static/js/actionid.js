@@ -181,6 +181,13 @@ function getactionid_manage() {
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
 
+        waitconversation_getFDState:"waitconversation_getFDState",
+        waitconversation_getdvdOutOrIn:"waitconversation_getdvdOutOrIn",
+        waitconversation_getstartRec_Rom:"waitconversation_getstartRec_Rom",
+        waitconversation_getstopRec_Rom:"waitconversation_getstopRec_Rom",
+        waitconversation_getyuntaiControl:"waitconversation_getyuntaiControl",
+        waitconversation_ptdj:"waitconversation_ptdj",
+        waitconversation_getptdjconst:"waitconversation_getptdjconst",
 
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
         templateTypeList_getTemplateTypeById: "templateTypeList_getTemplateTypeById",

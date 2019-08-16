@@ -287,15 +287,13 @@
                             <div style="margin-bottom: 20px;">
                                 <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘开始</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘结束</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">案件信息</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">信息叠加</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘结束</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">刻录模式</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">关闭音频</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘序号</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">证据切换</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘开始</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstopRec_Rom();">光盘结束</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">信息叠加</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">刻录模式</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">关闭音频</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘序号</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">证据切换</button>
                             </div>
                         </div>
                         <div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">
@@ -412,6 +410,10 @@
         var element = layui.element;
         var form = layui.form;
         var $ = layui.$; //由于layer弹层依赖jQuery，所以可以直接得到
+
+        form.on('select(burntime)', function (data) {
+            $("#bsettimerrecburntime").html(data.value + "小时");
+        });
 
     });
 

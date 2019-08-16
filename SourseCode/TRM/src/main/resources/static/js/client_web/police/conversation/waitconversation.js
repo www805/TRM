@@ -26,6 +26,11 @@ function callbackgetRecordById(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             getRecordById_data=data;
+
+            if(isNotEmpty(getRecordById_data)){
+                getFDState();
+            }
+
             var record=data.record;
             if (isNotEmpty(record)){
                 //获取提讯会议ssid
@@ -325,3 +330,7 @@ $(function () {
         $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
     },1000);
 })
+
+function zanshimsg() {
+    layer.msg("该功能暂时维护中...",{icon: 4});
+}
