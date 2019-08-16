@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface Police_userinfoMapper extends BaseMapper<Police_userinfo> {
 
-    @Select("select u.*,t.typename as cardtypename,ut.cardnum as cardnum  from police_userinfo u " +
+    @Select("select u.*,t.typename as cardtypename,t.ssid as cardtypessid,ut.cardnum as cardnum  from police_userinfo u " +
             "left join police_userinfototype ut on ut.userssid=u.ssid " +
             "left join `police_cardtype` t on t.ssid=ut.cardtypessid " +
             " where 1=1 ${ew.sqlSegment}")

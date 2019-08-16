@@ -202,7 +202,7 @@ $(function () {
                 name:'详情来源',
                 type:'pie',
                 radius: ['40%', '55%'],
-                /*label: {
+                label: {
                     normal: {
                         formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                         backgroundColor: '#eee',
@@ -233,8 +233,8 @@ $(function () {
                             }
                         }
                     }
-                },*/
-                label:{
+                },
+                /*label:{
                     align: 'left',
                     normal:{
                         formatter(v) {
@@ -256,13 +256,29 @@ $(function () {
                             fontSize : 8
                         }
                     }
-                },
+                },*/
                 data:[]
             }
         ]
     };
     myChart2.setOption(option2);
-
-
 });
 
+
+function open_startConversation() {
+    var HTML='';
+    layer.open({
+        id:"startconversation_id",
+        type:2,
+        title: '填写基础信息',
+        shade: 0.3,
+        resize:false,
+        area: ['50%', '600px'],
+      /*  btn:['开始谈话'],*/
+        skin: 'startconversation_btn', //样式类名
+        content: startConversationURL,
+        success: function(layero,index){
+        }
+    });
+
+}

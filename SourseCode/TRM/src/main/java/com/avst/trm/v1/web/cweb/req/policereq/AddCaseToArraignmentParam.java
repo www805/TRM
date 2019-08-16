@@ -31,6 +31,17 @@ public class AddCaseToArraignmentParam {
 
     private Integer skipCheckbool;//是否跳过检测1跳过-1不跳过
 
+    private Integer conversationbool=-1;//是否为谈话 默认-1 非谈话类型(信息全需) 1开始谈话(填写基本信息即可) 2一键谈话（默认基本信息）
+
+
+    public Integer getConversationbool() {
+        return conversationbool;
+    }
+
+    public void setConversationbool(Integer conversationbool) {
+        this.conversationbool = conversationbool;
+    }
+
     public Integer getSkipCheckbool() {
         return skipCheckbool;
     }

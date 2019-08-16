@@ -245,5 +245,13 @@ function getactionid_manage() {
         main_getWorkunits:"main_getWorkunits",
         main_getUserBySsid:"main_getUserBySsid",
 
+        home_tostartConversation:"home_tostartConversation",
+        startConversation_getUserinfoList:"startConversation_getUserinfoList",
+        startConversation_getUserByCard:"startConversation_getUserByCard",
+        startConversation_getCaseById:"startConversation_getCaseById",
+        startConversation_getAdminList:"startConversation_getAdminList",
+        startConversation_addCaseToArraignment:"startConversation_addCaseToArraignment",
+        startConversation_getCards:"startConversation_getCards",
+
     };
 }

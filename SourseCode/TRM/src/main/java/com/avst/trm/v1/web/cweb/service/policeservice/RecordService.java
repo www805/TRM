@@ -787,37 +787,101 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
-        String recordname=addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
+        String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
         String adminssid=addCaseToArraignmentParam.getAdminssid();//询问人一
-        Integer asknum=addCaseToArraignmentParam.getAsknum();
+        Integer asknum=addCaseToArraignmentParam.getAsknum()==null?0:addCaseToArraignmentParam.getAsknum();
         String askobj=addCaseToArraignmentParam.getAskobj();
         String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();
         String recordplace=addCaseToArraignmentParam.getRecordplace();
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();
-
         UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
         Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
-
         String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
         String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
         String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
         String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
 
-
-        if (StringUtils.isBlank(mtmodelssid)){
-            //会议模板为空，直接取默认的
-            Base_type base_type=new Base_type();
-            base_type.setType(CommonCache.getCurrentServerType());
-            base_type=base_typeMapper.selectOne(base_type);
-            if (null!=base_type){
-                mtmodelssid=base_type.getMtmodelssid();
+        Integer conversationbool=addCaseToArraignmentParam.getConversationbool();
+        if (conversationbool==-1){
+            //笔录制作流程
+            if (StringUtils.isBlank(mtmodelssid)){
+                //会议模板为空，直接取默认的
+                Base_type base_type=new Base_type();
+                base_type.setType(CommonCache.getCurrentServerType());
+                base_type=base_typeMapper.selectOne(base_type);
+                if (null!=base_type){
+                    mtmodelssid=base_type.getMtmodelssid();
+                }
             }
+
+            if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
+                LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
+                Police_workunit workunit=new Police_workunit();
+                workunit.setSsid(OpenUtil.getUUID_32());
+                workunit.setCreatetime(new Date());
+                workunit.setWorkname(otherworkname);
+                int police_workunitMapper_insertbool= police_workunitMapper.insert(workunit);
+                LogUtil.intoLog("police_workunitMapper_insertbool__"+police_workunitMapper_insertbool);
+                if (police_workunitMapper_insertbool>0){
+                    otherworkssid=workunit.getSsid();
+                }
+            }
+
+            if (StringUtils.isBlank(otheradminssid)&&StringUtils.isNotBlank(otheruserinfoname)){
+                LogUtil.intoLog(this.getClass(),"需要新增询问人二____"+otheruserinfoname);
+                Base_admininfo base_admininfo=new Base_admininfo();
+                base_admininfo.setSsid(OpenUtil.getUUID_32());
+                base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
+                base_admininfo.setCreator(user.getSsid());
+                base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
+                base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
+                base_admininfo.setUsername(otheruserinfoname);
+                base_admininfo.setRegistertime(new Date());
+                int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
+                LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
+                if (base_admininfoMapper_insertbool>0){
+                    otheradminssid=base_admininfo.getSsid();
+                }
+            }
+        }else  if (conversationbool==1){
+            //开始谈话
+            //默认使用会议的谈话模板ssid
+            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation");
+
+            String conversationmsg="开始谈话_"+DateUtil.getDateAndMinute();
+
+            recordname=addUserInfo.getUsername()+"《"+addPolice_case.getCasename()+"》谈话笔录【开始谈话】"+"_第"+Integer.valueOf(asknum+1)+"版";
+            askobj="询问对象_"+conversationmsg;
+
+
+        }if (conversationbool==2){
+            //一键谈话
+            //默认使用会议的谈话模板ssid
+            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+            recordtypessid=PropertiesListenerConfig.getProperty("recordtypel_conversation");
+
+            String conversationmsg="一键谈话_"+DateUtil.getDateAndMinute();
+
+            //用户信息使用默认
+            addUserInfo.setUsername("用户_"+conversationmsg);
+            addUserInfo.setCardnum("证件号码_"+conversationmsg);
+
+            //案件信息默认
+            addPolice_case.setCasename("案件名_"+conversationmsg);
+            addPolice_case.setOccurrencetime(new Date());
+            addPolice_case.setStarttime(new Date());
+
+            //笔录名称
+            recordname=addUserInfo.getUsername()+"《"+addPolice_case.getCasename()+"》谈话笔录【一键谈话】"+"_第"+Integer.valueOf(asknum+1)+"版";
+            askobj="询问对象_"+conversationmsg;
         }
 
 
@@ -904,36 +968,6 @@ public class RecordService extends BaseService {
             return;
         }
 
-
-        if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
-            LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
-            Police_workunit workunit=new Police_workunit();
-            workunit.setSsid(OpenUtil.getUUID_32());
-            workunit.setCreatetime(new Date());
-            workunit.setWorkname(otherworkname);
-           int police_workunitMapper_insertbool= police_workunitMapper.insert(workunit);
-           LogUtil.intoLog("police_workunitMapper_insertbool__"+police_workunitMapper_insertbool);
-            if (police_workunitMapper_insertbool>0){
-                otherworkssid=workunit.getSsid();
-            }
-        }
-
-        if (StringUtils.isBlank(otheradminssid)&&StringUtils.isNotBlank(otheruserinfoname)){
-            LogUtil.intoLog(this.getClass(),"需要新增询问人二____"+otheruserinfoname);
-            Base_admininfo base_admininfo=new Base_admininfo();
-            base_admininfo.setSsid(OpenUtil.getUUID_32());
-            base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
-            base_admininfo.setCreator(user.getSsid());
-            base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
-            base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
-            base_admininfo.setUsername(otheruserinfoname);
-            base_admininfo.setRegistertime(new Date());
-            int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
-            LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
-            if (base_admininfoMapper_insertbool>0){
-                otheradminssid=base_admininfo.getSsid();
-            }
-        }
 
 
         //添加笔录信息
@@ -1030,14 +1064,18 @@ public class RecordService extends BaseService {
         LogUtil.intoLog(this.getClass(),"证件类型："+cardtypesssid);
         LogUtil.intoLog(this.getClass(),"证件号码："+cardnum);
 
-        if (StringUtils.isBlank(cardtypesssid)||StringUtils.isBlank(cardnum)){
+        if (StringUtils.isBlank(cardnum)){
             result.setMessage("请输入证件号");
             return;
         }
 
+
         //根据证件类型和证件号查询用户信息
         EntityWrapper userparam=new EntityWrapper();
-        userparam.eq("ut.cardtypessid",cardtypesssid);
+        if (StringUtils.isNotBlank(cardtypesssid)){
+            userparam.eq("ut.cardtypessid",cardtypesssid);
+        }
+
         userparam.eq("ut.cardnum",cardnum);
         List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
         if (null==userinfos||userinfos.size()<1){
@@ -1772,6 +1810,7 @@ public class RecordService extends BaseService {
 
         String cardtypesssid=getUserinfoListParam.getCardtypesssid();//证件类型ssid
         String cardnum=getUserinfoListParam.getCardnum();//证件号
+
 
         //根据证件类型和证件号查询用户信息
         EntityWrapper userparam=new EntityWrapper();

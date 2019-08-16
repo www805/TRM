@@ -226,6 +226,17 @@ public class PolicePageAction {
     }
 
 
+    /*********************************开始笔录谈话 end*********************************/
+    @GetMapping("tostartConversation")
+    public ModelAndView tostartConversation(Model model){
+        model.addAttribute("title","开始谈话");
+        return new ModelAndView("client_web/police/conversation/startConversation", "startConversationModel", model);
+    }
+
+
+
+
+
 
 
 

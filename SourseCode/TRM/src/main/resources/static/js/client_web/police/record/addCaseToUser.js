@@ -512,7 +512,7 @@ function getUserByCard(){
     /* $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
     $("#casename,#recordname").val("");
     $("#asknum").val(0);
-    $("#casename_ssid").html("");
+
 
     /* init_form();//初始化表单*/
     if (!isNotEmpty(cardnum)){
