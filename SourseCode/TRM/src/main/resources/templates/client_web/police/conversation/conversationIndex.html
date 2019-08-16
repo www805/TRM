@@ -42,6 +42,7 @@
         word-break: break-all;/*必须*/
         white-space: normal;
     }
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -51,34 +52,22 @@
         <h3 th:text="${conversationIndexModel.title}">智能提讯系统</h3>
     </div>
 
-    <div class="layui-row layui-form" >
-            <div class="layui-col-md12 "style="height: 780px;border:1px  solid #F2F2F2; " >
-               <div style="margin-top: 5px">
-                   <label class="layui-form-label" style="width: auto;">关键字</label>
-                   <div class="layui-input-inline" style="float: left; ">
-                       <input  type="text" name="recordname" id="recordname" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
-                   </div>
-
-                   <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,10);">
-               </div>
-                <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
-               【审讯列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的审讯进行编辑,对<span style="color: #00FF00">*已完成</span>的审讯进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
+    <form class="layui-form" >
+        <div class="layui-form-item">
+            <label class="layui-form-label" style="width: auto;">关键字</label>
+            <div class="layui-input-inline">
+                <input  type="text" name="recordname" id="recordname" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
             </div>
-                <div class="layui-card">
-                    <div style="height: 660px; overflow-x: hidden; overflow-y: scroll;">
-                          <div class="layui-card-body" style="padding: 0;" >
-                              <div><a href="/cweb/police/policePage/toconversationById">只是我们的审讯okokok</a></div>
-                              <div th:include ="page :: page"></div>
-                          </div>
-                    </div>
-                </div>
-            </div>
-    </div>
 
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="ggetRecordsByParam();">
+        </div>
+    </form>
+
+    <div th:replace="page :: page">...</div>
     <div th:replace="footer :: footer">...</div>
 </div>
 <script id="pagelisttemplates" type="text/html">
-    <table class="layui-table" style="table-layout: fixed">
+    <table class="layui-table" lay-skin="line">
         <thead>
         <tr>
             <th>序号</th>
@@ -91,17 +80,18 @@
         </thead>
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
-        <tr>
+        <tr ssid="{{value.ssid}}">
             <td>{{index+1}}</td>
-            {{#  var recordbool=value.recordbool;var recordbooltext; }}
-            {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
+            {{#  var recordbool=value.recordbool;var recordbooltext; var itemtext="继续"; var oldclass="layui-btn layui-btn-normal";}}
+            {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";itemtext="查看";oldclass="layui-btn layui-btn-primary"}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
             <td>{{recordbooltext}}</td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
-            <td>审讯时间</td>
-            <th>创建人</th>
+            <td>{{value.createtime==null?"":value.createtime}}</td>
+            {{# var creator=null; var creatorname="";  var caseAndUserInfo=value.caseAndUserInfo;if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator; creatorname=caseAndUserInfo.creatorname;} }}
+            <th>{{creatorname}}</th>
             <td>
-                <span class='layui-badge' onclick='changeboolRecord(this)'>查看</span>
-                <span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>
+                <span class="{{oldclass}}" onclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{value.recordtypessid}}');">{{itemtext}}</span>
+                <span class='layui-btn layui-btn-danger' onclick="changeboolRecord(this)">删除</span>
             </td>
         </tr>
         {{#  }); }}
@@ -119,7 +109,7 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
-
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

@@ -260,9 +260,16 @@ function getactionid_manage() {
         startConversation_towaitRecord:"startConversation_towaitRecord",
 
         conversationIndex_getRecords:"conversationIndex_getRecords",
+        conversationIndex_changeboolRecord:"conversationIndex_changeboolRecord",
+        conversationIndex_towaitconversation:"conversationIndex_towaitconversation",
+        conversationIndex_toconversationById:"conversationIndex_toconversationById",
+        conversationIndex_towaitRecord:"conversationIndex_towaitRecord",
+
 
         waitconversation_getRecordById:"waitconversation_getRecordById",
         waitconversation_addRecord:"waitconversation_addRecord",
+
+        getconversationById_getRecordById:"getconversationById_getRecordById",
 
     };
 }

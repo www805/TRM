@@ -177,8 +177,11 @@ public class PolicePageAction {
     }
 
     @GetMapping("toconversationById")
-    public ModelAndView toconversationById(Model model){
+    public ModelAndView toconversationById(Model model,String ssid){
         model.addAttribute("title","审讯详情");
+        if (StringUtils.isNotBlank(ssid)){
+            model.addAttribute("recordssid",ssid);
+        }
         return new ModelAndView("client_web/police/conversation/getconversationById", "conversationByIdModel", model);
     }
 

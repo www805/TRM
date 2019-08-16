@@ -26,12 +26,12 @@
         var video_h;
 
         function play(){
-
             playerwh=$("#phitem").width();
             if(!isNotEmpty(playerwh)||playerwh==0){
                 playerwh=$("#fditem").width();
             }
             playerwhht=playerwh*2.5/4;
+
 
             var myplayer = $f("player", swfurl, {
                 clip: {

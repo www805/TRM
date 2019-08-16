@@ -140,6 +140,7 @@ public class RecordService extends BaseService {
          String recordname=getRecordsParam.getRecordname();//笔录名
          String recordtypessid=getRecordsParam.getRecordtypessid();//笔录类型
          boolean creatorbool=getRecordsParam.isCreatorbool();
+         Integer conversationbool=getRecordsParam.getConversationbool();
 
         EntityWrapper recordparam=new EntityWrapper();
         if (StringUtils.isNotBlank(recordtypessid)){
@@ -153,10 +154,25 @@ public class RecordService extends BaseService {
             recordparam.eq("r.recordbool",recordbool);
         }
 
-        if (creatorbool){
+        String recordtype_conversation1=PropertiesListenerConfig.getProperty("recordtype_conversation1");
+        String recordtype_conversation2=PropertiesListenerConfig.getProperty("recordtype_conversation2");
+        getRecordsVO.setRecordtype_conversation1(recordtype_conversation1);
+        getRecordsVO.setRecordtype_conversation2(recordtype_conversation2);
+        if (conversationbool==1){
+            //只查看谈话类型的的笔录
+            recordparam.in("r.recordtypessid", new String[]{recordtype_conversation1, recordtype_conversation2});
+        }else if(conversationbool==-1){
+            //除开谈话类型的笔录
+            recordparam.notIn("r.recordtypessid", new String[]{recordtype_conversation1, recordtype_conversation2});
+        }
+
+       /* //默认只看自己做的笔录
+       if (creatorbool){
             AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
             recordparam.eq("c.creator",user.getSsid());
-        }
+        }*/
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
+        recordparam.eq("c.creator",user.getSsid());
 
 
 
@@ -854,7 +870,7 @@ public class RecordService extends BaseService {
             //开始谈话
             //默认使用会议的谈话模板ssid
             mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
-            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation");
+            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation2");
 
             String conversationmsg="开始谈话_"+DateUtil.getDateAndMinute();
 
@@ -866,7 +882,7 @@ public class RecordService extends BaseService {
             //一键谈话
             //默认使用会议的谈话模板ssid
             mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
-            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation");
+            recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");
 
             String conversationmsg="一键谈话_"+DateUtil.getDateAndMinute();
@@ -1512,9 +1528,9 @@ public class RecordService extends BaseService {
             String casename=caseAndUserInfo.getCasename();
             String cause=caseAndUserInfo.getCause();
             String casenum=caseAndUserInfo.getCasenum();
-            String occurrencetime=caseAndUserInfo.getOccurrencetime_format().toString();
-            String starttime=caseAndUserInfo.getStarttime().toString();
-            String endtime=caseAndUserInfo.getEndtime().toString();
+            String occurrencetime=caseAndUserInfo.getOccurrencetime_format()==null?null:caseAndUserInfo.getOccurrencetime_format().toString();
+            String starttime=caseAndUserInfo.getStarttime()==null?null:caseAndUserInfo.getStarttime().toString();
+            String endtime=caseAndUserInfo.getEndtime()==null?null:caseAndUserInfo.getEndtime().toString();
             String caseway=caseAndUserInfo.getCaseway();
 
 
@@ -1569,15 +1585,19 @@ public class RecordService extends BaseService {
             String workname2 = police_workunit2.getWorkname();
             String workname3 = police_workunit3.getWorkname();
             String username = police_userinfo.getUsername();
-            String sex = police_userinfo.getSex() == 1 ? "男" : "女";
-            String age = police_userinfo.getAge().toString();
+            String sex = police_userinfo.getSex() ==null?"未知":(police_userinfo.getSex()==1 ? "男" : "女");
+            String age = police_userinfo.getAge()==null?"未知": police_userinfo.getAge().toString();
             String politicsstatus = police_userinfo.getPoliticsstatus();
             String workunits = police_userinfo.getWorkunits();
             String residence = police_userinfo.getResidence();
             String phone = police_userinfo.getPhone();
             String domicile = police_userinfo.getDomicile();
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
-            String both = sdf2.format(police_userinfo.getBoth());
+            String both ="未知";
+            if (null!=police_userinfo.getBoth()){
+                both = sdf2.format(police_userinfo.getBoth());
+            }
+
 
             EntityWrapper userinfoparam = new EntityWrapper();
             userinfoparam.eq("u.ssid", userssid);

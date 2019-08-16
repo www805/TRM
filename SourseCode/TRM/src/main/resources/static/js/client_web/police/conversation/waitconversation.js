@@ -7,6 +7,7 @@ var dq_recorduser;
 var liveurl;
 var dq_livingurl;
 var dq_previewurl;
+var mcbool=null;
 
 
 function getRecordById() {
@@ -29,11 +30,20 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(record)){
                 //获取提讯会议ssid
                 mcbool=record.mcbool;
+                if (mcbool==1){
+                    $("#mtbool_txt").text("审讯中");
+                }else {
+                    $("#mtbool_txt").text("未审讯");
+                }
+
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
                     var mtssiddata=police_arraignment.mtssid;
                     if (isNotEmpty(mtssiddata)){
                         mtssid=mtssiddata;
+                        getRecordrealing();
+                    }else if (mcbool!=1&&!isNotEmpty(mtssid)) {
+                        startMC();
                     }
                 }
 
@@ -54,13 +64,55 @@ function callbackgetRecordById(data) {
                     recorduser.push(user2);
                     dq_recorduser=recordUserInfosdata.userssid;//当前被审讯人
                 }
-                startMC();
+
             }
         }
     }else{
         layer.msg(data.message);
     }
 }
+
+
+/**
+ * 获取会议asr实时数据
+ */
+function getRecordrealing() {
+    if (isNotEmpty(mtssid)) {
+        var url=getUrl_manage().getRecordrealing;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetgetRecordrealing);
+    }
+}
+function callbackgetgetRecordrealing(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        var datas = data.data;
+        var loadindex = layer.msg("加载中，请稍等...", {
+            icon: 16,
+            time:1000
+        });
+
+        var list= datas.list;
+        var fdCacheParams= datas.fdCacheParams;
+        if (isNotEmpty(fdCacheParams)){
+            for (var i = 0; i < fdCacheParams.length; i++) {
+                var fdCacheParam = fdCacheParams[i];
+                liveurl=fdCacheParam.previewurl;//开始会议后默认使用副麦预览地址
+                dq_livingurl= fdCacheParam.livingUrl;
+                dq_previewurl= fdCacheParam.previewurl;
+                console.log("当前liveurl————"+liveurl)
+            }
+            initplayer();
+        }
+    }else{
+        layer.msg(data.message);
+    }
+}
+
 
 
 var mtssid=null;//会议ssid
@@ -155,8 +207,9 @@ function callbackstartMC(data) {
             }
             mtssid=mtssiddata;
             mcbool=1;//正常开启
+            $("#mtbool_txt").text("审讯中");
 
-            var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
+            var con="审讯已开启<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
         }
     }else{
@@ -165,7 +218,7 @@ function callbackstartMC(data) {
             var checkStartRecordVO=data2.checkStartRecordVO;
             if (null!=checkStartRecordVO){
                 var msg=checkStartRecordVO.msg;
-                parent.layer.confirm("笔录开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的笔录", {
+                parent.layer.confirm("审讯开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的审讯", {
                     btn: ['好的'], //按钮
                     shade: [0.1,'#fff'], //不显示遮罩
                     closeBtn:0,
@@ -176,7 +229,7 @@ function callbackstartMC(data) {
                 return;
             }
         }
-        layer.msg("笔录开启失败");
+        layer.msg("审讯开启失败");
     }
 }
 
@@ -218,7 +271,7 @@ function overRecord() {
                     recordssid: recordssid,
                     recordbool:2,//关闭
                     recordToProblems:recordToProblems,
-                    mtssid:mtssid //会议ssid用于笔录结束时关闭会议
+                    mtssid:mtssid //会议ssid用于审讯结束时关闭会议
                 }
             };
             $("#overRecord_btn").attr("click","");
@@ -244,7 +297,7 @@ function calladdRecord(data) {
             if (isNotEmpty(overRecord_loadindex)) {
                 layer.close(overRecord_loadindex);
             }
-            layer.msg("审讯结束结束",{time:500},function () {
+            layer.msg("审讯结束",{time:500},function () {
                 window.history.go(-1);
             })
         }
