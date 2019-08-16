@@ -110,8 +110,14 @@ public class PolicePageAction {
 
     @GetMapping("toconversationIndex")
     public ModelAndView toconversationIndex(Model model){
-        model.addAttribute("title","谈话查看");
+        model.addAttribute("title","审讯查看");
         return new ModelAndView("client_web/police/conversation/conversationIndex", "conversationIndexModel", model);
+    }
+
+    @GetMapping("towaitconversation")
+    public ModelAndView towaitconversation(Model model){
+        model.addAttribute("title","审讯制作中");
+        return new ModelAndView("client_web/police/conversation/waitconversation", "waitconversationModel", model);
     }
 
     @GetMapping("torecordTypeList")
@@ -165,6 +171,12 @@ public class PolicePageAction {
             model.addAttribute("recordssid",ssid);
         }
        return new ModelAndView("client_web/police/record/getRecordById", "getRecordByIdModel", model);
+    }
+
+    @GetMapping("toconversationById")
+    public ModelAndView toconversationById(Model model){
+        model.addAttribute("title","审讯详情");
+        return new ModelAndView("client_web/police/conversation/getconversationById", "conversationByIdModel", model);
     }
 
 
