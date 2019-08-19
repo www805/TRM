@@ -457,6 +457,7 @@ function callgetptdjconst(data){
                     ptjsonValue = matchPtdjKey(ptdjmaps[ptjsonName]);
                 }
 
+                ptjsonValue=ptjsonValue==null?"":ptjsonValue;
                 PtFormHTML += '<div class="layui-form-item">\n' +
                     '   <label class="layui-form-label">' + ptjsonName + '</label>\n' +
                     '       <div class="layui-input-block">\n' +
@@ -485,7 +486,7 @@ function callgetbiluptdjconst(data){
                 if (isNotEmpty(ptdjmaps)) {
                     ptjsonValue = matchPtdjKey(ptdjmaps[ptjsonName]);
                 }
-
+                ptjsonValue=ptjsonValue==null?"":ptjsonValue;
                 ptjsonValues.push(ptjsonValue);
             }
         }
@@ -709,7 +710,7 @@ function matchPtdjKey(key) {
         return getRecordById_data.record.recordUserInfos.adminname == null ? "" : getRecordById_data.record.recordUserInfos.adminname;
     }
     if("recordadminname" == key){
-        return getRecordById_data.record.recordUserInfos.recordadminname = null ? "" : getRecordById_data.record.recordUserInfos.recordadminname;
+        return getRecordById_data.record.recordUserInfos.recordadminname == null ? "" : getRecordById_data.record.recordUserInfos.recordadminname;
     }
     if("recordplace" == key){
         return getRecordById_data.record.police_arraignment.recordplace == null ? "" : getRecordById_data.record.police_arraignment.recordplace;
