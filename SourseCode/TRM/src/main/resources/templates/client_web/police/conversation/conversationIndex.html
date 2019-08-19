@@ -58,6 +58,15 @@
             <div class="layui-input-inline">
                 <input  type="text" name="recordname" id="recordname" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
             </div>
+            <label class="layui-form-label" style="width: auto;">状态</label>
+            <div class="layui-input-inline" style="width: 80px;float: left;margin-right: 20px;">
+                <select name="recordbool" lay-verify="" id="recordbool" lay-filter="change_recordbool" >
+                    <option value="">全部</option>
+                    <option value="0">未开始</option>
+                    <option value="1">进行中</option>
+                    <option value="2">已完成</option>
+                </select>
+            </div>
 
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="ggetRecordsByParam();">
         </div>

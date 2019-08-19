@@ -45,6 +45,7 @@ import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.ctc.wstx.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
@@ -408,6 +409,8 @@ public class RecordService extends BaseService {
             return;
         }
 
+        getRecordByIdVO.setRecordtype_conversation1(PropertiesListenerConfig.getProperty("recordtype_conversation1"));
+        getRecordByIdVO.setRecordtype_conversation2(PropertiesListenerConfig.getProperty("recordtype_conversation2"));
 
         //根据笔录ssid获取录音数据
             EntityWrapper recordParam=new EntityWrapper();
@@ -804,6 +807,10 @@ public class RecordService extends BaseService {
             return;
         }
 
+        addCaseToArraignmentVO.setRecordtype_conversation1(PropertiesListenerConfig.getProperty("recordtype_conversation1"));
+        addCaseToArraignmentVO.setRecordtype_conversation2(PropertiesListenerConfig.getProperty("recordtype_conversation2"));
+
+
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
@@ -827,15 +834,6 @@ public class RecordService extends BaseService {
         Integer conversationbool=addCaseToArraignmentParam.getConversationbool();
         if (conversationbool==-1){
             //笔录制作流程
-            if (StringUtils.isBlank(mtmodelssid)){
-                //会议模板为空，直接取默认的
-                Base_type base_type=new Base_type();
-                base_type.setType(CommonCache.getCurrentServerType());
-                base_type=base_typeMapper.selectOne(base_type);
-                if (null!=base_type){
-                    mtmodelssid=base_type.getMtmodelssid();
-                }
-            }
 
             if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
                 LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
@@ -869,23 +867,26 @@ public class RecordService extends BaseService {
         }else  if (conversationbool==1){
             //开始谈话
             //默认使用会议的谈话模板ssid
-            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation2");
 
-            String conversationmsg="开始谈话_"+DateUtil.getDateAndMinute();
+            String time=String.valueOf(new Date().getTime());
+            String conversationmsg="开启审讯_"+time;
 
-            recordname=addUserInfo.getUsername()+"《"+addPolice_case.getCasename()+"》谈话笔录【开始谈话】"+"_第"+Integer.valueOf(asknum+1)+"版";
+            recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
             askobj="询问对象_"+conversationmsg;
+            addPolice_case.setCasenum("案件编号_"+conversationmsg);
 
 
         }if (conversationbool==2){
             //一键谈话
             //默认使用会议的谈话模板ssid
-            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");
 
-            String conversationmsg="一键谈话_"+DateUtil.getDateAndMinute();
+            String time=String.valueOf(new Date().getTime());
+            String conversationmsg="一键审讯_"+time;
 
             //用户信息使用默认
             addUserInfo=new UserInfo();
@@ -898,11 +899,32 @@ public class RecordService extends BaseService {
             addPolice_case.setCasename("案件名_"+conversationmsg);
             addPolice_case.setOccurrencetime(new Date());
             addPolice_case.setStarttime(new Date());
+            addPolice_case.setCasenum("案件编号_"+conversationmsg);
+
 
             //笔录名称
-            recordname=conversationmsg+"谈话笔录【一键谈话】"+"_第"+Integer.valueOf(asknum+1)+"版_";
+            recordname="审讯笔录【一键审讯】_"+time;
             askobj="询问对象_"+conversationmsg;
         }
+
+        //整理模板
+            if (StringUtils.isNotBlank(recordtypessid)&&recordtypessid.equals(PropertiesListenerConfig.getProperty("recordtype_conversation1"))||recordtypessid.equals(PropertiesListenerConfig.getProperty("recordtype_conversation2"))){
+                mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+            }else {
+                if (StringUtils.isBlank(mtmodelssid)){
+                    //会议模板为空，直接取默认的
+                    Base_type base_type=new Base_type();
+                    base_type.setType(CommonCache.getCurrentServerType());
+                    base_type=base_typeMapper.selectOne(base_type);
+                    if (null!=base_type){
+                        mtmodelssid=base_type.getMtmodelssid();
+                    }
+                }
+            }
+
+
+        LogUtil.intoLog(this.getClass(),"添加笔录使用的会议模板ssid_"+mtmodelssid);
+
 
 
         if (skipCheckbool==-1){
@@ -1063,7 +1085,7 @@ public class RecordService extends BaseService {
                 LogUtil.intoLog(this.getClass(),"insertuserto_bool__"+insertuserto_bool);
             }
         }
-
+        addCaseToArraignmentVO.setRecordtypessid(recordtypessid);
         addCaseToArraignmentVO.setRecordssid(record.getSsid());
          result.setData(addCaseToArraignmentVO);//返回开始笔录的ssid
 

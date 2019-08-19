@@ -81,10 +81,15 @@ function showpagetohtml(){
         var casename=pageparam.casename;
         var casenum=pageparam.casenum;
         var username=pageparam.username;
+        var occurrencetime_start=pageparam.occurrencetime_start;
+        var occurrencetime_end=pageparam.occurrencetime_end;
+
         var arrparam=new Array();
         arrparam[0] = casename;
         arrparam[1]=casenum;
         arrparam[2]=username;
+        arrparam[3]=occurrencetime_start;
+        arrparam[4]=occurrencetime_end;
         showpage("paging",arrparam,'getCasesByParam',currPage,pageCount,pageSize);
     }
 }

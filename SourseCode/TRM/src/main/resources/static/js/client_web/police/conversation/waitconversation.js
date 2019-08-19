@@ -29,6 +29,13 @@ function callbackgetRecordById(data) {
 
             if(isNotEmpty(getRecordById_data)){
                 getFDState();
+
+                //获取默认的片头信息
+                getptdjconst(1);
+
+                setInterval(function () {
+                    getFDState();
+                }, 10000);
             }
 
             var record=data.record;
@@ -40,6 +47,8 @@ function callbackgetRecordById(data) {
                 }else {
                     $("#mtbool_txt").text("未审讯");
                 }
+
+
 
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
@@ -123,6 +132,10 @@ function callbackgetgetRecordrealing(data) {
 var mtssid=null;//会议ssid
 var useretlist=null;
 function startMC() {
+    var loadindex = layer.msg("加载中，请稍等...", {
+        icon: 16,
+        time:1000
+    });
     if (isNotEmpty(getRecordById_data)){
         var casenum=null;
         var casename=null;
@@ -168,18 +181,21 @@ function startMC() {
             }
 
 
-            var ptdjParam_out=getptdjinfo();
 
-            var url=getUrl_manage().startRercord;
-            var data={
-                token:INIT_CLIENTKEY,
-                param:{
-                    startRecordAndCaseParam:startRecordAndCaseParam
-                    ,recordssid:recordssid
-                    ,ptdjParam_out:ptdjParam_out,
-                }
-            };
-            ajaxSubmitByJson(url, data, callbackstartMC);
+            setTimeout(function () {
+                var ptdjParam_out=getptdjinfo();
+
+                var url=getUrl_manage().startRercord;
+                var data={
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        startRecordAndCaseParam:startRecordAndCaseParam
+                        ,recordssid:recordssid
+                        ,ptdjParam_out:ptdjParam_out,
+                    }
+                };
+                ajaxSubmitByJson(url, data, callbackstartMC);
+            },1000)
         }
     }else {
         layer.msg("请稍等",{time:1000},function () {
@@ -188,6 +204,7 @@ function startMC() {
     }
 }
 function callbackstartMC(data) {
+
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){

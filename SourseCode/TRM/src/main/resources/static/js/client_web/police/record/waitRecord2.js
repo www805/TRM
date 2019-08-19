@@ -1219,7 +1219,7 @@ function callbackgnlist(data) {
                         /*$("#fd").show();*/
                     }else if (list=="ph") {
                         /* $("#ph").show();*/
-                        $("#xthtml").css("visibility","visible");
+                       /* $("#xthtml").css("visibility","visible");*/
                     }
                 }
             }

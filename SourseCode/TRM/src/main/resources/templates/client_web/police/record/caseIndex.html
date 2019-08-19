@@ -86,10 +86,10 @@
             <td>{{index+1}}</td>
             {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
-            <td>{{value.casename==null?"":value.casename}}</td>
+            <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
             <td>{{value.casenum==null?"":value.casenum}}</td>
-            <td title="{{value.cause}}">{{value.cause==null?"":value.cause}}</td>
-            <td>{{value.username==null?"":value.username}}</td>
+            <td title="{{value.cause==null?'':value.cause}}">{{value.cause==null?"":value.cause}}</td>
+            <td title="{{value.username==null?'':value.username}}">{{value.username==null?"":value.username}}</td>
             <td>{{value.caseway==null?"":value.caseway}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
             <td>{{value.starttime==null?"":value.starttime}}</td>

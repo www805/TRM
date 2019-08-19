@@ -122,6 +122,8 @@ function getactionid_manage() {
         addCaseToUser_getDefaultMtModelssid:"addCaseToUser_getDefaultMtModelssid",
         addCaseToUser_getWorkunits:"addCaseToUser_getWorkunits",
         addCaseToUser_torecordIndex:"addCaseToUser_torecordIndex",
+        addCaseToUser_towaitconversation:"addCaseToUser_towaitconversation",
+        addCaseToUser_toconversationIndex:"addCaseToUser_toconversationIndex",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

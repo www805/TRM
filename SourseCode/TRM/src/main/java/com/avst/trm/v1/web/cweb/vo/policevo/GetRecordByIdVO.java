@@ -23,6 +23,26 @@ public class GetRecordByIdVO {
     private List<Avstmt_modeltd> modeltds;//会议模板通道list
 
 
+    private String recordtype_conversation1;//默认谈话笔录ssid:一键笔录
+
+    private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
+
+    public String getRecordtype_conversation1() {
+        return recordtype_conversation1;
+    }
+
+    public void setRecordtype_conversation1(String recordtype_conversation1) {
+        this.recordtype_conversation1 = recordtype_conversation1;
+    }
+
+    public String getRecordtype_conversation2() {
+        return recordtype_conversation2;
+    }
+
+    public void setRecordtype_conversation2(String recordtype_conversation2) {
+        this.recordtype_conversation2 = recordtype_conversation2;
+    }
+
     public List<Avstmt_modeltd> getModeltds() {
         return modeltds;
     }

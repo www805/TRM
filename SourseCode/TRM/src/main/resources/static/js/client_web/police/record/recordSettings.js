@@ -486,7 +486,6 @@ function callgetbiluptdjconst(data){
                 ptjsonValues.push(ptjsonValue);
             }
         }
-
     }else{
         // layer.msg(data.message,{icon: 2});
     }

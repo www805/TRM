@@ -187,23 +187,39 @@ function callbackaddCaseToArraignment(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
+
+            var recordtype_conversation1=data.recordtype_conversation1;
+            var recordtype_conversation2=data.recordtype_conversation2;
+            var recordtypessid=data.recordtypessid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
                 //跳转笔录制作
                 var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
                 },function () {
-                    var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
-                    if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
-                        setpageAction(INIT_CLIENT,nextparam.nextPageId);
-                        var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+                    if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
+                        //跳转一键提讯
+                        var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitconversation);
                         parent.location.href=toUrl+"?ssid="+recordssid;
+                    }else {
+                        var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
+                        if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
+                            setpageAction(INIT_CLIENT,nextparam.nextPageId);
+                            var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitRecord);
+                            parent.location.href=toUrl+"?ssid="+recordssid;
+                        }
                     }
+
                 });
             }else if(toUrltype==2){
                 //跳转笔录查看列表
-                /* $("#record_select", window.parent.document).click();*///获取不到直接跳页面
-                setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
-                var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
-                parent.location.href = url;
+                if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
+                    //跳转一键提讯
+                    var url = getActionURL(getactionid_manage().addCaseToUser_toconversationIndex);
+                    parent.location.href = url;
+                }else {
+                    setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
+                    var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
+                    parent.location.href = url;
+                }
             }
         }
     }else{

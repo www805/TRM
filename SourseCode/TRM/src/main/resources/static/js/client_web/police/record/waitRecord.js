@@ -410,8 +410,50 @@ function callbackgetRecordById(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             getRecordById_data=data;
+
+            var recordtype_conversation1=data.recordtype_conversation1;
+            var recordtype_conversation2=data.recordtype_conversation2;
             var record=data.record;
             if (isNotEmpty(record)){
+                var recordtypessid=record.recordtypessid;
+                if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+                    console.log("我是谈话笔录隐藏")
+                    $("#fd").show();
+                    $("#initec ul li").removeClass("layui-this");
+                    $("#initec .layui-tab-item").removeClass("layui-show");
+                    $("#fd").addClass("layui-this");
+                    $("#fditem").addClass("layui-show");
+
+                    $("#initheart_click").removeClass("layui-show");
+                    $(".layui-tab-content").css("height","650px");
+
+                } else {
+                    console.log("我不是谈话笔录")
+                    $("#asr").show();
+                    $("#fd").show();
+                    $("#ph").show();
+                    $("#xthtml").css("visibility","visible");
+                    $("#initec ul li").removeClass("layui-this");
+                    $("#initec .layui-tab-item").removeClass("layui-show");
+                    $("#asr").addClass("layui-this");
+                    $("#asritem").addClass("layui-show");
+                }
+                
+                //获取笔录类型
+               /* if (list=="asr") {
+                    /!*  $("#asr").show();
+                      $("#initec ul li").removeClass("layui-this");
+                      $("#initec .layui-tab-item").removeClass("layui-show");
+                      $("#asr").addClass("layui-this");
+                      $("#asritem").addClass("layui-show");*!/
+                }else if (list=="fd") {
+                    /!*$("#fd").show();*!/
+                }else if (list=="ph") {
+                    /!* $("#ph").show();*!/
+                    $("#xthtml").css("visibility","visible");
+                }*/
+                
+                
                 //获取提讯会议ssid
                 mcbool=record.mcbool;
                 var police_arraignment=record.police_arraignment;

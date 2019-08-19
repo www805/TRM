@@ -53,6 +53,7 @@ import com.netflix.ribbon.proxy.annotation.Http;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
@@ -137,6 +138,7 @@ public class OutService  extends BaseService {
                 }
             }
 
+            LogUtil.intoLog(this.getClass(),"开启笔录使用的会议模板ssid_"+mtmodelssid);
 
             //先检测是否可以开始笔录
             List<String> adminssids=new ArrayList<>();
