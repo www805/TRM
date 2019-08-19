@@ -1,4 +1,9 @@
 var occurrencetime=null;
+
+
+var recordtype_conversation1;
+var recordtype_conversation2;
+
 function getCases_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().caseIndex_getCases);
     var casename=$("#casename").val();
@@ -51,6 +56,8 @@ function callbackgetCases(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             pageshow(data);
+            recordtype_conversation1=data.data.recordtype_conversation1;
+            recordtype_conversation2=data.data.recordtype_conversation2;
         }
     }else{
         layer.msg(data.message);
@@ -158,6 +165,7 @@ function callbackgetRecordByCasessid(data) {
                 //展示已知数据
                 table.render({
                     elem: '#openModelhtml'
+
                     ,id: 'idTest'
                     ,cols: [[ //标题栏
                         {field: 'bool', title: '笔录状态',sort:true}
@@ -182,8 +190,9 @@ function callbackgetRecordByCasessid(data) {
                     if (isNotEmpty(arraignment)){
                         var recordssid=arraignment.recordssid;
                         var recordbool=arraignment.recordbool;
+                        var recordtypessid=arraignment.recordtypessid;
                         var creator=$("#openModelhtml").attr("creator");
-                        towaitRecord(recordssid,recordbool,creator);
+                        towaitRecord(recordssid,recordbool,creator,recordtypessid);
                     }
                 });
                 //监听行工具事件
@@ -282,21 +291,36 @@ function toaddOupdateurl(ssid,casebool) {
 
 
 //跳转笔录编辑页
-function towaitRecord(recordssid,recordbool,creator) {
+function towaitRecord(recordssid,recordbool,creator,recordtypessid) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
 
     if (recordbool==2){
+        if (isNotEmpty(recordtype_conversation1)&&isNotEmpty(recordtype_conversation2)&&recordtypessid==recordtype_conversation1||recordtypessid==recordtype_conversation2){
+            //跳转审讯回放
+            var url=getActionURL(getactionid_manage().caseIndex_toconversationById);
+            window.location.href=url+"?ssid="+recordssid;
+       } else{
+           //跳转笔录回放
             var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
             window.location.href=url+"?ssid="+recordssid;
+       }
     } else{
-    if (isNotEmpty(creator)&&creator==sessionadminssid){
-        var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
-        window.location.href=url+"?ssid="+recordssid;
-     }else {
-        layer.msg("笔录正在制作中...")
-    }
+        if (isNotEmpty(creator)&&creator==sessionadminssid){
+            if (recordtypessid==recordtype_conversation1&&isNotEmpty(recordtype_conversation1)){
+                //跳转审讯制作中：
+                var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
+                window.location.href=url+"?ssid="+recordssid;
+            } else {
+                //跳转笔录制作
+                var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
+                window.location.href=url+"?ssid="+recordssid;
+            }
+
+         }else {
+            layer.msg("笔录正在制作中...")
+        }
     }
 }
 

@@ -92,7 +92,7 @@ function callbackgetRecordById(data) {
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
                                   <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>笔录类型</td><td>"+recordtypename+"</td> </tr>";
+                                  <tr><td>类型</td><td>"+recordtypename+"</td> </tr>";
 
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }

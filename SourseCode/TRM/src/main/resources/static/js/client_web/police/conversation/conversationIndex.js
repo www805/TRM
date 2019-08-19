@@ -142,7 +142,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,recordtypessid) 
                 window.location.href=url+"?ssid="+recordssid;
             }
         }else {
-            layer.msg(creatorname+"正在制作笔录...")
+            layer.msg(creatorname+"正在制作审讯...")
         }
     } else{
         var url=getActionURL(getactionid_manage().conversationIndex_toconversationById);

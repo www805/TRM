@@ -1717,6 +1717,12 @@ public class RecordService extends BaseService {
         }
 
         GetCasesVO getCasesVO=new GetCasesVO();
+
+
+        getCasesVO.setRecordtype_conversation1(PropertiesListenerConfig.getProperty("recordtype_conversation1"));
+        getCasesVO.setRecordtype_conversation2(PropertiesListenerConfig.getProperty("recordtype_conversation2"));
+
+
         //请求参数组合
         EntityWrapper ew=new EntityWrapper();
         if (StringUtils.isNotBlank(getCasesParam.getCasename())){
@@ -2540,7 +2546,7 @@ public class RecordService extends BaseService {
                         for (String admininfo : admininfos) {
                             if(null!=admininfo&&s!=null&&s.equals(admininfo)){
                                 if (session_adminssid.equals(admininfo)){
-                                    vo.setMsg("*您有一份笔录正在制作中");
+                                    vo.setMsg("*您有一份笔录/审讯正在制作中");
                                 }else {
                                     vo.setMsg("*询问人二已被选用");
                                 }

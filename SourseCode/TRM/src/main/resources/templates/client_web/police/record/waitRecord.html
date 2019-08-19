@@ -403,9 +403,9 @@
                                 </div>
                         </div>
                         <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                           <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行笔录制作">
-                            <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,2);" id="startrecord" title="笔录制作中">
-                            <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,-1);" id="endrecord"title="已开过笔录">
+                           <img src="/uimaker/images/record1.png" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
+                            <img src="/uimaker/images/record.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
+                            <img src="/uimaker/images/record2.png" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,-1);" id="endrecord"title="已制作">
                         </div>
                     </div>
                 </div>
@@ -419,7 +419,7 @@
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
             <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px">
                 <div class="layui-inline" >
-                    <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制笔录左侧功能和笔录页展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
+                    <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
                     <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
                 </div>
                 <div class="layui-inline" >
@@ -445,12 +445,11 @@
                     <div class="layui-card" style="border-width: 0;box-shadow:none" >
                         <div class="layui-card-header">
                             <div class="layui-input-inline layui-col-md6" >
-                            笔录制作<span style="color: red;font-weight: normal">（提示:光标移至指定"答" 回车添加自定义问答）</span><!--用时：<span id="jishi">00:00:00</span>-->
+                            <span th:text="${waitRecordModel.title}">加载中</span><span style="color: red;font-weight: normal">（提示:光标移至指定"答" 回车添加自定义问答）</span><!--用时：<span id="jishi">00:00:00</span>-->
                             </div>
                             <div class="layui-input-inline layui-col-md6">
-                                <div  style="float: right">
+                                <div  style="float: right;visibility: hidden" id="record_switch_HTML">
                                    <div class="layui-unselect layui-form-switch" lay-skin="_switch"  id="record_switch_bool"  name="record_switch_bool"  isn="-1"><em>关闭</em><i></i></div>自动甄别
-
                                 </div>
                             </div>
                         </div>
@@ -516,7 +515,7 @@
                 </div>
                 <div class="layui-col-md4"  >
                     <div class="layui-inline" style="margin-bottom:0;float: right">
-                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord();" id="overRecord_btn">结束笔录</button>
+                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord();" id="overRecord_btn">加载中</button>
                     </div>
                 </div>
             </div>
@@ -615,13 +614,12 @@
 
         recordstate_index = layer.open({
             type:1,
-            title: '笔录状态栏',
+            title: '状态栏',
             closeBtn: 0,
             skin: 'layui-layer-lan',
             shade: 0,
             offset: 'lb',
             area: ['250px', '185px'],
-            maxmin: true,
             resize:false,
             content: html,
             success: function(layero,index){

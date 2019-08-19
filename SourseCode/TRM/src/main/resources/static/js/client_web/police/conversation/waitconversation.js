@@ -129,10 +129,12 @@ function callbackgetgetRecordrealing(data) {
 
 var mtssid=null;//会议ssid
 var useretlist=null;
+
+var startMC_index=null;
 function startMC() {
-    var loadindex = layer.msg("加载中，请稍等...", {
+     startMC_index = layer.msg("加载中，请稍等...", {
         icon: 16,
-        time:1000
+        time:100000
     });
     if (isNotEmpty(getRecordById_data)){
         var casenum=null;
@@ -202,6 +204,9 @@ function startMC() {
     }
 }
 function callbackstartMC(data) {
+    if (isNotEmpty(startMC_index)){
+        layer.close(startMC_index);
+    }
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){

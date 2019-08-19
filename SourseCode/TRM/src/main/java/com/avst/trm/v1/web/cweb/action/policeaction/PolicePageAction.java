@@ -1,6 +1,10 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
+import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +24,9 @@ public class PolicePageAction {
      * @param model
      * @return
      */
+    @Autowired
+    private Police_recordMapper police_recordMapper;//为了得到笔录类型
+
     @GetMapping("totemplateIndex")
     public ModelAndView totemplateIndex(Model model){
         model.addAttribute("title","笔录模板");
@@ -148,7 +155,17 @@ public class PolicePageAction {
         if (StringUtils.isNotBlank(ssid)){
             model.addAttribute("recordssid",ssid);
         }
-        model.addAttribute("title","笔录制作中");
+        String recordtype_conversation2=PropertiesListenerConfig.getProperty("recordtype_conversation2");
+        Police_record record=new Police_record();
+        record.setSsid(ssid);
+        record=police_recordMapper.selectOne(record);
+        if (StringUtils.isNotBlank(record.getRecordtypessid())&&StringUtils.isNotBlank(recordtype_conversation2)&&recordtype_conversation2.equals(record.getRecordtypessid())){
+            model.addAttribute("title","审讯制作中");
+        }else {
+            model.addAttribute("title","笔录制作中");
+        }
+
+
        return new ModelAndView("client_web/police/record/waitRecord", "waitRecordModel", model);
     }
 

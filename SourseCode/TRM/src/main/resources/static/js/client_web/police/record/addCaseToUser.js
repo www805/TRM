@@ -211,7 +211,8 @@ function callbackaddCaseToArraignment(data) {
                 });
             }else if(toUrltype==2){
                 //跳转笔录查看列表
-                if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
+
+                if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&isNotEmpty(recordtype_conversation2)&&recordtypessid==recordtype_conversation1||recordtypessid==recordtype_conversation2) {
                     //跳转一键提讯
                     var url = getActionURL(getactionid_manage().addCaseToUser_toconversationIndex);
                     parent.location.href = url;
@@ -220,6 +221,8 @@ function callbackaddCaseToArraignment(data) {
                     var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
                     parent.location.href = url;
                 }
+
+
             }
         }
     }else{

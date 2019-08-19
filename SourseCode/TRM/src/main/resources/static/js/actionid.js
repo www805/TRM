@@ -237,6 +237,8 @@ function getactionid_manage() {
         caseIndex_togetRecordById:"caseIndex_togetRecordById",
         caseIndex_changeboolCase:"caseIndex_changeboolCase",
         caseIndex_changeboolRecord:"caseIndex_changeboolRecord",
+        caseIndex_towaitconversation:"caseIndex_towaitconversation",
+        caseIndex_toconversationById:"caseIndex_toconversationById",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

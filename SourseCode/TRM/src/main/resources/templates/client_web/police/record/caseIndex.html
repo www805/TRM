@@ -95,7 +95,7 @@
             <td>{{value.starttime==null?"":value.starttime}}</td>
             <td>{{value.endtime==null?"":value.endtime}}</td>
             <td>{{value.creatorname==null?"":value.creatorname}}</td>
-            <td  class="noline"  onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
+            <td  class="noline"  onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
             <td>
                 <div  style="float: left">
                     <button onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}')"   title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}"      class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs"  >查看</button>

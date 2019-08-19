@@ -322,17 +322,17 @@ function callbackaddCaseToArraignment(data) {
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
                         layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始笔录',"查看笔录列表","取消"], //按钮
+                            btn: ['开始审讯',"查看审讯列表","取消"], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
-                                console.log("跳转笔录制作中");
+                                console.log("跳转审讯制作中");
                                 //保存
                                 skipCheckbool = 1;
                                 to_waitconversationURL();
                                 layer.close(index);
                             },
                             btn2: function(index) {
-                                console.log("跳转笔录列表")
+                                console.log("跳转审讯列表")
                                 toUrltype=2;
                                 skipCheckbool =1;
                                 to_waitconversationURL();

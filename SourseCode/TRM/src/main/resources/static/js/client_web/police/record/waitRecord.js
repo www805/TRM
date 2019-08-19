@@ -215,7 +215,7 @@ function img_bool(obj,type){
     if (type==1){
         if (mtssid==null){
             //开始会议
-            startMC_index = layer.msg("笔录开启中，请稍等...", {
+            startMC_index = layer.msg("开启中，请稍等...", {
                 icon: 16,
                 time:-1,
                 shade: [0.1,'#fff'], //不显示遮罩
@@ -226,7 +226,7 @@ function img_bool(obj,type){
             startMC();
         } else {
             //继续会议
-            startMC_index = layer.msg("笔录重启中，请稍等...", {
+            startMC_index = layer.msg("重启中，请稍等...", {
                 icon: 16,
                 time:-1,
                 shade: [0.1,'#fff'], //不显示遮罩
@@ -237,7 +237,7 @@ function img_bool(obj,type){
             pauseOrContinueRercord(2);
         }
     }else if (type==2) {
-        startMC_index = layer.msg("笔录暂停中，请稍等...", {
+        startMC_index = layer.msg("暂停中，请稍等...", {
             icon: 16,
             time:-1,
             shade: [0.1,'#fff'], //不显示遮罩
@@ -252,7 +252,7 @@ function img_bool(obj,type){
     }else if(type==-1) {
         $("#endrecord").css("display","block");
         console.log("会议已结束")
-        layer.msg("该案件已开启过笔录");
+        layer.msg("该案件已制作");
 
     }
 }
@@ -427,6 +427,8 @@ function callbackgetRecordById(data) {
                     $("#initheart_click").removeClass("layui-show");
                     $(".layui-tab-content").css("height","650px");
 
+                    $("#overRecord_btn").html("结束审讯")
+
                 } else {
                     console.log("我不是谈话笔录")
                     $("#asr").show();
@@ -437,6 +439,8 @@ function callbackgetRecordById(data) {
                     $("#initec .layui-tab-item").removeClass("layui-show");
                     $("#asr").addClass("layui-this");
                     $("#asritem").addClass("layui-show");
+                    $("#record_switch_HTML").css("visibility","visible");
+                    $("#overRecord_btn").html("结束笔录")
                 }
                 
                 //获取笔录类型
@@ -486,7 +490,7 @@ function callbackgetRecordById(data) {
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                     var layer=layui.layer;
-                                    layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                             });
                     }
 
@@ -534,7 +538,7 @@ function callbackgetRecordById(data) {
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
                                   <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>\
-                                  <tr><td>笔录类型</td><td>"+recordtypename+"</td> </tr>";
+                                  <tr><td>类型</td><td>"+recordtypename+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
                 getMCCacheParamByMTssid();//获取缓存
@@ -641,7 +645,7 @@ function startMC() {
             $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
             });
         });
     }
@@ -679,7 +683,7 @@ function callbackstartMC(data) {
             getMCCacheParamByMTssid();//获取缓存
             getTDCacheParamByMTssid();
 
-            var con="笔录已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
+            var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
         }
     }else{
@@ -706,13 +710,13 @@ function callbackstartMC(data) {
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击将开启场景模板对应的设备，进行笔录制作' ,'#pauserecord',{time:0, tips: 2});
+                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                 });
             }
 
             if (null!=checkStartRecordVO){
                 var msg=checkStartRecordVO.msg;
-                parent.layer.confirm("笔录开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的笔录", {
+                parent.layer.confirm("开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的笔录", {
                     btn: ['好的'], //按钮
                     shade: [0.1,'#fff'], //不显示遮罩
                     closeBtn:0,
@@ -723,7 +727,7 @@ function callbackstartMC(data) {
                 return;
             }
         }
-        layer.msg("笔录开启失败");
+        layer.msg("开启失败");
 
     }
 }
@@ -759,7 +763,7 @@ function callbackpauseOrContinueRercord(data) {
             var recordnum=data.recordnum;//录音设备暂停/停止个数
             var asrnum=data.asrnum;//语音识别服务暂停/停止个数
             var polygraphnum=data.polygraphnum;//测谎仪服务暂停/停止个数
-            var con="笔录"+msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
+            var con=msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
             layer.msg(con, {time: 2000});
         }
     }else {
@@ -864,7 +868,7 @@ function calladdRecord(data) {
             }
 
             if (recordbool==2) {
-                layer.msg("笔录结束",{time:500},function () {
+                layer.msg("已结束",{time:500},function () {
                     window.history.go(-1);
                 })
             }else if (recordbool==3){//导出word
@@ -904,7 +908,7 @@ function calladdRecord(data) {
                             layer.open({
                                 id:"pdfid",
                                 type: 1,
-                                title: '导出PDF笔录',
+                                title: '导出PDF',
                                 shadeClose: true,
                                 maxmin: true, //开启最大化最小化按钮
                                 area: ['893px', '600px'],
@@ -931,7 +935,7 @@ function calladdRecord(data) {
 var overRecord_index=null;
 var overRecord_loadindex =null;
  function overRecord() {
-    layer.confirm('是否结束笔录?<br/><span style="color: red">*确保笔录类型存在对应模板否则导出功能失效</span>', {
+    layer.confirm('是否结束?<br/><span style="color: red">*确保存在对应模板否则导出功能失效</span>', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -1423,7 +1427,7 @@ function clearRecord() {
     //1、保存重置内容，并且给出返回上一份笔录的按钮
     //返回按钮点击的时候询问要插入的位置当前光标孩纸追加后面或者最前面，没有任何光标将追加
     layer.open({
-        content:"重置后问答笔录将清空，确定要重置吗？"
+        content:"重置后问答将清空，确定要重置吗？"
         ,btn: ['确定', '取消']
         ,yes: function(index, layero){
             var url=getActionURL(getactionid_manage().waitRecord_setRecordreal_Last);
@@ -1525,7 +1529,7 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
                 var problemhtml= setqw(problems);
                 var qw_location=2; //1当前光标加一行 2尾部追加 0首部
                 layer.open({
-                    content:"已获取重置问答，请选择要插入的笔录位置"
+                    content:"已获取重置问答，请选择要插入的位置"
                     ,btn: ['当前光标', '首部追加','尾部追加']
                     ,yes: function(index, layero){
                         qw_location=1;

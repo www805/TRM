@@ -20,6 +20,16 @@ public class ArraignmentAndRecord extends Police_arraignment {
 
         private String recordssid;//笔录ssid
 
+        private String recordtypessid;
+
+        public String getRecordtypessid() {
+            return recordtypessid;
+        }
+
+        public void setRecordtypessid(String recordtypessid) {
+            this.recordtypessid = recordtypessid;
+        }
+
     @Override
     public String getRecordssid() {
         return recordssid;

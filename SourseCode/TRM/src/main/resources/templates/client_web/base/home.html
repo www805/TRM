@@ -12,7 +12,12 @@
     <link rel="stylesheet" href="/uimaker/css/admin.css">
     <style>
         .btn_color {
-            background-color: #197fcc;;
+            background-color: #197fcc;
+            cursor:pointer
+        }
+        .btn_color:hover{
+            background-color: #5886CA;
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
         }
         .diy-font{
             font-size: 26px;
@@ -55,9 +60,9 @@
     <div style="margin-bottom: 10px;" class=" layui-col-space15">
         <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
             <div class="layui-col-sm3 layui-col-md3">
-                <a onclick="to_waitconversationURL();">
-                    <div class="layui-card btn_color">
-                        <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
+                <a onclick="to_waitconversationURL();" >
+                    <div class="layui-card btn_color " title="点击进行一键审讯">
+                        <div class="layui-card-body layuiadmin-card-list layui-row topbottom ">
                             <div style="text-align: center">
                                 <p class="diy-font" ><span class="iconfont" style="position: relative;top: 3px;">&#xe62c;</span>一键审讯</p>
                             </div>
@@ -68,7 +73,7 @@
 
             <div class="layui-col-sm3 layui-col-md3">
                 <a onclick="open_startConversation();">
-                    <div class="layui-card btn_color">
+                    <div class="layui-card btn_color" title="点击开始审讯">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
                                 <p class="diy-font" ><span class="iconfont" style="position: relative;top: 3px;">&#xe600;</span>开始审讯</p>
@@ -80,7 +85,7 @@
 
             <div class="layui-col-sm3 layui-col-md3">
                 <a onclick="window.location.href=conversationIndexURL">
-                    <div class="layui-card btn_color">
+                    <div class="layui-card btn_color" title="点击进行审讯查看">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
                                 <p class="diy-font" ><span class="iconfont" style="margin-right: 2px;position: relative;top: 2px;">&#xe647;</span>审讯查看</p>
