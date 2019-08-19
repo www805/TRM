@@ -289,7 +289,7 @@
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘开始</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstopRec_Rom();">光盘结束</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">信息叠加</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="addptdj(true);">信息叠加</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">刻录模式</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">关闭音频</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘序号</button>
@@ -367,7 +367,7 @@
             <div class="layui-col-md12" >
                 <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
                 <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
-                <div style="height:650px;width: 95%; overflow-x: hidden; overflow-y: scroll;margin: auto" id="phitem"><!--phitem此处用：live4调用的是这个的宽度-->
+                <div style="height:700px;width: 95%; overflow-x: hidden; overflow-y: scroll;margin: auto" id="phitem"><!--phitem此处用：live4调用的是这个的宽度-->
                     <!--视频直播区域-->
                     <div th:replace="living4 :: living"  >...</div>
                 </div>

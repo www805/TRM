@@ -48,8 +48,6 @@ function callbackgetRecordById(data) {
                     $("#mtbool_txt").text("未审讯");
                 }
 
-
-
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
                     var mtssiddata=police_arraignment.mtssid;
@@ -204,7 +202,6 @@ function startMC() {
     }
 }
 function callbackstartMC(data) {
-
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){

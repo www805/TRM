@@ -185,7 +185,7 @@ function yuntaikz() {
 }
 
 //片头叠加
-function addptdj() {
+function addptdj(str) {
     var url=getActionURL(getactionid_manage().waitconversation_ptdj);
     if(!isNotEmpty(url)){
         url=getActionURL(getactionid_manage().waitRecord_ptdj);
@@ -197,19 +197,22 @@ function addptdj() {
         return;
     }
 
-    ptjsonValues = [];
+    if(!isNotEmpty(str)){
+        ptjsonValues = [];
 
-    var params = getFormData("caseInfoModelYes");
+        var params = getFormData("caseInfoModelYes");
 
-    for (var i = 0; i < params.length; i++) {
-        if (ptjsonArr.length > i) {
-            ptjsonValues.push(params[i]["value"])
+        for (var i = 0; i < params.length; i++) {
+            if (ptjsonArr.length > i) {
+                ptjsonValues.push(params[i]["value"])
+            }
         }
     }
 
     ptdjct = $("#ptdjct").val();
-
-    // console.log(ptjsonValues);
+    if(!isNotEmpty(ptdjct)){
+        ptdjct = "10";
+    }
 
     var data={
         token:INIT_CLIENTKEY,
