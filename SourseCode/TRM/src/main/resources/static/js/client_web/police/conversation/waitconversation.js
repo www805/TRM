@@ -368,6 +368,3 @@ $(function () {
     },1000);
 })
 
-function zanshimsg() {
-    layer.msg("该功能暂时维护中...",{icon: 4});
-}
