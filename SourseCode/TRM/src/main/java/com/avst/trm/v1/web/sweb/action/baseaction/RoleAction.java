@@ -7,7 +7,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.ChangeboolRoleParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetRoleListParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.RoleService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,27 +29,34 @@ public class RoleAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getRole")
     @RequestMapping(value = "/getRole")
     public ModelAndView getUser(Model model) {
-        model.addAttribute("title", "角色列表");
-        return new ModelAndView("server_web/base/role/getRoleList", "roleModel", model);
-
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getRole")) {
+            model.addAttribute("title", "角色列表");
+            return new ModelAndView("server_web/base/role/getRoleList", "roleModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /***
      * 角色列表分页pp
      * @return
      */
-    @RequiresPermissions("getRoleList")
     @RequestMapping(value = "/getRoleList")
     @ResponseBody
     public RResult getRoleList(GetRoleListParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getRoleList")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                roleService.getRoleList(result,param);
+            }
         }else{
-            roleService.getRoleList(result,param);
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -58,12 +66,16 @@ public class RoleAction extends BaseAction{
      * 获取全部角色pp
      * @return
      */
-    @RequiresPermissions("getRoles")
     @RequestMapping(value = "/getRoles")
     @ResponseBody
     public RResult getRoles() {
         RResult result=createNewResultOfFail();
-        roleService.getRoles(result);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getRoles")) {
+            roleService.getRoles(result);
+        }else{
+            result.setMessage("权限不足");
+        }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -74,15 +86,19 @@ public class RoleAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions("deleteRole")
     @RequestMapping(value = "/deleteRole")
     @ResponseBody
     public RResult deleteRole(ChangeboolRoleParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("deleteRole")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                roleService.changeboolRole(result,param);
+            }
         }else{
-            roleService.changeboolRole(result,param);
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -93,12 +109,17 @@ public class RoleAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateRole")
     @RequestMapping(value = "/getAddOrUpdateRole")
     public ModelAndView getAddOrUpdateRole(Model model,String ssid) {
-        model.addAttribute("ssid", ssid);
-        model.addAttribute("title", "添加/修改角色");
-        return new ModelAndView("server_web/base/role/addOrUpdateRole", "roleModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getAddOrUpdateRole")) {
+            model.addAttribute("ssid", ssid);
+            model.addAttribute("title", "添加/修改角色");
+            return new ModelAndView("server_web/base/role/addOrUpdateRole", "roleModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
+
     }
 
     /**
@@ -106,15 +127,19 @@ public class RoleAction extends BaseAction{
      * @param ssid
      * @return
      */
-    @RequiresPermissions("getRoleBySsid")
     @RequestMapping(value = "/getRoleBySsid")
     @ResponseBody
     public RResult getRoleBySsid(String ssid){
         RResult result=createNewResultOfFail();
-        if (null==ssid){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getRoleBySsid")) {
+            if (null==ssid){
+                result.setMessage("参数为空");
+            }else{
+                roleService.getRoleBySsid(result,ssid);
+            }
         }else{
-            roleService.getRoleBySsid(result,ssid);
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -125,17 +150,20 @@ public class RoleAction extends BaseAction{
      * 添加角色pp
      * @return
      */
-    @RequiresPermissions("addRole")
     @RequestMapping(value = "/addRole")
     @ResponseBody
     public RResult addRole(Base_role param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("addRole")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                roleService.addRole(result,param);
+            }
         }else{
-            roleService.addRole(result,param);
+            result.setMessage("权限不足");
         }
-
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -145,17 +173,20 @@ public class RoleAction extends BaseAction{
      * 修改角色pp
      * @return
      */
-    @RequiresPermissions("updateRole")
     @RequestMapping(value = "/updateRole")
     @ResponseBody
     public RResult updateRole(Base_role param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("updateRole")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                roleService.updateRole(result,param);
+            }
         }else{
-            roleService.updateRole(result,param);
+            result.setMessage("权限不足");
         }
-
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -165,15 +196,19 @@ public class RoleAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions("changeboolRole")
     @RequestMapping(value = "/changeboolRole")
     @ResponseBody
     public RResult changeboolRole(ChangeboolRoleParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("changeboolRole")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                roleService.changeboolRole(result,param);
+            }
         }else{
-            roleService.changeboolRole(result,param);
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

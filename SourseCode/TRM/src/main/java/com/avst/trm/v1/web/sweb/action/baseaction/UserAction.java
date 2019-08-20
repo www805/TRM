@@ -7,7 +7,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.ChangeboolUserParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetUserListParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,26 +30,34 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getUser")
     @RequestMapping(value = "/getUser")
     public ModelAndView getUser(Model model) {
-        model.addAttribute("title","管理员列表");
-        return new ModelAndView("server_web/base/users/getUserList", "userModel", model);
+       Subject subject = SecurityUtils.getSubject();
+       if(subject.isPermitted("getUser")) {
+           model.addAttribute("title","管理员列表");
+           return new ModelAndView("server_web/base/users/getUserList", "userModel", model);
+       } else {
+           return new ModelAndView("redirect:/sweb/base/home/unauth");
+       }
     }
 
     /***
      * 用户列表分页pp
      * @return
      */
-    @RequiresPermissions("getUserList")
     @RequestMapping(value = "/getUserList")
     @ResponseBody
     public RResult getUserList(GetUserListParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            userService.getUserList(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getUserList")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.getUserList(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -60,15 +69,20 @@ public class UserAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions("deleteUser")
+
     @RequestMapping(value = "/deleteUser")
     @ResponseBody
     public RResult deleteUser(ChangeboolUserParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            userService.changeboolUser(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("deleteUser")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.changeboolUser(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -78,12 +92,16 @@ public class UserAction extends BaseAction{
      * 获取全部单位pp
      * @return
      */
-    @RequiresPermissions("getWorkunits")
     @RequestMapping(value = "/getWorkunits")
     @ResponseBody
     public RResult getWorkunits(){
         RResult result=createNewResultOfFail();
-        userService.getWorkunits(result);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getWorkunits")) {
+            userService.getWorkunits(result);
+        }else {
+             result.setMessage("权限不足");
+        }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -93,12 +111,16 @@ public class UserAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("toAddOrUpdateUser")
     @RequestMapping(value = "/toAddOrUpdateUser")
     public ModelAndView getAddOrUpdateUser(Model model,String ssid) {
-        model.addAttribute("ssid", ssid);
-        model.addAttribute("title", "添加/修改用户");
-        return new ModelAndView("server_web/base/users/addOrUpdateUser", "userModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("toAddOrUpdateUser")) {
+            model.addAttribute("ssid", ssid);
+            model.addAttribute("title", "添加/修改用户");
+            return new ModelAndView("server_web/base/users/addOrUpdateUser", "userModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /**
@@ -106,15 +128,19 @@ public class UserAction extends BaseAction{
      * @param ssid
      * @return
      */
-    @RequiresPermissions("getUserBySsid")
     @RequestMapping(value = "/getUserBySsid")
     @ResponseBody
     public RResult getUserBySsid(String ssid){
         RResult result=createNewResultOfFail();
-        if (null==ssid){
-            result.setMessage("参数为空");
-        }else{
-            userService.getUserBySsid(result,ssid);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getUserBySsid")) {
+            if (null==ssid){
+                result.setMessage("参数为空");
+            }else{
+                userService.getUserBySsid(result,ssid);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -124,17 +150,20 @@ public class UserAction extends BaseAction{
      * 添加用户pp
      * @return
      */
-    @RequiresPermissions("addUser")
     @RequestMapping(value = "/addUser")
     @ResponseBody
     public RResult addUser(@RequestBody AdminAndWorkunit param,HttpSession session) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            userService.addUser(result,param,session);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("addUser")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.addUser(result,param,session);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
-
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -144,17 +173,20 @@ public class UserAction extends BaseAction{
      * 修改用户pp
      * @return
      */
-    @RequiresPermissions("updateUser")
     @RequestMapping(value = "/updateUser")
     @ResponseBody
     public RResult updateUser(@RequestBody  AdminAndWorkunit param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            userService.updateUser(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("updateUser")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.updateUser(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
-
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
@@ -165,15 +197,19 @@ public class UserAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions(value = "changeboolUser")
     @RequestMapping(value = "/changeboolUser")
     @ResponseBody
     public RResult changeboolUser(ChangeboolUserParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            userService.changeboolUser(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("changeboolUser")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.changeboolUser(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

@@ -1,0 +1,48 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>400</title>
+    <link href='//fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            color: #B0BEC5;
+            display: table;
+            font-weight: 100;
+            font-family: 'Lato';
+        }
+
+        .container {
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .content {
+            text-align: center;
+            display: inline-block;
+        }
+
+        .title {
+            font-size: 42px;
+            margin-bottom: 40px;
+            display: inline;
+        }
+        .title a:hover{
+            color: blue;
+            text-decoration:underline;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="content">
+        <div class="title">没有权限访问该页面...... 请点击<a onclick="javascript:window.history.go(-1);return false;" style="color: dodgerblue">返回</a></div>
+    </div>
+</div>
+</body>
+</html>

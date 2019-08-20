@@ -5,7 +5,9 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.policereq.GetArraignmentListParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.ArraignmentService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,12 +28,15 @@ public class ArraignmentAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getArraignment")
     @RequestMapping(value = "/getArraignment")
     public ModelAndView getArraignment(Model model) {
-        model.addAttribute("title", "笔录提讯");
-        return new ModelAndView("server_web/police/arraignment/arraignment", "arraignmentModel", model);
-
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignment")) {
+            model.addAttribute("title", "笔录提讯");
+            return new ModelAndView("server_web/police/arraignment/arraignment", "arraignmentModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /**
@@ -39,15 +44,19 @@ public class ArraignmentAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions("getArraignmentList")
     @RequestMapping(value = "/getArraignmentList")
     @ResponseBody
     public RResult getArraignmentList(GetArraignmentListParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            arraignmentService.getArraignmentList(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignmentList")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                arraignmentService.getArraignmentList(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -57,15 +66,19 @@ public class ArraignmentAction extends BaseAction{
      * 获取笔录列表
      * @return
      */
-    @RequiresPermissions("getArraignmentByCaseSsid")
     @RequestMapping(value = "/getArraignmentByCaseSsid")
     @ResponseBody
     public RResult getArraignments(String caseSsid) {
         RResult result=createNewResultOfFail();
-        if (null==caseSsid){
-            result.setMessage("参数为空");
-        }else{
-            arraignmentService.getArraignmentByCaseSsid(result,caseSsid);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignmentByCaseSsid")) {
+            if (null==caseSsid){
+                result.setMessage("参数为空");
+            }else{
+                arraignmentService.getArraignmentByCaseSsid(result,caseSsid);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -77,12 +90,16 @@ public class ArraignmentAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getArraignmentShow")
     @RequestMapping(value = "/getArraignmentShow")
     public ModelAndView getArraignmentShow(Model model,String ssid) {
-        model.addAttribute("title", "笔录详情");
-        model.addAttribute("ssid",ssid);
-        return new ModelAndView("server_web/police/arraignment/getArraignmentShow", "arraignmentModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignmentShow")) {
+            model.addAttribute("title", "笔录详情");
+            model.addAttribute("ssid",ssid);
+            return new ModelAndView("server_web/police/arraignment/getArraignmentShow", "arraignmentModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
 
     }
 
@@ -91,17 +108,20 @@ public class ArraignmentAction extends BaseAction{
      * @param ssid
      * @return
      */
-    @RequiresPermissions("getArraignmentBySsid")
     @RequestMapping(value = "/getArraignmentBySsid")
     @ResponseBody
     public RResult getArraignmentBySsid(String ssid) {
         RResult result=createNewResultOfFail();
-        if (null==ssid){
-            result.setMessage("参数为空");
-        }else{
-            arraignmentService.getArraignmentBySsid(result,ssid);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignmentBySsid")) {
+            if (null==ssid){
+                result.setMessage("参数为空");
+            }else{
+                arraignmentService.getArraignmentBySsid(result,ssid);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
-
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }

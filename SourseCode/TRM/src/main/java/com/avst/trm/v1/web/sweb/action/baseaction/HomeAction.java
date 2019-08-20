@@ -154,5 +154,12 @@ public class HomeAction extends BaseAction{
         return new ModelAndView("server_web/404", "error", model);
     }
 
+    //没有权限
+    @RequestMapping(value = "/unauth")
+    public ModelAndView getounauth(Model model) {
+        return new ModelAndView("error/unauth", "unauth", model);
+    }
+
+
 
 }

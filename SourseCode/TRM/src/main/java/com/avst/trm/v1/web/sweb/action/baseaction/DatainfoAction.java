@@ -6,7 +6,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.GetdataInfosParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.DatainfoService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,14 +32,19 @@ public class DatainfoAction extends BaseAction {
      * @param model
      * @return
      */
-    @RequiresPermissions("tostartDownServer")
     @RequestMapping(value = "/tostartDownServer")
     public ModelAndView tostartDownServer(Model model,String lastIP) {
-        model.addAttribute("title","表单列表");
-        if (StringUtils.isNotBlank(lastIP)){
-            model.addAttribute("lastIP",lastIP);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("tostartDownServer")) {
+            model.addAttribute("title","表单列表");
+            if (StringUtils.isNotBlank(lastIP)){
+                model.addAttribute("lastIP",lastIP);
+            }
+            return new ModelAndView("server_web/base/startDownServer", "startDownServerModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
         }
-        return new ModelAndView("server_web/base/startDownServer", "startDownServerModel", model);
+
     }
 
     /**
@@ -46,15 +52,19 @@ public class DatainfoAction extends BaseAction {
      * @param param
      * @return
      */
-    @RequiresPermissions("getdataInfos")
     @RequestMapping(value = "/getdataInfos")
     @ResponseBody
     public RResult getdataInfos(GetdataInfosParam param){
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getdataInfos")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else {
+                datainfoService.getdataInfos(result, param);
+            }
         }else {
-            datainfoService.getdataInfos(result, param);
+            result.setMessage("权限不足");
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

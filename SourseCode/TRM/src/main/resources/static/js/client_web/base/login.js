@@ -2,6 +2,7 @@
 
 
 function userlogin() {
+    $("#loginbtn").html('登录中&nbsp;<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop" style="display: inline-block"></i>')
     var url=getActionURL(getactionid_manage().login_userlogin);
     var loginaccount =$("#loginaccount").val();
     var password =$("#password").val();

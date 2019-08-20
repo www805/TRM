@@ -56,10 +56,10 @@ function callbackgetHome(data) {
             myChart2.hideLoading();
             myChart.setOption({
                 title: {
-                    text: data.dq_y+'年智能提讯系统案件笔录统计',
+                    text: data.dq_y+'年智能提讯系统案件审讯统计',
                 },
                 series: [{
-                    name: '笔录数',
+                    name: '审讯数',
                     data: data.record_monthnum_y
                 },{
                     name: '案件数',
@@ -69,16 +69,16 @@ function callbackgetHome(data) {
             myChart2.setOption({
                 series: [{
                     name: '详情来源',
-                    data: [{value:data.record_waitnum_y,name:'未开始笔录'},
-                        {value:data.record_finishnum_y, name:'已完成笔录'},
-                        {value:data.record_unfinishnum_y, name:'进行中笔录'},
+                    data: [{value:data.record_waitnum_y,name:'未开始审讯'},
+                        {value:data.record_finishnum_y, name:'已完成审讯'},
+                        {value:data.record_unfinishnum_y, name:'进行中审讯'},
                         {value:data.case_endnum_y, name:'未提讯案件'},
                         {value:data.case_startnum_y, name:'已提讯案件'},
                         {value:data.template_num_y, name:'模板'},
                         {value:data.userinfo_num_y, name:'人员'}]
                 },{
                     name: '数据来源',
-                    data: [ {value:data.record_num_y, name:'笔录', selected:true},
+                    data: [ {value:data.record_num_y, name:'审讯', selected:true},
                         {value:data.case_num_y, name:'案件'},
                         {value:data.template_num_y, name:'模板'},
                         {value:data.userinfo_num_y, name:'人员'}]
@@ -102,14 +102,14 @@ $(function () {
     myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {
-            text: 'xxxx年智能提讯系统案件笔录统计',
+            text: 'xxxx年智能提讯系统案件审讯统计',
             subtext: '数据来源深圳顺泰伟成科技有限公司'
         },
         tooltip: {
             trigger: 'axis'
         },
         legend: {
-            data:['案件数','笔录数']
+            data:['案件数','审讯数']
         },
         toolbox: {
             show : true,
@@ -143,7 +143,7 @@ $(function () {
                 }
             },
             {
-                name: '笔录数',
+                name: '审讯数',
                 type: 'bar',
                 data: [],
                 markPoint : {
@@ -170,7 +170,7 @@ $(function () {
         legend: {
             orient: 'vertical',
             x: 'left',
-            data:['未开始笔录','已完成笔录','进行中笔录','未提讯案件','已提讯案件','模板','人员']
+            data:['未开始审讯','已完成审讯','进行中审讯','未提讯案件','已提讯案件','模板','人员']
         },
         toolbox: {
             show : true,

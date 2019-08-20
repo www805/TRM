@@ -5,7 +5,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.KeywordParam;
 import com.avst.trm.v1.web.sweb.req.policereq.AddOrUpdateKeywordParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.KeywordService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,29 +26,36 @@ public class KeywordAction extends BaseAction{
      * @param param
      * @return
      */
-    @RequiresPermissions("getKeyword")
     @RequestMapping(value = "/getKeyword")
     public ModelAndView getKeyword(Model model, KeywordParam param) {
-        RResult rResult=createNewResultOfFail();
-        model.addAttribute("result", rResult);
-        model.addAttribute("title", "关键字");
-        return new ModelAndView("server_web/base/keyword/getKeyword", "keywordModel", model);
-
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getKeyword")) {
+            RResult rResult=createNewResultOfFail();
+            model.addAttribute("result", rResult);
+            model.addAttribute("title", "关键字");
+            return new ModelAndView("server_web/base/keyword/getKeyword", "keywordModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /***
      * 关键字列表分页
      * @return
      */
-    @RequiresPermissions("getKeywordList")
     @RequestMapping(value = "/getKeywordList")
     @ResponseBody
     public RResult getKeywordList(KeywordParam param) {
         RResult result=createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else{
-            keywordService.findKeywordlist(result,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getKeywordList")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                keywordService.findKeywordlist(result,param);
+            }
+        }else {
+            result.setMessage("权限不足");
         }
         return result;
     }
@@ -57,17 +65,18 @@ public class KeywordAction extends BaseAction{
      * @param model
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateKeyword")
     @RequestMapping(value = "/getAddOrUpdateKeyword")
     public ModelAndView getAddKeyword(Model model, AddOrUpdateKeywordParam keyword) {
-        RResult rResult = createNewResultOfFail();
-
-//        keyword.setShieldbool(1);
-        rResult.setData(keyword);
-        model.addAttribute("RResult", rResult);
-
-        model.addAttribute("title", "添加关键字");
-        return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getAddOrUpdateKeyword")) {
+            RResult rResult = createNewResultOfFail();
+            rResult.setData(keyword);
+            model.addAttribute("RResult", rResult);
+            model.addAttribute("title", "添加关键字");
+            return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /**
@@ -76,16 +85,18 @@ public class KeywordAction extends BaseAction{
      * @param id
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateKeyword")
     @RequestMapping(value = "/getAddOrUpdateKeyword/{id}")
     public ModelAndView getUpdateKeyword(Model model,  @PathVariable("id") int id) {
-
-        RResult rResult = createNewResultOfFail(); // AddKeywordParam addKeywordParam,
-        keywordService.getKeywordById(rResult, id);
-
-        model.addAttribute("RResult", rResult);
-        model.addAttribute("title", "修改关键字");
-        return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getAddOrUpdateKeyword")) {
+            RResult rResult = createNewResultOfFail(); // AddKeywordParam addKeywordParam,
+            keywordService.getKeywordById(rResult, id);
+            model.addAttribute("RResult", rResult);
+            model.addAttribute("title", "修改关键字");
+            return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /**
@@ -94,12 +105,16 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateKeyword")
     @PostMapping(value = "/getAddOrUpdateKeyword/{id}")
     @ResponseBody
     public RResult UpdateKeyword(@PathVariable("id") int id, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
-        keywordService.UpdateKeyword(rResult, keyword);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getAddOrUpdateKeyword")) {
+            keywordService.UpdateKeyword(rResult, keyword);
+        }else {
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 
@@ -108,12 +123,16 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @RequiresPermissions("getAddOrUpdateKeyword")
     @PostMapping(value = "/getAddOrUpdateKeyword")
     @ResponseBody
     public RResult AddKeyword(AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
-        keywordService.AddKeyword(rResult, keyword);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getAddOrUpdateKeyword")) {
+            keywordService.AddKeyword(rResult, keyword);
+        }else {
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 
@@ -122,12 +141,16 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @RequiresPermissions("deleteKeyword")
     @PostMapping(value = "/deleteKeyword")
     @ResponseBody
     public RResult deleteKeyword(AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
-        keywordService.deleteKeyword(rResult, keyword);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("deleteKeyword")) {
+            keywordService.deleteKeyword(rResult, keyword);
+        }else {
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 
@@ -136,12 +159,16 @@ public class KeywordAction extends BaseAction{
      * @param keyword
      * @return
      */
-    @RequiresPermissions("updateShieldbool")
     @PostMapping(value = "/updateShieldbool")
     @ResponseBody
     public RResult updateShieldbool(AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
-        keywordService.updateShieldbool(rResult, keyword);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("updateShieldbool")) {
+            keywordService.updateShieldbool(rResult, keyword);
+        }else {
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 

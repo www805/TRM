@@ -123,6 +123,11 @@
         content:none;
     }
 
+
+    #recorddetail{
+        cursor:text
+    }
+
     @font-face {font-family: "iconfont";
         src: url('iconfont.eot?t=1558432184553'); /* IE9 */
         src: url('iconfont.eot?t=1558432184553#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -403,9 +408,9 @@
                                 </div>
                         </div>
                         <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
+                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display: block;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
+                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
+                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,8 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.Arraignment_countService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +19,21 @@ public class ArraignmentCountAction extends BaseAction{
     @Autowired
     private Arraignment_countService arraignmentCountService;
 
-    @RequiresPermissions("getArraignment_countList")
     @PostMapping(value = "/getArraignment_countList")
     @ResponseBody
     public RResult getArraignment_countList(Arraignment_countParam param) {
         RResult rResult=createNewResultOfFail();
-        if (null==param){
-            rResult.setMessage("参数为空");
-        }else{
-            arraignmentCountService.getArraignment_countList(rResult,param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignment_countList")) {
+            if (null==param){
+                rResult.setMessage("参数为空");
+            }else{
+                arraignmentCountService.getArraignment_countList(rResult,param);
+            }
+        }else {
+            rResult.setMessage("权限不足");
         }
+
         return rResult;
     }
 
@@ -51,14 +57,16 @@ public class ArraignmentCountAction extends BaseAction{
      * 笔录使用情况统计表
      * @return
      */
-    @RequiresPermissions("getArraignment_countPrint")
     @RequestMapping(value = "/getArraignment_countPrint")
     @ResponseBody
     public RResult getArraignment_countPrint(Arraignment_countParam param) {
-
         RResult rResult = createNewResultOfFail();
-        arraignmentCountService.exportExcel(rResult, param);
-
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getArraignment_countPrint")) {
+            arraignmentCountService.exportExcel(rResult, param);
+        }else {
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 }
