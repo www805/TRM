@@ -487,6 +487,16 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        /**判断一下是否重名**/
+        Police_templatetype police_problemtype = new Police_templatetype();
+        police_problemtype.setTypename(addTemplatetypeParam.getTypename());
+        Police_templatetype templatetype = police_templatetypeMapper.selectOne(police_problemtype);
+
+        if (null != templatetype) {
+            result.setMessage("模板类型的名称不能重复");
+            return;
+        }
+
         //添加模板类型
         addTemplatetypeParam.setCreatetime(new Date());
         addTemplatetypeParam.setSsid(OpenUtil.getUUID_32());
@@ -514,6 +524,16 @@ public class TemplateService extends BaseService {
 
         if (null == updateTemplateTypeParam.getSsid() || null == updateTemplateTypeParam.getTypename()) {
             result.setMessage("参数为空");
+            return;
+        }
+
+        /**判断一下是否重名**/
+        Police_templatetype police_problemtype = new Police_templatetype();
+        police_problemtype.setTypename(updateTemplateTypeParam.getTypename());
+        Police_templatetype templatetype = police_templatetypeMapper.selectOne(police_problemtype);
+
+        if (null != templatetype) {
+            result.setMessage("模板类型的名称不能重复");
             return;
         }
 
@@ -836,6 +856,16 @@ public class TemplateService extends BaseService {
             return;
         }
 
+        /**判断一下是否重名**/
+        Police_problemtype police_problemtype = new Police_problemtype();
+        police_problemtype.setTypename(addProblemtypeParam.getTypename());
+        Police_problemtype problemtype = police_problemtypeMapper.selectOne(police_problemtype);
+
+        if (null != problemtype) {
+            result.setMessage("问题类型的名称不能重复");
+            return;
+        }
+
         //添加问题类型
         addProblemtypeParam.setCreatetime(new Date());
         addProblemtypeParam.setSsid(OpenUtil.getUUID_32());
@@ -864,6 +894,16 @@ public class TemplateService extends BaseService {
 
         if (null==updateProblemtypeParam.getTypename() || null==updateProblemtypeParam.getOrdernum() || null==updateProblemtypeParam.getSsid()){
             result.setMessage("参数为空");
+            return;
+        }
+
+        /**判断一下是否重名**/
+        Police_problemtype police_problemtype = new Police_problemtype();
+        police_problemtype.setTypename(updateProblemtypeParam.getTypename());
+        Police_problemtype problemtype = police_problemtypeMapper.selectOne(police_problemtype);
+
+        if (null != problemtype) {
+            result.setMessage("问题类型的名称不能重复");
             return;
         }
 

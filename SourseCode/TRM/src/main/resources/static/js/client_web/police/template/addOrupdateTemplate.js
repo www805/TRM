@@ -498,13 +498,13 @@ function modelban(problemV) {
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
         "            <input type='hidden' id='ByIdDDD' value='" + id + "'>\n" +
-        "            <label class=\"layui-form-label\">问题类型</label>\n" +
+        "            <label class=\"layui-form-label\"><span style=\"color: red;\">*</span>问题类型</label>\n" +
         "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
         "                <select name=\"problemtypessid\" id='problemtypessid' lay-verify=\"\" style=\"margin-top: 5px;width: 120px;height: 30px;\">\n"
         + tableProblems +
         "                </select>\n" +
         "            </div>\n" +
-        "            <label class=\"layui-form-label\">问题</label>\n" +
+        "            <label class=\"layui-form-label\"><span style=\"color: red;\">*</span>问题</label>\n" +
         "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
         "                <textarea name='problem' id='problem' placeholder=\"请输入问题\" class=\"layui-textarea\">" + problem + "</textarea>\n" +
         "            </div>\n" +

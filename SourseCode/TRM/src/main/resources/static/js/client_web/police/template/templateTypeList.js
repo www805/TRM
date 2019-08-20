@@ -147,13 +147,13 @@ function opneModal_1(problem) {
 
     var html='  <form class="layui-form site-inline" style="margin-top: 20px">\
                <div class="layui-form-item">\
-                   <label class="layui-form-label">类型名称</label>\
+                   <label class="layui-form-label"><span style="color: red;">*</span>类型名称</label>\
                     <div class="layui-input-block">\
                     <input type="text" name="typename" lay-verify="title" autocomplete="off" placeholder="请输入类型名称" value="' + typename + '"  class="layui-input">\
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
-                    <label class="layui-form-label">排序</label>\
+                    <label class="layui-form-label"><span style="color: red;">*</span>排序</label>\
                     <div class="layui-input-block">\
                     <input type="number" name="ordernum" lay-verify="title" autocomplete="off" placeholder="请输入排序" value="' + ordernum + '"  class="layui-input">\
                     </div>\
