@@ -40,6 +40,10 @@
 </style>
 
 <div class="layui-form"  style="margin: 10px">
+
+    <div class="layui-elem-quote" style=" padding: 10px;">
+        <h3 th:text="${startConversationModel.title}">智能提讯系统</h3>
+    </div>
         <div class="layui-col-md12 layui-col-xs12  layui-col-lg12 " >
                 <div class="layui-card" >
                     <div class="layui-card-header">人员基本信息</div>
@@ -194,6 +198,7 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+   var  parentbool=[[${startConversationModel.parentbool}]]
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

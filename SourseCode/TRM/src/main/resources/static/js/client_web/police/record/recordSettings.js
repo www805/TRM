@@ -36,8 +36,8 @@ function recordSet() {
         '    <div style="margin-bottom: 20px;">\n' +
         '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
         '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘开始</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="">光盘结束</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘开始</button>\n' +
+        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘结束</button>\n' +
         '    </div>\n' +
         '</div>';
 //getstopRec_Rom()光盘结束   getstartRec_Rom()光盘开始
@@ -542,6 +542,10 @@ function callFDState(data){
     }else{
         layer.msg(data.message,{icon: 2});
     }
+}
+
+function zanshimsg() {
+    layer.msg("该功能暂时维护中...",{icon: 4});
 }
 
 //转换百分比

@@ -113,10 +113,20 @@ function callbackaddCaseToArraignment(data) {
                 },function () {
                     //跳转笔录制作
                     var url=getActionURL(getactionid_manage().startConversation_towaitRecord);
-                    parent.location.href=url+"?ssid="+recordssid
+                    if (parentbool==-1){
+                        window.location.href=url+"?ssid="+recordssid
+                    } else {
+                        parent.location.href=url+"?ssid="+recordssid
+                    }
+
                 });
             }else if(toUrltype==2){
-                parent.location.href =  window.parent.conversationIndexURL;
+                if (parentbool==-1){
+                    window.location.href =  window.parent.conversationIndexURL;
+                }else {
+                    parent.location.href =  window.parent.conversationIndexURL;
+                }
+
             }
         }
     }else{

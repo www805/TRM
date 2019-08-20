@@ -45,7 +45,8 @@ function callbackgetRecordById(data) {
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
 
                 //问题答案
-              var problems=record.problems;
+               var problems=record.problems;
+
                 $("#recorddetail").html("");
                 if (isNotEmpty(problems)) {
                     for (var z = 0; z< problems.length;z++) {
@@ -64,6 +65,7 @@ function callbackgetRecordById(data) {
                         }
                         $("#recorddetail").append(problemhtml);
                     }
+                    $("#recorddetail_strong").html("【审讯笔录】");
                 }
 
                 //会议人员
@@ -90,10 +92,7 @@ function callbackgetRecordById(data) {
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
-                                  <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>类型</td><td>"+recordtypename+"</td> </tr>";
-
+                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
             }

@@ -875,7 +875,8 @@ public class RecordService extends BaseService {
 
             recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
             askobj="询问对象_"+conversationmsg;
-            addPolice_case.setCasenum("案件编号_"+conversationmsg);
+            addPolice_case.setCasenum(time);
+            addPolice_case.setCaseway("案由_"+conversationmsg);
 
 
         }if (conversationbool==2){
@@ -894,12 +895,15 @@ public class RecordService extends BaseService {
             addUserInfo.setCardnum("证件号码_"+conversationmsg);
             addUserInfo.setCardtypessid(cardtypessid);
 
+            recordadminssid=adminssid;//记录人默认自己
+
             //案件信息默认
             addPolice_case=new Police_case();
             addPolice_case.setCasename("案件名_"+conversationmsg);
             addPolice_case.setOccurrencetime(new Date());
             addPolice_case.setStarttime(new Date());
-            addPolice_case.setCasenum("案件编号_"+conversationmsg);
+            addPolice_case.setCasenum(time);
+            addPolice_case.setCaseway("案由_"+conversationmsg);
 
 
             //笔录名称
