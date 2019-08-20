@@ -9,6 +9,9 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
+/**
+ * 授权已经到了第三阶段 使用CPU序列号+C盘序列号
+ */
 public class NetTool{
   
 public static void main( String[] args){  
@@ -212,11 +215,13 @@ public static String getLocalMac() {
 		Process p = null;
 		InputStream in2=null;
 		InputStream in=null;
+		InputStreamReader isr=null;
 		try {
 			p = Runtime.getRuntime().exec(new String[]{ "sh", "-c", CPU_ID_CMD });// 管道
 			in=p.getInputStream();
 			in2=p.getErrorStream();
-			bufferedReader = new BufferedReader(new InputStreamReader(in));
+			isr=new InputStreamReader(in);
+			bufferedReader = new BufferedReader(isr);
 			String line = null;
 			int index = -1;
 			while ((line = bufferedReader.readLine()) != null) {
@@ -247,6 +252,14 @@ public static String getLocalMac() {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			try {
+				if(null!=isr){
+					isr.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
 
 			try {
 				if(null!=in){
@@ -344,11 +357,20 @@ public static String getLocalMac() {
 
 		String line = "";
 		String HdSerial = "";//定义变量 硬盘序列号
+		BufferedReader bufferedReader = null;
+		Process p = null;
+		InputStream in2=null;
+		InputStream in=null;
+		InputStreamReader isr=null;
 		try {
-			Process proces = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
-			BufferedReader buffreader = new BufferedReader(new InputStreamReader(proces.getInputStream(),"gbk"));
 
-			while ((line = buffreader.readLine()) != null) {
+			p = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
+			in=p.getInputStream();
+			isr=new InputStreamReader(in,"gbk");
+			in2=p.getErrorStream();
+			bufferedReader = new BufferedReader(isr);
+
+			while ((line = bufferedReader.readLine()) != null) {
 				if (line.indexOf("卷的序列号是 ") != -1) {  //读取参数并获取硬盘序列号
 
 					HdSerial = line.substring(line.indexOf("卷的序列号是 ") + "卷的序列号是 ".length(), line.length());
@@ -356,8 +378,47 @@ public static String getLocalMac() {
 				}
 			}
 
-		} catch (IOException e) {
+			printMessage(in2);
+
+			int exitvalue=p.waitFor();
+			if(exitvalue!=0){
+				throw new Exception("exitvalue is not 0, 说明代码有错");
+			}
+
+		} catch (Exception e) {
 			e.printStackTrace();
+		}finally {
+			try {
+				if(null!=bufferedReader){
+					bufferedReader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(null!=isr){
+					isr.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+
+			try {
+				if(null!=in){
+					in.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=p){
+					p.destroy();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return HdSerial;
