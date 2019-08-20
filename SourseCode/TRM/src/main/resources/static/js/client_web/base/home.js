@@ -277,7 +277,6 @@ function open_startConversation() {
         skin: 'startconversation_btn', //样式类名
         content: startConversationURL,
     });
-
 }
 
 //一键谈话添加基础数据跳转审讯页面

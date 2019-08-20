@@ -87,6 +87,21 @@ function callgetNavList(data) {
     }
 }
 
+function  open_startConversation() {
+    var HTML='';
+    layer.open({
+        id:"startconversation_id",
+        type:2,
+        title: '填写基础信息',
+        shade: 0.3,
+        resize:false,
+        area: ['50%', '600px'],
+        skin: 'startconversation_btn', //样式类名
+        content: startConversationURL,
+    });
+}
+
+
 $(function () {
     /*  var _t;
       window.onbeforeunload = function(){

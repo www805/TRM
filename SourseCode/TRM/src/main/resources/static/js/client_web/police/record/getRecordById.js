@@ -19,6 +19,8 @@ var first_playstarttime=0;//第一个视频的开始时间
 var dq_play=null;//当前视频数据
 var recordPlayParams=[];//全部视频数据集合
 
+var phSubtracSeconds=0;
+
 
 
 /**
@@ -82,7 +84,7 @@ function setqw() {
             var q_starttime=parseFloat(problemstarttime)+parseFloat(subtractime_q);
 
             var problemtext=problem.problem==null?"未知":problem.problem;
-            var problemhtml='<tr ondblclick="showrecord('+q_starttime+',1,this)" times='+q_starttime+'><td class="font_red_color">问：'+problemtext+' </td></tr>';
+            var problemhtml='<tr ondblclick="showrecord('+q_starttime+',null)" times='+q_starttime+'><td class="font_red_color">问：'+problemtext+' </td></tr>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
@@ -92,7 +94,7 @@ function setqw() {
                     var w_starttime=parseFloat(answerstarttime)+parseFloat(subtractime_w);
 
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<tr ondblclick="showrecord('+w_starttime+',2,this)" times='+w_starttime+'> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
+                    problemhtml+='<tr ondblclick="showrecord('+w_starttime+',null)" times='+w_starttime+'> <td class="font_blue_color" >答：'+answertext+' </td></tr>';
                 }
             }else{
                 problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
@@ -189,6 +191,7 @@ function callbackgetRecordById(data) {
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){
                 phdatabackList=phDataBackVoParams;
+                phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
             }
 
             var getPlayUrlVO=data.getPlayUrlVO;
@@ -231,14 +234,14 @@ function set_getRecord(data){
                         if (usertype==1){
                             subtractime_q=subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                         }else if (usertype==2){
                             subtractime_w=subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+','+usertype+',this)" times='+starttime+'>\
+                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
@@ -432,7 +435,7 @@ function exportPdf(obj) {
 var RANKING_INDEX=null;
 function select_monitorallranking(obj) {
     var RANKING_HTML='<div class="layui-row layui-form " > \
-        <div class="layui-col-md12 layui-form-item"  >\
+        <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >\
         <div  id="rank_btn" style="display:inline">\
         <span class="layui-badge layui-btn" isn="1"  type="stress" >紧张值</span>\
         <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type="hr" >心率</span>\
@@ -588,7 +591,9 @@ function set_phranking(type,sorttype) {
               var num=$(this).attr("num");//秒数
               if (null!=num){
                   //定位视频和asr
-                  showrecord(parseFloat(num*1000),null,null);
+                  phSubtracSeconds=parseInt(phSubtracSeconds);
+                  var  newnum=num-phSubtracSeconds==null?0:(num-phSubtracSeconds<0?0:num-phSubtracSeconds);
+                  showrecord(parseFloat(newnum*1000),parseFloat(num*1000));
                   //身心检测显示
                   var type= $("#rank_btn span[isn=1]").attr("type");
                   var $tb=$('#monitor_btn span[type='+type+']');
@@ -927,11 +932,11 @@ function select_monitorall(obj) {
 }
 
 //视频进度
-function showrecord(times,usertype,obj) {
+function showrecord(times,oldtime) {
     $("#recorddetail td").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
     if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
-        var isnvideo=0;
+        var isnvideo=0;//是否有视频定位点
         //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
         for (let i = 0; i < recordPlayParams.length; i++) {
             const recordPlayParam = recordPlayParams[i];
@@ -964,6 +969,11 @@ function showrecord(times,usertype,obj) {
         }
         if (isnvideo==0){
             layer.msg("没有找到视频定位点",{time:500})
+            /*if (isNotEmpty(oldtime)){
+console.log("old"+oldtime)
+            }else {
+
+            }*/
         }
 
 

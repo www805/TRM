@@ -251,8 +251,9 @@ public class PolicePageAction {
 
     /*********************************开始笔录谈话 end*********************************/
     @GetMapping("tostartConversation")
-    public ModelAndView tostartConversation(Model model){
-        model.addAttribute("title","开始谈话");
+    public ModelAndView tostartConversation(Model model,String parentbool){
+        model.addAttribute("title","开始审讯");
+        model.addAttribute("parentbool",parentbool);//用于控制页面跳转
         return new ModelAndView("client_web/police/conversation/startConversation", "startConversationModel", model);
     }
 

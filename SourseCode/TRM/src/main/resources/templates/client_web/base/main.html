@@ -49,6 +49,13 @@
         line-height: 45px;
     }
 
+    body .startconversation_btn .layui-layer-btn a{
+        border-color: #FFB800 !important;
+        background-color: #FFB800 !important;
+        height: 44px !important;
+        line-height: 44px !important;
+        padding: 0 20px;}
+
 </style>
 <body class="layui-layout-body" id="">
 
@@ -204,7 +211,7 @@
 <script th:inline="javascript">
     var  INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-    setpageAction(INIT_CLIENT,"client_web/base/main");
+        setpageAction(INIT_CLIENT,"client_web/base/main");
         var homeUrl=getActionURL(getactionid_manage().mian_home);
 
         var toaddCaseToUserUrl=getActionURL(getactionid_manage().main_toaddCaseToUser);
@@ -216,6 +223,9 @@
         var torecordTypeListUrl=getActionURL(getactionid_manage().main_torecordTypeList);
 
         var gotoupdateServerconfigUrl=getActionURL(getactionid_manage().main_gotoupdateServerconfig);
+
+        var startConversationURL=getActionURL(getactionid_manage().main_tostartConversation);
+        var conversationIndexURL=getActionURL(getactionid_manage().main_toconversationIndex);
 
     $(function(){
         getNavList();

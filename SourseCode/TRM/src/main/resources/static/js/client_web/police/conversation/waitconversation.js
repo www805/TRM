@@ -42,19 +42,37 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(record)){
                 //获取提讯会议ssid
                 mcbool=record.mcbool;
-                if (mcbool==1){
-                    $("#mtbool_txt").text("审讯中");
-                }else {
-                    $("#mtbool_txt").text("未审讯");
-                }
 
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
                     var mtssiddata=police_arraignment.mtssid;
                     if (isNotEmpty(mtssiddata)){
                         mtssid=mtssiddata;
-                        getRecordrealing();
+
+                        if ((!isNotEmpty(mcbool)||!(mcbool==1||mcbool==3))&&isNotEmpty(mtssiddata)){
+                            //存在会议但是状态为空或者不等于1
+                            $("#mtbool_txt").text("审讯已结束");
+                            layer.confirm('审讯已结束', function(index){
+                                //do something
+                                overRecord();
+                                layer.close(index);
+                            });
+                        }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
+                            //存在会议状态正常
+                            $("#mtbool_txt").text("审讯中");
+                            getRecordrealing();
+                        }else {
+                            layui.use(['layer','element','form'], function(){
+                                var layer=layui.layer;
+                                var layer=layui.layer;
+                                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
+                            });
+                        }
+
+
+
                     }else if (mcbool!=1&&!isNotEmpty(mtssid)) {
+                        $("#mtbool_txt").text("审讯启动中");
                         startMC();
                     }
                 }

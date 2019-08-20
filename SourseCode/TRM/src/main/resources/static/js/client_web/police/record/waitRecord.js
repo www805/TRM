@@ -428,7 +428,9 @@ function callbackgetRecordById(data) {
                     $(".layui-tab-content").css("height","650px");
 
                     $("#overRecord_btn").html("结束审讯")
-
+                    $("#pauserecord").attr("src","/uimaker/images/record4.png").css({"width":"200px"});
+                    $("#startrecord").attr("src","/uimaker/images/record3.gif").css({"width":"200px"});
+                    $("#endrecord").attr("src","/uimaker/images/record5.png").css({"width":"200px"});
                 } else {
                     console.log("我不是谈话笔录")
                     $("#asr").show();
@@ -441,6 +443,12 @@ function callbackgetRecordById(data) {
                     $("#asritem").addClass("layui-show");
                     $("#record_switch_HTML").css("visibility","visible");
                     $("#overRecord_btn").html("结束笔录")
+
+
+
+                    $("#pauserecord").attr("src","/uimaker/images/record1.png").css({"width":"100px"});
+                    $("#startrecord").attr("src","/uimaker/images/record.gif").css({"width":"100px"});
+                    $("#endrecord").attr("src","/uimaker/images/record2.png").css({"width":"100px"});
                 }
                 
                 //获取笔录类型
