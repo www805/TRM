@@ -81,14 +81,14 @@
         </thead>
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
-        <tr ssid="{{value.ssid}}">
+        {{#  var recordbool=value.recordbool;var recordbooltext; var itemtext="继续"; var oldclass="layui-btn layui-btn-normal";}}
+        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";itemtext="查看";oldclass="layui-btn layui-btn-primary"}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
+        {{# var creator=null; var creatorname="";  var caseAndUserInfo=value.caseAndUserInfo;if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator; creatorname=caseAndUserInfo.creatorname;} }}
+        <tr ssid="{{value.ssid}}" ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{value.recordtypessid}}');" >
             <td>{{index+1}}</td>
-            {{#  var recordbool=value.recordbool;var recordbooltext; var itemtext="继续"; var oldclass="layui-btn layui-btn-normal";}}
-            {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";itemtext="查看";oldclass="layui-btn layui-btn-primary"}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
-            <td>{{recordbooltext}}</td>
+           <td>{{recordbooltext}}</td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
-            {{# var creator=null; var creatorname="";  var caseAndUserInfo=value.caseAndUserInfo;if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator; creatorname=caseAndUserInfo.creatorname;} }}
             <th>{{creatorname}}</th>
             <td>
                 <span class="{{oldclass}}" onclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{value.recordtypessid}}');">{{itemtext}}</span>

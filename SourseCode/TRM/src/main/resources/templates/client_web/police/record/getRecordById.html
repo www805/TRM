@@ -125,6 +125,27 @@
     .layui-btn+.layui-btn {
         margin-left: 0px;
     }
+
+    #recorddetail_scrollhtml{
+        width:100%; height: 650px; overflow-x: hidden; overflow-y: hidden;padding-right: 10px;
+    }
+
+    #recorddetail_scrollhtml:hover{
+        overflow-y: scroll;
+    }
+
+    #recorddetail_scrollhtml::-webkit-scrollbar
+    {
+        width: 8px;
+        height: 8px;
+        background-color: #F5F5F5;
+    }
+    #recorddetail_scrollhtml::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        background-color: rgba(203, 203, 203, 0.1);
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -146,7 +167,7 @@
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息</li>
-                            <li>语音识别</li><!--onclick="getRecord();"-->
+                            <li>语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show">
@@ -241,7 +262,8 @@
                     </button>-->
                 </div>
                     <div class="layui-card">
-                        <div class="layui-card-header">笔录回放 <span style="color: red">（提示:<span class="highlight_left">黄色</span>高亮跟随视频定位，<span class="highlight_right">绿色</span>高亮跟随双击定位）</span></div>
+                        <div class="layui-card-header">笔录回放 <span style="color: red">（提示:<span class="highlight_left">黄色</span>高亮跟随视频定位，<span class="highlight_right">绿色</span>高亮跟随双击定位）</span>
+                           </div>
                         <div class="layui-card-body">
                             <!--视频点播区域-->
                             <div class="layui-row" style="">
@@ -295,7 +317,8 @@
                                 </div>
                                 <div class="layui-col-md7" >
                                     <div class="layui-card">
-                                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;" id="recorddetail_scrollhtml">
+                                        <div id="recorddetail_webkit">
+                                        <div style="" id="recorddetail_scrollhtml">
                                             <div class="layui-card-body">
                                                 <table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed;margin-bottom: 30px;">
                                                     <tbody id="recorddetail">
@@ -304,6 +327,7 @@
                                                 </table>
                                             </div>
                                         </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -338,6 +362,11 @@
         getRecordById();//获取笔录案件等信息
         main1();//身心统计回放
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
+
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});
+        $(window).resize(function(){
+            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});
+        })
     });
     layui.use(['layer','element','slider','form'], function(){
         var layer = layui.layer; //获得layer模块

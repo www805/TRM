@@ -261,6 +261,13 @@ function set_getRecord(data){
             }
         }
         setqw();
+        var recordreals_selecthtml=document.getElementById("recordreals_selecthtml");
+        var IHTML='<span class="layui-table-sort layui-inline" title="语音识别可滚动"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc" "></i></span>';
+        if(recordreals_selecthtml.scrollHeight>recordreals_selecthtml.clientHeight||recordreals_selecthtml.offsetHeight>recordreals_selecthtml.clientHeight){
+            $("#webkit2").html(IHTML)
+        }else {
+            $("#webkit2").empty();
+        }
     }
 }
 

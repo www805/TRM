@@ -13,7 +13,7 @@
         border: 2px solid #FFFFFF;
         font-weight: bold;
     }
-    ::-webkit-scrollbar{
+   ::-webkit-scrollbar{
         width: 0px;
     }
 
@@ -242,6 +242,31 @@
     .highlight_monitorall {
         -webkit-animation: fade 1s infinite ease-in-out;
     }
+
+    #recorddetail_scrollhtml{
+        width:95%; height: 650px; overflow-x: hidden; overflow-y: hidden;padding-right: 5%;
+    }
+
+    #recorddetail_scrollhtml:hover{
+        overflow-y: scroll;
+    }
+
+    #recorddetail_scrollhtml::-webkit-scrollbar
+    {
+        width: 8px;
+        height: 8px;
+        background-color: #F5F5F5;
+    }
+    #recorddetail_scrollhtml::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        background-color: rgba(203, 203, 203, 0.1);
+    }
+
+
+
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -299,7 +324,7 @@
                 </div>
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="initec">
                     <ul class="layui-tab-title">
-                        <li onclick="initasr()" id="asr" style="display: none">语音识别</li>
+                        <li onclick="initasr()" id="asr" style="display: none">语音识别 <span id="webkit2"></span></li>
                         <li onclick="initliving()"id="fd" style="display: none">设备控制</li>
                         <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
                         <li onclick="initcase()" id="case"  class="layui-this" > 案件信息</li>
@@ -321,13 +346,13 @@
                             </div>
                             <div class="layui-card">
                                <!-- <div style="height: 300px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">-->
-                                <div style="height:400px;  overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
-                                    <div class="layui-card-body" >
-                                        <div class="talk_show"  id="recordreals" style="margin-bottom: 100px;">
+                                    <div style="height:400px;  overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                                        <div class="layui-card-body" >
+                                            <div class="talk_show"  id="recordreals" style="margin-bottom: 100px;">
 
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                         <div class="layui-tab-item"  id="fditem">
@@ -352,9 +377,9 @@
                                 <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
                                 <!--<button onclick="location.reload();">刷新</button>-->
                             </div>
-                            <div>
-                                <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
-                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
+                            <div id="livetypes">
+                                <span class="layui-badge" onclick="select_liveurl(this,1);" isn="1" type="1">标清</span>
+                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);" isn="-1" type="2">高清</span>
                                 <div id="living3_2">
                                     <!--视频直播区域-->
                                     <div th:replace="living4 :: living"  >...</div>
@@ -420,7 +445,7 @@
             <!---->
         </div>
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
-            <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px">
+            <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px" id="www">
                 <div class="layui-inline" >
                     <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
                     <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
@@ -456,18 +481,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div style="height: 650px; overflow-x: hidden; overflow-y: scroll;" id="recorddetail_scrollhtml">
-                            <div class="layui-card-body layui-row "  >
+                        <div id="recorddetail_webkit">
+                        <div style="" id="recorddetail_scrollhtml">
+                            <div class="layui-card-body layui-row ">
                                 <div class="layui-col-lg12 ">
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
                                         <tbody id="recorddetail">
                                         <tr id="first_originaltr">
-                                            <td style="padding: 0;width: 90%;" class="onetd">
+                                            <td style="padding: 0;width: 85%;" class="onetd">
                                                 <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>
                                                 <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" w_starttime="" placeholder=""></label></div>
                                                 <div id="btnadd"><button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="focuslable(trtd_html,2,'q');"><i class="layui-icon" style="font-size: 45px"></i></button></div>
                                             </td>
-                                            <td style="float: right;">
+                                            <td>
                                                 <div class="layui-btn-group">
                                                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>
                                                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>
@@ -479,7 +505,7 @@
                                     </table>
                                 </div>
                             </div>
-
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -575,6 +601,14 @@
                 $("#templatetoproblem_html").append(html);
             }
         }
+
+
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        $(window).resize(function(){
+            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        })
+
+
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

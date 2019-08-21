@@ -75,8 +75,19 @@ function callbackgetRecordById(data) {
 
 
                     }else if (mcbool!=1&&!isNotEmpty(mtssid)) {
-                        $("#mtbool_txt").text("审讯启动中");
-                        startMC();
+                        layer.confirm('是否直接开启审讯', {
+                            btn: ['确认','取消'], //按钮
+                            shade: [0.1,'#fff'], //不显示遮罩
+                        }, function(index){
+                            $("#mtbool_txt").text("审讯启动中");
+                            startMC();
+                            $("#startbtn").css({"visibility":"hidden"});
+                            layer.close(index);
+                        }, function(index){
+                            $("#startbtn").css({"visibility":"visible"});
+                            layer.close(index);
+                        });
+
                     }
                 }
 
@@ -153,6 +164,7 @@ var useretlist=null;
 
 var startMC_index=null;
 function startMC() {
+    $("#startbtn").attr("onclick","");
      startMC_index = layer.msg("加载中，请稍等...", {
         icon: 16,
         time:100000
@@ -221,6 +233,7 @@ function startMC() {
     }else {
         layer.msg("请稍等",{time:1000},function () {
             getRecordById();
+            $("#startbtn").attr("onclick","startMC();")
         });
     }
 }
@@ -256,6 +269,7 @@ function callbackstartMC(data) {
 
             var con="审讯已开启<br>设备录音数："+recordnum;
             layer.msg(con, {time: 2000});
+            $("#startbtn").css({"visibility":"hidden"}).attr("onclick","");
         }
     }else{
         var data2=data.data;
@@ -274,6 +288,8 @@ function callbackstartMC(data) {
                 return;
             }
         }
+        $("#startbtn").css({"visibility":"visible"}).attr("onclick","startMC();");
+
         layer.msg("审讯开启失败");
     }
 }
@@ -302,7 +318,16 @@ function select_liveurl(obj,type){
 
 var overRecord_loadindex =null;
 function overRecord() {
-    layer.confirm('是否结束审讯', {
+
+
+       var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
+       var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
+       var msgtxt="";
+       if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
+           msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
+       }
+
+    layer.confirm('是否结束审讯<br>'+msgtxt, {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -320,6 +345,7 @@ function overRecord() {
                 }
             };
             $("#overRecord_btn").attr("click","");
+            getstopRec_Rom();//停止光驱刻录
             ajaxSubmitByJson(url, data, calladdRecord);
         }else{
             layer.msg("系统异常");

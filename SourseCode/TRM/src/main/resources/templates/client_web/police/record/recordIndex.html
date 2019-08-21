@@ -46,6 +46,26 @@
         float: none;
         margin-left: 20%;
     }
+    #recorddetail_scrollhtml{
+        width:100%; height: 700px; overflow-x: hidden; overflow-y: hidden;padding-right: 10px;
+    }
+
+    #recorddetail_scrollhtml:hover{
+        overflow-y: scroll;
+    }
+
+    #recorddetail_scrollhtml::-webkit-scrollbar
+    {
+        width: 8px;
+        height: 8px;
+        background-color: #F5F5F5;
+    }
+    #recorddetail_scrollhtml::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        background-color: rgba(203, 203, 203, 0.1);
+    }
 
 </style>
 <body>
@@ -93,12 +113,13 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md8" style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+            <div class="layui-col-md8" style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <div class="layui-card">
-                    <div class="layui-card-header">
+                    <div class="layui-card-header" id="www">
                        当前笔录： <span id="recordtitle"  recordtitle_first="false">笔录标题</span>
                     </div>
-                    <div style="height: 700px; overflow-x: hidden; overflow-y: scroll;">
+                    <div id="recorddetail_webkit">
+                    <div style=""  id="recorddetail_scrollhtml">
                         <div class="layui-card-body">
                             <table class="layui-table" lay-even="" lay-skin="nob">
                                 <tbody id="recorddetail">
@@ -112,6 +133,7 @@
                             </table>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
     </div>
@@ -159,6 +181,11 @@
         setpageAction(INIT_CLIENT,"client_web/police/record/recordIndex");
         getRecordtypesindex();
         ggetRecordsByParam();
+
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width()+20)});
+        $(window).resize(function(){
+            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width()+20)});
+        })
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

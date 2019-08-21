@@ -66,6 +66,7 @@ function callbackgetRecordById(data) {
                         $("#recorddetail").append(problemhtml);
                     }
                     $("#recorddetail_strong").html("【审讯笔录】");
+
                 }
 
                 //会议人员

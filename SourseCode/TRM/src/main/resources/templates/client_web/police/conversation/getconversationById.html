@@ -107,23 +107,35 @@
         background-color: #F5F5F5;
     }
 
-    /*定义滚动条轨道 内阴影+圆角*/
-    #videos::-webkit-scrollbar-track
-    {
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-        border-radius: 10px;
-        background-color: #F5F5F5;
-    }
-
     /*定义滑块 内阴影+圆角*/
     #videos::-webkit-scrollbar-thumb
     {
         border-radius: 10px;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: rgba(100, 100, 100, 0.7);
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        background-color: rgba(203, 203, 203, 0.1);
     }
     .layui-btn+.layui-btn {
         margin-left: 0px;
+    }
+    #recorddetail_scrollhtml{
+        width:100%; height: 300px; overflow-x: hidden; overflow-y: hidden;
+    }
+
+    #recorddetail_scrollhtml:hover{
+        overflow-y: scroll;
+    }
+
+    #recorddetail_scrollhtml::-webkit-scrollbar
+    {
+        width: 8px;
+        height: 8px;
+        background-color: #F5F5F5;
+    }
+    #recorddetail_scrollhtml::-webkit-scrollbar-thumb
+    {
+        border-radius: 10px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
+        background-color: rgba(203, 203, 203, 0.1);
     }
 </style>
 <body>
@@ -135,20 +147,20 @@
     </div>
 
     <div class="layui-row layui-form " >
-            <div class="layui-col-md4 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
-                <div class="layui-card" style="margin-bottom: 0;">
+            <div class="layui-col-md4 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+                <div class="layui-card" style="margin-bottom: 0;"  >
                     <div class="layui-card-header" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-right: 0;">
                         当前审讯：<span id="recordtitle" >标题加载中请稍等...</span>
                     </div>
                 </div>
-                <div class="layui-tab layui-tab-brief" style="margin-top: 0;" lay-filter="docDemoTabBrief">
+                <div class="layui-tab layui-tab-brief" style="margin-top: 0;" lay-filter="docDemoTabBrief" >
                         <div class="layui-tab-item layui-show">
                             <div class="layui-card">
                                 <!--   <div class="layui-card-header">案件信息</div>-->
 
-                                    <div class="layui-card-body">
+                                    <div class="layui-card-body" >
                                         <div><strong>【审讯信息】</strong></div>
-                                        <table class="layui-table" lay-skin="line" style="table-layout: fixed" >
+                                        <table class="layui-table" lay-skin="line" style="table-layout: fixed" id="www">
                                             <tbody id="caseAndUserInfo_html">
                                             <tr><td>案件名称</td><td></td></tr>
                                             <tr><td>被询(讯)问人</td><td></td> </tr>
@@ -161,13 +173,17 @@
                                         </table>
                                         <hr>
                                         <div><strong id="recorddetail_strong"></strong></div>
-                                        <div style="height:300px; overflow-x: hidden; overflow-y: scroll; " >
-                                            <table class="layui-table" lay-even="" lay-skin="nob">
-                                                <tbody id="recorddetail">
+                                        <div id="recorddetail_webkit">
+                                            <div style="" id="recorddetail_scrollhtml" >
+                                                <div>
+                                                <table class="layui-table" lay-even="" lay-skin="nob">
+                                                    <tbody id="recorddetail">
 
-                                                </tbody>
-                                            </table>
-                                         </div>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                             </div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -224,6 +240,11 @@
         setpageAction(INIT_CLIENT,"client_web/police/conversation/getconversationById");
         recordssid=[[${conversationByIdModel.recordssid}]];
         getRecordById();//获取笔录案件等信息
+
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        $(window).resize(function(){
+            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        })
     });
     layui.use(['layer','element','slider','form'], function(){
         var layer = layui.layer; //获得layer模块

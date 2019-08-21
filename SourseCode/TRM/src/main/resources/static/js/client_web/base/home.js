@@ -283,6 +283,7 @@ function open_startConversation() {
 var skipCheckbool=-1;//是否跳过检测：默认-1
 var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 function to_waitconversationURL() {
+
     var url=getActionURL(getactionid_manage().home_addCaseToArraignment);
     var data={
         token:INIT_CLIENTKEY,
@@ -324,7 +325,7 @@ function callbackaddCaseToArraignment(data) {
                             btn: ['开始审讯',"查看审讯列表","取消"], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
-                                console.log("跳转审讯制作中");
+                                console.log("跳转审讯制作控制台");
                                 //保存
                                 skipCheckbool = 1;
                                 to_waitconversationURL();

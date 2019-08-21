@@ -827,14 +827,16 @@ function shrink(obj) {
         $("#notshrink_html").attr("class","layui-col-md12");
 
         $("#layui-layer"+recordstate_index).hide();
-
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
     }else{
         $("#shrink_html").show();
         $(obj).attr("shrink_bool","1");
         $("#notshrink_html").attr("class","layui-col-md9");
         $("i",obj).attr("class","layui-icon layui-icon-shrink-right");
         $("#layui-layer"+recordstate_index).show();
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
     }
+
 }
 //*******************************************************************伸缩按钮end****************************************************************//
 

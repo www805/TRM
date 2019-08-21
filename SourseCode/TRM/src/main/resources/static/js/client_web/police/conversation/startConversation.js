@@ -145,7 +145,7 @@ function callbackaddCaseToArraignment(data) {
                             btn: ['开始审讯',"查看审讯列表","取消"], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
-                                console.log("跳转审讯制作中");
+                                console.log("跳转审讯制作控制台");
                                 //保存
                                 skipCheckbool = 1;
                                 addCaseToArraignment();
