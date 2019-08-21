@@ -35,12 +35,12 @@ var html=
     '    </div>\n' +
     '    <div style="margin-bottom: 20px;">\n' +
     '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
-    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">刻录模式</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="changeBurnMode();">刻录模式</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘刻录</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;padding: 0 4px;" onclick="getstopRec_Rom();">停止光盘刻录</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getCDNumber();">光盘序号</button>\n' +
     '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="addptdj(true);">信息叠加</button>\n' +
     '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
-    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘刻录</button>\n' +
-    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">停止光盘刻录</button>\n' +
-    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘序号</button>\n' +
     '    </div>\n' +
     '</div>';
 
@@ -602,6 +602,8 @@ function callCDNumber(data){
             }
             if (con != "") {
                 layer.msg(con, {time: 3000,area: ['500px', 'auto']});
+            }else{
+                layer.msg("暂时未找到",{icon: 1});
             }
         }
     }else{
@@ -714,7 +716,7 @@ function callFDState(data){
                 $("#roma_status").html(getRomStatus(fdStateInfo.roma_status));//光盘状态
                 $("#roma_begintime").html(fdStateInfo.roma_begintime);//开始直刻的时间
                 $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : fdStateInfo.roma_lefttime);//直刻剩余的倒计时
-                $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime);//刻录时间
+                $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime + "小时");//刻录时间
             }
 
             if (fdStateInfo.dvdnum >= 2) {
@@ -725,7 +727,7 @@ function callFDState(data){
                 $("#romb_status").html(getRomStatus(fdStateInfo.romb_status));//光盘状态
                 $("#romb_begintime").html(fdStateInfo.romb_begintime);//开始直刻的时间
                 $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : fdStateInfo.romb_lefttime);//直刻剩余的倒计时
-                $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime);//刻录时间
+                $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime + "小时");//刻录时间
             }
 
             $("#diskrec_isrec").html(fdStateInfo.diskrec_isrec == 1 ? "<span style='color: red;'>录像中</span>" : "未录像");//是否正在本地硬盘录像
