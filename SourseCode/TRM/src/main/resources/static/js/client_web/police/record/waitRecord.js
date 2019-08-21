@@ -562,7 +562,7 @@ function callbackgetRecordById(data) {
             setInterval(function () {
               /*  console.log("刷新，获取设备状态");*/
                 getFDState();
-            }, 10000);
+            }, 1000);
 
         }
     }else{

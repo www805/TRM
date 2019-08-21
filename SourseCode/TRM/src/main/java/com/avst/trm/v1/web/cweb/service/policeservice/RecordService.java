@@ -2825,6 +2825,71 @@ public class RecordService extends BaseService {
         return;
     }
 
+    public void getBurnTime(RResult result, ReqParam param) {
+
+        try {
+            RResult resultBurn = equipmentControl.getBurnTime(param);
+
+            result.setData(resultBurn.getData());
+            result.setMessage(resultBurn.getMessage());
+            result.setEndtime(resultBurn.getEndtime());
+            result.setActioncode(resultBurn.getActioncode());
+            result.setNextpageid(resultBurn.getNextpageid());
+            result.setVersion(resultBurn.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getBurnTime  获取刻录选时 请求错误...");
+        }
+    }
+
+    public void updateBurnTime(RResult result, ReqParam param) {
+
+        try {
+            RResult resultBurn = equipmentControl.updateBurnTime(param);
+
+            result.setData(resultBurn.getData());
+            result.setMessage(resultBurn.getMessage());
+            result.setEndtime(resultBurn.getEndtime());
+            result.setActioncode(resultBurn.getActioncode());
+            result.setNextpageid(resultBurn.getNextpageid());
+            result.setVersion(resultBurn.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.updateBurnTime  修改刻录选时 请求错误...");
+        }
+    }
+
+    public void changeBurnMode(RResult result, ReqParam<ChangeBurnModeParam_out> param) {
+
+        try {
+            RResult resultBurn = equipmentControl.changeBurnMode(param);
+
+            result.setData(resultBurn.getData());
+            result.setMessage(resultBurn.getMessage());
+            result.setEndtime(resultBurn.getEndtime());
+            result.setActioncode(resultBurn.getActioncode());
+            result.setNextpageid(resultBurn.getNextpageid());
+            result.setVersion(resultBurn.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.changeBurnMode  刻录模式选择 请求错误...");
+        }
+
+    }
+
+    public void getCDNumber(RResult result, ReqParam<GetCDNumberParam_out> param) {
+
+        try {
+            RResult resultBurn = equipmentControl.getCDNumber(param);
+
+            result.setData(resultBurn.getData());
+            result.setMessage(resultBurn.getMessage());
+            result.setEndtime(resultBurn.getEndtime());
+            result.setActioncode(resultBurn.getActioncode());
+            result.setNextpageid(resultBurn.getNextpageid());
+            result.setVersion(resultBurn.getVersion());
+        } catch (Exception e) {
+            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getCDNumber  光盘序号 请求错误...");
+        }
+    }
+
     /***************************笔录问答实时缓存****end***************************/
 
 

@@ -43,6 +43,7 @@ function callgetNavList(data) {
                     var nav = nav_list[i];
                     var dd_HTML = "";
                     var nav_icon_HTML = "";
+                    var nav_space = "";
                     if(isNotEmpty(nav.list)){
                         for (var j = 0; j < nav.list.length; j++) {
                             var dd = nav.list[j];
@@ -58,11 +59,14 @@ function callgetNavList(data) {
                     if(isNotEmpty(nav.iconh)){
                         nav_icon_HTML = "<span class='iconfont'>&#" + nav.iconh + "</span>\n";
                     }
+                    if(isNotEmpty(nav.space)){
+                        nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 9px;right: 0;width: 3px;height: 28px;'></i>\n";
+                    }
 
                     nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
                         "                <a target=\"option\" href=\"" + nav.url + "\">\n" + nav_icon_HTML+
-                        "                    <cite>" + nav.name + "</cite>\n"+
-                        "                </a>\n" + dd_HTML +
+                        "                    <cite>" + nav.name + "</cite>\n" +
+                        "                </a>\n" + dd_HTML + nav_space +
                         "            </li>";
                 }
                 $("#nav_list").html(nav_list_HTML);

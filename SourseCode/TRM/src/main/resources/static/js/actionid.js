@@ -181,6 +181,10 @@ function getactionid_manage() {
         waitRecord_getstopRec_Rom:"waitRecord_getstopRec_Rom",
         waitRecord_getyuntaiControl:"waitRecord_getyuntaiControl",
         waitRecord_ptdj:"waitRecord_ptdj",
+        waitRecord_getBurnTime:"waitRecord_getBurnTime",
+        waitRecord_updateBurnTime:"waitRecord_updateBurnTime",
+        waitRecord_changeBurnMode:"waitRecord_changeBurnMode",
+        waitRecord_getCDNumber:"waitRecord_getCDNumber",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
@@ -192,6 +196,10 @@ function getactionid_manage() {
         waitconversation_getyuntaiControl:"waitconversation_getyuntaiControl",
         waitconversation_ptdj:"waitconversation_ptdj",
         waitconversation_getptdjconst:"waitconversation_getptdjconst",
+        waitconversation_getCDNumber:"waitconversation_getCDNumber",
+        waitconversation_changeBurnMode:"waitconversation_changeBurnMode",
+        waitconversation_updateBurnTime:"waitconversation_updateBurnTime",
+        waitconversation_getBurnTime:"waitconversation_getBurnTime",
 
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
         templateTypeList_getTemplateTypeById: "templateTypeList_getTemplateTypeById",

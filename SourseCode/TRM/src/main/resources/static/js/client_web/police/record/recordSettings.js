@@ -4,6 +4,7 @@ var recordCaseInfo_index;
 var yuntaikz_index;
 var diskrec_continuettime;
 var inOrOut = 0;
+var kelumoshi = 1; //刻录模式开光
 var PtFormHTML = "";
 var ptjsonArr = [];
 var ptjsonValues = [];
@@ -11,35 +12,39 @@ var setintervalKey;
 var outcang;
 var ptdjct;
 var fdtype = "FD_AVST";
+var fdStateInfo;
+
+//使用模块
+var html=
+    '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
+    '    <div style="z-index: 88;">\n' +
+    '        <div class="layui-inline">\n' +
+    '            <label class="layui-form-label" style="width: auto;padding-left: 0;">刻录选时</label>\n' +
+    '            <div class="layui-input-inline" style="width: 100px;">\n' +
+    '                <select name="burntime" id="burntime" lay-filter="burntime">\n' +
+    '                    <option value="1">1小时</option>\n' +
+    '                    <option value="4">4小时</option>\n' +
+    '                    <option value="8">8小时</option>\n' +
+    '                    <option value="12">12小时</option>\n' +
+    '                    <option value="16">16小时</option>\n' +
+    '                    <option value="20">20小时</option>\n' +
+    '                    <option value="24">24小时</option>\n' +
+    '                </select>\n' +
+    '            </div>\n' +
+    '        </div>\n' +
+    '    </div>\n' +
+    '    <div style="margin-bottom: 20px;">\n' +
+    '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">刻录模式</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="addptdj(true);">信息叠加</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘刻录</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">停止光盘刻录</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘序号</button>\n' +
+    '    </div>\n' +
+    '</div>';
 
 function recordSet() {
-
-    //使用模块
-    var html=
-        '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
-        '    <div style="z-index: 88;">\n' +
-        '        <div class="layui-inline">\n' +
-        '            <label class="layui-form-label" style="width: auto;padding-left: 0;">刻录选时</label>\n' +
-        '            <div class="layui-input-inline" style="width: 100px;">\n' +
-        '                <select name="burntime" id="burntime" lay-filter="burntime">\n' +
-        '                    <option value="1">1小时</option>\n' +
-        '                    <option value="4">4小时</option>\n' +
-        '                    <option value="8">8小时</option>\n' +
-        '                    <option value="12">12小时</option>\n' +
-        '                    <option value="16">16小时</option>\n' +
-        '                    <option value="20">20小时</option>\n' +
-        '                    <option value="24">24小时</option>\n' +
-        '                </select>\n' +
-        '            </div>\n' +
-        '        </div>\n' +
-        '    </div>\n' +
-        '    <div style="margin-bottom: 20px;">\n' +
-        '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘开始</button>\n' +
-        '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘结束</button>\n' +
-        '    </div>\n' +
-        '</div>';
 //getstopRec_Rom()光盘结束   getstartRec_Rom()光盘开始
     recordSet_index = layer.open({
         type: 1,
@@ -186,14 +191,16 @@ function yuntaikz() {
 
 //片头叠加
 function addptdj(str) {
-    var url=getActionURL(getactionid_manage().waitconversation_ptdj);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_ptdj);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_ptdj);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_ptdj);
     }
     // var url = "/cweb/police/record/ptdj";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法片头叠加",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法片头叠加", {icon: 2});
         return;
     }
 
@@ -228,15 +235,16 @@ function addptdj(str) {
 
 //获取设备状态
 function getFDState() {
-
-    var url=getActionURL(getactionid_manage().waitconversation_getFDState);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getFDState);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getFDState);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getFDState);
     }
     // var url = "/cweb/police/record/getFDState";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法获取设备状态",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
         return;
     }
 
@@ -250,16 +258,136 @@ function getFDState() {
     ajaxSubmitByJson(url,data,callFDState);
 }
 
+//获取刻录选时
+function getBurnTime() {
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getBurnTime);
+    if(!isNotEmpty(url)){
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getBurnTime);
+    }
+    // var url = "/cweb/police/record/getBurnTime";
+
+    if(!isNotEmpty(getRecordById_data)){
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        return;
+    }
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callgetBurnTime);
+}
+
+//修改刻录选时
+function updateBurnTime() {
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_updateBurnTime);
+    if(!isNotEmpty(url)){
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_updateBurnTime);
+    }
+    // var url = "/cweb/police/record/updateBurnTime";
+
+    if(!isNotEmpty(getRecordById_data)){
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        return;
+    }
+
+    var burntime = $("#burntime").val();
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            burntime: burntime,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callBase);
+}
+
+//刻录模式选择
+function changeBurnMode() {
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_changeBurnMode);
+    if(!isNotEmpty(url)){
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_changeBurnMode);
+    }
+    // var url = "/cweb/police/record/changeBurnMode";
+
+    if (kelumoshi == 0) {
+        return ;
+    }
+
+    if(!isNotEmpty(getRecordById_data)){
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        return;
+    }
+
+    var burn_mode = 0;
+    if (fdStateInfo.burn_mode == 0) {
+        burn_mode = 2;
+    }
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            dx:burn_mode,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callBase);
+}
+
+//光盘序号
+function getCDNumber() {
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getCDNumber);
+    if(!isNotEmpty(url)){
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getCDNumber);
+    }
+    // var url = "/cweb/police/record/getCDNumber";
+
+    if(!isNotEmpty(getRecordById_data)){
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        return;
+    }
+
+    layer.msg("加载中，请稍等...", {
+        icon: 16,
+        time:1000
+    });
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callCDNumber);
+}
+
 //获取当前配置片头字段
 function getptdjconst(qidong) {
-    var url=getActionURL(getactionid_manage().waitconversation_getptdjconst);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getptdjconst);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getptdjconst);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getptdjconst);
     }
     // var url = "/cweb/police/record/getptdjconst";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法获取当前配置片头字段",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取当前配置片头字段", {icon: 2});
         // layer.msg("笔录尚未开始，无法打开案件信息",{icon: 2});
         return;
     }
@@ -280,60 +408,65 @@ function getptdjconst(qidong) {
 
 //光盘出仓/进仓
 function getdvdOutOrIn(obj) {
-    var url=getActionURL(getactionid_manage().waitconversation_getdvdOutOrIn);
-    if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getdvdOutOrIn);
+    var strtitle = "笔录";
+    url = getActionURL(getactionid_manage().waitRecord_getdvdOutOrIn);
+    if (!isNotEmpty(url)) {
+        strtitle = "审讯";
+        var url = getActionURL(getactionid_manage().waitconversation_getdvdOutOrIn);
     }
     // var url = "/cweb/police/record/getdvdOutOrIn";
 
-    if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法进行光盘出仓/进仓",{icon: 2});
+    if (!isNotEmpty(getRecordById_data)) {
+        layer.msg(strtitle + "尚未开始，无法进行光盘出仓/进仓", {icon: 2});
         return;
     }
 
-    clearTimeout(outcang);
+    // clearTimeout(outcang);
 
-    $("#cd_hint").show();
-    $("#cd2_hint").show();
+    // $("#cd_hint").show();
+    // $("#cd2_hint").show();
     //1进仓，2出仓
-    if (inOrOut == 2) {
-        inOrOut = 1;
-        $(obj).val("光盘出仓");
-        $("#cd_bin").html("进仓");
-        $("#cd2_bin").html("进仓");
-    }else{
+    // if (inOrOut == 2) {
+    //     inOrOut = 1;
+    //     $(obj).val("光盘出仓");
+    //     $("#cd_bin").html("进仓");
+    //     $("#cd2_bin").html("进仓");
+    // } else {
         inOrOut = 2;
-        $(obj).val("光盘进仓");
-        $("#cd_bin").html("出仓");
-        $("#cd2_bin").html("出仓");
-    }
+    //     $(obj).val("光盘进仓");
+    //     $("#cd_bin").html("出仓");
+    //     $("#cd2_bin").html("出仓");
+    // }
 
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {
             fdType: fdtype,
-            inOrOut:inOrOut,
-            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+            inOrOut: inOrOut,
+            flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid
         }
     };
-    ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
+    ajaxSubmitByJson(url, data, callgetdvdOutOrIn);
 
-    outcang = setTimeout(function () {
-        $("#cd_hint").hide();
-        $("#cd2_hint").hide();
-    }, 20000);
+    // outcang = setTimeout(function () {
+    //     $("#cd_hint").hide();
+    //     $("#cd2_hint").hide();
+    // }, 20000);
 }
+
 
 //开始光盘刻录
 function getstartRec_Rom() {
-    var url=getActionURL(getactionid_manage().waitconversation_getstartRec_Rom);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getstartRec_Rom);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getstartRec_Rom);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getstartRec_Rom);
     }
     // var url = "/cweb/police/record/getstartRec_Rom";
 
     if(!isNotEmpty(getRecordById_data) || !isNotEmpty(getRecordById_data.record.police_arraignment.mtssid)){
-        layer.msg("笔录尚未开始，无法开始光盘刻录",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法开始光盘刻录", {icon: 2});
         return;
     }
     if(!isNotEmpty(getRecordById_data.record.police_arraignment.mtssid)){
@@ -353,18 +486,22 @@ function getstartRec_Rom() {
         }
     };
     ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
+    $("#kelumoshi").removeClass("layui-btn-normal").addClass(" layui-btn-disabled");
+    kelumoshi = 0;
 }
 
 //结束光盘刻录
 function getstopRec_Rom() {
-    var url=getActionURL(getactionid_manage().waitconversation_getstopRec_Rom);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getstopRec_Rom);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getstopRec_Rom);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getstopRec_Rom);
     }
     // var url = "/cweb/police/record/getstopRec_Rom";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法结束光盘刻录",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法结束光盘刻录", {icon: 2});
         return;
     }
 
@@ -376,18 +513,22 @@ function getstopRec_Rom() {
         }
     };
     ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
+    $("#kelumoshi").removeClass("layui-btn-disabled").addClass(" layui-btn-normal");
+    kelumoshi = 1;
 }
 
 //云台控制
 function getyuntaiControl(ptzaction) {
-    var url=getActionURL(getactionid_manage().waitconversation_getyuntaiControl);
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_getyuntaiControl);
     if(!isNotEmpty(url)){
-        url=getActionURL(getactionid_manage().waitRecord_getyuntaiControl);
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_getyuntaiControl);
     }
     // var url = "/cweb/police/record/getyuntaiControl";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg("笔录尚未开始，无法进行云台控制",{icon: 2});
+        layer.msg(strtitle + "尚未开始，无法进行云台控制", {icon: 2});
         return;
     }
 
@@ -412,6 +553,66 @@ function callptdj(data){
         if (isNotEmpty(data)){
             layer.msg("片头叠加成功",{icon: 1});
             layer.close(recordCaseInfo_index);
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function callgetBurnTime(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var flushbonadinginfo = data.data;
+            var burntime = flushbonadinginfo.burntime;
+            $("#burntime").val(burntime);
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render();
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function callCDNumber(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+
+            var cdNumList = data.data.cdNumList;
+            var con = "";
+            for (var i = 0; i < cdNumList.length; i++) {
+                var Disc_iid = cdNumList[i];
+                var rs = Disc_iid.rs;
+
+                if (rs == 1) {
+                    var crc32 = Disc_iid.crc32;
+                    var md5 = Disc_iid.md5;
+                    var iid = Disc_iid.iid;
+
+                    var cdnum = Disc_iid.cdnum;
+                    if (cdnum == 0) {
+                        cdnum = "光驱1";
+                    }else{
+                        cdnum = "光驱2";
+                    }
+
+                    con += "【"+cdnum + "】<br>内容CRC校验码：" + crc32 + "<br>哈希值：" + md5 + "<br>光盘编号：" + iid + "<br>";
+                }
+            }
+            if (con != "") {
+                layer.msg(con, {time: 3000,area: ['500px', 'auto']});
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 2});
+    }
+}
+
+function callBase(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            layer.msg("操作成功",{icon: 1});
         }
     }else{
         layer.msg(data.message,{icon: 2});
@@ -501,22 +702,31 @@ function callFDState(data){
         if (isNotEmpty(data.data)) {
             // console.log(data.data);
 
-            clearTimeout(setintervalKey);
+            // clearTimeout(setintervalKey);
 
-            var fdStateInfo = data.data;
-            //光驱1
-            $("#roma_status").html(getRomStatus(fdStateInfo.roma_status));//光盘状态
-            $("#roma_begintime").html(fdStateInfo.roma_begintime);//开始直刻的时间
-            $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : fdStateInfo.roma_lefttime);//直刻剩余的倒计时
-            $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime);//刻录时间
+            fdStateInfo = data.data;
 
+            if (fdStateInfo.dvdnum >= 1) {
+                //光驱1
+                $("#guangqu").show();
+                $(".guangpan").show();
+                $("#dvd1").show();
+                $("#roma_status").html(getRomStatus(fdStateInfo.roma_status));//光盘状态
+                $("#roma_begintime").html(fdStateInfo.roma_begintime);//开始直刻的时间
+                $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : fdStateInfo.roma_lefttime);//直刻剩余的倒计时
+                $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime);//刻录时间
+            }
 
-            //光驱2
-            $("#romb_status").html(getRomStatus(fdStateInfo.romb_status));//光盘状态
-            $("#romb_begintime").html(fdStateInfo.romb_begintime);//开始直刻的时间
-            $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : fdStateInfo.romb_lefttime);//直刻剩余的倒计时
-            $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime);//刻录时间
-
+            if (fdStateInfo.dvdnum >= 2) {
+                //光驱2
+                $("#guangqu").show();
+                $(".guangpan").show();
+                $("#dvd2").show();
+                $("#romb_status").html(getRomStatus(fdStateInfo.romb_status));//光盘状态
+                $("#romb_begintime").html(fdStateInfo.romb_begintime);//开始直刻的时间
+                $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : fdStateInfo.romb_lefttime);//直刻剩余的倒计时
+                $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime);//刻录时间
+            }
 
             $("#diskrec_isrec").html(fdStateInfo.diskrec_isrec == 1 ? "<span style='color: red;'>录像中</span>" : "未录像");//是否正在本地硬盘录像
 
@@ -530,10 +740,10 @@ function callFDState(data){
 
             if(fdStateInfo.diskrec_isrec == 1){
                 diskrec_continuettime = fdStateInfo.diskrec_continuettime;
-                // jisuantime();
-                setintervalKey = setInterval(function () {
-                    jisuantime();
-                }, 1000);
+                jisuantime();
+                // setintervalKey = setInterval(function () {
+                //     jisuantime();
+                // }, 1000);
             }else{
                 $("#diskrec_continuettime").html("00:00");//硬盘录像持续时间
             }

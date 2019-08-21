@@ -800,17 +800,73 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 获取刻录选时
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getBurnTime")
+    public RResult getBurnTime(@RequestBody  ReqParam<GetBurnTimeParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getBurnTime(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 修改刻录选时
+     * @param param
+     * @return
+     */
+    @RequestMapping("/updateBurnTime")
+    public RResult updateBurnTime(@RequestBody  ReqParam<GetBurnTimeParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.updateBurnTime(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
+    /**
+     * 刻录模式选择
+     * @param param
+     * @return
+     */
+    @RequestMapping("/changeBurnMode")
+    public RResult changeBurnMode(@RequestBody  ReqParam<ChangeBurnModeParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.changeBurnMode(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
-
-
-
-
-
-
-
-
+    /**
+     * 光盘序号
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getCDNumber")
+    public RResult getCDNumber(@RequestBody  ReqParam<GetCDNumberParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getCDNumber(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

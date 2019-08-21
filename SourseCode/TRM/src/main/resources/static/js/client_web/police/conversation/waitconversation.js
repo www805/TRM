@@ -35,7 +35,10 @@ function callbackgetRecordById(data) {
 
                 setInterval(function () {
                     getFDState();
-                }, 10000);
+                }, 1000);
+
+                //获取刻录选时
+                getBurnTime();
             }
 
             var record=data.record;

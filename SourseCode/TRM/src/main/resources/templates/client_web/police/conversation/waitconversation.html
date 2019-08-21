@@ -237,6 +237,9 @@
     .highlight_monitorall {
         -webkit-animation: fade 1s infinite ease-in-out;
     }
+    .guangpan{
+        display: none;
+    }
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -272,11 +275,15 @@
                         <b class="biaoti_cu">&nbsp;&nbsp;&nbsp;&nbsp;选时: </b>
                         <span class="biaoti" id="bsettimerrecburntime">1小时</span>
                     </div>
-                    <div style="border-bottom: 1px solid #1193D6;padding: 5px;">
-                        <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
-                        <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
-                        <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
-                        <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
+                    <div style="border-bottom: 1px solid #1193D6;padding: 5px;" id="guangqu">
+                        <div id="dvd1" style="display: none;">
+                            <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
+                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
+                        </div>
+                        <div id="dvd2" style="display: none;">
+                            <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
+                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
+                        </div>
                     </div>
                     <div style="border-bottom: 1px solid #1193D6;padding: 5px;">
                         <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
@@ -301,15 +308,13 @@
                                     </div>
                                 </div>
 
-                                <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘开始</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘结束</button>
+                                <input type="button" class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getdvdOutOrIn(this);" value="光盘出仓" />
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" id="kelumoshi" onclick="changeBurnMode();">刻录模式</button>
+                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘刻录</button>
+                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;padding: 0 4px;" onclick="getstopRec_Rom();">停止光盘刻录</button>
+                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getCDNumber();">光盘序号</button>
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="addptdj(true);">信息叠加</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">刻录模式</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">关闭音频</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">光盘序号</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="zanshimsg();">证据切换</button>
+                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
                             </div>
                         </div>
                         <div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">
@@ -411,7 +416,8 @@
         var $ = layui.$; //由于layer弹层依赖jQuery，所以可以直接得到
 
         form.on('select(burntime)', function (data) {
-            $("#bsettimerrecburntime").html(data.value + "小时");
+            // $("#bsettimerrecburntime").html(data.value + "小时");
+            updateBurnTime();
         });
 
     });

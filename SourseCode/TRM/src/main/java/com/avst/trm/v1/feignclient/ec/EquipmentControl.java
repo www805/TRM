@@ -165,4 +165,40 @@ public interface EquipmentControl {
     @RequestMapping("/flushbonading/v1/ptdj")
     @ResponseBody
     public RResult ptdj(@RequestBody ReqParam<PtdjParam_out> param);
+
+    /**
+     * 刻录模式选择
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/changeBurnMode")
+    @ResponseBody
+    public RResult changeBurnMode(@RequestBody ReqParam<ChangeBurnModeParam_out> param);
+
+    /**
+     * 光盘序号
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getCDNumber")
+    @ResponseBody
+    public RResult getCDNumber(@RequestBody ReqParam<GetCDNumberParam_out> param);
+
+    /**
+     * 获取刻录选时
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getBurnTime")
+    @ResponseBody
+    public RResult getBurnTime(@RequestBody ReqParam<GetBurnTimeParam> param);
+
+    /**
+     * 修改刻录选时
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/updateBurnTime")
+    @ResponseBody
+    public RResult updateBurnTime(@RequestBody ReqParam<GetBurnTimeParam> param);
 }
