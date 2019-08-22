@@ -298,6 +298,7 @@ public static String getLocalMac() {
 			process = Runtime.getRuntime().exec(
 					new String[] { "wmic", "cpu", "get", "ProcessorId" });
 			os=process.getOutputStream();
+			os.close();
 			in=process.getInputStream();
 			in2=process.getErrorStream();
 			br=new BufferedReader(new  InputStreamReader(in));
@@ -311,7 +312,7 @@ public static String getLocalMac() {
 
 			int exitvalue=process.waitFor();
 			if(exitvalue!=0){
-				throw new Exception("exitvalue is not 0, 说明代码有错");
+				throw new Exception(exitvalue+"exitvalue is not 0, 说明代码有错");
 			}
 
 			System.out.println( "::::::: " + line2);
@@ -367,10 +368,13 @@ public static String getLocalMac() {
 		InputStream in2=null;
 		InputStream in=null;
 		InputStreamReader isr=null;
+		OutputStream os = null;
 		try {
 
 			p = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
 			in=p.getInputStream();
+			os=p.getOutputStream();
+			os.close();
 			isr=new InputStreamReader(in,"gbk");
 			in2=p.getErrorStream();
 			bufferedReader = new BufferedReader(isr);
