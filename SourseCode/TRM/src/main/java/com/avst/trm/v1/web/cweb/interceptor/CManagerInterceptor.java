@@ -30,13 +30,14 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         try {
             //获取session，判断用户
             HttpSession session=request.getSession();
-
+            LogUtil.intoLog(3,this.getClass(),"测试8");
             boolean disbool=true;
             InitVO initVO;
             if(null==session.getAttribute(Constant.INIT_CLIENT)
                 ||CommonCache.initbool){//web客户端页面动作集
                 disbool=false;
                 initVO=CommonCache.getinit_CLIENT();
+                LogUtil.intoLog(3,this.getClass(),"测试7");
                 session.setAttribute(Constant.INIT_CLIENT,initVO);
                 if(null!=session.getAttribute(Constant.INIT_CLIENT)){
                     CommonCache.initbool=false;//只能用一次初始化判断
