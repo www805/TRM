@@ -555,6 +555,8 @@ function callbackgetRecordById(data) {
                 getFDState();
             }, 1000);
 
+            //获取刻录选时
+            getBurnTime();
         }
     }else{
         layer.msg(data.message);
