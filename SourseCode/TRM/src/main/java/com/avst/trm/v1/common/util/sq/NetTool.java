@@ -21,7 +21,7 @@ public static void main( String[] args){
 //		LogUtil.intoLog(NetTool.class,getLocalMac());
 //		LogUtil.intoLog(NetTool.class,getCPUCode());
 
-		System.out.println(getSQCode_win());
+		System.out.println(getCPUCode_win());
 
 
 	} catch (Exception e) {
@@ -198,6 +198,8 @@ public static String getLocalMac() {
 		}
 		if(null!=cpuCode&&!cpuCode.trim().equals("")){
 			cpuCode=AnalysisSQ.encode_uid(cpuCode);
+		}else{
+			LogUtil.intoLog(4,NetTool.class,"cpuCode is null");
 		}
 		return cpuCode;
 	}
@@ -290,7 +292,7 @@ public static String getLocalMac() {
 		InputStream in=null;
 		InputStream in2=null;
 		Process process=null;
-		Scanner sc=null;
+		BufferedReader br = null;
 		try {
 			long start = System.currentTimeMillis();
 			process = Runtime.getRuntime().exec(
@@ -298,10 +300,13 @@ public static String getLocalMac() {
 			os=process.getOutputStream();
 			in=process.getInputStream();
 			in2=process.getErrorStream();
-			sc = new Scanner(in);
-			String property = sc.next();
-			String serial = sc.next();
-
+			br=new BufferedReader(new  InputStreamReader(in));
+			String line2 = null ;
+			while ((line2 = br.readLine()) !=  null ) {
+				if (!line2 .trim().equals("")&&!line2 .trim().equals("ProcessorId")){
+					break;
+				}
+			}
 			printMessage(in2);
 
 			int exitvalue=process.waitFor();
@@ -309,24 +314,15 @@ public static String getLocalMac() {
 				throw new Exception("exitvalue is not 0, 说明代码有错");
 			}
 
-			System.out.println(property + "::::::: " + serial);
-			return serial;
+			System.out.println( "::::::: " + line2);
+			return line2.trim();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
 
 			try {
-				if(null!=os){
-					os.flush();
-					os.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=sc){
-					sc.close();
+				if(null!=br){
+					br.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -343,6 +339,15 @@ public static String getLocalMac() {
 			try {
 				if(null!=in){
 					in.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=os){
+					os.flush();
+					os.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
