@@ -41,9 +41,11 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                 if(null!=session.getAttribute(Constant.INIT_CLIENT)){
                     CommonCache.initbool=false;//只能用一次初始化判断
                 }
+                LogUtil.intoLog(3,this.getClass(),"测试7");
             }else{
                 initVO=(InitVO)session.getAttribute(Constant.INIT_CLIENT);
             }
+            LogUtil.intoLog(3,this.getClass(),"测试6");
             String clientkey=CommonCache.getClientKey();
             if(null!=clientkey){
                 session.setAttribute(Constant.INIT_CLIENTKEY,clientkey);
@@ -52,7 +54,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                 session.setAttribute(Constant.INIT_CLIENTKEY,clientkey);
                 LogUtil.intoLog(this.getClass(),"clientkey is null 53,clientkey="+clientkey);
             }
-
+            LogUtil.intoLog(3,this.getClass(),"测试5");
             if(null==session.getAttribute(Constant.SOCKETIO_HOST)||
                     null==session.getAttribute(Constant.SOCKETIO_PORT)){
                 String socketio_host=PropertiesListenerConfig.getProperty("socketio.server.host");
@@ -62,7 +64,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                     session.setAttribute(Constant.SOCKETIO_PORT,socketio_port);
                 }
             }
-
+            LogUtil.intoLog(this.getClass(),"测试1");
             String url=request.getRequestURI();
             if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
                 LogUtil.intoLog(this.getClass(),url+":url，跳过进入登录页面的拦截");
@@ -72,7 +74,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                 LogUtil.intoLog(this.getClass(),url+":url，测试上传接口");
                 return true;
             }
-
+            LogUtil.intoLog(3,this.getClass(),"测试2");
 
             String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
             String firstinterface=basepath+"/gotologin";
@@ -87,15 +89,17 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                     firstinterface= ( interfaceurl.startsWith("/") ? interfaceurl : ("/"+interfaceurl) );
                 }
             }
-
+            LogUtil.intoLog(3,this.getClass(),"测试3");
 //        disbool = true;  //暂时让他成功
             if (disbool&&!url.equals("/cweb/")) {
+                LogUtil.intoLog(3,this.getClass(),"测试4");
                 return true;  //通过拦截器，继续执行请求
             } else {//跳转登录界面
-                LogUtil.intoLog(this.getClass(),firstinterface+":firstinterface，跳转登录界面");
+                LogUtil.intoLog(3,this.getClass(),firstinterface+":firstinterface，跳转登录界面");
                 request.getRequestDispatcher(firstinterface).forward(request, response);
                 return false;  //没有通过拦截器，返回登录页面
             }
+
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (Exception e) {
