@@ -35,7 +35,7 @@ var html=
     '    </div>\n' +
     '    <div style="margin-bottom: 20px;">\n' +
     '        <input type="button" class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getdvdOutOrIn(this)" value="光盘出仓" />\n' +
-    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="changeBurnMode();">刻录模式</button>\n' +
+    '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" id="kelumoshi" onclick="changeBurnMode();">刻录模式</button>\n' +
     '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘刻录</button>\n' +
     '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;padding: 0 4px;" onclick="getstopRec_Rom();">停止光盘刻录</button>\n' +
     '        <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getCDNumber();">光盘序号</button>\n' +
@@ -59,7 +59,8 @@ function recordSet() {
         content: html,
         success: function (layero, index) {
             // layer.min(index);
-
+            //获取刻录选时
+            getBurnTime();
             layui.use('form', function() {
                 var form = layui.form;
                 form.render();
