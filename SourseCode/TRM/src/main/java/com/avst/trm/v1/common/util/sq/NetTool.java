@@ -21,7 +21,7 @@ public static void main( String[] args){
 //		LogUtil.intoLog(NetTool.class,getLocalMac());
 //		LogUtil.intoLog(NetTool.class,getCPUCode());
 
-		System.out.println(getSerialNumber("C"));
+		System.out.println(getSQCode_win());
 
 
 	} catch (Exception e) {
@@ -40,7 +40,8 @@ public static void main( String[] args){
 	 */
 	public static String getSQCode_win(){
 		String cpuCode=getCPUCode_win();
-		String ypCode=getHdSerialInfo();
+//		String ypCode=getHdSerialInfo();
+		String ypCode=getSerialNumber();
 		String sqcode="";
 		if(null!=cpuCode&&!cpuCode.trim().equals("")){
 			sqcode=cpuCode;
@@ -434,31 +435,89 @@ public static String getLocalMac() {
 		return HdSerial;
 	}
 
+	/**
+	 * C盘序列号
+	 * @return
+	 */
+	public static String getSerialNumber() {
 
-	public static String getSerialNumber(String drive) {
+		String drive="C";//只找C盘
 		String result = "";
+		FileWriter fw=null;
+		BufferedReader bufferedReader = null;
+		Process p = null;
+		InputStream in2=null;
+		InputStream in=null;
+		InputStreamReader isr=null;
+		OutputStream os = null;
 		try {
 			File file = File.createTempFile("realhowto",".vbs");
 			file.deleteOnExit();
-			FileWriter fw = new java.io.FileWriter(file);
+			fw = new java.io.FileWriter(file);
 			String vbs = "Set objFSO = CreateObject(\"Scripting.FileSystemObject\")\n"
 					+"Set colDrives = objFSO.Drives\n"
 					+"Set objDrive = colDrives.item(\"" + drive + "\")\n"
 					+"Wscript.Echo objDrive.SerialNumber";  // see note
 			fw.write(vbs);
 			fw.close();
-			Process p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
-			BufferedReader input =
-					new BufferedReader
-							(new InputStreamReader(p.getInputStream()));
+			p = Runtime.getRuntime().exec("cscript //NoLogo " + file.getPath());
+
+			os=p.getOutputStream();
+			os.close();
+			in=p.getInputStream();
+			isr=new InputStreamReader(in,"gbk");
+			in2=p.getErrorStream();
+			bufferedReader = new BufferedReader(isr);
+
+			printMessage(in2);
+
 			String line;
-			while ((line = input.readLine()) != null) {
+			while ((line = bufferedReader.readLine()) != null) {
 				result += line;
 			}
-			input.close();
 		}
 		catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			try {
+				if(null!=bufferedReader){
+					bufferedReader.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				if(null!=isr){
+					isr.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+
+			try {
+				if(null!=in){
+					in.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=p){
+					p.destroy();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			try {
+				if(null!=fw){
+					fw.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		return result.trim();
 	}
