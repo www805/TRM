@@ -356,6 +356,11 @@ function getCDNumber() {
     }
     // var url = "/cweb/police/record/getCDNumber";
 
+    if (fdStateInfo.roma_disktype != 10 && fdStateInfo.romb_disktype != 10) {
+        layer.msg("光盘状态，当前不是可播放的",{icon: 2});
+        return;
+    }
+
     if(!isNotEmpty(getRecordById_data)){
         layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
         return;
@@ -363,7 +368,7 @@ function getCDNumber() {
 
     layer.msg("加载中，请稍等...", {
         icon: 16,
-        time:1000
+        time:3000
     });
 
     var data={
@@ -713,7 +718,15 @@ function callFDState(data){
                 $("#guangqu").show();
                 $(".guangpan").show();
                 $("#dvd1").show();
-                $("#roma_status").html(getRomStatus(fdStateInfo.roma_status));//光盘状态
+
+                var statusName = fdStateInfo.roma_disktype;
+                if(statusName == 10){
+                    statusName = "可播放的";
+                }else{
+                    statusName = getRomStatus(fdStateInfo.roma_status);
+                }
+
+                $("#roma_status").html(statusName);//光盘状态
                 $("#roma_begintime").html(fdStateInfo.roma_begintime);//开始直刻的时间
                 $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : fdStateInfo.roma_lefttime);//直刻剩余的倒计时
                 $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime + "小时");//刻录时间
@@ -724,7 +737,15 @@ function callFDState(data){
                 $("#guangqu").show();
                 $(".guangpan").show();
                 $("#dvd2").show();
-                $("#romb_status").html(getRomStatus(fdStateInfo.romb_status));//光盘状态
+
+                var statusName = fdStateInfo.romb_disktype;
+                if(statusName == 10){
+                    statusName = "可播放的";
+                }else{
+                    statusName = getRomStatus(fdStateInfo.romb_status);
+                }
+
+                $("#romb_status").html(statusName);//光盘状态
                 $("#romb_begintime").html(fdStateInfo.romb_begintime);//开始直刻的时间
                 $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : fdStateInfo.romb_lefttime);//直刻剩余的倒计时
                 $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime + "小时");//刻录时间
