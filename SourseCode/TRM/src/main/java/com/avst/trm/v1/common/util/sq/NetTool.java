@@ -372,9 +372,9 @@ public static String getLocalMac() {
 		try {
 
 			p = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
-			in=p.getInputStream();
 			os=p.getOutputStream();
 			os.close();
+			in=p.getInputStream();
 			isr=new InputStreamReader(in,"gbk");
 			in2=p.getErrorStream();
 			bufferedReader = new BufferedReader(isr);
