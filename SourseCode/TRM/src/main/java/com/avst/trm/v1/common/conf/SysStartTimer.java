@@ -32,7 +32,7 @@ public class SysStartTimer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        scheduler.testTasks();
+        scheduler.testTasks2();
     }
 
 
