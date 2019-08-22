@@ -465,11 +465,11 @@ function getstartRec_Rom() {
     }
     // var url = "/cweb/police/record/getstartRec_Rom";
 
-    if(!isNotEmpty(getRecordById_data) || !isNotEmpty(getRecordById_data.record.police_arraignment.mtssid)){
+    if(!isNotEmpty(getRecordById_data) || !isNotEmpty(mtssid)){
         layer.msg(strtitle + "尚未开始，无法开始光盘刻录", {icon: 2});
         return;
     }
-    if(!isNotEmpty(getRecordById_data.record.police_arraignment.mtssid)){
+    if(!isNotEmpty(mtssid)){
         layer.msg("会议ssid为空或没开始笔录，无法开始光盘刻录",{icon: 2});
         return;
     }
@@ -480,7 +480,7 @@ function getstartRec_Rom() {
         token:INIT_CLIENTKEY,
         param:{
             fdType: fdtype,
-            iid: getRecordById_data.record.police_arraignment.mtssid,
+            iid: mtssid,
             burntime: burntime,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
