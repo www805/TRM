@@ -21,7 +21,7 @@ public static void main( String[] args){
 //		LogUtil.intoLog(NetTool.class,getLocalMac());
 //		LogUtil.intoLog(NetTool.class,getCPUCode());
 
-		System.out.println(getSerialNumber("c"));
+		System.out.println(getSerialNumber("C"));
 
 
 	} catch (Exception e) {
@@ -371,7 +371,7 @@ public static String getLocalMac() {
 		OutputStream os = null;
 		try {
 
-			p = Runtime.getRuntime().exec("cmd /c dir c:");//获取命令行参数
+			p = Runtime.getRuntime().exec("C:\\Windows\\System32\\cmd.exe /c dir c:");//获取命令行参数
 			os=p.getOutputStream();
 			os.close();
 			in=p.getInputStream();
