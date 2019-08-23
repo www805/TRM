@@ -26,6 +26,7 @@ function callbackuserlogin(data) {
             });
         }
     }else{
+        $("#loginbtn").html('登录')
         layer.msg(data.message);
 
     }

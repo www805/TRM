@@ -1130,33 +1130,69 @@ function select_liveurl(obj,type){
     }
     initplayer();
 }
+$(document).keydown(function (event) {
 
+});
 
 //回车
 function qw_keydown(obj,event) {
     var e = event || window.event;
-    if (e && e.keyCode == 13) { //回车键的键值为13
-        var dqname=$(obj).attr("name");
-        var trindex= $(obj).closest("tr").index();
-        if (dqname=="q") {
-            var lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');//定位本行的答
-            setFocus(lable);
-        }else {
-            var trlength=$("#recorddetail tr").length;
-            if (trlength==(trindex+1)){//最后一行答直接追加一行问答
-                focuslable(trtd_html,1,'q');
-            } else {
-                var lable=$('#recorddetail tr:eq("'+(trindex+1)+'") label[name="q"]');//定位到下一行的问
+  var keyCode = e.keyCode;
+
+    var dqname=$(obj).attr("name");
+    var trindex= $(obj).closest("tr").index();
+    var trlength=$("#recorddetail tr").length;
+    var lable=null;
+    switch(keyCode){
+        case 13:
+            console.log("回车")
+            if (dqname=="q") {
+                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');//定位本行的答
+                setFocus(lable);
+            }else {
+                if (trlength==(trindex+1)){//最后一行答直接追加一行问答
+                    focuslable(trtd_html,1,'q');
+                } else {
+                     lable=$('#recorddetail tr:eq("'+(trindex+1)+'") label[name="q"]');//定位到下一行的问
+                    setFocus(lable);
+                }
+            }
+            event.preventDefault();
+            break;
+        case 38:
+            console.log("上一句")
+           var name=dqname=="q"?"w":"q";
+            var index=(trindex-1)<=0?0:(trindex-1);
+            if (dqname=="w"){
+                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="'+name+'"]');
+                setFocus(lable);
+            }else {
+                if(trindex!=0){
+                   lable=$('#recorddetail tr:eq("'+index+'") label[name="'+name+'"]');
+                    setFocus(lable);
+                }
+                event.preventDefault();
+            }
+            break;
+        case 40:
+            console.log("下一句")
+            var index=(trindex+1)>=trlength?trlength:(trindex+1);
+            var name=dqname=="q"?"w":"q";
+            if (dqname=="q"){
+                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="'+name+'"]');
+                setFocus(lable);
+            }else {
+                 lable=$('#recorddetail tr:eq("'+index+'") label[name="'+name+'"]');
                 setFocus(lable);
             }
-        }
-        event.preventDefault();
+            break;
+        default: break;
     }
 }
 function setFocus(el) {
     if (isNotEmpty(el)){
         el = el[0];
-        el.focus();
+
 
         //回车加锚点：先判断语音识别是否开启
         if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
@@ -1189,15 +1225,26 @@ function setFocus(el) {
             }
         }
 
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        var sel = window.getSelection();
-        if(sel.anchorOffset!=0){
-            return;
-        };
-        sel.removeAllRanges();
-        sel.addRange(range);
+
+
+        if (window.getSelection) {//ie11 10 9 ff safari
+            el.focus(); //解决ff不获取焦点无法定位问题
+            var range = window.getSelection();//创建range
+            range.selectAllChildren(el);//range 选择obj下所有子内容
+            range.collapseToEnd();//光标移至最后
+        }
+        else if (document.selection) {//ie10 9 8 7 6 5
+            var range = document.createRange();
+            range.selectNodeContents(el);
+            range.collapse(false);
+            var sel = window.getSelection();
+            if(sel.anchorOffset!=0){
+                return;
+            };
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+        event.preventDefault();
     }
 };
 

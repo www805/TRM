@@ -553,6 +553,7 @@
 
     <div th:replace="footer :: footer">...</div>
 </div>
+
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
 <script th:src="@{/js/common.js}"  type="text/javascript" ></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
@@ -609,6 +610,8 @@
         $(window).resize(function(){
             $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         })
+
+
 
 
     });

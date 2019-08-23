@@ -189,9 +189,9 @@ function open_uploadword(ssid) {
                 <label class="layui-form-label">word</label>\
                 <div class="layui-input-block">\
                     <button type="button" class="layui-btn layui-btn-normal layui-input" id="test1" style="background-color: #1e9fff" onclick="wordfileclick();"><i class="layui-icon"></i>上传word模板</button>\
-                    <input id="wordfile" type="file" style="display: none;">\
+                    <input id="wordfile" type="file" style="display: none;" onchange="showfilename(this);">\
                 </div>\
-                <div class="layui-form-mid layui-word-aux">*请选择doc或者docx问答进行上传</div>\
+                <div class="layui-form-mid layui-word-aux" style="width: 100%">*请选择doc或者docx问答进行上传<div style="display: inline;text-align: right;float: right" id="showfilename"></div></div>\
             </div>\
             <div class="layui-form-item">\
                 <label class="layui-form-label">是否为默认</label>\
@@ -323,6 +323,12 @@ function callbackgetWordTemplateByssid(data) {
 
 function wordfileclick() {
     $("#wordfile").click();
+}
+function showfilename(obj) {
+    var file = document.getElementById("wordfile").files[0];
+    if (isNotEmpty(file)){
+        $("#showfilename").text(file.name);
+    }
 }
 
 //word 模板类型1 word笔录 word笔录说明
