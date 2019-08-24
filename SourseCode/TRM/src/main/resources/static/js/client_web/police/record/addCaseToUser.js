@@ -23,52 +23,52 @@ function addCaseToArraignment() {
   var url=getActionURL(getactionid_manage().addCaseToUser_addCaseToArraignment);
     var recordtypessid= $("td[recordtypebool='true']",parent.document).attr("recordtype");
     if (!isNotEmpty(recordtypessid)){
-        parent.layer.msg("未找到选择的笔录类型");
+        parent.layer.msg("未找到选择的笔录类型",{icon: 5});
         return;
     }
 
     var cardnum=$("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();
     if (!isNotEmpty(cardnum)){
-        parent.layer.msg("证件号码不能为空");
+        parent.layer.msg("证件号码不能为空",{icon: 5});
         return;
     }
     if ($.trim(cardtypetext)=="居民身份证"){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
-            parent.layer.msg("身份证输入不合法");
+            parent.layer.msg("身份证输入不合法",{icon: 5});
             return false;
         }
     }
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
-        parent.layer.msg("姓名不能为空");
+        parent.layer.msg("姓名不能为空",{icon: 5});
         return;
     }
 
     var  casename=$("#casename").val();
     if (!isNotEmpty(casename)){
-        parent.layer.msg("案件名称不能为空");
+        parent.layer.msg("案件名称不能为空",{icon: 5});
         return;
     }
 
 
     var recordadminssid=$("#recordadmin  option:selected").val();
     if (!isNotEmpty(recordadminssid)){
-        parent.layer.msg("记录人不能为空");
+        parent.layer.msg("记录人不能为空",{icon: 5});
         return;
     }
     var recordplace=$("#recordplace").val();
     var askobj=$("#askobj").val();
     if (!isNotEmpty(askobj)){
-        parent.layer.msg("询问对象不能为空");
+        parent.layer.msg("询问对象不能为空",{icon: 5});
         return;
     }
 
     var asknum=$("#asknum").val();
     var recordname=$("#recordname").val();
     if (!isNotEmpty(recordname)){
-        parent.layer.msg("笔录名称不能为空");
+        parent.layer.msg("笔录名称不能为空",{icon: 5});
         return;
     }
 
@@ -193,7 +193,7 @@ function callbackaddCaseToArraignment(data) {
             var recordtypessid=data.recordtypessid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
                 //跳转笔录制作
-                var index = parent.layer.msg('开始进行笔录', {shade:0.1,time:500
+                var index = parent.layer.msg('开始进行笔录', {shade:0.6,time:500
                 },function () {
                     if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
                         //跳转一键提讯
@@ -261,10 +261,10 @@ function callbackaddCaseToArraignment(data) {
                     }
                 }
             }else {
-                parent.layer.msg(data.message);
+                parent.layer.msg(data.message,{icon: 5});
             }
         }else {
-            parent.layer.msg(data.message);
+            parent.layer.msg(data.message,{icon: 5});
         }
     }
 }
@@ -690,7 +690,7 @@ function tabAdd(){
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
-                                                                <label class="layui-form-label">联系电话</label>\
+                                                                <label class="layui-form-label">手机号</label>\
                                                                 <div class="layui-input-block">\
                                                                     <input type="text" name="tab_phone"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\

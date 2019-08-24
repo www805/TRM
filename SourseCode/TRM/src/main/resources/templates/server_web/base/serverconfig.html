@@ -167,15 +167,15 @@
             ,done: function(res){
                 //如果上传失败
                 if (res.data == "") {
-                    return layer.msg('上传失败');
+                    return layer.msg('上传失败',{icon: 5});
                 }
                 //上传成功
                 //把图片地址回显在输入框中
                 $('input[name="' + filesavessid + '"]').val(res.data);
                 if (filesavessid == "syslogo_filesavessid") {
-                    layer.msg('系统logo上传成功', {icon: 1});
+                    layer.msg('系统logo上传成功', {icon:6});
                 }else{
-                    layer.msg('客户端logo上传成功', {icon: 1});
+                    layer.msg('客户端logo上传成功', {icon: 6});
                 }
 
             }

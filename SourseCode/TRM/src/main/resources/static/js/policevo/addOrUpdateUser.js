@@ -19,7 +19,7 @@ function callbackgetWorkunits(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -45,7 +45,7 @@ function callbackgetRoles(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -54,7 +54,7 @@ function callbackgetRoles(data){
 
 function getUserBySsid(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -102,7 +102,7 @@ function callbackgetUserBySsid(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -137,7 +137,7 @@ function addOrUpdateUser() {
     if (!isNotEmpty(ssid)){
         var password_again=$("#password_again").val();
         if (password!=password_again) {
-            layer.msg("密码输入不一致",{icon: 2});
+            layer.msg("密码输入不一致",{icon: 5});
             return false;
         }
     }
@@ -162,12 +162,12 @@ function addOrUpdateUser() {
         contentType: "application/json",
         success : function(reData) {
             if ($.trim(reData) == null) {
-                parent.layer.msg("本次请求失败",{icon: 2});
+                parent.layer.msg("本次请求失败",{icon: 5});
             } else {
                 callbackaddOrUpdateUser(reData);
             }
         },error : function(){
-            parent.layer.msg("请求异常",{icon: 2});
+            parent.layer.msg("请求异常",{icon: 5});
         }
     });
 }
@@ -177,7 +177,7 @@ function callbackaddOrUpdateUser(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                layer.msg("保存成功",{icon: 1,time:500},function () {
+                layer.msg("保存成功",{icon: 6,time:500},function () {
                     var nextparam=getAction(getactionid_manage().addOrUpdateUser_updateUser);
                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                         setpageAction(INIT_WEB,nextparam.nextPageId);
@@ -188,6 +188,6 @@ function callbackaddOrUpdateUser(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }

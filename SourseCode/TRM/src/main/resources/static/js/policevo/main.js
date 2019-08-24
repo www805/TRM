@@ -66,7 +66,7 @@ function callgetNavList(data) {
             element.render();
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 

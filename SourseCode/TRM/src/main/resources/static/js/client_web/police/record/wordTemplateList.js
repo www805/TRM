@@ -49,7 +49,7 @@ function callbackgetWordTemplateList(data){
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -100,7 +100,7 @@ function callbackgetRecordtypes(data) {
             gets(recordtypes);
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -149,7 +149,7 @@ function getsm(data) {
 function preview(url) {
 
     if (!isNotEmpty(url)){
-        layer.msg("请先上传word模板");
+        layer.msg("请先上传word模板",{icon: 5});
         return;
     }
 
@@ -215,7 +215,7 @@ function open_uploadword(ssid) {
         yes:function(index, layero){
             var file = document.getElementById("wordfile").files[0];
             if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
-                layer.msg("请选择文件进行上传");
+                layer.msg("请选择文件进行上传",{icon: 5});
                 return;
             }
 
@@ -230,13 +230,13 @@ function open_uploadword(ssid) {
             }
 
             if (!isNotEmpty(recordtypessid)) {
-                layer.msg("请选择笔录类型");
+                layer.msg("请选择笔录类型",{icon: 5});
                 $("#recordtypessidm").focus();
                 return;
             }
 
             if (!isNotEmpty(wordtemplatename)) {
-                layer.msg("请输入word模板名称");
+                layer.msg("请输入word模板名称",{icon: 5});
                 $("#wordtemplatenamem").focus();
                 return;
             }
@@ -313,7 +313,7 @@ function callbackgetWordTemplateByssid(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -371,13 +371,13 @@ function callbackuploadWordTemplate(str) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg("保存成功",{time:500},function () {
+            layer.msg("保存成功",{time:500,icon:6},function () {
                 layer.close(open_uploadword_index);
                 getWordTemplateListByParam();
             });
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -395,7 +395,7 @@ $(function () {
             var obj=switchdata.elem.checked;
             var ssid=switchdata.value;
             if (!isNotEmpty(ssid)){
-                layer.msg("系统异常");
+                layer.msg("系统异常",{icon: 5});
                 return;
             }
 
@@ -432,7 +432,7 @@ $(function () {
                             }
                         }else{
                             switchdata.elem.checked=!obj;
-                            layer.msg(data.message,{icon: 2});
+                            layer.msg(data.message,{icon: 5});
                         }
                     });
                     form.render();
@@ -456,9 +456,9 @@ $(function () {
 function exportWord(worddownurl) {
     if (isNotEmpty(worddownurl)){
         window.location.href = worddownurl;
-        layer.msg("导出成功,等待下载中...");
+        layer.msg("导出成功,等待下载中...",{icon: 6});
     }else {
-        layer.msg("导出失败");
+        layer.msg("导出失败",{icon: 5});
     }
 }
 
@@ -466,7 +466,7 @@ function exportWord(worddownurl) {
 //word模板制作说明--------------------------start---------------------------------------------//
 function open_getWordexplain() {
     if (!isNotEmpty(explaindownurl_html)){
-        layer.msg("请先上传word模板制作说明");
+        layer.msg("请先上传word模板制作说明",{icon: 5});
         return;
     }
 
@@ -489,7 +489,7 @@ function open_uploadWordexplain() {
 function uploadWordexplain() {
     var file = document.getElementById("wordexplainfile").files[0];
     if (!isNotEmpty(file)){
-        layer.msg("请选择文件进行上传");
+        layer.msg("请选择文件进行上传",{icon: 5});
         return;
     }
 

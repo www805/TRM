@@ -39,7 +39,7 @@
     }
 </style>
 
-<div class="layui-form"  style="margin: 10px">
+<form class="layui-form"  style="margin: 10px">
 
     <div class="layui-elem-quote" style=" padding: 10px;">
         <h3 th:text="${startConversationModel.title}">智能提讯系统</h3>
@@ -62,7 +62,7 @@
                                 <div class="layui-input-block">
                                     <div class="layui-form-select">
                                         <div class="layui-select-title">
-                                            <input type="text" name="cardnum"  placeholder="" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onfocus="getUserinfoList()" onblur="select_cardnumblur();">
+                                            <input type="text" name="cardnum"  placeholder="请输入证件号" autocomplete="off" class="layui-input" lay-verify="cardnum" id="cardnum" oninput="getUserinfoList()"  onfocus="getUserinfoList()" onblur="select_cardnumblur();">
                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard();"></i>
                                         </div>
                                         <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"    >
@@ -74,7 +74,7 @@
                             <div class="layui-col-md6 layui-col-xs6 layui-col-lg6">
                                 <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>姓名</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="username" id="username"  placeholder="" autocomplete="off" class="layui-input">
+                                    <input type="text" name="username" id="username"  lay-verify="username" placeholder="请输入姓名" autocomplete="off" class="layui-input">
                                 </div>
                             </div>
 
@@ -146,7 +146,7 @@
                                     <div class="layui-col-md12 layui-col-xs12 layui-col-lg12">
                                         <div class="layui-form-select">
                                             <div class="layui-select-title">
-                                                <input type="text" name="casename"  placeholder="" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
+                                                <input type="text" name="casename"  lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
                                             </div>
                                             <dl class="layui-anim layui-anim-upbit"  id="casename_ssid"   >
 
@@ -156,7 +156,7 @@
                                 </div>
                             </div>
                             <div class="layui-col-md6 layui-col-xs6 layui-col-lg6">
-                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案发时间</label>
+                                <label class="layui-form-label">案发时间</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="occurrencetime"  id="occurrencetime"  placeholder="" autocomplete="off" class="layui-input">
                                 </div>
@@ -164,14 +164,14 @@
                             <div class="layui-col-md6 layui-col-xs6 layui-col-lg6">
                                 <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>记录人</label>
                                 <div class="layui-input-block">
-                                    <select name="recordadmin"  id="recordadmin"  lay-search="">
+                                    <select name="recordadmin"  id="recordadmin"  lay-search="" lay-verify="recordadmin">
 
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-md12 layui-col-xs12 layui-col-lg12">
                                 <div class="layui-input-block" style="float: right">
-                                    <button class=" layui-btn layui-btn-warm  layui-btn-lg" type="button" style="float: right" onclick="addCaseToArraignment();" id="startrecord_btn">开始审讯</button>
+                                    <button class=" layui-btn layui-btn-warm  layui-btn-lg" type="button" style="float: right" id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn">开始审讯</button>
                                 </div>
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                     </div>
                 </div>
         </div>
-    </div>
+    </form>
 
 </div>
 
@@ -220,6 +220,27 @@
             ,type:"datetime"
             ,value: new Date(Date.parse(new Date()))
             ,format: 'yyyy-MM-dd HH:mm:ss'
+        });
+
+        form.verify({
+            cardnum:function (value) {
+            var cardtypetext = $("#cards option:selected").text();
+            if ($.trim(cardtypetext) == "居民身份证" && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
+                return "请输入正确的18位居民身份证号码";
+            }
+            if (!(/\S/).test(value)) {
+                    return "请输入证件号码"
+             }
+        },
+            username:[ /\S/,"请输入姓名"],
+            casename:[ /\S/,"请输入案件名称"],
+            recordadmin:[ /\S/,"请输入记录人"],
+        });
+
+
+        form.on('submit(startrecord_btn)', function (data) {
+            addCaseToArraignment();
+            return false;
         });
     });
 

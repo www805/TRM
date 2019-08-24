@@ -25,7 +25,7 @@ function callbackggetdataInfos(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -67,12 +67,12 @@ function startdownServer(type,datainfossid) {
 
     var upserverip=$("#upserverip").val();
     if (!isNotEmpty(upserverip)){
-        layer.msg("请输入要你要同步的上级服务器IP",{icon: 2});
+        layer.msg("请输入要你要同步的上级服务器IP",{icon: 5});
         return false;
     }
 
     if (null==type) {
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon:5});
         return false;
     }
 
@@ -118,12 +118,12 @@ function progressFunction(evt) {
 function callbackstartdownServer(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("同步成功",{icon: 2});
+            layer.msg("同步成功",{icon: 5});
             $("#closeddownServer_btn").hide();
             $("#startdownServer_btn").text("全部同步").removeClass('layui-btn-disabled').prop("disabled" , false);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
         $("#closeddownServer_btn").show();
         $("#startdownServer_btn").text("同步失败").addClass('layui-btn-disabled').prop("disabled" , true);
     }
@@ -178,7 +178,7 @@ function callbackcloseddownServer(data) {
             $("#startdownServer_btn").text("全部同步").removeClass('layui-btn-disabled').prop("disabled" , false);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
         $("#closeddownServer_btn").show().text("强制关闭同步").removeClass('layui-btn-disabled').prop("disabled" , false);
     }
     layer.close(index);

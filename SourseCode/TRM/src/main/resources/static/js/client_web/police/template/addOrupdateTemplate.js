@@ -75,7 +75,7 @@ function callTmplates(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -92,7 +92,7 @@ function callTmplates2(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -102,7 +102,7 @@ function callAddOrUpdate(data){
         if (isNotEmpty(data)){
             // window.location.reload();
             // console.log(data);
-            layer.msg("操作成功",{icon: 1});
+            layer.msg("操作成功",{icon: 6});
             setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);
         }
     }else{
@@ -122,7 +122,7 @@ function callAddOrUpdate(data){
             });
 
         }else{
-            layer.msg(data.message,{icon: 2});
+            layer.msg(data.message,{icon: 5});
         }
     }
 }
@@ -141,7 +141,7 @@ function callProblemTypes(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -152,7 +152,7 @@ function callUpdateProblem(data){
             modelban(problem);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -196,7 +196,7 @@ function callTemplateById(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -220,14 +220,14 @@ function callTmplateTypes(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
 function callAddTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("操作成功！",{icon: 1});
+            layer.msg("操作成功！",{icon: 6});
 
             setTimeout(function () {
                 setpageAction(INIT_CLIENT, "client_web/base/main");
@@ -251,7 +251,7 @@ function callAddTmplate(data){
             });
 
         }else{
-            layer.msg(data.message,{icon: 2});
+            layer.msg(data.message,{icon: 5});
         }
     }
 }
@@ -259,7 +259,7 @@ function callAddTmplate(data){
 function callUpdateTmplate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("操作成功！",{icon: 1});
+            layer.msg("操作成功！",{icon: 6});
 
             setTimeout("var templateTypeId = $(\"#templateType\").val();var editSsid = getQueryString(\"ssid\");var templateId = getQueryString(\"templateId\");window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId;",1500);
             // window.location.reload();
@@ -278,7 +278,7 @@ function callUpdateTmplate(data){
             });
 
         }else{
-            layer.msg(data.message,{icon: 2});
+            layer.msg(data.message,{icon: 5});
         }
     }
 }
@@ -372,7 +372,7 @@ function AddOrUpdateProblem(version) {
     // console.log(url);
 
     if("" == problem){
-        layer.msg("问题不能为空",{icon: 2});
+        layer.msg("问题不能为空",{icon: 5});
         return;
     }
 
@@ -546,11 +546,11 @@ function getDataAll() {
     title = title.replace("//s/g", "");
     // alert(t01);
     if (tableLength == 0) {
-        layer.msg("模板问题不能为空", {icon: 2});
+        layer.msg("模板问题不能为空", {icon: 5});
         return;
     }
     if(!title){
-        layer.msg("模板标题不能为空", {icon: 2});
+        layer.msg("模板标题不能为空", {icon: 5});
         // $("#templateTitle").css("border","1px solid red");
         $("#templateTitle").focus();
         return;
@@ -570,7 +570,7 @@ function getDataAll() {
 
         if(arr[0] == ""){
             tiaochu = false;
-            layer.msg("新增的问题不能为空", {icon: 2});
+            layer.msg("新增的问题不能为空", {icon: 5});
             return;
         }
 

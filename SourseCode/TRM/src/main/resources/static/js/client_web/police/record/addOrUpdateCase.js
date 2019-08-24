@@ -4,7 +4,7 @@
  */
 function getCaseBySsid(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -70,7 +70,7 @@ function addOrUpdateCase() {
         $("#casename").focus();
         return;
     }
-    if (!isNotEmpty(cause)) {
+    /*if (!isNotEmpty(cause)) {
         layer.msg("请输入当前案由");
         $("#cause").focus();
         return;
@@ -89,7 +89,7 @@ function addOrUpdateCase() {
         layer.msg("请输入到案方式");
         $("#caseway").focus();
         return;
-    }
+    }*/
 
 
     var data={
@@ -113,7 +113,7 @@ function callbackaddOrUpdateCase(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                layer.msg("保存成功",{icon: 1,time:500},function () {
+                layer.msg("保存成功",{icon: 6,time:500},function () {
                     var nextparam=getAction(getactionid_manage().addOrUpdateCase_updateCase);
                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                         setpageAction(INIT_CLIENT,nextparam.nextPageId);
@@ -124,7 +124,7 @@ function callbackaddOrUpdateCase(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -159,7 +159,7 @@ function callbackgetUserinfoList(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form =  layui.form;

@@ -18,10 +18,10 @@ function callgetKeywordById(data) {
 
         console.log(data);
 
-        layer.msg(data.message,{icon: 1});
+        layer.msg(data.message,{icon: 6});
     }else{
         // alert(data.message);
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;

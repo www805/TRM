@@ -60,7 +60,7 @@ function callbackgetCases(data){
             recordtype_conversation2=data.data.recordtype_conversation2;
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -104,7 +104,7 @@ function showpagetohtml(){
 
 function open_RecordsByCasessid(casessid,arraignmentslength,creator) {
     if (null==arraignmentslength||arraignmentslength<1){
-        layer.msg("该案件没有笔录");
+        layer.msg("该案件没有笔录",{icon: 5});
         return;
     }
 
@@ -212,13 +212,13 @@ function callbackgetRecordByCasessid(data) {
                             ajaxSubmitByJson(url,d,function (data) {
                                 if(null!=data&&data.actioncode=='SUCCESS'){
                                     if (isNotEmpty(data)) {
-                                        layer.msg("删除成功", {time: 500}, function () {
+                                        layer.msg("删除成功", {icon: 6,time: 500}, function () {
                                             obj.del();
                                             getCasesByParam();
                                         });
                                     }
                                 }else{
-                                    layer.msg(data.message);
+                                    layer.msg(data.message,{icon: 5});
                                 }
                             });
                             layer.close(index);
@@ -229,7 +229,7 @@ function callbackgetRecordByCasessid(data) {
             });
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -237,7 +237,7 @@ function callbackgetRecordByCasessid(data) {
 function changeboolCase(ssid,oldcasebool) {
     var con="案件归档后将不再被提讯，确定要归档吗";
     if (isNotEmpty(oldcasebool)&&oldcasebool==2){
-        layer.msg("案件已归档");
+        layer.msg("案件已归档",{icon: 6});
         return;
     }
 

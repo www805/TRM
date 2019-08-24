@@ -29,7 +29,7 @@ function callTmplateTypes(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -74,7 +74,7 @@ function callTmplates(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 function callTmplates2(data){
@@ -84,7 +84,7 @@ function callTmplates2(data){
             getTemplateById(0);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

@@ -17,13 +17,13 @@ function getUpdateServerConfig(){
     var authorizesortnum =$('input[name="authorizesortnum"]').val();
 
     if (sysname.length > 9) {
-        layer.msg("系统名称不能超过9个字符");
+        layer.msg("系统名称不能超过9个字符",{icon: 5});
         $("#clientname").focus();
         return;
     }
 
     if (clientname.length > 9) {
-        layer.msg("客户端名称不能超过9个字符");
+        layer.msg("客户端名称不能超过9个字符",{icon: 5});
         $("#clientname").focus();
         return;
     }
@@ -47,7 +47,7 @@ function getUpdateServerConfig(){
 
 function callServerConfig(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg(data.message, {icon:1});
+        layer.msg(data.message, {icon:6});
         setTimeout("window.location.reload()",1500);
     }else{
         // alert(data.message);

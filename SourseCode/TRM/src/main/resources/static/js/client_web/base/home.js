@@ -86,7 +86,7 @@ function callbackgetHome(data) {
             });
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -301,7 +301,7 @@ function callbackaddCaseToArraignment(data) {
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
-                var index = layer.msg('开始进行审讯', {shade:0.1,time:500
+                var index = layer.msg('开始进行审讯', {icon: 6,shade:0.1,time:500
                 },function () {
                     location.href=window.waitconversationURL+"?ssid="+recordssid
                 });
@@ -345,10 +345,10 @@ function callbackaddCaseToArraignment(data) {
                     }
                 }
             }else {
-                layer.msg(data.message);
+                layer.msg(data.message,{icon: 5});
             }
         }else {
-            layer.msg(data.message);
+            layer.msg(data.message,{icon: 5});
         }
     }
 }

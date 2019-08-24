@@ -30,8 +30,8 @@
     </div>
 
 
-<div  >
-        <div class="layui-row" style="margin-top: 10%">
+
+        <form class="layui-row layui-form" style="margin-top: 10%">
             <div class="layui-col-md12 ">
                 <div class="layui-col-md6 ">
                     <div style="float: right; width:432px; height:400px;"><img id="clientimage" src="/uimaker/images/login-img.png" style="border:0px;width:432px; height:400px;"/></div>
@@ -43,17 +43,17 @@
                         <div class="login_name">
                             <p th:text="${loginModel.serviceName}">智能提讯系统</p>
                         </div>
-                        <input name="loginaccount" id="loginaccount" type="text" placeholder="用户名" value="admin">
-                        <input name="password" id="password" type="password" placeholder="密码" value="admin">
-                        <button  type="button" id="loginbtn" onclick="userlogin();">登录</button>
+                        <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="admin" lay-verify="loginaccount">
+                        <input name="password" id="password" type="password" placeholder="密码" value="admin" lay-verify="password">
+                        <button  type="button" id="loginbtn"  lay-filter="loginbtn" lay-submit="">登录</button>
                     </div>
                 </div>
             </div>
-        </div>
-</div>
+        </form>
 
 
-<div class="layui-footer"  style="left: 0; height: 30px; line-height: 30px;font-size: 12px">
+
+    <div class="layui-footer"  style="left: 0; height: 30px; line-height: 30px;font-size: 12px">
         <p id="bottom_mian" style=" text-align:center;">笔录系统</a></p>
     </div>
 </div>
@@ -99,10 +99,6 @@
             $("#loginbtn").click();
         }
     });
-    layui.use(['layer','element'], function(){
-        var layer = layui.layer; //获得layer模块
-        var element = layui.element;
-        //使用模块
-    });
+
 </script>
 </html>

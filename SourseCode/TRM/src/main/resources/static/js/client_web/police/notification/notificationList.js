@@ -30,7 +30,7 @@ function getNotificationList(notificationname, currPage, pageSize) {
 //删除告知书
 function deleteNotificationById(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -87,7 +87,7 @@ function calldownloadNotification(data){
         if (isNotEmpty(filesave)){
             var base_filesave=filesave.base_filesave;
             if (isNotEmpty(base_filesave)) {
-                layer.msg("下载中，请稍后...");
+                layer.msg("下载中，请稍后...",{icon: 5});
                 // window.location.href = filesave.recorddownurl;
 
                 var url = base_filesave.recorddownurl;
@@ -114,7 +114,7 @@ function calldownloadNotification(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -132,18 +132,18 @@ function callNotificationList(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon:5});
     }
 }
 
 function callDeleteNotificationById(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data.data)){
-            layer.msg(data.data,{icon: 1});
+            layer.msg(data.data,{icon: 6});
             setTimeout("window.location.reload()",1500);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

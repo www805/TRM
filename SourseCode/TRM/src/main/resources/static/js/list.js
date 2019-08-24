@@ -32,7 +32,7 @@ function callbackgetAdminInfoPage(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         pageshow(data);
     }else{
-        parent.layer.msg(data.message,{icon: 2},1);
+        parent.layer.msg(data.message,{icon: 5},1);
     }
 
 }

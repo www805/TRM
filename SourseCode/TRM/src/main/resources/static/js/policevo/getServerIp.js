@@ -112,7 +112,7 @@ function callgetServerIpALL(data){
 
 function callUpdateServerIp(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg("操作成功",{icon: 1});
+        layer.msg("操作成功",{icon: 6});
         setTimeout("window.location.reload()",1500);
     }else{
         layer.msg(data.message, {icon:5});

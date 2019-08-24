@@ -345,7 +345,7 @@ function overRecord() {
                 }
             };
             $("#overRecord_btn").attr("click","");
-            getstopRec_Rom();//停止光驱刻录
+
             ajaxSubmitByJson(url, data, calladdRecord);
         }else{
             layer.msg("系统异常");

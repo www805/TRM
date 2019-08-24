@@ -123,7 +123,7 @@ public class MainService extends BaseService {
 
         //检查用户登陆
         EntityWrapper ew=new EntityWrapper();
-        ew.eq("loginaccount",loginaccount1);
+        ew.eq("BINARY  loginaccount",loginaccount1);//BINARY区分大小写
         List<AdminAndWorkunit> users= base_admininfoMapper.getAdminListAndWorkunit(ew);
         if (null!=users&&users.size()>0){
             if (users.size()==1){
@@ -163,6 +163,8 @@ public class MainService extends BaseService {
                     result.setData(userloginVO);
                     changeResultToSuccess(result);
                     return;
+                }else {
+                    LogUtil.intoLog(this.getClass(),"登录异常了--账户"+loginaccount1+"--密码--"+password);
                 }
             }else{
                 LogUtil.intoLog(this.getClass(),"多个用户异常--"+loginaccount1);

@@ -36,7 +36,7 @@ function callbackgetServerconfig(data) {
            }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
 
     }
 }
@@ -70,31 +70,31 @@ function updateServerconfig() {
     var workdays=$("#workdays").val();
 
     if (!isNotEmpty(clientname)) {
-        layer.msg("请输入客户端名称");
+        layer.msg("请输入客户端名称",{icon: 5});
         $("#clientname").focus();
         return;
     }
 
     if (clientname.length > 9) {
-        layer.msg("客户端名称不能超过9个字符");
+        layer.msg("客户端名称不能超过9个字符",{icon: 5});
         $("#clientname").focus();
         return;
     }
 
     if (!isNotEmpty(serverip)) {
-        layer.msg("请输入服务器IP");
+        layer.msg("请输入服务器IP",{icon: 5});
         $("#serverip").focus();
         return;
     }
 
     if (!isNotEmpty(serverport)) {
-        layer.msg("请输入服务器端口");
+        layer.msg("请输入服务器端口",{icon: 5});
         $("#serverport").focus();
         return;
     }
 
     if (!isNotEmpty(workdays)) {
-        layer.msg("请输入同步时间(天");
+        layer.msg("请输入同步时间(天",{icon: 5});
         $("#workdays").focus();
         return;
     }
@@ -145,11 +145,11 @@ function callbackupdateServerconfig(str) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg("保存成功",{time:500},function () {
+            layer.msg("保存成功",{icon: 6,time:500},function () {
                 getServerconfig();
             });
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }

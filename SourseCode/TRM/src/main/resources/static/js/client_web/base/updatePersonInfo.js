@@ -29,7 +29,7 @@ function getWorkunits() {
 
 function getUserBySsid(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
     var url=getActionURL(getactionid_manage().main_getUserBySsid);
@@ -76,7 +76,7 @@ function callbackgetUserBySsid(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -96,7 +96,7 @@ function callbackgetWorkunits(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -104,13 +104,13 @@ function callupdatePersonInfo(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             if(data.data == 1){
-                layer.msg("修改成功",{icon: 1});
+                layer.msg("修改成功",{icon: 6});
                 setTimeout("window.parent.location.reload();",1500);
             }else{
-                layer.msg(data.message,{icon: 2});
+                layer.msg(data.message,{icon: 5});
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }

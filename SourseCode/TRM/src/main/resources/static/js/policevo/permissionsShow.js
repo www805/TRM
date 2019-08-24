@@ -16,7 +16,7 @@ function callbackgetRoles(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form =  layui.form;
@@ -63,7 +63,7 @@ function callgetPermissions(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form =  layui.form;
@@ -129,7 +129,7 @@ function callgetPermissionsByRoleSsid(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form =  layui.form;
@@ -164,12 +164,12 @@ function updateRoleToPermissions() {
             contentType: "application/json",
             success : function(reData) {
                 if ($.trim(reData) == null) {
-                    parent.layer.msg("本次请求失败",{icon: 2});
+                    parent.layer.msg("本次请求失败",{icon: 5});
                 } else {
                     callbackupdateRoleToPermissions(reData);
                 }
             },error : function(){
-                parent.layer.msg("请求异常",{icon: 2});
+                parent.layer.msg("请求异常",{icon:5});
             }
         });
     }
@@ -180,18 +180,18 @@ function callbackupdateRoleToPermissions(data) {
         if (isNotEmpty(data)) {
             var data = data.data;
             if (isNotEmpty(data)) {
-                layer.msg("保存成功", {icon: 1});
+                layer.msg("保存成功", {icon: 6});
                 getPermissionsByRoleSsid();
             }
         } else {
-            layer.msg(data.message, {icon: 2});
+            layer.msg(data.message, {icon: 5});
         }
         layui.use('form', function () {
             var form = layui.form;
             form.render();
         });
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

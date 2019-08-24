@@ -19,7 +19,7 @@ function callbackgetAdminInfoPage(data){
         var url=getActionURL(getactionid_manage().login_main);
         window.location.href=url;
     }else{
-        layer.msg(data.message, {icon: 2});
+        layer.msg(data.message, {icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -87,7 +87,7 @@ function callgetNavList(data) {
             element.render();
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 

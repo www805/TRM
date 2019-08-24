@@ -956,7 +956,7 @@ function calladdRecord(data) {
                     }
                 });
             } else {
-                layer.msg('保存成功');
+                layer.msg('保存成功',{icon:6});
             }
         }
     }else{
@@ -986,7 +986,7 @@ var overRecord_loadindex =null;
         $("#record_switch_bool").attr("isn",-1);
         $("#record_switch_bool").removeClass("layui-form-onswitch");
         $("#record_switch_bool").find("em").html("关闭");
-        getstopRec_Rom();//停止光驱刻录
+
 
         overRecord_index=index;
         recordbool=2;

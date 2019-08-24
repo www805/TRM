@@ -201,7 +201,7 @@ function callbackgetRecordById(data) {
 
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -313,7 +313,7 @@ function  set_getPlayUrl(data) {
                 videourl=dq_play.playUrl;
                 initplayer();
             }else {
-                layer.msg("文件获取中...")
+                layer.msg("文件获取中...",{icon: 5})
             }
 
             $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
@@ -331,7 +331,7 @@ function  set_getPlayUrl(data) {
                     videourl=dq_play.playUrl;
                     initplayer();
                 }else {
-                    layer.msg("文件获取中...")
+                    layer.msg("文件获取中...",{icon: 5})
                 }
             });
         }
@@ -353,7 +353,7 @@ function btn(obj) {
 function exportWord(obj){
     if (isNotEmpty(worddownurl)){
         window.location.href = worddownurl;
-        layer.msg("导出成功,等待下载中...");
+        layer.msg("导出成功,等待下载中...",{icon: 6});
     }else {
         //调用导出方法
         layer.msg("导出中，请稍等...", {
@@ -374,10 +374,10 @@ function exportWord(obj){
                     var word_htmlpath=data.word_htmlpath;//预览html地址
                     var word_path=data.word_path;//下载地址
                     window.location.href = word_path;
-                    layer.msg("导出成功,等待下载中...");
+                    layer.msg("导出成功,等待下载中...",{icon: 6});
                 }
             }else{
-                layer.msg(data.message);
+                layer.msg(data.message,{icon: 5});
             }
         });
     }
@@ -396,7 +396,7 @@ function exportPdf(obj) {
         });
 
         showPDF("pdfid",pdfdownurl);
-        layer.msg("导出成功,等待下载中...");
+        layer.msg("导出成功,等待下载中...",{icon: 6});
     }else{
         //调用导出方法
         layer.msg("导出中，请稍等...", {
@@ -425,10 +425,10 @@ function exportPdf(obj) {
                         area: ['893px', '600px'],
                     });
                     showPDF("pdfid",pdfdownurl);
-                    layer.msg("导出成功,等待下载中...");
+                    layer.msg("导出成功,等待下载中...",{icon: 6});
                 }
             }else{
-                layer.msg(data.message);
+                layer.msg(data.message,{icon: 5});
             }
         });
     }

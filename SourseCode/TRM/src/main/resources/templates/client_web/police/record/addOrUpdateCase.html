@@ -20,23 +20,23 @@
     </div>
     <form class="layui-form  layui-form-pane layui-main site-inline" action="" style="margin-top: 30px;">
         <div class="layui-form-item">
-            <label class="layui-form-label">案件名称</label>
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
             <div class="layui-input-block">
-                <input type="text" name="casename" id="casename"   lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
+                <input type="text" name="casename" id="casename"   lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">案件编号</label>
             <div class="layui-input-block">
-                <input type="text" name="casenum" id="casenum" required  lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="casenum" id="casenum" required   placeholder="请输入案件编号" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">当前案由</label>
             <div class="layui-input-block">
-                <input type="text" name="cause" id="cause" required  lay-verify="required" placeholder="请输入当前案由" autocomplete="off" class="layui-input">
+                <input type="text" name="cause" id="cause" required   placeholder="请输入当前案由" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -64,15 +64,15 @@
         <div class="layui-form-item">
             <label class="layui-form-label">到案方式</label>
             <div class="layui-input-block">
-                <input type="text" name="caseway" id="caseway" required  lay-verify="required" placeholder="请输入到案方式" autocomplete="off" class="layui-input">
+                <input type="text" name="caseway" id="caseway" required   placeholder="请输入到案方式" autocomplete="off" class="layui-input">
             </div>
         </div>
 
 
         <div class="layui-form-item">
-            <label class="layui-form-label">案件人</label>
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件人</label>
             <div class="layui-input-block">
-                <select name="userssid" lay-verify="required" id="userssid"  lay-search>
+                <select name="userssid" lay-verify="userssid" id="userssid"  lay-search>
                     <option value="">请选择案件人</option>
                 </select>
             </div>
@@ -80,7 +80,7 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <input type="button"  class="layui-btn layui-btn-normal" onclick="addOrUpdateCase();" value="保存" />
+                <input type="button"  class="layui-btn layui-btn-normal"  lay-submit=""  lay-filter="addOrUpdateCase_btn" value="保存" />
                 <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回</button>
             </div>
         </div>
@@ -134,6 +134,18 @@
             ,type: 'datetime'
         });
         form.render();
+
+        form.verify({
+            userssid:[ /\S/,"请选择案件人"],
+            casename:[ /\S/,"请输入案件名称"],
+        });
+
+
+
+        form.on('submit(addOrUpdateCase_btn)', function (data) {
+            addOrUpdateCase();
+            return false;
+        });
     });
 </script>
 </html>

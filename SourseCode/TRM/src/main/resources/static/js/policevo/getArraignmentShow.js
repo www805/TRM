@@ -1,7 +1,7 @@
 var recordstarttime=null;//录音开始时间戳
 function getArraignmentBySsid(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -125,7 +125,7 @@ function callbackgetArraignmentBySsid(data) {
             });
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

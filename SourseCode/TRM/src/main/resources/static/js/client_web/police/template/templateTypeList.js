@@ -64,14 +64,14 @@ function callAddOrUpdate(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             if (data.data.bool) {
-                layer.msg("操作成功",{icon: 1});
+                layer.msg("操作成功",{icon: 6});
             }else{
-                layer.msg("操作失败",{icon: 2});
+                layer.msg("操作失败",{icon: 5});
             }
             setTimeout("window.location.reload()",1500);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -89,7 +89,7 @@ function callTemplateTypeList(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -99,7 +99,7 @@ function callTemplateTypeById(data){
             opneModal_1(data.data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

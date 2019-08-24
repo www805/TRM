@@ -1,7 +1,7 @@
 
 function getRoleBySsid(ssid) {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -32,7 +32,7 @@ function callbackgetRoleBySsid(data) {
           }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -68,7 +68,7 @@ function callbackaddOrUpdateRole(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                layer.msg("保存成功",{icon: 1,time:500},function () {
+                layer.msg("保存成功",{icon: 6,time:500},function () {
                     var nextparam=getAction(getactionid_manage().addOrUpdateRole_updateRole);
                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                         setpageAction(INIT_WEB,nextparam.nextPageId);
@@ -79,7 +79,7 @@ function callbackaddOrUpdateRole(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

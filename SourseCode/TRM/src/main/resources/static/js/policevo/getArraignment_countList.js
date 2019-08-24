@@ -67,7 +67,7 @@ function callCountExcelList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var host = "http://localhost";
-            layer.msg(data.message,{icon: 1});
+            layer.msg(data.message,{icon: 6});
             // window.location.href = "file://" + data.data;
             window.location.href = host + data.data;
             // window.open("file:///" + data.data);
@@ -78,7 +78,7 @@ function callCountExcelList(data){
             });
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon:5});
     }
 }
 
@@ -88,7 +88,7 @@ function callCountList(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 

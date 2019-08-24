@@ -29,7 +29,7 @@ function callbackgetRoleList(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -69,7 +69,7 @@ function showpagetohtml(){
 
 function deleteRole(ssid){
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 2});
+        layer.msg("系统异常",{icon: 5});
         return;
     }
 
@@ -96,7 +96,7 @@ function callbackdeleteRole(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
-                layer.msg("删除成功",{icon: 1,time:500},function () {
+                layer.msg("删除成功",{icon: 6,time:500},function () {
                    /* var nextparam=getAction(getactionid_manage().getRoleList_deleteRole);
                     if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                         setpageAction(INIT_WEB,nextparam.nextPageId);
@@ -108,7 +108,7 @@ function callbackdeleteRole(data) {
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -117,13 +117,13 @@ function callbackchangeRole(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             if (isNotEmpty(data.data)){
-                layer.msg("操作成功",{icon: 1,time:500},function () {
+                layer.msg("操作成功",{icon: 6,time:500},function () {
                     getRoleList_init(1,3);
                 });
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -136,7 +136,7 @@ $(function () {
             var obj=switchdata.elem.checked;
             var ssid=switchdata.value;
             if (!isNotEmpty(ssid)||null==obj){
-                layer.msg("系统异常",{icon: 2});
+                layer.msg("系统异常",{icon: 5});
                 return;
             }
 

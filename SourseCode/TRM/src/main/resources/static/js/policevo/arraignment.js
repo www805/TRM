@@ -46,7 +46,7 @@ function callbackgetArraignmentList(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -89,7 +89,7 @@ function showpagetohtml(){
 
 function openModel(casessid,arraignmentslength,creator) {
     if (null==arraignmentslength||arraignmentslength<1){
-        layer.msg("该案件没有笔录");
+        layer.msg("该案件没有笔录",{icon: 5});
         return;
     }
 
@@ -121,7 +121,7 @@ function openModel(casessid,arraignmentslength,creator) {
             });
         });
     }else{
-        layer.msg("参数错误",{icon: 2});
+        layer.msg("参数错误",{icon: 6});
         return false;
     }
 }
@@ -181,7 +181,7 @@ function callbackgetArraignmentByCaseSsid(data) {
             });
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 
 }
@@ -196,7 +196,7 @@ function towaitRecord(recordssid,recordbool,creator) {
         var url=getActionURL(getactionid_manage().arraignment_getArraignmentShow);
         window.location.href=url+"?ssid="+recordssid;
     } else{
-        layer.msg("笔录正在制作中...")
+        layer.msg("笔录正在制作中...",{icon: 5})
     }
 }
 

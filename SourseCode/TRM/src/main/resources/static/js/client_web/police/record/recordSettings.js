@@ -201,7 +201,7 @@ function addptdj(str) {
     // var url = "/cweb/police/record/ptdj";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法片头叠加", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法片头叠加", {icon: 5});
         return;
     }
 
@@ -245,7 +245,7 @@ function getFDState() {
     // var url = "/cweb/police/record/getFDState";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 5});
         return;
     }
 
@@ -270,7 +270,7 @@ function getBurnTime() {
     // var url = "/cweb/police/record/getBurnTime";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 5});
         return;
     }
 
@@ -295,7 +295,7 @@ function updateBurnTime() {
     // var url = "/cweb/police/record/updateBurnTime";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 5});
         return;
     }
 
@@ -327,7 +327,7 @@ function changeBurnMode() {
     }
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 5});
         return;
     }
 
@@ -358,12 +358,12 @@ function getCDNumber() {
     // var url = "/cweb/police/record/getCDNumber";
 
     if (fdStateInfo.roma_disktype != 10 && fdStateInfo.romb_disktype != 10) {
-        layer.msg("光盘状态，当前不是可播放的",{icon: 2});
+        layer.msg("光盘状态，当前不是可播放的",{icon: 5});
         return;
     }
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取设备状态", {icon: 5});
         return;
     }
 
@@ -393,7 +393,7 @@ function getptdjconst(qidong) {
     // var url = "/cweb/police/record/getptdjconst";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法获取当前配置片头字段", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法获取当前配置片头字段", {icon: 5});
         // layer.msg("笔录尚未开始，无法打开案件信息",{icon: 2});
         return;
     }
@@ -423,7 +423,7 @@ function getdvdOutOrIn(obj) {
     // var url = "/cweb/police/record/getdvdOutOrIn";
 
     if (!isNotEmpty(getRecordById_data)) {
-        layer.msg(strtitle + "尚未开始，无法进行光盘出仓/进仓", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法进行光盘出仓/进仓", {icon: 5});
         return;
     }
 
@@ -472,11 +472,11 @@ function getstartRec_Rom() {
     // var url = "/cweb/police/record/getstartRec_Rom";
 
     if(!isNotEmpty(getRecordById_data) || !isNotEmpty(mtssid)){
-        layer.msg(strtitle + "尚未开始，无法开始光盘刻录", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法开始光盘刻录", {icon: 5});
         return;
     }
     if(!isNotEmpty(mtssid)){
-        layer.msg("会议ssid为空或没开始笔录，无法开始光盘刻录",{icon: 2});
+        layer.msg("会议ssid为空或没开始笔录，无法开始光盘刻录",{icon: 5});
         return;
     }
 
@@ -507,7 +507,7 @@ function getstopRec_Rom() {
     // var url = "/cweb/police/record/getstopRec_Rom";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法结束光盘刻录", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法结束光盘刻录", {icon:5});
         return;
     }
 
@@ -534,7 +534,7 @@ function getyuntaiControl(ptzaction) {
     // var url = "/cweb/police/record/getyuntaiControl";
 
     if(!isNotEmpty(getRecordById_data)){
-        layer.msg(strtitle + "尚未开始，无法进行云台控制", {icon: 2});
+        layer.msg(strtitle + "尚未开始，无法进行云台控制", {icon:5});
         return;
     }
 
@@ -557,11 +557,11 @@ function getyuntaiControl(ptzaction) {
 function callptdj(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("片头叠加成功",{icon: 1});
+            layer.msg("片头叠加成功",{icon: 6});
             layer.close(recordCaseInfo_index);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon:5});
     }
 }
 
@@ -577,7 +577,7 @@ function callgetBurnTime(data){
             });
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -609,21 +609,21 @@ function callCDNumber(data){
             if (con != "") {
                 layer.msg(con, {time: 3000,area: ['500px', 'auto']});
             }else{
-                layer.msg("暂时未找到",{icon: 1});
+                layer.msg("暂时未找到",{icon: 6});
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
 function callBase(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("操作成功",{icon: 1});
+            layer.msg("操作成功",{icon: 6});
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -642,10 +642,10 @@ function getptdjinfo() {
 function callgetdvdOutOrIn(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            layer.msg("操作成功",{icon: 1});
+            layer.msg("操作成功",{icon: 6});
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -678,7 +678,7 @@ function callgetptdjconst(data){
 
         recordCaseInfo();
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -774,7 +774,7 @@ function callFDState(data){
 
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message,{icon:5});
     }
 }
 

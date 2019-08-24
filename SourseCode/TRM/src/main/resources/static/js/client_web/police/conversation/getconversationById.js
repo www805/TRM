@@ -105,7 +105,7 @@ function callbackgetRecordById(data) {
 
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -146,7 +146,7 @@ function  set_getPlayUrl(data) {
                 videourl=dq_play.playUrl;
                 initplayer();
             }else {
-                layer.msg("文件获取中...")
+                layer.msg("文件获取中...",{icon: 5})
             }
 
             $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
@@ -164,7 +164,7 @@ function  set_getPlayUrl(data) {
                     videourl=dq_play.playUrl;
                     initplayer();
                 }else {
-                    layer.msg("文件获取中...")
+                    layer.msg("文件获取中...",{icon: 5})
                 }
             });
         }

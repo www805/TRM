@@ -49,7 +49,7 @@ function eitdTemplateYe() {
     if(editSsid){
         window.location.href = 'toaddOrupdateTemplate?ssid=' + editSsid + '&type='+templateTypeId +'&templateId='+templateId
     }else{
-        layer.msg("当前没有模板，不能编辑",{icon: 2});
+        layer.msg("当前没有模板，不能编辑", {icon: 5});
     }
 
 }
@@ -70,7 +70,7 @@ function callTmplates(data){
             pageshow(data);
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message, {icon: 5});
     }
 }
 
@@ -88,7 +88,7 @@ function callTmplates2(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message, {icon: 5});
     }
 }
 
@@ -109,7 +109,7 @@ function callTmplateTypes(data){
             }
         }
     }else{
-        layer.msg(data.message,{icon: 2});
+        layer.msg(data.message, {icon: 5});
     }
 }
 
@@ -248,7 +248,7 @@ function modelbanUpdateTemplate() {
                 var filevalue = file.name;
                 var fileType = getFileType(filevalue)
                 if (fileType !== 'xls') {
-                    layer.msg("请选择xls类型的文件导入！", {icon: 2});
+                    layer.msg("请选择xls类型的文件导入！", {icon: 5});
                 }
             });
             return false;
@@ -258,7 +258,7 @@ function modelbanUpdateTemplate() {
             console.log(res);
             repeatStatus = null;
             if ("SUCCESS" == res.actioncode) {
-                layer.msg(res.message, {icon: 1});
+                layer.msg(res.message, {icon: 6});
                 setTimeout("window.location.reload()", 1500);
             }else if(res.data == 504){
 
@@ -315,11 +315,11 @@ function exportWord(obj){
                 a.download = 'beautifulGirl'                  // 设置a节点的download属性值
                 a.href = url;                                 // 将图片的src赋值给a节点的href
                 a.dispatchEvent(event);
-                layer.msg("导出成功,等待下载中...");
+                layer.msg("导出成功,等待下载中...", {icon: 6});
                 // DownLoadReportIMG(url);
             }
         }else{
-            layer.msg("导出失败",{icon: 2});
+            layer.msg("导出失败", {icon: 5});
         }
         btn(obj);
     });
@@ -348,12 +348,12 @@ function exportEcxcel(obj){
                 a.download = 'beautifulGirl'                  // 设置a节点的download属性值
                 a.href = url;                                 // 将图片的src赋值给a节点的href
                 a.dispatchEvent(event);
-                layer.msg("导出成功,等待下载中...");
+                layer.msg("导出成功,等待下载中...", {icon: 6});
 
                 // DownLoadReportIMG(url);
             }
         }else{
-            layer.msg("导出失败",{icon: 2});
+            layer.msg("导出失败",{icon: 5});
         }
         btn(obj);
     });

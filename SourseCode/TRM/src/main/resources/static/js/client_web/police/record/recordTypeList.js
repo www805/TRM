@@ -104,7 +104,7 @@ function callbackaddOrUpdateRecordtype(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
         var data = data.data;
         if (isNotEmpty(data)) {
-            layer.msg("保存成功");
+            layer.msg("保存成功",{icon:6});
             getRecordtypes();
         }
     }else{

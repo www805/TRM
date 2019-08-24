@@ -975,7 +975,7 @@ function htmlopen(htmldata, width, height, skin) {
 function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 
 	if (!isNotEmpty(getdatafun)) {
-		parent.layer.msg('分页失败');
+		parent.layer.msg('分页失败', {icon: 5});
 		return;
 	}
 
@@ -1152,7 +1152,7 @@ function gotonextpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 					reqparamdata[6], reqparamdata[7], reqparamdata[8],
 					reqparamdata[9], currPage, pageSize);
 		} else {
-			parent.layer.msg('分页请求的参数超过预期，失败,参数个数：' + reqparamdata.length);
+			parent.layer.msg('分页请求的参数超过预期，失败,参数个数：' + reqparamdata.length, {icon: 5});
 			return;
 		}
 	} else {
@@ -1228,7 +1228,7 @@ function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
 					reqparamdata[6], reqparamdata[7], reqparamdata[8],
 					reqparamdata[9], currPage, pageSize);
 		} else {
-			parent.layer.msg('分页请求的参数超过预期，失败' + reqparamdata.length);
+			parent.layer.msg('分页请求的参数超过预期，失败' + reqparamdata.length, {icon: 5});
 			return;
 		}
 	} else {

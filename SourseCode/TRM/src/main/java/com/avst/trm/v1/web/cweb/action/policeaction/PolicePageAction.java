@@ -123,7 +123,7 @@ public class PolicePageAction {
 
     @GetMapping("towaitconversation")
     public ModelAndView towaitconversation(Model model,String ssid){
-        model.addAttribute("title","审讯制作控制台");
+        model.addAttribute("title","审讯控制台");
         if (StringUtils.isNotBlank(ssid)){
             model.addAttribute("recordssid",ssid);
         }
@@ -160,7 +160,7 @@ public class PolicePageAction {
         record.setSsid(ssid);
         record=police_recordMapper.selectOne(record);
         if (StringUtils.isNotBlank(record.getRecordtypessid())&&StringUtils.isNotBlank(recordtype_conversation2)&&recordtype_conversation2.equals(record.getRecordtypessid())){
-            model.addAttribute("title","审讯制作控制台");
+            model.addAttribute("title","审讯控制台");
         }else {
             model.addAttribute("title","笔录制作中");
         }

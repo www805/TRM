@@ -8,7 +8,7 @@ function userloginout() {
 
 function callbackuserloginout(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg("登出成功",{time:500},function () {
+        layer.msg("登出成功",{time:500,icon: 6,},function () {
             var nextparam=getAction(getactionid_manage().main_userloginout);
             if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                 setpageAction(INIT_CLIENT,nextparam.nextPageId);
@@ -17,7 +17,7 @@ function callbackuserloginout(data) {
             }
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message, {icon: 5});
     }
 }
 
@@ -87,7 +87,7 @@ function callgetNavList(data) {
             element.render();
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
