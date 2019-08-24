@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <title th:text="${roleModel.title}">Title</title>
@@ -43,7 +43,7 @@
 
 
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRoleList_init(1,3) ">
-            <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加角色</a>
+            <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" shiro:hasPermission='addRole'>添加角色</a>
         </div>
     </form>
 
@@ -77,8 +77,8 @@
             <td>{{value.description==null?"":value.description}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <td>
-                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a onclick="deleteRole('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm" shiro:hasPermission='updateRole'>修改</a>
+                <a onclick="deleteRole('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" shiro:hasPermission='deleteRole'>删除</a>
             </td>
 
         </tr>

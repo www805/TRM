@@ -54,7 +54,7 @@ function getArraignmentListByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=10;//测试
+        var pageSize=3;//测试
         getArraignmentList_init(currPage,pageSize);
     }else if (len==2){
         getArraignmentList('',arguments[0],arguments[1]);
@@ -73,10 +73,16 @@ function showpagetohtml(){
         var casename=pageparam.casename;
         var casenum=pageparam.casenum;
         var username=pageparam.username;
+        var occurrencetime_start=pageparam.occurrencetime_start;
+        var occurrencetime_end=pageparam.occurrencetime_end;
+
         var arrparam=new Array();
         arrparam[0] = casename;
         arrparam[1]=casenum;
         arrparam[2]=username;
+        arrparam[3]=occurrencetime_start;
+        arrparam[4]=occurrencetime_end;
+
         showpage("paging",arrparam,'getArraignmentListByParam',currPage,pageCount,pageSize);
     }
 }
@@ -169,7 +175,7 @@ function callbackgetArraignmentByCaseSsid(data) {
                         var recordssid=arraignment.recordssid;
                         var recordbool=arraignment.recordbool;
                         var creator=$("#openModelhtml").attr("creator");
-                        towaitRecord(recordssid,recordbool,creator);
+                     /*   towaitRecord(recordssid,recordbool,creator);*/
                     }
                 });
             });

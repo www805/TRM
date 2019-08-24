@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <title th:text="${keywordModel.title}">Title</title>
@@ -45,7 +45,7 @@
             <input type="text" name="text" id="kText" required lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
         </div>
         <input type="button" id="btn" class="layui-btn layui-btn-normal" onclick="getKeyword_search(1,3);" value="查询">
-        <a class="layui-btn layui-btn-normal"  onclick="window.location.href=updateurl;" >添加关键字</a>
+        <a class="layui-btn layui-btn-normal"  onclick="window.location.href=updateurl;"shiro:hasPermission='getAddOrUpdateKeyword'  >添加关键字</a>
     </form>
 
     <div th:replace="page :: page">...</div>
@@ -82,8 +82,8 @@
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <td ><input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchTest" lay-text="正常|屏蔽" {{value.shieldbool==-1?'':'checked'}} value="{{value.id}}"></td>
             <td>
-                <a href="{{updateurl}}/{{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a href="javascript:;"  onclick="deleteKeyword({{value.id}});" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{updateurl}}/{{value.id}}" class="layui-btn layui-btn-normal layui-btn-sm"shiro:hasPermission='getAddOrUpdateKeyword' >修改</a>
+                <a href="javascript:;"  onclick="deleteKeyword({{value.id}});" class="layui-btn layui-btn-danger layui-btn-sm"shiro:hasPermission='deleteKeyword' >删除</a>
             </td>
 
         </tr>

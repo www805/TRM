@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <title th:text="${permissionsModel.title}">Title</title>
@@ -26,7 +26,7 @@
             </select>
         </div>
         <input type="button"  class="layui-btn layui-btn-normal" onclick="getPermissionsByRoleSsid();" value="查询">
-        <input type="button"  class="layui-btn layui-btn-normal" onclick="updateRoleToPermissions();" value="保存">
+        <input type="button"  class="layui-btn layui-btn-normal" onclick="updateRoleToPermissions();" shiro:hasPermission='updateRoleToPermissions' value="保存">
     </form>
 
     <div style="padding: 10px; background-color: #F2F2F2;">

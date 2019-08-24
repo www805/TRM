@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" >
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <title th:text="${userModel.title}">Title</title>
@@ -85,7 +85,7 @@
             </div>
 
             <input type="button" class="layui-btn layui-btn-normal" onclick="getUserList_init(1,3);" value="查询"/>
-            <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加用户</a>
+            <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" shiro:hasPermission='addUser'>添加用户</a>
         </div>
     </form>
 
@@ -135,8 +135,8 @@
             <td>{{value.updatetime==null?"":value.updatetime}}</td>
             <td>{{value.lastlogintime==null?"":value.lastlogintime}}</td>
             <td>
-                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm">修改</a>
-                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm">删除</a>
+                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm" shiro:hasPermission='updateUser'>修改</a>
+                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" shiro:hasPermission='deleteUser'>删除</a>
             </td>
         </tr>
         {{#  }); }}

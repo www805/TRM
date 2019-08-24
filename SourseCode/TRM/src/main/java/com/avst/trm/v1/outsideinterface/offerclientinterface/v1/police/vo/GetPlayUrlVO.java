@@ -13,6 +13,11 @@ public class GetPlayUrlVO {
 
     private List<RecordPlayParam> recordPlayParams;//播放文件集合
 
+
+
+
+
+
     public String getIid() {
         return iid;
     }

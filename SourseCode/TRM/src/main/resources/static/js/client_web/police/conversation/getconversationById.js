@@ -112,6 +112,8 @@ function callbackgetRecordById(data) {
 function sortPlayUrl(a, b) {
     return a.filenum - b.filenum;//由低到高
 }
+
+var oldname=[];
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
         var iiddata=data.iid;
@@ -130,9 +132,10 @@ function  set_getPlayUrl(data) {
                 for (let j = 0; j < recordFileParams.length; j++) {
                     const file = recordFileParams[j];
                     var filename= file.filename;
-                    if (filename==playname){
+                    if (filename==playname&&oldname.indexOf(filename)<0){
                         var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
                         $("#videos").append(VIDEO_HTML);
+                        oldname.push(filename)
                     }
                 }
             }
