@@ -21,9 +21,9 @@
 
     <form class="layui-form layui-main site-inline" action="" style="margin-top: 30px;">
         <div class="layui-form-item">
-            <label class="layui-form-label">角色名称</label>
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>角色名称</label>
             <div class="layui-input-block">
-                <input type="text" name="rolename" id="rolename" required  lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                <input type="text" name="rolename" id="rolename" required  lay-verify="rolename" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
@@ -40,7 +40,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <input type="button"  class="layui-btn layui-btn-normal" onclick="addOrUpdateRole();" value="保存" />
+                <input type="button"  class="layui-btn layui-btn-normal"  lay-submit="" lay-filter="addOrUpdateRole_btn"value="保存" />
                 <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回</button>
             </div>
         </div>
@@ -73,6 +73,16 @@
     layui.use('form', function(){
         var form =  layui.form;
         form.render();
+
+        form.verify({
+            rolename:[ /\S/,"请输入角色名称"],
+        });
+
+
+        form.on('submit(addOrUpdateRole_btn)', function (data) {
+            addOrUpdateRole();
+            return false;
+        });
     });
 
 </script>

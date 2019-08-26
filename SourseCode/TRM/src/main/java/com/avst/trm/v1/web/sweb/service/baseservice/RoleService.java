@@ -133,6 +133,25 @@ public class RoleService extends BaseService {
 
     public void updateRole(RResult result,Base_role param){
         try {
+            String rolename=param.getRolename();
+            if (StringUtils.isBlank(rolename)){
+                result.setMessage("请输入角色名称");
+                return;
+            }
+
+            EntityWrapper base_roles_param=new EntityWrapper();
+            base_roles_param.eq("rolename",rolename);
+            base_roles_param.ne("ssid",param.getSsid());
+            List<Base_role> base_roles_=roleMapper.selectList(base_roles_param);
+            if (null!=base_roles_&&base_roles_.size()>0){
+                result.setMessage("角色名称不能重复");
+                return;
+            }
+
+
+
+
+
             EntityWrapper ew=new EntityWrapper();
             ew.eq(true,"ssid",param.getSsid());
             int update_bool=roleMapper.update(param,ew);
@@ -151,6 +170,21 @@ public class RoleService extends BaseService {
 
     public void addRole(RResult result,Base_role param){
         try {
+            String rolename=param.getRolename();
+            if (StringUtils.isBlank(rolename)){
+                result.setMessage("请输入角色名称");
+                return;
+            }
+
+            EntityWrapper base_roles_param=new EntityWrapper();
+            base_roles_param.eq("rolename",rolename);
+            List<Base_role> base_roles_=roleMapper.selectList(base_roles_param);
+            if (null!=base_roles_&&base_roles_.size()>0){
+                result.setMessage("角色名称不能重复");
+                return;
+            }
+
+
             param.setCreatetime(new Date());
             param.setSsid(OpenUtil.getUUID_32());
             int insert_bool=roleMapper.insert(param);

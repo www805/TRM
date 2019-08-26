@@ -108,7 +108,7 @@ function openModel(casessid,arraignmentslength,creator) {
             var layer = layui.layer;
             layer.open({
                 type: 1,
-                title: "笔录列表(提示:双击可对<span style='color: red;'>*进行中</span>的笔录进行编辑,对<span style='color: #00FF00;'>*已完成</span>的笔录进行查看)",
+                title: "笔录列表",
                 shade: 0.5,
                 shadeClose : true,
                 area: ['1200px', '620px'],

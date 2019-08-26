@@ -9,6 +9,9 @@
         .layui-form-switch {
             margin-top: 7px;
         }
+        .layui-form-item .layui-input-inline{
+            width: 50%;
+        }
     </style>
 </head>
 <body>
@@ -21,39 +24,44 @@
 
     <form class="layui-form layui-main site-inline" action="" style="margin-top: 30px;">
         <div class="layui-form-item">
-            <label class="layui-form-label">登录账号</label>
-            <div class="layui-input-block">
-                <input type="text" name="loginaccount" id="loginaccount"   lay-verify="required" placeholder="请输入登录账号" autocomplete="off" class="layui-input">
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>登录账号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="loginaccount" id="loginaccount"   lay-verify="loginaccount" placeholder="请输入登录账号" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux" >请输入5-12个字符不含空格的登录账号</div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">用户名称</label>
-            <div class="layui-input-block">
-                <input type="text" name="username" id="username" required  lay-verify="required" placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>用户名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="username" id="username" required  lay-verify="username" placeholder="请输入用户名称" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux" >请输入1-10个字符不含空格的用户名称</div>
         </div>
 
 
+
         <div class="layui-form-item">
-            <label class="layui-form-label">密码</label>
-            <div class="layui-input-block">
-                <input type="text" name="password" id="password" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="password" id="password" required  lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux" >请输字母开头可以为字母、数字、下划线的5-12位字符密码</div>
         </div>
 
 
         <div class="layui-form-item" th:if="${userModel.ssid}==null">
-            <label class="layui-form-label">确认密码</label>
-            <div class="layui-input-block">
-                <input type="text" name="password_again" id="password_again" required  lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>确认密码</label>
+            <div class="layui-input-inline">
+                 <input type="password" name="password_again" id="password_again" required  lay-verify="password_again" placeholder="请输入确认密码" autocomplete="off" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux" >请输入确认密码</div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">工作单位</label>
-            <div class="layui-input-block">
-                <select name="workunitssid" id="workunitssid">
+            <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>工作单位</label>
+            <div class="layui-input-inline">
+                <select name="workunitssid" id="workunitssid" lay-verify="workunitssid">
                     <option value="">请选择工作单位</option>
                 </select>
             </div>
@@ -75,7 +83,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <input type="button"  class="layui-btn layui-btn-normal" onclick="addOrUpdateUser();" value="保存" />
+                <input type="button"  class="layui-btn layui-btn-normal"   lay-submit="" lay-filter="addOrUpdateUser_btn" value="保存" />
                 <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回</button>
             </div>
         </div>
@@ -109,6 +117,55 @@
     layui.use('form', function(){
         var form =  layui.form;
         form.render();
+
+
+        form.verify({
+            loginaccount:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入登录账号"
+                }
+                if (!(/^(?!.*\s).{5,12}$/.test(value))) {
+                    return "请输入5-12个字符不含空格的登录账号"
+                }
+            },
+            username:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入用户名称"
+                }
+                if (!(/^(?!.*\s).{1,10}$/.test(value))) {
+                    return "请输入1-10个字符不含空格的用户名称"
+                }
+            },
+            password:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入密码"
+                }
+                if (!(/^[a-zA-Z]\w{4,11}$/.test(value))) {
+                    return "请输字母开头可以为字母、数字、下划线的5-12位字符密码"
+                }
+            },
+            password_again:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入确认密码"
+                }
+                var password=$("#password").val();
+                if (isNotEmpty(password)&&isNotEmpty(value)&&password!=value) {
+                    return "两次密码不一致"
+                }
+            },
+            workunitssid:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请选择工作单位"
+                }
+            },
+        });
+
+
+
+        form.on('submit(addOrUpdateUser_btn)', function (data) {
+            addOrUpdateUser();
+            return false;
+        });
     });
 </script>
 </html>

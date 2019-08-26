@@ -161,18 +161,20 @@ public class UserService extends BaseService {
     }
 
     public void addUser(RResult result, AdminAndWorkunit param, HttpSession session){
-
-
-        boolean checkLoginaccount_bool=false;
         String loginaccount=param.getLoginaccount();
-        if (StringUtils.isNotBlank(loginaccount)){
-            checkLoginaccount_bool = checkLoginaccount(loginaccount,null);
+        if (StringUtils.isBlank(loginaccount)){
+            result.setMessage("请输入登录账号");
+            return;
         }
-        //检测账号是否重复
-        if (!checkLoginaccount_bool){
+
+        EntityWrapper base_admininfos_param=new EntityWrapper();
+        base_admininfos_param.eq("loginaccount",loginaccount);
+        List<Base_admininfo> base_admininfos_=base_admininfoMapper.selectList(base_admininfos_param);
+        if (null!=base_admininfos_&&base_admininfos_.size()>0){
             result.setMessage("登录账号已存在,请重新输入");
             return;
         }
+
 
         try {
             //新增用户
@@ -217,23 +219,21 @@ public class UserService extends BaseService {
             return;
         }
 
-        String oldloginaccount=null;
-        Base_admininfo admininfo=new Base_admininfo();
-        admininfo.setSsid(param.getSsid());
-        admininfo = base_admininfoMapper.selectOne(admininfo);
-        oldloginaccount=admininfo.getLoginaccount();
-
-
-        boolean checkLoginaccount_bool=false;
         String loginaccount=param.getLoginaccount();
-        if (StringUtils.isNotBlank(loginaccount)){
-            checkLoginaccount_bool = checkLoginaccount(loginaccount,oldloginaccount);
+        if (StringUtils.isBlank(loginaccount)){
+            result.setMessage("请输入登录账号");
+            return;
         }
-        //检测账号是否重复
-        if (!checkLoginaccount_bool){
+
+        EntityWrapper base_admininfos_param=new EntityWrapper();
+        base_admininfos_param.eq("loginaccount",loginaccount);
+        base_admininfos_param.ne("ssid",param.getSsid());
+        List<Base_admininfo> base_admininfos_=base_admininfoMapper.selectList(base_admininfos_param);
+        if (null!=base_admininfos_&&base_admininfos_.size()>0){
             result.setMessage("登录账号已存在,请重新输入");
             return;
         }
+
 
         param.setUpdatetime(new Date());
         Base_admininfo base_admininfo = gson.fromJson(gson.toJson(param), Base_admininfo.class);
@@ -265,23 +265,6 @@ public class UserService extends BaseService {
         }
     }
 
-    /**
-     * 检测账号是否存在
-     * @return
-     */
-    public boolean checkLoginaccount(String loginaccount,String oldloginaccount) {
-        if (null!=loginaccount){
-                if (null!=oldloginaccount&&loginaccount.trim().equals(oldloginaccount.trim())){
-                    return  true;
-                }
-                EntityWrapper adminew=new EntityWrapper();
-                adminew.eq("loginaccount",loginaccount);
-                List<Base_admininfo> admininfos = base_admininfoMapper.selectList(adminew);
-                if (null==admininfos||admininfos.size()<1){
-                    return  true;
-                }
-        }
-        return  false;
-    }
+
 
 }

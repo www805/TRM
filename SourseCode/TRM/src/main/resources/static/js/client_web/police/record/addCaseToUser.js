@@ -690,7 +690,7 @@ function tabAdd(){
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
-                                                                <label class="layui-form-label">手机号</label>\
+                                                                <label class="layui-form-label">联系电话</label>\
                                                                 <div class="layui-input-block">\
                                                                     <input type="text" name="tab_phone"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\

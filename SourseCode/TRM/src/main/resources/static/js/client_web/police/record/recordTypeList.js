@@ -15,33 +15,49 @@ function opneModal_1(id) {
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
-                    <label class="layui-form-label">类型名称</label>\
+                    <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>类型名称</label>\
                     <div class="layui-input-block">\
-                    <input type="text" name="typenamem" id="typenamem" lay-verify="required" autocomplete="off" placeholder="请输入类型名称" class="layui-input">\
+                    <input type="text" name="typenamem" id="typenamem" lay-verify="typenamem" autocomplete="off" placeholder="请输入类型名称" class="layui-input">\
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
-                    <label class="layui-form-label">排序</label>\
+                    <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>排序</label>\
                     <div class="layui-input-block">\
-                    <input type="num" name="ordernumm" id="ordernumm" lay-verify="required" autocomplete="off" placeholder="请输入排序" class="layui-input" value="1">\
+                    <input type="num" name="ordernumm" id="ordernumm" lay-verify="ordernumm" autocomplete="off" placeholder="请输入排序" class="layui-input" value="1">\
                     </div>\
                 </div>\
             </form>';
-
+    layui.use(['layer','element','form','laydate'], function(){
+        var form=layui.form;
     var index = layer.open({
         type:1,
         title:'笔录类型编辑',
         content: html,
         area: ['500px', '300px'],
         btn: ['确定', '取消'],
+        success: function (layero, index) {
+            layero.addClass('layui-form');//添加form标识
+            layero.find('.layui-layer-btn0').attr('lay-submit', '');//将按钮弄成能提交的
+            form.render();
+        },
         yes:function(index, layero){
+            form.verify({
+                typenamem:[ /\S/,"请输入类型名称"],
+                ordernumm:[ /\S/,"请输入排序"],
+            });
+
+
             var pidm=$("#pidm option:selected").val();
-            var typenamem=$("#typenamem").val();
             var typenamem=$("#typenamem").val();
             var ordernum=$("#ordernumm").val();
             if(!isNotEmpty(typenamem)){
-                layer.msg("请输入类型名称");
+                layer.msg("请输入类型名称",{icon:5});
                 $("#typenamem").focus();
+                return;
+            }
+            if(!isNotEmpty(ordernum)){
+                layer.msg("请输入排序",{icon:5});
+                $("#ordernumm").focus();
                 return;
             }
             if (isNotEmpty(id)) {
@@ -59,14 +75,36 @@ function opneModal_1(id) {
                     layer.confirm('该类目下的子类目将会变成同级，是否保存？', {
                         btn: ['保存','取消'] //按钮
                     }, function(){
-                        ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
-                        layer.close(index);
+                        ajaxSubmitByJson(url,data,function (data2) {
+                            if(null!=data2&&data2.actioncode=='SUCCESS') {
+                                var data = data2.data;
+                                if (isNotEmpty(data)) {
+                                    layer.close(index);
+                                    layer.msg("保存成功",{icon:6});
+                                    getRecordtypes();
+                                }
+                            }else{
+                                layer.msg(data2.message,{icon: 5});
+                                return;
+                            }
+                        });
                     }, function(){
 
                     });
                 }else {
-                    ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
-                    layer.close(index);
+                    ajaxSubmitByJson(url,data,function (data2) {
+                        if(null!=data2&&data2.actioncode=='SUCCESS') {
+                            var data = data2.data;
+                            if (isNotEmpty(data)) {
+                                layer.close(index);
+                                layer.msg("保存成功",{icon:6});
+                                getRecordtypes();
+                            }
+                        }else{
+                            layer.msg(data2.message,{icon: 5});
+                            return;
+                        }
+                    });
                 }
             } else {
                 var url=getActionURL(getactionid_manage().recordTypeList_addRecordtype);
@@ -78,15 +116,26 @@ function opneModal_1(id) {
                         typename: typenamem
                     }
                 };
-                ajaxSubmitByJson(url,data,callbackaddOrUpdateRecordtype);
-                layer.close(index);
+                ajaxSubmitByJson(url,data,function (data2) {
+                    if(null!=data2&&data2.actioncode=='SUCCESS') {
+                        var data = data2.data;
+                        if (isNotEmpty(data)) {
+                            layer.close(index);
+                            layer.msg("保存成功",{icon:6});
+                            getRecordtypes();
+                        }
+                    }else{
+                        layer.msg(data2.message,{icon: 5});
+                        return;
+                    }
+                });
             }
         },
         btn2:function(index, layero){
             layer.close(index);
         }
     });
-
+    });
     if (null!=id){
         var url=getActionURL(getactionid_manage().recordTypeList_getRecordtypeById);
         var data={

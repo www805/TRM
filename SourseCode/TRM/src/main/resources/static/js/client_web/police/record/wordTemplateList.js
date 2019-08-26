@@ -172,17 +172,17 @@ var upload_data={};
 function open_uploadword(ssid) {
     var html='<form class="layui-form layui-form-pane site-inline"  style="margin: 30px;">\
             <div class="layui-form-item">\
-                <label class="layui-form-label">笔录类型</label>\
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>笔录类型</label>\
                 <div class="layui-input-block">\
-                    <select name="recordtypessidm" lay-verify="required" id="recordtypessidm"  lay-search lay-filter="recordtypessidm_filter">\
+                    <select name="recordtypessidm" lay-verify="recordtypessidm" id="recordtypessidm"  lay-search lay-filter="recordtypessidm_filter">\
                         <option value="">请选择笔录类型</option>\
                     </select>\
                 </div>\
             </div>\
             <div class="layui-form-item">\
-                <label class="layui-form-label">模板名称</label>\
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>模板名称</label>\
                 <div class="layui-input-block">\
-                    <input type="text" name="wordtemplatenamem" id="wordtemplatenamem"   lay-verify="required" placeholder="请输入word模板名称" autocomplete="off" class="layui-input">\
+                    <input type="text" name="wordtemplatenamem" id="wordtemplatenamem"   lay-verify="wordtemplatenamem" placeholder="请输入word模板名称" autocomplete="off" class="layui-input">\
                 </div>\
             </div>\
             <div class="layui-form-item">\
@@ -204,6 +204,12 @@ function open_uploadword(ssid) {
                 <div class="layui-progress-bar "  ><span class="layui-progress-text">10%</span></div>\
             </div>\
             </form>';
+
+    layui.use('form', function() {
+        var form = layui.form;
+
+
+
     open_uploadword_index= layer.open({
         type: 1,
         title: 'word模板编辑',
@@ -212,7 +218,17 @@ function open_uploadword(ssid) {
         area: ['893px', '450px'],
         content: html,
         btn: ['确定', '取消'],
+        success: function (layero, index) {
+            layero.addClass('layui-form');//添加form标识
+            layero.find('.layui-layer-btn0').attr('lay-submit', '');//将按钮弄成能提交的
+            form.render();
+        },
         yes:function(index, layero){
+            form.verify({
+                recordtypessidm:[ /\S/,"请选择笔录类型"],
+                wordtemplatenamem:[ /\S/,"请输入word模板名称"],
+            });
+
             var file = document.getElementById("wordfile").files[0];
             if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
                 layer.msg("请选择文件进行上传",{icon: 5});
@@ -254,7 +270,7 @@ function open_uploadword(ssid) {
             layer.close(index);
         }
     });
-
+    });
     if (isNotEmpty(recordtypes)){
         getsm(recordtypes);
     }
