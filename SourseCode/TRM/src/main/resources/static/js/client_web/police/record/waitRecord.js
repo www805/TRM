@@ -76,7 +76,7 @@ function callTemplateById(data) {
               }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -140,7 +140,7 @@ function callsetAllproblem(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 
 }
@@ -388,7 +388,7 @@ function callbackgetTime(data) {
             yesterdaytime=data.yesterdaytime;
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 //编辑框下面按钮事件-------------------------------end-------------------------------
@@ -559,7 +559,7 @@ function callbackgetRecordById(data) {
             getBurnTime();
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -812,7 +812,7 @@ function callbackpauseOrContinueRercord(data) {
             }
         }
         console.log(data)
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -923,7 +923,7 @@ function calladdRecord(data) {
                             layer.msg("导出成功,等待下载中...");
                         }
                     }else{
-                        layer.msg(data.message);
+                        layer.msg(data.message,{icon: 5});
                     }
                 });
             } else  if (recordbool==4){//导出pdf
@@ -952,7 +952,7 @@ function calladdRecord(data) {
                             layer.msg("导出成功,等待下载中...");
                         }
                     }else{
-                        layer.msg(data.message);
+                        layer.msg(data.message,{icon: 5});
                     }
                 });
             } else {
@@ -960,7 +960,7 @@ function calladdRecord(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
     $("#overRecord_btn").attr("click","overRecord();");
 }
@@ -1103,7 +1103,7 @@ function callbackgetgetRecordrealing(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -1496,7 +1496,7 @@ function callbacksetRecordreal(data) {
            /* console.log("笔录实时保存成功__"+data);*/
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -1523,7 +1523,7 @@ function callbackgetRecordrealByRecordssid(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -1588,7 +1588,7 @@ function clearRecord() {
                         $("#getRecordreal_LastByRecordssid").show();
                     }
                 }else{
-                    layer.msg(data.message);
+                    layer.msg(data.message,{icon: 5});
                 }
             });
 
@@ -1659,7 +1659,7 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
             focuslable(null,2,'q');//重置保存的内容为空时添加一行自定义问答
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 /***************************************笔录实时问答end*************************************************/

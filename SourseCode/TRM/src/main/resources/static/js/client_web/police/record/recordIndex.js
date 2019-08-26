@@ -22,7 +22,7 @@ function callbackgetRecordtypes(data) {
             gets(list);
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
  var len="-";
@@ -123,7 +123,7 @@ function callbackgetRecords(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 
     var time = setInterval(function () {
@@ -254,7 +254,7 @@ function changeboolRecord(obj) {
                         });
                     }
                 }else{
-                    layer.msg(data.message);
+                    layer.msg(data.message,{icon: 5});
                 }
             });
             layer.close(index);

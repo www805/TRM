@@ -876,7 +876,7 @@ function getNotifications() {
                 }
             }
         }else{
-            layer.msg(data.message);
+            layer.msg(data.message,{icon: 5});
         }
         layui.use(['layer','element','upload'], function(){
             var layer = layui.layer; //获得layer模块
@@ -951,12 +951,12 @@ function downloadNotification(ssid) {
                 var base_filesave=data.base_filesave;
                 if (isNotEmpty(base_filesave)) {
                     var recorddownurl=base_filesave.recorddownurl;
-                    layer.msg("下载中，请稍后...");
+                    layer.msg("下载中，请稍后...",{icon: 6});
                     window.location.href=recorddownurl;
                 }
             }
         }else{
-            layer.msg(data.message);
+            layer.msg(data.message,{icon: 5});
         }
     });
 }
@@ -1075,7 +1075,7 @@ function previewgetNotifications(ssid) {
                 }
             }
         }else{
-            layer.msg(data.message);
+            layer.msg(data.message,{icon: 5});
         }
     });
 
@@ -1109,7 +1109,7 @@ function callbackstr2Tts(data) {
             }
         }
     }else {
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -1227,7 +1227,7 @@ function callbackgnlist(data) {
             }
         }
     }else {
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 //*******************************************************************左侧授权模块显示endt****************************************************************//

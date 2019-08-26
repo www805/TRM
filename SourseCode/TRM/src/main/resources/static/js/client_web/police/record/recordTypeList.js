@@ -108,7 +108,7 @@ function callbackaddOrUpdateRecordtype(data) {
             getRecordtypes();
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 function callbackgetRecordtypeById(data) {
@@ -137,7 +137,7 @@ function callbackgetRecordtypeById(data) {
             form.render();
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -234,7 +234,7 @@ function callbackgetPidRecordtypes(data) {
             form.render();
         });
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 

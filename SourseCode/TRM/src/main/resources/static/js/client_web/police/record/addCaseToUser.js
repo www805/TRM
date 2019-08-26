@@ -292,7 +292,7 @@ function callbackgetRecordtypes(data) {
             gettree(list);
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon: 5});
     }
 }
 function gettree(data){
@@ -407,7 +407,7 @@ function callbackgetNationalitys(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -436,7 +436,7 @@ function callbackgetNationals(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -470,7 +470,7 @@ function callbackgetCards(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -503,7 +503,7 @@ function callbackgetAdminList(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -593,7 +593,7 @@ function callbackgetUserByCard(data){
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -783,7 +783,7 @@ function getUserByCard_other(obj){
                 }
             }
         }else{
-            parent.layer.msg(data.message);
+            parent.layer.msg(data.message,{icon: 5});
             $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         }
         layui.use('form', function(){
@@ -830,7 +830,7 @@ function callbakegetCaseById(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -863,7 +863,7 @@ function callbakegetWorkunits(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -909,7 +909,7 @@ function callbackgetUserinfoList(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var form =  layui.form;

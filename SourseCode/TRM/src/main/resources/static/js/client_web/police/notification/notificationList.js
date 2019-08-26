@@ -87,7 +87,7 @@ function calldownloadNotification(data){
         if (isNotEmpty(filesave)){
             var base_filesave=filesave.base_filesave;
             if (isNotEmpty(base_filesave)) {
-                layer.msg("下载中，请稍后...",{icon: 5});
+                layer.msg("下载中，请稍后...",{icon: 6});
                 // window.location.href = filesave.recorddownurl;
 
                 var url = base_filesave.recorddownurl;
