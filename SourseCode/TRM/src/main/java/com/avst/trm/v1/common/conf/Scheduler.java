@@ -131,7 +131,8 @@ public class Scheduler {
             LogUtil.intoLog(4,this.getClass(),"查看授权是否出问题了，CommonCache.getinit_WEB() is null");
             return ;
         }
-        ko: //跳出两层循环标号
+        /**提供给总控，服务端的登录地址（从动作缓存中获取）**/
+        ko: /**跳出两层循环标号**/
         for (PageVO pageVO : initVO_WEB.getPageList()) {
             if("server_web/base/login".equals(pageVO.getPageid())){
                 for (ActionVO actionVO : pageVO.getActionList()) {
@@ -142,9 +143,9 @@ public class Scheduler {
                 }
             }
         }
-
+        /**提供给总控，客户端的登录地址（从动作缓存中获取）**/
         com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO initVO_Client = CommonCache.getinit_CLIENT();
-        out: //跳出两层循环标号
+        out: /**跳出两层循环标号**/
         for (PageVO pageVO : initVO_Client.getPageList()) {
             if("client_web/base/login".equals(pageVO.getPageid())){
                 for (ActionVO actionVO : pageVO.getActionList()) {

@@ -52,11 +52,11 @@ public class CreateSQ {
         sqEntity.setServerType("police");
         sqEntity.setForeverBool(false);//是否永久授权
         sqEntity.setClientName("销售测试客户端服务器");
-        sqEntity.setCpuCode("53575653575357574141414541474642");
+        sqEntity.setCpuCode("535756535753575741414144414754444243454344444943");
         sqEntity.setGnlist("record|asr|fd|ph");
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
-        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));
+        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"D:\\trmshouquan"));
 
 
     }

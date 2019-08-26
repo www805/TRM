@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -140,12 +141,12 @@ public class TemplateService extends BaseService {
         //请求参数转换
         UpdateTemplateParam template=param.getParam();
         if (null==template){
-            result.setMessage("参数为空");
+            result.setMessage("参数不能为空");
             return;
         }
 
         if (null==template.getId()){
-            result.setMessage("参数为空");
+            result.setMessage("id不能为空");
             return;
         }
 
@@ -478,12 +479,17 @@ public class TemplateService extends BaseService {
 
         AddTemplatetypeParam addTemplatetypeParam = param.getParam();
         if (null==addTemplatetypeParam){
-            result.setMessage("参数为空");
+            result.setMessage("参数不能为空");
             return;
         }
 
-        if (null==addTemplatetypeParam.getTypename()){
-            result.setMessage("参数为空");
+        if (StringUtils.isBlank(addTemplatetypeParam.getTypename())){
+            result.setMessage("模板类型名称不能为空");
+            return;
+        }
+
+        if (null == addTemplatetypeParam.getOrdernum()){
+            result.setMessage("排序不能为空");
             return;
         }
 
@@ -491,10 +497,21 @@ public class TemplateService extends BaseService {
         Police_templatetype police_problemtype = new Police_templatetype();
         police_problemtype.setTypename(addTemplatetypeParam.getTypename());
         Police_templatetype templatetype = police_templatetypeMapper.selectOne(police_problemtype);
-
         if (null != templatetype) {
             result.setMessage("模板类型的名称不能重复");
             return;
+        }
+
+        /**判断顺序是否已经存在**/
+        if (addTemplatetypeParam.getOrdernum() > 0) {
+            Police_templatetype templatetype1 = new Police_templatetype();
+
+            templatetype1.setOrdernum(addTemplatetypeParam.getOrdernum());
+            Police_templatetype selectOne = police_templatetypeMapper.selectOne(templatetype1);
+            if (null != selectOne) {
+                result.setMessage("排序不能重复，请重新排序");
+                return;
+            }
         }
 
         //添加模板类型
@@ -518,23 +535,55 @@ public class TemplateService extends BaseService {
 
         UpdateTemplateTypeParam updateTemplateTypeParam = param.getParam();
         if (null==updateTemplateTypeParam){
-            result.setMessage("参数为空");
+            result.setMessage("参数不能为空");
             return;
         }
 
-        if (null == updateTemplateTypeParam.getSsid() || null == updateTemplateTypeParam.getTypename()) {
-            result.setMessage("参数为空");
+        if (null == updateTemplateTypeParam.getSsid()) {
+            result.setMessage("ssid不能为空");
             return;
         }
 
-        /**判断一下是否重名**/
+        if(StringUtils.isBlank(updateTemplateTypeParam.getTypename())){
+            result.setMessage("修改的模板类型名不能为空");
+            return;
+        }
+
+        if (null == updateTemplateTypeParam.getOrdernum()) {
+            result.setMessage("排序不能为空");
+            return;
+        }
+
         Police_templatetype police_problemtype = new Police_templatetype();
         police_problemtype.setTypename(updateTemplateTypeParam.getTypename());
-        Police_templatetype templatetype = police_templatetypeMapper.selectOne(police_problemtype);
+        police_problemtype.setOrdernum(updateTemplateTypeParam.getOrdernum());
+        police_problemtype.setSsid(updateTemplateTypeParam.getSsid());
+        Police_templatetype selectOne1 = police_templatetypeMapper.selectOne(police_problemtype);
 
-        if (null != templatetype) {
-            result.setMessage("模板类型的名称不能重复");
-            return;
+        if (null == selectOne1) {
+            /**判断一下是否重名**/
+            EntityWrapper<Police_templatetype> ew1 = new EntityWrapper<>();
+            ew1.eq("typename", updateTemplateTypeParam.getTypename());
+            ew1.ne("ssid", updateTemplateTypeParam.getSsid());
+            List<Police_templatetype> police_templatetypes = police_templatetypeMapper.selectList(ew1);
+
+            if (null != police_templatetypes && police_templatetypes.size() > 0) {
+                result.setMessage("模板类型的名称不能重复");
+                return;
+            }
+
+            /**判断顺序是否已经存在**/
+            if (updateTemplateTypeParam.getOrdernum() > 0) {
+                EntityWrapper<Police_templatetype> ew2 = new EntityWrapper<>();
+                ew2.eq("ordernum", updateTemplateTypeParam.getOrdernum());
+                ew2.ne("ssid", updateTemplateTypeParam.getSsid());
+                List<Police_templatetype> templatetypes = police_templatetypeMapper.selectList(ew2);
+
+                if (null != templatetypes && templatetypes.size() > 0) {
+                    result.setMessage("排序不能重复，请重新排序");
+                    return;
+                }
+            }
         }
 
         EntityWrapper ew = new EntityWrapper();
@@ -637,7 +686,7 @@ public class TemplateService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
-        if (StringUtils.isEmpty(updateProblemParam.getProblem().trim())){
+        if (StringUtils.isBlank(updateProblemParam.getProblem())){
             result.setMessage("问题不能为空");
             return;
         }
@@ -847,12 +896,17 @@ public class TemplateService extends BaseService {
 
         AddProblemtypeParam addProblemtypeParam = param.getParam();
         if (null==addProblemtypeParam){
-            result.setMessage("参数为空");
+            result.setMessage("参数不能为空");
             return;
         }
 
-        if (null==addProblemtypeParam.getTypename()){
-            result.setMessage("参数为空");
+        if (StringUtils.isBlank(addProblemtypeParam.getTypename())){
+            result.setMessage("问题类型名称不能为空");
+            return;
+        }
+
+        if (null == addProblemtypeParam.getOrdernum()){
+            result.setMessage("排序不能为空");
             return;
         }
 
@@ -864,6 +918,17 @@ public class TemplateService extends BaseService {
         if (null != problemtype) {
             result.setMessage("问题类型的名称不能重复");
             return;
+        }
+
+        /**判断排序是否重复**/
+        if (addProblemtypeParam.getOrdernum() > 0) {
+            Police_problemtype policeProblemtype = new Police_problemtype();
+            policeProblemtype.setOrdernum(addProblemtypeParam.getOrdernum());
+            Police_problemtype selectOne = police_problemtypeMapper.selectOne(policeProblemtype);
+            if (null != selectOne) {
+                result.setMessage("排序不能重复，请重新排序");
+                return;
+            }
         }
 
         //添加问题类型
@@ -888,23 +953,57 @@ public class TemplateService extends BaseService {
 
         UpdateProblemtypeParam updateProblemtypeParam = param.getParam();
         if (null==updateProblemtypeParam){
-            result.setMessage("参数为空");
+            result.setMessage("参数不能为空");
             return;
         }
 
-        if (null==updateProblemtypeParam.getTypename() || null==updateProblemtypeParam.getOrdernum() || null==updateProblemtypeParam.getSsid()){
-            result.setMessage("参数为空");
+        if (null==updateProblemtypeParam.getSsid()){
+            result.setMessage("ssid参数不能为空");
             return;
         }
 
-        /**判断一下是否重名**/
-        Police_problemtype police_problemtype = new Police_problemtype();
-        police_problemtype.setTypename(updateProblemtypeParam.getTypename());
-        Police_problemtype problemtype = police_problemtypeMapper.selectOne(police_problemtype);
-
-        if (null != problemtype) {
-            result.setMessage("问题类型的名称不能重复");
+        if (StringUtils.isBlank(updateProblemtypeParam.getTypename())) {
+            result.setMessage("问题类型名称不能为空");
             return;
+        }
+
+        if (null==updateProblemtypeParam.getOrdernum()){
+            result.setMessage("排序参数不能为空");
+            return;
+        }
+
+        Police_problemtype problemtype1 = new Police_problemtype();
+        problemtype1.setTypename(updateProblemtypeParam.getTypename());
+        problemtype1.setOrdernum(updateProblemtypeParam.getOrdernum());
+        problemtype1.setSsid(updateProblemtypeParam.getSsid());
+        Police_problemtype selectOne1 = police_problemtypeMapper.selectOne(problemtype1);
+
+        if (null == selectOne1) {
+            /**判断一下是否重名**/
+
+            EntityWrapper<Police_problemtype> ew = new EntityWrapper<>();
+            ew.eq("typename", updateProblemtypeParam.getTypename());
+            ew.ne("ssid", updateProblemtypeParam.getSsid());
+            List<Police_problemtype> problemtypes = police_problemtypeMapper.selectList(ew);
+
+            if (null != problemtypes && problemtypes.size() > 0) {
+                result.setMessage("问题类型的名称不能重复");
+                return;
+            }
+
+            /**判断排序是否重复**/
+            if (updateProblemtypeParam.getOrdernum() > 0) {
+
+                EntityWrapper<Police_problemtype> ew2 = new EntityWrapper<>();
+                ew2.eq("ordernum", updateProblemtypeParam.getOrdernum());
+                ew2.ne("ssid", updateProblemtypeParam.getSsid());
+                List<Police_problemtype> policeProblemtypes = police_problemtypeMapper.selectList(ew2);
+
+                if (null != policeProblemtypes && policeProblemtypes.size() > 0) {
+                    result.setMessage("排序不能重复，请重新排序");
+                    return;
+                }
+            }
         }
 
         EntityWrapper ew=new EntityWrapper();

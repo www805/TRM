@@ -24,7 +24,7 @@
     <form class="layui-form layui-main site-inline" style="margin-top: 30px;" onsubmit="return false" th:object="${configModel.RResult.data.serverconfig}">
         <input type="hidden" name="id" th:value="*{id}">
         <div class="layui-form-item">
-            <label class="layui-form-label">系统名称</label>
+            <label class="layui-form-label"><span style="color: red;">*</span>系统名称</label>
             <div class="layui-input-block">
                 <input type="text" name="sysname" required th:value="*{sysname}" lay-verify="required" placeholder="请输入系统名称" autocomplete="off" class="layui-input">
             </div>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">客户端名称</label>
+            <label class="layui-form-label"><span style="color: red;">*</span>客户端名称</label>
             <div class="layui-input-block">
                 <input type="text" name="clientname" required th:value="*{clientname}" lay-verify="required" placeholder="请输入客户端名称" autocomplete="off" class="layui-input">
             </div>
@@ -70,14 +70,14 @@
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">服务器IP   (暂无用)</label>
+            <label class="layui-form-label"><span style="color: red;">*</span>服务器IP   (暂无用)</label>
             <div class="layui-input-block">
                 <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="required" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label">服务器端口(暂无用)</label>
+            <label class="layui-form-label"><span style="color: red;">*</span>服务器端口(暂无用)</label>
             <div class="layui-input-block">
                 <input type="text" name="serverport" required th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="required" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
             </div>

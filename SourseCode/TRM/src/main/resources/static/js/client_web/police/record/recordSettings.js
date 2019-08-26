@@ -13,6 +13,7 @@ var outcang;
 var ptdjct;
 var fdtype = "FD_AVST";
 var fdStateInfo;
+var CDNumModel_index;
 
 //使用模块
 var html=
@@ -603,11 +604,21 @@ function callCDNumber(data){
                         cdnum = "光驱2";
                     }
 
-                    con += "【"+cdnum + "】<br>内容CRC校验码：" + crc32 + "<br>哈希值：" + md5 + "<br>光盘编号：" + iid + "<br>";
+                    con += "<div style='padding: 20px 0;text-align: center;'>【"+cdnum + "】<br>内容CRC校验码：" + crc32 + "<br>哈希值：" + md5 + "<br>光盘编号：" + iid + "<br></div>";
                 }
             }
             if (con != "") {
-                layer.msg(con, {time: 3000,area: ['500px', 'auto']});
+
+                //弹窗层
+                CDNumModel_index = layer.open({
+                    type: 1,
+                    title: "光盘序号",
+                    area: ['500px', 'auto'], //宽高
+                    shadeClose: true,
+                    content: con
+                });
+
+
             }else{
                 layer.msg("暂时未找到",{icon: 6});
             }
@@ -720,17 +731,22 @@ function callFDState(data){
                 $(".guangpan").show();
                 $("#dvd1").show();
 
-                var statusName = fdStateInfo.roma_disktype;
-                if(statusName == 10){
-                    statusName = "可播放的";
-                }else{
+                var statusName = fdStateInfo.roma_status;
+                if (statusName >= 1 && statusName <= 14) {
                     statusName = getRomStatus(fdStateInfo.roma_status);
+                } else {
+                    statusName = getDisktype(fdStateInfo.roma_disktype);
                 }
 
                 $("#roma_status").html(statusName);//光盘状态
-                $("#roma_begintime").html(fdStateInfo.roma_begintime);//开始直刻的时间
-                $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : fdStateInfo.roma_lefttime);//直刻剩余的倒计时
-                $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_setburntime + "小时");//刻录时间
+                if(statusName == "刻录中"){
+                    $("#roma_status").css("color", "red");
+                }else{
+                    $("#roma_status").css("color", "#2c5572");
+                }
+                $("#roma_begintime").html(fdStateInfo.roma_lefttime != 0 ? fdStateInfo.roma_begintime : "00:00:00");//开始直刻的时间
+                $("#roma_lefttime").html(fdStateInfo.roma_lefttime == 0 ? "00:00:00" : changeTimes(fdStateInfo.roma_lefttime));//直刻剩余的倒计时
+                $("#roma_setburntime").html(fdStateInfo.roma_setburntime == 0 ? "无" : fdStateInfo.roma_lefttime != 0 ? fdStateInfo.roma_setburntime + "小时" : "无");//刻录时间
             }
 
             if (fdStateInfo.dvdnum >= 2) {
@@ -739,17 +755,22 @@ function callFDState(data){
                 $(".guangpan").show();
                 $("#dvd2").show();
 
-                var statusName = fdStateInfo.romb_disktype;
-                if(statusName == 10){
-                    statusName = "可播放的";
-                }else{
+                var statusName = fdStateInfo.romb_status;
+                if (statusName >= 1 && statusName <= 14) {
                     statusName = getRomStatus(fdStateInfo.romb_status);
+                } else {
+                    statusName = getDisktype(fdStateInfo.romb_disktype);
                 }
 
                 $("#romb_status").html(statusName);//光盘状态
-                $("#romb_begintime").html(fdStateInfo.romb_begintime);//开始直刻的时间
-                $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : fdStateInfo.romb_lefttime);//直刻剩余的倒计时
-                $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_setburntime + "小时");//刻录时间
+                if(statusName == "刻录中"){
+                    $("#romb_status").css("color", "red");
+                }else{
+                    $("#romb_status").css("color", "#2c5572");
+                }
+                $("#romb_begintime").html(fdStateInfo.romb_lefttime != 0 ? fdStateInfo.romb_begintime : "00:00:00");//开始直刻的时间
+                $("#romb_lefttime").html(fdStateInfo.romb_lefttime == 0 ? "00:00:00" : changeTimes(fdStateInfo.romb_lefttime));//直刻剩余的倒计时
+                $("#romb_setburntime").html(fdStateInfo.romb_setburntime == 0 ? "无" : fdStateInfo.romb_lefttime != 0 ? fdStateInfo.romb_setburntime + "小时" : "无");//刻录时间
             }
 
             $("#diskrec_isrec").html(fdStateInfo.diskrec_isrec == 1 ? "<span style='color: red;'>录像中</span>" : "未录像");//是否正在本地硬盘录像
@@ -759,7 +780,7 @@ function callFDState(data){
 
             $("#diskrec_begintime").html(fdStateInfo.diskrec_begintime);//本地硬盘开始录像时间
 
-            $("#bsettimerrecburntime").html(fdStateInfo.bsettimerrecburntime == null ? "1小时" : fdStateInfo.bsettimerrecburntime + "小时");//刻录选时
+            $("#bsettimerrecburntime").html(fdStateInfo.selburntime == null ? "1小时" : changeTimes(fdStateInfo.selburntime, 1) + "小时");//刻录选时
             $("#burn_mode").html(getBurnMode(fdStateInfo.burn_mode));//当前刻录模式 0:直刻模式 1:硬盘导刻模式 2:接力刻录模式
 
             if(fdStateInfo.diskrec_isrec == 1){
@@ -770,6 +791,14 @@ function callFDState(data){
                 // }, 1000);
             }else{
                 $("#diskrec_continuettime").html("00:00");//硬盘录像持续时间
+            }
+
+            if(isNotEmpty(getRecordById_data) && fdStateInfo.roma_status == 1 || fdStateInfo.romb_status == 1){
+                $("#kelumoshi").removeClass("layui-btn-normal").addClass(" layui-btn-disabled");
+                kelumoshi = 0;
+            }else {
+                $("#kelumoshi").removeClass("layui-btn-disabled").addClass(" layui-btn-normal");
+                kelumoshi = 1;
             }
 
         }
@@ -850,6 +879,48 @@ function getBurnMode(mode) {
     return burn_mode;
 }
 
+function getDisktype(status) {
+
+    var disktype = "";//光盘状态
+
+    switch (status) {
+        case "0":
+            disktype = "空闲";
+            break;
+        case "1":
+            disktype = "准备就绪（DVD+R）";
+            break;
+        case "2":
+            disktype = "准备就绪（DVD-R）";
+            break;
+        case "3":
+            disktype = "准备就绪（DVD+R DL）";
+            break;
+        case "4":
+            disktype = "准备就绪（DVD-R DL）";
+            break;
+        case "5":
+            disktype = "准备就绪（BuleRay DVD）";
+            break;
+        case "10":
+            disktype = "可播放的";
+            break;
+        case "11":
+            disktype = "已格式化可直 接刻录的";
+            break;
+        case "12":
+            disktype = "错误的盘片";
+            break;
+        case "13":
+            disktype = "无光盘";
+            break;
+        default:
+            disktype = "未知的";
+    }
+    return disktype;
+
+}
+
 function getRomStatus(status) {
 
     var roma_status = "";//光盘状态
@@ -922,6 +993,17 @@ function getFormData(eId) {
         inData.push({"name": $(this).attr("name"), "value": $(this).val().trim()});
     });
     return inData;
+}
+
+//秒数转换时间
+function changeTimes(num, status) {
+    var min = Math.floor(num % 3600);
+
+    if(isNotEmpty(status)){
+        return num / 3600;
+    }
+    var numtime = num % 60;
+    return Math.floor(min / 60) + ":" + (numtime < 10 ? '0' + numtime : numtime);
 }
 
 function matchPtdjKey(key) {

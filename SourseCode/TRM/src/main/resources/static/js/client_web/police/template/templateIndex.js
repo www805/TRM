@@ -200,7 +200,7 @@ function modelbanUpdateTemplate() {
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 0px;padding-right: 20px;'>\n" +
         "            <div style='margin:10px 0 5px 40px;color: red;'>（请选择xls格式的文件上传）</div>\n" +
-        "            <label class=\"layui-form-label\">模板类型</label>\n" +
+        "            <label class=\"layui-form-label\"><span style=\"color: red;\">*</span>模板类型</label>\n" +
         "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
         "                <select name=\"problemtypessid\" onchange='updateTemplateType = this[selectedIndex].value;' lay-verify=\"\" style=\"margin-top: 5px;width: 120px;height: 30px;\">\n"
         + templateTypes +
