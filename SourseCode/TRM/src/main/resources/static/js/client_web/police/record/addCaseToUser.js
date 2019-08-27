@@ -11,6 +11,7 @@ var dqotheruserinfossid=null;//当前询问人(新增询问人回显)
 var dqotherworkssid=null;//当前询问人对应的工作单位
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
+var skipCheckCasebool=-1;
 var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 
 
@@ -72,7 +73,7 @@ function addCaseToArraignment() {
         return;
     }
 
-    $("#startrecord_btn").attr("onclick","");
+    $("#startrecord_btn").attr("lay-filter","");
 
     //收集人员信息
     var  cardtypessid=$("#cards option:selected").val();
@@ -177,12 +178,13 @@ function addCaseToArraignment() {
             otheruserinfoname:otheruserinfoname,
             otherworkname:otherworkname,
             skipCheckbool:skipCheckbool,
+            skipCheckCasebool:skipCheckCasebool,
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
-    $("#startrecord_btn").attr("onclick","addCaseToArraignment();");
+    $("#startrecord_btn").attr("lay-filter","startrecord_btn");
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
@@ -193,7 +195,7 @@ function callbackaddCaseToArraignment(data) {
             var recordtypessid=data.recordtypessid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
                 //跳转笔录制作
-                var index = parent.layer.msg('开始进行笔录', {shade:0.6,time:500
+                var index = parent.layer.msg('开始进行笔录', {shade:[0.1,"#fff"],icon:6,time:500
                 },function () {
                     if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
                         //跳转一键提讯
@@ -232,9 +234,45 @@ function callbackaddCaseToArraignment(data) {
             var recordssid=data2.recordssid;
             var checkStartRecordVO=data2.checkStartRecordVO;
 
-            if (null!=recordingbool&&recordingbool==true){
+            var caseAndUserInfo=data2.caseAndUserInfo;
+            var caseingbool=data2.caseingbool;
+
+            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(caseAndUserInfo)){
+                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
+                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
+                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
+                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
+                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+                                  <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
+                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="caseAndUserInfo_html"></tbody>\
+                </table>';
+                parent.layer.open({
+                    type:1,
+                    title: '案件信息(案件正在<strong style="color: red">休庭</strong>中...)',
+                    shade: 0.3,
+                    resize:false,
+                    area: ['35%', '400px'],
+                    content: TABLE_HTML,
+                    btn: ['继续笔录', '取消',]
+                    ,yes: function(index, layero){
+                    //按钮【按钮一】的回调
+                        skipCheckCasebool = 1;
+                        addCaseToArraignment();
+                        parent.layer.close(index);
+                   },
+                    btn2: function(index) {
+                        parent.layer.close(index);
+                    }
+                });
+
+            }else if (null!=recordingbool&&recordingbool==true&&isNotEmpty(checkStartRecordVO)){
                 //存在笔录正在进行中，跳转笔录列表，给出提示：建议他先结束制作中的
-                if (isNotEmpty(checkStartRecordVO)){
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
                         parent.layer.confirm("<span style='color:red'>"+msg+"</span>", {
@@ -259,7 +297,6 @@ function callbackaddCaseToArraignment(data) {
                              }
                          });
                     }
-                }
             }else {
                 parent.layer.msg(data.message,{icon: 5});
             }

@@ -5,7 +5,9 @@ var recorduser=[];//会议用户集合：副麦主麦
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
-var recordbool=null;//笔录状态 3 4暂时用于导出判断不存在数据库
+var recordbool=null;//笔录状态 -1 -2暂时用于导出判断不存在数据库
+
+var casebool=null;//案件状态
 
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
@@ -528,6 +530,7 @@ function callbackgetRecordById(data) {
                     var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
                     var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
                     var recordtypename=record.recordtypename==null?"":record.recordtypename;
+                    casebool=caseAndUserInfo.casebool==null?"":caseAndUserInfo.casebool;
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
@@ -869,7 +872,7 @@ function getTDCacheParamByMTssid() {
 
 
 //保存按钮
-//recordbool 1进行中 2已结束 0初始化 3导出word 4导出pdf
+//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 function addRecord() {
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
@@ -883,6 +886,7 @@ function addRecord() {
             param:{
                 recordssid: recordssid,
                 recordbool:recordbool,
+                casebool:casebool,
                 recordToProblems:recordToProblems,
                 mtssid:mtssid //会议ssid用于笔录结束时关闭会议
             }
@@ -902,10 +906,10 @@ function calladdRecord(data) {
             }
 
             if (recordbool==2) {
-                layer.msg("已结束",{time:500},function () {
+                layer.msg("已结束",{time:500,icon:6},function () {
                     window.history.go(-1);
                 })
-            }else if (recordbool==3){//导出word
+            }else if (recordbool==-1){//导出word
                 var url=getActionURL(getactionid_manage().waitRecord_exportWord);
                 var paramdata={
                     token:INIT_CLIENTKEY,
@@ -914,19 +918,22 @@ function calladdRecord(data) {
                     }
                 };
                 ajaxSubmitByJson(url, paramdata, function (data) {
+                    if (isNotEmpty(exportWord_index)) {
+                            layer.close(exportWord_index);
+                    }
                     if(null!=data&&data.actioncode=='SUCCESS'){
                         var data=data.data;
                         if (isNotEmpty(data)){
                             var word_htmlpath=data.word_htmlpath;//预览html地址
                             var word_path=data.word_path;//下载地址
                             window.location.href = word_path;
-                            layer.msg("导出成功,等待下载中...");
+                            layer.msg("导出成功,等待下载中...",{icon: 6});
                         }
                     }else{
                         layer.msg(data.message,{icon: 5});
                     }
                 });
-            } else  if (recordbool==4){//导出pdf
+            } else  if (recordbool==-2){//导出pdf
                 var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
                 var paramdata={
                     token:INIT_CLIENTKEY,
@@ -935,6 +942,9 @@ function calladdRecord(data) {
                     }
                 };
                 ajaxSubmitByJson(url, paramdata, function (data) {
+                    if (isNotEmpty(exportPdf_index)) {
+                        layer.close(exportPdf_index);
+                    }
                     if(null!=data&&data.actioncode=='SUCCESS'){
                         var data=data.data;
                         if (isNotEmpty(data)){
@@ -949,7 +959,7 @@ function calladdRecord(data) {
                             });
 
                             showPDF("pdfid",data);
-                            layer.msg("导出成功,等待下载中...");
+                            layer.msg("导出成功,等待下载中...",{icon: 6});
                         }
                     }else{
                         layer.msg(data.message,{icon: 5});
@@ -968,14 +978,19 @@ function calladdRecord(data) {
 //结束笔录按钮
 var overRecord_index=null;
 var overRecord_loadindex =null;
- function overRecord() {
+ function overRecord(state) {
+     var msgtxt2="是否结束？";
+     if (state==1){
+         msgtxt2="是否休庭？";
+     }
+
      var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
      var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
      var msgtxt="";
      if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
          msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
      }
-    layer.confirm('是否结束?<br/><span style="color: red">*确保存在对应模板否则导出功能失效</span><br>'+msgtxt, {
+    layer.confirm(msgtxt2+'<br/><span style="color: red">*确保存在对应模板否则导出功能失效</span><br>'+msgtxt, {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -990,6 +1005,11 @@ var overRecord_loadindex =null;
 
         overRecord_index=index;
         recordbool=2;
+        if (state==1){
+            casebool=3;//需要休庭
+        }
+
+
         addRecord();
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
             typy:1,
@@ -1002,25 +1022,30 @@ var overRecord_loadindex =null;
 }
 
 
+
+
 //导出word
+var exportWord_index=null;
 function exportWord(obj){
-    recordbool=3; //不存在数据库
+    recordbool=-1; //不存在数据库
     addRecord();
     btn(obj);
-    layer.msg("导出中，请稍等...", {
+    exportWord_index=layer.msg("导出中，请稍等...", {
         icon: 16,
-        shade: [0.1, 'transparent']
+        shade: [0.1, 'transparent'],
+        time:-1
     });
 }
+var exportPdf_index=null;
 function exportPdf(obj) {
-    recordbool=4; //不存在数据库
+    recordbool=-2; //不存在数据库
     addRecord();
     btn(obj);
-    layer.msg("导出中，请稍等...", {
+    exportPdf_index=layer.msg("导出中，请稍等...", {
         icon: 16,
-        shade: [0.1, 'transparent']
-    });
+        shade: [0.1, 'transparent'],
 
+    });
 }
 
 

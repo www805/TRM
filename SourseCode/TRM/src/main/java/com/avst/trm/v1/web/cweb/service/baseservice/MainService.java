@@ -684,15 +684,18 @@ public class MainService extends BaseService {
                 for (Base_keyword keyword : keywords) {
                     String keywordtext=keyword.getText();
                     if (txt.indexOf(keywordtext)>=0){
-                         String color=keyword.getColor();
-                         String backgroundcolor=keyword.getBackgroundcolor();
+                         String color=keyword.getColor()==null?"":keyword.getColor();
+                         String backgroundcolor=keyword.getBackgroundcolor()==null?"":keyword.getBackgroundcolor();
                          String replacetext=keyword.getReplacetext();
                          Integer shieldbool=keyword.getShieldbool(); // 是否屏蔽：1屏蔽/-1不屏蔽；默认-1
 
                         //需要屏蔽
                         String style="";//样式css
-                        if(null!=color&&null!=backgroundcolor){
+                        if(null!=color||null!=backgroundcolor){
                             style+="color:"+color+";background-color:"+backgroundcolor;
+                        }else {
+                            //默认
+                            style+="color:#000;background-color:#fff";
                         }
                          if (null!=shieldbool&&shieldbool==1){
                              //文本替换
@@ -713,6 +716,8 @@ public class MainService extends BaseService {
                 result.setData(vo);
                 changeResultToSuccess(result);
                 return;
+            }else {
+                LogUtil.intoLog(this.getClass(),"关键字检测：检测列表为空__");
             }
         }else {
             LogUtil.intoLog(this.getClass(),"关键字检测：没有要检测的文本__");

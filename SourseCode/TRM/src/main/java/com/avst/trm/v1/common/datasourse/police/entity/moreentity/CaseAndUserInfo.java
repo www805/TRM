@@ -13,6 +13,8 @@ import java.util.List;
 public class CaseAndUserInfo extends Police_case {
     private String userssid;//用户ssid
     private String username;
+    private String cardtypename;//证件类型名称
+    private String cardnum;//证件号码
 
     private Integer asknum;//询问次数
 
@@ -23,6 +25,22 @@ public class CaseAndUserInfo extends Police_case {
 
     private List<ArraignmentAndRecord> arraignments;//多次提讯数据
 
+
+    public String getCardtypename() {
+        return cardtypename;
+    }
+
+    public void setCardtypename(String cardtypename) {
+        this.cardtypename = cardtypename;
+    }
+
+    public String getCardnum() {
+        return cardnum;
+    }
+
+    public void setCardnum(String cardnum) {
+        this.cardnum = cardnum;
+    }
 
     public String getCreatorname() {
         return creatorname;

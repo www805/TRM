@@ -1235,7 +1235,9 @@ function callbackgnlist(data) {
 
 //*******************************************************************关键字start****************************************************************//
 //未使用==后台执行了
+var dq_keyword;
 function checkKeyword(txt) {
+    dq_keyword=txt;
     var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
     var data={
         token:INIT_CLIENTKEY,
@@ -1243,19 +1245,20 @@ function checkKeyword(txt) {
             txt:txt
         }
     };
-    ajaxSubmitByJson(url, data,callbackcheckKeyword);
+    ajaxSubmitByJson(url, data,function callbackcheckKeyword(data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var vo=data.data;
+            if (isNotEmpty(vo)){
+                dq_keyword=vo.txt
+                console.log("关键字"+dq_keyword)
+            }
+        }else {
+            console.log(data.message);
+        }
+    });
 }
 
-function callbackcheckKeyword(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var vo=data.data;
-        if (isNotEmpty(vo)){
-            dq_newtxt=vo.txt;
-        }
-    }else {
-        console.log(data.message);
-    }
-}
+
 //*******************************************************************关键字end****************************************************************//
 
 //*******************************************************************获取各个状态start****************************************************************//

@@ -39,11 +39,9 @@ import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.*;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
-import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckStartRecordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
-import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckStartRecordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.corundumstudio.socketio.SocketIOClient;
@@ -399,22 +397,9 @@ public class OutService  extends BaseService {
                 }
 
                 String txt=setMCAsrTxtBackVO.getTxt();
-                //检测关键字
-                RResult checkkeyword_rr=new RResult();
-                CheckKeywordParam checkKeywordParam=new CheckKeywordParam();
-                checkKeywordParam.setTxt(txt);
-                ReqParam checkkeyword_param=new ReqParam();
-                checkkeyword_param.setParam(checkKeywordParam);
-                mainService.checkKeyword(checkkeyword_rr,checkkeyword_param);
-                if (null!=checkkeyword_rr&&checkkeyword_rr.getActioncode().equals(Code.SUCCESS.toString())&&null!=checkkeyword_rr.getData()){
-                    CheckKeywordVO vo=gson.fromJson(gson.toJson(checkkeyword_rr.getData()),CheckKeywordVO.class);
-                    if (null!=vo&&null!=vo.getTxt()){
-                        txt=vo.getTxt();
-                        setMCAsrTxtBackVO.setTxt(txt);
-                    }
-                }
 
                 List<SocketIOClient> clients = SocketIOConfig.clients;
+                LogUtil.intoLog(this.getClass(),"SocketIOClient__"+clients);
                 if (null!=clients&&clients.size()>0){
                     for (SocketIOClient client : clients) {
                         client.sendEvent("getback", setMCAsrTxtBackVO);
@@ -459,21 +444,6 @@ public class OutService  extends BaseService {
                             if (StringUtils.isNotBlank(asrstartime)&&StringUtils.isNotBlank(starttime)){
                                 asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
                                 asrTxtParam_toout.setAsrstartime(asrstartime);
-                            }
-                            //检测关键字
-                            String txt=asrTxtParam_toout.getTxt();
-                            RResult checkkeyword_rr=new RResult();
-                            CheckKeywordParam checkKeywordParam=new CheckKeywordParam();
-                            checkKeywordParam.setTxt(txt);
-                            ReqParam checkkeyword_param=new ReqParam();
-                            checkkeyword_param.setParam(checkKeywordParam);
-                            mainService.checkKeyword(checkkeyword_rr,checkkeyword_param);
-                            if (null!=checkkeyword_rr&&checkkeyword_rr.getActioncode().equals(Code.SUCCESS.toString())&&null!=checkkeyword_rr.getData()){
-                                CheckKeywordVO vo=gson.fromJson(gson.toJson(checkkeyword_rr.getData()),CheckKeywordVO.class);
-                                if (null!=vo&&null!=vo.getTxt()){
-                                    txt=vo.getTxt();
-                                    asrTxtParam_toout.setTxt(txt);
-                                }
                             }
                         }
                         LogUtil.intoLog(this.getClass(),"排序后时间2：——————"+asrTxtParam_toouts.get(0).getStarttime());
@@ -530,22 +500,6 @@ public class OutService  extends BaseService {
                             asrstartime = df.format(new Date(Long.parseLong(asrstartime)+Long.parseLong(starttime)));
                             asrTxtParam_toout.setAsrstartime(asrstartime);
                         }
-                        //检测关键字
-                        String txt=asrTxtParam_toout.getTxt();
-                        RResult checkkeyword_rr=new RResult();
-                        CheckKeywordParam checkKeywordParam=new CheckKeywordParam();
-                        checkKeywordParam.setTxt(txt);
-                        ReqParam checkkeyword_param=new ReqParam();
-                        checkkeyword_param.setParam(checkKeywordParam);
-                        mainService.checkKeyword(checkkeyword_rr,checkkeyword_param);
-                        if (null!=checkkeyword_rr&&checkkeyword_rr.getActioncode().equals(Code.SUCCESS.toString())&&null!=checkkeyword_rr.getData()){
-                            CheckKeywordVO vo=gson.fromJson(gson.toJson(checkkeyword_rr.getData()),CheckKeywordVO.class);
-                            if (null!=vo&&null!=vo.getTxt()){
-                                txt=vo.getTxt();
-                                asrTxtParam_toout.setTxt(txt);
-                            }
-                        }
-
                     }
                     LogUtil.intoLog(this.getClass(),"排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());
                    /* Collections.sort(asrTxtParam_toouts, (s1, s2) -> s1.getStarttime().toString().compareTo(s2.getStarttime().toString()));*/

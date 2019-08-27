@@ -29,10 +29,18 @@ public class AddCaseToArraignmentParam {
     private String otheruserinfoname;//新增询问人二的名称
     private String otherworkname;//新增询问人二的对应的工作单位
 
-    private Integer skipCheckbool;//是否跳过检测1跳过-1不跳过
+    private Integer skipCheckbool=-1;//是否跳过检测1跳过-1不跳过
+    private Integer skipCheckCasebool=-1;//是否跳过检测案件状态 1跳过-1不跳过
 
     private Integer conversationbool=-1;//是否为谈话 默认-1 非谈话类型(信息全需) 1开始谈话(填写基本信息即可) 2一键谈话（默认基本信息）
 
+    public Integer getSkipCheckCasebool() {
+        return skipCheckCasebool;
+    }
+
+    public void setSkipCheckCasebool(Integer skipCheckCasebool) {
+        this.skipCheckCasebool = skipCheckCasebool;
+    }
 
     public Integer getConversationbool() {
         return conversationbool;

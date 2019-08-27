@@ -9,6 +9,8 @@ var dq_livingurl;
 var dq_previewurl;
 var mcbool=null;
 
+var casebool=null;//案件状态
+
 
 function getRecordById() {
     var url=getActionURL(getactionid_manage().waitconversation_getRecordById);
@@ -108,7 +110,10 @@ function callbackgetRecordById(data) {
                     recorduser.push(user2);
                     dq_recorduser=recordUserInfosdata.userssid;//当前被审讯人
                 }
-
+                var caseAndUserInfo=record.caseAndUserInfo;
+                if (isNotEmpty(caseAndUserInfo)){
+                    casebool=caseAndUserInfo.casebool==null?"":caseAndUserInfo.casebool;
+                }
             }
         }
     }else{
@@ -317,9 +322,11 @@ function select_liveurl(obj,type){
 }
 
 var overRecord_loadindex =null;
-function overRecord() {
-
-
+function overRecord(state) {
+    var msgtxt2="是否结束？";
+    if (state==1){
+        msgtxt2="是否休庭？";
+    }
        var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
        var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
        var msgtxt="";
@@ -327,7 +334,7 @@ function overRecord() {
            msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
        }
 
-    layer.confirm('是否结束审讯<br>'+msgtxt, {
+    layer.confirm(msgtxt2+'<br>'+msgtxt, {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -335,12 +342,16 @@ function overRecord() {
             var url=getActionURL(getactionid_manage().waitconversation_addRecord);
             //需要收拾数据
             var recordToProblems=[];//题目集合
+            if (state==1){
+                casebool=3;//需要休庭
+            }
             var data={
                 token:INIT_CLIENTKEY,
                 param:{
                     recordssid: recordssid,
                     recordbool:2,//关闭
                     recordToProblems:recordToProblems,
+                    casebool:casebool,
                     mtssid:mtssid //会议ssid用于审讯结束时关闭会议
                 }
             };

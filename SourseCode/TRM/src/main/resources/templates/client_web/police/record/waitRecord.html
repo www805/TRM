@@ -544,7 +544,8 @@
                 </div>
                 <div class="layui-col-md4"  >
                     <div class="layui-inline" style="margin-bottom:0;float: right">
-                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord();" id="overRecord_btn">加载中</button>
+                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord(1);" id="adjourn_btn">休庭</button>
+                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord(0);" id="overRecord_btn">加载中</button>
                     </div>
                 </div>
             </div>
@@ -580,7 +581,7 @@
     var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
 
     var recordstate_index=null;//笔录状态栏的下标
-    var dq_newtxt="";//当前关键字文本
+
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

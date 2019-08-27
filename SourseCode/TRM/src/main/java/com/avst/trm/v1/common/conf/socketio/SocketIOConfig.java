@@ -37,8 +37,8 @@ public class SocketIOConfig implements ApplicationRunner {
                     public void onConnect(SocketIOClient socketIOClient) {
                         // 判断是否有客户端连接
                         if (socketIOClient != null) {
-                            LogUtil.intoLog(this.getClass(),"客户端_____" + socketIOClient.getSessionId() + "_____已连接");
                             clients.add(socketIOClient);
+                            LogUtil.intoLog(this.getClass(),"客户端_____" + socketIOClient.getSessionId() + "_____已连接__"+clients.size());
                         }
                     }
                 });
@@ -47,13 +47,11 @@ public class SocketIOConfig implements ApplicationRunner {
                     @Override
                     public void onDisconnect(SocketIOClient socketIOClient) {
                         if (socketIOClient != null) {
-                            LogUtil.intoLog(this.getClass(),"客户端_____" + socketIOClient.getSessionId() + "_____断开连接");
+                            LogUtil.intoLog(this.getClass(),"客户端_____" + socketIOClient.getSessionId() + "_____断开连接__"+clients.size());
                             clients.remove(socketIOClient);
                         }
                     }
                 });
-
-
                 socketIoServer.start();
             }else {
                 LogUtil.intoLog(this.getClass(),"socketiode IP和端口为空_____");

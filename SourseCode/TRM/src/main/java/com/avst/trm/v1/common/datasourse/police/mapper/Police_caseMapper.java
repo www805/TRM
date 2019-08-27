@@ -19,11 +19,19 @@ import java.util.List;
  * @since 2019-04-22
  */
 public interface Police_caseMapper extends BaseMapper<Police_case> {
-    @Select("select c.*,u.username,u.ssid as userssid from police_case c left join police_userinfo u on u.ssid=c.userssid where 1=1 ${ew.sqlSegment}")
+    @Select("select c.*,u.username,u.ssid as userssid ,t.typename as cardtypename,ut.cardnum as cardnum from police_case c " +
+            " left join police_userinfo u on u.ssid=c.userssid " +
+            " left join police_userinfototype ut on u.ssid=ut.userssid " +
+            " left join police_cardtype t on t.ssid=ut.cardtypessid" +
+            " where 1=1 ${ew.sqlSegment}")
     List<CaseAndUserInfo> getArraignmentList(Page page, @Param("ew") EntityWrapper ew);
 
 
-    @Select("select count(c.ssid) from police_case c left join police_userinfo u on u.ssid=c.userssid where 1=1 ${ew.sqlSegment}")
+    @Select("select count(c.ssid) from police_case c" +
+            " left join police_userinfo u on u.ssid=c.userssid" +
+            " left join police_userinfototype ut on u.ssid=ut.userssid " +
+            " left join police_cardtype t on t.ssid=ut.cardtypessid" +
+            " where 1=1 ${ew.sqlSegment}")
     int countgetArraignmentList( @Param("ew")EntityWrapper ew);
 
     @Select("select c.*,u.username,u.ssid as userssid from police_arraignment a " +
