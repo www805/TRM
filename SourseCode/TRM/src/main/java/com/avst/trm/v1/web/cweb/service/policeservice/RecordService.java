@@ -909,15 +909,12 @@ public class RecordService extends BaseService {
 
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation2");
 
-            String time=String.valueOf(new Date().getTime());
+            String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
             String conversationmsg="开启审讯_"+time;
 
             recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
             askobj="询问对象_"+conversationmsg;
-            addPolice_case.setCasenum(time);
-            addPolice_case.setCaseway("案由_"+conversationmsg);
-
-
+            addPolice_case.setCause("案由_"+conversationmsg);
         }if (conversationbool==2){
             //一键谈话
             //默认使用会议的谈话模板ssid
@@ -925,7 +922,7 @@ public class RecordService extends BaseService {
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");
 
-            String time=String.valueOf(new Date().getTime());
+            String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
             String conversationmsg="一键审讯_"+time;
 
             //用户信息使用默认
@@ -941,9 +938,7 @@ public class RecordService extends BaseService {
             addPolice_case.setCasename("案件名_"+conversationmsg);
             addPolice_case.setOccurrencetime(new Date());
             addPolice_case.setStarttime(new Date());
-            addPolice_case.setCasenum(time);
-            addPolice_case.setCaseway("案由_"+conversationmsg);
-
+            addPolice_case.setCause("案由_"+conversationmsg);
 
             //笔录名称
             recordname="审讯笔录【一键审讯】_"+time;
@@ -1025,7 +1020,20 @@ public class RecordService extends BaseService {
         }
 
             //需要新增案件信息
+         String casenum=addPolice_case.getCasenum();//案件号码
          if (StringUtils.isBlank(casessid)){
+             if (StringUtils.isNotBlank(casenum)){
+                 //判断案件是否重复
+                 EntityWrapper police_cases_param=new EntityWrapper();
+                 police_cases_param.eq("casenum",casenum);
+                 List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                 if (null!=police_cases_&&police_cases_.size()>0){
+                     result.setMessage("案件编号不能重复");
+                     return;
+                 }
+             }
+
+
                 LogUtil.intoLog(this.getClass(),"需要新增案件信息____");
                 addPolice_case.setSsid(OpenUtil.getUUID_32());
                 addPolice_case.setCreatetime(new Date());
@@ -1033,18 +1041,60 @@ public class RecordService extends BaseService {
                 addPolice_case.setUserssid(userssid);
                 addPolice_case.setCasebool(0);
                 addPolice_case.setCreator(adminssid);
+
+
+
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
                 LogUtil.intoLog(this.getClass(),"insertcase_bool__"+insertcase_bool);
                 if (insertcase_bool>0){
                     casessid=addPolice_case.getSsid();
                 }
          }else{
+
+             if (StringUtils.isNotBlank(casenum)){
+                 //判断案件是否重复
+                 EntityWrapper police_cases_param=new EntityWrapper();
+                 police_cases_param.eq("casenum",casenum);
+                 police_cases_param.ne("ssid",casessid);
+                 List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                 if (null!=police_cases_&&police_cases_.size()>0){
+                     result.setMessage("案件编号不能重复");
+                     return;
+                 }
+             }
+
                 //修改案件信息
                 EntityWrapper updatecaseParam=new EntityWrapper();
                 updatecaseParam.eq("ssid",casessid);
                 int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
                 LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
          }
+
+        //修改案件编号
+        if (StringUtils.isBlank(addPolice_case.getCasenum())){
+            //截取类型的前一个字母
+            String type=CommonCache.getCurrentServerType();
+            int index=type.indexOf("_");
+            String q="";
+            if (index>-1&&index<type.length()-1){
+                String test3before=type.substring(0,index);
+                String test3after=type.substring(index+1);
+                q=test3before.substring(0,1)+test3after.substring(0,1)+"_";
+            }
+
+            //拼接案件编号
+            String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
+            String numberNo = getNumberNo(numbertType, String.valueOf(addPolice_case.getId()-1<1?1:addPolice_case.getId()-1));
+            addPolice_case.setCasenum(numberNo);
+
+            //修改编号
+            EntityWrapper updateparam=new EntityWrapper();
+            updateparam.eq("ssid",addPolice_case.getSsid());
+            int caseupdate_bool = police_caseMapper.update(addPolice_case,updateparam);
+            if (caseupdate_bool>0){
+                LogUtil.intoLog(this.getClass(),"案件编号修改成功__"+numberNo);
+            }
+        }
 
 
         if (StringUtils.isBlank(userssid)||StringUtils.isBlank(casessid)){
@@ -1788,8 +1838,10 @@ public class RecordService extends BaseService {
         int count = police_caseMapper.countgetArraignmentList(ew);
         getCasesParam.setRecordCount(count);
 
-        ew.orderBy("c.ordernum",true);
+
+        ew.orderBy("c.casenum",false);
         ew.orderBy("c.createtime",false);
+        ew.orderBy("c.ordernum",true);
         Page<CaseAndUserInfo> page=new Page<CaseAndUserInfo>(getCasesParam.getCurrPage(),getCasesParam.getPageSize());
         List<CaseAndUserInfo> list=police_caseMapper.getArraignmentList(page,ew);
         getCasesVO.setPageparam(getCasesParam);
@@ -1867,7 +1919,7 @@ public class RecordService extends BaseService {
                 }
 
                 //拼接案件编号
-                String numbertType=q+DateUtil.getYear()+""+DateUtil.getMonth()+""+DateUtil.getDay();
+                String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
                 String numberNo = getNumberNo(numbertType, String.valueOf(addCaseParam.getId()-1<1?1:addCaseParam.getId()-1));
                 addCaseParam.setCasenum(numberNo);
 
@@ -1925,7 +1977,7 @@ public class RecordService extends BaseService {
             }
 
             //拼接案件编号
-            String numbertType=q+DateUtil.getYear()+""+DateUtil.getMonth()+""+DateUtil.getDay();
+            String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
             String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?1:police_case_.getId()-1));
             updateCaseParam.setCasenum(numberNo);
         }
@@ -3016,13 +3068,15 @@ public class RecordService extends BaseService {
      * @return
      */
     public static String getNumberNo(String numberType, String numberNo){
-        String newNumberNo = "001";//默认5位
+        String newNumberNo = "00001";//默认5位
         if(numberNo != null && !numberNo.isEmpty()){
             int newEquipment = Integer.parseInt(numberNo) + 1;
-            newNumberNo = String.format(numberType + "%03d", newEquipment);
+            newNumberNo = String.format(numberType + "%05d", newEquipment);
         }
         return newNumberNo;
     }
+
+
 
 
 
