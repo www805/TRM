@@ -611,4 +611,10 @@ public class CommonCache {
         admininfo = base_admininfo;
     }
 
+
+    /**
+     * 点播打包线程是否有人占用
+     */
+    public static int gzvodthreadnum=0;
+
 }

@@ -5,11 +5,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.net.ssl.HostnameVerifier;
@@ -19,9 +18,33 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import com.avst.trm.v1.common.util.sq.NetTool;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.apache.commons.httpclient.methods.multipart.StringPart;
+import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-
-
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 
 public class HttpRequest {
@@ -143,11 +166,9 @@ public class HttpRequest {
 	 * @param uploadFilePath：需要上传的文件路径
 	 * @return
 	 */
-	@SuppressWarnings("finally")
 	public static String uploadFile(String actionUrl, String uploadFilePath,Map<String,String> map) {
 		String end = "\r\n";
-		String twoHyphens = "--";
-		String boundary = "*****";
+		String boundary = "--*****";
 
 		URLConnection urlConnection=null;
 		HttpURLConnection httpURLConnection=null;
@@ -234,7 +255,6 @@ public class HttpRequest {
 				StringBuilder sb = new StringBuilder();
 				if(null!=map){
 					for (Map.Entry<String, String> entry : map.entrySet()) {
-						sb.append(twoHyphens);
 						sb.append(boundary);
 						sb.append(end);
 						sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + end);
@@ -302,44 +322,37 @@ public class HttpRequest {
 				// 设定请求的方法，默认是GET
 				httpURLConnection.setRequestMethod("POST");
 				// 设置字符编码连接参数
-				httpURLConnection.setRequestProperty("Connection", "Keep-Alive");
-				// 设置字符编码
-				httpURLConnection.setRequestProperty("Charset", "UTF-8");
+				httpURLConnection.setRequestProperty("Connection", "Keep-alive");
+				httpURLConnection.setRequestProperty("Host", NetTool.getMyIP());
 				httpURLConnection.setRequestProperty("User-Agent",
-						"Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
+						"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
 				// 设置请求内容类型
-				httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+				httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+				httpURLConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+				httpURLConnection.setRequestProperty("Cookie", OpenUtil.getUUID_32()+"=admin");
 
-				httpURLConnection.setRequestProperty("Accept", "text/xml,text/javascript,text/html,application/json");
+			// 获得输出流
+				out = new DataOutputStream(httpURLConnection.getOutputStream());
 
 				// 请求正文信息
 				// 第一部分：
 				StringBuilder sb = new StringBuilder();
-
+				sb.append(end+boundary+end);
 				if(null!=map){
 					for (Map.Entry<String, String> entry : map.entrySet()) {
-						sb.append(twoHyphens);
-						sb.append(boundary);
-						sb.append(end);
-						sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" + end);
-						sb.append("Content-Type: text/plain; charset=UTF-8"  + end);
-						sb.append("Content-Transfer-Encoding: 8bit" + end);
-						sb.append(end);
+						sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" );
+						sb.append(end+end);
 						sb.append(entry.getValue());
-						sb.append(end);
+						sb.append(end+boundary+end);
 					}
 				}
 
-
-				sb.append(twoHyphens); // 必须多两道线
-				sb.append(boundary);
-				sb.append(end);
-				sb.append("Content-Disposition: form-data;name=\"filebinary\";filename=\"" + filename + "\""+end);
+				sb.append("Content-Disposition: form-data; name=\"filebinary\"; filename=\"" + filename + "\""+end);
 				//未知文件类型，以流的方式上传
-				sb.append("Content-Type:multipart/form-data; charset=utf-8"+end+end);
-				byte[] head = sb.toString().getBytes("utf-8");
-				// 获得输出流
-				out = new DataOutputStream(httpURLConnection.getOutputStream());
+				sb.append("Content-Type: application/octet-stream"+end+end);
+
+				byte[] head = sb.toString().getBytes("UTF-8");
+
 				// 输出表头
 				out.write(head);
 				// 文件正文部分
@@ -353,28 +366,27 @@ public class HttpRequest {
 				}
 
 				// 结尾部分
-				byte[] foot = (end+twoHyphens + boundary + twoHyphens+end).getBytes("utf-8");// 定义最后数据分隔线
+				byte[] foot = (end+boundary+"--"+end).getBytes("UTF-8");// 定义最后数据分隔线
 				out.write(foot);
 				out.flush();
 				out.close();
 
 				//返回值
+				System.out.println(httpURLConnection.getResponseCode()+"--httpURLConnection.getResponseCode()");
 				if (httpURLConnection.getResponseCode() >= 300) {
 					throw new Exception(
 							"HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
 				}
 
-				if (httpURLConnection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-					inputStream = httpURLConnection.getInputStream();
-					inputStreamReader = new InputStreamReader(inputStream);
-					reader = new BufferedReader(inputStreamReader);
-					tempLine = null;
-					resultBuffer = new StringBuffer();
-					while ((tempLine = reader.readLine()) != null) {
-						resultBuffer.append(tempLine);
-						resultBuffer.append("\n");
-					}
+				// 4. 从服务器获得回答的内容
+				String strLine="";
+				InputStream in =httpURLConnection.getInputStream();
+				reader = new BufferedReader(new InputStreamReader(in));
+				while((strLine =reader.readLine()) != null)
+				{
+					resultBuffer.append(strLine +"\n");
 				}
+
 			}
 
 		} catch (Exception e) {
@@ -470,23 +482,81 @@ public class HttpRequest {
 	}
 
 
+public static String uploadFile_HttpPost(String actionURL,String filepath,Map<String,String> map){
+
+	try {
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		CloseableHttpResponse httpResponse = null;
+		RequestConfig requestConfig = RequestConfig.custom().setConnectTimeout(200000).setSocketTimeout(200000000).build();
+		HttpPost httpPost = new HttpPost(actionURL);
+		httpPost.setConfig(requestConfig);
+
+		//把文件转换成流对象FileBody
+		FileBody bin = new FileBody(new File(filepath),"Content-Type: application/octet-stream");
+		MultipartEntityBuilder multipartEntityBuilder=MultipartEntityBuilder.create();
+		multipartEntityBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+		multipartEntityBuilder.addPart("filebinary", bin);
+		if(null!=map){
+			for (Map.Entry<String, String> entry : map.entrySet()) {
+				multipartEntityBuilder.addPart(entry.getKey(), new StringBody(entry.getValue(), ContentType.create("text/plain", Consts.UTF_8)));
+			}
+		}
+		httpPost.setEntity(multipartEntityBuilder.build());
+
+		httpPost.addHeader("Connection", "Keep-alive");
+		httpPost.addHeader("Host", NetTool.getMyIP());
+		httpPost.addHeader("User-Agent",
+				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
+		// 设置请求内容类型
+		httpPost.addHeader("Content-Type", "multipart/form-data; " );
+		httpPost.addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+		httpPost.addHeader("Cookie", OpenUtil.getUUID_32()+"=admin");
+
+
+		httpResponse = httpClient.execute(httpPost);
+		HttpEntity responseEntity = httpResponse.getEntity();
+		int statusCode= httpResponse.getStatusLine().getStatusCode();
+		if(statusCode == 200){
+			BufferedReader reader = new BufferedReader(new InputStreamReader(responseEntity.getContent()));
+			StringBuffer buffer = new StringBuffer();
+			String str = "";
+			while((str =reader.readLine()) != null)
+			{
+				buffer.append(str +"\n");
+			}
+			System.out.println(buffer.toString()+"----");
+		}
+
+		httpClient.close();
+		if(httpResponse!=null){
+			httpResponse.close();
+		}
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+
+	return null;
+
+}
 
 
 
 	public static void main(String[] args) {
 
 		String uuid=OpenUtil.getUUID_32();
-		String actionUrl="http://192.168.17.159:80/uploadService/httpFileUpload?token="+uuid;
+		String actionUrl="http://192.168.17.186:80/uploadService/httpFileUpload";
 //		String actionUrl="http://192.168.17.175:8080/cweb/police/notification/uploadNotification";
-		String uploadFilePath="D:\\ftpdata\\gz\\2019\\07\\17\\18\\19\\15\\client.tar.gz";
+		String uploadFilePath="D:\\ftpdata\\sb3\\2019-08-21\\892eddc0bd0647419a3246d7a9d4d580_sxsba2\\NetTool.jar";
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("upload_task_id",uuid);
-		map.put("dstPath","/tmp/hd0/2019-07-16/a534d4088e354603851dc4418f5944da_sxsba2/");
-		map.put("fileName","client.tar.gz");
+		map.put("upload_task_id","892eddc0bd0647419a3246d7a9d4d580_sxsba2");
+		map.put("dstPath","/tmp/hd0/2019-08-21/892eddc0bd0647419a3246d7a9d4d580_sxsba2/");
+		map.put("fileName","NetTool.jar");
 		map.put("linkaction","burn");
-		map.put("discFileName","client.tar.gz");
+		map.put("discFileName","NetTool.jar");
 		map.put("action","upload_file");
 		String rr=uploadFile(actionUrl,uploadFilePath,map);
+
+//		String rr=uploadFile_HttpPost(actionUrl,uploadFilePath,map);
 		System.out.println(rr);
 	}
 

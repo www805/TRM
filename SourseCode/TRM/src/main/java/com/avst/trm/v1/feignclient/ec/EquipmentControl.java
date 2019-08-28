@@ -41,6 +41,20 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult saveFile_local(@RequestBody SaveFile_localParam param);
 
+    /**
+     * 获取存储服务器的对应iid的存储地址的路径
+     * @param param
+     * @return
+     */
+    @RequestMapping("/ss/v1/getSaveFilePath_local")
+    @ResponseBody
+    public RResult getSaveFilePath_local(@RequestBody GetSaveFilePath_localParam param);
+
+    @RequestMapping("/ss/v1/getSaveFilePath_local")
+    @ResponseBody
+    public RResult getSaveFilesPathByiid(@RequestBody GetSaveFilesPathByiidParam param);
+
+
 //设备
     @RequestMapping("/flushbonading/v1/getFDListByFdid")
     @ResponseBody

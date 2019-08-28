@@ -69,7 +69,7 @@ public class Police_record extends Model<Police_record> {
 
 
     /**
-     * 点播压缩地址的iid
+     * 点播文件存储地址的iid
      */
     private String gz_iid;
 

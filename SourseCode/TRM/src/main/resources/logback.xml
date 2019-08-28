@@ -7,6 +7,10 @@
     <property name="log.path" value="D:\\log\\trm\\" />
     <property name="log.file" value="D:\\log\\trm\\trm.log" />
 
+    <!--WARN-->
+    <property name="log.path.warn" value="D:\\log\\trm\\" />
+    <property name="log.file.warn" value="D:\\log\\trm\\trm-warn.log" />
+
     <!-- errr,错误路径 -->
     <property name="log.path.error" value="D:\\log\\trm\\" />
     <property name="log.file.error" value="D:\\log\\trm\\trm-error.log" />
@@ -34,6 +38,31 @@
         <!-- 显示所有的日志记录 -->
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!--警告的日志-->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.file.warn}</file>
+        <!-- 循环政策：基于时间创建日志文件 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
+            <fileNamePattern>${log.path.error}ec-log-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- 最大保存时间：30天-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <append>true</append>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>

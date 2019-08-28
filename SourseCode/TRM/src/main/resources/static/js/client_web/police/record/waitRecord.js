@@ -1735,6 +1735,13 @@ function contextMenu() {
 }
 
 
+
+
+//右侧标记的文本：当前
+var dqtag_right=[];//{key:0,value:"q",txt:["哈哈","哈哈"]}
+
+
+
 //自动甄别初始化
 var laststarttime_qq=-1;//上一个问时间
 var laststarttime_ww=-1;//上一个答时间
@@ -1840,6 +1847,17 @@ $(function () {
     },1000);
 
 
+//自动甄别初始化
+
+    var laststarttime_qq=-1;//上一个问时间
+    var laststarttime_ww=-1;//上一个答时间
+    var last_type=-1;//上一个是 1问题 2是答案
+    var qq="";//本次的问的内容
+    var qqq="";//没有跳问答的已经写入行中问的内容
+    var ww="";//本次的答的内容
+    var www="";//没有跳问答的已经写入行中答的内容
+
+
     // 建立连接
     if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
 
@@ -1909,100 +1927,80 @@ $(function () {
                             if (record_switch_bool==1){
                                 if (last_type==-1){
                                     //初始化，开始有问就开始追加一行
-                                    if (usertype==1){
+                                    if (usertype==1){//初始化上墙，
+
                                         qq=translatext;
-                                        last_type=usertype;
-                                        laststarttime_qq=starttime;
+
                                         setrecord_html();
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
+
+                                        last_type=usertype;
+                                        laststarttime_qq=starttime;
+                                        www="";
+                                        qqq="";
                                     }
                                 }else  if (last_type==1){
                                     //最后是问
-                                    var last_type2=last_type;
-                                    last_type=usertype;
+
                                     if (usertype==1){
                                         //最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_qq==starttime||laststarttime_qq==-1){
+                                        if (laststarttime_qq==starttime){//修改最后一条数据
                                             qq=translatext;
-                                            laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
-                                        }else{
-                                            qqq+=qq;
+                                        }else{//追加这条数据
+                                            qqq+=qq;//把上一条数据加到qqq，说明上一条数据已经完成，qqq记录的都是已经完成的问
                                             qq=translatext;
-                                            laststarttime_qq=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
                                         }
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
+                                        laststarttime_qq=starttime;
                                     }else if (usertype==2){
                                         //最后是问，本次是答，开始拼接答案
-                                        if (w_prevstarttime==starttime){
-                                            last_type=last_type2;//还原
+                                        if (laststarttime_ww==starttime){//判断这次答的时间跟上一句答的时间是否一样，一样的话
                                             console.log("修改即可————————————————————————————w")
-                                            console.log("ww_prev_______________________________"+ww_prev)
-                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").text(ww_prev+translatext);
-                                        }else {
+                                            console.log("www_______________________________"+www);
+                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").text(www+translatext);
+                                        }else {//建立新答
                                             ww=translatext;
-                                            laststarttime_ww=starttime;
+                                            www="";
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
-                                            ww_prev=ww;
-                                            console.log("ww_prev3_____________________________"+ww_prev)
+                                            console.log("建立新答_____________________________"+ww);
                                         }
+                                        laststarttime_ww=starttime;
                                     }
+                                    last_type=usertype;
+
                                 }else  if (last_type==2){
                                     //最后是答
-                                    last_type=usertype;
+
                                     if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_ww==starttime||laststarttime_ww==-1){
+                                        if (laststarttime_ww==starttime){//答的修改最后一句
                                             ww=translatext;
-                                            laststarttime_ww=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
-                                        }else{
+                                        }else{//答的追加最后一句
                                             www+=ww;
                                             ww=translatext;
-                                            laststarttime_ww=starttime;
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
                                         }
-                                        ww_prev=www;
-                                        console.log("ww_prev2_________________________"+ww_prev)
+                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
+                                        laststarttime_ww=starttime;
+                                        console.log("www_________________________"+www)
                                     }else if (usertype==1){//最后是答，本次为问
                                         //判断本次问是否和上一次问相同时间，相同改变否则追加一行
-                                        if (laststarttime_qq==starttime||laststarttime_qq==-1){
+                                        if (laststarttime_qq==starttime){//只需要修改最后一个问
                                             console.log("修改即可————————————————————————————q")
                                             qq=translatext;
-                                            laststarttime_qq=starttime;
+
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").text(qqq+qq);
-                                        }else {
+                                        }else {//追加一个新问
                                             console.log("从这里开始追加新的一行_________")
-                                            w_prevstarttime=laststarttime_ww;
-
-                                           /* if (isNotEmpty(www)){
-                                                ww_prev=www;
-                                                console.log("ww_prev2____"+ww_prev)
-                                            }else {
-                                              var txt=  $("#recorddetail tr[automaticbool='1']").find("td:first label[name='w']").text();
-                                                ww_prev=txt;
-                                                console.log("ww_prev3____"+ww_prev)
-                                            }*/
-
-
-                                            //2.初始化问答
-                                            laststarttime_qq=-1;
-                                            laststarttime_ww=-1;
-                                            last_type=-1;//1问题 2是答案
-                                            qq="";
                                             qqq="";
-                                            ww="";
-                                            www="";
-
                                             qq=translatext;
-                                            last_type=usertype;
-                                            laststarttime_qq=starttime;
                                             setrecord_html();
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
                                         }
+                                        laststarttime_qq=starttime;
                                     }
+                                    last_type=usertype;
                                 }
                                 setRecordreal();//实时保存一下
                             }

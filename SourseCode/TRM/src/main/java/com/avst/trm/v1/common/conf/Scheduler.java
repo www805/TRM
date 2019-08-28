@@ -26,6 +26,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -193,6 +194,29 @@ public class Scheduler {
         } catch (Exception e) {
             LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败");
         }
+    }
+
+
+    /**
+     * 定时重启电脑
+     */
+    public void checkReboot(){
+
+        String os= NetTool.getOsName();
+        if (os.startsWith("Win")) {
+            try {
+
+                String cmd="shutdown -r";
+
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+        } else if (os.startsWith("Linux")) {
+            LogUtil.intoLog(3,this.getClass(),"暂时没有重启Linux的计划");
+        }
+
     }
 
 }

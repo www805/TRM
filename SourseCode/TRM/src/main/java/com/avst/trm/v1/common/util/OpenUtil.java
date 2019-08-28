@@ -559,7 +559,7 @@ public static String numtoStr(int digit,Integer num){
 	}
 	
 	/**
-	 * 判断文件类型
+	 * 获取文件类型
 	 * @param filename
 	 * @return
 	 */
@@ -603,6 +603,31 @@ public static String numtoStr(int digit,Integer num){
         return null;
         
 	}
+
+	/**
+	 * 获取文件的文件名
+	 * @param filepath
+	 * @return
+	 */
+	public static String getfilename(String filepath){
+
+		try {
+			if(StringUtils.isNotEmpty(filepath)){
+
+				if(filepath.contains("/")&&!filepath.contains("\\")){
+					return filepath.substring(filepath.lastIndexOf("/")+1);
+				}else if (filepath.contains("\\")){
+					return filepath.substring(filepath.lastIndexOf("\\")+1);
+				}
+			}
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
 	
 	/**
 	 * 按要求字符切割字符串
@@ -1162,7 +1187,7 @@ public static String numtoStr(int digit,Integer num){
 	public static void main(String[] args) {
 
 
-		LogUtil.intoLog(getfile_folder("d:\\ws\\12\\1/txt"));
+		LogUtil.intoLog(getfilename("d:\\ws\\12\\1/txt"));
 
 
 

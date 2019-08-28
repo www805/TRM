@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.conf;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
@@ -9,6 +10,7 @@ import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.GetSaveFilePath_localParam;
 import com.avst.trm.v1.feignclient.ec.req.GetSavePathParam;
 import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
@@ -27,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 压缩点播线程
+ * 生成点播线程
  * 暂时没有做多个人一起使用，稍后会做缓存多人用，一个一个来
  */
 public class GZVodThread extends Thread{
@@ -48,12 +50,17 @@ boolean  bool=true;
     @Override
     public void run() {
 
+        if(CommonCache.gzvodthreadnum > 0){
+            LogUtil.intoLog(3,this.getClass(),"暂时只允许一个人打包，不允许多个打包线程一块跑");
+            return;
+        }
+        CommonCache.gzvodthreadnum++;
         try {
 
-            if(bool){
-                System.out.println("------------------------打包暂时不使用，等对接设备光盘刻录成功再开启------------------------");
-                return;
-            }
+//            if(bool){
+//                System.out.println("------------------------打包暂时不使用，等对接设备光盘刻录成功再开启------------------------");
+//                return;
+//            }
 
             GetRecordByIdVO getRecordByIdVO=(GetRecordByIdVO)result.getData();
             if(null==getRecordByIdVO||null==getRecordByIdVO.getGetPlayUrlVO()){
@@ -61,8 +68,6 @@ boolean  bool=true;
                 return ;
             }
             GetPlayUrlVO getPlayUrlVO=getRecordByIdVO.getGetPlayUrlVO();
-            List<RecordPlayParam>  recordPlayParams=getPlayUrlVO.getRecordPlayParams();
-
             List<RecordFileParam> statelist = getPlayUrlVO.getRecordFileParams();
             if(null!=statelist&&statelist.size() > 0){
                 boolean bool=true;
@@ -82,150 +87,125 @@ boolean  bool=true;
                 return ;
             }
 
-            //1、生成gz的压缩文件
-            //读取播放器地址
-            String vodplayerfilepath=PropertiesListenerConfig.getProperty("vodplayerfilepath");
-            if(StringUtils.isEmpty(vodplayerfilepath)){
-                LogUtil.intoLog(4,this.getClass(),"PropertiesListenerConfig.getProperty(\"vodplayerfilepath\") is null");
-                return ;
-            }
-            String outfile=PropertiesListenerConfig.getProperty("outfile");
-            if(StringUtils.isEmpty(outfile)){//这个不允许出错
-                outfile="outfile";
+            EquipmentControl ec=SpringUtil.getBean(EquipmentControl.class);
+            //1、生成所有的脱机回放可能需要的文件
+            //读取文件保存地址，iid所在地
+            String iidsavepath="";
+            String iid=getPlayUrlVO.getIid();
+            GetSaveFilePath_localParam getSaveFilePath_localParam=new GetSaveFilePath_localParam();
+            getSaveFilePath_localParam.setIid(iid);
+            getSaveFilePath_localParam.setSsType(SSType.AVST);
+            RResult result_getsavepath=ec.getSaveFilePath_local(getSaveFilePath_localParam);
+            if(null!=result_getsavepath&&result_getsavepath.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_getsavepath.getData()){
+                iidsavepath=result_getsavepath.getData().toString();
+            }else{
+                LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不打包，不生成回放文件，直接跳出，iid："+iid);
+                return;
             }
 
-            //查看外部文件夹是否有文件，有的话就直接清空，在建
-            outfile=vodplayerfilepath+outfile;
-            File file=new File(outfile);
+            //新增一个视频文件的说明文件
+            String iidplayfilesname=PropertiesListenerConfig.getProperty("iidplayfilesname");
+            if(StringUtils.isEmpty(iidplayfilesname)){
+                iidplayfilesname="iidplay.txt";
+            }
+            boolean filebool=false;
+            String iidplayfilespath=iidsavepath+iidplayfilesname;
+            List<RecordPlayParam>  recordPlayParams=getPlayUrlVO.getRecordPlayParams();
+            if(null!=recordPlayParams&&recordPlayParams.size() > 0){
+                String toout_filename=PropertiesListenerConfig.getProperty("toout_filename");
+                if(StringUtils.isEmpty(toout_filename)){
+                    toout_filename="file_@i@:";
+                }
+                String filerr="iid:"+iid;
+                int i=0;
+                for(RecordPlayParam recordPlayParam:recordPlayParams){
+                    String playurl=recordPlayParam.getPlayUrl();
+                    String filename=OpenUtil.getfilename(playurl);
+                    recordPlayParam.setPlayUrl(filename);
+                    filename=toout_filename.replace("@i@",i+"")+filename;
+                    filerr+="\r\n"+filename;
+                    i++;
+                }
+                filebool= ReadWriteFile.writeTxtFile(filerr,iidplayfilespath,"utf8");
+            }else{
+                LogUtil.intoLog(4,this.getClass(),"recordPlayParams is null,播放文件没有一个视频，不允许打包");
+                return ;
+            }
+
+
+            //Word和PDF copy到iid存储位置
+            Record record=getRecordByIdVO.getRecord();
+            String wordrealurl= null;
+            boolean wordbool=false;
             try {
-                if(file.exists()){//有的话直接干掉
-                    file=null;
-                    FileUtil.delAllFile(outfile);//有待考证
+                wordrealurl = record.getWordrealurl();
+                if(StringUtils.isNotEmpty(wordrealurl)||OpenUtil.fileisexist(wordrealurl)){
+                    String iid_wordrealurl=iidsavepath+OpenUtil.getfilename(wordrealurl);
+                    FileUtils.copyFile(new File(wordrealurl),new File(iid_wordrealurl));
+                    wordbool=true;
                 }else{
-                    file.mkdirs();
-                    file=null;
+                    //需要生成Word文件
+                    //后期写入自动生成Word文件
+                    LogUtil.intoLog(3,this.getClass(),"-----GZVodThread-需要生成Word文件");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            Record record=getRecordByIdVO.getRecord();
-            String wordrealurl=record.getWordrealurl();
-            String wordpath=outfile+"/"+FileUtil.getsavename(wordrealurl);
-            String pdfrealurl=record.getPdfrealurl();
-            String pdfpath=outfile+"/"+FileUtil.getsavename(pdfrealurl);
-
+            boolean pdfbool=false;
             try {
-                FileUtils.copyFile(new File(wordrealurl),new File(wordpath));
-            } catch (IOException e) {
+                String pdfrealurl=record.getPdfrealurl();
+                if(StringUtils.isNotEmpty(pdfrealurl)||OpenUtil.fileisexist(pdfrealurl)){
+                    String iid_pdfrealurl=iidsavepath+OpenUtil.getfilename(pdfrealurl);
+                    FileUtils.copyFile(new File(pdfrealurl),new File(iid_pdfrealurl));
+                    pdfbool=true;
+                }else{
+                    //需要生成pdf文件
+                    //后期写入自动生成pdf文件
+                    LogUtil.intoLog(3,this.getClass(),"-----GZVodThread-需要生成pdf文件");
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            try {
-                FileUtils.copyFile(new File(pdfrealurl),new File(pdfpath));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            //生成RResult返回对象的TXT文件
+            //生成RResult返回对象的TXT文件,写入iid所在的文件中
             String str=JacksonUtil.objebtToString(result);
+
+            //json数据处理
+            //去掉\n,去掉\\,前面加上var result='  后面加上';
+            str=str.replaceAll("\\\\n","");
+            str=str.replaceAll("\\\\","\\\\\\\\");
+            str="var result='"+str+"';";
+
             String resultfilename=PropertiesListenerConfig.getProperty("resultfilename");
             if(StringUtils.isEmpty(resultfilename)){
-                resultfilename="result.txt";
+                resultfilename="result.js";
             }
-            String resultpath=outfile+"/"+resultfilename;
-            //需要对result字符串进行部分处理
-            ReadWriteFile.writeTxtFile(str,resultpath);//写入TXT文件
+            String iid_resultfilepath=iidsavepath+resultfilename;
+            boolean resultbool= ReadWriteFile.writeTxtFile(str,iid_resultfilepath,"utf8");
 
-            //调用压缩生成文件
-            String gzfilename="client";
-            String gzfilepath=null;
-            String gzbasepath=PropertiesListenerConfig.getProperty("gzbasepath");
-            if(StringUtils.isEmpty(gzbasepath)){
-                gzbasepath="gz/";
-            }
-            String sourseRelativePath= OpenUtil.getpath_fileByBasepath2(gzbasepath)+gzfilename+".tar.gz";
-
-            String iid=getPlayUrlVO.getIid();
-            //准备调用本地储存系统
-            String gz_iid=iid+"_gz";//相对于视频的iid加了一个gz
-            EquipmentControl ec=SpringUtil.getBean(EquipmentControl.class);
-            SaveFile_localParam param_save=new SaveFile_localParam();
-            param_save.setIid(gz_iid);
-            param_save.setSourseRelativePath(sourseRelativePath);
-            param_save.setSsType(SSType.AVST);
-            RResult result_SAVE=ec.saveFile_local(param_save);
-
-            //请求设备控制，获取上传文件服务器的路径
-            if(null!=result_SAVE&&result_SAVE.getActioncode().equals(Code.SUCCESS.toString())){
-                gzfilepath=result_SAVE.getData().toString();
-
-                //开始压缩
-                long starttime=(new Date()).getTime();
-                LogUtil.intoLog(1,this.getClass(),"-----GZVodThread-压缩开始,starttime:"+starttime);
-                boolean bool=GZIPUtil.CompressedFiles_Gzip(vodplayerfilepath,FileUtil.getsavepath(gzfilepath)+"/"+gzfilename,gzfilename);
-                long endtime=(new Date()).getTime();
-                LogUtil.intoLog(1,this.getClass(),"-----GZVodThread-压缩结束,endtime:"+endtime);
-                if(bool){
-                    LogUtil.intoLog(1,this.getClass(),"-----GZVodThread-压缩成功,总计时间："+(endtime-starttime));
-
-                    //更新数据库的压缩iid
-                    police_record.setGz_iid(gz_iid);
-                    int updateById=police_recordMapper.updateById(police_record);
-                    if(updateById > -1){
-
-                    }else{
-                        LogUtil.intoLog(4,this.getClass(),"-----GZVodThread-police_recordMapper.updateById is error");
-                        return ;
-                    }
+            if(pdfbool&&resultbool&&wordbool&&filebool){//这四个文件都成功才填入iid
+                //更新数据库的iid
+                police_record.setGz_iid(iid);
+                int updateById=police_recordMapper.updateById(police_record);
+                if(updateById > -1){
 
                 }else{
-                    LogUtil.intoLog(4,this.getClass(),"-----GZVodThread-压缩失败,总计时间："+(endtime-starttime));
+                    LogUtil.intoLog(4,this.getClass(),"-----GZVodThread-police_recordMapper.updateById is error");
                     return ;
                 }
-
             }else{
-                LogUtil.intoLog(4,this.getClass(),"-----GZVodThread-equipmentControl.saveFile_local 失败");
-                return ;
-            }
-
-            //请求设备，请求设备允许上传到设备中的路径
-            GetSavePathParam param=new GetSavePathParam();
-            param.setIid(iid);
-            param.setSsType(SSType.AVST);
-            RResult<GetSavepathVO> result=ec.getSavePath(param);
-            if(null!=result&&result.getActioncode().equals(Code.SUCCESS.toString())){
-
-                GetSavepathVO vo=result.getData();
-                if(null!=vo&&null!=vo.getRecordList()&&vo.getRecordList().size() > 0){
-
-                    List<RecordSavepathParam> rlist=vo.getRecordList();//现阶段只需要其中一个就可以了，上传文件的路径
-                    RecordSavepathParam recordPlayParam=rlist.get(0);
-                    if(null==recordPlayParam||StringUtils.isEmpty(recordPlayParam.getSoursedatapath())){
-                        LogUtil.intoLog(4,this.getClass(),"recordPlayParam or recordPlayParam.getSoursedatapath() is null,返回的视频原路径数据为空,最里面一层");
-                        return;
-                    }
-                    String soursepath=recordPlayParam.getSoursedatapath();
-
-                    //开始上传文件到设备
-
-
-                }else{
-                    LogUtil.intoLog(4,this.getClass(),"getURLToPlayVO or getURLToPlayVO.getRecordList() is null,返回的视频原路径数据为空");
-                    return ;
-                }
-
-
-            }else{
-                LogUtil.intoLog(4,this.getClass(),"ec.getSavePath is error,请求设备源地址失败");
+                LogUtil.intoLog(4,this.getClass(),"-----可能有文件没有新增或者copy成功，pdfbool："+pdfbool+",resultbool:"+resultbool+",wordbool:"+wordbool+",filebool:"+filebool);
                 return ;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            CommonCache.gzvodthreadnum--;
         }
 
-        LogUtil.intoLog(4,this.getClass(),"GZVodThread 出来了---");
+        LogUtil.intoLog(1,this.getClass(),"GZVodThread 出来了---");
 
     }
 }

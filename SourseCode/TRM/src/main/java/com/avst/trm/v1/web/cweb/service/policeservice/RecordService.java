@@ -3133,7 +3133,39 @@ public class RecordService extends BaseService {
     }
 
 
+    /**
+     * 上传笔录相关信息并刻盘
+     * @return
+     */
+    public RResult uploadRecordMessageToETAndTimeRecord(RResult result,UploadRecordMessageToETAndTimeRecordParam param){
 
+        String iid="";
+
+        //根据iid找到需要上传的所有文件
+        GetSaveFilesPathByiidParam getSaveFilesPathByiidParam=new GetSaveFilesPathByiidParam();
+        getSaveFilesPathByiidParam.setIid(iid);
+        getSaveFilesPathByiidParam.setVideobool(0);//不需要上传视频文件
+        getSaveFilesPathByiidParam.setSsType(SSType.AVST);
+        RResult rResult=equipmentControl.getSaveFilesPathByiid(getSaveFilesPathByiidParam);
+        //请求设备允许上传到设备中的路径，一个一个传过去
+        if(null!=rResult&&null!=rResult.getData()){
+
+            String pathlist=rResult.getData().toString();
+            String[] patharr=pathlist.split(",");
+            if(patharr!=null&&patharr.length > 0){
+                for(String path:patharr){
+                    if(StringUtils.isNotEmpty(path)){
+                        //开始上传
+                    }
+                }
+            }else{
+                result.setMessage("没有一个可以打包上传的文件路径");
+            }
+        }
+
+
+        return result;
+    }
 
 
 }
