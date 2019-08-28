@@ -674,7 +674,9 @@ public class MainService extends BaseService {
         }
 
         String txt=checkKeywordParam.getTxt();
+        String defaultstyle="color:#fff;background-color:red";//默认样式
         if (StringUtils.isNotBlank(txt)){
+
             //开始检测文本
             //1、获取关键字列表
             EntityWrapper keywords_ew=new EntityWrapper();
@@ -689,24 +691,16 @@ public class MainService extends BaseService {
                          String replacetext=keyword.getReplacetext();
                          Integer shieldbool=keyword.getShieldbool(); // 是否屏蔽：1屏蔽/-1不屏蔽；默认-1
 
-                        //需要屏蔽
-                        String style="";//样式css
-                        if(null!=color||null!=backgroundcolor){
-                            style+="color:"+color+";background-color:"+backgroundcolor;
-                        }else {
-                            //默认
-                            style+="color:#000;background-color:#fff";
+
+                        if(StringUtils.isNotBlank(color)||StringUtils.isNotBlank(backgroundcolor)){
+                            defaultstyle="color:"+color+";background-color:"+backgroundcolor; //指定样式
                         }
-                         if (null!=shieldbool&&shieldbool==1){
-                             //文本替换
-                             if (null!=replacetext){
-                                 replacetext="<text style='"+style+"'>"+replacetext+"</text>";
-                             }
+                        //需要屏蔽
+                         if (null!=shieldbool&&shieldbool==1&&StringUtils.isNotBlank(replacetext)){
+                                 replacetext="<text style='"+defaultstyle+"'>"+replacetext+"</text>";
                          }else {
                              //文本替换
-                             if (null!=replacetext){
-                                 replacetext="<text style='"+style+"'>"+keywordtext+"</text>";
-                             }
+                                 replacetext="<text style='"+defaultstyle+"'>"+keywordtext+"</text>";
                          }
                         txt=txt.replaceAll(keywordtext,replacetext);
                         LogUtil.intoLog(this.getClass(),"关键字过滤后的文本__"+txt);

@@ -126,6 +126,7 @@ function getactionid_manage() {
         addCaseToUser_torecordIndex:"addCaseToUser_torecordIndex",
         addCaseToUser_towaitconversation:"addCaseToUser_towaitconversation",
         addCaseToUser_toconversationIndex:"addCaseToUser_toconversationIndex",
+        addCaseToUser_getCardreader:"addCaseToUser_getCardreader",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -279,6 +280,7 @@ function getactionid_manage() {
         startConversation_addCaseToArraignment:"startConversation_addCaseToArraignment",
         startConversation_getCards:"startConversation_getCards",
         startConversation_towaitRecord:"startConversation_towaitRecord",
+        startConversation_getCardreader:"startConversation_getCardreader",
 
         conversationIndex_getRecords:"conversationIndex_getRecords",
         conversationIndex_changeboolRecord:"conversationIndex_changeboolRecord",

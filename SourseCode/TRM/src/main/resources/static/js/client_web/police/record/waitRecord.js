@@ -694,7 +694,7 @@ function callbackstartMC(data) {
             getMCCacheParamByMTssid();//获取缓存
             getTDCacheParamByMTssid();
 
-            var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录音数："+recordnum;
+            var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录像数："+recordnum;
             layer.msg(con, {time: 2000});
         }
     }else{
@@ -981,7 +981,7 @@ var overRecord_loadindex =null;
  function overRecord(state) {
      var msgtxt2="是否结束？";
      if (state==1){
-         msgtxt2="是否休庭？";
+         msgtxt2="是否休庭？(结束该笔录/身心，该案件将会休庭)";
      }
 
      var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
@@ -1101,6 +1101,9 @@ function callbackgetgetRecordrealing(data) {
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
+
+                            translatext= checkKeyword(translatext);
+                            console.log(translatext)
 
                             //实时会议数据
                             if (usertype==1){
@@ -1885,6 +1888,9 @@ $(function () {
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
+
+                            translatext=checkKeyword(translatext);
+                            console.log(translatext)
 
 
                             var p_span_HTML="";

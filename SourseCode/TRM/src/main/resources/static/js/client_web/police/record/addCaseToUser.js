@@ -500,9 +500,9 @@ function callbackgetCards(data) {
         if (isNotEmpty(data)){
             for (var i = 0; i < data.length; i++) {
                 var l = data[i];
-                $("#cards").append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                $("#cards").append("<option value='"+l.ssid+"' title='"+l.typename+"'> "+l.typename+"</option>");
                 $("#tab_content select[name='tab_card']").each(function(){
-                    $(this).append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                    $(this).append("<option value='"+l.ssid+"'  title='"+l.typename+"'> "+l.typename+"</option>");
                 });
             }
         }
@@ -752,7 +752,7 @@ function tabAdd(){
                 for (var i = 0; i < cards.length; i++) {
                     var l = cards[i];
                     $("#tab_content select[name='tab_card']").each(function(){
-                        $(this).append("<option value='"+l.ssid+"' > "+l.typename+"</option>");
+                        $(this).append("<option value='"+l.ssid+"' title='"+l.typename+"'> "+l.typename+"</option>");
                     });
                 }
             }
@@ -1343,7 +1343,7 @@ function checkout_cardnum(cardnum,cardtypetext) {
 
 //初始化页面
 function init_form() {
-    layer.confirm('数据将会清空，确定要重置吗？', {
+   layer.confirm('所填信息将会清空，确定要重置吗？', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -1509,4 +1509,6 @@ $(function () {
             form.render('select');
         });
     });
+
+
 });

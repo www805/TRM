@@ -14,6 +14,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -48,6 +49,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.ctc.wstx.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1266,7 +1270,7 @@ public class RecordService extends BaseService {
         userparam.eq("ut.cardnum",cardnum);
         List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
         if (null==userinfos||userinfos.size()<1){
-            result.setMessage("未找到该人员信息");
+            result.setMessage("该人员信息未有过记录");
             return;
         }
 
@@ -3116,6 +3120,27 @@ public class RecordService extends BaseService {
     }
 
     /***************************笔录问答实时缓存****end***************************/
+
+    public void getCardreader(RResult result,ReqParam<GetCardreaderParam> param){
+        String getCardreader_Url="http://localhost:8989/api/ReadMsg";//http格式 https断开9199
+        try {
+            if (null == getCardreader_Url || !getCardreader_Url.startsWith("http")) {
+                result.setMessage("请求格式出错");
+                return;
+            }
+            HttpClient httpClient = new HttpClient();
+            GetMethod method = new GetMethod(getCardreader_Url);
+            method.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=" + "utf-8");
+            httpClient.executeMethod(method);
+            result.setData(method.getResponseBodyAsString());
+            changeResultToSuccess(result);
+            //释放连接
+            method.releaseConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 主要用于案件编号

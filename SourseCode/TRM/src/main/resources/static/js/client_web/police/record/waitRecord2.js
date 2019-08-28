@@ -1234,10 +1234,9 @@ function callbackgnlist(data) {
 
 
 //*******************************************************************关键字start****************************************************************//
-//未使用==后台执行了
-var dq_keyword;
+//未使用==后台执行了 此处使用同步因为不能及时接受到它关键字检测的值
+
 function checkKeyword(txt) {
-    dq_keyword=txt;
     var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
     var data={
         token:INIT_CLIENTKEY,
@@ -1245,17 +1244,29 @@ function checkKeyword(txt) {
             txt:txt
         }
     };
-    ajaxSubmitByJson(url, data,function callbackcheckKeyword(data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var vo=data.data;
-            if (isNotEmpty(vo)){
-                dq_keyword=vo.txt
-                console.log("关键字"+dq_keyword)
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        async: false,
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        timeout: 60000,
+        success: function callbackcheckKeyword(data) {
+            if (null != data && data.actioncode == 'SUCCESS') {
+                var vo = data.data;
+                if (isNotEmpty(vo)) {
+                    txt = vo.txt;
+                    console.log(txt)
+                    return txt;
+                }
+            } else {
+                console.log(data.message);
             }
-        }else {
-            console.log(data.message);
         }
     });
+    return txt;
 }
 
 

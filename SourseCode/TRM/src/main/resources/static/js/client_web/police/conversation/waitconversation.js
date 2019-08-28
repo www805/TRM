@@ -272,7 +272,7 @@ function callbackstartMC(data) {
             mcbool=1;//正常开启
             $("#mtbool_txt").text("审讯中");
 
-            var con="审讯已开启<br>设备录音数："+recordnum;
+            var con="审讯已开启";
             layer.msg(con, {time: 2000});
             $("#startbtn").css({"visibility":"hidden"}).attr("onclick","");
         }
@@ -325,7 +325,7 @@ var overRecord_loadindex =null;
 function overRecord(state) {
     var msgtxt2="是否结束？";
     if (state==1){
-        msgtxt2="是否休庭？";
+        msgtxt2="是否休庭？(结束该笔录/身心，该案件将会休庭)";
     }
        var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
        var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;

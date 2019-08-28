@@ -868,6 +868,18 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping("/getCardreader")
+    public RResult getCardreader(ReqParam<GetCardreaderParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getCardreader(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 
