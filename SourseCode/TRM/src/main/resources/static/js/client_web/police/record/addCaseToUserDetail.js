@@ -26,6 +26,19 @@ $(function () {
                       $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
                     /*  $("#national").val(data.nation);*///和数据库不符合
 
+
+                      var nation=data.nation;
+                      $("#national option").each(function () {
+                          var txt=$(this).text();
+                          var value=$(this).attr("value");
+                          if (txt.indexOf(nation)>-1){
+                              $("#national").val(value);
+                              return;
+                          }
+                      })
+
+
+
                       layui.use('form', function(){
                           var form =  layui.form;
                           form.render();
@@ -43,8 +56,8 @@ $(function () {
 
 
 
-    // 建立连接
-        socket = io.connect('http://localhost:5000',{'timeout': 300000,'reconnectionDelayMax':1000,'reconnectionDelay':500});
+     // 建立连接
+    /*    socket = io.connect('http://localhost:5000',{'timeout': 300000,'reconnectionDelayMax':1000,'reconnectionDelay':500});
         socket.on('connect', function () {
             console.log("连接成功___读卡器开始读卡___")
             socket.emit('startRead');
@@ -77,7 +90,17 @@ $(function () {
                 $("#cardnum").val(data.cardno);
                 $("#domicile").val(data.address);
                 $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
-                /*  $("#national").val(data.nation);*///和数据库不符合
+
+                 var nation=data.nation;
+                  $("#national option").each(function () {
+                          var txt=$(this).text();
+                          var value=$(this).attr("value");
+                          if (txt.indexOf(nation)>-1){
+                              $("#national").val(value);
+                              return;
+                          }
+                      })
+
                 layui.use('form', function(){
                     var form =  layui.form;
                     form.render();
@@ -86,7 +109,7 @@ $(function () {
                     getUserByCard();
                 });
             }
-        });
+        });*/
 })
 
 function Base64() {

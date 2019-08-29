@@ -583,7 +583,6 @@ $(function () {
                         $("#cardnum").val(data.cardno);
                         $("#domicile").val(data.address);
                         $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
-                        /*  $("#national").val(data.nation);*///和数据库不符合
 
                         layui.use('form', function(){
                             var form =  layui.form;
@@ -599,52 +598,6 @@ $(function () {
             }
         })
     });
-
-    // 建立连接
-        socket = io.connect('http://localhost:5000',{'timeout': 300000,'reconnectionDelayMax':1000,'reconnectionDelay':500});
-        socket.on('connect', function () {
-            console.log("连接成功___读卡器开始读卡___")
-            socket.emit('startRead');
-            socket.emit('readOnce','true');
-        });
-        socket.on('disconnect', function () {
-            console.log("连接断开___读卡器开始读卡___")
-        });
-        socket.on('card message', function(msg){
-
-            var cardtypetext=$("#cards option:selected").text();
-            if ($.trim(cardtypetext)!="居民身份证"){
-                layer.msg("请先选择身份证类型",{icon:5});
-                return;
-            }
-
-            var base = new Base64();
-            //2.解密后是json字符串
-            var result1 = base.decode(msg);
-            var data = eval("("+result1+")");
-            console.log(data)
-            if (isNotEmpty(data)){
-                reset();
-                var retmsg=data.retmsg==null?"未知错误":data.retmsg;
-                var bool=checkout_cardnum(data.cardno,"居民身份证");
-                if (!bool){
-                    return;
-                }
-                $("#username").val(data.name==null?"":data.name);
-                $("#cardnum").val(data.cardno);
-                $("#domicile").val(data.address);
-                $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
-                /*  $("#national").val(data.nation);*///和数据库不符合
-                layui.use('form', function(){
-                    var form =  layui.form;
-                    form.render();
-                });
-                layer.msg(retmsg,{icon:6,time:1000},function () {
-                    getUserByCard();
-                });
-            }
-        });
-
 
 });
 
