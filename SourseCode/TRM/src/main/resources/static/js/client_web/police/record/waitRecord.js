@@ -558,6 +558,10 @@ function callbackgetRecordById(data) {
                 getFDState();
             }, 1000);
 
+            setInterval(function () {
+                putRecessStatus();
+            }, 10000);
+
             //获取刻录选时
             getBurnTime();
         }

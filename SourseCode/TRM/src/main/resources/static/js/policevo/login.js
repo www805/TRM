@@ -38,8 +38,10 @@ function callLogout(data){
 
     if(null!=data&&data.actioncode=='SUCCESS'){
         //alert(data.message);
+        setpageAction(INIT_WEB, "server_web/base/login");
         var url=getActionURL(getactionid_manage().login_main);
         window.location.href=url;
+
     }else{
         // alert(data.message);
         layer.msg(data.message, {time: 5000, icon:6});

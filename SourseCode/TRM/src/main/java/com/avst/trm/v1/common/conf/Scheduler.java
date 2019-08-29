@@ -1,14 +1,19 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.RecordStatusCache;
+import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
+import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
@@ -18,7 +23,10 @@ import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
+import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,8 +36,11 @@ import org.springframework.stereotype.Component;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 定时器任务
@@ -48,6 +59,9 @@ public class Scheduler {
 
     @Autowired
     private Base_admininfoMapper base_admininfoMapper;
+
+    @Autowired
+    private RecordService recordService;
 
     private String url;
 
@@ -194,6 +208,56 @@ public class Scheduler {
         } catch (Exception e) {
             LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败");
         }
+    }
+
+    /**
+     * 处理休庭状态
+     */
+    @Scheduled(cron = "0 0/1 * * * ? ")
+    public void recordTasks() {
+
+        List<RecordStatusCacheParam> paramList = RecordStatusCache.getRecordStatusCacheParam();
+
+        if (null != paramList && paramList.size() > 0) {
+            for (RecordStatusCacheParam param : paramList) {
+                //判断时间如果2分钟没连接就设置为断线状态
+                int i = calLastedTime(param.getLasttime());
+                if (i >= 70) {
+                    //修改笔录状态
+                    String ssid = param.getRecordssid();
+                    String mtssid = param.getMtssid();
+
+                    RResult result = new RResult();
+                    ReqParam reqParam = new ReqParam();
+                    AddRecordParam addRecordParam = new AddRecordParam();
+                    addRecordParam.setRecordssid(ssid);
+                    addRecordParam.setMtssid(mtssid);
+                    addRecordParam.setRecordbool(2);
+                    addRecordParam.setCasebool(3);
+                    reqParam.setParam(addRecordParam);
+
+                    recordService.addRecord(result, reqParam);
+
+                    LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功");
+                }
+            }
+        }
+    }
+
+    //判断两个时间相差几秒
+    public  int calLastedTime(String lasttime) {
+        long a = new Date().getTime();
+
+        DateFormat formatter  = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date parse = null;
+        try {
+            parse = formatter.parse(lasttime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        long b = parse.getTime();
+        int c = (int)((a - b) / 1000);return c;
     }
 
 

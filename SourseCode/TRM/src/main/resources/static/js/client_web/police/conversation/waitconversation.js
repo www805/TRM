@@ -39,6 +39,12 @@ function callbackgetRecordById(data) {
                     getFDState();
                 }, 1000);
 
+
+                setInterval(function () {
+                    putRecessStatus();
+                }, 10000);
+
+
                 //获取刻录选时
                 getBurnTime();
             }
@@ -121,7 +127,6 @@ function callbackgetRecordById(data) {
     }
 }
 
-
 /**
  * 获取会议asr实时数据
  */
@@ -161,8 +166,6 @@ function callbackgetgetRecordrealing(data) {
         layer.msg(data.message);
     }
 }
-
-
 
 var mtssid=null;//会议ssid
 var useretlist=null;
@@ -388,9 +391,6 @@ function calladdRecord(data) {
     }
     $("#overRecord_btn").attr("click","overRecord();");
 }
-
-
-
 
 $(function () {
     var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.cweb.action.policeaction;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
@@ -881,8 +882,22 @@ public class RecordAction extends BaseAction {
     }
 
 
-
-
+    /**
+     * 提供休庭心跳
+     * @param param
+     * @return
+     */
+    @RequestMapping("/putRecessStatus")
+    public RResult putRecessStatus(@RequestBody  ReqParam<RecordStatusCacheParam> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.putRecessStatus(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

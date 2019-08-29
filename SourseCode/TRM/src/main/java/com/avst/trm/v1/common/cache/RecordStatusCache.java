@@ -31,7 +31,7 @@ public class RecordStatusCache {
 
         List<RecordStatusCacheParam> list = RecordStatusCache.getRecordStatusCacheParam();
         for (RecordStatusCacheParam recordStatusCache : list) {
-            if (recordStatusCacheParam.getSsid().equals(recordStatusCache.getSsid())) {
+            if (recordStatusCacheParam.getRecordssid().equals(recordStatusCache.getRecordssid())) {
                 recordStatusCache.setLasttime(recordStatusCacheParam.getLasttime());
                 status = true;
                 break;
@@ -54,7 +54,7 @@ public class RecordStatusCache {
         Iterator<RecordStatusCacheParam> iterator = mapList.iterator();
         while (iterator.hasNext()) {
             RecordStatusCacheParam param = iterator.next();
-            if (param.getSsid().equals(ssid)) {
+            if (param.getRecordssid().equals(ssid)) {
                 iterator.remove();
                 break;
             }
