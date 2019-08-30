@@ -15,10 +15,9 @@ public class RecordStatusCache {
      * @return
      */
     public static List<RecordStatusCacheParam> getRecordStatusCacheParam() {
-        if(null == recordStatusCache){
-            recordStatusCache = new ArrayList<>();
+        synchronized(RecordStatusCache.class){
+            return recordStatusCache;
         }
-        return recordStatusCache;
     }
 
     /**
@@ -26,22 +25,22 @@ public class RecordStatusCache {
      * @param recordStatusCacheParam
      */
     public static void setRecordStatusCache(RecordStatusCacheParam recordStatusCacheParam) {
+        synchronized(RecordStatusCache.class){
+            boolean status = false;
 
-        boolean status = false;
+            List<RecordStatusCacheParam> list = RecordStatusCache.getRecordStatusCacheParam();
+            for (RecordStatusCacheParam recordStatusCache : list) {
+                if (recordStatusCacheParam.getRecordssid().equals(recordStatusCache.getRecordssid())) {
+                    recordStatusCache.setLasttime(recordStatusCacheParam.getLasttime());
+                    status = true;
+                    break;
+                }
+            }
 
-        List<RecordStatusCacheParam> list = RecordStatusCache.getRecordStatusCacheParam();
-        for (RecordStatusCacheParam recordStatusCache : list) {
-            if (recordStatusCacheParam.getRecordssid().equals(recordStatusCache.getRecordssid())) {
-                recordStatusCache.setLasttime(recordStatusCacheParam.getLasttime());
-                status = true;
-                break;
+            if (status == false) {
+                RecordStatusCache.getRecordStatusCacheParam().add(recordStatusCacheParam);
             }
         }
-
-        if (status == false) {
-            RecordStatusCache.getRecordStatusCacheParam().add(recordStatusCacheParam);
-        }
-
     }
 
     /**
@@ -49,14 +48,16 @@ public class RecordStatusCache {
      * @param ssid
      */
     public static void removeRecordInfoCache(String ssid){
-        List<RecordStatusCacheParam> mapList = RecordStatusCache.recordStatusCache;
+        synchronized(RecordStatusCache.class){
+            List<RecordStatusCacheParam> mapList = RecordStatusCache.recordStatusCache;
 
-        Iterator<RecordStatusCacheParam> iterator = mapList.iterator();
-        while (iterator.hasNext()) {
-            RecordStatusCacheParam param = iterator.next();
-            if (param.getRecordssid().equals(ssid)) {
-                iterator.remove();
-                break;
+            Iterator<RecordStatusCacheParam> iterator = mapList.iterator();
+            while (iterator.hasNext()) {
+                RecordStatusCacheParam param = iterator.next();
+                if (param.getRecordssid().equals(ssid)) {
+                    iterator.remove();
+                    break;
+                }
             }
         }
     }
@@ -64,8 +65,10 @@ public class RecordStatusCache {
     /**
      * 清空所有
      */
-    public static void delRecordInfoCache(){
-        recordStatusCache = null;
+    public static synchronized void delRecordInfoCache(){
+        synchronized(RecordStatusCache.class){
+            recordStatusCache = null;
+        }
     }
 
 }

@@ -405,7 +405,9 @@ public class MainAction extends BaseAction {
     @RequestMapping(value = "/gotomain")
     public ModelAndView gotomain(Model model){
         AppCacheParam param = AppCache.getAppCacheParam();
-        if(null == param.getTitle()){
+        if(StringUtils.isBlank(param.getTitle()) || StringUtils.isBlank(param.getGuidepageUrl())){
+            this.getNavList();
+            param = AppCache.getAppCacheParam();
             Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
             if (null != base_serverconfig) {
                 param.setTitle(base_serverconfig.getClientname());

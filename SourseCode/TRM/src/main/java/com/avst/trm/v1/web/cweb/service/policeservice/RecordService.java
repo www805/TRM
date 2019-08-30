@@ -419,8 +419,6 @@ public class RecordService extends BaseService {
         result.setData(recordssid);
         changeResultToSuccess(result);
 
-        RecordStatusCache.removeRecordInfoCache(addRecordParam.getRecordssid());/**如果修改成功，删除这条缓存**/
-
         return;
     }
 

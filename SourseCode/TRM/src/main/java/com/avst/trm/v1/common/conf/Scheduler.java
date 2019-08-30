@@ -216,30 +216,36 @@ public class Scheduler {
     @Scheduled(cron = "0 0/1 * * * ? ")
     public void recordTasks() {
 
-        List<RecordStatusCacheParam> paramList = RecordStatusCache.getRecordStatusCacheParam();
+        synchronized(RecordStatusCache.class){
+            List<RecordStatusCacheParam> paramList = RecordStatusCache.getRecordStatusCacheParam();
 
-        if (null != paramList && paramList.size() > 0) {
-            for (RecordStatusCacheParam param : paramList) {
-                //判断时间如果2分钟没连接就设置为断线状态
-                int i = calLastedTime(param.getLasttime());
-                if (i >= 70) {
-                    //修改笔录状态
-                    String ssid = param.getRecordssid();
-                    String mtssid = param.getMtssid();
+            if (null != paramList && paramList.size() > 0) {
 
-                    RResult result = new RResult();
-                    ReqParam reqParam = new ReqParam();
-                    AddRecordParam addRecordParam = new AddRecordParam();
-                    addRecordParam.setRecordssid(ssid);
-                    addRecordParam.setMtssid(mtssid);
-                    addRecordParam.setRecordbool(2);
-                    addRecordParam.setCasebool(3);
-                    reqParam.setParam(addRecordParam);
+                for (int i = 0; i < paramList.size(); i++) {
+                    RecordStatusCacheParam param = paramList.get(i);
+                    //判断时间如果5分钟没心跳就设为休庭
+                    int countTime = calLastedTime(param.getLasttime());
+                    if (countTime >= 70) {
+                        //修改笔录状态
+                        String ssid = param.getRecordssid();
+                        String mtssid = param.getMtssid();
 
-                    recordService.addRecord(result, reqParam);
+                        RResult result = new RResult();
+                        ReqParam reqParam = new ReqParam();
+                        AddRecordParam addRecordParam = new AddRecordParam();
+                        addRecordParam.setRecordssid(ssid);
+                        addRecordParam.setMtssid(mtssid);
+                        addRecordParam.setRecordbool(2);
+                        addRecordParam.setCasebool(3);
+                        reqParam.setParam(addRecordParam);
 
-                    LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功");
+                        recordService.addRecord(result, reqParam);
+                        RecordStatusCache.removeRecordInfoCache(addRecordParam.getRecordssid());/**如果修改成功，删除这条缓存**/
+
+                        LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功");
+                    }
                 }
+
             }
         }
     }
