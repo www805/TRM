@@ -26,10 +26,9 @@
 <div class="layui-layout layui-layout-admin">
 
     <div class="layui-header " style="  background-color: rgba(0, 0, 0, 0.44);height: 45px">
-       <h1 class="layui-logo"  style="color: #fff; font-size: 22px;width: auto; font-weight:bold; font-style:italic;line-height: 45px" th:text="${loginModel.title}">欢迎使用智能提讯系统</h1>
+        <h1 class="layui-logo"  style="color: #fff; font-size: 22px;width: auto; font-weight:bold; font-style:italic;line-height: 45px" th:text="${loginModel.title}">欢迎使用智能提讯系统</h1>
+        <a id="guidepage" style="float: right;color: #afc5d2;line-height: 48px;font-size: 9px;margin-right: 25px;" th:href="${loginModel.guidepageUrl}">返回引导页</a>
     </div>
-
-
 
         <form class="layui-row layui-form" style="margin-top: 10%">
             <div class="layui-col-md12 ">
@@ -86,7 +85,7 @@
 
         //如果在iframe中打开，就自动点击登录按钮
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
-            $(".layui-footer").remove();
+            $(".layui-footer, #guidepage").remove();
             var loginaccount = GetQueryString("loginaccount");
             var adminpassword = GetQueryString("loginpassword");
 

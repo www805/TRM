@@ -108,6 +108,12 @@
                     <span>首页</span>
                 </a>
             </li>
+            <li class="layui-nav-item" id="guidepage">
+                <a th:href="${mainModel.guidepageUrl}">
+                    <i class="layui-icon layui-icon-flag" style="font-size: 20px;"></i>
+                    <span>引导页</span>
+                </a>
+            </li>
 
             <li class="layui-nav-item">
                 <a href="javascript:;" >
@@ -239,7 +245,7 @@
         getNavList();
 
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
-            $(".layui-footer").remove();
+            $(".layui-footer, #guidepage").remove();
         }
 
     });

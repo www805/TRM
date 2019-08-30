@@ -19,6 +19,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
@@ -643,9 +644,14 @@ public class MainService extends BaseService {
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
                 Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(cwebFile);
+                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
+                Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
+                String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
+                String hostAddress = NetTool.getMyIP();
 
                 cacheParam.setData(fileYml);
+                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
 
             } catch (IOException e) {
                 LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);

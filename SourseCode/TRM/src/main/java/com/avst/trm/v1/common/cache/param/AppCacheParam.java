@@ -8,6 +8,23 @@ public class AppCacheParam {
     private Map<String,Object> data;
     private String syslogoimage;
     private String clientimage;
+    private String guidepageUrl;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Map<String, Object> getData() {
+        return data;
+    }
+
+    public void setData(Map<String, Object> data) {
+        this.data = data;
+    }
 
     public String getSyslogoimage() {
         return syslogoimage;
@@ -25,19 +42,22 @@ public class AppCacheParam {
         this.clientimage = clientimage;
     }
 
-    public String getTitle() {
-        return title;
+    public String getGuidepageUrl() {
+        return guidepageUrl;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setGuidepageUrl(String guidepageUrl) {
+        this.guidepageUrl = guidepageUrl;
     }
 
-    public Map<String, Object> getData() {
-        return data;
-    }
-
-    public void setData(Map<String, Object> data) {
-        this.data = data;
+    @Override
+    public String toString() {
+        return "AppCacheParam{" +
+                "title='" + title + '\'' +
+                ", data=" + data +
+                ", syslogoimage='" + syslogoimage + '\'' +
+                ", clientimage='" + clientimage + '\'' +
+                ", guidepageUrl='" + guidepageUrl + '\'' +
+                '}';
     }
 }

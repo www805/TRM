@@ -371,7 +371,7 @@ function getCDNumber() {
 
     getCDNumberMsg = layer.msg("加载中，请稍等...", {
         icon: 16,
-        time:3000
+        time:10000
     });
 
     var data={
@@ -628,6 +628,8 @@ function callCDNumber(data){
         if (isNotEmpty(data)){
 
             var cdNumList = data.data.cdNumList;
+            var conTop = "<table border=\"0\" cellpadding=\"5\" style='width: 100%;'>";
+            var conBottom = "</table>";
             var con = "";
             for (var i = 0; i < cdNumList.length; i++) {
                 var Disc_iid = cdNumList[i];
@@ -645,9 +647,26 @@ function callCDNumber(data){
                         cdnum = "光驱2";
                     }
 
-                    con += "<div style='padding: 20px 0;text-align: center;'>【"+cdnum + "】<br>内容CRC校验码：" + crc32 + "<br>哈希值：" + md5 + "<br>光盘编号：" + iid + "<br></div>";
+                    con += "<tr>\n" +
+                        "    <th colspan=\"2\" class='detection'>【" + cdnum + "】</th>\n" +
+                        "  </tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;' class=\"detection\">内容CRC校验码：</td>\n" +
+                        "       <td >" + crc32 + "</td>\n" +
+                        "</tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;' class=\"detection\">哈希值：</td>\n" +
+                        "       <td >" + md5 + "</td>\n" +
+                        "</tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;padding-bottom: 10px;' class=\"detection\">光盘编号：</td>\n" +
+                        "       <td style='padding-bottom: 10px;'>" + iid + "</td>\n" +
+                        "</tr>";
                 }
             }
+
+            con = conTop + con + conBottom;
+
             if (con != "") {
                 layer.close(getCDNumberMsg);
 
