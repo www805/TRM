@@ -225,7 +225,7 @@ public class Scheduler {
                     RecordStatusCacheParam param = paramList.get(i);
                     //判断时间如果5分钟没心跳就设为休庭
                     int countTime = calLastedTime(param.getLasttime());
-                    if (countTime >= 70) {
+                    if (countTime >= 60 * 60 * 30) {
                         //修改笔录状态
                         String ssid = param.getRecordssid();
                         String mtssid = param.getMtssid();
