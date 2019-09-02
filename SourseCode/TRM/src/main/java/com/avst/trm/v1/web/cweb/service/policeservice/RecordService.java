@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.PtdjmapCache;
+import com.avst.trm.v1.common.cache.RecordStatusCache;
+import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.conf.GZVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
@@ -416,6 +418,7 @@ public class RecordService extends BaseService {
 
         result.setData(recordssid);
         changeResultToSuccess(result);
+
         return;
     }
 
@@ -3117,6 +3120,15 @@ public class RecordService extends BaseService {
         } catch (Exception e) {
             LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getCDNumber  光盘序号 请求错误...");
         }
+    }
+
+    public void putRecessStatus(RResult result, ReqParam<RecordStatusCacheParam> param) {
+
+        RecordStatusCacheParam paramParam = param.getParam();
+
+        RecordStatusCache.setRecordStatusCache(paramParam);
+
+        changeResultToSuccess(result);
     }
 
     /***************************笔录问答实时缓存****end***************************/

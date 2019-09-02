@@ -14,6 +14,7 @@ var ptdjct;
 var fdtype = "FD_AVST";
 var fdStateInfo;
 var CDNumModel_index;
+var getCDNumberMsg;
 
 //使用模块
 var html=
@@ -368,9 +369,9 @@ function getCDNumber() {
         return;
     }
 
-    layer.msg("加载中，请稍等...", {
+    getCDNumberMsg = layer.msg("加载中，请稍等...", {
         icon: 16,
-        time:3000
+        time:10000
     });
 
     var data={
@@ -483,12 +484,18 @@ function getstartRec_Rom() {
 
     var burntime = $("#burntime").val();
 
+    var bmode = "bmode";
+    if(fdStateInfo.burn_mode == 2){
+        bmode = "exchange";
+    }
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
             fdType: fdtype,
             iid: mtssid,
             burntime: burntime,
+            bmode: bmode,
             flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
         }
     };
@@ -555,6 +562,40 @@ function getyuntaiControl(ptzaction) {
     ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
 }
 
+function putRecessStatus() {
+    if (isNotEmpty(recordssid) && isNotEmpty(mtssid)) {
+        var url=getActionURL(getactionid_manage().waitRecord_putRecessStatus);
+        if(!isNotEmpty(url)){
+            url=getActionURL(getactionid_manage().waitconversation_putRecessStatus);
+        }
+        // var url = "/cweb/police/record/putRecessStatus";
+
+        var lasttime = new Date().Format("yyyy-MM-dd HH:mm:ss");
+
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                mtssid: mtssid,
+                lasttime: lasttime
+            }
+        };
+        ajaxSubmitByJson(url, data, callputRecessStatus);
+    }else{
+        console.log("笔录ssid和会议ssid为空，无法提交休庭检测心跳");
+        // layer.msg("笔录ssid和会议ssid为空，无法提交休庭检测心跳",{icon: 5});
+    }
+}
+
+function callputRecessStatus(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+
+    }else{
+        layer.msg(data.message);
+    }
+}
+
+
 function callptdj(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -587,6 +628,8 @@ function callCDNumber(data){
         if (isNotEmpty(data)){
 
             var cdNumList = data.data.cdNumList;
+            var conTop = "<table border=\"0\" cellpadding=\"5\" style='width: 100%;'>";
+            var conBottom = "</table>";
             var con = "";
             for (var i = 0; i < cdNumList.length; i++) {
                 var Disc_iid = cdNumList[i];
@@ -604,10 +647,28 @@ function callCDNumber(data){
                         cdnum = "光驱2";
                     }
 
-                    con += "<div style='padding: 20px 0;text-align: center;'>【"+cdnum + "】<br>内容CRC校验码：" + crc32 + "<br>哈希值：" + md5 + "<br>光盘编号：" + iid + "<br></div>";
+                    con += "<tr>\n" +
+                        "    <th colspan=\"2\" class='detection'>【" + cdnum + "】</th>\n" +
+                        "  </tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;' class=\"detection\">内容CRC校验码：</td>\n" +
+                        "       <td >" + crc32 + "</td>\n" +
+                        "</tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;' class=\"detection\">哈希值：</td>\n" +
+                        "       <td >" + md5 + "</td>\n" +
+                        "</tr>\n" +
+                        "<tr>\n" +
+                        "       <td style='text-align: right;padding-bottom: 10px;' class=\"detection\">光盘编号：</td>\n" +
+                        "       <td style='padding-bottom: 10px;'>" + iid + "</td>\n" +
+                        "</tr>";
                 }
             }
+
+            con = conTop + con + conBottom;
+
             if (con != "") {
+                layer.close(getCDNumberMsg);
 
                 //弹窗层
                 CDNumModel_index = layer.open({
@@ -993,6 +1054,22 @@ function getFormData(eId) {
         inData.push({"name": $(this).attr("name"), "value": $(this).val().trim()});
     });
     return inData;
+}
+
+Date.prototype.Format = function (fmt) {
+    var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "H+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
 }
 
 //秒数转换时间

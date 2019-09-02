@@ -367,6 +367,7 @@ function AddOrUpdateProblem(version) {
     var referanswer = $("#referanswer").val();
     var problemtypessid = $("#problemtypessid").val();
     var ByIdDDD = "";
+    var ByssIdDDD = "";
 
     // console.log(pageActionByPage);
     // console.log(url);
@@ -378,6 +379,7 @@ function AddOrUpdateProblem(version) {
 
     if (version == "修改") {
         ByIdDDD = $("#ByIdDDD").val();
+        ByssIdDDD = $("#ByssIdDDD").val();
     } else {
         //添加
         url=getActionURL(getactionid_manage().addOrupdateTemplate_addProblem);
@@ -388,9 +390,10 @@ function AddOrUpdateProblem(version) {
         token: INIT_CLIENTKEY,
         param: {
             id: ByIdDDD,
+            ssid: ByssIdDDD,
             problem: problem,
             referanswer: referanswer,
-            problemtypessid: parseInt(problemtypessid),
+            problemtypessid: problemtypessid,
             problemtypessidV: problemtypessidV
         }
     };
@@ -432,10 +435,10 @@ function addUpdateinfo(ssid, problemtypessid, type) {
     tableProblems = ""; //清空以前的
     for (var i = 0; i < plist.length; i++) {
         var problemType = plist[i];
-        if (problemtypessid == problemType.id) {
-            tableProblems += "<option selected value='" + problemType.id + "' >" + problemType.typename + "</option>";
+        if (problemtypessid == problemType.ssid) {
+            tableProblems += "<option selected value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
         }else{
-            tableProblems += "<option value='" + problemType.id + "' >" + problemType.typename + "</option>";
+            tableProblems += "<option value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
         }
     }
 
@@ -445,7 +448,7 @@ function addUpdateinfo(ssid, problemtypessid, type) {
         var data = {
             token: INIT_CLIENTKEY,
             param: {
-                id: ssid
+                ssid: ssid
             }
         };
         ajaxSubmitByJson(url, data, callUpdateProblem);
@@ -489,15 +492,18 @@ function modelban(problemV) {
     var problem = "";
     var referanswer = "";
     var id = "";
+    var ssid = "";
 
     if (isNotEmpty(problemV)){
         problem = problemV.problem;
         referanswer = problemV.referanswer;
         id = problemV.id;
+        ssid = problemV.ssid;
     }
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +
         "            <input type='hidden' id='ByIdDDD' value='" + id + "'>\n" +
+        "            <input type='hidden' id='ByssIdDDD' value='" + ssid + "'>\n" +
         "            <label class=\"layui-form-label\"><span style=\"color: red;\">*</span>问题类型</label>\n" +
         "            <div class=\"layui-input-block\" style=\"margin-bottom: 10px;\">\n" +
         "                <select name=\"problemtypessid\" id='problemtypessid' lay-verify=\"\" style=\"margin-top: 5px;width: 120px;height: 30px;\">\n"

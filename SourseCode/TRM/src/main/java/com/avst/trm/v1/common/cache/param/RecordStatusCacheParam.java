@@ -2,15 +2,24 @@ package com.avst.trm.v1.common.cache.param;
 
 public class RecordStatusCacheParam {
 
-    private String ssid;
+    private String recordssid;
+    private String mtssid;
     private String lasttime;
 
-    public String getSsid() {
-        return ssid;
+    public String getRecordssid() {
+        return recordssid;
     }
 
-    public void setSsid(String ssid) {
-        this.ssid = ssid;
+    public void setRecordssid(String recordssid) {
+        this.recordssid = recordssid;
+    }
+
+    public String getMtssid() {
+        return mtssid;
+    }
+
+    public void setMtssid(String mtssid) {
+        this.mtssid = mtssid;
     }
 
     public String getLasttime() {
@@ -24,7 +33,8 @@ public class RecordStatusCacheParam {
     @Override
     public String toString() {
         return "RecordStatusCacheParam{" +
-                "ssid='" + ssid + '\'' +
+                "recordssid='" + recordssid + '\'' +
+                ", mtssid='" + mtssid + '\'' +
                 ", lasttime='" + lasttime + '\'' +
                 '}';
     }

@@ -18,6 +18,7 @@ import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.HomeService;
 import com.avst.trm.v1.web.sweb.service.policeservice.LoginService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,21 +53,19 @@ public class HomeAction extends BaseAction{
 
     @RequestMapping(value = "/main")
     public ModelAndView gotomain(Model model) {
-
         String type=CommonCache.getCurrentServerType();
 
-        //根据type跳service处理
-
-        //获取统计数据信息
-
         AppCacheParam param = AppServiceCache.getAppServiceCache();
-        if(null == param.getTitle()){
+        if(StringUtils.isBlank(param.getTitle())){
+            this.getNavList();
+            param = AppServiceCache.getAppServiceCache();
             Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
             if (null != base_serverconfig) {
                 param.setTitle(base_serverconfig.getSysname());
             }
         }
         model.addAttribute("title",param.getTitle());
+        model.addAttribute("guidepageUrl",param.getGuidepageUrl());
         return new ModelAndView("server_web/base/main", "main", model);
     }
 
@@ -96,7 +95,9 @@ public class HomeAction extends BaseAction{
         RResult rResult=createNewResultOfFail();
 
         AppCacheParam param = AppServiceCache.getAppServiceCache();
-        if(null == param.getTitle()){
+        if(StringUtils.isBlank(param.getTitle()) || StringUtils.isBlank(param.getGuidepageUrl())){
+            this.getNavList();
+            param = AppServiceCache.getAppServiceCache();
             Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
             if (null != base_serverconfig) {
                 param.setTitle(base_serverconfig.getSysname());
@@ -104,6 +105,7 @@ public class HomeAction extends BaseAction{
         }
 
         model.addAttribute("result", rResult);
+        model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
         model.addAttribute("title", "欢迎登录后台" + param.getTitle());//欢迎登录后台管理界面平台
 
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());

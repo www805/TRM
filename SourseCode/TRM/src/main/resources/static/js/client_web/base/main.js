@@ -1,3 +1,4 @@
+
 function userloginout() {
     var url=getActionURL(getactionid_manage().main_userloginout);
     var data={

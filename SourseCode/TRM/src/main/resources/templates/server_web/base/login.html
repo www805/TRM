@@ -15,7 +15,7 @@
 <div class="logintop">
     <span th:text="${title}">欢迎登录后台管理界面平台</span>
     <ul>
-    <li><a href="#">回首页</a></li>
+    <li id="guidepage"><a th:href="${guidepageUrl}">返回引导页</a></li>
     <li><a href="#">帮助</a></li>
     <li><a href="#">关于</a></li>
     </ul>
@@ -57,7 +57,7 @@
        $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
         $(window).resize(function(){
             $('.loginbox').css({'position':'absolute','left':($(window).width()-692)/2});
-        })
+        });
 
         INIT_WEB = [[${session.INIT_WEB}]];
         INIT_CLIENT = [[${session.INIT_CLIENT}]];
@@ -66,19 +66,16 @@
         getNavList();
 
         //如果在iframe中打开，就自动点击登录按钮
-        if (window.frames.length != parent.frames.length) {
-            var loginaccount = GetQueryString("loginusername");
+        if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
+            $("#bottom_mian,#guidepage").remove();
+            var loginaccount = GetQueryString("loginaccount");
             var adminpassword = GetQueryString("loginpassword");
 
-            if(!isNotEmpty(loginaccount)){
-                loginaccount = "admin";
+            if (isNotEmpty(loginaccount) && isNotEmpty(adminpassword)) {
+                $("input[name='loginaccount']").val(loginaccount);
+                $("input[name='password']").val(adminpassword);
+                $("#loginbtn").click();
             }
-            if(!isNotEmpty(adminpassword)){
-                adminpassword = "admin";
-            }
-            $("input[name='loginaccount']").val(loginaccount);
-            $("input[name='password']").val(adminpassword);
-            $("#loginbtn").click();
         }
     });
 </script>

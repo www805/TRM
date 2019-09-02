@@ -86,7 +86,7 @@
         {{# var creator=null; var creatorname="";  var caseAndUserInfo=value.caseAndUserInfo;if(null!=caseAndUserInfo){creator=caseAndUserInfo.creator; creatorname=caseAndUserInfo.creatorname;} }}
         <tr ssid="{{value.ssid}}" ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{value.recordtypessid}}');" >
             <td>{{index+1}}</td>
-           <td>{{recordbooltext}}</td>
+            <td>{{recordbooltext}}</td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <th>{{creatorname}}</th>
