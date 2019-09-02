@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.sweb.vo.policevo;
 
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
 import com.avst.trm.v1.web.sweb.req.policereq.GetArraignmentListParam;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class GetArraignmentListVO {
     private GetArraignmentListParam pageparam;
 
-    private List<CaseAndUserInfo> pagelist;
+    private List<Case> pagelist;
 
 
     public GetArraignmentListParam getPageparam() {
@@ -19,11 +19,11 @@ public class GetArraignmentListVO {
         this.pageparam = pageparam;
     }
 
-    public List<CaseAndUserInfo> getPagelist() {
+    public List<Case> getPagelist() {
         return pagelist;
     }
 
-    public void setPagelist(List<CaseAndUserInfo> pagelist) {
+    public void setPagelist(List<Case> pagelist) {
         this.pagelist = pagelist;
     }
 }

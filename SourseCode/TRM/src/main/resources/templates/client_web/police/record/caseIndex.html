@@ -69,9 +69,7 @@
             <th>案件状态</th>
             <th>案件编号</th>
             <th>案件名称</th>
-            <th>案件人名称</th>
-            <th>案件人证件号</th>
-            <th>案件人证件类型</th>
+            <th>案件人</th>
             <th style="width: 150px">案件发生时间</th>
             <th>案件创建人</th>
             <th style="width:80px">笔录次数</th>
@@ -82,13 +80,17 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: orange'>休庭中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
+            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #ffe214'>休庭中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
             <td title="{{value.casenum==null?'':value.casenum}}">{{value.casenum==null?"":value.casenum}}</td>
             <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
-            <td title="{{value.username==null?'':value.username}}">{{value.username==null?"":value.username}}</td>
-            <td title="{{value.cardnum==null?'':value.cardnum}}">{{value.cardnum==null?"":value.cardnum}}</td>
-            <td title="{{value.cardtypename==null?'':value.cardtypename}}">{{value.cardtypename==null?"":value.cardtypename}}</td>
+           <!-- <td title="{{value.username==null?'':value.username}}">{{value.username==null?"":value.username}}</td>-->
+            {{# var USERHTNL="";var userInfos=value.userInfos;    }}
+            {{# if(null!=userInfos){ for (let i = 0; i < userInfos.length; i++) { }}
+            {{# const u = userInfos[i]; }}
+            {{# USERHTNL+=u.username+"、";  }}
+            {{# } USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;} }}
+            <td style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;" title="{{USERHTNL}}">{{USERHTNL}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
             <td>{{value.creatorname==null?"":value.creatorname}}</td>
             <td  class="noline"  onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
@@ -126,6 +128,8 @@
         setpageAction(INIT_CLIENT,"client_web/police/record/caseIndex");
         addOupdateurl=getActionURL(getactionid_manage().caseIndex_toaddOrUpdateCase);
         getCasesByParam();
+
+
     });
     layui.use(['layer','element','laydate'], function(){
         var layer = layui.layer; //获得layer模块

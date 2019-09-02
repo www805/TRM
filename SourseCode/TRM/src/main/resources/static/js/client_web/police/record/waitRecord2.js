@@ -1043,7 +1043,7 @@ function previewgetNotifications(ssid) {
                                         str2Tts(text);
                                         len++;
                                     }
-                                    if (len>arr.length-1){
+                                    if (len>dqrecorddownurl_htmlreads.length-1){
                                         clearInterval(t1);
                                     }
                                 },500);

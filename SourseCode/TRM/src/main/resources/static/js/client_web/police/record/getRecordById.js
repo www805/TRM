@@ -111,21 +111,9 @@ function callbackgetRecordById(data) {
             pdfdownurl=record.pdfdownurl;//pdf下载地址
             worddownurl=record.worddownurl;//word下载地址
 
-            //提讯数据
-            var police_arraignment=record.police_arraignment;
-            if (isNotEmpty(police_arraignment)){
-                mtssid=police_arraignment.mtssid;//获取会议mtssid
-                if (!isNotEmpty(mtssid)) {
-                    //不存在会议
-                }
-            }
+
 
             recordnameshow=record.recordname;//当前笔录名称
-
-
-            /*getRecord();//实时数据获取*/
-            /*getPHDataBack();//身心回放获取*/
-
 
             if (isNotEmpty(record)){
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
@@ -156,21 +144,25 @@ function callbackgetRecordById(data) {
                 }
 
                 //案件信息
-                var caseAndUserInfo=record.caseAndUserInfo;
+                var case_=record.case_;
                 $("#caseAndUserInfo_html").html("");
-                if (isNotEmpty(caseAndUserInfo)){
-                    var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                    var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                    var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                    var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                    var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                if (isNotEmpty(case_)){
+                    var casename=case_.casename==null?"":case_.casename;
+                    var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
+                    var cause=case_.cause==null?"":case_.cause;
+                    var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                    var casenum=case_.casenum==null?"":case_.casenum;
                     var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
                     var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
-                    var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var department=case_.department==null?"":case_.department;
                     var recordtypename=record.recordtypename==null?"":record.recordtypename;
+                    var userInfos=case_.userInfos;
+                    var USERHTNL="";
+                    if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
@@ -197,6 +189,16 @@ function callbackgetRecordById(data) {
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
                 set_getPlayUrl(getPlayUrlVO);
+            }
+
+            //提讯数据
+            var police_arraignment=record.police_arraignment;
+            if (isNotEmpty(police_arraignment)){
+                mtssid=police_arraignment.mtssid;//获取会议mtssid
+                if (!isNotEmpty(mtssid)) {
+                    //不存在会议
+
+                }
             }
 
         }

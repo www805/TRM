@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
 
 public class AddCaseToArraignmentVO {
     private boolean recordingbool=false;//是否存在笔录进行中或者未开始 true 存在笔录中 false不存在默认false
@@ -9,7 +9,7 @@ public class AddCaseToArraignmentVO {
 
     private String recordssid;//笔录ssid
 
-    private CaseAndUserInfo  caseAndUserInfo;//案件信息返回回显
+    private Case case_;//案件信息返回回显
 
     private boolean caseingbool=false;//案件是否需要在休庭中 true 休庭中false正常
 
@@ -20,12 +20,12 @@ public class AddCaseToArraignmentVO {
     private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
 
 
-    public CaseAndUserInfo getCaseAndUserInfo() {
-        return caseAndUserInfo;
+    public Case getCase_() {
+        return case_;
     }
 
-    public void setCaseAndUserInfo(CaseAndUserInfo caseAndUserInfo) {
-        this.caseAndUserInfo = caseAndUserInfo;
+    public void setCase_(Case case_) {
+        this.case_ = case_;
     }
 
     public boolean isCaseingbool() {

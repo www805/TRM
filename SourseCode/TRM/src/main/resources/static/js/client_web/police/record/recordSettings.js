@@ -1086,22 +1086,22 @@ function changeTimes(num, status) {
 function matchPtdjKey(key) {
 
     if("casenum" == key){
-        return getRecordById_data.record.caseAndUserInfo.casenum == null ? "" : getRecordById_data.record.caseAndUserInfo.casenum;
+        return getRecordById_data.record.case_.casenum == null ? "" : getRecordById_data.record.case_.casenum;
     }
     if("casename" == key){
-        return getRecordById_data.record.caseAndUserInfo.casename == null ? "" : getRecordById_data.record.caseAndUserInfo.casename;
+        return getRecordById_data.record.case_.casename == null ? "" : getRecordById_data.record.case_.casename;
     }
     if("recordtypename" == key){
         return getRecordById_data.record.recordtypename == null ? "" : getRecordById_data.record.recordtypename;
     }
     if("cause" == key){
-        return getRecordById_data.record.caseAndUserInfo.cause == null ? "" : getRecordById_data.record.caseAndUserInfo.cause;
+        return getRecordById_data.record.case_.cause == null ? "" : getRecordById_data.record.case_.cause;
     }
     if("department" == key){
-        return getRecordById_data.record.caseAndUserInfo.department == null ? "" : getRecordById_data.record.caseAndUserInfo.department;
+        return getRecordById_data.record.case_.department == null ? "" : getRecordById_data.record.case_.department;
     }
     if("username" == key){
-        return getRecordById_data.record.caseAndUserInfo.username == null ? "" : getRecordById_data.record.caseAndUserInfo.username;
+        return getRecordById_data.record.recordUserInfos.username == null ? "" : getRecordById_data.record.recordUserInfos.username;
     }
     if("adminname" == key){
         return getRecordById_data.record.recordUserInfos.adminname == null ? "" : getRecordById_data.record.recordUserInfos.adminname;

@@ -28,13 +28,13 @@ function addCaseToArraignment() {
         parent.layer.msg("证件号码不能为空");
         return;
     }
-    if ($.trim(cardtypetext)=="居民身份证"){
+   /* if ($.trim(cardtypetext)=="居民身份证"){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
             parent.layer.msg("身份证输入不合法");
             return false;
         }
-    }
+    }*/
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
         parent.layer.msg("姓名不能为空");
@@ -140,23 +140,25 @@ function callbackaddCaseToArraignment(data) {
 
 
 
-            var caseAndUserInfo=data2.caseAndUserInfo;
+            var case_=data2.case_;
             var caseingbool=data2.caseingbool;
 
-            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(caseAndUserInfo)){
-                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
-                var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(case_)){
+                var casename=case_.casename==null?"":case_.casename;
+                var cause=case_.cause==null?"":case_.cause;
+                var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                var casenum=case_.casenum==null?"":case_.casenum;
+                var department=case_.department==null?"":case_.department;
+                var userInfos=case_.userInfos;
+                var USERHTNL="";
+                if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
+                var  init_casehtml=" <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
+                                  <tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
-                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="caseAndUserInfo_html"></tbody>\
+                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="case_html"></tbody>\
                 </table>';
                 parent.layer.open({
                     type:1,
@@ -508,10 +510,14 @@ function callbackgetAdminList(data) {
 
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
+    var nationality = $("#nationality option:selected").text();//国籍
+    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
+        return false;
+    }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
         if(reg.test(cardnum) === false) {
-            parent.layer.msg("身份证输入不合法");
+          /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/
             return false;
         }
@@ -565,25 +571,54 @@ $(function () {
             layer.msg("请先选择身份证类型",{icon:5});
             return;
         }
-        var url=getActionURL(getactionid_manage().startConversation_getCardreader);
-        ajaxSubmitByJson(url,null,function (data) {
-            if(null!=data&&data.actioncode=='SUCCESS'){
-                var data=data.data;
-                if (isNotEmpty(data)){
-                    reset();
-                    var data = eval("("+data+")");
-                    if (isNotEmpty(data)){
-                        var retmsg=data.retmsg==null?"未知错误":data.retmsg;
-                        var bool=checkout_cardnum(data.cardno,"居民身份证");
-                        if (!bool){
-                            return;
-                        }
 
-                        $("#username").val(data.name==null?"":data.name);
+        $.ajax({
+            dataType: "JSONP",
+            type: "get",
+            url: "http://localhost:8989/api/ReadMsg",
+            success: function (data) {
+                    if (isNotEmpty(data)){
+                        reset();
+                        var retmsg=data.retmsg==null?"未知错误":data.retmsg;
+
+                        var CardType=data.CardType;//0身份证 1其他国家身份证 2港澳居住证
+                        var username="";
+                        if (CardType==0||CardType==2){
+                            var bool=checkout_cardnum(data.cardno,"居民身份证");
+                            if (!bool){
+                                return;
+                            }
+                            username=data.name==null?"":data.name;
+
+                            var nation=data.nation;
+                            $("#national option").each(function () {
+                                var txt=$(this).text();
+                                var value=$(this).attr("value");
+                                if (txt.indexOf(nation)>-1){
+                                    $("#national").val(value);
+                                    return;
+                                }
+                            })
+                            var nationality_value=$("#nationality option[title='China']").attr("value");
+                            $("#nationality").val(nationality_value);
+                        } else if (CardType==1){
+                            var nation=data.nation;
+                            $("#nationality option").each(function () {
+                                var txt=$(this).text();
+                                var value=$(this).attr("value");
+                                if (txt.indexOf(nation)>-1){
+                                    $("#nationality").val(value);
+                                    return;
+                                }
+                            })
+                            username=data.EngName==null?"":data.EngName
+                        }
+                        $("#username").val(username);
                         $("#cardnum").val(data.cardno);
                         $("#domicile").val(data.address);
                         $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
-                        /*  $("#national").val(data.nation);*///和数据库不符合
+
+
 
                         layui.use('form', function(){
                             var form =  layui.form;
@@ -593,117 +628,14 @@ $(function () {
                             getUserByCard();
                         });
                     }
-                }
-            }else {
-                layer.msg(data.message,{icon:5});
+            },
+            error: function (e) {
             }
-        })
+        });
     });
-
-    // 建立连接
-        socket = io.connect('http://localhost:5000',{'timeout': 300000,'reconnectionDelayMax':1000,'reconnectionDelay':500});
-        socket.on('connect', function () {
-            console.log("连接成功___读卡器开始读卡___")
-            socket.emit('startRead');
-            socket.emit('readOnce','true');
-        });
-        socket.on('disconnect', function () {
-            console.log("连接断开___读卡器开始读卡___")
-        });
-        socket.on('card message', function(msg){
-
-            var cardtypetext=$("#cards option:selected").text();
-            if ($.trim(cardtypetext)!="居民身份证"){
-                layer.msg("请先选择身份证类型",{icon:5});
-                return;
-            }
-
-            var base = new Base64();
-            //2.解密后是json字符串
-            var result1 = base.decode(msg);
-            var data = eval("("+result1+")");
-            console.log(data)
-            if (isNotEmpty(data)){
-                reset();
-                var retmsg=data.retmsg==null?"未知错误":data.retmsg;
-                var bool=checkout_cardnum(data.cardno,"居民身份证");
-                if (!bool){
-                    return;
-                }
-                $("#username").val(data.name==null?"":data.name);
-                $("#cardnum").val(data.cardno);
-                $("#domicile").val(data.address);
-                $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
-                /*  $("#national").val(data.nation);*///和数据库不符合
-                layui.use('form', function(){
-                    var form =  layui.form;
-                    form.render();
-                });
-                layer.msg(retmsg,{icon:6,time:1000},function () {
-                    getUserByCard();
-                });
-            }
-        });
-
 
 });
 
-function Base64() {
-    // private property
-    _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-    // public method for decoding
-    this.decode = function (input) {
-        var output = "";
-        var chr1, chr2, chr3;
-        var enc1, enc2, enc3, enc4;
-        var i = 0;
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-        while (i < input.length) {
-            enc1 = _keyStr.indexOf(input.charAt(i++));
-            enc2 = _keyStr.indexOf(input.charAt(i++));
-            enc3 = _keyStr.indexOf(input.charAt(i++));
-            enc4 = _keyStr.indexOf(input.charAt(i++));
-            chr1 = (enc1 << 2) | (enc2 >> 4);
-            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-            chr3 = ((enc3 & 3) << 6) | enc4;
-            output = output + String.fromCharCode(chr1);
-            if (enc3 != 64) {
-                output = output + String.fromCharCode(chr2);
-            }
-            if (enc4 != 64) {
-                output = output + String.fromCharCode(chr3);
-            }
-        }
-        output = _utf8_decode(output);
-        return output;
-    }
-
-
-    // private method for UTF-8 decoding
-    _utf8_decode = function (utftext) {
-        var string = "";
-        var i = 0;
-        var c = c1 = c2 = 0;
-        while ( i < utftext.length ) {
-            c = utftext.charCodeAt(i);
-            if (c < 128) {
-                string += String.fromCharCode(c);
-                i++;
-            } else if((c > 191) && (c < 224)) {
-                c2 = utftext.charCodeAt(i+1);
-                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                i += 2;
-            } else {
-                c2 = utftext.charCodeAt(i+1);
-                c3 = utftext.charCodeAt(i+2);
-                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                i += 3;
-            }
-        }
-        return string;
-    }
-}
 
 function reset() {
     dquserssid=null;//当前用户的ssid

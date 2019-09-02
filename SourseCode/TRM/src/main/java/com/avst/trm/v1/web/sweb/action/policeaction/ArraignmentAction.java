@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
+
 @Controller
 @RequestMapping("/sweb/police/arraignment")
 public class ArraignmentAction extends BaseAction{
@@ -46,14 +48,14 @@ public class ArraignmentAction extends BaseAction{
      */
     @RequestMapping(value = "/getArraignmentList")
     @ResponseBody
-    public RResult getArraignmentList(GetArraignmentListParam param) {
+    public RResult getArraignmentList(GetArraignmentListParam param, HttpSession session) {
         RResult result=createNewResultOfFail();
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("getArraignmentList")) {
             if (null==param){
                 result.setMessage("参数为空");
             }else{
-                arraignmentService.getArraignmentList(result,param);
+                arraignmentService.getArraignmentList(result,param,session);
             }
         }else {
             result.setMessage("权限不足");

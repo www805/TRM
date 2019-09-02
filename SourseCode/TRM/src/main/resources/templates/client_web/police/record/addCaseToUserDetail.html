@@ -161,7 +161,6 @@
                             <label class="layui-form-label">政治面貌</label>
                             <div class="layui-input-block">
                                 <select name="politicsstatus"   lay-search="" id="politicsstatus">
-                                    <option value=""></option>
                                     <option value="群众">群众</option>
                                     <option value="中国致公党党员">中国致公党党员</option>
                                     <option value="台湾民主自治同盟盟员">台湾民主自治同盟盟员</option>
@@ -599,8 +598,9 @@
         form.verify({
             cardnum:function (value) {
                 var cardtypetext = $("#cards option:selected").text();
-                if ($.trim(cardtypetext) == "居民身份证"  && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
-                    return "请输入正确的18位居民身份证号码"
+                var nationality = $("#nationality option:selected").text();//国籍
+                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality)) && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
+                    return "请输入正确的18位居民身份证号码";
                 }
                 if (!(/\S/).test(value)) {
                     return "请输入证件号码"

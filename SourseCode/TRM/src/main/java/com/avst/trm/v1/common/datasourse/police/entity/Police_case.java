@@ -74,10 +74,6 @@ public class Police_case extends Model<Police_case> {
      */
     private Date createtime;
 
-    /**
-     * 案件人id
-     */
-    private String userssid;
 
     /**
      * 创建人
@@ -195,13 +191,7 @@ public class Police_case extends Model<Police_case> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public String getUserssid() {
-        return userssid;
-    }
 
-    public void setUserssid(String userssid) {
-        this.userssid = userssid;
-    }
     public String getSsid() {
         return ssid;
     }
@@ -256,9 +246,9 @@ public class Police_case extends Model<Police_case> {
                 ", caseway='" + caseway + '\'' +
                 ", ordernum=" + ordernum +
                 ", createtime=" + createtime +
-                ", userssid='" + userssid + '\'' +
                 ", creator='" + creator + '\'' +
                 ", casebool=" + casebool +
+                ", department='" + department + '\'' +
                 ", ssid='" + ssid + '\'' +
                 ", string1='" + string1 + '\'' +
                 ", string2='" + string2 + '\'' +

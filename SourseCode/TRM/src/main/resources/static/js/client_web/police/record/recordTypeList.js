@@ -37,7 +37,7 @@ function opneModal_1(id) {
         btn: ['确定', '取消'],
         success: function (layero, index) {
             layero.addClass('layui-form');//添加form标识
-            layero.find('.layui-layer-btn0').attr('lay-submit', '');//将按钮弄成能提交的
+            layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
             form.render();
         },
         yes:function(index, layero){
@@ -45,36 +45,52 @@ function opneModal_1(id) {
                 typenamem:[ /\S/,"请输入类型名称"],
                 ordernumm:[ /\S/,"请输入排序"],
             });
+            form.on("submit(fromContent)", function (data) {
+                var pidm=$("#pidm option:selected").val();
+                var typenamem=$("#typenamem").val();
+                var ordernum=$("#ordernumm").val();
+                if(!isNotEmpty(typenamem)){
+                    layer.msg("请输入类型名称",{icon:5});
+                    $("#typenamem").focus();
+                    return;
+                }
+                if(!isNotEmpty(ordernum)){
+                    layer.msg("请输入排序",{icon:5});
+                    $("#ordernumm").focus();
+                    return;
+                }
+                if (isNotEmpty(id)) {
+                    var url=getActionURL(getactionid_manage().recordTypeList_updateRecordtype);
+                    var data={
+                        token:INIT_CLIENTKEY,
+                        param:{
+                            id:id,
+                            pid:pidm,
+                            ordernum:ordernum,
+                            typename:typenamem
+                        }
+                    };
+                    if (oldpidm==0&&pidm!=0&&recordtypes_son>0){
+                        layer.confirm('该类目下的子类目将会变成同级，是否保存？', {
+                            btn: ['保存','取消'] //按钮
+                        }, function(){
+                            ajaxSubmitByJson(url,data,function (data2) {
+                                if(null!=data2&&data2.actioncode=='SUCCESS') {
+                                    var data = data2.data;
+                                    if (isNotEmpty(data)) {
+                                        layer.close(index);
+                                        layer.msg("保存成功",{icon:6});
+                                        getRecordtypes();
+                                    }
+                                }else{
+                                    layer.msg(data2.message,{icon: 5});
+                                    return;
+                                }
+                            });
+                        }, function(){
 
-
-            var pidm=$("#pidm option:selected").val();
-            var typenamem=$("#typenamem").val();
-            var ordernum=$("#ordernumm").val();
-            if(!isNotEmpty(typenamem)){
-                layer.msg("请输入类型名称",{icon:5});
-                $("#typenamem").focus();
-                return;
-            }
-            if(!isNotEmpty(ordernum)){
-                layer.msg("请输入排序",{icon:5});
-                $("#ordernumm").focus();
-                return;
-            }
-            if (isNotEmpty(id)) {
-                var url=getActionURL(getactionid_manage().recordTypeList_updateRecordtype);
-                var data={
-                    token:INIT_CLIENTKEY,
-                    param:{
-                        id:id,
-                        pid:pidm,
-                        ordernum:ordernum,
-                        typename:typenamem
-                    }
-                };
-                if (oldpidm==0&&pidm!=0&&recordtypes_son>0){
-                    layer.confirm('该类目下的子类目将会变成同级，是否保存？', {
-                        btn: ['保存','取消'] //按钮
-                    }, function(){
+                        });
+                    }else {
                         ajaxSubmitByJson(url,data,function (data2) {
                             if(null!=data2&&data2.actioncode=='SUCCESS') {
                                 var data = data2.data;
@@ -88,10 +104,17 @@ function opneModal_1(id) {
                                 return;
                             }
                         });
-                    }, function(){
-
-                    });
-                }else {
+                    }
+                } else {
+                    var url=getActionURL(getactionid_manage().recordTypeList_addRecordtype);
+                    var data={
+                        token:INIT_CLIENTKEY,
+                        param: {
+                            pid: pidm,
+                            ordernum:ordernum,
+                            typename: typenamem
+                        }
+                    };
                     ajaxSubmitByJson(url,data,function (data2) {
                         if(null!=data2&&data2.actioncode=='SUCCESS') {
                             var data = data2.data;
@@ -106,30 +129,7 @@ function opneModal_1(id) {
                         }
                     });
                 }
-            } else {
-                var url=getActionURL(getactionid_manage().recordTypeList_addRecordtype);
-                var data={
-                    token:INIT_CLIENTKEY,
-                    param: {
-                        pid: pidm,
-                        ordernum:ordernum,
-                        typename: typenamem
-                    }
-                };
-                ajaxSubmitByJson(url,data,function (data2) {
-                    if(null!=data2&&data2.actioncode=='SUCCESS') {
-                        var data = data2.data;
-                        if (isNotEmpty(data)) {
-                            layer.close(index);
-                            layer.msg("保存成功",{icon:6});
-                            getRecordtypes();
-                        }
-                    }else{
-                        layer.msg(data2.message,{icon: 5});
-                        return;
-                    }
-                });
-            }
+            });
         },
         btn2:function(index, layero){
             layer.close(index);

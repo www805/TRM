@@ -5,7 +5,7 @@
     <title>视频点播</title>
 </head>
 <body>
-<div  data-th-fragment="video" style="height: 100%">
+<div  data-th-fragment="video" style="height: 95%">
     <div id="view" >
         <div id="player" class="player"></div>
     </div>
@@ -19,6 +19,7 @@
         var setinterval1;
         var totaltime;
         var mouseoverbool=-1;//是否滚动1滚2不滚mouseoverbool
+        var progrssBar_width="70%";//是否滚动1滚2不滚mouseoverbool
 
         SewisePlayer.setup({
             server: "vod",
@@ -45,6 +46,7 @@
                 gotoprogrssBarByPlayer();
             },1000);
 
+            $("#progrssBar").css({"width":progrssBar_width})
         }
         layui.use('element', function(){
             var element = layui.element;
@@ -113,10 +115,10 @@
     <!--播放器/代码结束-->
 
     <div  style="width: 100%;display:flex;">
-        <div class="layui-progress layui-progress-big layui-bg-gray" id="progrssBar" style="width: 70%;flex:none;" onclick="changeProgrss();">
+        <div class="layui-progress layui-progress-big layui-bg-gray" id="progrssBar" style="width: 79%;flex:none;" onclick="changeProgrss();">
             <div class="layui-progress-bar layui-bg-red" lay-percent="20%\" style="width: 20%"></div>
         </div>
-        <div style="flex:1;float: right;"><!--时间显示-->
+        <div style="flex:1;"><!--时间显示-->
             <label >&nbsp;&nbsp;</label><label id="currenttime">00:00:00</label>/<label id="totaltime" >未知</label>
         </div>
     </div>

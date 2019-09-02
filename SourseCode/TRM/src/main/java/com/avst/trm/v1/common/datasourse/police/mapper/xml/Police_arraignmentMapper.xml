@@ -15,6 +15,7 @@
         <result column="recordssid" property="recordssid" />
         <result column="mtssid" property="mtssid" />
         <result column="mtmodelssid" property="mtmodelssid" />
+        <result column="userssid" property="userssid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

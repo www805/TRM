@@ -220,7 +220,7 @@ function open_uploadword(ssid) {
         btn: ['确定', '取消'],
         success: function (layero, index) {
             layero.addClass('layui-form');//添加form标识
-            layero.find('.layui-layer-btn0').attr('lay-submit', '');//将按钮弄成能提交的
+            layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
             form.render();
         },
         yes:function(index, layero){
@@ -229,42 +229,45 @@ function open_uploadword(ssid) {
                 wordtemplatenamem:[ /\S/,"请输入word模板名称"],
             });
 
-            var file = document.getElementById("wordfile").files[0];
-            if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
-                layer.msg("请选择文件进行上传",{icon: 5});
-                return;
-            }
+            form.on("submit(fromContent)", function (data) {
+                var file = document.getElementById("wordfile").files[0];
+                if (!isNotEmpty(ssid)&&!isNotEmpty(file)){
+                    layer.msg("请选择文件进行上传",{icon: 5});
+                    return;
+                }
 
-            var recordtypessid=$("#recordtypessidm").val();
-            var wordtemplatename=$("#wordtemplatenamem").val();
-            var defaultboolm=$("#defaultboolm").prop("checked");
-            var defaultbool;
-            if (defaultboolm){
-                defaultbool=1;
-            } else{
-                defaultbool=-1;
-            }
+                var recordtypessid=$("#recordtypessidm").val();
+                var wordtemplatename=$("#wordtemplatenamem").val();
+                var defaultboolm=$("#defaultboolm").prop("checked");
+                var defaultbool;
+                if (defaultboolm){
+                    defaultbool=1;
+                } else{
+                    defaultbool=-1;
+                }
 
-            if (!isNotEmpty(recordtypessid)) {
-                layer.msg("请选择笔录类型",{icon: 5});
-                $("#recordtypessidm").focus();
-                return;
-            }
+                if (!isNotEmpty(recordtypessid)) {
+                    layer.msg("请选择笔录类型",{icon: 5});
+                    $("#recordtypessidm").focus();
+                    return;
+                }
 
-            if (!isNotEmpty(wordtemplatename)) {
-                layer.msg("请输入word模板名称",{icon: 5});
-                $("#wordtemplatenamem").focus();
-                return;
-            }
+                if (!isNotEmpty(wordtemplatename)) {
+                    layer.msg("请输入word模板名称",{icon: 5});
+                    $("#wordtemplatenamem").focus();
+                    return;
+                }
 
-            var data={
-                recordtypessid:recordtypessid,
-                wordtemplatename:wordtemplatename,
-                defaultbool:defaultbool,
-                word:1,
-                ssid:ssid,
-            };
-            uploadWordTemplate(data,file);
+                var data={
+                    recordtypessid:recordtypessid,
+                    wordtemplatename:wordtemplatename,
+                    defaultbool:defaultbool,
+                    word:1,
+                    ssid:ssid,
+                };
+                uploadWordTemplate(data,file);
+            });
+
         },
         btn2:function(index, layero){
             layer.close(index);

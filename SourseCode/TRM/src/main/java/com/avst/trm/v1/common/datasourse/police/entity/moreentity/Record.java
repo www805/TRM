@@ -27,11 +27,19 @@ public class Record extends Police_record {
 
     private Police_arraignment police_arraignment;//提讯信息
 
-    private  CaseAndUserInfo caseAndUserInfo;//案件信息
+    private Case case_;
 
     private Integer mcbool;//会议状态
 
     private String recordtypename;//案件类型名称
+
+    public Case getCase_() {
+        return case_;
+    }
+
+    public void setCase_(Case case_) {
+        this.case_ = case_;
+    }
 
     public String getRecordtypename() {
         return recordtypename;
@@ -63,14 +71,6 @@ public class Record extends Police_record {
 
     public void setMcbool(Integer mcbool) {
         this.mcbool = mcbool;
-    }
-
-    public CaseAndUserInfo getCaseAndUserInfo() {
-        return caseAndUserInfo;
-    }
-
-    public void setCaseAndUserInfo(CaseAndUserInfo caseAndUserInfo) {
-        this.caseAndUserInfo = caseAndUserInfo;
     }
 
     public Police_arraignment getPolice_arraignment() {

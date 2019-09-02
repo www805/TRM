@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
 import com.avst.trm.v1.web.cweb.req.policereq.GetCasesParam;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class GetCasesVO {
     private GetCasesParam pageparam;
 
-    private List<CaseAndUserInfo> pagelist;
+    private List<Case> pagelist;
 
     private String recordtype_conversation1;//默认谈话笔录ssid:一键笔录
 
@@ -38,11 +38,12 @@ public class GetCasesVO {
         this.pageparam = pageparam;
     }
 
-    public List<CaseAndUserInfo> getPagelist() {
+
+    public List<Case> getPagelist() {
         return pagelist;
     }
 
-    public void setPagelist(List<CaseAndUserInfo> pagelist) {
+    public void setPagelist(List<Case> pagelist) {
         this.pagelist = pagelist;
     }
 }

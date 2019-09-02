@@ -517,22 +517,27 @@ function callbackgetRecordById(data) {
 
 
                 //案件信息
-                var caseAndUserInfo=record.caseAndUserInfo;
+                var case_=record.case_;
                 $("#caseAndUserInfo_html").html("");
-                if (isNotEmpty(caseAndUserInfo)){
-                    var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                    var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                    var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                    var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                    var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
+                if (isNotEmpty(case_)){
+                    var casename=case_.casename==null?"":case_.casename;
+                    var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
+                    var cause=case_.cause==null?"":case_.cause;
+                    var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                    var casenum=case_.casenum==null?"":case_.casenum;
                     var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
                     var recordadminname=recordUserInfosdata.recordadminname==null?"":recordUserInfosdata.recordadminname;
-                    var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
+                    var department=case_.department==null?"":case_.department;
                     var recordtypename=record.recordtypename==null?"":record.recordtypename;
-                    casebool=caseAndUserInfo.casebool==null?"":caseAndUserInfo.casebool;
+                    casebool=case_.casebool==null?"":case_.casebool;
+
+                    var userInfos=case_.userInfos;
+                    var USERHTNL="";
+                    if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
@@ -600,13 +605,13 @@ function startMC() {
 
         var record=getRecordById_data.record;
         if (isNotEmpty(record)){
-            var caseAndUserInfo=record.caseAndUserInfo;
+            var case_=record.case_;
             var recordUserInfos=record.recordUserInfos;
             var police_arraignment=record.police_arraignment;
-            casenum=caseAndUserInfo.casenum;
-            casename=caseAndUserInfo.casename;
-            cause=caseAndUserInfo.cause;
-            department=caseAndUserInfo.department;
+            casenum=case_.casenum;
+            casename=case_.casename;
+            cause=case_.cause;
+            department=case_.department;
             askedname=recordUserInfos.userssid;
             askname=recordUserInfos.adminname;
             recordername=recordUserInfos.recordadminname;
@@ -985,15 +990,18 @@ var overRecord_loadindex =null;
  function overRecord(state) {
      var msgtxt2="是否结束？";
      if (state==1){
-         msgtxt2="是否休庭？(结束该笔录/身心，该案件将会休庭)";
+         msgtxt2="是否休庭？";
+     }
+     var msgtxt="";
+     if (isNotEmpty(fdStateInfo)) {
+         var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
+         var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
+         if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
+             msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
+         }
      }
 
-     var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
-     var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
-     var msgtxt="";
-     if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
-         msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
-     }
+
     layer.confirm(msgtxt2+'<br/><span style="color: red">*确保存在对应模板否则导出功能失效</span><br>'+msgtxt, {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
