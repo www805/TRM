@@ -225,7 +225,8 @@ public class Scheduler {
                     RecordStatusCacheParam param = paramList.get(i);
                     //判断时间如果5分钟没心跳就设为休庭
                     int countTime = calLastedTime(param.getLasttime());
-                    if (countTime >= 60 * 60 * 30) {
+                    int maxTime = 60 * 60 * 30;
+                    if (countTime >= maxTime) {
                         //修改笔录状态
                         String ssid = param.getRecordssid();
                         String mtssid = param.getMtssid();
@@ -240,7 +241,6 @@ public class Scheduler {
                         reqParam.setParam(addRecordParam);
 
                         recordService.addRecord(result, reqParam);
-                        RecordStatusCache.removeRecordInfoCache(addRecordParam.getRecordssid());/**如果修改成功，删除这条缓存**/
 
                         LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功");
                     }
@@ -263,7 +263,8 @@ public class Scheduler {
         }
 
         long b = parse.getTime();
-        int c = (int)((a - b) / 1000);return c;
+        int c = (int)((a - b) / 1000);
+        return c;
     }
 
 

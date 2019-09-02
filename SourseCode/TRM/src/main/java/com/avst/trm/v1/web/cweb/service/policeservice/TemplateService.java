@@ -498,7 +498,7 @@ public class TemplateService extends BaseService {
         police_problemtype.setTypename(addTemplatetypeParam.getTypename());
         Police_templatetype templatetype = police_templatetypeMapper.selectOne(police_problemtype);
         if (null != templatetype) {
-            result.setMessage("模板类型的名称不能重复");
+            result.setMessage("模板类型的名称已存在，请重新设置");
             return;
         }
 
@@ -568,7 +568,7 @@ public class TemplateService extends BaseService {
             List<Police_templatetype> police_templatetypes = police_templatetypeMapper.selectList(ew1);
 
             if (null != police_templatetypes && police_templatetypes.size() > 0) {
-                result.setMessage("模板类型的名称不能重复");
+                result.setMessage("模板类型的名称已存在，请重新设置");
                 return;
             }
 
@@ -923,7 +923,7 @@ public class TemplateService extends BaseService {
         Police_problemtype problemtype = police_problemtypeMapper.selectOne(police_problemtype);
 
         if (null != problemtype) {
-            result.setMessage("问题类型的名称不能重复");
+            result.setMessage("问题类型已存在，请重新设置");
             return;
         }
 
@@ -994,7 +994,7 @@ public class TemplateService extends BaseService {
             List<Police_problemtype> problemtypes = police_problemtypeMapper.selectList(ew);
 
             if (null != problemtypes && problemtypes.size() > 0) {
-                result.setMessage("问题类型的名称不能重复");
+                result.setMessage("问题类型已存在，请重新设置");
                 return;
             }
 

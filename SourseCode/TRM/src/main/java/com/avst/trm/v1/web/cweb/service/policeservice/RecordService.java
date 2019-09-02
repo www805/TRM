@@ -309,6 +309,8 @@ public class RecordService extends BaseService {
             return;
         }
 
+        RecordStatusCache.removeRecordInfoCache(recordssid);/**如果修改成功，删除这条缓存**/
+
         //判断笔录状态，如果等于2或者0（已完成或者已删除）不进行下一步
         Police_record police_record=new Police_record();
         police_record.setSsid(recordssid);
