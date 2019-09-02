@@ -14,7 +14,6 @@
         <result column="caseway" property="caseway" />
         <result column="ordernum" property="ordernum" />
         <result column="createtime" property="createtime" />
-        <result column="userssid" property="userssid" />
         <result column="ssid" property="ssid" />
         <result column="creator" property="creator" />
         <result column="casebool" property="casebool" />

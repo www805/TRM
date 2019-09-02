@@ -122,7 +122,7 @@ function updateServerconfig() {
     xhr.timeout = 500000;
     xhr.onload = function(data) {
         $("#saveapkbtn").attr('disabled', false);
-        $("#saveapkbtn").val("保存修改");
+        $("#saveapkbtn").val("保存");
         $("[lay-filter='progress_demo']").css("visibility","hidden");
         callbackupdateServerconfig(xhr.responseText);
     };
@@ -133,7 +133,7 @@ function updateServerconfig() {
 function progressFunction(evt) {
     if (evt.lengthComputable) {
         var completePercent = Math.round(evt.loaded / evt.total * 100)+ "%";
-        $("#saveapkbtn").val("保存修改中" + completePercent);
+        $("#saveapkbtn").val("保存中" + completePercent);
         $("[lay-filter='progress_demo']").css("visibility","visible");
         $("[lay-filter='progress_demo'] .layui-progress-text").text(completePercent);
         $("[lay-filter='progress_demo'] .layui-progress-bar").width(completePercent);

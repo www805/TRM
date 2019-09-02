@@ -34,13 +34,7 @@ function addCaseToArraignment() {
         parent.layer.msg("证件号码不能为空",{icon: 5});
         return;
     }
-    if ($.trim(cardtypetext)=="居民身份证"){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-        if(reg.test(cardnum) === false) {
-            parent.layer.msg("身份证输入不合法",{icon: 5});
-            return false;
-        }
-    }
+
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
         parent.layer.msg("姓名不能为空",{icon: 5});
@@ -234,23 +228,25 @@ function callbackaddCaseToArraignment(data) {
             var recordssid=data2.recordssid;
             var checkStartRecordVO=data2.checkStartRecordVO;
 
-            var caseAndUserInfo=data2.caseAndUserInfo;
+            var case_=data2.case_;
             var caseingbool=data2.caseingbool;
 
-            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(caseAndUserInfo)){
-                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
-                var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(case_)){
+                var casename=case_.casename==null?"":case_.casename;
+                var cause=case_.cause==null?"":case_.cause;
+                var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                var casenum=case_.casenum==null?"":case_.casenum;
+                var department=case_.department==null?"":case_.department;
+               var userInfos=case_.userInfos;
+                var USERHTNL="";
+                if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
+                var  init_casehtml=" <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
+                                  <tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
-                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="caseAndUserInfo_html"></tbody>\
+                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="case_html"></tbody>\
                 </table>';
                 parent.layer.open({
                     type:1,
@@ -662,7 +658,8 @@ function setcases(cases){
                         var casename=$("#casename").find("option:selected").text();
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
                         var username=$("#username").val();
-                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
+                        var asknum=c.arraignments==null?0:c.arraignments.length;
+                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
@@ -676,7 +673,7 @@ function setcases(cases){
                             $("#occurrencetime").val(c.occurrencetime);
                         }
                         $("#caseway").val(c.caseway);
-                        $("#asknum").val(c.asknum);
+                        $("#asknum").val(asknum);
                         $("#recordname").val(recordname);
                     }
                 }
@@ -1012,13 +1009,14 @@ function select_case(obj) {
                 if (dqcasessid==c.ssid){
                     var username=$("#username").val();
                     var casename=$("#casename").val();
+                    var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                    var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
+                    var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
                     $("#caseway").val(c.caseway);
-                    $("#asknum").val(c.asknum);
+                    $("#asknum").val(asknum);
                     $("#recordname").val(recordname);
 
                     if (isNotEmpty(c.starttime)){
@@ -1053,12 +1051,13 @@ function select_caseblur() {
             var c = cases[i];
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
-                var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(c.asknum)+1)+"版";
+                var asknum=c.arraignments==null?0:c.arraignments.length;
+                var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
                 $("#caseway").val(c.caseway);
-                $("#asknum").val(c.asknum);
+                $("#asknum").val(asknum);
                 $("#recordname").val(recordname);
 
                 if (isNotEmpty(c.starttime)){
@@ -1303,7 +1302,7 @@ function checkout_cardnum(cardnum,cardtypetext) {
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
-            parent.layer.msg("身份证输入不合法");
+          /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/
             return false;
         }
@@ -1406,7 +1405,6 @@ function callbackgetMc_model(data){
        var data=data.data;
        if (isNotEmpty(data)){
            modelList=data;
-           console.log(modelList)
            if (isNotEmpty(modelList)&&isNotEmpty(model_index)){
                $("#modelList").html("");
                for (let i = 0; i < modelList.length; i++) {

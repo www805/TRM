@@ -71,14 +71,10 @@
         <tr>
             <th>序号</th>
             <th>案件状态</th>
-            <th>案件名称</th>
             <th>案件编号</th>
-            <th>当前案由</th>
-            <th>案件人名称</th>
-            <th>到案方式</th>
+            <th>案件名称</th>
+            <th>案件人</th>
             <th style="width: 150px">案件发生时间</th>
-            <th style="width: 150px">案发开始时间</th>
-            <th style="width: 150px">案发结束时间</th>
             <th>案件创建人</th>
             <th style="width:80px">笔录次数</th>
             <th style="width: 150px">操作</th>
@@ -88,16 +84,17 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
+            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #000000'>休庭中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
-            <td>{{value.casename==null?"":value.casename}}</td>
-            <td>{{value.casenum==null?"":value.casenum}}</td>
-            <td title="{{value.cause}}">{{value.cause==null?"":value.cause}}</td>
-            <td>{{value.username==null?"":value.username}}</td>
-            <td>{{value.caseway==null?"":value.caseway}}</td>
+            <td title="{{value.casenum==null?'':value.casenum}}">{{value.casenum==null?"":value.casenum}}</td>
+            <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
+            {{# var USERHTNL="";var userInfos=value.userInfos;    }}
+            {{# if(null!=userInfos){ for (let i = 0; i < userInfos.length; i++) { }}
+            {{# const u = userInfos[i]; }}
+            {{# USERHTNL+=u.username+"、";  }}
+            {{# } USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;} }}
+            <td style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;" title="{{USERHTNL}}">{{USERHTNL}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
-            <td>{{value.starttime==null?"":value.starttime}}</td>
-            <td>{{value.endtime==null?"":value.endtime}}</td>
             <td>{{value.creatorname==null?"":value.creatorname}}</td>
             <td  class="noline"  onclick="openModel('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
             <td>

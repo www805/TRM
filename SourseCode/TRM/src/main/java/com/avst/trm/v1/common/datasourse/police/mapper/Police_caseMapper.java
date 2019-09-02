@@ -1,7 +1,7 @@
 package com.avst.trm.v1.common.datasourse.police.mapper;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_case;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -19,31 +19,32 @@ import java.util.List;
  * @since 2019-04-22
  */
 public interface Police_caseMapper extends BaseMapper<Police_case> {
-    @Select("select c.*,u.username,u.ssid as userssid ,t.typename as cardtypename,ut.cardnum as cardnum from police_case c " +
-            " left join police_userinfo u on u.ssid=c.userssid " +
-            " left join police_userinfototype ut on u.ssid=ut.userssid " +
-            " left join police_cardtype t on t.ssid=ut.cardtypessid" +
+    @Select(" select DISTINCT(c.ssid),c.* from police_case c " +
+            " left join police_casetouserinfo cu on cu.casessid=c.ssid " +
+            " left join police_userinfo u on u.ssid=cu.userssid "+
+            " where 1=1 ${ew.sqlSegment} ")
+    List<Case> getCaseList(Page page,@Param("ew") EntityWrapper ew);
+
+    @Select(" select COUNT(DISTINCT(c.ssid)) from police_case c " +
+            " left join police_casetouserinfo cu on cu.casessid=c.ssid " +
+            " left join police_userinfo u on u.ssid=cu.userssid "+
             " where 1=1 ${ew.sqlSegment}")
-    List<CaseAndUserInfo> getArraignmentList(Page page, @Param("ew") EntityWrapper ew);
+    int countgetCaseList( @Param("ew")EntityWrapper ew);
 
 
-    @Select("select count(c.ssid) from police_case c" +
-            " left join police_userinfo u on u.ssid=c.userssid" +
-            " left join police_userinfototype ut on u.ssid=ut.userssid " +
-            " left join police_cardtype t on t.ssid=ut.cardtypessid" +
-            " where 1=1 ${ew.sqlSegment}")
-    int countgetArraignmentList( @Param("ew")EntityWrapper ew);
-
-    @Select("select c.*,u.username,u.ssid as userssid from police_arraignment a " +
+    @Select("select c.* from police_arraignment a " +
             "  left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
             "  left join police_case c on c.ssid=cr.casessid" +
             "  left join police_record r on r.ssid=a.recordssid " +
-            "  left join police_userinfo u on u.ssid=c.userssid" +
             "  where 1=1 ${ew.sqlSegment} ")
-    CaseAndUserInfo getCaseByRecordSsid( @Param("ew")EntityWrapper ew);
+    Case getCaseByRecordSsid( @Param("ew")EntityWrapper ew);
 
-    @Select("select c.*,u.username,u.ssid as userssid from police_case c left join police_userinfo u on u.ssid=c.userssid where 1=1 ${ew.sqlSegment}")
-    List<CaseAndUserInfo> getCaseByUserSsid(@Param("ew") EntityWrapper ew);
+
+    @Select(" select DISTINCT(c.ssid),c.* from police_case c " +
+            " left join police_casetouserinfo cu on cu.casessid=c.ssid " +
+            " left join police_userinfo u on u.ssid=cu.userssid "+
+            " where 1=1 ${ew.sqlSegment} ")
+    List<Case> getCase(@Param("ew") EntityWrapper ew);
 
 
     @Select(" select case_monthnum_y as 'case_monthnum_y' from (" +

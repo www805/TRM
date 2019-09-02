@@ -116,9 +116,9 @@ function callbackgetRecordById(data) {
                     recorduser.push(user2);
                     dq_recorduser=recordUserInfosdata.userssid;//当前被审讯人
                 }
-                var caseAndUserInfo=record.caseAndUserInfo;
-                if (isNotEmpty(caseAndUserInfo)){
-                    casebool=caseAndUserInfo.casebool==null?"":caseAndUserInfo.casebool;
+                var case_=record.case_;
+                if (isNotEmpty(case_)){
+                    casebool=case_.casebool==null?"":case_.casebool;
                 }
             }
         }
@@ -192,13 +192,13 @@ function startMC() {
 
         var record=getRecordById_data.record;
         if (isNotEmpty(record)){
-            var caseAndUserInfo=record.caseAndUserInfo;
+            var case_=record.case_;
             var recordUserInfos=record.recordUserInfos;
             var police_arraignment=record.police_arraignment;
-            casenum=caseAndUserInfo.casenum;
-            casename=caseAndUserInfo.casename;
-            cause=caseAndUserInfo.cause;
-            department=caseAndUserInfo.department;
+            casenum=case_.casenum;
+            casename=case_.casename;
+            cause=case_.cause;
+            department=case_.department;
             askedname=recordUserInfos.userssid;
             askname=recordUserInfos.adminname;
             recordername=recordUserInfos.recordadminname;
@@ -328,14 +328,16 @@ var overRecord_loadindex =null;
 function overRecord(state) {
     var msgtxt2="是否结束？";
     if (state==1){
-        msgtxt2="是否休庭？(结束该笔录/身心，该案件将会休庭)";
+        msgtxt2="是否休庭？";
     }
-       var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
-       var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
-       var msgtxt="";
-       if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
-           msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
-       }
+    var msgtxt="";
+    if (isNotEmpty(fdStateInfo)) {
+        var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
+        var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
+        if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
+            msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
+        }
+    }
 
     layer.confirm(msgtxt2+'<br>'+msgtxt, {
         btn: ['确认','取消'], //按钮

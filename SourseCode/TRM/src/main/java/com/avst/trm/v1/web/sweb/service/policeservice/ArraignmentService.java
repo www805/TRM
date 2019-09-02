@@ -1,7 +1,9 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
@@ -14,10 +16,12 @@ import com.avst.trm.v1.web.sweb.vo.policevo.GetArraignmentBySsidVO;
 import com.avst.trm.v1.web.sweb.vo.policevo.GetArraignmentListVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Service("arraignmentService")
@@ -43,7 +47,12 @@ public class ArraignmentService extends BaseService {
     @Autowired
     private Base_admininfoMapper base_admininfoMapper;
 
-  public void  getArraignmentList(RResult result, GetArraignmentListParam param){
+    @Autowired
+    private Police_userinfoMapper police_userinfoMapper;
+
+    private Gson gson = new Gson();
+
+  public void  getArraignmentList(RResult result, GetArraignmentListParam param, HttpSession session){
         GetArraignmentListVO getArraignmentListVO=new GetArraignmentListVO();
 
         //请求参数组合
@@ -61,32 +70,51 @@ public class ArraignmentService extends BaseService {
           ew.between("c.occurrencetime", param.getOccurrencetime_start(), param.getOccurrencetime_end());
       }
 
-        int count = police_caseMapper.countgetArraignmentList(ew);
+      AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_WEB)), AdminAndWorkunit.class);
+      ew.eq("c.creator",user.getSsid());
+
+
+        int count = police_caseMapper.countgetCaseList(ew);
         param.setRecordCount(count);
 
         ew.orderBy("c.ordernum",true);
         ew.orderBy("c.createtime",false);
-        Page<CaseAndUserInfo> page=new Page<CaseAndUserInfo>(param.getCurrPage(),param.getPageSize());
-        List<CaseAndUserInfo> list=police_caseMapper.getArraignmentList(page,ew);
+        Page<Case> page=new Page<Case>(param.getCurrPage(),param.getPageSize());
+        List<Case> list=police_caseMapper.getCaseList(page,ew);
         getArraignmentListVO.setPageparam(param);
 
         if (null!=list&&list.size()>0){
-            //绑定多次提讯数据
-            for (CaseAndUserInfo recordAndCase : list) {
+            for (Case case_: list) {
+                //1、绑定多次提讯数据
                 EntityWrapper ewarraignment=new EntityWrapper();
-                ewarraignment.eq("cr.casessid",recordAndCase.getSsid());
+                ewarraignment.eq("cr.casessid",case_.getSsid());
                 ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
                 ewarraignment.orderBy("a.createtime",false);
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
-                    recordAndCase.setArraignments(arraignmentAndRecords);
+                    case_.setArraignments(arraignmentAndRecords);
                 }
-                if(StringUtils.isNotEmpty(recordAndCase.getCreator())){
+
+                //2、多个案件提讯人
+                EntityWrapper ewuserinfo=new EntityWrapper<>();
+                ewuserinfo.eq("ctu.casessid",case_.getSsid());
+                List<UserInfo> userInfos=police_userinfoMapper.getUserByCase(ewuserinfo);
+                if (null!=userInfos&&userInfos.size()>0){
+                    for (UserInfo userInfo : userInfos) {
+                        EntityWrapper ewcard=new EntityWrapper<>();
+                        ewcard.eq("u.ssid",userInfo.getSsid());
+                        List<UserInfoAndCard> cards=police_userinfoMapper.getCardByUser(ewcard);
+                        userInfo.setCards(cards);
+                    }
+                    case_.setUserInfos(userInfos);
+                }
+
+                if(StringUtils.isNotEmpty(case_.getCreator())){
                     //查出创建人的名称ew
                     Base_admininfo base_admininfo = new Base_admininfo();
-                    base_admininfo.setSsid(recordAndCase.getCreator());
+                    base_admininfo.setSsid(case_.getCreator());
                     Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
-                    recordAndCase.setCreatorname(admininfo.getUsername());
+                    case_.setCreatorname(admininfo.getUsername());
                 }
             }
             getArraignmentListVO.setPagelist(list);

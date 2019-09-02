@@ -1,6 +1,5 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
 import com.avst.trm.v1.feignclient.mc.vo.param.Avstmt_modeltd;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;

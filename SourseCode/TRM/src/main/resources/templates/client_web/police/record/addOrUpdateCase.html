@@ -9,6 +9,20 @@
         .layui-form-switch {
             margin-top: 7px;
         }
+        .layui-card{
+            box-shadow: 0 0px 0px 0 rgba(0,0,0,.05);
+        }
+        .layui-card-header{
+            background-color: #E5F4FD;
+            border: 2px solid #FFFFFF;
+            font-weight: bold;
+        }
+
+        ::-webkit-scrollbar{
+            width: 0px;
+        }
+
+
     </style>
 </head>
 <body>
@@ -29,70 +43,90 @@
         <div class="layui-form-item">
             <label class="layui-form-label">案件编号</label>
             <div class="layui-input-block">
-                <input type="text" name="casenum" id="casenum" required   placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="casenum" id="casenum"    placeholder="请输入案件编号" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">当前案由</label>
             <div class="layui-input-block">
-                <input type="text" name="cause" id="cause" required   placeholder="请输入当前案由" autocomplete="off" class="layui-input">
+                <input type="text" name="cause" id="cause"    placeholder="请输入当前案由" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">案发时间</label>
             <div class="layui-input-block">
-                <input type="text" name="occurrencetime" id="occurrencetime" required  placeholder="请输入案发时间" autocomplete="off" class="layui-input">
+                <input type="text" name="occurrencetime" id="occurrencetime"   placeholder="请输入案发时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">开始时间</label>
             <div class="layui-input-block">
-                <input type="text" name="starttime" id="starttime" required  placeholder="请输入开始时间" autocomplete="off" class="layui-input">
+                <input type="text" name="starttime" id="starttime"   placeholder="请输入开始时间" autocomplete="off" class="layui-input">
             </div>
         </div>
 
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label class="layui-form-label">结束时间</label>
             <div class="layui-input-block">
-                <input type="text" name="endtime" id="endtime" required  placeholder="请输入结束时间" autocomplete="off" class="layui-input">
+                <input type="text" name="endtime" id="endtime"   placeholder="请输入结束时间" autocomplete="off" class="layui-input">
             </div>
-        </div>
+        </div>-->
 
         <div class="layui-form-item">
             <label class="layui-form-label">到案方式</label>
             <div class="layui-input-block">
-                <input type="text" name="caseway" id="caseway" required   placeholder="请输入到案方式" autocomplete="off" class="layui-input">
+                <input type="text" name="caseway" id="caseway"    placeholder="请输入到案方式" autocomplete="off" class="layui-input">
             </div>
         </div>
 
 
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件人</label>
             <div class="layui-input-block">
                 <select name="userssid" lay-verify="userssid" id="userssid"  lay-search>
                     <option value="">请选择案件人</option>
                 </select>
             </div>
-        </div>
-
+        </div>-->
         <div class="layui-form-item">
-            <div class="layui-input-block">
+            <table class="layui-table" id="user_tbody">
+               <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>姓名</th>
+                    <th>证件类型</th>
+                    <th>证件号码</th>
+                    <th>出生日期</th>
+                    <th>户籍地</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody >
+
+                </tbody>
+            </table>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block" style="float: right">
+                <input type="button" class="layui-btn layui-btn-normal" value="添加用户" onclick="tr_addOrUpdate(this,1);return false;"/></input>
                 <input type="button"  class="layui-btn layui-btn-normal"  lay-submit=""  lay-filter="addOrUpdateCase_btn" value="保存" />
                 <button class="layui-btn layui-btn-normal" onclick="javascript:window.history.go(-1);return false;">返回</button>
             </div>
         </div>
+
     </form>
+
 
 
 </div>
 
 <div th:replace="footer :: footer">...</div>
 
-
 </body>
+
 <script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
 <script th:src="@{/js/common.js}"  type="text/javascript" ></script>
 <script th:src="@{/js/actionid.js}" type="text/javascript"></script>
@@ -109,7 +143,8 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/addOrUpdateCase");
         ssid=[[${addOrUpdateCaseModel.ssid}]];
-        getUserinfoList();
+        getCaseBySsid();
+     /*   getUserinfoList();*/
     });
 
     layui.use(['form', 'layedit', 'laydate','laypage', 'layer'], function(){

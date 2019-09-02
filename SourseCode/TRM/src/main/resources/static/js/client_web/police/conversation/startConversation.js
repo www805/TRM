@@ -28,13 +28,13 @@ function addCaseToArraignment() {
         parent.layer.msg("证件号码不能为空");
         return;
     }
-    if ($.trim(cardtypetext)=="居民身份证"){
+   /* if ($.trim(cardtypetext)=="居民身份证"){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
             parent.layer.msg("身份证输入不合法");
             return false;
         }
-    }
+    }*/
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
         parent.layer.msg("姓名不能为空");
@@ -140,23 +140,25 @@ function callbackaddCaseToArraignment(data) {
 
 
 
-            var caseAndUserInfo=data2.caseAndUserInfo;
+            var case_=data2.case_;
             var caseingbool=data2.caseingbool;
 
-            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(caseAndUserInfo)){
-                var casename=caseAndUserInfo.casename==null?"":caseAndUserInfo.casename;
-                var username=caseAndUserInfo.username==null?"":caseAndUserInfo.username;
-                var cause=caseAndUserInfo.cause==null?"":caseAndUserInfo.cause;
-                var occurrencetime=caseAndUserInfo.occurrencetime==null?"":caseAndUserInfo.occurrencetime;
-                var casenum=caseAndUserInfo.casenum==null?"":caseAndUserInfo.casenum;
-                var department=caseAndUserInfo.department==null?"":caseAndUserInfo.department;
-                var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
+            if (null!=caseingbool&&caseingbool==true&&isNotEmpty(case_)){
+                var casename=case_.casename==null?"":case_.casename;
+                var cause=case_.cause==null?"":case_.cause;
+                var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                var casenum=case_.casenum==null?"":case_.casenum;
+                var department=case_.department==null?"":case_.department;
+                var userInfos=case_.userInfos;
+                var USERHTNL="";
+                if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
+                var  init_casehtml=" <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
+                                  <tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
+                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
-                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="caseAndUserInfo_html"></tbody>\
+                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="case_html"></tbody>\
                 </table>';
                 parent.layer.open({
                     type:1,
@@ -511,7 +513,7 @@ function checkout_cardnum(cardnum,cardtypetext) {
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
         var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
         if(reg.test(cardnum) === false) {
-            parent.layer.msg("身份证输入不合法");
+          /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/
             return false;
         }
@@ -583,6 +585,16 @@ $(function () {
                         $("#cardnum").val(data.cardno);
                         $("#domicile").val(data.address);
                         $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
+
+                        var nation=data.nation;
+                        $("#national option").each(function () {
+                            var txt=$(this).text();
+                            var value=$(this).attr("value");
+                            if (txt.indexOf(nation)>-1){
+                                $("#national").val(value);
+                                return;
+                            }
+                        })
 
                         layui.use('form', function(){
                             var form =  layui.form;

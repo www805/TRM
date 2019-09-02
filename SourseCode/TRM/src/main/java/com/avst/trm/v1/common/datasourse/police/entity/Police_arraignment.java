@@ -79,6 +79,11 @@ public class Police_arraignment extends Model<Police_arraignment> {
      */
     private String mtmodelssid;
 
+    /**
+     * 被提讯人
+     */
+    private String userssid;
+
     private String ssid;
 
     private String string1;
@@ -89,6 +94,13 @@ public class Police_arraignment extends Model<Police_arraignment> {
 
     private Integer integer2;
 
+    public String getUserssid() {
+        return userssid;
+    }
+
+    public void setUserssid(String userssid) {
+        this.userssid = userssid;
+    }
 
     public String getMtmodelssid() {
         return mtmodelssid;

@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.mapper;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordUserInfos;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
@@ -51,12 +50,10 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
     int countgetRecords(@Param("ew") EntityWrapper ew);
 
 
-
-
-    @Select(" select a.adminssid,a1.username as adminname,a1.workunitssid as workunitssid1,a.otheradminssid,a2.username as otheradminname,a2.workunitssid as workunitssid2,a.recordadminssid,a3.username as recordadminname,a3.workunitssid as workunitssid3,c.userssid,u.username as username from police_arraignment a " +
+    @Select(" select a.adminssid,a1.username as adminname,a1.workunitssid as workunitssid1,a.otheradminssid,a2.username as otheradminname,a2.workunitssid as workunitssid2,a.recordadminssid,a3.username as recordadminname,a3.workunitssid as workunitssid3,a.userssid,u.username as username from police_arraignment a " +
             " left join police_casetoarraignment ca on a.ssid=ca.arraignmentssid " +
             " left join police_case c on c.ssid=ca.casessid " +
-            " LEFT JOIN police_userinfo u on u.ssid=c.userssid " +
+            " LEFT JOIN police_userinfo u on u.ssid=a.userssid " +
             " left JOIN base_admininfo a1 on a1.ssid=a.adminssid " +
             " LEFT JOIN base_admininfo a2 on a2.ssid=a.otheradminssid " +
             " LEFT JOIN base_admininfo a3 on a3.ssid=a.recordadminssid " +

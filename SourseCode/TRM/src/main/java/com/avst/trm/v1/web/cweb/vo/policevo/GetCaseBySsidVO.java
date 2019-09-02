@@ -1,15 +1,15 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.CaseAndUserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
 
 public class GetCaseBySsidVO {
-    private CaseAndUserInfo caseAndUserInfo;
+    private Case case_;
 
-    public CaseAndUserInfo getCaseAndUserInfo() {
-        return caseAndUserInfo;
+    public Case getCase_() {
+        return case_;
     }
 
-    public void setCaseAndUserInfo(CaseAndUserInfo caseAndUserInfo) {
-        this.caseAndUserInfo = caseAndUserInfo;
+    public void setCase_(Case case_) {
+        this.case_ = case_;
     }
 }

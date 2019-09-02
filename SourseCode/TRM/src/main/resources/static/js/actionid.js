@@ -257,6 +257,10 @@ function getactionid_manage() {
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",
         addOrUpdateCase_addCase:"addOrUpdateCase_addCase",
         addOrUpdateCase_getUserinfoList:"addOrUpdateCase_getUserinfoList",
+        addOrUpdateCase_getNationalitys:"addOrUpdateCase_getNationalitys",
+        addOrUpdateCase_getNationals:"addOrUpdateCase_getNationals",
+        addOrUpdateCase_getCards:"addOrUpdateCase_getCards",
+        addOrUpdateCase_getUserByCard:"addOrUpdateCase_getUserByCard",
 
         wordTemplateList_getWordTemplateList:"wordTemplateList_getWordTemplateList",
         wordTemplateList_getRecordtypes:"wordTemplateList_getRecordtypes",
