@@ -103,7 +103,7 @@ $(function () {
     var option = {
         title: {
             text: 'xxxx年智能提讯系统案件审讯统计',
-            subtext: '数据来源深圳顺泰伟成科技有限公司'
+            subtext: '数据来源TRM'
         },
         tooltip: {
             trigger: 'axis'

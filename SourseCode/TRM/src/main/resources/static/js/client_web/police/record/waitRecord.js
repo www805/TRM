@@ -22,6 +22,7 @@ var getRecordById_data=null;//单份笔录返回的全部数据
 var dq_livingurl=null;//当前直播地址
 var dq_previewurl=null;//当前预览地址
 
+
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -124,8 +125,8 @@ function callsetAllproblem(data) {
 
                         var html='<tr >\
                                 <td style="padding: 0;width: 85%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" >'+templateToProblem.problem+'</label></div>\
-                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""></label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""  isn_fdtime="-1"></label></div>\
                                     <div  id="btnadd"></div>\
                                 </td>\
                                 <td>\
@@ -153,8 +154,8 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 85%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="">'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime=""></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="" isn_fdtime="-1">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime="" isn_fdtime="-1"></label></div>\
             <div  id="btnadd"></div>\
         </td>\
         <td>\
@@ -1170,9 +1171,7 @@ function select_liveurl(obj,type){
     }
     initplayer();
 }
-$(document).keydown(function (event) {
 
-});
 
 //回车
 function qw_keydown(obj,event) {
@@ -1233,37 +1232,44 @@ function setFocus(el) {
     if (isNotEmpty(el)){
         el = el[0];
 
-
-        //回车加锚点：先判断语音识别是否开启
-        if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
-            var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
-            var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
-            console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
-            if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                var dqtime=new Date().getTime();
-                var qw_type=el.getAttribute("name");
-                if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
-                    console.log("开始使用直播时间~")
-                    if (qw_type=="w"){
-                        var w_starttime=el.getAttribute("w_starttime");
-                        if ((!isNotEmpty(w_starttime)||w_starttime<0)){
-                            //计算时间戳
-                            w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                            el.setAttribute("w_starttime",w_starttime);
-                        }
-                    }else  if (qw_type=="q"){
-                        var q_starttime=el.getAttribute("q_starttime");
-                        if ((!isNotEmpty(q_starttime)||q_starttime<0)){
-                            //计算时间戳
-                            q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                            el.setAttribute("q_starttime",q_starttime);
+        var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
+        if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
+            //回车加锚点：先判断语音识别是否开启
+            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
+                var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
+                var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
+                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
+                if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    var dqtime=new Date().getTime();
+                    var qw_type=el.getAttribute("name");
+                    if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                        console.log("开始使用直播时间~")
+                        if (qw_type=="w"){
+                            var w_starttime=el.getAttribute("w_starttime");
+                            if ((!isNotEmpty(w_starttime)||w_starttime<0)){
+                                //计算时间戳
+                                w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                                el.setAttribute("w_starttime",w_starttime);
+                            }
+                        }else  if (qw_type=="q"){
+                            var q_starttime=el.getAttribute("q_starttime");
+                            if ((!isNotEmpty(q_starttime)||q_starttime<0)){
+                                //计算时间戳
+                                q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                                el.setAttribute("q_starttime",q_starttime);
+                            }
                         }
                     }
+                }else {
+                    console.log("使用语音识别时间~")
                 }
-            }else {
-                console.log("使用语音识别时间~")
             }
+        }else {
+                console.log("这是模板里面的题目~")
         }
+
+
+
 
 
 
@@ -1424,7 +1430,7 @@ var trtd_html='<tr>\
                 </td>\
                 </tr>';
 
-//lable focus 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
+//lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
     var qwfocus=null;

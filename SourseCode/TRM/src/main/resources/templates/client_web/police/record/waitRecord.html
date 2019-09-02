@@ -267,6 +267,7 @@
         padding: 3px 0;
     }
 
+
 </style>
 <body>
 <div class="layui-fluid layadmin-message-fluid" style="padding: 0 15px">
@@ -329,7 +330,7 @@
                         <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
                         <li onclick="initcase()" id="case"  class="layui-this" > 案件信息</li>
                     </ul>
-                    <div class="layui-tab-content" id="leftdiv">
+                    <div class="layui-tab-content" id="leftdiv" style="height: 450px">
                         <div class="layui-tab-item  layui-show"  id="asritem" >
                             <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                                 <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
@@ -410,15 +411,6 @@
                                     <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
                                     <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
                                 </div>
-                               <!-- <div class="layui-col-md12 " style="font-size: 12px;height: 25px;line-height: 25px;position: absolute;bottom: 0px;left:0;background-color: #E5F4FD;z-index:1;text-align: center;" id="xthtml" >
-                                    <div style="float: left;width: 100%">
-                                        状态：<span id="xt1"> 加载中  </span>
-                                        放松值：<span id="xt2"> 0.0  </span>
-                                        紧张值：<span id="xt3"> 0.0  </span>
-                                        血压变化：<span id="xt4"> 0.0  </span>
-                                        血氧：<span id="xt5"> 0.0</span>
-                                    </div>
-                                </div>-->
                             </div>
                         </div>
                         <div class="layui-tab-item " id="caseitem">
@@ -438,6 +430,7 @@
                             <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 100px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
                         </div>
                     </div>
+
                 </div>
             </div>
             <!---->
