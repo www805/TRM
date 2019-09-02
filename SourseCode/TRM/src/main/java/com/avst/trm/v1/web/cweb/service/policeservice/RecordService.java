@@ -806,6 +806,22 @@ public class RecordService extends BaseService {
            return;
        }
 
+       //判断序号
+        Integer pid=police_recordtype.getPid();
+        Integer ordernum=police_recordtype.getOrdernum();
+        if (ordernum!=null){
+            EntityWrapper ordernum_param=new EntityWrapper();
+            ordernum_param.eq("pid",pid);
+            ordernum_param.eq("ordernum",ordernum);
+            List<Police_recordtype> police_recordtypes_ordernum=police_recordtypeMapper.selectList(ordernum_param);
+            if (null!=police_recordtypes_ordernum&&police_recordtypes_ordernum.size()>0){
+                result.setMessage("同类目下排序不能重复");
+                return;
+            }
+        }
+
+
+
         police_recordtype.setSsid(OpenUtil.getUUID_32());
         police_recordtype.setCreatetime(new Date());
         if (police_recordtype.getOrdernum()==null){
@@ -846,6 +862,21 @@ public class RecordService extends BaseService {
         if (null!=police_recordtypes_&&police_recordtypes_.size()>0){
             result.setMessage("笔录类型的名称不能重复");
             return;
+        }
+
+        //判断序号
+        Integer pid=police_recordtype.getPid();
+        Integer ordernum=police_recordtype.getOrdernum();
+        if (ordernum!=null){
+            EntityWrapper ordernum_param=new EntityWrapper();
+            ordernum_param.eq("pid",pid);
+            ordernum_param.eq("ordernum",ordernum);
+            ordernum_param.ne("id",id);
+            List<Police_recordtype> police_recordtypes_ordernum=police_recordtypeMapper.selectList(ordernum_param);
+            if (null!=police_recordtypes_ordernum&&police_recordtypes_ordernum.size()>0){
+                result.setMessage("同类目下排序不能重复");
+                return;
+            }
         }
 
         int update_bool=police_recordtypeMapper.updateById(police_recordtype);
@@ -1114,6 +1145,19 @@ public class RecordService extends BaseService {
          String casenum=addPolice_case.getCasenum();//案件号码
          Integer caseid=null;
          if (StringUtils.isBlank(casessid)){
+
+             String casename=addPolice_case.getCasename();//案件号码
+             if (StringUtils.isNotBlank(casename)){
+                 //判断案件是否重复
+                 EntityWrapper police_cases_param=new EntityWrapper();
+                 police_cases_param.eq("casename",casename.trim());
+                 List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                 if (null!=police_cases_&&police_cases_.size()>0){
+                     result.setMessage("案件名称不能重复");
+                     return;
+                 }
+             }
+
              if (StringUtils.isNotBlank(casenum)){
                  //判断案件是否重复
                  EntityWrapper police_cases_param=new EntityWrapper();
@@ -1152,6 +1196,19 @@ public class RecordService extends BaseService {
                 }
          }else{
 
+             String casename=addPolice_case.getCasename();//案件号码
+             if (StringUtils.isNotBlank(casename)){
+                 //判断案件是否重复
+                 EntityWrapper police_cases_param=new EntityWrapper();
+                 police_cases_param.eq("casename",casename.trim());
+                 police_cases_param.ne("ssid",casessid);
+                 List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                 if (null!=police_cases_&&police_cases_.size()>0){
+                     result.setMessage("案件名称不能重复");
+                     return;
+                 }
+             }
+
              if (StringUtils.isNotBlank(casenum)){
                  //判断案件是否重复
                  EntityWrapper police_cases_param=new EntityWrapper();
@@ -1163,6 +1220,8 @@ public class RecordService extends BaseService {
                      return;
                  }
              }
+
+
              LogUtil.intoLog(this.getClass(),"需要修改案件信息____");
 
              //修改案件信息参数
@@ -2031,6 +2090,18 @@ public class RecordService extends BaseService {
             return;
         }
 
+        String casename=addCaseParam.getCasename();//案件号码
+        if (StringUtils.isNotBlank(casename)){
+            //判断案件是否重复
+            EntityWrapper police_cases_param=new EntityWrapper();
+            police_cases_param.eq("casename",casename.trim());
+            List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+            if (null!=police_cases_&&police_cases_.size()>0){
+                result.setMessage("案件名称不能重复");
+                return;
+            }
+        }
+
         String casenum=addCaseParam.getCasenum();//案件号码
         if (StringUtils.isNotBlank(casenum)){
             //判断案件是否重复
@@ -2042,6 +2113,9 @@ public class RecordService extends BaseService {
                 return;
             }
         }
+
+
+
 
         AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
         addCaseParam.setSsid(OpenUtil.getUUID_32());
@@ -2172,6 +2246,19 @@ public class RecordService extends BaseService {
             return;
         }
 
+        String casename=updateCaseParam.getCasename();//案件号码
+        if (StringUtils.isNotBlank(casename)){
+            //判断案件是否重复
+            EntityWrapper police_cases_param=new EntityWrapper();
+            police_cases_param.eq("casename",casename.trim());
+            police_cases_param.ne("ssid",casessid);
+            List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+            if (null!=police_cases_&&police_cases_.size()>0){
+                result.setMessage("案件名称不能重复");
+                return;
+            }
+        }
+
 
         String casenum=updateCaseParam.getCasenum();//案件号码
         if (StringUtils.isNotBlank(casenum)){
@@ -2203,6 +2290,8 @@ public class RecordService extends BaseService {
             String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?0:police_case_.getId()-1));
             updateCaseParam.setCasenum(numberNo);
         }
+
+
 
 
         EntityWrapper updateParam=new EntityWrapper();
