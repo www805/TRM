@@ -510,8 +510,12 @@ function callbackgetAdminList(data) {
 
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
+    var nationality = $("#nationality option:selected").text();//国籍
+    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
+        return false;
+    }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
         if(reg.test(cardnum) === false) {
           /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/
@@ -567,34 +571,54 @@ $(function () {
             layer.msg("请先选择身份证类型",{icon:5});
             return;
         }
-        var url=getActionURL(getactionid_manage().startConversation_getCardreader);
-        ajaxSubmitByJson(url,null,function (data) {
-            if(null!=data&&data.actioncode=='SUCCESS'){
-                var data=data.data;
-                if (isNotEmpty(data)){
-                    reset();
-                    var data = eval("("+data+")");
-                    if (isNotEmpty(data)){
-                        var retmsg=data.retmsg==null?"未知错误":data.retmsg;
-                        var bool=checkout_cardnum(data.cardno,"居民身份证");
-                        if (!bool){
-                            return;
-                        }
 
-                        $("#username").val(data.name==null?"":data.name);
+        $.ajax({
+            dataType: "JSONP",
+            type: "get",
+            url: "http://localhost:8989/api/ReadMsg",
+            success: function (data) {
+                    if (isNotEmpty(data)){
+                        reset();
+                        var retmsg=data.retmsg==null?"未知错误":data.retmsg;
+
+                        var CardType=data.CardType;//0身份证 1其他国家身份证 2港澳居住证
+                        var username="";
+                        if (CardType==0||CardType==2){
+                            var bool=checkout_cardnum(data.cardno,"居民身份证");
+                            if (!bool){
+                                return;
+                            }
+                            username=data.name==null?"":data.name;
+
+                            var nation=data.nation;
+                            $("#national option").each(function () {
+                                var txt=$(this).text();
+                                var value=$(this).attr("value");
+                                if (txt.indexOf(nation)>-1){
+                                    $("#national").val(value);
+                                    return;
+                                }
+                            })
+                            var nationality_value=$("#nationality option[title='China']").attr("value");
+                            $("#nationality").val(nationality_value);
+                        } else if (CardType==1){
+                            var nation=data.nation;
+                            $("#nationality option").each(function () {
+                                var txt=$(this).text();
+                                var value=$(this).attr("value");
+                                if (txt.indexOf(nation)>-1){
+                                    $("#nationality").val(value);
+                                    return;
+                                }
+                            })
+                            username=data.EngName==null?"":data.EngName
+                        }
+                        $("#username").val(username);
                         $("#cardnum").val(data.cardno);
                         $("#domicile").val(data.address);
                         $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
 
-                        var nation=data.nation;
-                        $("#national option").each(function () {
-                            var txt=$(this).text();
-                            var value=$(this).attr("value");
-                            if (txt.indexOf(nation)>-1){
-                                $("#national").val(value);
-                                return;
-                            }
-                        })
+
 
                         layui.use('form', function(){
                             var form =  layui.form;
@@ -604,71 +628,14 @@ $(function () {
                             getUserByCard();
                         });
                     }
-                }
-            }else {
-                layer.msg(data.message,{icon:5});
+            },
+            error: function (e) {
             }
-        })
+        });
     });
 
 });
 
-function Base64() {
-    // private property
-    _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-
-    // public method for decoding
-    this.decode = function (input) {
-        var output = "";
-        var chr1, chr2, chr3;
-        var enc1, enc2, enc3, enc4;
-        var i = 0;
-        input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-        while (i < input.length) {
-            enc1 = _keyStr.indexOf(input.charAt(i++));
-            enc2 = _keyStr.indexOf(input.charAt(i++));
-            enc3 = _keyStr.indexOf(input.charAt(i++));
-            enc4 = _keyStr.indexOf(input.charAt(i++));
-            chr1 = (enc1 << 2) | (enc2 >> 4);
-            chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-            chr3 = ((enc3 & 3) << 6) | enc4;
-            output = output + String.fromCharCode(chr1);
-            if (enc3 != 64) {
-                output = output + String.fromCharCode(chr2);
-            }
-            if (enc4 != 64) {
-                output = output + String.fromCharCode(chr3);
-            }
-        }
-        output = _utf8_decode(output);
-        return output;
-    }
-
-
-    // private method for UTF-8 decoding
-    _utf8_decode = function (utftext) {
-        var string = "";
-        var i = 0;
-        var c = c1 = c2 = 0;
-        while ( i < utftext.length ) {
-            c = utftext.charCodeAt(i);
-            if (c < 128) {
-                string += String.fromCharCode(c);
-                i++;
-            } else if((c > 191) && (c < 224)) {
-                c2 = utftext.charCodeAt(i+1);
-                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                i += 2;
-            } else {
-                c2 = utftext.charCodeAt(i+1);
-                c3 = utftext.charCodeAt(i+2);
-                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                i += 3;
-            }
-        }
-        return string;
-    }
-}
 
 function reset() {
     dquserssid=null;//当前用户的ssid

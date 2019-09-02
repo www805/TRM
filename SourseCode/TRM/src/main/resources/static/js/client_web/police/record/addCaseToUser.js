@@ -1299,8 +1299,12 @@ function select_otheruserinfosblur() {
 
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
+    var nationality = $("#nationality option:selected").text();//国籍
+    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
+        return false;
+    }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
         if(reg.test(cardnum) === false) {
           /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/

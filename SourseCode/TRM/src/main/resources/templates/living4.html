@@ -19,8 +19,10 @@
         //播放器加载
         var swfurl = "/flowplayer/flowplayer-3.2.18.swf";
 
+        var play_x=2.5;
         var playerwh=$("#recordreals").width();
-        var playerwhht=playerwh*2.5/4;
+        var playerwhht=playerwh*play_x/4;
+
 
         var viode_w;
         var video_h;
@@ -30,7 +32,7 @@
             if(!isNotEmpty(playerwh)||playerwh==0){
                 playerwh=$("#fditem").width();
             }
-            playerwhht=playerwh*2.5/4;
+            playerwhht=playerwh*play_x/4;
 
 
             var myplayer = $f("player", swfurl, {

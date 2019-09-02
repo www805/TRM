@@ -167,7 +167,7 @@
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息</li>
-                            <li>语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
+                            <li id="asr_html">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show">
@@ -267,7 +267,7 @@
                         <div class="layui-card-body">
                             <!--视频点播区域-->
                             <div class="layui-row" style="">
-                                <div class="layui-col-md5" >
+                                <div class="layui-col-md5" id="fd_ph_HTML" >
                                     <div style="height: 675px; overflow-x: hidden; overflow-y: scroll;">
                                         <div class="layui-col-md12">
                                             <div th:replace="video :: video" >...</div>
@@ -315,7 +315,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="layui-col-md7" >
+                                <div class="layui-col-md7" id="record_qw_HTML" >
                                     <div class="layui-card">
                                         <div id="recorddetail_webkit">
                                         <div style="" id="recorddetail_scrollhtml">

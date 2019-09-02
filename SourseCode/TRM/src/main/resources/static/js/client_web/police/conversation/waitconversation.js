@@ -160,6 +160,7 @@ function callbackgetgetRecordrealing(data) {
                 dq_previewurl= fdCacheParam.previewurl;
                 console.log("当前liveurl————"+liveurl)
             }
+            play_x=1.99;
             initplayer();
         }
     }else{
@@ -269,6 +270,8 @@ function callbackstartMC(data) {
                         dq_previewurl=useret.previewurl;//当前预览地址
                     }
                 }
+
+                play_x=1.99;
                 initplayer();//初始化地址
             }
             mtssid=mtssiddata;

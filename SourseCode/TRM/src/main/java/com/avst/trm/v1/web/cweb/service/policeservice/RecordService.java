@@ -953,7 +953,6 @@ public class RecordService extends BaseService {
 
             recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
             askobj="询问对象_"+conversationmsg;
-            addPolice_case.setCause("案由_"+conversationmsg);
         }if (conversationbool==2){
             //一键谈话
             //默认使用会议的谈话模板ssid
@@ -977,7 +976,6 @@ public class RecordService extends BaseService {
             addPolice_case.setCasename("案件名_"+conversationmsg);
             addPolice_case.setOccurrencetime(new Date());
             addPolice_case.setStarttime(new Date());
-            addPolice_case.setCause("案由_"+conversationmsg);
 
             //笔录名称
             recordname="审讯笔录【一键审讯】_"+time;
@@ -1962,7 +1960,6 @@ public class RecordService extends BaseService {
         int count = police_caseMapper.countgetCaseList(ew);
         getCasesParam.setRecordCount(count);
 
-        ew.orderBy("c.ordernum",true);
         ew.orderBy("c.createtime",false);
         Page<Case> page=new Page<Case>(getCasesParam.getCurrPage(),getCasesParam.getPageSize());
         List<Case> list=police_caseMapper.getCaseList(page,ew);
@@ -3407,26 +3404,6 @@ public class RecordService extends BaseService {
 
     /***************************笔录问答实时缓存****end***************************/
 
-    public void getCardreader(RResult result,ReqParam<GetCardreaderParam> param){
-        String getCardreader_Url="http://localhost:8989/api/ReadMsg";//http格式 https断开9199
-        try {
-            if (null == getCardreader_Url || !getCardreader_Url.startsWith("http")) {
-                result.setMessage("请求格式出错");
-                return;
-            }
-            HttpClient httpClient = new HttpClient();
-            GetMethod method = new GetMethod(getCardreader_Url);
-            method.addRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=" + "utf-8");
-            httpClient.executeMethod(method);
-            result.setData(method.getResponseBodyAsString());
-            changeResultToSuccess(result);
-            //释放连接
-            method.releaseConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * 主要用于案件编号

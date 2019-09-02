@@ -104,6 +104,7 @@ function callbackgetRecordById(data) {
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
+                progrssBar_width="89%";
                 set_getPlayUrl(getPlayUrlVO);
             }
 

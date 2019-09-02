@@ -147,12 +147,13 @@ function tr_addOrUpdate(obj,type) {
               },
               yes:function(index, layero){
                   var cardtypetext = $("#cards option:selected").text();
+                  var nationality = $("#nationality option:selected").text();//国籍
                   form.verify({
                       cardnum:function (value) {
                           if (!(/\S/).test(value)) {
                               return "请输入证件号码"
                           }
-                          if ($.trim(cardtypetext) == "居民身份证"  && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
+                          if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality)) && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
                               return "请输入正确的18位居民身份证号码"
                           }
                       },
@@ -616,20 +617,18 @@ function getCardreader_btn() {
         type: "get",
         url: "http://localhost:8989/api/ReadMsg",
         success: function (data) {
-            if (isNotEmpty(data)){
-                reset();
                 if (isNotEmpty(data)){
+                    reset();
                     var retmsg=data.retmsg==null?"未知错误":data.retmsg;
-                    var bool=checkout_cardnum(data.cardno,"居民身份证");
-                    if (!bool){
-                        return;
-                    }
 
-                    var CardType=data.CardType;//0中国 1 其他国家 2港澳
-                        $("#username").val(data.name==null?"":data.name);
-                        $("#cardnum").val(data.cardno);
-                        $("#domicile").val(data.address);
-                        $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
+                    var CardType=data.CardType;//0身份证 1其他国家身份证 2港澳居住证
+                    var username="";
+                    if (CardType==0||CardType==2){
+                        var bool=checkout_cardnum(data.cardno,"居民身份证");
+                        if (!bool){
+                            return;
+                        }
+                        username=data.name==null?"":data.name;
 
                         var nation=data.nation;
                         $("#national option").each(function () {
@@ -640,6 +639,24 @@ function getCardreader_btn() {
                                 return;
                             }
                         })
+                       var nationality_value=$("#nationality option[title='China']").attr("value");
+                        $("#nationality").val(nationality_value);
+                    } else if (CardType==1){
+                        var nation=data.nation;
+                        $("#nationality option").each(function () {
+                            var txt=$(this).text();
+                            var value=$(this).attr("value");
+                            if (txt.indexOf(nation)>-1){
+                                $("#nationality").val(value);
+                                return;
+                            }
+                        })
+                        username=data.EngName==null?"":data.EngName
+                    }
+                    $("#username").val(username);
+                    $("#cardnum").val(data.cardno);
+                    $("#domicile").val(data.address);
+                    $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
 
                     layui.use('form', function(){
                         var form =  layui.form;
@@ -649,7 +666,6 @@ function getCardreader_btn() {
                         getUserByCard();
                     });
                 }
-            }
         },
         error: function (e) {
         }
@@ -658,8 +674,13 @@ function getCardreader_btn() {
 
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
+    var nationality = $("#nationality option:selected").text();//国籍
+    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
+        return false;
+    }
+
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
-        var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
         if(reg.test(cardnum) === false) {
             /*  parent.layer.msg("身份证输入不合法");*/
             /*init_form();*/

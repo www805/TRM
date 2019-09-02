@@ -375,10 +375,10 @@
             <!---->
         </div>
         <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
-            <div class="layui-col-md12" >
+            <div class="layui-col-md12"  id="phitem">
                 <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
                 <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
-                <div style="height:700px;width: 95%; overflow-x: hidden; overflow-y: scroll;margin: auto" id="phitem"><!--phitem此处用：live4调用的是这个的宽度-->
+                <div style="height:700px;width: 95%; overflow-x: hidden; overflow-y: scroll;margin: auto" ><!--phitem此处用：live4调用的是这个的宽度-->
                     <!--视频直播区域-->
                     <div th:replace="living4 :: living"  >...</div>
                 </div>

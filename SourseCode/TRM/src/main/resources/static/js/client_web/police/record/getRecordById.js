@@ -111,14 +111,7 @@ function callbackgetRecordById(data) {
             pdfdownurl=record.pdfdownurl;//pdf下载地址
             worddownurl=record.worddownurl;//word下载地址
 
-            //提讯数据
-            var police_arraignment=record.police_arraignment;
-            if (isNotEmpty(police_arraignment)){
-                mtssid=police_arraignment.mtssid;//获取会议mtssid
-                if (!isNotEmpty(mtssid)) {
-                    //不存在会议
-                }
-            }
+
 
             recordnameshow=record.recordname;//当前笔录名称
 
@@ -196,6 +189,16 @@ function callbackgetRecordById(data) {
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
                 set_getPlayUrl(getPlayUrlVO);
+            }
+
+            //提讯数据
+            var police_arraignment=record.police_arraignment;
+            if (isNotEmpty(police_arraignment)){
+                mtssid=police_arraignment.mtssid;//获取会议mtssid
+                if (!isNotEmpty(mtssid)) {
+                    //不存在会议
+
+                }
             }
 
         }

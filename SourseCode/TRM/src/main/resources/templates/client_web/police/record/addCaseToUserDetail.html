@@ -598,8 +598,9 @@
         form.verify({
             cardnum:function (value) {
                 var cardtypetext = $("#cards option:selected").text();
-                if ($.trim(cardtypetext) == "居民身份证"  && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
-                    return "请输入正确的18位居民身份证号码"
+                var nationality = $("#nationality option:selected").text();//国籍
+                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality)) && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
+                    return "请输入正确的18位居民身份证号码";
                 }
                 if (!(/\S/).test(value)) {
                     return "请输入证件号码"
