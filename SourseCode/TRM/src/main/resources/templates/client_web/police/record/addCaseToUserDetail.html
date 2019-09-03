@@ -62,7 +62,7 @@
                                 <div class="layui-form-select">
                                     <div class="layui-select-title">
                                         <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()">
-                                        <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;" onclick="getUserByCard();"></i>
+                                        <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="getUserByCard();"></i>
                                     </div>
                                     <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >
 
@@ -231,7 +231,7 @@
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
                                                             <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">
-                                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;"  onclick="getUserByCard_other(this);"></i>
+                                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;"  onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
@@ -293,7 +293,7 @@
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
                                                             <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">
-                                                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard_other(this);"></i>
+                                                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;" onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
@@ -365,6 +365,7 @@
                                 <div class="layui-form-select">
                                         <div class="layui-select-title">
                                             <input type="text" name="casename" lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
+                                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;" title="选择其他案件" onclick="open_othercases();"></i>
                                         </div>
                                         <dl class="layui-anim layui-anim-upbit"  id="casename_ssid"   >
 

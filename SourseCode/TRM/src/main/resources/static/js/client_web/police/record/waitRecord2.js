@@ -835,6 +835,8 @@ function shrink(obj) {
         $("i",obj).attr("class","layui-icon layui-icon-shrink-right");
         $("#layui-layer"+recordstate_index).show();
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+
+        //显示tips
     }
 
 }

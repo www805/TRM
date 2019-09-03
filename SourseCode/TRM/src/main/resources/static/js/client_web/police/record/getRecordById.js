@@ -825,119 +825,124 @@ function select_monitor(obj) {
 //查看全部按钮
 var select_monitorall_iframe=null;
 var select_monitorall_iframe_body=null;
-
+var select_monitorall_indedx=null;
 function select_monitorall(obj) {
-    layer.open({
-        type: 2
-        , skin: 'layui-layer-lan' //样式类名
-        ,title: "身心检测"
-        ,area: ['40%','100%']
-        ,shade: 0
-        ,id: 'layer_monitorall' //设定一个id，防止重复弹出
-        ,offset: 'l'
-        ,resize: true
-        ,content: togetPolygraphurl
-        ,success:function (layero,index) {
-            select_monitorall_iframe = window['layui-layer-iframe' + index];
-            select_monitorall_iframe_body=layer.getChildFrame('body', index);
-            select_monitorall_iframe.monitorall1(option);
-            select_monitorall_iframe.myMonitorall.setOption({
-                title: {
-                    text: "心率",
-                },
-                xAxis: {
-                    data: date_br
-                },
-                series: [{
-                    name:"心率",
-                    data: data_br
-                }]
-            });
-            select_monitorall_iframe.monitorall2(option);
-            select_monitorall_iframe.myMonitorall2.setOption({
-                title: {
-                    text: "心率变异",
-                },
-                xAxis: {
-                    data: date_hrv
-                },
-                series: [{
-                    name:"心率变异",
-                    data: data_hrv
-                }]
-            });
-            select_monitorall_iframe.monitorall3(option);
-            select_monitorall_iframe.myMonitorall3.setOption({
-                title: {
-                    text: "呼吸次数",
-                },
-                xAxis: {
-                    data: date_br
-                },
-                series: [{
-                    name:"呼吸次数",
-                    data: data_br
-                }]
-            });
-            select_monitorall_iframe.monitorall4(option);
-            select_monitorall_iframe.myMonitorall4.setOption({
-                title: {
-                    text: "放松值",
-                },
-                xAxis: {
-                    data: date_relax
-                },
-                series: [{
-                    name:"放松值",
-                    data: data_relax
-                }]
-            });
-            select_monitorall_iframe.monitorall5(option);
-            select_monitorall_iframe.myMonitorall5.setOption({
-                title: {
-                    text: "紧张值",
-                },
-                xAxis: {
-                    data: date_stress
-                },
-                series: [{
-                    name:"紧张值",
-                    data: data_stress
-                }]
-            });
-            select_monitorall_iframe.monitorall6(option);
-            select_monitorall_iframe.myMonitorall6.setOption({
-                title: {
-                    text: "血压变化",
-                },
-                xAxis: {
-                    data: date_bp
-                },
-                series: [{
-                    name:"血压变化",
-                    data: data_bp
-                }]
-            });
-            select_monitorall_iframe.monitorall7(option);
-            select_monitorall_iframe.myMonitorall7.setOption({
-                title: {
-                    text: "血氧",
-                },
-                xAxis: {
-                    data: date_spo2
-                },
-                series: [{
-                    name:"血氧",
-                    data: data_spo2
-                }]
-            });
-        },
-        cancel: function(index, layero){
-            select_monitorall_iframe=null;
-            select_monitorall_iframe_body=null;
-            layer.close(index)
-        }
-    });
+    if (select_monitorall_indedx==null){
+        select_monitorall_indedx= layer.open({
+            type: 2
+            , skin: 'layui-layer-lan' //样式类名
+            ,title: "身心检测"
+            ,area: ['40%','100%']
+            ,shade: 0
+            ,id: 'layer_monitorall' //设定一个id，防止重复弹出
+            ,offset: 'l'
+            ,resize: true
+            ,content: togetPolygraphurl
+            ,success:function (layero,index) {
+                select_monitorall_iframe = window['layui-layer-iframe' + index];
+                select_monitorall_iframe_body=layer.getChildFrame('body', index);
+                select_monitorall_iframe.monitorall1(option);
+                select_monitorall_iframe.myMonitorall.setOption({
+                    title: {
+                        text: "心率",
+                    },
+                    xAxis: {
+                        data: date_br
+                    },
+                    series: [{
+                        name:"心率",
+                        data: data_br
+                    }]
+                });
+                select_monitorall_iframe.monitorall2(option);
+                select_monitorall_iframe.myMonitorall2.setOption({
+                    title: {
+                        text: "心率变异",
+                    },
+                    xAxis: {
+                        data: date_hrv
+                    },
+                    series: [{
+                        name:"心率变异",
+                        data: data_hrv
+                    }]
+                });
+                select_monitorall_iframe.monitorall3(option);
+                select_monitorall_iframe.myMonitorall3.setOption({
+                    title: {
+                        text: "呼吸次数",
+                    },
+                    xAxis: {
+                        data: date_br
+                    },
+                    series: [{
+                        name:"呼吸次数",
+                        data: data_br
+                    }]
+                });
+                select_monitorall_iframe.monitorall4(option);
+                select_monitorall_iframe.myMonitorall4.setOption({
+                    title: {
+                        text: "放松值",
+                    },
+                    xAxis: {
+                        data: date_relax
+                    },
+                    series: [{
+                        name:"放松值",
+                        data: data_relax
+                    }]
+                });
+                select_monitorall_iframe.monitorall5(option);
+                select_monitorall_iframe.myMonitorall5.setOption({
+                    title: {
+                        text: "紧张值",
+                    },
+                    xAxis: {
+                        data: date_stress
+                    },
+                    series: [{
+                        name:"紧张值",
+                        data: data_stress
+                    }]
+                });
+                select_monitorall_iframe.monitorall6(option);
+                select_monitorall_iframe.myMonitorall6.setOption({
+                    title: {
+                        text: "血压变化",
+                    },
+                    xAxis: {
+                        data: date_bp
+                    },
+                    series: [{
+                        name:"血压变化",
+                        data: data_bp
+                    }]
+                });
+                select_monitorall_iframe.monitorall7(option);
+                select_monitorall_iframe.myMonitorall7.setOption({
+                    title: {
+                        text: "血氧",
+                    },
+                    xAxis: {
+                        data: date_spo2
+                    },
+                    series: [{
+                        name:"血氧",
+                        data: data_spo2
+                    }]
+                });
+            },
+            cancel: function(index, layero){
+                select_monitorall_iframe=null;
+                select_monitorall_iframe_body=null;
+                layer.close(index)
+            }
+        });
+    }else {
+        layer.close(select_monitorall_indedx);
+        select_monitorall_indedx=null;
+    }
 }
 
 //视频进度

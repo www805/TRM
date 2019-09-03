@@ -328,7 +328,7 @@ function addOrUpdateCase() {
         return;
     }
     if (!isNotEmpty(userinfos_)){
-        layer.msg("至少添加一个案件人");
+        layer.msg("至少添加一个案件人",{icon:5});
         $("#casename").focus();
         return;
     }
@@ -676,7 +676,7 @@ function getCardreader_btn() {
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
     if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
-        return false;
+        return true;
     }
 
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){

@@ -921,80 +921,55 @@ public class RecordService extends BaseService {
         addCaseToArraignmentVO.setRecordtype_conversation2(PropertiesListenerConfig.getProperty("recordtype_conversation2"));
 
 
-        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
+        //参数==============================================================start==============================================================
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);//session用户
         List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
-        String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
-        String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录类型
-        String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
-        String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
+        Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
+        Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
+        //笔录信息
+        String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
+        String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录名称
+       //讯问信息
         String adminssid=addCaseToArraignmentParam.getAdminssid()==null?user.getSsid():addCaseToArraignmentParam.getAdminssid();//询问人一
         Integer asknum=addCaseToArraignmentParam.getAsknum()==null?0:addCaseToArraignmentParam.getAsknum();
-        String askobj=addCaseToArraignmentParam.getAskobj();
-        String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();
-        String recordplace=addCaseToArraignmentParam.getRecordplace();
-        Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();
-        Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();
+        String askobj=addCaseToArraignmentParam.getAskobj();//询问对象
+        String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();//记录人sssid
+        String recordplace=addCaseToArraignmentParam.getRecordplace();//问话地点
+        //需要判断是否新增或者修改的参数******************************start
+        String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
+        String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
         UserInfo addUserInfo=addCaseToArraignmentParam.getAddUserInfo();//新增人员的信息
         Police_case addPolice_case=addCaseToArraignmentParam.getAddPolice_case();//新增案件的信息
+
         String otheruserinfoname=addCaseToArraignmentParam.getOtheruserinfoname();//新增询问人二的名称
         String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
         String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
         String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
+        //需要判断是否新增或者修改的参数******************************end
+        //参数==============================================================end==============================================================
 
-        Integer conversationbool=addCaseToArraignmentParam.getConversationbool();
+        Integer conversationbool=addCaseToArraignmentParam.getConversationbool();//笔录类型判断是审讯还是普通笔录
         if (conversationbool==-1){
             //笔录制作流程
 
-            if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
-                LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
-                Police_workunit workunit=new Police_workunit();
-                workunit.setSsid(OpenUtil.getUUID_32());
-                workunit.setCreatetime(new Date());
-                workunit.setWorkname(otherworkname);
-                int police_workunitMapper_insertbool= police_workunitMapper.insert(workunit);
-                LogUtil.intoLog("police_workunitMapper_insertbool__"+police_workunitMapper_insertbool);
-                if (police_workunitMapper_insertbool>0){
-                    otherworkssid=workunit.getSsid();
-                }
-            }
 
-            if (StringUtils.isBlank(otheradminssid)&&StringUtils.isNotBlank(otheruserinfoname)){
-                LogUtil.intoLog(this.getClass(),"需要新增询问人二____"+otheruserinfoname);
-                Base_admininfo base_admininfo=new Base_admininfo();
-                base_admininfo.setSsid(OpenUtil.getUUID_32());
-                base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
-                base_admininfo.setCreator(user.getSsid());
-                base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
-                base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
-                base_admininfo.setUsername(otheruserinfoname);
-                base_admininfo.setRegistertime(new Date());
-                int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
-                LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
-                if (base_admininfoMapper_insertbool>0){
-                    otheradminssid=base_admininfo.getSsid();
-                }
-            }
         }else  if (conversationbool==1){
-            //开始谈话
-            //默认使用会议的谈话模板ssid
-
+            //开始谈话：默认使用会议的谈话模板ssid
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation2");
-
             String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
             String conversationmsg="开启审讯_"+time;
 
             recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
             askobj="询问对象_"+conversationmsg;
         }if (conversationbool==2){
-            //一键谈话
-            //默认使用会议的谈话模板ssid
-
+            //一键谈话：默认使用会议的谈话模板ssid
+            String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
-            String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");
-
             String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
             String conversationmsg="一键审讯_"+time;
+
+
 
             //用户信息使用默认
             addUserInfo=new UserInfo();
@@ -1033,7 +1008,7 @@ public class RecordService extends BaseService {
 
         LogUtil.intoLog(this.getClass(),"添加笔录使用的会议模板ssid_"+mtmodelssid);
 
-
+        //检测
         if (skipCheckCasebool==-1&&StringUtils.isNotBlank(casessid)&&StringUtils.isNotBlank(userssid)){
             EntityWrapper caseparam=new EntityWrapper();
             caseparam.eq("c.ssid",casessid);
@@ -1102,6 +1077,37 @@ public class RecordService extends BaseService {
         }
 
 
+        if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
+            LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
+            Police_workunit workunit=new Police_workunit();
+            workunit.setSsid(OpenUtil.getUUID_32());
+            workunit.setCreatetime(new Date());
+            workunit.setWorkname(otherworkname);
+            int police_workunitMapper_insertbool= police_workunitMapper.insert(workunit);
+            LogUtil.intoLog("police_workunitMapper_insertbool__"+police_workunitMapper_insertbool);
+            if (police_workunitMapper_insertbool>0){
+                otherworkssid=workunit.getSsid();
+            }
+        }
+
+        if (StringUtils.isBlank(otheradminssid)&&StringUtils.isNotBlank(otheruserinfoname)){
+            LogUtil.intoLog(this.getClass(),"需要新增询问人二____"+otheruserinfoname);
+            Base_admininfo base_admininfo=new Base_admininfo();
+            base_admininfo.setSsid(OpenUtil.getUUID_32());
+            base_admininfo.setTemporaryaskbool(1);//是否为临时询问人
+            base_admininfo.setCreator(user.getSsid());
+            base_admininfo.setWorkunitssid(otherworkssid==null?user.getWorkunitssid():otherworkssid);//没有选择默认使用创建者相同的工作单位
+            base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
+            base_admininfo.setUsername(otheruserinfoname);
+            base_admininfo.setRegistertime(new Date());
+            int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
+            LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
+            if (base_admininfoMapper_insertbool>0){
+                otheradminssid=base_admininfo.getSsid();
+            }
+        }
+
+
 
 
         //需要新增人员信息
@@ -1147,7 +1153,6 @@ public class RecordService extends BaseService {
          String casenum=addPolice_case.getCasenum();//案件号码
          Integer caseid=null;
          if (StringUtils.isBlank(casessid)){
-
              String casename=addPolice_case.getCasename();//案件号码
              if (StringUtils.isNotBlank(casename)){
                  //判断案件是否重复
@@ -1186,7 +1191,6 @@ public class RecordService extends BaseService {
                     casessid=addPolice_case.getSsid();
 
                     //添加案件人员表
-
                     Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
                     police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
                     police_casetouserinfo_.setCreatetime(new Date());
@@ -1197,7 +1201,6 @@ public class RecordService extends BaseService {
                     LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
                 }
          }else{
-
              String casename=addPolice_case.getCasename();//案件号码
              if (StringUtils.isNotBlank(casename)){
                  //判断案件是否重复
@@ -1228,7 +1231,6 @@ public class RecordService extends BaseService {
 
              //修改案件信息参数
              EntityWrapper updatecaseParam=new EntityWrapper();
-
              //判断案件状态
              Police_case police_case_=new Police_case();
              police_case_.setSsid(casessid);
@@ -1238,10 +1240,28 @@ public class RecordService extends BaseService {
              }
 
 
-                updatecaseParam.eq("ssid",casessid);
-                int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
-                LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
+              updatecaseParam.eq("ssid",casessid);
+              int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
+              LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
 
+             if (updatecase_bool>0){
+                 //案件人员表修改，1根据用户ssid以及案件ssid判断该用户是否在该案件中，在不用管；不在新增案件人员表
+                 EntityWrapper casetouserinfoParam=new EntityWrapper();
+                 casetouserinfoParam.eq("casessid",casessid);
+                 casetouserinfoParam.eq("userssid",userssid);
+                 List<Police_casetouserinfo> police_casetouserinfos_=police_casetouserinfoMapper.selectList(casetouserinfoParam);
+                 if (null==police_casetouserinfos_||police_casetouserinfos_.size()<1){
+                     //新增关联案件人员表
+                     Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
+                     police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
+                     police_casetouserinfo_.setCreatetime(new Date());
+                     police_casetouserinfo_.setCasessid(casessid);
+                     police_casetouserinfo_.setUserssid(userssid);
+                     police_casetouserinfo_.setUsertotypessid(usertotypessid);
+                     int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
+                     LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                 }
+             }
          }
 
 
@@ -1282,6 +1302,10 @@ public class RecordService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+
+
+
+
 
 
 
@@ -1461,6 +1485,7 @@ public class RecordService extends BaseService {
         caseparam.eq("c.creator",user.getSsid());
         caseparam.orderBy("c.occurrencetime",false);
         List<Case> cases=police_caseMapper.getCase(caseparam);//加入询问次数
+        List<String> casessids=new ArrayList<>();
         if (null!=cases&&cases.size()>0){
             for (Case c: cases) {
                 //提讯数据
@@ -1472,9 +1497,39 @@ public class RecordService extends BaseService {
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
                     c.setArraignments(arraignmentAndRecords);
                 }
+                casessids.add(c.getSsid());
+
             }
             getCaseByIdVO.setCases(cases);
         }
+
+
+
+
+        //出来关联的其他案件
+        EntityWrapper otherCasesparam=new EntityWrapper();
+        if (null!=casessids&&casessids.size()>0){
+            otherCasesparam.notIn("c.ssid",casessids);
+        }
+        otherCasesparam.ne("u.ssid",userssid);
+        otherCasesparam.eq("c.creator",user.getSsid());
+        otherCasesparam.orderBy("c.occurrencetime",false);
+        List<Case> otherCases=police_caseMapper.getCase(otherCasesparam);//加入询问次数
+        if (null!=otherCases&&otherCases.size()>0){
+            for (Case c: otherCases) {
+                //提讯数据
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",c.getSsid());
+                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                ewarraignment.orderBy("a.createtime",false);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    c.setArraignments(arraignmentAndRecords);
+                }
+            }
+            getCaseByIdVO.setOthercases(otherCases);
+        }
+
         result.setData(getCaseByIdVO);
         //根据案件ssid查询该案件信息
         changeResultToSuccess(result);

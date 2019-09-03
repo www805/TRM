@@ -512,7 +512,7 @@ function callbackgetAdminList(data) {
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
     if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
-        return false;
+        return true;
     }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
         var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;

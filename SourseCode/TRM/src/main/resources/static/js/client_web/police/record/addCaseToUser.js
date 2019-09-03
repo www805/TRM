@@ -1,4 +1,5 @@
 var cases=null;//全部案件数据
+var othercases=null;//出开自己全部的案件信息
 var otheruserinfos=null;//其他询问人员数据
 var cards=null;//全部证件类型
 var workunits=null;//全部的工作单位
@@ -246,8 +247,7 @@ function callbackaddCaseToArraignment(data) {
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
-                var TABLE_HTML='<table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed">'+init_casehtml+' <tbody id="case_html"></tbody>\
-                </table>';
+                var TABLE_HTML='<form class="layui-form layui-row" style="margin: 10px"><table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed;">'+init_casehtml+' <tbody id="case_html"></tbody></table></form>';
                 parent.layer.open({
                     type:1,
                     title: '案件信息(案件正在<strong style="color: red">休庭</strong>中...)',
@@ -559,6 +559,7 @@ function getUserByCard(){
     dquserssid=null;//当前用户的ssid
     dqcasessid=null;//当前案件ssid
     cases=null;
+    othercases=null;
     var form=layui.form;
     $("#casename_ssid").html("");
     /* $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#asknum')").val("");not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
@@ -772,12 +773,12 @@ function getUserByCard_other(obj){
 
 
     if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){ //判断主要人员信息是否搜索
-        parent.layer.msg("请先获取人员基本信息");
+        parent.layer.msg("请先获取人员基本信息",{icon:5});
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
     if (dqcardssid==cards&&dqcardnum==cardnum){
-        parent.layer.msg("被询问人不能作为其他在场人员");
+        parent.layer.msg("被询问人不能作为其他在场人员",{icon:5});
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
@@ -791,7 +792,7 @@ function getUserByCard_other(obj){
         }
     });
     if (num>1){
-        parent.layer.msg("该在场人员已存在");
+        parent.layer.msg("该在场人员已存在",{icon:5});
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
@@ -857,7 +858,9 @@ function callbakegetCaseById(data) {
             var data=data.data;
             if (isNotEmpty(data)){
                 var casesdata=data.cases;
+                var othercasesdata=data.othercases;
                 cases=casesdata;
+                othercases=othercasesdata;
                 if (isNotEmpty(cases)){
                     setcases(cases);
                 }
@@ -1259,7 +1262,7 @@ function getOtheruserinfosList() {
             if (o.username.indexOf(otheruserinfosval) >= 0) {
                 otheruserinfoslike.push(o);
             }
-            if (otheruserinfosval==o.username){
+            if (otheruserinfosval==o.username&&o.ssid!=sessionadminssid){
                 dqotheruserinfossid=o.ssid;
             }
         }
@@ -1293,6 +1296,90 @@ function select_otheruserinfosblur() {
 }
 
 
+function open_othercases() {
+    var dqcardssid=$("#cards option:selected").val();
+    var dqcardnum=$("#cardnum").val();
+    if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){
+        parent.layer.msg("请先获取人员基本信息",{icon:5});
+        return;
+    }
+    if (!isNotEmpty(othercases)){
+        parent.layer.msg("暂未找到其他案件",{icon:5});
+        return;
+    }
+    var CASE_HTML='<form class="layui-form layui-row" ><table class="layui-table" lay-skin="line" style="table-layout: fixed;">\
+                     <tbody id="othercases_html"   dqothercase="">';
+                    for (let i = 0; i < othercases.length; i++) {
+                        const othercase = othercases[i];
+                        CASE_HTML+='<tr  onclick=setcolor(this,"'+othercase.ssid+'")><td >'+othercase.casename+'</td></tr>';
+                    }
+                     CASE_HTML+='</tbody>\
+                </table></form>';
+    parent.layer.open({
+        type:1,
+        title: '选择其他案件',
+        shade: 0.3,
+        resize:false,
+        area: ['25%', '400px'],
+        content: CASE_HTML,
+        btn: ['确认', '取消']
+        ,yes: function(index, layero){
+            //回填案件信息
+           var html= $("#othercases_html").html();
+            var othercasessid=$("#othercases_html",parent.document).attr("dqothercase");
+            if (isNotEmpty(othercasessid)&&isNotEmpty(othercases)) {
+                dqcasessid=othercasessid;
+
+                $("#casename").val("");
+                $("#cause").val("");
+                $("#casenum").val("");
+                $("#caseway").val("");
+                $("#asknum").val("0");
+                $("#recordname").val("");
+
+                for (var i = 0; i < othercases.length; i++) {
+                    var c = othercases[i];
+                    if (dqcasessid==c.ssid){
+                        var username=$("#username").val();
+                        var casename=c.casename;
+                        var asknum=c.arraignments==null?0:c.arraignments.length;
+                        var recordtypename=$("td[recordtypebool='true']",parent.document).text();
+                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+
+                        $("#casename").val(c.casename);
+                        $("#cause").val(c.cause);
+                        $("#casenum").val(c.casenum);
+                        $("#caseway").val(c.caseway);
+                        $("#asknum").val(asknum);
+                        $("#recordname").val(recordname);
+                        if (isNotEmpty(c.starttime)){
+                            $("#starttime").val(c.starttime);
+                        }
+                        if (isNotEmpty(c.endtime)){
+                            $("#endtime").val(c.endtime);
+                        }
+                        if (isNotEmpty(c.occurrencetime)){
+                            $("#occurrencetime").val(c.occurrencetime);
+                        }
+                    }
+                }
+            }
+            $("#casename_ssid").html("");
+            parent.layer.close(index);
+        },
+        btn2: function(index) {
+            parent.layer.close(index);
+        }
+    });
+}
+function setcolor(obj,ssid) {
+   $(obj).css({"background-color":" #f2f2f2"}).siblings().css({"background-color":" #fff"});
+   $("#othercases_html").attr("dqothercase",ssid)
+
+}
+
+
+
 
 
 
@@ -1301,7 +1388,7 @@ function select_otheruserinfosblur() {
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
     if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
-        return false;
+        return true;
     }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
         var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
@@ -1354,6 +1441,7 @@ function init_form() {
         dquserssid=null;//当前用户的ssid
         dqcasessid=null;//当前案件ssid
         cases=null;
+        othercases=null;
          dqotheruserinfossid=null;//当前询问人(新增询问人回显)
          dqotherworkssid=null;//当前询问人对应的工作单位
         layui.use(['form','laydate'], function(){
