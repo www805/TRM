@@ -52,7 +52,7 @@
                 <input type="text" name="occurrencetime" id="occurrencetime" lay-verify="required" placeholder="请输入案发时间" autocomplete="off" class="layui-input" >
             </div>
 
-            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getArraignmentList_init(1,10);" >
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getArraignmentListByParam();" >
         </div>
     </form>
 
@@ -84,7 +84,7 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #000000'>休庭中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
+            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #000000'>暂停中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
             <td title="{{value.casenum==null?'':value.casenum}}">{{value.casenum==null?"":value.casenum}}</td>
             <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>

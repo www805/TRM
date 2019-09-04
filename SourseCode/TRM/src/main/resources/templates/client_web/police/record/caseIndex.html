@@ -80,7 +80,7 @@
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr>
             <td>{{index+1}}</td>
-            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #ffe214'>休庭中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
+            {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #ffe214'>暂停中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
             <td title="{{value.casenum==null?'':value.casenum}}">{{value.casenum==null?"":value.casenum}}</td>
             <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>

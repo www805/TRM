@@ -251,7 +251,7 @@ function callbackaddCaseToArraignment(data) {
                 var TABLE_HTML='<form class="layui-form layui-row" style="margin: 10px"><table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed;">'+init_casehtml+' <tbody id="case_html"></tbody></table></form>';
                 parent.layer.open({
                     type:1,
-                    title: '案件信息(案件正在<strong style="color: red">休庭</strong>中...)',
+                    title: '案件信息(案件正在<strong style="color: red">暂停</strong>中...)',
                     shade: 0.3,
                     resize:false,
                     area: ['35%', '400px'],

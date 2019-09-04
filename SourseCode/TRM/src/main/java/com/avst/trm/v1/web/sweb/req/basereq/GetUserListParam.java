@@ -10,7 +10,7 @@ public class GetUserListParam extends Page {
 
     private String username;//用户名称
 
-    private String loginaccount;//登陆账号
+    private String loginaccount;//登录账号
 
     private String workunitssid;//工作单位ssid
 

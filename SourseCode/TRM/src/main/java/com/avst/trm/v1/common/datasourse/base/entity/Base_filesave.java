@@ -48,6 +48,8 @@ public class Base_filesave extends Model<Base_filesave> {
      */
     private String recordrealurl;
 
+    private Integer filebool;//文件状态
+
     private String ssid;
 
     private String string1;
@@ -57,6 +59,15 @@ public class Base_filesave extends Model<Base_filesave> {
     private Integer integer1;
 
     private Integer integer2;
+
+
+    public Integer getFilebool() {
+        return filebool;
+    }
+
+    public void setFilebool(Integer filebool) {
+        this.filebool = filebool;
+    }
 
     public Integer getId() {
         return id;

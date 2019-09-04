@@ -6,7 +6,6 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
-import com.avst.trm.v1.common.datasourse.base.entity.moreentity.Serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
@@ -14,7 +13,6 @@ import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
-import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -25,17 +23,13 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
-import com.avst.trm.v1.web.cweb.vo.basevo.GetHomeVO;
-import com.avst.trm.v1.web.cweb.vo.basevo.GetServerconfigVO;
-import com.avst.trm.v1.web.cweb.vo.basevo.UpdateServerconfigVO;
-import com.avst.trm.v1.web.cweb.vo.basevo.UserloginVO;
+import com.avst.trm.v1.web.cweb.vo.basevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
-import com.baomidou.mybatisplus.MybatisSqlSessionTemplate;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.yaml.snakeyaml.Yaml;
@@ -45,8 +39,6 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -122,7 +114,7 @@ public class MainService extends BaseService {
             return;
         }
 
-        //检查用户登陆
+        //检查用户登录
         EntityWrapper ew=new EntityWrapper();
         ew.eq("BINARY  loginaccount",loginaccount1);//BINARY区分大小写
         List<AdminAndWorkunit> users= base_admininfoMapper.getAdminListAndWorkunit(ew);
@@ -151,10 +143,10 @@ public class MainService extends BaseService {
                         return;
                     }
 
-                    //登陆成功
-                    LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登陆成功--");
-                    result.setMessage("登陆成功");
-                    //修改最后一次登陆时间
+                    //登录成功
+                    LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登录成功--");
+                    result.setMessage("登录成功");
+                    //修改最后一次登录时间
                     user.setLastlogintime(new Date());
                     int updateById_bool=base_admininfoMapper.updateById(user);
                     LogUtil.intoLog(this.getClass(),"updateById_bool--"+updateById_bool);
@@ -185,8 +177,8 @@ public class MainService extends BaseService {
     public void userloginout(RResult result,ReqParam param,HttpSession session){
         if (null!=session.getAttribute(Constant.MANAGE_CLIENT)){
             session.removeAttribute(Constant.MANAGE_CLIENT);
-            LogUtil.intoLog(this.getClass(),"登出成功");
-            result.setMessage("登出成功");
+            LogUtil.intoLog(this.getClass(),"退出成功");
+            result.setMessage("退出成功");
         }
         changeResultToSuccess(result);
         return;
@@ -727,7 +719,121 @@ public class MainService extends BaseService {
     }
 
 
+    public void getPackdownList(RResult result,ReqParam<GetPackdownListParam> param){
+        GetPackdownListVO vo=new GetPackdownListVO();
+        GetPackdownListParam getPackdownListParam=param.getParam();
+        if(null==getPackdownListParam){
+            result.setMessage("参数为空");
+            return;
+        }
 
+        String filename=getPackdownListParam.getFilename();
+        EntityWrapper getpackdownList_ew=new EntityWrapper();
+        if (StringUtils.isNotBlank(filename)){
+            getpackdownList_ew.like("uploadfilename",filename);
+        }
+        getpackdownList_ew.eq("datassid","packdown8520");//插件标识packdown8520*/
+        getpackdownList_ew.eq("filebool",1);//插件状态正常的插件
+        int count = base_filesaveMapper.countgetfilesavePage(getpackdownList_ew);
+        getPackdownListParam.setRecordCount(count);
+
+        Page<Base_filesave> page=new Page<Base_filesave>(getPackdownListParam.getCurrPage(),getPackdownListParam.getPageSize());
+        List<Base_filesave> list=base_filesaveMapper.getfilesavePage(page,getpackdownList_ew);
+        vo.setPageparam(getPackdownListParam);
+
+        if (null!=list&&list.size()>0){
+            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
+            for (Base_filesave base_filesave : list) {
+                String downurl=base_filesave.getRecorddownurl();
+                if (StringUtils.isNotBlank(downurl)){
+                    base_filesave.setRecorddownurl(uploadbasepath+downurl);
+                }
+            }
+        }
+
+        vo.setPagelist(list);
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void uploadPackdown(RResult result,ReqParam param, MultipartFile multipartfile){
+        if (null==multipartfile){
+            result.setMessage("请先选择插件(exe)进行上传");
+            return;
+        }
+        try {
+            String savePath=PropertiesListenerConfig.getProperty("file.packdown");
+            String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+            String originalfilename=multipartfile.getOriginalFilename();
+
+            if(!originalfilename.endsWith(".exe")){
+                result.setMessage("请先选择插件(exe)进行上传");
+                return;
+            }
+
+            String realurl = OpenUtil.createpath_fileByBasepath(savePath, originalfilename);
+            LogUtil.intoLog(this.getClass(),"插件上传的真实地址__："+realurl);
+            multipartfile.transferTo(new File(realurl));
+            String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;
+            LogUtil.intoLog(this.getClass(),"插件上传的下载地址__："+downurl);
+
+            if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                //添加数据库
+                Base_filesave base_filesave=new Base_filesave();
+                base_filesave.setDatassid("packdown8520");
+                base_filesave.setUploadfilename(originalfilename);
+                base_filesave.setRealfilename(originalfilename);
+                base_filesave.setRecordrealurl(realurl);
+                base_filesave.setRecorddownurl(downurl);
+                base_filesave.setSsid(OpenUtil.getUUID_32());
+                int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                LogUtil.intoLog(this.getClass(),"filesaveinsert_bool__"+filesaveinsert_bool);
+                if (filesaveinsert_bool>0){
+                    result.setData(filesaveinsert_bool);
+                    changeResultToSuccess(result);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+
+    public void changeboolPackdown(RResult result,ReqParam<ChangeboolPackdownParam> param){
+        ChangeboolPackdownParam changeboolPackdownParam=param.getParam();
+        if(null==changeboolPackdownParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String ssid=changeboolPackdownParam.getSsid();
+        Integer filebool=changeboolPackdownParam.getFilebool();
+        LogUtil.intoLog(this.getClass(),"插件删除的ssid__delPackdown__"+ssid);
+        if (StringUtils.isBlank(ssid)||null==filebool){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper filesaves_ew=new EntityWrapper();
+        filesaves_ew.eq("ssid",ssid);
+        List<Base_filesave> filesaves_=base_filesaveMapper.selectList(filesaves_ew);
+        if (null!=filesaves_&&filesaves_.size()==1){
+            Base_filesave base_filesave_=filesaves_.get(0);
+            base_filesave_.setFilebool(filebool);
+            //删除记录
+            int base_filesaveMapper_update_bool=base_filesaveMapper.update(base_filesave_,filesaves_ew);
+            LogUtil.intoLog(this.getClass(),"base_filesaveMapper_update_bool__"+base_filesaveMapper_update_bool);
+            if (base_filesaveMapper_update_bool>0){
+                result.setData(base_filesaveMapper_update_bool);
+                changeResultToSuccess(result);
+            }
+        }else {
+            LogUtil.intoLog(this.getClass(),"插件删除查询是否存在该文件：该记录不存在或者查询出多条");
+        }
+        return;
+    }
 
 
 }

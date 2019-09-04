@@ -164,7 +164,7 @@ function callbackaddCaseToArraignment(data) {
                 </table>';
                 parent.layer.open({
                     type:1,
-                    title: '案件信息(案件正在<strong style="color: red">休庭</strong>中...)',
+                    title: '案件信息(案件正在<strong style="color: red">暂停</strong>中...)',
                     shade: 0.3,
                     resize:false,
                     area: ['35%', '400px'],

@@ -86,7 +86,7 @@ public class LoginService extends BaseService {
                         LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
 
 
-                        //修改用户最后一次登陆
+                        //修改用户最后一次登录
                         base_admininfo.setLastlogintime(new Date());
                         int updateById_bool=admininfoMapper.updateById(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
@@ -95,7 +95,7 @@ public class LoginService extends BaseService {
 
 
                     }else{
-                        LogUtil.intoLog(this.getClass(),"系统异常--登陆账号多个："+loginaccount);
+                        LogUtil.intoLog(this.getClass(),"系统异常--登录账号多个："+loginaccount);
                         result.setMessage("系统异常");
                         return;
                     }

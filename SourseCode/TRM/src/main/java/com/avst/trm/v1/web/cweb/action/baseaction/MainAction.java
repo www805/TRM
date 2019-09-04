@@ -3,14 +3,10 @@ package com.avst.trm.v1.web.cweb.action.baseaction;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
-import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
-import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
-import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
@@ -18,7 +14,6 @@ import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,7 +24,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @Controller
 @RequestMapping("/cweb/base/main")
@@ -50,7 +44,7 @@ public class MainAction extends BaseAction {
 
 
     /*
-     * 客户端管理员登陆
+     * 客户端管理员登录
      * @return
      */
     @RequestMapping(value = "/userlogin")
@@ -345,6 +339,66 @@ public class MainAction extends BaseAction {
         return  result;
     }
 
+    /**
+     * 插件下载列表
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getPackdownList")
+    @ResponseBody
+    public  RResult getPackdownList(@RequestBody ReqParam<GetPackdownListParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            mainService.getPackdownList(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 上传插件
+     * @param
+     * @return
+     */
+    @RequestMapping("/uploadPackdown")
+    @ResponseBody
+    public  RResult uploadPackdown(ReqParam param,@RequestParam(value="file",required=false) MultipartFile multipartfile){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            mainService.uploadPackdown(result, param,multipartfile);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
+     * 删除插件
+     * @param
+     * @return
+     */
+    @RequestMapping("/changeboolPackdown")
+    @ResponseBody
+    public  RResult changeboolPackdown(@RequestBody ReqParam<ChangeboolPackdownParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            mainService.changeboolPackdown(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
 
 
 
@@ -380,7 +434,7 @@ public class MainAction extends BaseAction {
     }
 
     /**
-     * 跳转==》登陆页
+     * 跳转==》登录页
      */
     @RequestMapping(value = "/gotologin")
     public ModelAndView gotologin(Model model){
@@ -427,6 +481,15 @@ public class MainAction extends BaseAction {
         return  new ModelAndView("client_web/base/home","homeModel", model);
     }
 
+    /**
+     * 跳转==》插件列表
+     */
+    @GetMapping("gotopackdownList")
+    public ModelAndView gotopackdownList(Model model,String parentbool){
+        model.addAttribute("title","插件列表");
+        model.addAttribute("parentbool",parentbool);//用于控制页面跳转
+        return new ModelAndView("client_web/base/packdownList", "packdownListModel", model);
+    }
 
 
 

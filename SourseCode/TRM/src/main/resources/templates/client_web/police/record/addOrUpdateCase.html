@@ -43,7 +43,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">案件编号</label>
             <div class="layui-input-block">
-                <input type="text" name="casenum" id="casenum"    placeholder="请输入案件编号" autocomplete="off" class="layui-input">
+                <input type="text" name="casenum" id="casenum"   lay-verify="casenum"   placeholder="请输入案件编号" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -173,6 +173,13 @@
         form.verify({
             userssid:[ /\S/,"请选择案件人"],
             casename:[ /\S/,"请输入案件名称"],
+            casenum:function (value) {
+                if (isNotEmpty(value)) {
+                    if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/).test(value)||!(/^[^ ]+$/).test(value)){
+                        return "请输入英文和数字组成5位以上不含空格的案件编号"
+                    }
+                }
+            }
         });
 
 

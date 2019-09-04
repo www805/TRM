@@ -331,7 +331,7 @@ var overRecord_loadindex =null;
 function overRecord(state) {
     var msgtxt2="是否结束？";
     if (state==1){
-        msgtxt2="是否休庭？";
+        msgtxt2="是否暂停？";
     }
     var msgtxt="";
     if (isNotEmpty(fdStateInfo)) {
@@ -351,7 +351,7 @@ function overRecord(state) {
             //需要收拾数据
             var recordToProblems=[];//题目集合
             if (state==1){
-                casebool=3;//需要休庭
+                casebool=3;//需要暂停
             }
             var data={
                 token:INIT_CLIENTKEY,

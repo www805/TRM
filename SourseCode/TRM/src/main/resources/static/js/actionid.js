@@ -298,5 +298,9 @@ function getactionid_manage() {
 
         getconversationById_getRecordById:"getconversationById_getRecordById",
 
+        packdownList_getPackdownList:"packdownList_getPackdownList",
+        packdownList_changeboolPackdown:"packdownList_changeboolPackdown",
+        packdownList_uploadPackdown:"packdownList_uploadPackdown",
+
     };
 }

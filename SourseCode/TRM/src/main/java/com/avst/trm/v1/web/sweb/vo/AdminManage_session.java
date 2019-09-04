@@ -10,7 +10,7 @@ import java.util.Date;
 public class AdminManage_session  {
 
     /**
-     * 登陆账号
+     * 登录账号
      */
     private String loginaccount;
 
@@ -51,7 +51,7 @@ public class AdminManage_session  {
     private Date updatetime;
 
     /**
-     * 最后一次登陆时间
+     * 最后一次登录时间
      */
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date lastlogintime;

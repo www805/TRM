@@ -11,7 +11,7 @@ public class AddCaseToArraignmentVO {
 
     private Case case_;//案件信息返回回显
 
-    private boolean caseingbool=false;//案件是否需要在休庭中 true 休庭中false正常
+    private boolean caseingbool=false;//案件是否需要在暂停中 true 暂停中false正常
 
     private String recordtypessid;
 

@@ -991,7 +991,7 @@ var overRecord_loadindex =null;
  function overRecord(state) {
      var msgtxt2="是否结束？";
      if (state==1){
-         msgtxt2="是否休庭？";
+         msgtxt2="是否暂停？";
      }
      var msgtxt="";
      if (isNotEmpty(fdStateInfo)) {
@@ -1019,7 +1019,7 @@ var overRecord_loadindex =null;
         overRecord_index=index;
         recordbool=2;
         if (state==1){
-            casebool=3;//需要休庭
+            casebool=3;//需要暂停
         }
 
 

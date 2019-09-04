@@ -582,8 +582,8 @@ function putRecessStatus() {
         };
         ajaxSubmitByJson(url, data, callputRecessStatus);
     }else{
-        console.log("笔录ssid和会议ssid为空，无法提交休庭检测心跳");
-        // layer.msg("笔录ssid和会议ssid为空，无法提交休庭检测心跳",{icon: 5});
+        console.log("笔录ssid和会议ssid为空，无法提交暂停检测心跳");
+        // layer.msg("笔录ssid和会议ssid为空，无法提交暂停检测心跳",{icon: 5});
     }
 }
 

@@ -9,7 +9,7 @@ function userloginout() {
 
 function callbackuserloginout(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg("登出成功",{time:500,icon: 6,},function () {
+        layer.msg("退出成功",{time:500,icon: 6,},function () {
             var nextparam=getAction(getactionid_manage().main_userloginout);
             if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                 setpageAction(INIT_CLIENT,nextparam.nextPageId);

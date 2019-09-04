@@ -11,7 +11,7 @@ public class AddRecordParam {
 
     private Integer recordbool;//笔录状态  1进行中 2已结束 0未开始
 
-    private Integer casebool;//案件状态3 休庭
+    private Integer casebool;//案件状态3 暂停
 
     private String mtssid;//会议ssid
 

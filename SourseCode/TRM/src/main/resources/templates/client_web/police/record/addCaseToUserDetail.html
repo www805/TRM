@@ -391,7 +391,7 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label">案件编号</label>
                             <div class="layui-input-block">
-                                <input type="text" name="casenum" id="casenum"  placeholder="" autocomplete="off" class="layui-input">
+                                <input type="text" name="casenum" id="casenum"  lay-verify="casenum" placeholder="" autocomplete="off" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-col-lg12">
@@ -617,6 +617,13 @@
             recordname:[ /\S/,"请输入笔录名称"],
             recordadmin:[ /\S/,"请输入记录人"],
             askobj:[ /\S/,"请输入询问对象"],
+            casenum:function (value) {
+                if (isNotEmpty(value)) {
+                    if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/).test(value)||!(/^[^ ]+$/).test(value)){
+                        return "请输入英文和数字组成5位以上不含空格的案件编号"
+                    }
+                }
+            }
         });
 
 
