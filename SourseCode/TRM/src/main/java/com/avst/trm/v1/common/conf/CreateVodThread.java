@@ -30,16 +30,17 @@ import java.util.List;
 
 /**
  * 生成点播线程
- * 暂时没有做多个人一起使用，稍后会做缓存多人用，一个一个来
+ * 点播回放其实是要在设备控制存储组件里面写的，这里的result不好获取
+ *
  */
-public class GZVodThread extends Thread{
+public class CreateVodThread extends Thread{
 
     private RResult result;
 
     private Police_recordMapper police_recordMapper;
     private Police_record police_record;
 
-    public GZVodThread(RResult result_,Police_recordMapper police_recordMapper_,Police_record police_record_){
+    public CreateVodThread(RResult result_, Police_recordMapper police_recordMapper_, Police_record police_record_){
         result=result_;
         police_recordMapper=police_recordMapper_;
         police_record=police_record_;
@@ -50,21 +51,17 @@ boolean  bool=true;
     @Override
     public void run() {
 
-        if(CommonCache.gzvodthreadnum > 0){
-            LogUtil.intoLog(3,this.getClass(),"暂时只允许一个人打包，不允许多个打包线程一块跑");
-            return;
-        }
-        CommonCache.gzvodthreadnum++;
+
         try {
 
 //            if(bool){
-//                System.out.println("------------------------打包暂时不使用，等对接设备光盘刻录成功再开启------------------------");
+//                System.out.println("------------------------生成点播文件暂时不使用------------------------");
 //                return;
 //            }
 
             GetRecordByIdVO getRecordByIdVO=(GetRecordByIdVO)result.getData();
             if(null==getRecordByIdVO||null==getRecordByIdVO.getGetPlayUrlVO()){
-                LogUtil.intoLog(4,this.getClass(),"getRecordByIdVO or getRecordByIdVO.getGetPlayUrlVO is null,还没有生成可以使用的播放文件，不允许打包");
+                LogUtil.intoLog(4,this.getClass(),"getRecordByIdVO or getRecordByIdVO.getGetPlayUrlVO is null,还没有生成可以使用的播放文件，不允许生成点播文件");
                 return ;
             }
             GetPlayUrlVO getPlayUrlVO=getRecordByIdVO.getGetPlayUrlVO();
@@ -78,12 +75,12 @@ boolean  bool=true;
                     }
                 }
                 if(!bool){
-                    LogUtil.intoLog(4,this.getClass(),"state is not 2,播放文件的状态异常，不允许打包");
+                    LogUtil.intoLog(4,this.getClass(),"state is not 2,播放文件的状态异常，不允许生成点播文件");
                     return ;
                 }
 
             }else{
-                LogUtil.intoLog(4,this.getClass(),"statelist is null,播放文件没有找到状态，不允许打包");
+                LogUtil.intoLog(4,this.getClass(),"statelist is null,播放文件没有找到状态，不允许生成点播文件");
                 return ;
             }
 
@@ -99,7 +96,7 @@ boolean  bool=true;
             if(null!=result_getsavepath&&result_getsavepath.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_getsavepath.getData()){
                 iidsavepath=result_getsavepath.getData().toString();
             }else{
-                LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不打包，不生成回放文件，直接跳出，iid："+iid);
+                LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不生成回放文件，直接跳出，iid："+iid);
                 return;
             }
 
@@ -128,7 +125,7 @@ boolean  bool=true;
                 }
                 filebool= ReadWriteFile.writeTxtFile(filerr,iidplayfilespath,"utf8");
             }else{
-                LogUtil.intoLog(4,this.getClass(),"recordPlayParams is null,播放文件没有一个视频，不允许打包");
+                LogUtil.intoLog(4,this.getClass(),"recordPlayParams is null,播放文件没有一个视频，不允许生成iidplay.txt");
                 return ;
             }
 
@@ -146,7 +143,7 @@ boolean  bool=true;
                 }else{
                     //需要生成Word文件
                     //后期写入自动生成Word文件
-                    LogUtil.intoLog(3,this.getClass(),"-----GZVodThread-需要生成Word文件");
+                    LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成Word文件");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -161,7 +158,7 @@ boolean  bool=true;
                 }else{
                     //需要生成pdf文件
                     //后期写入自动生成pdf文件
-                    LogUtil.intoLog(3,this.getClass(),"-----GZVodThread-需要生成pdf文件");
+                    LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成pdf文件");
                 }
 
             } catch (Exception e) {
@@ -191,7 +188,7 @@ boolean  bool=true;
                 if(updateById > -1){
 
                 }else{
-                    LogUtil.intoLog(4,this.getClass(),"-----GZVodThread-police_recordMapper.updateById is error");
+                    LogUtil.intoLog(4,this.getClass(),"-----CreateVodThread-police_recordMapper.updateById is error");
                     return ;
                 }
             }else{
@@ -202,10 +199,10 @@ boolean  bool=true;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            CommonCache.gzvodthreadnum--;
+
         }
 
-        LogUtil.intoLog(1,this.getClass(),"GZVodThread 出来了---");
+        LogUtil.intoLog(1,this.getClass(),"CreateVodThread 出来了---");
 
     }
 }

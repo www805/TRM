@@ -225,7 +225,7 @@ public class Scheduler {
                     RecordStatusCacheParam param = paramList.get(i);
                     //判断时间如果5分钟没心跳就设为休庭
                     int countTime = calLastedTime(param.getLasttime());
-                    int maxTime = 60 * 60 * 30;
+                    int maxTime = 60 * 60 * 3;//测试3分钟，实际半小时
                     if (countTime >= maxTime) {
                         //修改笔录状态
                         String ssid = param.getRecordssid();
@@ -286,6 +286,22 @@ public class Scheduler {
             }
         } else if (os.startsWith("Linux")) {
             LogUtil.intoLog(3,this.getClass(),"暂时没有重启Linux的计划");
+        }
+
+    }
+
+    /**
+     * 检测压缩文件过期
+     */
+    public void checkZipTimeOut(){
+
+        try {
+
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
         }
 
     }

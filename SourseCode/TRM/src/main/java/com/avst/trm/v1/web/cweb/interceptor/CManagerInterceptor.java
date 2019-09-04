@@ -69,7 +69,6 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                 LogUtil.intoLog(this.getClass(),url+":url，测试上传接口");
                 return true;
             }
-            LogUtil.intoLog(1,this.getClass(),"测试10");
 
             String basepath="/cweb/base/main"; //首页的action只允许在homeaction里面
             String firstinterface=basepath+"/gotologin";

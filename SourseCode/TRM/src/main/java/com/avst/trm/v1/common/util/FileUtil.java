@@ -207,6 +207,30 @@ public class FileUtil {
 		return false;
 	}
 
+	/**
+	 * 检测文件夹路径，没有就新增
+	 * @param directoryPath
+	 * @return
+	 */
+	public static boolean checkDirectoryPath(String directoryPath) {
+
+		if(StringUtils.isEmpty(directoryPath)){
+			LogUtil.intoLog(4,FileUtil.class,"is null directoryPath:"+directoryPath);
+			return false;
+		}
+		try {
+			File file=new File(directoryPath);
+			if(!file.exists()||!file.isDirectory()){
+				file.mkdirs();
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 
 	public static void main(String[] args) {
 

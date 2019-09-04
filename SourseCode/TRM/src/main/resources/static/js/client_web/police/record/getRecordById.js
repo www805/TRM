@@ -1787,3 +1787,20 @@ function phdata(datad,dqdata) {
 
     }
 }
+
+//导出下载
+function gZIPVod(){
+
+
+    var url="/cweb/police/record/gZIPVod";
+    var data={
+        iid:"a08a1f4d944b489fa10dfc3eb5212b48_sxsba2",
+        zipfilename:"测试案件导出"
+    };
+    ajaxSubmitByJson(url,data,callbackgZIPVod);
+
+}
+
+function callbackgZIPVod(data) {
+        alert(data.data);
+}

@@ -1,12 +1,11 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
-import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.PtdjmapCache;
 import com.avst.trm.v1.common.cache.RecordStatusCache;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
-import com.avst.trm.v1.common.conf.GZVodThread;
+import com.avst.trm.v1.common.conf.CreateVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
@@ -16,13 +15,15 @@ import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.gzip.GZIPCache;
+import com.avst.trm.v1.common.util.gzip.GZIPCacheParam;
+import com.avst.trm.v1.common.util.gzip.GZIPThread;
 import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
@@ -48,17 +49,12 @@ import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.ctc.wstx.util.DataUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.DateUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
@@ -642,12 +638,12 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
 
                 String gz=record.getGz_iid();
-                //检测有没有下载包，没有就打包
-                if(StringUtils.isEmpty(gz)&&null!=recordbool&&recordbool.intValue()==2){//只有在完成状态下才会需要打包
-                    //调用打包线程
+                //检测有没有生成点播文件，没有就生成点播文件
+                if(StringUtils.isEmpty(gz)&&null!=recordbool&&recordbool.intValue()==2){//只有在完成状态下才会需要生成点播文件
+                    //调用生成点播文件线程
                     try {
                         Police_record police_record=record;
-                        GZVodThread thread=new GZVodThread(result,police_recordMapper,police_record);
+                        CreateVodThread thread=new CreateVodThread(result,police_recordMapper,police_record);
                         thread.start();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -3601,5 +3597,92 @@ public class RecordService extends BaseService {
         return result;
     }
 
+
+    /**
+     * 打包回放（其实打包回放应该存储组件完成）
+     * @return
+     */
+    public RResult gZIPVod(RResult result,GZIPVodParam param){
+
+        String iid=param.getIid();
+        String zipfilename=param.getZipfilename();
+        if(StringUtils.isEmpty(iid)){
+            result.setMessage("iid唯一标识未找到");
+            return result;
+        }
+
+        if(StringUtils.isEmpty(zipfilename)){
+            zipfilename=iid;
+        }
+
+        //根据iid找到需要上传的所有文件
+        GetSaveFilesPathByiidParam getSaveFilesPathByiidParam=new GetSaveFilesPathByiidParam();
+        getSaveFilesPathByiidParam.setIid(iid);
+        getSaveFilesPathByiidParam.setVideobool(0);//不需要上传视频文件
+        getSaveFilesPathByiidParam.setSsType(SSType.AVST);
+        RResult rResult=equipmentControl.getSaveFilesPathByiid(getSaveFilesPathByiidParam);
+        //请求设备允许上传到设备中的路径，一个一个传过去
+        if(null!=rResult&&null!=rResult.getData()){
+
+            String pathlist=rResult.getData().toString();
+            String[] patharr=pathlist.split(",");
+            if(patharr!=null&&patharr.length > 0) {
+                String path=patharr[0];
+                String zippath=OpenUtil.getfile_folder(path);
+                String gztype=PropertiesListenerConfig.getProperty("gztype");
+                if(StringUtils.isEmpty(gztype)){
+                    gztype=".zip";
+                }
+                LogUtil.intoLog(1,this.getClass(),zipfilename+":zipfilename,开始打包VOD，iid："+iid+"----打包的文件夹zippath:"+zippath);
+                GZIPThread gzipThread=new GZIPThread(zippath,zippath,iid,zipfilename,gztype);
+                gzipThread.start();
+
+                String zipfilepath=zippath;
+                if(zipfilepath.endsWith("\\")||zipfilepath.endsWith("/")){
+                    zipfilepath=zipfilepath.substring(0,zipfilepath.length()-1);
+                }
+                if(zipfilepath.indexOf("\\") > -1){
+                    zipfilepath+="\\\\"+iid+gztype;
+                }else {
+                    zipfilepath+="/"+iid+gztype;
+                }
+                String staticpath=PropertiesListenerConfig.getProperty("staticpath");
+                String httpbasestaticpath=PropertiesListenerConfig.getProperty("httpbasestaticpath");
+                String httpzipfilepath=httpbasestaticpath+OpenUtil.strMinusBasePath(staticpath,zipfilepath);
+                LogUtil.intoLog(1,this.getClass(),"打包下载的地址,httpzipfilepath:"+httpzipfilepath);
+
+                result.setData(httpzipfilepath);
+                this.changeResultToSuccess(result);
+            }
+        }else{
+            LogUtil.intoLog(4,this.getClass(),"根据iid获取文件路径异常，iid："+iid);
+        }
+        return result;
+    }
+
+
+    /**
+     * 获取线程打包的进度
+     * @param result
+     * @param param
+     * @return
+     */
+    public RResult zIPVodProgress(RResult result,GZIPVodParam param){
+
+        String iid=param.getIid();
+        if(StringUtils.isEmpty(iid)){
+            result.setMessage("iid唯一标识未找到");
+            return result;
+        }
+
+        GZIPCacheParam gzipCacheParam=GZIPCache.getGzipCacheParam(iid);
+        if(null==gzipCacheParam){
+            result.setMessage("未找到该打包进度，可能已经打包完成");
+        }else{
+            result.setData(gzipCacheParam);
+            this.changeResultToSuccess(result);
+        }
+        return result;
+    }
 
 }

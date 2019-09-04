@@ -889,8 +889,39 @@ public class RecordAction extends BaseAction {
     }
 
 
+    /**
+     * 回放打包，根据iid打包
+     * @param param
+     * @return
+     */
+    @RequestMapping("/gZIPVod")
+    public RResult gZIPVod(@RequestBody  GZIPVodParam param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.gZIPVod(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
-
+    /**
+     * 获取线程打包的进度
+     * @param param
+     * @return
+     */
+    @RequestMapping("/zIPVodProgress")
+    public RResult zIPVodProgress(@RequestBody  GZIPVodParam param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.zIPVodProgress(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 }
