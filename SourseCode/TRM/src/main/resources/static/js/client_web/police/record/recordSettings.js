@@ -628,7 +628,7 @@ function callCDNumber(data){
         if (isNotEmpty(data)){
 
             var cdNumList = data.data.cdNumList;
-            var conTop = "<table border=\"0\" cellpadding=\"5\" style='width: 100%;'>";
+            var conTop = "<table border=\"0\" cellpadding=\"5\" style='width: 100%;margin-top: 8px;'>";
             var conBottom = "</table>";
             var con = "";
             for (var i = 0; i < cdNumList.length; i++) {
@@ -655,13 +655,13 @@ function callCDNumber(data){
                         "       <td >" + crc32 + "</td>\n" +
                         "</tr>\n" +
                         "<tr>\n" +
-                        "       <td style='text-align: right;' class=\"detection\">哈希值：</td>\n" +
-                        "       <td >" + md5 + "</td>\n" +
+                        "       <td style='text-align: right;' class=\"detection\">光盘编号：</td>\n" +
+                        "       <td >" + iid + "</td>\n" +
                         "</tr>\n" +
                         "<tr>\n" +
-                        "       <td style='text-align: right;padding-bottom: 10px;' class=\"detection\">光盘编号：</td>\n" +
-                        "       <td style='padding-bottom: 10px;'>" + iid + "</td>\n" +
-                        "</tr>";
+                        "       <td style='text-align: right;padding-bottom: 10px;' class=\"detection\">哈希值：</td>\n" +
+                        "       <td style='padding-bottom: 10px;'>" + md5 + "</td>\n" +
+                        "</tr>\n";
                 }
             }
 
@@ -673,6 +673,9 @@ function callCDNumber(data){
                 //弹窗层
                 CDNumModel_index = layer.open({
                     type: 1,
+                    closeBtn: 1,
+                    skin: 'layui-layer-lan',
+                    shade: 0,
                     title: "光盘序号",
                     area: ['500px', 'auto'], //宽高
                     shadeClose: true,

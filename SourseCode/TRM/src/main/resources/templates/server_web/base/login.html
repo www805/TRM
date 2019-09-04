@@ -28,8 +28,8 @@
     <div class="loginbox">
 
         <ul>
-            <li><input name="loginaccount" type="text" class="loginuser" value="admin" onclick="JavaScript:this.value=''"/></li>
-            <li><input name="password" type="text" class="loginpwd" value="admin" onclick="JavaScript:this.value=''"/></li>
+            <li><input name="loginaccount" type="text" class="loginuser" value="" onclick="JavaScript:this.value=''"/></li>
+            <li><input name="password" type="password" class="loginpwd" value="" onclick="JavaScript:this.value=''"/></li>
             <li><input type="button" class="loginbtn" id="loginbtn" value="登录" onclick="login_login();" /><label><input name="" type="checkbox" value="" checked="checked" />记住密码</label><label><a href="#">忘记密码？</a></label></li>
         </ul>
 
@@ -65,17 +65,25 @@
 
         getNavList();
 
+        document.onkeydown = function (event) {
+            var e = event || window.event;
+            if (e && e.keyCode == 13) { //回车键的键值为13
+                event.preventDefault();
+                login_login();
+            }
+        };
+
         //如果在iframe中打开，就自动点击登录按钮
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
             $("#bottom_mian,#guidepage").remove();
             var loginaccount = GetQueryString("loginaccount");
             var adminpassword = GetQueryString("loginpassword");
 
-            if (isNotEmpty(loginaccount) && isNotEmpty(adminpassword)) {
-                $("input[name='loginaccount']").val(loginaccount);
-                $("input[name='password']").val(adminpassword);
-                $("#loginbtn").click();
-            }
+            // if (isNotEmpty(loginaccount) && isNotEmpty(adminpassword)) {
+            //     $("input[name='loginaccount']").val(loginaccount);
+            //     $("input[name='password']").val(adminpassword);
+            //     $("#loginbtn").click();
+            // }
         }
     });
 </script>

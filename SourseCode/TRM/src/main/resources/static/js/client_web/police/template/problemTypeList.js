@@ -143,39 +143,59 @@ function opneModal_1(problem) {
         ordernum = problem.ordernum;
     }
 
-    var html = '  <form class="layui-form site-inline" style="margin-top: 20px">\
+    var html = '  <form class="layui-form site-inline" style="margin-top: 20px;padding-right: 35px;">\
                <div class="layui-form-item">\
                    <label class="layui-form-label"><span style="color: red;">*</span>类型名称</label>\
                     <div class="layui-input-block">\
-                    <input type="text" name="typename" lay-verify="title" autocomplete="off" placeholder="请输入类型名称" value="' + typename + '" class="layui-input">\
+                    <input type="text" name="typename" lay-verify="typename" required  autocomplete="off" placeholder="请输入类型名称" value="' + typename + '" class="layui-input" >\
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
                     <label class="layui-form-label"><span style="color: red;">*</span>排序</label>\
                     <div class="layui-input-block">\
-                    <input type="number" name="ordernum" lay-verify="title" autocomplete="off" placeholder="请输入排序" value="' + ordernum + '" class="layui-input">\
+                    <input type="number" name="ordernum" lay-verify="ordernum" required  autocomplete="off" placeholder="请输入排序" value="' + ordernum + '" class="layui-input" >\
                     </div>\
                 </div>\
             </form>';
 
 
-    var index = layer.open({
-        title: '问题类型编辑',
-        content: html,
-        area: ['500px', '300px'],
-        btn: ['确定', '取消'],
-        yes: function (index, layero) {
-            layer.close(index);
+    layui.use('form', function(){
+        var form = layui.form;
 
-            if (isNotEmpty(typename) ) {
-                AddOrUpdateProblemType();//修改
-            } else {
-                AddOrUpdateProblemType(1);//新增
+        var index = layer.open({
+            type: 1,
+            title: '问题类型编辑',
+            content: html,
+            area: ['500px', '300px'],
+            btn: ['确定', '取消'],
+            success: function (layero, index) {
+                layero.addClass('layui-form');//添加form标识
+                layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
+                form.render();
+            },
+            yes: function (index, layero) {
+                //自定义验证规则
+                form.verify({
+                    typename:[/\S/,'请输入问题类型名称'], ordernum: [/\S/,'请输入问题排序号']
+                });
+                //监听提交
+                form.on('submit(fromContent)', function(data){
+
+                    if (isNotEmpty(typename) ) {
+                        AddOrUpdateProblemType();//修改
+                    } else {
+                        AddOrUpdateProblemType(1);//新增
+                    }
+
+                });
+
+            },
+            btn2: function (index, layero) {
+                layer.close(index);
             }
+        });
 
-        },
-        btn2: function (index, layero) {
-            layer.close(index);
-        }
     });
+
+
 }

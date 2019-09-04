@@ -82,15 +82,15 @@ public class KeywordAction extends BaseAction{
     /**
      * 修改关键字页面
      * @param model
-     * @param id
+     * @param ssid
      * @return
      */
-    @RequestMapping(value = "/getAddOrUpdateKeyword/{id}")
-    public ModelAndView getUpdateKeyword(Model model,  @PathVariable("id") int id) {
+    @RequestMapping(value = "/getAddOrUpdateKeyword/{ssid}")
+    public ModelAndView getUpdateKeyword(Model model,  @PathVariable("ssid") String ssid) {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("getAddOrUpdateKeyword")) {
             RResult rResult = createNewResultOfFail(); // AddKeywordParam addKeywordParam,
-            keywordService.getKeywordById(rResult, id);
+            keywordService.getKeywordById(rResult, ssid);
             model.addAttribute("RResult", rResult);
             model.addAttribute("title", "修改关键字");
             return new ModelAndView("server_web/base/keyword/addOrUpdateKeyword", "keywordModel", model);
@@ -101,13 +101,13 @@ public class KeywordAction extends BaseAction{
 
     /**
      * 修改关键字
-     * @param id
+     * @param ssid
      * @param keyword
      * @return
      */
-    @PostMapping(value = "/getAddOrUpdateKeyword/{id}")
+    @PostMapping(value = "/getAddOrUpdateKeyword/{ssid}")
     @ResponseBody
-    public RResult UpdateKeyword(@PathVariable("id") int id, AddOrUpdateKeywordParam keyword) {
+    public RResult UpdateKeyword(@PathVariable("ssid") String ssid, AddOrUpdateKeywordParam keyword) {
         RResult rResult = createNewResultOfFail();
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("getAddOrUpdateKeyword")) {

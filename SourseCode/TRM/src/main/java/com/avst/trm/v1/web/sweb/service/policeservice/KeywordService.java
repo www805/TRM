@@ -34,11 +34,13 @@ public class KeywordService extends BaseService {
     /**
      * 通过id查询关键字
      * @param result
-     * @param id
+     * @param ssid
      */
-    public void getKeywordById(RResult<Base_keyword> result, int id){
+    public void getKeywordById(RResult<Base_keyword> result, String ssid){
 
-        Base_keyword keyword = keywordMapper.selectById(id);
+        Base_keyword base_keyword = new Base_keyword();
+        base_keyword.setSsid(ssid);
+        Base_keyword keyword = keywordMapper.selectOne(base_keyword);
 
         if(null==result){
             result=new RResult<Base_keyword>();
@@ -156,7 +158,19 @@ public class KeywordService extends BaseService {
         if(!checkKeyword(rResult, keyword)){
             return;
         }
-        Integer update = keywordMapper.updateById(keyword);
+        EntityWrapper<Base_keyword> ew = new EntityWrapper<>();
+        ew.eq("text", keyword.getText());
+        ew.ne("ssid", keyword.getSsid());
+        List<Base_keyword> base_keywords = keywordMapper.selectList(ew);
+        if (null != base_keywords && base_keywords.size() > 0) {
+            rResult.setMessage("关键字已存在，请重新输入");
+            return;
+        }
+
+        EntityWrapper<Base_keyword> ew2 = new EntityWrapper<>();
+        ew2.eq("ssid", keyword.getSsid());
+
+        Integer update = keywordMapper.update(keyword, ew2);
         if (update > 0) {
             rResult.setData(update);
             this.changeResultToSuccess(rResult);
@@ -173,8 +187,13 @@ public class KeywordService extends BaseService {
             return;
         }
 
-//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-//        LogUtil.intoLog(this.getClass(),df.format(new Date()));// new Date()为获取当前系统时间
+        EntityWrapper<Base_keyword> ew = new EntityWrapper<>();
+        ew.eq("text", keyword.getText());
+        List<Base_keyword> base_keywords = keywordMapper.selectList(ew);
+        if (null != base_keywords && base_keywords.size() > 0) {
+            rResult.setMessage("关键字已存在，请重新输入");
+            return;
+        }
 
         keyword.setCreatetime(new Date());
         keyword.setSsid(OpenUtil.getUUID_32());
@@ -191,11 +210,13 @@ public class KeywordService extends BaseService {
      * @param keyword
      */
     public void deleteKeyword(RResult rResult, AddOrUpdateKeywordParam keyword) {
-        if (null == keyword.getId()) {
+        if (null == keyword.getSsid()) {
             return;
         }
 
-        Integer integer = keywordMapper.deleteById(keyword.getId());
+        EntityWrapper<Base_keyword> ew = new EntityWrapper<>();
+        ew.eq("ssid", keyword.getSsid());
+        Integer integer = keywordMapper.delete(ew);
         if (integer > 0) {
             rResult.setData(integer);
             this.changeResultToSuccess(rResult, "关键字删除成功!");
@@ -209,7 +230,11 @@ public class KeywordService extends BaseService {
      */
     public void updateShieldbool(RResult rResult, AddOrUpdateKeywordParam keyword) {
         if(null != keyword.getShieldbool()){
-            Integer integer = keywordMapper.updateById(keyword);
+
+            EntityWrapper<Base_keyword> ew = new EntityWrapper<>();
+            ew.eq("ssid", keyword.getSsid());
+
+            Integer integer = keywordMapper.update(keyword, ew);
             if (integer > 0) {
                 rResult.setData(integer);
                 this.changeResultToSuccess(rResult, "关键字屏蔽修改成功!");

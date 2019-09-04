@@ -42,8 +42,8 @@
                         <div class="login_name">
                             <p th:text="${loginModel.serviceName}">智能提讯系统</p>
                         </div>
-                        <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="admin" lay-verify="loginaccount">
-                        <input name="password" id="password" type="password" placeholder="密码" value="admin" lay-verify="password">
+                        <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="" lay-verify="loginaccount">
+                        <input name="password" id="password" type="password" placeholder="密码" value="" lay-verify="password">
                         <button  type="button" id="loginbtn"  lay-filter="loginbtn" lay-submit="">登录</button>
                     </div>
                 </div>
@@ -89,11 +89,11 @@
             var loginaccount = GetQueryString("loginaccount");
             var adminpassword = GetQueryString("loginpassword");
 
-            if (isNotEmpty(loginaccount) && isNotEmpty(adminpassword)) {
-                $("input[name='loginaccount']").val(loginaccount);
-                $("input[name='password']").val(adminpassword);
-                userlogin();
-            }
+            // if (isNotEmpty(loginaccount) && isNotEmpty(adminpassword)) {
+            //     $("input[name='loginaccount']").val(loginaccount);
+            //     $("input[name='password']").val(adminpassword);
+            //     userlogin();
+            // }
         }
     });
 

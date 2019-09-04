@@ -1,10 +1,10 @@
 var KeywordAction = null;
 
-function updateShieldbool(id, shieldbool) {
+function updateShieldbool(ssid, shieldbool) {
 
     var url = getActionURL(getactionid_manage().getKeyword_updateShieldbool);
     var data = {
-        id: id,
+        ssid: ssid,
         shieldbool: shieldbool
     };
 
@@ -38,7 +38,7 @@ function getKeywordList(){
 
     var url = "";
 
-    var id =$('input[name="id"]').val();
+    var ssid =$('input[name="ssid"]').val();
     var text =$('input[name="text"]').val();
     var replacetext =$('input[name="replacetext"]').val();
     var color =$('input[name="color"]').val();
@@ -52,7 +52,7 @@ function getKeywordList(){
     }
 
     var data={
-        id:id,
+        ssid:ssid,
         text:text,
         replacetext:replacetext,
         color:color,
@@ -60,8 +60,8 @@ function getKeywordList(){
         shieldbool:shieldbool
     };
 
-    if(id){
-        url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword) + "/" + id;
+    if(ssid){
+        url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword) + "/" + ssid;
     }else{
         url = getActionURL(getactionid_manage().addOrUpdateKeyword_getAddOrUpdateKeyword);
     }
@@ -97,16 +97,16 @@ function getKeyWordPage(text,currPage,pageSize){
 }
 
 
-function deleteKeyword(id){
+function deleteKeyword(ssid){
 
-    var aa = layer.confirm('你确定要删除关键字？', {
+    var index_Keyword = layer.confirm('你确定要删除关键字？', {
         btn: ['确定','取消'] //按钮
     }, function(){
 
-        layer.close(aa);
+        layer.close(index_Keyword);
         KeywordAction = getAction(getactionid_manage().getKeyword_deleteKeyword);
         var data={
-            id:id
+            ssid:ssid
         };
         ajaxSubmit(KeywordAction.reqURL,data,callDeleteKeyword);
 

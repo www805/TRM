@@ -23,7 +23,7 @@
 
     <style>
         .layui-form-switch {
-            margin-top: 7px;`
+            margin-top: 7px;
         }
     </style>
 </head>
@@ -36,7 +36,7 @@
     </div>
 
     <form class="layui-form layui-main site-inline" style="margin-top: 30px;" th:object="${keywordModel.RResult.data}">
-        <input type="hidden" name="id" th:value="( (*{id} == null)? '' : *{id})">
+        <input type="hidden" name="ssid" th:value="( (*{ssid} == null)? '' : *{ssid})">
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>关键字名称</label>
             <div class="layui-input-block">
