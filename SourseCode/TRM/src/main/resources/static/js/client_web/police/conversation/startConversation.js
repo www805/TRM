@@ -4,8 +4,10 @@
 
 var dquserssid;//当前用户ssid
 var dqcasessid;//当前案件
+var dqothercasessid;//当前其他案件的ssid
 
 var cases;//全部案件
+var othercases=null;
 var otheruserinfos;//工作人员
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
@@ -390,7 +392,9 @@ function callbakegetCaseById(data) {
             var data=data.data;
             if (isNotEmpty(data)){
                 var casesdata=data.cases;
+                var othercasesdata=data.othercases;
                 cases=casesdata;
+                othercases=othercasesdata;
             }
         }
     }else{
@@ -463,6 +467,19 @@ function select_caseblur() {
             }
         }
     }
+    if (!isNotEmpty(dqcasessid)&&isNotEmpty(othercases)) {
+        for (var i = 0; i < othercases.length; i++) {
+            var c = othercases[i];
+            if (c.casename.trim()==casename.trim()) {
+                dqcasessid=c.ssid;
+                asknum=c.arraignments==null?0:c.arraignments.length;
+                if (isNotEmpty(c.occurrencetime)){
+                    $("#occurrencetime").val(c.occurrencetime);
+                }
+                break;
+            }
+        }
+    }
     if (isNotEmpty(dqcasessid)&&isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c = cases[i];
@@ -506,6 +523,65 @@ function callbackgetAdminList(data) {
     });
 }
 
+
+function open_othercases() {
+    var dqcardssid=$("#cards option:selected").val();
+    var dqcardnum=$("#cardnum").val();
+    if (!isNotEmpty(dqcardssid)||!isNotEmpty(dqcardnum)){
+        parent.layer.msg("请先获取人员基本信息",{icon:5});
+        return;
+    }
+    if (!isNotEmpty(othercases)){
+        parent.layer.msg("暂未找到其他案件",{icon:5});
+        return;
+    }
+    var CASE_HTML='<form class="layui-form layui-row" ><table class="layui-table" lay-skin="line" style="table-layout: fixed;">\
+                     <tbody id="othercases_html" >';
+    for (let i = 0; i < othercases.length; i++) {
+        const othercase = othercases[i];
+        CASE_HTML+='<tr  ssid="'+othercase.ssid+'"><td >'+othercase.casename+'</td></tr>';
+    }
+    CASE_HTML+='</tbody>\
+                </table></form>';
+    parent.layer.open({
+        type:1,
+        title: '选择其他案件',
+        shade: 0.3,
+        resize:false,
+        area: ['25%', '400px'],
+        content: CASE_HTML,
+        btn: ['确认', '取消']
+        ,yes: function(index, layero){
+            //回填案件信息
+            if (isNotEmpty(dqothercasessid)&&isNotEmpty(othercases)) {
+                dqcasessid=dqothercasessid;
+                $("#casename").val("");
+                for (var i = 0; i < othercases.length; i++) {
+                    var c = othercases[i];
+                    if (dqcasessid==c.ssid){
+                        $("#casename").val(c.casename);
+                        if (isNotEmpty(c.occurrencetime)){
+                            $("#occurrencetime").val(c.occurrencetime);
+                        }
+                    }
+                }
+            }
+            $("#casename_ssid").html("");
+            dqothercasessid=null;
+            parent.layer.close(index);
+        },
+        btn2: function(index) {
+            dqothercasessid=null;
+            parent.layer.close(index);
+        }
+    });
+
+    $("#othercases_html tr",parent.document).click(function () {
+        $(this).css({"background-color":" #f2f2f2"}).siblings().css({"background-color":" #fff"});
+        dqothercasessid= $(this).attr("ssid");
+    });
+
+}
 
 
 //检验主身份证号码

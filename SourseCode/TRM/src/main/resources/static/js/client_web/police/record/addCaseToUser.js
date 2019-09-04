@@ -10,6 +10,7 @@ var dqcasessid=null;//当前案件ssid
 var dqmodelssid=null;//当前所选的会议模板ssid
 var dqotheruserinfossid=null;//当前询问人(新增询问人回显)
 var dqotherworkssid=null;//当前询问人对应的工作单位
+var dqothercasessid;//当前其他案件的ssid
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
 var skipCheckCasebool=-1;
@@ -660,7 +661,7 @@ function setcases(cases){
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
                         var username=$("#username").val();
                         var asknum=c.arraignments==null?0:c.arraignments.length;
-                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
@@ -1014,7 +1015,7 @@ function select_case(obj) {
                     var casename=$("#casename").val();
                     var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                    var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
@@ -1055,7 +1056,35 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+
+                $("#cause").val(c.cause);
+                $("#casenum").val(c.casenum);
+                $("#caseway").val(c.caseway);
+                $("#asknum").val(asknum);
+                $("#recordname").val(recordname);
+
+                if (isNotEmpty(c.starttime)){
+                    $("#starttime").val(c.starttime);
+                }
+                if (isNotEmpty(c.endtime)){
+                    $("#endtime").val(c.endtime);
+                }
+                if (isNotEmpty(c.occurrencetime)){
+                    $("#occurrencetime").val(c.occurrencetime);
+                }
+                break;
+            }
+        }
+    }
+
+    if (!isNotEmpty(dqcasessid)&&isNotEmpty(othercases)) {
+        for (var i = 0; i < othercases.length; i++) {
+            var c = othercases[i];
+            if (c.casename.trim()==casename.trim()) {
+                dqcasessid=c.ssid;
+                var asknum=c.arraignments==null?0:c.arraignments.length;
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -1078,7 +1107,7 @@ function select_caseblur() {
     }
     if (isNotEmpty(casename)&&!isNotEmpty(dqcasessid)){
         var asknum=$("#asknum").val();
-        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
         $("#recordname").val(recordname);
         layui.use(['form','laydate'], function(){
             var form=layui.form;
@@ -1308,10 +1337,10 @@ function open_othercases() {
         return;
     }
     var CASE_HTML='<form class="layui-form layui-row" ><table class="layui-table" lay-skin="line" style="table-layout: fixed;">\
-                     <tbody id="othercases_html"   dqothercase="">';
+                     <tbody id="othercases_html"  >';
                     for (let i = 0; i < othercases.length; i++) {
                         const othercase = othercases[i];
-                        CASE_HTML+='<tr  onclick=setcolor(this,"'+othercase.ssid+'")><td >'+othercase.casename+'</td></tr>';
+                        CASE_HTML+='<tr  ssid="'+othercase.ssid+'"><td >'+othercase.casename+'</td></tr>';
                     }
                      CASE_HTML+='</tbody>\
                 </table></form>';
@@ -1325,10 +1354,8 @@ function open_othercases() {
         btn: ['确认', '取消']
         ,yes: function(index, layero){
             //回填案件信息
-           var html= $("#othercases_html").html();
-            var othercasessid=$("#othercases_html",parent.document).attr("dqothercase");
-            if (isNotEmpty(othercasessid)&&isNotEmpty(othercases)) {
-                dqcasessid=othercasessid;
+            if (isNotEmpty(dqothercasessid)&&isNotEmpty(othercases)) {
+                dqcasessid=dqothercasessid;
 
                 $("#casename").val("");
                 $("#cause").val("");
@@ -1344,7 +1371,7 @@ function open_othercases() {
                         var casename=c.casename;
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                        var recordname=""+username+"《"+casename+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);
@@ -1365,18 +1392,21 @@ function open_othercases() {
                 }
             }
             $("#casename_ssid").html("");
+            dqothercasessid=null;
             parent.layer.close(index);
         },
         btn2: function(index) {
+            dqothercasessid=null;
             parent.layer.close(index);
         }
     });
-}
-function setcolor(obj,ssid) {
-   $(obj).css({"background-color":" #f2f2f2"}).siblings().css({"background-color":" #fff"});
-   $("#othercases_html").attr("dqothercase",ssid)
 
+    $("#othercases_html tr",parent.document).click(function () {
+        $(this).css({"background-color":" #f2f2f2"}).siblings().css({"background-color":" #fff"});
+        dqothercasessid= $(this).attr("ssid");
+    });
 }
+
 
 
 
