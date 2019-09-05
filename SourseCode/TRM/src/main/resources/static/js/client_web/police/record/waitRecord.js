@@ -22,6 +22,8 @@ var getRecordById_data=null;//单份笔录返回的全部数据
 var dq_livingurl=null;//当前直播地址
 var dq_previewurl=null;//当前预览地址
 
+var record_pausebool=-1;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
+
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -227,7 +229,7 @@ function img_bool(obj,type){
             $("#pauserecord").attr("onclick","");
             console.log("开始会议")
             startMC();
-        } else {
+        } else if (record_pausebool==1) {
             //继续会议
             startMC_index = layer.msg("再次启动中，请稍等...", {
                 icon: 16,
@@ -239,16 +241,25 @@ function img_bool(obj,type){
             pauseOrContinueRercord(2);
         }
     }else if (type==2) {
-        startMC_index = layer.msg("暂停中，请稍等...", {
-            icon: 16,
-            time:-1,
-            shade: [0.1,'#fff'], //不显示遮罩
-        });
-        //暂停录音
-        $("#pauserecord").css("display","block");
-        console.log("暂停会议")
-        if (null!=mtssid) {
-            pauseOrContinueRercord(1);
+        if (record_pausebool==1){
+            startMC_index = layer.msg("暂停中，请稍等...", {
+                icon: 16,
+                time:-1,
+                shade: [0.1,'#fff'], //不显示遮罩
+            });
+            //暂停录音
+            $("#pauserecord").css("display","block");
+            console.log("暂停会议")
+            if (null!=mtssid) {
+                pauseOrContinueRercord(1);
+            }
+        } else {
+            $("#startrecord").css("display","block");
+            layui.use(['layer','element','form'], function(){
+                var layer=layui.layer;
+                layer.tips("笔录制作中~" ,'#startrecord',{time:0, tips: 2});
+            });
+            layer.msg("笔录制作中~");
         }
     }else if(type==-1) {
         $("#endrecord").css("display","block");
@@ -257,7 +268,7 @@ function img_bool(obj,type){
             layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
         });
         console.log("会议已结束")
-        layer.msg("该案件已制作");
+        layer.msg("该笔录已经制作过啦~");
     }
 }
 
@@ -417,6 +428,7 @@ function callbackgetRecordById(data) {
 
             var recordtype_conversation1=data.recordtype_conversation1;
             var recordtype_conversation2=data.recordtype_conversation2;
+            record_pausebool=data.record_pausebool;//
             var record=data.record;
             if (isNotEmpty(record)){
                 var recordtypessid=record.recordtypessid;
@@ -448,8 +460,6 @@ function callbackgetRecordById(data) {
                     $("#record_switch_HTML").css("visibility","visible");
                     $("#overRecord_btn").html("结束笔录")
 
-
-
                     $("#pauserecord").attr("src","/uimaker/images/record1.png").css({"width":"100px","height":"100px"});
                     $("#startrecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
                     $("#endrecord").attr("src","/uimaker/images/record2.png").css({"width":"100px","height":"100px"});
@@ -477,11 +487,15 @@ function callbackgetRecordById(data) {
                         //存在会议状态正常
                         if (mcbool==1){
                             $("#startrecord").css("display","block");
+                            var tips_msg="笔录制作中~";
+                            if (record_pausebool==1) {
+                                tips_msg="点击我可以暂停制作~";
+                            }
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
+                                layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
                             });
-                        } else if (mcbool==3) {
+                        } else if (mcbool==3&&record_pausebool==1) {
                             $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
@@ -670,11 +684,14 @@ function callbackstartMC(data) {
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
+        var tips_msg="笔录制作中~";
+        if (record_pausebool==1){
+            tips_msg="点击我可以暂停制作~";
+        }
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
+            layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
         });
-
 
         var data=data.data;
         if (isNotEmpty(data)){

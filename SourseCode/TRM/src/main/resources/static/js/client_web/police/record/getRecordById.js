@@ -21,6 +21,8 @@ var recordPlayParams=[];//全部视频数据集合
 
 var phSubtracSeconds=0;
 
+var iid=null;//打包iid
+
 
 
 /**
@@ -279,7 +281,7 @@ function sortPlayUrl(a, b) {
 
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
-        var iiddata=data.iid;
+         iid=data.iid;
         var recordFileParams=data.recordFileParams;
         recordPlayParams=data.recordPlayParams;
         var state;
@@ -1789,18 +1791,91 @@ function phdata(datad,dqdata) {
 }
 
 //导出下载
+var gZIPVod_index;
+var gZIPVod_Url;
 function gZIPVod(){
-
-
-    var url="/cweb/police/record/gZIPVod";
-    var data={
-        iid:"a08a1f4d944b489fa10dfc3eb5212b48_sxsba2",
-        zipfilename:"测试案件导出"
-    };
-    ajaxSubmitByJson(url,data,callbackgZIPVod);
+    if (isNotEmpty(iid)){
+        $("#gZIPVod_html").css("display","none");
+        gZIPVod_index=layer.msg("打包中，请稍等...", {
+            icon: 16,
+            shade: [0.1, 'transparent'],
+            time: 100000
+        });
+        var url=getActionURL(getactionid_manage().getRecordById_gZIPVod);
+        var data={
+            iid:iid,
+            zipfilename:recordnameshow
+        };
+        ajaxSubmitByJson(url,data,callbackgZIPVod);
+    } else {
+        layer.msg("请先确认视频文件是否生成...",{icon: 5});
+    }
 
 }
-
+var timer_zIPVodProgress;
 function callbackgZIPVod(data) {
-        alert(data.data);
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        layer.close(gZIPVod_index);
+        gZIPVod_Url=data;
+
+        //开始请求获取进度
+         timer_zIPVodProgress=setInterval(function () {
+            zIPVodProgress();
+        },1000)
+
+    }else {
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+function zIPVodProgress() {
+    var url=getActionURL(getactionid_manage().getRecordById_zIPVodProgress);
+    var data={
+        iid:iid,
+        zipfilename:recordnameshow
+    };
+    ajaxSubmitByJson(url,data,callbackzIPVodProgress);
+}
+function callbackzIPVodProgress(data) {
+    $("#gZIPVod_html").css("display","block");
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        console.log(data)
+        //开始显示进度
+        if (isNotEmpty(data)){
+            $("#gZIPVod_html .layui-col-md9").empty();
+            var totalzipnum=data.totalzipnum==null?0:data.totalzipnum;//总共有多少个需要打包的文件
+            var overzipnum=data.overzipnum==null?0:data.overzipnum;//已经完成了多少个文件
+            var shu=(overzipnum/totalzipnum)*100;
+            shu=parseInt(shu);
+            var HTML='<div class="layui-progress " lay-showPercent="true" style="margin:8px" lay-filter="progress">\
+                <div class="layui-progress-bar" lay-percent="'+shu+'%"></div>\
+                </div>';
+            $("#gZIPVod_html .layui-col-md9").html(HTML);
+
+            layui.use(['layer','element','slider','form'], function(){
+                var element = layui.element;
+                element.render('progress');
+                //使用模块
+            });
+
+
+        }
+    }else if(null!=data&&data.actioncode=='SUCCESS_NOTHINGTODO'){
+        $("#gZIPVod_html .layui-col-md9").html(data.message);
+       setTimeout(function () {
+            $("#gZIPVod_html").css("display","none");
+        },5000)
+
+        clearInterval(timer_zIPVodProgress);
+        if (isNotEmpty(gZIPVod_Url)){
+            var $a = $("<a></a>").attr("href", gZIPVod_Url).attr("download", "打包文件");
+            $a[0].click();
+        }
+    }else {
+        console.log(data.message);
+        //进度请求失败
+        $("#gZIPVod_html .layui-col-md9").html(data.message);
+    }
 }

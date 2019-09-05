@@ -26,6 +26,16 @@ public class GetRecordByIdVO {
 
     private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
 
+    private String record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许
+
+    public String getRecord_pausebool() {
+        return record_pausebool;
+    }
+
+    public void setRecord_pausebool(String record_pausebool) {
+        this.record_pausebool = record_pausebool;
+    }
+
     public String getRecordtype_conversation1() {
         return recordtype_conversation1;
     }

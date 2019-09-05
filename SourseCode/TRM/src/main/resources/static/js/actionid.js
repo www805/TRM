@@ -147,6 +147,8 @@ function getactionid_manage() {
         getRecordById_togetPolygraph:"getRecordById_togetPolygraph",
         getRecordById_exportWord:"getRecordById_exportWord",
         getRecordById_exportPdf:"getRecordById_exportPdf",
+        getRecordById_gZIPVod:"getRecordById_gZIPVod",
+        getRecordById_zIPVodProgress:"getRecordById_zIPVodProgress",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",

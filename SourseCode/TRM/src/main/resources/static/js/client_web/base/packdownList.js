@@ -153,5 +153,4 @@ function downPackdown(url,filename) {
         var $a = $("<a></a>").attr("href", url).attr("download", filename);
         $a[0].click();
     }
-
 }

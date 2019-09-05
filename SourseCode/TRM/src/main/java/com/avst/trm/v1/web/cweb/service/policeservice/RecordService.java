@@ -441,7 +441,7 @@ public class RecordService extends BaseService {
 
         getRecordByIdVO.setRecordtype_conversation1(PropertiesListenerConfig.getProperty("recordtype_conversation1"));
         getRecordByIdVO.setRecordtype_conversation2(PropertiesListenerConfig.getProperty("recordtype_conversation2"));
-
+        getRecordByIdVO.setRecord_pausebool(PropertiesListenerConfig.getProperty("record.pausebool"));
         //根据笔录ssid获取录音数据
             EntityWrapper recordParam=new EntityWrapper();
             recordParam.eq("r.ssid",recordssid);
@@ -1274,7 +1274,7 @@ public class RecordService extends BaseService {
                 if (index>-1&&index<type.length()-1){
                     String test3before=type.substring(0,index);
                     String test3after=type.substring(index+1);
-                    q=test3before.substring(0,1)+test3after.substring(0,1)+"_";
+                    q=test3before.substring(0,1)+test3after.substring(0,1);
                 }
 
                 //拼接案件编号
@@ -2195,7 +2195,7 @@ public class RecordService extends BaseService {
                 if (index>-1&&index<type.length()-1){
                     String test3before=type.substring(0,index);
                     String test3after=type.substring(index+1);
-                    q=test3before.substring(0,1)+test3after.substring(0,1)+"_";
+                    q=test3before.substring(0,1)+test3after.substring(0,1);
                 }
 
                 //拼接案件编号
@@ -2335,7 +2335,7 @@ public class RecordService extends BaseService {
             if (index>-1&&index<type.length()-1){
                 String test3before=type.substring(0,index);
                 String test3after=type.substring(index+1);
-                q=test3before.substring(0,1)+test3after.substring(0,1)+"_";
+                q=test3before.substring(0,1)+test3after.substring(0,1);
             }
 
             //拼接案件编号
@@ -3642,9 +3642,9 @@ public class RecordService extends BaseService {
                     zipfilepath=zipfilepath.substring(0,zipfilepath.length()-1);
                 }
                 if(zipfilepath.indexOf("\\") > -1){
-                    zipfilepath+="\\\\"+iid+gztype;
+                    zipfilepath+="\\\\"+zipfilename+gztype;
                 }else {
-                    zipfilepath+="/"+iid+gztype;
+                    zipfilepath+="/"+zipfilename+gztype;
                 }
                 String staticpath=PropertiesListenerConfig.getProperty("staticpath");
                 String httpbasestaticpath=PropertiesListenerConfig.getProperty("httpbasestaticpath");
@@ -3676,7 +3676,8 @@ public class RecordService extends BaseService {
         }
 
         GZIPCacheParam gzipCacheParam=GZIPCache.getGzipCacheParam(iid);
-        if(null==gzipCacheParam){
+      if(null==gzipCacheParam){
+            result.setActioncode(Code.SUCCESS_NOTHINGTODO.toString());
             result.setMessage("未找到该打包进度，可能已经打包完成");
         }else{
             result.setData(gzipCacheParam);
