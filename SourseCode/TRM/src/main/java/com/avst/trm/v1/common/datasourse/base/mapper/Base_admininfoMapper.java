@@ -95,7 +95,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      */
 //    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
     @Select("select * from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
-            "where 1=1 ${ew.sqlSegment} GROUP BY a.id " )
+            "where 1=1 ${ew.sqlSegment} " )
     public List<Base_arraignmentCount> getArraignmentCountList(Page page, @Param("ew") EntityWrapper ew);
 
     /**
@@ -103,8 +103,8 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
      * @param ew
      * @return
      */
-    @Select("select * from base_admininfo a left join police_recordreal r on a.ssid = r.userssid left join police_record re on re.id = r.recordssid " +
-            "where 1=1 ${ew.sqlSegment} GROUP BY a.id " )
+    @Select("select * from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
+            "where 1=1 ${ew.sqlSegment} " )
     public List<Base_arraignmentCount> getArraignmentCountListNoPage(@Param("ew") EntityWrapper ew);
 
 

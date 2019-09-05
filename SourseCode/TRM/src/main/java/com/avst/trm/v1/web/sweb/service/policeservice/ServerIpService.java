@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 
 
 import com.avst.trm.v1.common.util.ChangeIP;
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RRParam;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -67,6 +68,43 @@ public class ServerIpService extends BaseService {
      */
     public void updateServerIp(RResult rResult, GetServerIpParam getServerIpParam) {
         if(!checkKeyword(rResult, getServerIpParam)){
+            return;
+        }
+
+        String asrEtip = getServerIpParam.getAsrip().getEtip();
+        String fluEtip = getServerIpParam.getFlushbonadingip().getEtip();
+        String polyEtip = getServerIpParam.getPolygraphip().getEtip();
+        String stoEtip = getServerIpParam.getStorageip().getEtip();
+        String tteEtip = getServerIpParam.getTtsetinfoip().getEtip();
+
+        boolean isip = OpenUtil.isIp(getServerIpParam.getTrmip());
+        if(isip == false){
+            rResult.setMessage("笔录系统ip，不是一个正确的IP");
+            return;
+        }
+        boolean asrEtipisip = OpenUtil.isIp(asrEtip);
+        if(asrEtipisip == false){
+            rResult.setMessage("请输入测谎仪ip，不是一个正确的IP");
+            return;
+        }
+        boolean fluEtipisip = OpenUtil.isIp(fluEtip);
+        if(fluEtipisip == false){
+            rResult.setMessage("请输入审讯设备ip，不是一个正确的IP");
+            return;
+        }
+        boolean polyEtipisip = OpenUtil.isIp(polyEtip);
+        if(polyEtipisip == false){
+            rResult.setMessage("请输入语音识别服务ip，不是一个正确的IP");
+            return;
+        }
+        boolean stoEtipisip = OpenUtil.isIp(stoEtip);
+        if(stoEtipisip == false){
+            rResult.setMessage("请输入存储设备ip，不是一个正确的IP");
+            return;
+        }
+        boolean tteEtipisip = OpenUtil.isIp(tteEtip);
+        if(tteEtipisip == false){
+            rResult.setMessage("请输入文字转语音服务ip，不是一个正确的IP");
             return;
         }
 

@@ -5,6 +5,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.ServerIpService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -26,8 +28,13 @@ public class ServerIpAction extends BaseAction{
      */
     @GetMapping(value = "/getServerIp")
     public ModelAndView getServerIp(Model model) {
-        model.addAttribute("title", "服务器IP配置");
-        return new ModelAndView("server_web/base/serverip", "ipModel", model);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getServerIp")) {
+            model.addAttribute("title", "服务器IP配置");
+            return new ModelAndView("server_web/base/serverip", "ipModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
     /**
@@ -38,7 +45,12 @@ public class ServerIpAction extends BaseAction{
     @ResponseBody
     public RResult updateServerIp(@RequestBody GetServerIpParam getServerIpParam) {
         RResult rResult = createNewResultOfFail();
-        serverIpService.updateServerIp(rResult, getServerIpParam);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("updateServerIp")) {
+            serverIpService.updateServerIp(rResult, getServerIpParam);
+        }else{
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 
@@ -50,7 +62,12 @@ public class ServerIpAction extends BaseAction{
     @ResponseBody
     public RResult getServerIpList() {
         RResult rResult = createNewResultOfFail();
-        serverIpService.getServerIp(rResult);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getServerIpList")) {
+            serverIpService.getServerIp(rResult);
+        }else{
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 
@@ -62,7 +79,12 @@ public class ServerIpAction extends BaseAction{
     @ResponseBody
     public RResult getServerIpALL(GetServerIpALLParam param) {
         RResult rResult = createNewResultOfFail();
-        serverIpService.getServerIpALL(rResult, param);
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getServerIpALL")) {
+            serverIpService.getServerIpALL(rResult, param);
+        }else{
+            rResult.setMessage("权限不足");
+        }
         return rResult;
     }
 

@@ -98,3 +98,21 @@ function GetQueryString(name) {
     var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
     if(r!=null)return  unescape(r[2]); return null;
 }
+
+$(function () {
+    layui.use(['layer','element','form'], function(){
+        var layer = layui.layer; //获得layer模块
+        var element = layui.element;
+        var form=layui.form;
+        //使用模块
+
+        //自定义验证规则
+        form.verify({
+            loginaccount:[/\S/,'请输入账号'], password: [/\S/,'请输入密码']
+        });
+        form.on('submit(loginbtn)', function (data) {
+            userlogin();
+            return false;
+        });
+    });
+})

@@ -134,6 +134,7 @@ public class Arraignment_countService extends BaseService {
                 }
 
             }
+            ew.orderBy("a.id", false);
             int count = arraignmentCountMapper.getArraignmentCountCount(ew);
             param.setRecordCount(count);
             getlist3VO.setPageparam(param);
@@ -204,6 +205,7 @@ public class Arraignment_countService extends BaseService {
             }
 
         }
+        ew.orderBy("a.id", false);
         List<Base_arraignmentCount> list = arraignmentCountMapper.getArraignmentCountListNoPage(ew);
 
         Base_arraignmentCount arraignmentCount = null;

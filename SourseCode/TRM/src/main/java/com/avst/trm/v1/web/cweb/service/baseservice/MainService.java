@@ -199,6 +199,12 @@ public class MainService extends BaseService {
             return;
         }
 
+        boolean isip = OpenUtil.isIp(updateServerconfigParam.getServerip());
+        if(isip == false){
+            result.setMessage("设备IP不是一个正确的IP");
+            return;
+        }
+
         //old数据
         EntityWrapper ew=new EntityWrapper();
         ew.eq("b.ssid",updateServerconfigParam.getSsid());

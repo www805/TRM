@@ -90,6 +90,12 @@ public class ServerConfigService extends BaseService {
             return;
         }
 
+        boolean isip = OpenUtil.isIp(serverconfig.getServerip());
+        if(isip == false){
+            rResult.setMessage("填写的服务器IP，不是一个正确的IP");
+            return;
+        }
+
         AppCache.delAppCacheParam();//清空客户端缓存
         AppServiceCache.delAppServiceCache();//清空服务器缓存
 

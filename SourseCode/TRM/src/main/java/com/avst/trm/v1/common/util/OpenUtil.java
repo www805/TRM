@@ -1181,7 +1181,25 @@ public static String numtoStr(int digit,Integer num){
 	}
 
 
+	/**
+	 * 判断ip是否正确
+	 * @param ip
+	 * @return
+	 */
+	public static boolean isIp(String ip) {
+		boolean b1 = ip.matches("([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}");
+		return b1;
+	}
 
+	/**
+	 * 判断是否是英文+数字
+	 * @param str
+	 * @return
+	 */
+	public static boolean isEnNum(String str) {
+		boolean b1 = str.matches("[0-9a-zA-Z]*");
+		return b1;
+	}
 	
 	
 	public static void main(String[] args) {
