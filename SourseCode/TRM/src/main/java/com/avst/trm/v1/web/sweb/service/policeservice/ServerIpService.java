@@ -43,22 +43,27 @@ public class ServerIpService extends BaseService {
 
         GetServerIpVO getServerIpVO = new GetServerIpVO();
 
-
-        //远程请求
-        ReqParam<GetTDCacheParamByMTssidParam_out> reqParam = new ReqParam();
-        GetTDCacheParamByMTssidParam_out param = new GetTDCacheParamByMTssidParam_out();
-        param.setMcType("MC_AVST");
-        reqParam.setParam(param);
-        RResult mc_model = meetingControl.getTDByMTList(reqParam);
-
         //获取配置文件
         String trmIP = NetTool.getMyIP();
-
         getServerIpVO.setTrmip(trmIP);
-        getServerIpVO.setModeltds(mc_model.getData());
 
-        result.setData(getServerIpVO);
-        this.changeResultToSuccess(result);
+        try {
+            //远程请求
+            ReqParam<GetTDCacheParamByMTssidParam_out> reqParam = new ReqParam();
+            GetTDCacheParamByMTssidParam_out param = new GetTDCacheParamByMTssidParam_out();
+            param.setMcType("MC_AVST");
+            reqParam.setParam(param);
+            RResult mc_model = meetingControl.getTDByMTList(reqParam);
+
+            getServerIpVO.setModeltds(mc_model.getData());
+            result.setData(getServerIpVO);
+            this.changeResultToSuccess(result);
+        } catch (Exception ex) {
+            result.setData(getServerIpVO);
+            result.setMessage("远程请求设备、会议ip失败");
+            System.out.println("远程请求设备、会议ip失败");
+        }
+
     }
 
     /**

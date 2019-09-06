@@ -120,5 +120,24 @@ function callUpdateServerIp(data){
 }
 
 
+$(function () {
+    layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload'], function () {
+        var $ = layui.jquery
+            , upload = layui.upload
+            , form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate
+            ,laypage = layui.laypage
+            ,element = layui.element;
 
+        form.on('select(mctemplate_filter)', function (data) {
+            //请求
+            // console.log(data);
+            getServerIpALL(data.value);
+        });
+
+
+    });
+});
 
