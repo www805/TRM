@@ -4,7 +4,7 @@ public class RecordStatusCacheParam {
 
     private String recordssid;
     private String mtssid;
-    private String lasttime;
+    private long lasttime;
 
     public String getRecordssid() {
         return recordssid;
@@ -22,11 +22,11 @@ public class RecordStatusCacheParam {
         this.mtssid = mtssid;
     }
 
-    public String getLasttime() {
+    public long getLasttime() {
         return lasttime;
     }
 
-    public void setLasttime(String lasttime) {
+    public void setLasttime(long lasttime) {
         this.lasttime = lasttime;
     }
 

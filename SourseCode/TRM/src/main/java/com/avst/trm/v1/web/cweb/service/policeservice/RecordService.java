@@ -3538,7 +3538,7 @@ public class RecordService extends BaseService {
     public void putRecessStatus(RResult result, ReqParam<RecordStatusCacheParam> param) {
 
         RecordStatusCacheParam paramParam = param.getParam();
-
+        paramParam.setLasttime(new Date().getTime());
         RecordStatusCache.setRecordStatusCache(paramParam);
 
         changeResultToSuccess(result);

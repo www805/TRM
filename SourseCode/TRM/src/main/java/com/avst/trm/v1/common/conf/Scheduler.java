@@ -221,11 +221,14 @@ public class Scheduler {
 
             if (null != paramList && paramList.size() > 0) {
 
+                long nowtime=new Date().getTime();
+
                 for (int i = 0; i < paramList.size(); i++) {
                     RecordStatusCacheParam param = paramList.get(i);
-                    //判断时间如果5分钟没心跳就设为休庭
-                    int countTime = calLastedTime(param.getLasttime());
-                    int maxTime = 60 * 60 * 3;//测试3分钟，实际半小时
+                    //判断时间如果3分钟没心跳就设为休庭
+                    long countTime = nowtime-param.getLasttime();
+
+                    long maxTime = 3*60*1000;//测试3分钟，实际半小时
                     if (countTime >= maxTime) {
                         //修改笔录状态
                         String ssid = param.getRecordssid();
@@ -248,23 +251,6 @@ public class Scheduler {
 
             }
         }
-    }
-
-    //判断两个时间相差几秒
-    public  int calLastedTime(String lasttime) {
-        long a = new Date().getTime();
-
-        DateFormat formatter  = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date parse = null;
-        try {
-            parse = formatter.parse(lasttime);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        long b = parse.getTime();
-        int c = (int)((a - b) / 1000);
-        return c;
     }
 
 
