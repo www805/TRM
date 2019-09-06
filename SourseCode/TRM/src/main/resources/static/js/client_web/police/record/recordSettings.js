@@ -1077,13 +1077,47 @@ Date.prototype.Format = function (fmt) {
 
 //秒数转换时间
 function changeTimes(num, status) {
-    var min = Math.floor(num % 3600);
-
     if(isNotEmpty(status)){
         return num / 3600;
     }
-    var numtime = num % 60;
-    return Math.floor(min / 60) + ":" + (numtime < 10 ? '0' + numtime : numtime);
+
+    var hh=Math.floor(num / 3600);
+    var hh_="";
+    var mm;
+    var mm_="";
+    var ss;
+    var ss_="";
+    mm=Math.floor(num % 3600/ 60);
+
+    if(hh > 9){
+        hh_=hh+"";
+    }else if(hh > 0){
+        hh_="0"+hh;
+    }else{
+        hh_="00";
+    }
+    if(mm > 9){
+        mm_=mm+"";
+    }else if(mm > 0){
+        mm_="0"+mm;
+    }else{
+        mm_="00";
+    }
+
+    if(mm > 0){
+        ss=num % 3600 % 60;
+    }else{
+        ss=num % 3600;
+    }
+    if(ss > 9){
+        ss_=""+ss;
+    }else if(ss > 0){
+        ss_="0"+ss;
+    }else{
+        ss_="00";
+    }
+
+    return hh_+":"+mm_+":"+ss_;
 }
 
 function matchPtdjKey(key) {
