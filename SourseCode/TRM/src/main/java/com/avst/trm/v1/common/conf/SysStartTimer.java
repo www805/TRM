@@ -3,10 +3,6 @@ package com.avst.trm.v1.common.conf;
 import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -15,8 +11,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -70,13 +64,10 @@ public class SysStartTimer implements ApplicationRunner {
         if(null!=filelist&&filelist.size() > 0){
             for(String path:filelist){
                 //对比删除
-                if(path.indexOf("a08a1f4d944b489fa10dfc3eb5212b48_sxsba2") > 0){
-
-                    if(path.endsWith(gztype)){//删除GZIP的文件
-                        File file=new File(path);
-                        file.delete();
-                        file=null;
-                    }
+                if(path.endsWith(gztype)){//删除GZIP的文件
+                    File file=new File(path);
+                    file.delete();
+                    file=null;
                 }
             }
         }
