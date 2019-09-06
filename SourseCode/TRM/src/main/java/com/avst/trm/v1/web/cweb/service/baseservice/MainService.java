@@ -146,7 +146,7 @@ public class MainService extends BaseService {
                     }
 
 
-                    subject.login( new UsernamePasswordToken(loginaccount, password,true));   //完成登录
+                    subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
                     LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
                     if(!subject.isPermitted("userlogin")&&subject.isAuthenticated()) {
                         result.setMessage("不好意思~您没有权限登录，请联系管理员");
@@ -160,6 +160,9 @@ public class MainService extends BaseService {
                         return;
                     }
 
+                    //session存储
+                    httpSession.setAttribute(Constant.MANAGE_CLIENT,user);
+
                     //登录成功
                     LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登录成功--");
                     result.setMessage("登录成功");
@@ -168,8 +171,7 @@ public class MainService extends BaseService {
                     int updateById_bool=base_admininfoMapper.updateById(user);
                     LogUtil.intoLog(this.getClass(),"updateById_bool--"+updateById_bool);
 
-                    //session存储
-                    httpSession.setAttribute(Constant.MANAGE_CLIENT,user);
+
                     result.setData(userloginVO);
                     changeResultToSuccess(result);
                     return;
@@ -192,11 +194,11 @@ public class MainService extends BaseService {
 
 
     public void userloginout(RResult result,ReqParam param,HttpSession session){
-        if (null!=session.getAttribute(Constant.MANAGE_CLIENT)){
-            session.removeAttribute(Constant.MANAGE_CLIENT);
+            session.setAttribute(Constant.MANAGE_CLIENT,null);
+            Subject subject = SecurityUtils.getSubject();
+            subject.logout();
             LogUtil.intoLog(this.getClass(),"退出成功");
             result.setMessage("退出成功");
-        }
         changeResultToSuccess(result);
         return;
     }

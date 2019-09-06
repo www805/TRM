@@ -217,14 +217,14 @@ function towaitRecord(recordssid,recordbool,creator,creatorname) {
         return false;
     }
 
-    if (recordbool!=2){
+    if (recordbool==1||recordbool==0){
         if (isNotEmpty(creator)&&creator==sessionadminssid){
             var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
             window.location.href=url+"?ssid="+recordssid;
         }else {
             layer.msg(creatorname+"正在制作笔录...")
         }
-    } else{
+    } else  if (recordbool==2||recordbool==3){
         var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
         window.location.href=url+"?ssid="+recordssid;
     }

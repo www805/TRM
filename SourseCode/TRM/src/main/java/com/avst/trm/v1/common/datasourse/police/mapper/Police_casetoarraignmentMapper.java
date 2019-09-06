@@ -20,12 +20,13 @@ import java.util.List;
  */
 public interface Police_casetoarraignmentMapper extends BaseMapper<Police_casetoarraignment> {
 
-    @Select("select a.*,r.recordname,r.recordbool,r.recordtypessid,r.recordtime ,au1.username as adminname ,au2.username as recordadminname,r.ssid as recordssid " +
+    @Select("select a.*,r.recordname,r.recordbool,r.recordtypessid,r.recordtime ,au1.username as adminname ,au2.username as recordadminname,r.ssid as recordssid,rt.typename as recordtypename" +
             " from police_arraignment a " +
             " left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
             " left join base_admininfo au1 on au1.ssid=a.adminssid " +
             " left join base_admininfo au2 on au2.ssid=a.recordadminssid " +
-            " left join police_record r on r.ssid=a.recordssid where 1=1 ${ew.sqlSegment}")
+            " left join police_record r on r.ssid=a.recordssid "+
+            " left join police_recordtype rt on rt.ssid=r.recordtypessid  where 1=1 ${ew.sqlSegment}")
     List<ArraignmentAndRecord> getArraignmentByCaseSsid( @Param("ew")EntityWrapper ew);
 
 }

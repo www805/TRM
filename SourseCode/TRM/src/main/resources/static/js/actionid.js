@@ -253,6 +253,8 @@ function getactionid_manage() {
         caseIndex_changeboolRecord:"caseIndex_changeboolRecord",
         caseIndex_towaitconversation:"caseIndex_towaitconversation",
         caseIndex_toconversationById:"caseIndex_toconversationById",
+        caseIndex_toconversationIndex:"caseIndex_toconversationIndex",
+        caseIndex_torecordIndex:"caseIndex_torecordIndex",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

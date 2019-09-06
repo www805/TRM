@@ -149,7 +149,7 @@ function callbackgetRecordByCasessid(data) {
                 var bool="";
                 if (datum.recordbool==1){
                     bool="<span style='color: red ' bool='1'>进行中</span>";
-                }else  if (datum.recordbool==2){
+                }else  if (datum.recordbool==2||datum.recordbool==3){
                     bool="<span style='color: #00FF00 ' bool='2'>已完成</span>";
                 }else  if (datum.recordbool==0){
                     bool="<span style='color: #cccccc ' bool='0'>未开始</span>";
@@ -269,8 +269,101 @@ function changeboolCase(ssid,oldcasebool) {
 function callbackchangeboolCase(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)) {
-            layer.msg("归档成功", {time: 500}, function () {
+            layer.msg("归档成功", {time: 500,icon: 6}, function () {
                 getCasesByParam();
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+function continueCase(ssid,casebool) {
+    if (casebool==2){
+        layer.msg("案件已归档",{icon: 5});
+        return;
+    }
+    if (casebool!=3){
+        layer.msg("案件未暂停,不需要继续~",{icon: 6});
+        return;
+    }
+
+    var con="案件将重新开启，确认吗";
+    //开始改变状态
+    layer.open({
+        content:con
+        ,btn: ['确定', '取消']
+        ,yes: function(index, layero){
+            var url=getActionURL(getactionid_manage().caseIndex_changeboolCase);
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    ssid:ssid,
+                    bool:casebool
+                }
+            };
+            ajaxSubmitByJson(url,data,callbackcontinueCase);
+            layer.close(index);
+        }
+        ,btn2: function(index, layero){
+            layer.close(index);
+        }
+    });
+}
+
+function callbackcontinueCase(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data.data)) {
+            layer.msg("案件重新开启", {time: 500,icon: 6},function () {
+                var addcasetoarraignmentvo_data=data.data.addcasetoarraignmentvo_data;
+                if (isNotEmpty(addcasetoarraignmentvo_data)){
+                    addcasetoarraignmentvo_data = eval('(' + addcasetoarraignmentvo_data + ')');
+
+                    var recordtypessid=addcasetoarraignmentvo_data.recordtypessid;
+                    var recordssid=addcasetoarraignmentvo_data.recordssid;
+                    if (isNotEmpty(addcasetoarraignmentvo_data)&&isNotEmpty(recordtypessid)&&isNotEmpty(recordssid)){
+                        layer.confirm("<span style='color:red'>新的笔录/审讯已生成</span>", {
+                            btn: ['开始笔录',"查看笔录列表","取消"], //按钮
+                            shade: [0.1,'#fff'], //不显示遮罩
+                            btn1:function(index) {
+                                console.log("跳转笔录制作中");
+
+                                var index =layer.msg('开始进行笔录', {shade:[0.1,"#fff"],icon:6,time:500
+                                },function () {
+                                    if (recordtypessid==recordtype_conversation1&&isNotEmpty(recordtype_conversation1)){
+                                        //跳转审讯制作中：
+                                        var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
+                                        window.location.href=url+"?ssid="+recordssid;
+                                    } else {
+                                        //跳转笔录制作
+                                        var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
+                                        window.location.href=url+"?ssid="+recordssid;
+                                    }
+                                });
+
+
+                                layer.close(index);
+                            },
+                            btn2: function(index) {
+                                console.log("跳转笔录列表")
+
+                                if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&isNotEmpty(recordtype_conversation2)&&recordtypessid==recordtype_conversation1||recordtypessid==recordtype_conversation2) {
+                                    //跳转一键提讯
+                                    var url = getActionURL(getactionid_manage().caseIndex_toconversationIndex);
+                                    window.location.href = url;
+                                }else {
+                                    var url = getActionURL(getactionid_manage().caseIndex_torecordIndex);
+                                    window.location.href = url;
+                                }
+                                layer.close(index);
+                            },
+                            btn3: function(index) {
+                                getCasesByParam();
+                                layer.close(index);
+                            }
+                        });
+                    }
+                }
             });
         }
     }else{
@@ -281,7 +374,7 @@ function callbackchangeboolCase(data) {
 
 function toaddOupdateurl(ssid,casebool) {
     if (casebool==2){
-        layer.msg("案件已归档");
+        layer.msg("案件已归档",{icon: 5});
         return;
     }
     if (isNotEmpty(ssid)&&casebool!=2){
@@ -296,7 +389,7 @@ function towaitRecord(recordssid,recordbool,creator,recordtypessid) {
         return false;
     }
 
-    if (recordbool==2){
+    if (recordbool==2||recordbool==3){
         if (isNotEmpty(recordtype_conversation1)&&isNotEmpty(recordtype_conversation2)&&recordtypessid==recordtype_conversation1||recordtypessid==recordtype_conversation2){
             //跳转审讯回放
             var url=getActionURL(getactionid_manage().caseIndex_toconversationById);
@@ -306,7 +399,7 @@ function towaitRecord(recordssid,recordbool,creator,recordtypessid) {
             var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
             window.location.href=url+"?ssid="+recordssid;
        }
-    } else{
+    } else if (recordbool==1||recordbool==0){
         if (isNotEmpty(creator)&&creator==sessionadminssid){
             if (recordtypessid==recordtype_conversation1&&isNotEmpty(recordtype_conversation1)){
                 //跳转审讯制作中：

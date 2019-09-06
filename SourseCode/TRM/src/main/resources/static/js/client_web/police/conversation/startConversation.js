@@ -113,7 +113,7 @@ function callbackaddCaseToArraignment(data) {
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
-                var index = parent.layer.msg('开始进行审讯', {shade:0.1,time:500
+                var index = parent.layer.msg('开始进行审讯', {icon: 6,shade:0.1,time:500
                 },function () {
                     //跳转笔录制作
                     var url=getActionURL(getactionid_manage().startConversation_towaitRecord);

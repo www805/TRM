@@ -23,6 +23,7 @@ var dq_livingurl=null;//当前直播地址
 var dq_previewurl=null;//当前预览地址
 
 var record_pausebool=-1;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
+var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
 
 
 //跳转变更模板页面//变更模板题目
@@ -429,6 +430,15 @@ function callbackgetRecordById(data) {
             var recordtype_conversation1=data.recordtype_conversation1;
             var recordtype_conversation2=data.recordtype_conversation2;
             record_pausebool=data.record_pausebool;//
+            record_adjournbool=data.record_adjournbool;
+            if (record_adjournbool==1||record_adjournbool=="1"){
+                //显示暂停按钮
+                $("#adjourn_btn").show();
+            } else {
+                $("#adjourn_btn").hide();
+            }
+
+
             var record=data.record;
             if (isNotEmpty(record)){
                 var recordtypessid=record.recordtypessid;
@@ -443,7 +453,8 @@ function callbackgetRecordById(data) {
                     $("#initheart_click").removeClass("layui-show");
                     $(".layui-tab-content").css("height","650px");
 
-                    $("#overRecord_btn").html("结束审讯")
+                    $("#overRecord_btn").html("结束审讯");
+                    $("#adjourn_btn").html("审讯暂停");
                     $("#pauserecord").attr("src","/uimaker/images/record4.png").css({"width":"200px","height":"110px"});
                     $("#startrecord").attr("src","/uimaker/images/record3.gif").css({"width":"200px","height":"110px"});
                     $("#endrecord").attr("src","/uimaker/images/record5.png").css({"width":"200px","height":"110px"});
@@ -459,6 +470,7 @@ function callbackgetRecordById(data) {
                     $("#asritem").addClass("layui-show");
                     $("#record_switch_HTML").css("visibility","visible");
                     $("#overRecord_btn").html("结束笔录")
+                    $("#adjourn_btn").html("笔录暂停");
 
                     $("#pauserecord").attr("src","/uimaker/images/record1.png").css({"width":"100px","height":"100px"});
                     $("#startrecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});

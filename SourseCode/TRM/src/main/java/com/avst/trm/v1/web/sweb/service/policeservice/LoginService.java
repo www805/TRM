@@ -77,9 +77,9 @@ public class LoginService extends BaseService {
                         }
 
 
-                        subject.login( new UsernamePasswordToken(loginaccount, password,true));   //完成登录
+                        subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
                         LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
-                       if(!subject.isPermitted("checklogin")&&subject.isAuthenticated()) {
+                      if(!subject.isPermitted("checklogin")&&subject.isAuthenticated()) {
                             result.setMessage("不好意思~您没有权限登录，请联系管理员");
                            subject.logout();
                             return;

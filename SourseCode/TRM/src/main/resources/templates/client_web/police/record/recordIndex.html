@@ -148,7 +148,7 @@
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
         {{#  var recordbool=value.recordbool;var recordbooltext; }}
-        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
+        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool||recordbool==3){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #8c8c8c'>未开始</span>";}else{recordbooltext="未知"}  }}
         {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var case_=value.case_;var creator=null;var creatorname="";var sessionssid="[[${session.MANAGE_CLIENT.ssid}]]";var showname=""; if(null!=case_){creator=case_.creator;creatorname=case_.creatorname; if(sessionssid!=creator){showname=creatorname+"：";} }  }}
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
         <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}');" style="background-color: {{backgroundcolor}}">

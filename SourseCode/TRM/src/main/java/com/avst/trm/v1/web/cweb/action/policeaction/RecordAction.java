@@ -560,14 +560,14 @@ public class RecordAction extends BaseAction {
 
 
     @RequestMapping("/changeboolCase")
-    public  RResult changeboolCase(@RequestBody ReqParam<ChangeboolCaseParam> param){
+    public  RResult changeboolCase(@RequestBody ReqParam<ChangeboolCaseParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.changeboolCase(result,param);
+            recordService.changeboolCase(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

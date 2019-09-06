@@ -82,7 +82,7 @@
         <tbody  id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){  }}
         {{#  var recordbool=value.recordbool;var recordbooltext; var itemtext="继续"; var oldclass="layui-btn layui-btn-normal";}}
-        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool){recordbooltext="<span style='color: #00FF00'>已完成</span>";itemtext="查看";oldclass="layui-btn layui-btn-primary"}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}  }}
+        {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool||recordbool==3){recordbooltext="<span style='color: #00FF00'>已完成</span>";itemtext="查看";oldclass="layui-btn layui-btn-primary"}else  if(0==recordbool){recordbooltext="<span style='color: #cccccc'>未开始</span>";}else{recordbooltext="未知"}  }}
         {{# var creator=null; var creatorname="";  var case_=value.case_;if(null!=case_){creator=case_.creator; creatorname=case_.creatorname;} }}
         <tr ssid="{{value.ssid}}" ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{value.recordtypessid}}');" >
             <td>{{index+1}}</td>

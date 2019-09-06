@@ -85,8 +85,8 @@ function callbackgetUserBySsid(data) {
                 }
 
                 var roles=data.roles;
+                $("#rolessid_checkbox input").prop("checked", false);
                 if(isNotEmpty(roles)){
-                    $("#rolessid_checkbox input").prop("checked", false);
                     var all = new Array();
                     $("#rolessid_checkbox input").each(function(index, element) {
                         all.push($(this).val());

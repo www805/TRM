@@ -30,6 +30,12 @@ function callbackgetRecordById(data) {
             getRecordById_data=data;
 
             if(isNotEmpty(getRecordById_data)){
+               var record_adjournbool=getRecordById_data.record_adjournbool;
+                if (record_adjournbool==1||record_adjournbool=="1"){
+                    //显示暂停按钮
+                    $("#adjourn_btn").show();
+                }
+
                 getFDState();
 
                 //获取默认的片头信息

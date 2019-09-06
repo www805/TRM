@@ -22,6 +22,8 @@ public class ArraignmentAndRecord extends Police_arraignment {
 
         private String recordtypessid;
 
+        private String recordtypename;
+
         public String getRecordtypessid() {
             return recordtypessid;
         }
@@ -29,6 +31,14 @@ public class ArraignmentAndRecord extends Police_arraignment {
         public void setRecordtypessid(String recordtypessid) {
             this.recordtypessid = recordtypessid;
         }
+
+    public String getRecordtypename() {
+        return recordtypename;
+    }
+
+    public void setRecordtypename(String recordtypename) {
+        this.recordtypename = recordtypename;
+    }
 
     @Override
     public String getRecordssid() {

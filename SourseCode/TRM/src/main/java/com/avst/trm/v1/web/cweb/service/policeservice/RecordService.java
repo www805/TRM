@@ -1,5 +1,7 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.PtdjmapCache;
@@ -52,6 +54,7 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -194,10 +197,10 @@ public class RecordService extends BaseService {
             for (Record record : records) {
                 String  recordssid=record.getSsid();
                 Integer recordbool_=record.getRecordbool();//笔录状态1进行中2已完成
-                if (null!=recordbool_&&recordbool_!=2){
+                if (null!=recordbool_&&(recordbool_==1||recordbool_==0)){
                     List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
                     record.setProblems(recordToProblems);
-                }else {
+                }else  if (null!=recordbool_&&(recordbool_==2||recordbool_==3)){
                     //查找笔录的全部题目
                     EntityWrapper probleparam=new EntityWrapper();
                     probleparam.eq("r.ssid",record.getSsid());
@@ -317,7 +320,7 @@ public class RecordService extends BaseService {
             return;
         }
 
-        if (police_record.getRecordbool()==2||police_record.getRecordbool()==-1){
+        if (police_record.getRecordbool()==2||police_record.getRecordbool()==-1||police_record.getRecordbool()==3){
             //2已完成或者-1已删除状态
             result.setMessage("该笔录已结束...");
             LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
@@ -379,21 +382,8 @@ public class RecordService extends BaseService {
         }
 
 
-
         LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
         if (null!=recordbool&&recordbool==2){
-            //导出笔录pdf和word并且关闭会议
-            AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,mtssid,outService);
-            addRecord_thread.start();
-
-
-            EntityWrapper updaterecordParam=new EntityWrapper();
-            updaterecordParam.eq("ssid",recordssid);
-            Police_record record=new Police_record();
-            record.setSsid(recordssid);
-            record.setRecordbool(recordbool);
-            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
 
             //如果为3就改为休庭
             Integer casebool=addRecordParam.getCasebool();
@@ -411,10 +401,25 @@ public class RecordService extends BaseService {
                         case_.setCasebool(casebool);
                         int caseupdate_bool = police_caseMapper.update(case_,updateParam);
                         LogUtil.intoLog(this.getClass(),"案件修改成休庭状态caseupdate_bool___"+caseupdate_bool+"__state__"+case_.getCasebool());
+                        if (caseupdate_bool>0){
+                            recordbool=3;//笔录也需要改为3休庭
+                        }
                     }
                 }
+            }
 
 
+            EntityWrapper updaterecordParam=new EntityWrapper();
+            updaterecordParam.eq("ssid",recordssid);
+            Police_record record=new Police_record();
+            record.setSsid(recordssid);
+            record.setRecordbool(recordbool);
+            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+            if (updaterecord_bool>0){
+                //导出笔录pdf和word并且关闭会议
+                AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,mtssid,outService);
+                addRecord_thread.start();
             }
         }
 
@@ -511,6 +516,18 @@ public class RecordService extends BaseService {
                         }
                         case_.setOccurrencetime_format(case_.getOccurrencetime());
                         record.setCase_(case_);
+
+
+
+                        //开始判断是否已经存在了笔录系统
+                        EntityWrapper ewarraignment=new EntityWrapper();
+                        ewarraignment.eq("cr.casessid",case_.getSsid());
+                        ewarraignment.eq("r.recordbool",3);
+                        ewarraignment.orderBy("a.createtime",false);
+                        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);//不出意外一般只存有一条数据
+                        if (null==arraignmentAndRecords||arraignmentAndRecords.size()<1){
+                            getRecordByIdVO.setRecord_adjournbool("1");
+                        }
                     }
 
                 } catch (Exception e) {
@@ -542,7 +559,7 @@ public class RecordService extends BaseService {
                             }
                         }
                         //获取模板通道：笔录制作过程中获取
-                        if (StringUtils.isNotBlank(modelssid)&&null!=recordbool&&recordbool.intValue()!=2){
+                        if (StringUtils.isNotBlank(modelssid)&&null!=recordbool&&recordbool.intValue()!=2&&recordbool.intValue()!=3){
                             RResult getTdByModelSsid__rr=new RResult();
                             GetTdByModelSsidParam_out getTdByModelSsidParam_out=new GetTdByModelSsidParam_out();
                             getTdByModelSsidParam_out.setModelssid(modelssid);
@@ -567,7 +584,7 @@ public class RecordService extends BaseService {
                     e.printStackTrace();
                 }
 
-                if (null!=mtssid&&null!=recordbool&&recordbool.intValue()==2){
+                if (null!=mtssid&&null!=recordbool&&(recordbool.intValue()==2||recordbool.intValue()==3)){
                     //回放数据，笔录制作中的时候不需要检测
 
                     String iid=null;
@@ -639,7 +656,7 @@ public class RecordService extends BaseService {
 
                 String gz=record.getGz_iid();
                 //检测有没有生成点播文件，没有就生成点播文件
-                if(StringUtils.isEmpty(gz)&&null!=recordbool&&recordbool.intValue()==2){//只有在完成状态下才会需要生成点播文件
+                if(StringUtils.isEmpty(gz)&&null!=recordbool&&(recordbool.intValue()==2||recordbool.intValue()==3)){//只有在完成状态下才会需要生成点播文件
                     //调用生成点播文件线程
                     try {
                         Police_record police_record=record;
@@ -1360,6 +1377,31 @@ public class RecordService extends BaseService {
             ew.eq("ssid",casessid);
             int police_caseMapper_updatebool = police_caseMapper.update(police_case,ew);
             LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
+            if (police_caseMapper_updatebool>0){
+                //查找该案件下所有提讯的笔录，找到暂停中的笔录改为已完成
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",casessid);
+                ewarraignment.eq("r.recordbool",3);
+                ewarraignment.orderBy("a.createtime",false);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);//不出意外一般只存有一条数据
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    //修改笔录状态为已完成
+                    for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                        Police_record record_=new Police_record();
+                        String recordssid=arraignmentAndRecord.getRecordssid();
+                        if (StringUtils.isNotBlank(recordssid)){
+                            EntityWrapper entityWrapper=new EntityWrapper();
+                            entityWrapper.eq("ssid",recordssid);
+                            record_.setSsid(recordssid);
+                            record_.setRecordbool(2);
+                            int  police_recordMapper_updatebool=police_recordMapper.update(record_,entityWrapper);
+                            if (police_recordMapper_updatebool>0){
+                                LogUtil.intoLog(this.getClass(),"changeboolCase__police_recordMapper.update__暂停笔录状态改为已完成__police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                            }
+                        }
+                    }
+                }
+            }
          }
 
         //添加其他
@@ -2994,7 +3036,9 @@ public class RecordService extends BaseService {
         return;
     }
 
-    public void changeboolCase(RResult result,ReqParam<ChangeboolCaseParam> param){
+    public void changeboolCase(RResult result,ReqParam<ChangeboolCaseParam> param,HttpSession session){
+        ChangeboolCaseVO vo=new ChangeboolCaseVO();
+
         ChangeboolCaseParam changeboolCaseParam=param.getParam();
         if (null==changeboolCaseParam){
             result.setMessage("参数为空");
@@ -3005,36 +3049,121 @@ public class RecordService extends BaseService {
         Integer bool=changeboolCaseParam.getBool();
         Police_case police_case=new Police_case();
         if (bool==2){
-            int ingsize=0;//进行中的笔录
+            //案件归档
             //归档，判断下面是否有进行中的笔录
             EntityWrapper ewarraignment=new EntityWrapper();
             ewarraignment.eq("cr.casessid",ssid);
-            ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
             ewarraignment.orderBy("a.createtime",false);
+            ewarraignment.eq("r.recordbool",1).or().eq("r.recordbool",0);
             List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
             if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
-                for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
-                    if (Integer.valueOf(arraignmentAndRecord.getRecordbool())==1||Integer.valueOf(arraignmentAndRecord.getRecordbool())==0){//未完成的
-                        ingsize++;
-                    }
-                }
-            }
-            if (ingsize>0){
-                LogUtil.intoLog(this.getClass(),"ingsize__"+ingsize);
                 result.setMessage("请先结束未完成的笔录，再进行归档");
                 return;
             }
             police_case.setEndtime(new Date());//归档修改结束时间
         }
 
+        if (bool==3){
+            //该案件正在休庭，需要改为进行中
+            bool=1;//改为进行中
 
+
+            //查找该案件下所有提讯的笔录，找到暂停中的笔录并且生成一份新的笔录，状态为未开始;旧的改为已完成
+            EntityWrapper ewarraignment=new EntityWrapper();
+            ewarraignment.eq("cr.casessid",ssid);
+            ewarraignment.eq("r.recordbool",3);
+            ewarraignment.orderBy("a.createtime",false);
+            List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);//不出意外一般只存有一条数据
+            if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                //修改笔录状态为已完成
+                for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+
+                    //开始获取该信息进行添加新的案件提讯笔录
+
+                    RResult addCaseToArraignment_rr=new RResult();
+                    ReqParam<AddCaseToArraignmentParam> addCaseToArraignment_param=new ReqParam<>();
+                    AddCaseToArraignmentParam addCaseToArraignmentParam=new AddCaseToArraignmentParam();
+
+
+                    //回填数据-------------------------------------------------------------------------start
+                    String userssid=arraignmentAndRecord.getUserssid();
+                    if (StringUtils.isNotBlank(userssid)&&StringUtils.isNotBlank(ssid)){
+                        addCaseToArraignmentParam.setUserssid(userssid);
+                        addCaseToArraignmentParam.setCasessid(ssid);
+
+                        //获取案件和人员信息
+                        Police_userinfo police_userinfo=new Police_userinfo();
+                        police_userinfo.setSsid(arraignmentAndRecord.getUserssid());
+                        police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+                        UserInfo userinfo_=gson.fromJson(gson.toJson(police_userinfo),UserInfo.class);
+
+                        police_case.setSsid(ssid);
+                        police_case=police_caseMapper.selectOne(police_case);
+
+                        if (null!=userinfo_&&null!=police_case){
+                            int asknum=arraignmentAndRecord.getAsknum()==null?0:arraignmentAndRecord.getAsknum();//询问
+                            addCaseToArraignmentParam.setAdminssid(arraignmentAndRecord.getAdminssid());
+                            addCaseToArraignmentParam.setOtheradminssid(arraignmentAndRecord.getOtheradminssid());
+                            addCaseToArraignmentParam.setRecordadminssid(arraignmentAndRecord.getRecordadminssid());
+                            addCaseToArraignmentParam.setRecordtypessid(arraignmentAndRecord.getRecordtypessid());
+                            addCaseToArraignmentParam.setRecordplace(arraignmentAndRecord.getRecordplace());
+                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"版";
+                            recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");//笔录名称
+                            addCaseToArraignmentParam.setRecordname(recordname);
+                            addCaseToArraignmentParam.setAskobj(arraignmentAndRecord.getAskobj());
+                            addCaseToArraignmentParam.setAsknum(asknum);
+                            addCaseToArraignmentParam.setMtmodelssid(arraignmentAndRecord.getMtmodelssid());
+                            addCaseToArraignmentParam.setSkipCheckbool(1);//默认跳过检测
+                            addCaseToArraignmentParam.setSkipCheckCasebool(1);//默认跳过检测
+                            addCaseToArraignment_param.setParam(addCaseToArraignmentParam);
+
+                            addCaseToArraignmentParam.setAddUserInfo(userinfo_);
+                            addCaseToArraignmentParam.setAddPolice_case(police_case);
+                            //回填数据-------------------------------------------------------------------------end
+                            addCaseToArraignment(addCaseToArraignment_rr,addCaseToArraignment_param,session);
+                            if (null!=addCaseToArraignment_rr&&addCaseToArraignment_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                if (null!=addCaseToArraignment_rr.getData()){
+                                    //获取到返回的笔录ssid
+                                    vo.setAddcasetoarraignmentvo_data(JSON.toJSONString(addCaseToArraignment_rr.getData()));
+                                }
+                            }
+                        }else {
+                            LogUtil.intoLog(this.getClass(),"案件暂停继续回填案件人员信息为空__userinfo__"+userinfo_+"__police_case__"+police_case);
+                        }
+
+                    }else {
+                        LogUtil.intoLog(this.getClass(),"案件暂停继续回填案件人员信息参数错误__casessid_"+ssid+"__userssid__"+userssid);
+                    }
+
+                    Police_record record=new Police_record();
+                    String recordssid=arraignmentAndRecord.getRecordssid();
+                    if (StringUtils.isNotBlank(recordssid)){
+                        record.setSsid(recordssid);
+                        record.setRecordbool(3);
+                        record=police_recordMapper.selectOne(record);
+                        if (null!=record){
+                            EntityWrapper entityWrapper=new EntityWrapper();
+                            entityWrapper.eq("ssid",recordssid);
+                            record.setSsid(recordssid);
+                            record.setRecordbool(2);
+                            int  police_recordMapper_updatebool=police_recordMapper.update(record,entityWrapper);
+                            if (police_recordMapper_updatebool>0){
+                                LogUtil.intoLog(this.getClass(),"changeboolCase__police_recordMapper.update__暂停笔录状态改为已完成__police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                            }
+                        }else {
+                            LogUtil.intoLog(this.getClass(),"changeboolCase__police_recordMapper.selectOne__未找到笔录信息__recordssid__"+recordssid);
+                        }
+                    }
+                }
+            }
+        }
 
         police_case.setCasebool(bool);
         EntityWrapper ew=new EntityWrapper();
         ew.eq("ssid",ssid);
        int police_caseMapper_updatebool = police_caseMapper.update(police_case,ew);
        if (police_caseMapper_updatebool>0){
-           result.setData(police_caseMapper_updatebool);
+           result.setData(vo);
            changeResultToSuccess(result);
        }
         return;

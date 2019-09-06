@@ -130,7 +130,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,recordtypessid) 
     if (!isNotEmpty(recordssid)){
         return false;
     }
-    if (recordbool!=2){
+    if (recordbool==1||recordbool==0){
         if (isNotEmpty(creator)&&creator==sessionadminssid){
             if (recordtypessid==recordtype_conversation1&&isNotEmpty(recordtype_conversation1)){
                 //跳转：
@@ -144,7 +144,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,recordtypessid) 
         }else {
             layer.msg(creatorname+"正在制作审讯...")
         }
-    } else{
+    } else if (recordbool==2||recordbool==3){
         var url=getActionURL(getactionid_manage().conversationIndex_toconversationById);
         window.location.href=url+"?ssid="+recordssid;
     }

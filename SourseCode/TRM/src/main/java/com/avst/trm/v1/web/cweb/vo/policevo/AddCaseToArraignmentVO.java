@@ -1,13 +1,14 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
+import com.google.gson.annotations.Expose;
 
 public class AddCaseToArraignmentVO {
     private boolean recordingbool=false;//是否存在笔录进行中或者未开始 true 存在笔录中 false不存在默认false
 
     private CheckStartRecordVO checkStartRecordVO;
 
-    private String recordssid;//笔录ssid
+    private  String  recordssid;//笔录ssid
 
     private Case case_;//案件信息返回回显
 
@@ -19,9 +20,32 @@ public class AddCaseToArraignmentVO {
 
     private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
 
-
     public Case getCase_() {
         return case_;
+    }
+
+    public boolean isRecordingbool() {
+        return recordingbool;
+    }
+
+    public void setRecordingbool(boolean recordingbool) {
+        this.recordingbool = recordingbool;
+    }
+
+    public CheckStartRecordVO getCheckStartRecordVO() {
+        return checkStartRecordVO;
+    }
+
+    public void setCheckStartRecordVO(CheckStartRecordVO checkStartRecordVO) {
+        this.checkStartRecordVO = checkStartRecordVO;
+    }
+
+    public String getRecordssid() {
+        return recordssid;
+    }
+
+    public void setRecordssid(String recordssid) {
+        this.recordssid = recordssid;
     }
 
     public void setCase_(Case case_) {
@@ -60,28 +84,17 @@ public class AddCaseToArraignmentVO {
         this.recordtype_conversation2 = recordtype_conversation2;
     }
 
-    public boolean isRecordingbool() {
-        return recordingbool;
+    @Override
+    public String toString() {
+        return "AddCaseToArraignmentVO{" +
+                "recordingbool=" + recordingbool +
+                ", checkStartRecordVO=" + checkStartRecordVO +
+                ", recordssid='" + recordssid + '\'' +
+                ", case_=" + case_ +
+                ", caseingbool=" + caseingbool +
+                ", recordtypessid='" + recordtypessid + '\'' +
+                ", recordtype_conversation1='" + recordtype_conversation1 + '\'' +
+                ", recordtype_conversation2='" + recordtype_conversation2 + '\'' +
+                '}';
     }
-
-    public void setRecordingbool(boolean recordingbool) {
-        this.recordingbool = recordingbool;
-    }
-
-    public CheckStartRecordVO getCheckStartRecordVO() {
-        return checkStartRecordVO;
-    }
-
-    public void setCheckStartRecordVO(CheckStartRecordVO checkStartRecordVO) {
-        this.checkStartRecordVO = checkStartRecordVO;
-    }
-
-    public String getRecordssid() {
-        return recordssid;
-    }
-
-    public void setRecordssid(String recordssid) {
-        this.recordssid = recordssid;
-    }
-
 }

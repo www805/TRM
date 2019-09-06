@@ -11,7 +11,6 @@ import java.util.List;
 public class GetRecordByIdVO {
     private Record record;//笔录信息 //有Word/PDF地址
 
-
     //以下对接外部的返回
     private GetMCVO getMCVO;//asr识别回放sql  //没有文件和地址
 
@@ -27,6 +26,16 @@ public class GetRecordByIdVO {
     private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
 
     private String record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许
+
+    private String record_adjournbool;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
+
+    public String getRecord_adjournbool() {
+        return record_adjournbool;
+    }
+
+    public void setRecord_adjournbool(String record_adjournbool) {
+        this.record_adjournbool = record_adjournbool;
+    }
 
     public String getRecord_pausebool() {
         return record_pausebool;
