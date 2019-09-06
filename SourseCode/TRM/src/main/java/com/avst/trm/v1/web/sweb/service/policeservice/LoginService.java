@@ -35,7 +35,7 @@ public class LoginService extends BaseService {
         String loginaccount=loginParam.getLoginaccount();
         String password=loginParam.getPassword();
 
-        if(!StringUtils.isNotBlank(loginaccount) && !StringUtils.isNotBlank(password)){
+        if(!StringUtils.isNotBlank(loginaccount) || !StringUtils.isNotBlank(password)){
             result.setMessage("用户名密码不能为空");
             LogUtil.intoLog(this.getClass(),"LogAction gotologin loginParam is null");
             return;
@@ -46,10 +46,7 @@ public class LoginService extends BaseService {
         }
         try {
 
-            Subject subject =  SecurityUtils.getSubject();
-            if (subject.isAuthenticated()){
-                subject.logout();
-            }
+
 
             EntityWrapper ew=new EntityWrapper();
             ew.eq("loginaccount", loginParam.getLoginaccount());
@@ -59,6 +56,11 @@ public class LoginService extends BaseService {
             if (null==adminManage||adminManage.size()<1){
                 result.setMessage("未找到该用户");
                 return;
+            }
+
+            Subject subject =  SecurityUtils.getSubject();
+            if (subject.isAuthenticated()){
+                subject.logout();
             }
 
             if (null!=adminManage&&adminManage.size()>0){
@@ -74,23 +76,29 @@ public class LoginService extends BaseService {
                             return;
                         }
 
-                        if (null!=base_admininfo.getTemporaryaskbool()&&base_admininfo.getTemporaryaskbool()==1){
-                            result.setMessage("临时询问人不可登录");
+
+                        subject.login( new UsernamePasswordToken(loginaccount, password,true));   //完成登录
+                        LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
+                       if(!subject.isPermitted("checklogin")&&subject.isAuthenticated()) {
+                            result.setMessage("不好意思~您没有权限登录，请联系管理员");
+                           subject.logout();
                             return;
                         }
 
 
 
+                        if (null!=base_admininfo.getTemporaryaskbool()&&base_admininfo.getTemporaryaskbool()==1){
+                            result.setMessage("临时询问人不可登录");
+                            return;
+                        }
+
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
-                        subject.login( new UsernamePasswordToken(loginaccount, password));   //完成登录
-                        LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
 
 
                         //修改用户最后一次登录
                         base_admininfo.setLastlogintime(new Date());
                         int updateById_bool=admininfoMapper.updateById(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
-
                         this.changeResultToSuccess(result);
 
 

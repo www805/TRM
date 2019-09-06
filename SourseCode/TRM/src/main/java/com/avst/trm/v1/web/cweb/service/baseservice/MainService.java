@@ -29,6 +29,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -114,6 +117,11 @@ public class MainService extends BaseService {
             return;
         }
 
+        Subject subject =  SecurityUtils.getSubject();
+        if (subject.isAuthenticated()){
+            subject.logout();
+        }
+
         //检查用户登录
         EntityWrapper ew=new EntityWrapper();
         ew.eq("BINARY  loginaccount",loginaccount1);//BINARY区分大小写
@@ -134,6 +142,15 @@ public class MainService extends BaseService {
                     if (null!=adminbool&&adminbool!=1){
                         LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"用户状态:"+adminbool+"--");
                         result.setMessage("用户状态异常");
+                        return;
+                    }
+
+
+                    subject.login( new UsernamePasswordToken(loginaccount, password,true));   //完成登录
+                    LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
+                    if(!subject.isPermitted("userlogin")&&subject.isAuthenticated()) {
+                        result.setMessage("不好意思~您没有权限登录，请联系管理员");
+                        subject.logout();
                         return;
                     }
 

@@ -45,6 +45,7 @@ public class ShiroRealm extends AuthorizingRealm {
         if (null!=user){
           EntityWrapper roleew=new EntityWrapper();
           roleew.eq("ar.adminssid",user.getSsid());
+            roleew.eq("r.rolebool",1);//角色状态zhengc
           List<Base_role> rolelist=base_admintoroleMapper.getRolesByAdminSsid(roleew);
           if (null!=rolelist&&rolelist.size()>0){
                 for(Base_role role:rolelist){
@@ -92,7 +93,7 @@ public class ShiroRealm extends AuthorizingRealm {
         if (null==adminManage||adminManage.size()!=1){  throw new UnknownAccountException();}
         Base_admininfo user=adminManage.get(0);
         if (user.getAdminbool()==1){
-            SecurityUtils.getSubject().getSession().setAttribute("user", user);
+            SecurityUtils.getSubject().getSession().setAttribute(user.getLoginaccount(), user);
             ByteSource credentialsSalt = ByteSource.Util.bytes(user.getUsername());
             SimpleAuthenticationInfo  simpleAuthenticationInfo = new SimpleAuthenticationInfo(
                     user,

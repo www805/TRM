@@ -5,6 +5,7 @@ function login_login(){
 
     var loginaccount =$('input[name="loginaccount"]').val();
     var password =$('input[name="password"]').val();
+
     var data={
         loginaccount:loginaccount,
         password:password
@@ -19,7 +20,7 @@ function callbackgetAdminInfoPage(data){
         var url=getActionURL(getactionid_manage().login_main);
         window.location.href=url;
     }else{
-        layer.msg(data.message, {icon: 5});
+        layer.msg(data.message, {icon: 5,offset: 't'	});
     }
     layui.use('form', function(){
         var form = layui.form;

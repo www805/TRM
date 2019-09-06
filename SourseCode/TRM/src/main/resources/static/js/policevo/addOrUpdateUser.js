@@ -36,11 +36,15 @@ function callbackgetRoles(data){
             if (isNotEmpty(list)){
                 for (var i = 0; i < list.length; i++) {
                     var roles = list[i];
-                    rolessid_checkbox.append("<input  value='"+roles.ssid+"'  type='checkbox' name='' title='"+roles.rolename+"'>");
+
+                    rolessid_checkbox.append("<input  value='"+roles.ssid+"'   type='checkbox' name='' title='"+roles.rolename+"'>");
+                    if (roles.ssid=="defaultrole") {//默认选中默认管理员
+                        $("#rolessid_checkbox input[value=" + roles.ssid + "]").prop("checked", true);
+                    }
                 }
                 layui.use('form', function(){
                     var form =  layui.form;
-                    form.render();
+                    form.render('checkbox');
                 });
             }
         }
@@ -82,6 +86,7 @@ function callbackgetUserBySsid(data) {
 
                 var roles=data.roles;
                 if(isNotEmpty(roles)){
+                    $("#rolessid_checkbox input").prop("checked", false);
                     var all = new Array();
                     $("#rolessid_checkbox input").each(function(index, element) {
                         all.push($(this).val());

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.sweb.service.baseservice;
 
 
+import com.avst.trm.v1.common.conf.shiro.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roleMapper;
 import com.avst.trm.v1.common.util.LogUtil;
@@ -160,6 +161,7 @@ public class RoleService extends BaseService {
                 result.setMessage("系统异常");
                 return;
             }
+            ShiroRealm.reloadAuthorizing();
             result.setData(update_bool);
             changeResultToSuccess(result);
         } catch (Exception e) {
@@ -193,6 +195,7 @@ public class RoleService extends BaseService {
                 result.setMessage("系统异常");
                 return;
             }
+            ShiroRealm.reloadAuthorizing();
             result.setData(insert_bool);
             changeResultToSuccess(result);
         } catch (Exception e) {
