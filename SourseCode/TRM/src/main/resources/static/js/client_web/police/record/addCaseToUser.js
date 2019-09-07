@@ -139,14 +139,14 @@ function addCaseToArraignment() {
             var language=$(this).find("select[name='tab_language']").val();
             var usertype=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
             var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).text();
-            var usertoss={
+            var usertos_={
                 otheruserssid:otheruserssid,
                 relation:relation,
                 language:language,
                 usertype:usertype==null?3:usertype,
                 usertitle:usertitle,
             }
-            usertos.push(usertoss);
+            usertos.push(usertos_);
         }
     });
 
