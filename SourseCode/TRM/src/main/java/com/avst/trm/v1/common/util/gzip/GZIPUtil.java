@@ -5,10 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.LogUtil;
@@ -23,7 +20,7 @@ public class GZIPUtil {
 
         public static void main(String[] args) {
             System.out.println(new Date().getTime());
-            CompressedFiles_Gzip("D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","a08a1f4d944b489fa10dfc3eb5212b48_sxsba2","测试打包",".zip");
+            CompressedFiles_Gzip("D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","a08a1f4d944b489fa10dfc3eb5212b48_sxsba2","测试打包",".zip","ts");
             System.out.println(new Date().getTime());
         }
 
@@ -34,9 +31,10 @@ public class GZIPUtil {
      * @param folderPath,要压缩的文件夹的路径
      * @param targzipFilePath,压缩后文件的路径
      * @param targzipFileName,压缩后文件的名称
-     * @param  gztype 压缩格式
+     * @param gztype 压缩格式
+     * @param notGZType 不打包的格式
      * */
-    public static boolean CompressedFiles_Gzip(String folderPath, String targzipFilePath,String iid, String targzipFileName,String gztype)
+    public static boolean CompressedFiles_Gzip(String folderPath, String targzipFilePath,String iid, String targzipFileName,String gztype,String notGZType)
     {
         final String zipfilename=targzipFilePath;
         if(folderPath.endsWith("/")||folderPath.endsWith("\\")){
@@ -87,12 +85,16 @@ public class GZIPUtil {
             //写入缓存
             GZIPCacheParam gzipCacheParam=new GZIPCacheParam();
             Map<String, Boolean> filepathMap=new HashMap<String, Boolean>();
+            List<String> pathlist=new ArrayList<String>();
             for(String path:filelist){
-                filepathMap.put(path,false);
+                if(null==notGZType||notGZType.trim().equals("")||!path.endsWith(notGZType)){
+                    pathlist.add(path);
+                    filepathMap.put(path,false);
+                }
             }
             gzipCacheParam.setFilepathMap(filepathMap);
             gzipCacheParam.setStartTime(new Date().getTime());
-            gzipCacheParam.setTotalzipnum(filelist.size());
+            gzipCacheParam.setTotalzipnum(pathlist.size());
             gzipCacheParam.setZipfilename(zipfilename);
             GZIPCache.setGzipCacheParam(gzipCacheParam,iid);
 
@@ -101,8 +103,9 @@ public class GZIPUtil {
             //建立tar压缩输出流
             TarArchiveOutputStream tout=new TarArchiveOutputStream(fout);
             try {
-                for(String path:filelist)
+                for(String path:pathlist)
                 {
+
                     File file=new File(path);
                     if(file.isDirectory()){
                         System.out.println(path+":path,path is 文件夹");
@@ -130,6 +133,7 @@ public class GZIPUtil {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
 
                     //更新打包缓存
                     GZIPCache.updateGzipState(path,iid);
