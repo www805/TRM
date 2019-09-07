@@ -11,6 +11,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -40,6 +41,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.spring5.context.SpringContextUtils;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -1146,8 +1148,12 @@ public class TemplateService extends BaseService {
                 fileMkdir.mkdirs();
             }
 //            String filename=record.getRecordname();
+
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+            String format = df.format(new Date());// new Date()为获取当前系统时间
+
             String filename=template.getTitle()==null?"笔录模板":template.getTitle();
-            String path = filePathNew +filename+".doc";
+            String path = filePathNew + filename + format + ".doc";
 
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             templateDamo.process(dataMap, out);
@@ -1155,8 +1161,8 @@ public class TemplateService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
-            result.setData(uploadbasepath + uploadpath);
+            String uploadbasepath = NetTool.getMyIP();
+            result.setData("http://" + uploadbasepath + uploadpath);
 
             changeResultToSuccess(result);
         } catch (IOException e) {
@@ -1260,8 +1266,8 @@ public class TemplateService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
-            result.setData(uploadbasepath + uploadpath);
+            String uploadbasepath=NetTool.getMyIP();
+            result.setData("http://" + uploadbasepath + uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("Excel导出成功，请稍后...");

@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.sweb.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.sweb.req.policereq.GetArraignmentCountParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.ArraignmentCountVO;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -408,13 +411,17 @@ public class Arraignment_countService extends BaseService {
                 fileMkdir.mkdirs();
             }
 
-            String path = filePathNew + "/提讯案件列表.xls";
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+            String format = df.format(new Date());// new Date()为获取当前系统时间
+
+            String path = filePathNew + "/笔录统计表" + format + ".xls";
             FileOutputStream fout = new FileOutputStream(path);
             wb.write(fout);
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            result.setData(uploadpath);
+            String myIP = NetTool.getMyIP();
+            result.setData("http://" + myIP + uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("表格导出成功");

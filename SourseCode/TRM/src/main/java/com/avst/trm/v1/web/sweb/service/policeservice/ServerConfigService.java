@@ -12,6 +12,7 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.sweb.req.policereq.ServerconfigParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.GetServerConfigByIdVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -53,12 +54,13 @@ public class ServerConfigService extends BaseService {
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
+        String myIP = NetTool.getMyIP();
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
             Base_filesave filesaveSyslogo = new Base_filesave();
             filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
             Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
             if (null!=syslogo){
-                serverConfigByIdVO.setSyslogoimage(syslogo.getRecorddownurl());
+                serverConfigByIdVO.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
             }
         }
 
@@ -67,7 +69,7 @@ public class ServerConfigService extends BaseService {
             filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
             Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
             if (null!=clientlogo){
-                serverConfigByIdVO.setClientimage(clientlogo.getRecorddownurl());
+                serverConfigByIdVO.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
             }
         }
 
