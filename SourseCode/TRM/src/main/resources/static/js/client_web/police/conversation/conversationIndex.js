@@ -51,7 +51,7 @@ function callbackgetRecords(data) {
             recordtype_conversation2=data.data.recordtype_conversation2;
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon:5});
     }
 
 
@@ -109,12 +109,12 @@ function changeboolRecord(obj) {
             ajaxSubmitByJson(url,d,function (data) {
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     if (isNotEmpty(data)) {
-                        layer.msg("删除成功", {time: 500}, function () {
+                        layer.msg("删除成功", {time: 500,icon:6}, function () {
                             ggetRecordsByParam();
                         });
                     }
                 }else{
-                    layer.msg(data.message);
+                    layer.msg(data.message,{icon:5});
                 }
             });
             layer.close(index);
@@ -142,7 +142,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,recordtypessid) 
                 window.location.href=url+"?ssid="+recordssid;
             }
         }else {
-            layer.msg(creatorname+"正在制作审讯...")
+            layer.msg(creatorname+"正在制作审讯...",{icon:5})
         }
     } else if (recordbool==2||recordbool==3){
         var url=getActionURL(getactionid_manage().conversationIndex_toconversationById);

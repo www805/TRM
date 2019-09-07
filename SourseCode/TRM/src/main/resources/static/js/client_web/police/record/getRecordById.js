@@ -1803,8 +1803,11 @@ function gZIPVod(){
         });
         var url=getActionURL(getactionid_manage().getRecordById_gZIPVod);
         var data={
-            iid:iid,
-            zipfilename:recordnameshow
+            token:INIT_CLIENTKEY,
+            param:{
+                iid:iid,
+                zipfilename:recordnameshow
+            }
         };
         ajaxSubmitByJson(url,data,callbackgZIPVod);
     } else {
@@ -1832,8 +1835,11 @@ function callbackgZIPVod(data) {
 function zIPVodProgress() {
     var url=getActionURL(getactionid_manage().getRecordById_zIPVodProgress);
     var data={
-        iid:iid,
-        zipfilename:recordnameshow
+        token:INIT_CLIENTKEY,
+        param:{
+            iid:iid,
+            zipfilename:recordnameshow
+        }
     };
     ajaxSubmitByJson(url,data,callbackzIPVodProgress);
 }

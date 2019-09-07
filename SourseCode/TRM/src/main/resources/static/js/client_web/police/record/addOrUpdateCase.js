@@ -153,8 +153,11 @@ function tr_addOrUpdate(obj,type) {
                           if (!(/\S/).test(value)) {
                               return "请输入证件号码"
                           }
-                          if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality)) && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
-                              return "请输入正确的18位居民身份证号码"
+                          if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                              var checkidcard_bool=checkIDCard(value);
+                              if (!checkidcard_bool) {
+                                  return "请输入有效的18位居民身份证号码";
+                              }
                           }
                       },
                       username:[ /\S/,"请输入姓名"],
@@ -675,19 +678,16 @@ function getCardreader_btn() {
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
+    cardnum = $.trim(cardnum);
     if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
         return true;
     }
 
-    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
-        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
-        if(reg.test(cardnum) === false) {
-            /*  parent.layer.msg("身份证输入不合法");*/
-            /*init_form();*/
+    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
+        var checkidcard_bool=  checkIDCard(cardnum);
+        if(!checkidcard_bool) {
             return false;
         }
-        //解析身份证
-        cardnum = $.trim(cardnum);
         if (cardnum.length==15){
             return true;
         }else  if (cardnum.length==18){

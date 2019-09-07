@@ -27,7 +27,7 @@ function addCaseToArraignment() {
     var cardnum=$("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();
     if (!isNotEmpty(cardnum)){
-        parent.layer.msg("证件号码不能为空");
+        parent.layer.msg("证件号码不能为空",{icon:5});
         return;
     }
    /* if ($.trim(cardtypetext)=="居民身份证"){
@@ -39,20 +39,20 @@ function addCaseToArraignment() {
     }*/
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
-        parent.layer.msg("姓名不能为空");
+        parent.layer.msg("姓名不能为空",{icon:5});
         return;
     }
 
     var  casename=$("#casename").val();
     if (!isNotEmpty(casename)){
-        parent.layer.msg("案件名称不能为空");
+        parent.layer.msg("案件名称不能为空",{icon:5});
         return;
     }
 
 
     var recordadminssid=$("#recordadmin  option:selected").val();
     if (!isNotEmpty(recordadminssid)){
-        parent.layer.msg("记录人不能为空");
+        parent.layer.msg("记录人不能为空",{icon:5});
         return;
     }
 
@@ -66,6 +66,8 @@ function addCaseToArraignment() {
     var  both=$("#both").val();
     var  politicsstatus=$("#politicsstatus").val();
     var  domicile=$("#domicile").val();
+    var  nationalssid=$("#national").val();
+    var  nationalityssid=$("#nationality").val();
     addUserInfo={
         cardtypessid:cardtypessid,
         cardnum:cardnum,
@@ -75,6 +77,8 @@ function addCaseToArraignment() {
         both:both,
         politicsstatus:politicsstatus,
         domicile:domicile,
+        nationalssid:nationalssid,
+        nationalityssid:nationalityssid,
     }
 
 
@@ -210,12 +214,72 @@ function callbackaddCaseToArraignment(data) {
                     }
                 }
             }else {
-                parent.layer.msg(data.message);
+                parent.layer.msg(data.message,{icon:5});
             }
         }else {
-            parent.layer.msg(data.message);
+            parent.layer.msg(data.message,{icon:5});
         }
     }
+}
+
+/**
+ * 获取国籍
+ */
+function getNationalitys(){
+    var url=getActionURL(getactionid_manage().startConversation_getNationalitys);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetNationalitys);
+}
+function callbackgetNationalitys(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        $('#nationality option').not(":lt(1)").remove();
+        if (isNotEmpty(data)){
+            if (isNotEmpty(data)) {
+                for (var i = 0; i < data.length; i++) {
+                    var l = data[i];
+                    $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
+                }
+            }
+        }
+    }else{
+        parent.layer.msg(data.message,{icon: 5});
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+
+/**
+ * 获取民族
+ */
+function getNationals(){
+    var url=getActionURL(getactionid_manage().startConversation_getNationals);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetNationals);
+}
+function callbackgetNationals(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        $('#national option').not(":lt(1)").remove();
+        if (isNotEmpty(data)) {
+            for (var i = 0; i < data.length; i++) {
+                var l = data[i];
+                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
+            }
+        }
+    }else{
+        parent.layer.msg(data.message,{icon: 5});
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 
@@ -238,7 +302,7 @@ function callbackgetCards(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon:5});
     }
     layui.use('form', function(){
         var form = layui.form;
@@ -306,7 +370,7 @@ function callbackgetUserByCard(data){
 
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon:5});
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -353,7 +417,7 @@ function callbackgetUserinfoList(data) {
             }
         }
     }else{
-       parent.layer.msg(data.message);
+       parent.layer.msg(data.message,{icon:5});
     }
     layui.use('form', function(){
         var form =  layui.form;
@@ -398,7 +462,7 @@ function callbakegetCaseById(data) {
             }
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon:5});
     }
 }
 
@@ -514,7 +578,7 @@ function callbackgetAdminList(data) {
             $("#recordadmin").val(otheruserinfos[0].ssid);//默认选择第一个
         }
     }else{
-        parent.layer.msg(data.message);
+        parent.layer.msg(data.message,{icon:5});
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -587,18 +651,16 @@ function open_othercases() {
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
+    cardnum = $.trim(cardnum);
     if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
         return true;
     }
-    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)||!isNotEmpty(cardtypetext)){
-        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
-        if(reg.test(cardnum) === false) {
-          /*  parent.layer.msg("身份证输入不合法");*/
-            /*init_form();*/
+    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
+        var checkidcard_bool=  checkIDCard(cardnum);
+        if(!checkidcard_bool) {
             return false;
         }
         //解析身份证
-        cardnum = $.trim(cardnum);
         if (cardnum.length==15){
             return true;
         }else  if (cardnum.length==18){

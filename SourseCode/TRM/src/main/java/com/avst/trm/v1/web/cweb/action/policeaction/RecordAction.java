@@ -895,7 +895,7 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/gZIPVod")
-    public RResult gZIPVod(@RequestBody  GZIPVodParam param){
+    public RResult gZIPVod(@RequestBody ReqParam<GZIPVodParam> param ){
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");
@@ -912,7 +912,7 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/zIPVodProgress")
-    public RResult zIPVodProgress(@RequestBody  GZIPVodParam param){
+    public RResult zIPVodProgress(@RequestBody ReqParam<GZIPVodParam> param ){
         RResult result = this.createNewResultOfFail();
         if (null == param) {
             result.setMessage("参数为空");

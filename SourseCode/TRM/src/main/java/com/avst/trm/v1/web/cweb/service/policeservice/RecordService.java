@@ -3731,8 +3731,8 @@ public class RecordService extends BaseService {
      * 打包回放（其实打包回放应该存储组件完成）
      * @return
      */
-    public RResult gZIPVod(RResult result,GZIPVodParam param){
-
+    public RResult gZIPVod(RResult result,ReqParam<GZIPVodParam> paramReqParam){
+        GZIPVodParam param=paramReqParam.getParam();
         String iid=param.getIid();
         String zipfilename=param.getZipfilename();
         if(StringUtils.isEmpty(iid)){
@@ -3796,8 +3796,8 @@ public class RecordService extends BaseService {
      * @param param
      * @return
      */
-    public RResult zIPVodProgress(RResult result,GZIPVodParam param){
-
+    public RResult zIPVodProgress(RResult result, ReqParam<GZIPVodParam> paramReqParam){
+        GZIPVodParam param=paramReqParam.getParam();
         String iid=param.getIid();
         if(StringUtils.isEmpty(iid)){
             result.setMessage("iid唯一标识未找到");
