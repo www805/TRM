@@ -1276,15 +1276,6 @@ function checkKeyword(txt) {
 
 //*******************************************************************获取各个状态start****************************************************************//
 function  getEquipmentsState() {
-    $("#MtState").text("加载中");
-    $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#AsrState").text("加载中");
-    $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#LiveState").text("加载中");
-    $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
-    $("#PolygraphState").text("加载中");
-    $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
-
     if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
         var recordnum=MCCache.recordnum==null?0:MCCache.recordnum;//本次会议开启的录音/像个数
         var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;//本次会议开启的语音识别个数
@@ -1390,6 +1381,15 @@ function callbackgetEquipmentsState(data) {
             $("#PolygraphState").attr({"PolygraphState": PolygraphState, "class": PolygraphClass});
 
         }
+    }else {
+        $("#MtState").text("加载中");
+        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").text("加载中");
+        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").text("加载中");
+        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").text("加载中");
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
     }
 }
 //*******************************************************************获取各个状态end****************************************************************//

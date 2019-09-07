@@ -125,7 +125,21 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-col-md6 layui-col-xs6 layui-col-lg6">
+                            <div class="layui-col-lg6">
+                                <label class="layui-form-label">民族</label>
+                                <div class="layui-input-block">
+                                    <select name="national"  lay-search="" id="national">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-col-lg6">
+                                <label class="layui-form-label">国籍</label>
+                                <div class="layui-input-block">
+                                    <select name="city"  lay-search="" id="nationality">
+                                        <option value=""></option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="layui-col-md12 layui-col-xs12 layui-col-lg12">
                                 <label class="layui-form-label">户籍地</label>
@@ -209,6 +223,8 @@
         setpageAction(INIT_CLIENT,"client_web/police/conversation/startConversation");
         getAdminList();
         getCards();
+        getNationalitys();
+        getNationals();
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块
@@ -230,12 +246,15 @@
             cardnum:function (value) {
             var cardtypetext = $("#cards option:selected").text();
             var nationality = $("#nationality option:selected").text();//国籍
-            if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality)) && !(/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/).test(value)) {
-                return "请输入正确的18位居民身份证号码";
-            }
             if (!(/\S/).test(value)) {
                     return "请输入证件号码"
              }
+             if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                    var checkidcard_bool=checkIDCard(value);
+                    if (!checkidcard_bool) {
+                        return "请输入有效的18位居民身份证号码";
+                    }
+              }
         },
             username:[ /\S/,"请输入姓名"],
             casename:[ /\S/,"请输入案件名称"],

@@ -37,6 +37,7 @@ function addCaseToArraignment() {
         return;
     }
 
+
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
         parent.layer.msg("姓名不能为空",{icon: 5});
@@ -1417,18 +1418,17 @@ function open_othercases() {
 //检验主身份证号码
 function checkout_cardnum(cardnum,cardtypetext) {
     var nationality = $("#nationality option:selected").text();//国籍
-    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
+    cardnum = $.trim(cardnum);
+    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){ //只检测中国国籍的
         return true;
     }
     if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
-        var reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
-        if(reg.test(cardnum) === false) {
-          /*  parent.layer.msg("身份证输入不合法");*/
-            /*init_form();*/
+        var checkidcard_bool=  checkIDCard(cardnum);
+        if(!checkidcard_bool) {
             return false;
         }
-        //解析身份证
-        cardnum = $.trim(cardnum);
+
+        //开始计算生日啥的
         if (cardnum.length==15){
             return true;
         }else  if (cardnum.length==18){
@@ -1459,6 +1459,8 @@ function checkout_cardnum(cardnum,cardtypetext) {
     }
     return true;
 }
+
+
 
 
 //初始化页面

@@ -129,7 +129,7 @@ function callbackgetRecordById(data) {
             }
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon:5});
     }
 }
 
@@ -170,7 +170,7 @@ function callbackgetgetRecordrealing(data) {
             initplayer();
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon:5});
     }
 }
 
@@ -246,7 +246,7 @@ function startMC() {
             },1000)
         }
     }else {
-        layer.msg("请稍等",{time:1000},function () {
+        layer.msg("请稍等",{time:1000,icon:5},function () {
             getRecordById();
             $("#startbtn").attr("onclick","startMC();")
         });
@@ -285,7 +285,7 @@ function callbackstartMC(data) {
             $("#mtbool_txt").text("审讯中");
 
             var con="审讯已开启";
-            layer.msg(con, {time: 2000});
+            layer.msg(con, {time: 2000,icon:6});
             $("#startbtn").css({"visibility":"hidden"}).attr("onclick","");
         }
     }else{
@@ -307,7 +307,7 @@ function callbackstartMC(data) {
         }
         $("#startbtn").css({"visibility":"visible"}).attr("onclick","startMC();");
 
-        layer.msg("审讯开启失败");
+        layer.msg("审讯开启失败",{icon:5});
     }
 }
 
@@ -373,7 +373,7 @@ function overRecord(state) {
 
             ajaxSubmitByJson(url, data, calladdRecord);
         }else{
-            layer.msg("系统异常");
+            layer.msg("系统异常",{icon:5});
         }
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
             typy:1,
@@ -393,12 +393,12 @@ function calladdRecord(data) {
             if (isNotEmpty(overRecord_loadindex)) {
                 layer.close(overRecord_loadindex);
             }
-            layer.msg("审讯结束",{time:500},function () {
+            layer.msg("审讯结束",{time:500,icon:6},function () {
                 window.history.go(-1);
             })
         }
     }else{
-        layer.msg(data.message);
+        layer.msg(data.message,{icon:5});
     }
     $("#overRecord_btn").attr("click","overRecord();");
 }

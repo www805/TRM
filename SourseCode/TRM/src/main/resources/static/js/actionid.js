@@ -289,6 +289,8 @@ function getactionid_manage() {
         startConversation_addCaseToArraignment:"startConversation_addCaseToArraignment",
         startConversation_getCards:"startConversation_getCards",
         startConversation_towaitRecord:"startConversation_towaitRecord",
+        startConversation_getNationalitys:"startConversation_getNationalitys",
+        startConversation_getNationals:"startConversation_getNationals",
 
         conversationIndex_getRecords:"conversationIndex_getRecords",
         conversationIndex_changeboolRecord:"conversationIndex_changeboolRecord",
