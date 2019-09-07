@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.cweb.req.policereq;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_case;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userto;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.UserInfo;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Userto;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class AddCaseToArraignmentParam {
 
     private String mtmodelssid;//会议模板ssid
 
-    private List<Police_userto> usertos;//其他在场人员信息
+    private List<Userto> usertos;//其他在场人员信息
 
     private UserInfo addUserInfo;//新增人员的信息
     private Police_case addPolice_case;//新增案件的信息
@@ -122,11 +123,11 @@ public class AddCaseToArraignmentParam {
         this.recordname = recordname;
     }
 
-    public List<Police_userto> getUsertos() {
+    public List<Userto> getUsertos() {
         return usertos;
     }
 
-    public void setUsertos(List<Police_userto> usertos) {
+    public void setUsertos(List<Userto> usertos) {
         this.usertos = usertos;
     }
 

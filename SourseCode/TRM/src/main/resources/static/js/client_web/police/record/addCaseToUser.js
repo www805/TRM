@@ -50,6 +50,12 @@ function addCaseToArraignment() {
         return;
     }
 
+    var asknum=$("#asknum").val();
+    var recordname=$("#recordname").val();
+    if (!isNotEmpty(recordname)){
+        parent.layer.msg("笔录名称不能为空",{icon: 5});
+        return;
+    }
 
     var recordadminssid=$("#recordadmin  option:selected").val();
     if (!isNotEmpty(recordadminssid)){
@@ -63,12 +69,74 @@ function addCaseToArraignment() {
         return;
     }
 
-    var asknum=$("#asknum").val();
-    var recordname=$("#recordname").val();
-    if (!isNotEmpty(recordname)){
-        parent.layer.msg("笔录名称不能为空",{icon: 5});
+    //其他人
+    var usertos=[];
+    var ck=true;
+    var ck_msg="";
+    $("#tab_body #tab_content .layui-tab-item").each(function(){
+        var tab_cardnum=$(this).find("input[name='tab_cardnum']").val();
+        var index=$(this).index();
+        if (isNotEmpty(tab_cardnum)){
+            var otheruserssid=$(this).find("input[name='tab_otheruserssid']").val();
+            var relation=$(this).find("select[name='tab_relation']").val();
+            var language=$(this).find("select[name='tab_language']").val();
+            var usertype=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
+            var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("lay-id");
+
+            var cardtypessid=$(this).find("select[name='tab_card']").val();
+            var cardtypetext=$(this).find("select[name='tab_card'] option:selected").text();
+
+            var cardnum=$(this).find("input[name='tab_cardnum']").val();
+            var username=$(this).find("input[name='tab_username']").val();
+            var sex=$(this).find("select[name='tab_sex']").val();
+            var phone=$(this).find("input[name='tab_phone']").val();
+
+
+            //开始验证
+            var bool=  checkIDCard(cardnum);
+            if (!bool){
+                $(this).find("input[name='tab_cardnum']").focus();
+                ck_msg="其他在场人员下身份证号码无效";
+                ck=false;
+                return false;
+            }
+
+            if (!isNotEmpty(username)){
+                $(this).find("input[name='tab_username']").focus();
+                ck_msg="其他在场人员下姓名不能为空";
+                ck=false;
+                return false;
+            }
+
+            if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
+                $(this).find("input[name='tab_phone']").focus();
+                ck_msg="其他在场人员下联系电话无效";
+                ck=false;
+                return false;
+            }
+
+
+            var usertos_={
+                otheruserssid:otheruserssid,
+                relation:relation,
+                language:language,
+                usertype:usertype==null?3:usertype,
+                usertitle:usertitle,
+                cardtypessid:cardtypessid,//当前证件类型ssid
+                cardnum:cardnum,//当前证件号码
+                username:username,//姓名
+                sex:sex,//性别
+                phone:phone //联系电话
+            }
+            usertos.push(usertos_);
+        }
+    });
+    if(!ck){
+        parent.layer.msg(ck_msg,{icon: 5});
         return;
     }
+
+
 
     $("#startrecord_btn").attr("lay-filter","");
 
@@ -128,27 +196,6 @@ function addCaseToArraignment() {
         department:department
     }
 
-    //其他人
-    var usertos=[];
-    $("#tab_body #tab_content .layui-tab-item").each(function(){
-        var tab_cardnum=$(this).find("input[name='tab_cardnum']").val();
-        var index=$(this).index();
-        if (isNotEmpty(tab_cardnum)){
-            var otheruserssid=$(this).find("input[name='tab_otheruserssid']").val();
-            var relation=$(this).find("select[name='tab_relation']").val();
-            var language=$(this).find("select[name='tab_language']").val();
-            var usertype=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
-            var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).text();
-            var usertos_={
-                otheruserssid:otheruserssid,
-                relation:relation,
-                language:language,
-                usertype:usertype==null?3:usertype,
-                usertitle:usertitle,
-            }
-            usertos.push(usertos_);
-        }
-    });
 
     //收集询问人二和对应工作单位等信息
     var otheruserinfoname=$("#otheruserinfos").val();
@@ -697,7 +744,7 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">证件类型</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <select name="tab_card" lay-verify="required"  disabled  lay-filter="tab_cardfilter">\
+                                                                    <select name="tab_card"   disabled  lay-filter="tab_cardfilter">\
                                                                     <option value=""></option>\
                                                                     </select>\
                                                                 </div>\
@@ -705,20 +752,20 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">证件号码</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="tab_cardnum"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">\
                                                                       <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard_other(this);"></i>\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">姓名</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="tab_username"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_username"  placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">性别</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <select name="tab_sex" lay-verify="required" >\
+                                                                    <select name="tab_sex" >\
                                                                         <option value=""></option>\
                                                                         <option value="1">男</option>\
                                                                         <option value="2">女</option>\
@@ -729,7 +776,7 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">联系电话</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="tab_phone"  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_phone"   placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg12">\
@@ -745,7 +792,8 @@ function tabAdd(){
         parent.layer.prompt({title: '请输入标其他在场人员标题', formType: 0}, function(title, index){
             element.tabAdd('tabAdd_filter', {
                 title:title
-                ,content:html
+                ,content:html,
+                id:title
             });
             $("#tab_content select[name='tab_card']").html("");
             if (isNotEmpty(cards)){
@@ -784,50 +832,55 @@ function getUserByCard_other(obj){
         $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
         return;
     }
-    //判断证件是否已经被搜索
-    var num=0;
-    $("#tab_content select[name='tab_card']").each(function(){
-       var card_val=$(this).val();
-       var card_num=$(this).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
-        if (card_val==cards&&card_num==cardnum){
-            num++;
-        }
-    });
-    if (num>1){
-        parent.layer.msg("该在场人员已存在",{icon:5});
-        $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
-        return;
-    }
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            cardtypesssid:cards,
-            cardnum:cardnum
-        }
-    };
-    ajaxSubmitByJson(url,data,function callbackgetUserByCard_other(data){
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var userinfo=data.userinfo;
-                if (isNotEmpty(userinfo)){
-                    /*人员信息*/
 
-                    $(obj).closest(".layui-tab-item").find("input[name='tab_username']").val(userinfo.username);
-                    $(obj).closest(".layui-tab-item").find("select[name='tab_sex']").val(userinfo.sex);
-                    $(obj).closest(".layui-tab-item").find("input[name='tab_phone']").val(userinfo.phone);
-                    $(obj).closest(".layui-tab-item").find("input[name='tab_otheruserssid']").val(userinfo.ssid);
-                }
+    if(isNotEmpty(cardnum)){
+        //判断证件是否已经被搜索
+        var num=0;
+        $("#tab_content select[name='tab_card']").each(function(){
+            var card_val=$(this).val();
+            var card_num=$(this).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
+            if (card_val==cards&&card_num==cardnum){
+                num++;
             }
-        }else{
-            parent.layer.msg(data.message,{icon: 5});
-            $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
-        }
-        layui.use('form', function(){
-            var form = layui.form;
-            form.render();
         });
-    });
+        if (num>1){
+            parent.layer.msg("该在场人员已存在",{icon:5});
+            $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+            return;
+        }
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                cardtypesssid:cards,
+                cardnum:cardnum
+            }
+        };
+        ajaxSubmitByJson(url,data,function callbackgetUserByCard_other(data){
+            if(null!=data&&data.actioncode=='SUCCESS'){
+                var data=data.data;
+                if (isNotEmpty(data)){
+                    var userinfo=data.userinfo;
+                    if (isNotEmpty(userinfo)){
+                        /*人员信息*/
+
+                        $(obj).closest(".layui-tab-item").find("input[name='tab_username']").val(userinfo.username);
+                        $(obj).closest(".layui-tab-item").find("select[name='tab_sex']").val(userinfo.sex);
+                        $(obj).closest(".layui-tab-item").find("input[name='tab_phone']").val(userinfo.phone);
+                        $(obj).closest(".layui-tab-item").find("input[name='tab_otheruserssid']").val(userinfo.ssid);
+                    }
+                }
+            }else{
+                parent.layer.msg(data.message,{icon: 5});
+                $(obj).closest(".layui-tab-item").find("input[name='tab_cardnum']").val("");
+            }
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render();
+            });
+        });
+    }else {
+        parent.layer.msg("请输入证件号码",{icon:5});
+    }
 }
 
 //其他在场人员重置按钮

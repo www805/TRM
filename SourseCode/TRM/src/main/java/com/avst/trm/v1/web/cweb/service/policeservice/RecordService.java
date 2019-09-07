@@ -936,7 +936,7 @@ public class RecordService extends BaseService {
 
         //参数==============================================================start==============================================================
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);//session用户
-        List<Police_userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
+        List<Userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
@@ -1125,7 +1125,11 @@ public class RecordService extends BaseService {
 
         //需要新增人员信息
         String usertotypessid=null;
-        if (StringUtils.isBlank(userssid)){
+        EntityWrapper userparam_=new EntityWrapper();
+        userparam_.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
+        userparam_.eq("ut.cardnum",addUserInfo.getCardnum());
+        List<UserInfo> userinfos_=police_userinfoMapper.getUserByCard(userparam_);
+        if ((null==userinfos_||userinfos_.size()<1)&&StringUtils.isBlank(userssid)){
             LogUtil.intoLog(this.getClass(),"需要新增人员____");
             addUserInfo.setSsid(OpenUtil.getUUID_32());
             addUserInfo.setCreatetime(new Date());
@@ -1144,7 +1148,7 @@ public class RecordService extends BaseService {
                LogUtil.intoLog(this.getClass(),"新增的人员ssid____"+userssid);
                usertotypessid=police_userinfototype.getSsid();
            }
-        }else{
+        }else  if(userinfos_.size()==1){
           //修改用户信息
             EntityWrapper updateuserinfoParam=new EntityWrapper();
             updateuserinfoParam.eq("ssid",userssid);
@@ -1406,19 +1410,60 @@ public class RecordService extends BaseService {
 
         //添加其他
         if (null!=usertos&&usertos.size()>0){
-            for (Police_userto userto : usertos) {
-              Police_userto  userto1=new Police_userto();
-                userto1.setSsid(OpenUtil.getUUID_32());
-                userto1.setCreatetime(new Date());
-                userto1.setArraignmentssid(arraignment.getSsid());
-                userto1.setUserssid(userssid);
-                userto1.setLanguage(userto.getLanguage());
-                userto1.setOtheruserssid(userto.getOtheruserssid());
-                userto1.setRelation(userto.getRelation());
-                userto1.setUsertitle(userto.getUsertitle());
-                userto1.setUsertype(userto.getUsertype());
-                int insertuserto_bool= police_usertoMapper.insert(userto1);
-                LogUtil.intoLog(this.getClass(),"insertuserto_bool__"+insertuserto_bool);
+            for (Userto userto : usertos) {
+                Police_userinfo userinfo_=new Police_userinfo();
+
+                //先检查是否存在了该人员信息，不存在新增，存在修改
+                EntityWrapper userparam=new EntityWrapper();
+                userparam.eq("ut.cardtypessid",userto.getCardtypessid());
+                userparam.eq("ut.cardnum",userto.getCardnum());
+                List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+                if (null==userinfos||userinfos.size()<1){
+                    LogUtil.intoLog(this.getClass(),"其他在场__需要新增人员____");
+                    userinfo_.setSsid(OpenUtil.getUUID_32());
+                    userinfo_.setCreatetime(new Date());
+                    userinfo_.setSex(userto.getSex());
+                    userinfo_.setPhone(userto.getPhone());
+                    userinfo_.setUsername(userto.getUsername());
+                    int insertuserinfo_bool = police_userinfoMapper.insert(userinfo_);
+                    LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
+                    if (insertuserinfo_bool>0){
+                        Police_userinfototype police_userinfototype=new Police_userinfototype();
+                        police_userinfototype.setCardnum(userto.getCardnum());
+                        police_userinfototype.setSsid(OpenUtil.getUUID_32());
+                        police_userinfototype.setCreatetime(new Date());
+                        police_userinfototype.setCardtypessid(userto.getCardtypessid());
+                        police_userinfototype.setUserssid(userinfo_.getSsid());
+                        int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
+                        LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
+                    }
+                }else if(userinfos.size()==1) {
+                    LogUtil.intoLog(this.getClass(),"其他在场__需要修改人员____");
+                    //修改
+                    userinfo_=userinfos.get(0);
+                    userinfo_.setSex(userto.getSex());
+                    userinfo_.setPhone(userto.getPhone());
+                    userinfo_.setUsername(userto.getUsername());
+                    EntityWrapper updateuserinfoParam=new EntityWrapper();
+                    updateuserinfoParam.eq("ssid",userinfo_.getSsid());
+                    int updateuserinfo_bool = police_userinfoMapper.update(userinfo_,updateuserinfoParam);
+                    LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                }
+
+                if (null!=userinfo_.getSsid()){
+                    Police_userto  userto1=new Police_userto();
+                    userto1.setSsid(OpenUtil.getUUID_32());
+                    userto1.setCreatetime(new Date());
+                    userto1.setArraignmentssid(arraignment.getSsid());
+                    userto1.setUserssid(userssid);
+                    userto1.setLanguage(userto.getLanguage());
+                    userto1.setOtheruserssid(userinfo_.getSsid());
+                    userto1.setRelation(userto.getRelation());
+                    userto1.setUsertitle(userto.getUsertitle());
+                    userto1.setUsertype(userto.getUsertype());
+                    int insertuserto_bool= police_usertoMapper.insert(userto1);
+                    LogUtil.intoLog(this.getClass(),"insertuserto_bool__"+insertuserto_bool);
+                }
             }
         }
         addCaseToArraignmentVO.setRecordtypessid(recordtypessid);

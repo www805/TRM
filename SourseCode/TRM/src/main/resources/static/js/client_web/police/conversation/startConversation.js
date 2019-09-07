@@ -363,6 +363,8 @@ function callbackgetUserByCard(data){
                 $("#age").val(userinfo.age);
                 $("#sex").val(userinfo.sex);
                 $("#politicsstatus").val(userinfo.politicsstatus);
+                $("#national").val(userinfo.nationalssid);
+                $("#nationality").val(userinfo.nationalityssid);
             }
             if (isNotEmpty(dquserssid)){
                 getCaseById();
