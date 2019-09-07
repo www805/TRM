@@ -8,12 +8,12 @@ function getArraignment_count_init(currPage,pageSize) {
     };
     ajaxSubmit(url,data,callCountList);
 }
-function getArraignment_countList(starttime,endtime,times,currPage,pageSize){
+function getArraignment_countList(username,starttime,endtime,currPage,pageSize){
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
     var data={
+        username:username,
         starttime:starttime,
         endtime:endtime,
-        times:times,
         currPage:currPage,
         pageSize:pageSize
     };
@@ -34,14 +34,14 @@ function getArraignment_count_search(currPage,pageSize) {
 
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
 
+    var username=$("#username").val();
     var starttime=$("#starttime").val();
     var endtime=$("#endtime").val();
-    var times=$("#times").val();
 
     var data={
+        username:username,
         starttime:starttime,
         endtime:endtime,
-        times:times,
         currPage:currPage,
         pageSize:pageSize
     };
@@ -50,14 +50,14 @@ function getArraignment_count_search(currPage,pageSize) {
 
 function getArraignment_count_Excel(){
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countPrint);
+    var username=$("#username").val();
     var starttime=$("#starttime").val();
     var endtime=$("#endtime").val();
-    var times=$("#times").val();
 
     var data={
+        username:username,
         starttime:starttime,
-        endtime:endtime,
-        times:times
+        endtime:endtime
     };
 
     ajaxSubmit(url,data,callCountExcelList);
@@ -67,6 +67,7 @@ function callCountExcelList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             var host = "http://localhost";
+            host = "";
             layer.msg(data.message,{icon: 6});
             // window.location.href = "file://" + data.data;
             window.location.href = host + data.data;
@@ -118,13 +119,14 @@ function showpagetohtml(){
         var pageCount=pageparam.pageCount;
         var currPage=pageparam.currPage;
 
+        var username=pageparam.username;
         var starttime=pageparam.starttime;
         var endtime=pageparam.endtime;
         var times=pageparam.times;
         var arrparam=new Array();
-        arrparam[0] = starttime;
-        arrparam[1]=endtime;
-        arrparam[2]=times;
+        arrparam[0] = username;
+        arrparam[1]=starttime;
+        arrparam[2]=endtime;
         showpage("paging",arrparam,'getArraignment_countByParam',currPage,pageCount,pageSize);
     }
 }

@@ -8,7 +8,7 @@ public class Arraignment_countParam extends Page {
 
     private String endtime;
 
-    private String times;
+    private String username;
 
     public String getStarttime() {
         return starttime;
@@ -26,12 +26,12 @@ public class Arraignment_countParam extends Page {
         this.endtime = endtime;
     }
 
-    public String getTimes() {
-        return times;
+    public String getUsername() {
+        return username;
     }
 
-    public void setTimes(String times) {
-        this.times = times;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Arraignment_countParam extends Page {
         return "Arraignment_countParam{" +
                 "starttime='" + starttime + '\'' +
                 ", endtime='" + endtime + '\'' +
-                ", times='" + times + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }
