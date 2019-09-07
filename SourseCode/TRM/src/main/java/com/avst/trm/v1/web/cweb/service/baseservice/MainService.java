@@ -325,9 +325,10 @@ public class MainService extends BaseService {
         if (null!=list&&list.size()>0){
 
             if (list.size()==1){
+                String myIP = NetTool.getMyIP();
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
-                serverconfig.setSyslogo_downurl(serverconfig.getSyslogo_downurl());
-                serverconfig.setClient_downurl(serverconfig.getClient_downurl());
+                serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
+                serverconfig.setClient_downurl("http://" + myIP + serverconfig.getClient_downurl());
                 getServerconfigVO.setServerconfigAndFilesave(serverconfig);
                 result.setData(getServerconfigVO);
                 changeResultToSuccess(result);
@@ -630,6 +631,7 @@ public class MainService extends BaseService {
         AppCacheParam cacheParam = AppCache.getAppCacheParam();
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
+            String myIP = NetTool.getMyIP();
             FileInputStream fis = null;
             try {
                 Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
@@ -639,7 +641,7 @@ public class MainService extends BaseService {
                     filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
                     Base_filesave syslogo = base_filesaveMapper.selectOne(filesaveSyslogo);
                     if (null!=syslogo){
-                        cacheParam.setSyslogoimage(syslogo.getRecorddownurl());
+                        cacheParam.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
                     }
                 }
 
@@ -648,7 +650,7 @@ public class MainService extends BaseService {
                     filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
                     Base_filesave clientlogo = base_filesaveMapper.selectOne(filesaveClientlogo);
                     if (null!=clientlogo){
-                        cacheParam.setClientimage(clientlogo.getRecorddownurl());
+                        cacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
                     }
                 }
 

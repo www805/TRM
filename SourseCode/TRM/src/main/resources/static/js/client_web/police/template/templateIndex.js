@@ -310,11 +310,12 @@ function exportWord(obj){
             var data=data.data;
             if (isNotEmpty(data)){
                 var url = data;
-                var a = document.createElement('a');          // 创建一个a节点插入的document
-                var event = new MouseEvent('click')           // 模拟鼠标click点击事件
-                a.download = 'beautifulGirl'                  // 设置a节点的download属性值
-                a.href = url;                                 // 将图片的src赋值给a节点的href
-                a.dispatchEvent(event);
+                // var a = document.createElement('a');          // 创建一个a节点插入的document
+                // var event = new MouseEvent('click')           // 模拟鼠标click点击事件
+                // a.download = 'beautifulGirl'                  // 设置a节点的download属性值
+                // a.href = url;                                 // 将图片的src赋值给a节点的href
+                // a.dispatchEvent(event);
+                window.location.href = url;
                 layer.msg("导出成功,等待下载中...", {icon: 6});
                 // DownLoadReportIMG(url);
             }
@@ -343,11 +344,12 @@ function exportEcxcel(obj){
             var data=data.data;
             if (isNotEmpty(data)){
                 var url = data;
-                var a = document.createElement('a');          // 创建一个a节点插入的document
-                var event = new MouseEvent('click')           // 模拟鼠标click点击事件
-                a.download = 'beautifulGirl'                  // 设置a节点的download属性值
-                a.href = url;                                 // 将图片的src赋值给a节点的href
-                a.dispatchEvent(event);
+                // var a = document.createElement('a');          // 创建一个a节点插入的document
+                // var event = new MouseEvent('click')           // 模拟鼠标click点击事件
+                // a.download = 'beautifulGirl'                  // 设置a节点的download属性值
+                // a.href = url;                                 // 将图片的src赋值给a节点的href
+                // a.dispatchEvent(event);
+                window.location.href = url;
                 layer.msg("导出成功,等待下载中...", {icon: 6});
 
                 // DownLoadReportIMG(url);

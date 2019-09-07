@@ -139,6 +139,7 @@ public class HomeService extends BaseService {
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
             FileInputStream fis = null;
+            String myIP = NetTool.getMyIP();
             try {
 
                 Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
@@ -148,7 +149,7 @@ public class HomeService extends BaseService {
                     filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
                     Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
                     if (null!=syslogo){
-                        cacheParam.setSyslogoimage(syslogo.getRecorddownurl());
+                        cacheParam.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
                     }
                 }
 
@@ -157,7 +158,7 @@ public class HomeService extends BaseService {
                     filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
                     Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
                     if (null!=clientlogo){
-                        cacheParam.setClientimage(clientlogo.getRecorddownurl());
+                        cacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
                     }
                 }
 
