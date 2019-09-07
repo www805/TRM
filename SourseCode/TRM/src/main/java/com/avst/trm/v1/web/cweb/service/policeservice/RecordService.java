@@ -970,7 +970,7 @@ public class RecordService extends BaseService {
         }else  if (conversationbool==1){
             //开始谈话：默认使用会议的谈话模板ssid
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation2");
-            String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
+            String time=new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date());
             String conversationmsg="开启审讯_"+time;
 
             recordname="审讯笔录【开启审讯】"+"_第"+Integer.valueOf(asknum+1)+"版_"+time;
@@ -979,7 +979,7 @@ public class RecordService extends BaseService {
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
-            String time=DateUtil.getYear()+"-"+DateUtil.getMonth()+"-"+DateUtil.getDay()+"-"+DateUtil.get24Hour()+"-"+DateUtil.getMinute();
+            String time=new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date());
             String conversationmsg="一键审讯_"+time;
 
 
