@@ -1169,7 +1169,14 @@ public class RecordService extends BaseService {
             //需要新增案件信息
          String casenum=addPolice_case.getCasenum();//案件号码
          Integer caseid=null;
-         if (StringUtils.isBlank(casessid)){
+
+        Police_case police_case_1=null;
+         if (StringUtils.isNotBlank(casessid)){
+             police_case_1=new Police_case();
+             police_case_1.setSsid(casessid);
+             police_case_1=police_caseMapper.selectOne(police_case_1);
+         }
+         if (StringUtils.isBlank(casessid)&&police_case_1==null){
              String casename=addPolice_case.getCasename();//案件号码
              if (StringUtils.isNotBlank(casename)){
                  //判断案件是否重复
