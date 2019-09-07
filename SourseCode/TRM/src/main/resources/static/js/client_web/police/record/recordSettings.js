@@ -561,7 +561,7 @@ function getyuntaiControl(ptzaction) {
     };
     ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
 }
-
+//上报休庭心跳
 function putRecessStatus() {
     if (isNotEmpty(recordssid) && isNotEmpty(mtssid)) {
         var url=getActionURL(getactionid_manage().waitRecord_putRecessStatus);
@@ -570,14 +570,12 @@ function putRecessStatus() {
         }
         // var url = "/cweb/police/record/putRecessStatus";
 
-        var lasttime = new Date().Format("yyyy-MM-dd HH:mm:ss");
 
         var data={
             token:INIT_CLIENTKEY,
             param:{
                 recordssid: recordssid,
-                mtssid: mtssid,
-                lasttime: lasttime
+                mtssid: mtssid
             }
         };
         ajaxSubmitByJson(url, data, callputRecessStatus);

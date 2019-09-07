@@ -27,6 +27,9 @@ import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -220,6 +223,11 @@ public class Scheduler {
             List<RecordStatusCacheParam> paramList = RecordStatusCache.getRecordStatusCacheParam();
 
             if (null != paramList && paramList.size() > 0) {
+                //计算公式转换成整数
+                JexlEngine jexlEngine = new JexlBuilder().create();
+                String formulas=PropertiesListenerConfig.getProperty("record.cache.maxTime");
+                JexlExpression expression = jexlEngine.createExpression(formulas);
+                Integer maxTime = (Integer) expression.evaluate(null);
 
                 long nowtime=new Date().getTime();
 
@@ -228,7 +236,7 @@ public class Scheduler {
                     //判断时间如果3分钟没心跳就设为休庭
                     long countTime = nowtime-param.getLasttime();
 
-                    long maxTime = 3*60*1000;//测试3分钟，实际半小时
+//                    long maxTime = 3*60*1000;//测试3分钟，实际半小时
                     if (countTime >= maxTime) {
                         //修改笔录状态
                         String ssid = param.getRecordssid();

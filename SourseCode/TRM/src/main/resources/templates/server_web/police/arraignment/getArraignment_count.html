@@ -43,11 +43,11 @@
                 <input type="text" name="endtime" id="endtime" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
             </div>
 
-            <label class="layui-form-label" style="width: auto;">语音笔录时长阈值</label>
+            <label class="layui-form-label" style="width: auto;">人员名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="times" id="times" lay-verify="required" placeholder="请输入阈值" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入人员名称" autocomplete="off" class="layui-input">
             </div>
-            <label class="layui-form-label" style="width: auto;">分钟</label>
+            <!--<label class="layui-form-label" style="width: auto;">分钟</label>-->
 
             <input type="button" class="layui-btn layui-btn-normal" onclick="getArraignment_count_search(1,10)" value="查询">
             <input type="button" class="layui-btn layui-btn-normal" onclick="getArraignment_count_Excel()" value="导出Excel">
@@ -66,9 +66,9 @@
             <tr>
                 <th>序号</th>
                 <th>人员名称</th>
-                <th>笔录总量</th>
-                <th>语音笔录总量</th>
-                <th>笔录总时长</th>
+                <th>询问总次数</th>
+                <th>记录总次数</th>
+                <th>笔录总数</th>
                 <!--<th>录音时长</th>-->
                 <!--<th>笔录字数</th>-->
             </tr>
@@ -78,9 +78,9 @@
             <tr>
                 <td>{{index+1}}</td>
                 <td>{{value.username==null?"":value.username}}</td>
-                <td>{{value.recordCount==null?"":value.recordCount}}</td>
-                <td>{{value.recordrealCount==null?"":value.recordrealCount}}</td>
-                <td>{{value.recordtimeCount==null?"":value.recordtimeCount}}</td>
+                <td>{{value.arraignmentcount==null?"":value.arraignmentcount}}</td>
+                <td>{{value.recordadmincount==null?"":value.recordadmincount}}</td>
+                <td>{{value.recordcount==null?"":value.recordcount}}</td>
                 <!--<td>{{value.timeCount==null?"":value.timeCount}}</td>-->
                 <!--<td>{{value.translatextCount==null?"":value.translatextCount}}</td>-->
 
