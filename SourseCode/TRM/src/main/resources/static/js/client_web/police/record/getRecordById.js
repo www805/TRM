@@ -78,7 +78,8 @@ function getRecordById() {
 
 function setqw() {
     if (isNotEmpty(problems)){
-        $("#recorddetail").html("");
+        $("#recorddetail").empty();
+        $("#datanull_2").hide();
         for (var z = 0; z< problems.length;z++) {
             var problem = problems[z];
 
@@ -103,6 +104,8 @@ function setqw() {
             }
             $("#recorddetail").append(problemhtml);
         }
+    }else {
+        $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
     }
 }
 function callbackgetRecordById(data) {
@@ -122,10 +125,11 @@ function callbackgetRecordById(data) {
 
                 //问题答案
                 var problems1=record.problems;
-                $("#recorddetail").html("");
                 if (isNotEmpty(problems1)) {
                     problems=problems1;
                     setqw();
+                }else {
+                    $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
                 }
 
                 //会议人员
@@ -179,18 +183,30 @@ function callbackgetRecordById(data) {
 
             //左侧asr识别数据
             var getMCVO=data.getMCVO;
-            if (isNotEmpty(getMCVO)){
+            if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
                 set_getRecord(getMCVO);
+                $("#asr_html").show();
+            }else  {
+                $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){
                 phdatabackList=phDataBackVoParams;
                 phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
+                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
+                $("#record_qw_HTML").attr("class","layui-col-md7").show();
+                $("#ph_HTML").show();
+                main1();//身心统计回放
             }
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
+                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
+                $("#record_qw_HTML").attr("class","layui-col-md7").show();
+                $("#fd_HTML").show();
                 set_getPlayUrl(getPlayUrlVO);
+            }else {
+                $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
             }
 
             //提讯数据
@@ -199,7 +215,6 @@ function callbackgetRecordById(data) {
                 mtssid=police_arraignment.mtssid;//获取会议mtssid
                 if (!isNotEmpty(mtssid)) {
                     //不存在会议
-
                 }
             }
 
@@ -214,6 +229,7 @@ function callbackgetRecordById(data) {
 //数据渲染
 function set_getRecord(data){
     if (isNotEmpty(data.list)){
+        $("#recordreals").empty();
         $("#recordreals_selecthtml").show();
         var list=data.list;
         for (var i = 0; i < list.length; i++) {
@@ -272,6 +288,8 @@ function set_getRecord(data){
         }else {
             $("#webkit2").empty();
         }
+    }else {
+        $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
     }
 }
 
@@ -285,7 +303,7 @@ function  set_getPlayUrl(data) {
         var recordFileParams=data.recordFileParams;
         recordPlayParams=data.recordPlayParams;
         var state;
-        $("#videos").html("");
+        $("#videos").empty();
         if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
             recordPlayParams.sort(sortPlayUrl);//重新排序一边
 
@@ -339,6 +357,8 @@ function  set_getPlayUrl(data) {
                 }
             });
         }
+    }else {
+        $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
     }
 }
 
@@ -1111,7 +1131,7 @@ $(function () {
 
     },1000);
 
-    /*检测视频是否播完，播完自动进入下一个视频*/
+    /!*检测视频是否播完，播完自动进入下一个视频*!/
     SewisePlayer.onPlayTime(function(time, id){
         var totaltime=SewisePlayer.duration()==null?0:SewisePlayer.duration();
         if (parseFloat(time)==parseFloat(totaltime)&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)) {
@@ -1132,7 +1152,7 @@ $(function () {
         }
 
 
-        /*此处开始定位*/
+        /!*此处开始定位*!/
         if (isNotEmpty(time)&&time>0){
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
             locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;

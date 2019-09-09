@@ -177,7 +177,7 @@
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息</li>
-                            <li id="asr_html">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
+                            <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show">
@@ -232,14 +232,6 @@
                                     <div style="height:590px; overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
                                         <div class="layui-card-body" >
                                             <div class="talk_show"  id="recordreals">
-                                                <!--  <div class="atalk">
-                                                      <p>【检察官】 2019-4-14 02:25:08</p>
-                                                      <span>吃饭了吗？</span>
-                                                  </div>
-                                                  <div class="btalk">
-                                                      <p>【犯人】 2019-4-14 02:24:55</p>
-                                                      <span>还没呢</span>
-                                                  </div>-->
                                             </div>
                                         </div>
                                     </div>
@@ -274,40 +266,43 @@
                         <div class="layui-card-body">
                             <!--视频点播区域-->
                             <div class="layui-row" style="">
-                                <div class="layui-col-md5" id="fd_ph_HTML" >
+                                <div class="layui-col-md5" id="fd_ph_HTML"  >
                                     <div style="height: 675px; overflow-x: hidden; overflow-y: scroll;">
-                                        <div class="layui-col-md12">
-                                            <div th:replace="video :: video" >...</div>
-                                        </div>
-                                        <div class="layui-col-md12" style="line-height: 50px">
-                                            <div style="width: 95%">
-                                                <!--<button type="button" id="goleft" class="layui-btn layui-btn-sm layui-btn-primary" style="float: left;"><i class="layui-icon layui-icon-left"></i></button>-->
-                                                <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width:100%;margin:5px;" id="videos">
-                                                    视频加载中...
+                                        <div class="layui-col-md12" id="fd_HTML">
+                                            <div class="layui-col-md12">
+                                              <div th:replace="video :: video"   >...</div>
+                                            </div>
+                                            <div class="layui-col-md12" style="line-height: 50px">
+                                                <div style="width: 95%">
+                                                    <!--<button type="button" id="goleft" class="layui-btn layui-btn-sm layui-btn-primary" style="float: left;"><i class="layui-icon layui-icon-left"></i></button>-->
+                                                    <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width:100%;margin:5px;" id="videos">
+                                                        <div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>
+                                                    </div>
+                                                    <!--<button type="button" id="goright"  class="layui-btn layui-btn-sm layui-btn-primary" style="float: right;"><i class="layui-icon layui-icon-right"></i></button>-->
                                                 </div>
-                                                <!--<button type="button" id="goright"  class="layui-btn layui-btn-sm layui-btn-primary" style="float: right;"><i class="layui-icon layui-icon-right"></i></button>-->
                                             </div>
                                         </div>
-                                        <div class="layui-col-md12" >
-                                            <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:32px;line-height: 32px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心回放加载中...</strong></div>
-                                        </div>
-                                        <div class="layui-col-md12" >
-                                            <div id="main1" style="height:180px;width:100%;"></div>
-                                        </div>
-                                        <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >
-                                            <div  id="monitor_btn" style="display:inline">
-                                                <span class="layui-badge layui-btn" isn="1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hr' onclick="select_monitor(this);">心率</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
-                                                <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
+                                        <div class="layui-col-md12"id="ph_HTML" style="display: none">
+                                            <div class="layui-col-md12" >
+                                                <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:32px;line-height: 32px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心回放加载中...</strong></div>
                                             </div>
-                                            <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
-                                            <span class="layui-badge layui-bg-black layui-btn" isn="-1"  type='allranking'  onclick="select_monitorallranking(this);">排行榜</span>
-                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
-                                            <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6">
+                                            <div class="layui-col-md12" >
+                                                <div id="main1" style="height:180px;width:100%;"></div>
+                                            </div>
+                                            <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >
+                                                <div  id="monitor_btn" style="display:inline">
+                                                    <span class="layui-badge layui-btn" isn="1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hr' onclick="select_monitor(this);">心率</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
+                                                    <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
+                                                </div>
+                                                <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
+                                                <span class="layui-badge layui-bg-black layui-btn" isn="-1"  type='allranking'  onclick="select_monitorallranking(this);">排行榜</span>
+                                                <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
+                                                <div style="width:96.5%;text-align: center;margin-top: 2px;color:#1171d6">
                                                 <span class="layui-badge-rim"  style="width: 100%;" id="monitoralltext">
                                                     生理状态： 加载中
                                                     <span  id="monitorall_stress">紧张值： 0</span>
@@ -318,12 +313,14 @@
                                                     <span  id="monitorall_br">呼吸次数： 0</span>
                                                     <span  id="monitorall_relax">放松值： 0</span>
                                                  </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="layui-col-md7" id="record_qw_HTML" >
                                     <div class="layui-card">
+                                        <div><strong>【笔录问答】</strong></div>
                                         <div id="recorddetail_webkit">
                                             <div style="" id="recorddetail_scrollhtml">
                                                 <div class="layui-card-body">
@@ -369,7 +366,7 @@
         setpageAction(INIT_CLIENT,"client_web/police/record/getRecordById");
         recordssid=[[${getRecordByIdModel.recordssid}]];
         getRecordById();//获取笔录案件等信息
-        main1();//身心统计回放
+      /*  main1();//身心统计回放*/
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
 
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});
