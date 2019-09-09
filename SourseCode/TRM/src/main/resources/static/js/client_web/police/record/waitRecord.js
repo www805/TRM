@@ -198,19 +198,19 @@ function tr_remove(obj) {
     td_lastindex={};
     $(obj).parents("tr").remove();
     addbtn();
-    setRecordreal();
+    /*setRecordreal();*/
 }
 function tr_up(obj) {
     var $tr = $(obj).parents("tr");
     $tr.prev().before($tr);
     addbtn();
-    setRecordreal();
+   /* setRecordreal();*/
 }
 function tr_downn(obj) {
     var $tr = $(obj).parents("tr");
     $tr.next().after($tr);
     addbtn();
-    setRecordreal();
+    /*setRecordreal();*/
 }
 
 //录音按钮显示隐藏 type:1开始录音
@@ -323,7 +323,7 @@ function copy_text(obj,event) {
        touchtime = new Date().getTime();
    }
     copy_text_html="";
-    setRecordreal();
+   /* setRecordreal();*/
     return false;
 }
 
@@ -353,7 +353,7 @@ function get_case_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(occurrencetime_format);
-                setRecordreal();
+               /* setRecordreal();*/
             }
         });
         btn(obj);
@@ -367,7 +367,7 @@ function get_current_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(currenttime);
-                setRecordreal();
+                /*setRecordreal();*/
             }
         });
         btn(obj);
@@ -381,7 +381,7 @@ function get_yesterday_time(obj) {
             var value=$(this).attr("name");
             if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
                 $(this).append(yesterdaytime);
-                setRecordreal();
+                /*setRecordreal();*/
             }
         });
         btn(obj);
@@ -1515,15 +1515,16 @@ function addbtn() {
         td_lastindex["value"]=$(this).attr("name");
     });
 
-    setRecordreal();
-    $('#recorddetail label').bind('input', function() {
+   /* setRecordreal();
+    $('#recorddetail label').bind('mouseout', function() {
         setRecordreal();
-    });
+    });*/
 }
 
 /***************************************笔录实时问答start*************************************************/
 /*笔录实时保存*/
 function setRecordreal() {
+
     var url=getActionURL(getactionid_manage().waitRecord_setRecordreal);
 
     var recordToProblems=[];//题目集合
@@ -1677,7 +1678,7 @@ function clearRecord() {
             ww="";
             www="";
             td_lastindex={};
-            setRecordreal();
+            /*setRecordreal();*/
             layer.close(index);
         }
         ,btn2: function(index, layero){
@@ -1775,13 +1776,17 @@ function setqw(problems){
 }
 
 function contextMenu() {
-    $('#recorddetail label').mousedown(function (e) {
+    $('#recorddetail label').bind('mousedown', function(e) {
         if (3 == e.which) {
             document.execCommand('removeFormat');
         }  else if (1 == e.which) {
             document.execCommand('backColor',false,'yellow');
         }
     });
+
+   /* $('#recorddetail label').bind('input', function() {
+        setRecordreal();
+    });*/
 }
 
 
@@ -1820,9 +1825,9 @@ $(function () {
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
     });
-    $('#recorddetail label').bind('input', function() {
+   /* $('#recorddetail label').bind('mouseout', function() {
         setRecordreal();
-    });
+    });*/
    //初始化第一行的焦点
     contextMenu();
 
@@ -1845,7 +1850,7 @@ $(function () {
           /*  if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {*/
            if (lastindex==td_lastindex["key"]&&value=="w") {
                 $(this).append(text);
-               setRecordreal();
+              /* setRecordreal();*/
             }
         });
         btn(this);
@@ -1895,6 +1900,10 @@ $(function () {
 
 
     },1000);
+
+    setInterval( function() {
+         setRecordreal();//5秒实时保存
+    },3000)
 
 
 //自动甄别初始化
@@ -2055,7 +2064,7 @@ $(function () {
                                     }
                                     last_type=usertype;
                                 }
-                                setRecordreal();//实时保存一下
+                              /*  setRecordreal();//实时保存一下*/
                             }
                         }
                     }
