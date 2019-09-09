@@ -501,7 +501,6 @@ public class MainAction extends BaseAction {
      */
     public boolean checkToken( String token){
         String clientkey=CommonCache.getClientKey();
-      LogUtil.intoLog(this.getClass(),"token:"+token+"------clientkey:"+clientkey);
       if (StringUtils.isEmpty(token)||StringUtils.isEmpty(clientkey)){
             return  false;
         }

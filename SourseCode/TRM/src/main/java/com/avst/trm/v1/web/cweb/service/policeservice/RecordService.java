@@ -986,8 +986,8 @@ public class RecordService extends BaseService {
 
             //用户信息使用默认
             addUserInfo=new UserInfo();
-            addUserInfo.setUsername("用户_"+conversationmsg);
-            addUserInfo.setCardnum("证件号码_"+conversationmsg);
+            addUserInfo.setUsername("未知");
+            addUserInfo.setCardnum("未知");
             addUserInfo.setCardtypessid(cardtypessid);
 
             recordadminssid=adminssid;//记录人默认自己

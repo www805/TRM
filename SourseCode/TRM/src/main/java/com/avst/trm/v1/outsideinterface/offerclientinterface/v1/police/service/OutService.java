@@ -587,17 +587,13 @@ public class OutService  extends BaseService {
         if (null != rr1 && rr1.getActioncode().equals(Code.SUCCESS.toString())) {
             PhDataParam_toout vo=gson.fromJson(gson.toJson(rr1.getData()),PhDataParam_toout.class);
             if (null!=vo){
-
                 GetPolygraphAnalysisVO getPolygraphAnalysisVO=new GetPolygraphAnalysisVO();
                 getPolygraphAnalysisVO.setT(vo.getT());
-                LogUtil.intoLog(this.getClass(),"getPolygraphAnalysise__"+ JacksonUtil.objebtToString(getPolygraphAnalysisVO));
                 result.setData(getPolygraphAnalysisVO);
                 changeResultToSuccess(result);
                 return;
             }else{
-                LogUtil.intoLog(this.getClass(),"请求getPolygraphAnalysise__出错,rr1.getMessage():"+rr1.getMessage());
             }
-
         }else {
             LogUtil.intoLog(this.getClass(),"身心监测数据获取异常 mtssid："+mtssid);
             changeResultToSuccess(result);
@@ -775,7 +771,6 @@ public class OutService  extends BaseService {
                     LiveState=1;
                 }
                 //设置状态
-                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__成功"+MtState);
             }else{
                 //设置状态
                 MtState= -1;
@@ -785,7 +780,6 @@ public class OutService  extends BaseService {
                 if(null!=recordnum&&recordnum.intValue()>0&&null!=fdrecord&&fdrecord.intValue()==1){
                     LiveState=-1;
                 }
-                LogUtil.intoLog(this.getClass(),"getEquipmentsState请求getMCState__出错");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -810,12 +804,9 @@ public class OutService  extends BaseService {
                     String phssid = rResult.getData().toString();
                     if (StringUtils.isNotEmpty(phssid)){
                         polygraphssid=phssid;
-                        LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid 请求polygraphssid__成功,polygraphssid:"+polygraphssid);
                     }else{
-                        LogUtil.intoLog(this.getClass(),"meetingControl.getPhssidByMTssid ，polygraphssid is null");
                     }
                 }else{
-                    LogUtil.intoLog(this.getClass(),"getEquipmentsState请求polygraphssid__出错,rResult.getMessage():"+rResult.getMessage());
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -835,11 +826,9 @@ public class OutService  extends BaseService {
                     if (null != Polygraph_rr && Polygraph_rr.getActioncode().equals(Code.SUCCESS.toString())) {
                         PolygraphState=1;
                         //设置状态
-                        LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__成功");
                     }else{
                         //设置状态
                         PolygraphState=-1;
-                        LogUtil.intoLog(this.getClass(),"getEquipmentsState请求checkPolygraphState__出错");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
