@@ -98,6 +98,10 @@ function addCaseToArraignment() {
                 $(this).find("input[name='tab_cardnum']").focus();
                 ck_msg="其他在场人员下身份证号码无效";
                 ck=false;
+                layui.use(['element'], function(){
+                    var element = layui.element;
+                    element.tabChange("tabAdd_filter", usertitle);
+                });
                 return false;
             }
 
@@ -105,6 +109,10 @@ function addCaseToArraignment() {
                 $(this).find("input[name='tab_username']").focus();
                 ck_msg="其他在场人员下姓名不能为空";
                 ck=false;
+                layui.use(['element'], function(){
+                    var element = layui.element;
+                    element.tabChange("tabAdd_filter", usertitle);
+                });
                 return false;
             }
 
@@ -112,6 +120,10 @@ function addCaseToArraignment() {
                 $(this).find("input[name='tab_phone']").focus();
                 ck_msg="其他在场人员下联系电话无效";
                 ck=false;
+                layui.use(['element'], function(){
+                    var element = layui.element;
+                    element.tabChange("tabAdd_filter", usertitle);
+                });
                 return false;
             }
 
@@ -789,7 +801,22 @@ function tabAdd(){
         var form = layui.form;
         var element=layui.element;
         //使用模块
-        parent.layer.prompt({title: '请输入标其他在场人员标题', formType: 0}, function(title, index){
+        parent.layer.prompt({title: '请输入其他在场人员标题', formType: 0}, function(title, index){
+            title   =   title.replace(/\s+/g,"");
+            var ck=true;
+            var ck_msg="";
+            $("#tab_body #tab_content .layui-tab-item").each(function(){
+                var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("lay-id");
+                if (title==usertitle) {
+                    ck_msg="其他在场人员标题不允许重复";
+                    ck=false;
+                    return false;
+                }
+            })
+            if(!ck){
+                parent.layer.msg(ck_msg,{icon: 5});
+                return;
+            }
             element.tabAdd('tabAdd_filter', {
                 title:title
                 ,content:html,
