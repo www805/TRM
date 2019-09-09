@@ -1,3 +1,5 @@
+var clientName="加载中";//默认
+
 //yearstype 1 今年 2去年
 function getHome(yearstype) {
     myChart.showLoading();
@@ -28,7 +30,7 @@ function callbackgetHome(data) {
 
             var sqEntity = data.sqEntity; //授权信息
             var sqgnList = data.sqgnList; //授权功能信息
-
+            clientName=sqEntity.clientName;
             var sqEntityHTML = "<p>单位名称：" + sqEntity.clientName + "</p>";//单位名称
             if(sqEntity.foreverBool == true){
                 sqEntityHTML += "<p>授权期限：永久</p>";//授权时间
@@ -56,7 +58,8 @@ function callbackgetHome(data) {
             myChart2.hideLoading();
             myChart.setOption({
                 title: {
-                    text: data.dq_y+'年智能提讯系统案件审讯统计',
+                    text: data.dq_y+'年'+clientName+'案件审讯统计',
+                    subtext: '数据来源'+clientName,
                 },
                 series: [{
                     name: '审讯数',
@@ -102,8 +105,8 @@ $(function () {
     myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {
-            text: 'xxxx年智能提讯系统案件审讯统计',
-            subtext: '数据来源TRM'
+            text: 'xxxx年'+clientName+'案件审讯统计',
+            subtext: '数据来源'+clientName,
         },
         tooltip: {
             trigger: 'axis'
