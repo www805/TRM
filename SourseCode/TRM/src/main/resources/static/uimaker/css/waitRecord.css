@@ -386,23 +386,14 @@ table td {
     text-overflow: ellipsis;
 }
 div>img{
-
-    　　position: absolute!important;
-
-    　　width: 100%;
-
-    　　left: 0;
-
-    　　top: 0;
-
-    　　right:0;
-
-    　　bottom:0;
-
-    　　margin:auto;
-
-    　　display: block;
-
+position: absolute!important;
+width: 100%;
+left: 0;
+top: 0;
+right:0;
+bottom:0;
+margin:auto;
+display: block;
 }
 #layui-row1 .layui-table td{
     word-break: break-all;/*必须*/

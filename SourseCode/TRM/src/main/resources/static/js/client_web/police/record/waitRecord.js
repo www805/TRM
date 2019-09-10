@@ -27,6 +27,10 @@ var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存�
 
 var occurrencetime_format;//案发时间
 
+var recordtype_conversation1;
+var recordtype_conversation2;
+var recordtypessid;
+
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -223,35 +227,45 @@ function img_bool(obj,type){
     if (type==1){
         if (mtssid==null){
             //开始会议
+            $("#startrecord").css("display","block");
+            $("#pauserecord").attr("onclick","");
             startMC_index = layer.msg("开启中，请稍等...", {
                 icon: 16,
                 time:-1,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
-            $("#startrecord").css("display","block");
-            $("#pauserecord").attr("onclick","");
             console.log("开始会议")
             startMC();
         } else if (record_pausebool==1) {
             //继续会议
+            if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+                $("#pauserecord").attr("src","/uimaker/images/record7.png").css({"width":"150px","height":"100px"});
+            }else {
+                $("#pauserecord").attr("src","/uimaker/images/record3.png").css({"width":"150px","height":"100px"});
+            }
+            $("#startrecord").css("display","block");
             startMC_index = layer.msg("再次启动中，请稍等...", {
                 icon: 16,
                 time:-1,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
-            $("#startrecord").css("display","block");
             console.log("继续会议");
             pauseOrContinueRercord(2);
         }
     }else if (type==2) {
         if (record_pausebool==1){
+            //暂停录音
+            if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+                $("#pauserecord").attr("src","/uimaker/images/record7.png").css({"width":"150px","height":"100px"});
+            }else {
+                $("#pauserecord").attr("src","/uimaker/images/record3.png").css({"width":"150px","height":"100px"});
+            }
+            $("#pauserecord").css("display","block");
             startMC_index = layer.msg("暂停中，请稍等...", {
                 icon: 16,
                 time:-1,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
-            //暂停录音
-            $("#pauserecord").css("display","block");
             console.log("暂停会议")
             if (null!=mtssid) {
                 pauseOrContinueRercord(1);
@@ -348,8 +362,8 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             getRecordById_data=data;
 
-            var recordtype_conversation1=data.recordtype_conversation1;
-            var recordtype_conversation2=data.recordtype_conversation2;
+             recordtype_conversation1=data.recordtype_conversation1;
+             recordtype_conversation2=data.recordtype_conversation2;
             record_pausebool=data.record_pausebool;//
             record_adjournbool=data.record_adjournbool;
             if (record_adjournbool==1||record_adjournbool=="1"){
@@ -361,7 +375,7 @@ function callbackgetRecordById(data) {
 
             var record=data.record;
             if (isNotEmpty(record)){
-                var recordtypessid=record.recordtypessid;
+                 recordtypessid=record.recordtypessid;
                 if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
                     console.log("我是谈话笔录隐藏")
                     $("#fd").show();
@@ -375,9 +389,9 @@ function callbackgetRecordById(data) {
 
                     $("#overRecord_btn").html("结束审讯");
                     $("#adjourn_btn").html("审讯暂停");
-                    $("#pauserecord").attr("src","/uimaker/images/record4.png").css({"width":"200px","height":"110px"});
-                    $("#startrecord").attr("src","/uimaker/images/record3.gif").css({"width":"200px","height":"110px"});
-                    $("#endrecord").attr("src","/uimaker/images/record5.png").css({"width":"200px","height":"110px"});
+                    $("#pauserecord").attr("src","/uimaker/images/record5.png").css({"width":"150px","height":"100px"});
+                    $("#startrecord").attr("src","/uimaker/images/record6.png").css({"width":"150px","height":"100px"});
+                    $("#endrecord").attr("src","/uimaker/images/record8.png").css({"width":"150px","height":"100px"});
                 } else {
                     console.log("我不是谈话笔录")
                     $("#asr").show();
@@ -392,9 +406,9 @@ function callbackgetRecordById(data) {
                     $("#overRecord_btn").html("结束笔录")
                     $("#adjourn_btn").html("笔录暂停");
 
-                    $("#pauserecord").attr("src","/uimaker/images/record1.png").css({"width":"100px","height":"100px"});
-                    $("#startrecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
-                    $("#endrecord").attr("src","/uimaker/images/record2.png").css({"width":"100px","height":"100px"});
+                    $("#pauserecord").attr("src","/uimaker/images/record.png").css({"width":"150px","height":"100px"});
+                    $("#startrecord").attr("src","/uimaker/images/record2.png").css({"width":"150px","height":"100px"});
+                    $("#endrecord").attr("src","/uimaker/images/record4.png").css({"width":"150px","height":"100px"});
                 }
 
                 //获取提讯会议ssid
@@ -416,6 +430,13 @@ function callbackgetRecordById(data) {
                             layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
                         });
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
+
+                        if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+                            $("#pauserecord").attr("src","/uimaker/images/record7.png").css({"width":"150px","height":"100px"});
+                        }else {
+                            $("#pauserecord").attr("src","/uimaker/images/record3.png").css({"width":"150px","height":"100px"});
+                        }
+
                         //存在会议状态正常
                         if (mcbool==1){
                             $("#startrecord").css("display","block");
@@ -428,7 +449,6 @@ function callbackgetRecordById(data) {
                                 layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
                             });
                         } else if (mcbool==3&&record_pausebool==1) {
-                            $("#pauserecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
                             $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
@@ -621,10 +641,14 @@ function callbackstartMC(data) {
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
-        $("#pauserecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
         var tips_msg="笔录制作中~";
         if (record_pausebool==1){
             tips_msg="点击我可以暂停制作~";
+        }
+        if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+            $("#pauserecord").attr("src","/uimaker/images/record7.png").css({"width":"150px","height":"100px"});
+        }else {
+            $("#pauserecord").attr("src","/uimaker/images/record3.png").css({"width":"150px","height":"100px"});
         }
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
@@ -733,8 +757,6 @@ function callbackpauseOrContinueRercord(data) {
     getMCCacheParamByMTssid();//获取缓存
     getTDCacheParamByMTssid();
     if(null!=data&&data.actioncode=='SUCCESS'){
-
-
         var data=data.data;
         if (isNotEmpty(data)){
             //1请求暂停，2请求继续
