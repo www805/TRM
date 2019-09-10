@@ -54,7 +54,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">字体颜色</label>
             <div class="layui-input-inline" style="width: 120px;">
-                <input type="text" name="color" id="test-form-input" required th:value="*{color}" lay-verify="required" placeholder="非必选" autocomplete="off" class="layui-input">
+                <input type="text" name="color" id="test-form-input" required th:value="*{color}" lay-verify="" placeholder="非必选" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline" style="left: -11px;">
                 <div id="test-form"></div>
@@ -64,7 +64,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label">背景颜色</label>
             <div class="layui-input-inline" style="width: 120px;">
-                <input type="text" name="backgroundcolor" id="backgroundcolor" required th:value="*{backgroundcolor}" lay-verify="required" placeholder="非必选" autocomplete="off" class="layui-input">
+                <input type="text" name="backgroundcolor" id="backgroundcolor" required th:value="*{backgroundcolor}" lay-verify="" placeholder="非必选" autocomplete="off" class="layui-input">
             </div>
             <div class="layui-inline" style="left: -11px;">
                 <div id="background-form"></div>
@@ -81,7 +81,7 @@
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <input type="button" class="layui-btn layui-btn-normal" onclick="getKeywordList()" th:value="${keywordModel.title}" value="添加关键字" />
+                <input type="button" class="layui-btn layui-btn-normal"  lay-filter="formDemo" lay-submit="" th:value="${keywordModel.title}" value="添加关键字" />
                 <input type="button" class="layui-btn layui-btn-normal"  onclick="javascript:window.history.go(-1);return false;" value="返回" />
             </div>
         </div>
@@ -96,7 +96,8 @@
     //Demo
     layui.use(['form','colorpicker'], function(){
         var $ = layui.$
-            ,colorpicker = layui.colorpicker;
+            ,colorpicker = layui.colorpicker
+            ,form = layui.form;
 
         var test_form_input = $("#test-form-input").val();
         var backgroundcolor = $("#backgroundcolor").val();
@@ -116,6 +117,11 @@
             ,done: function(color){
                 $('#backgroundcolor').val(color);
             }
+        });
+
+        form.on('submit(formDemo)', function (data) {
+            getKeywordList();
+            return false;
         });
 
     });

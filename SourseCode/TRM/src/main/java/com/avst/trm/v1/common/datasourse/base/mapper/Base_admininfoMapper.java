@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRole;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdmintorole;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.web.sweb.req.basereq.AdmininfoOrWorkunitParam;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -27,6 +28,15 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
             "from base_admininfo a left join base_admintorole ar on a.ssid=ar.adminssid ")
     public List<AdminAndAdmintorole> getAdminAndAdmintorolelist(Page page, EntityWrapper ew);
 
+
+    @Select("SELECT " +
+            " a.*," +
+            " w.workname " +
+            " FROM " +
+            " base_admininfo a " +
+            " LEFT JOIN police_workunit w ON a.workunitssid = w.id " +
+            " where 1=1 ${ew.sqlSegment}")
+    public List<AdmininfoOrWorkunitParam> selectPageWorkunit(Page page, @Param("ew") EntityWrapper ew);
 
     /**
      * 用户表，角色表，用户角色关联表
@@ -91,7 +101,7 @@ public interface Base_admininfoMapper extends BaseMapper<Base_admininfo> {
 
 
 
-    @Select("select count(a.id) from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
+    @Select("select count(DATE(arr.createtime)) from base_admininfo a left join police_arraignment arr on a.ssid = arr.adminssid left join police_record r on arr.recordssid = r.ssid " +
             "where 1=1 ${ew.sqlSegment} " )
     public Integer getArraignmentListCount(@Param("ew") EntityWrapper ew);
 

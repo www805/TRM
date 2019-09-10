@@ -11,6 +11,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
+import com.avst.trm.v1.web.sweb.req.basereq.AdmininfoOrWorkunitParam;
 import com.avst.trm.v1.web.sweb.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.sweb.req.policereq.GetArraignmentCountParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.ArraignmentCountVO;
@@ -21,6 +22,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -132,20 +135,23 @@ public class Arraignment_countService extends BaseService {
         }
 
         Integer count = arraignmentCountMapper.selectCount(ew);
-
         param.setRecordCount(count);
 
-        Page<Base_admininfo> page=new Page<Base_admininfo>(param.getCurrPage(),param.getPageSize());
+        Page<AdmininfoOrWorkunitParam> page=new Page<AdmininfoOrWorkunitParam>(param.getCurrPage(),param.getPageSize());
 
-        List<Base_admininfo> base_admininfos = arraignmentCountMapper.selectPage(page, ew);
-        if (null != base_admininfos && base_admininfos.size() > 0) {
+        List<AdmininfoOrWorkunitParam> admininfoOrWorkunitParams = arraignmentCountMapper.selectPageWorkunit(page, ew);
+        if (null != admininfoOrWorkunitParams && admininfoOrWorkunitParams.size() > 0) {
 
-            for (Base_admininfo base_admininfo : base_admininfos) {
+            for (AdmininfoOrWorkunitParam base_admininfo : admininfoOrWorkunitParams) {
 
                 GetArraignmentCountParam getArraignmentCountParam = new GetArraignmentCountParam();
                 getArraignmentCountParam.setUsername(base_admininfo.getUsername());
 
                 EntityWrapper<Base_admininfo> wrapper = new EntityWrapper<>();
+
+                if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
+                    wrapper.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
+                }
                 wrapper.eq("arr.adminssid",base_admininfo.getSsid());
                 wrapper.or("arr.otheradminssid",base_admininfo.getSsid());
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
@@ -155,19 +161,21 @@ public class Arraignment_countService extends BaseService {
                 Integer arraignmentCount = arraignmentCountMapper.getArraignmentListCount(wrapper);
                 getArraignmentCountParam.setArraignmentcount(arraignmentCount);
 
-                //查询记录人2总量
+                //查询记录人总量
                 EntityWrapper<Base_admininfo> wrapper2 = new EntityWrapper<>();
+                wrapper2.ne("arr.adminssid",base_admininfo.getSsid());
                 wrapper2.eq("arr.recordadminssid",base_admininfo.getSsid());
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
                     wrapper2.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
-//                    ew.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
-//                    ew.le("DATE(arr.createtime)",param.getEndtime()); //<=
+//                    wrapper2.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
+//                    wrapper2.le("DATE(arr.createtime)",param.getEndtime()); //<=
                 }
                 Integer recordadmincount = arraignmentCountMapper.getArraignmentListCount(wrapper2);
                 getArraignmentCountParam.setRecordadmincount(recordadmincount);
 
                 //两个加起来
                 getArraignmentCountParam.setRecordcount(arraignmentCount + recordadmincount);
+                getArraignmentCountParam.setWorkname(base_admininfo.getWorkname());
 
                 list.add(getArraignmentCountParam);
             }
@@ -292,27 +300,30 @@ public class Arraignment_countService extends BaseService {
 
         List<GetArraignmentCountParam> list = new ArrayList<GetArraignmentCountParam>();
 
-        EntityWrapper<Base_admininfo> ewq = new EntityWrapper<>();
+        EntityWrapper<Base_admininfo> eww = new EntityWrapper<>();
 
         if(StringUtils.isNotBlank(param.getUsername())){
-            ewq.like("username", param.getUsername());
+            eww.like("username", param.getUsername());
         }
 
-        Integer count = arraignmentCountMapper.selectCount(ewq);
-
+        Integer count = arraignmentCountMapper.selectCount(eww);
         param.setRecordCount(count);
 
-        Page<Base_admininfo> page=new Page<Base_admininfo>(param.getCurrPage(),param.getPageSize());
+        Page<AdmininfoOrWorkunitParam> page=new Page<AdmininfoOrWorkunitParam>(param.getCurrPage(),param.getPageSize());
 
-        List<Base_admininfo> base_admininfos = arraignmentCountMapper.selectPage(page, ewq);
-        if (null != base_admininfos && base_admininfos.size() > 0) {
+        List<AdmininfoOrWorkunitParam> admininfoOrWorkunitParams = arraignmentCountMapper.selectPageWorkunit(page, eww);
+        if (null != admininfoOrWorkunitParams && admininfoOrWorkunitParams.size() > 0) {
 
-            for (Base_admininfo base_admininfo : base_admininfos) {
+            for (AdmininfoOrWorkunitParam base_admininfo : admininfoOrWorkunitParams) {
 
                 GetArraignmentCountParam getArraignmentCountParam = new GetArraignmentCountParam();
                 getArraignmentCountParam.setUsername(base_admininfo.getUsername());
 
                 EntityWrapper<Base_admininfo> wrapper = new EntityWrapper<>();
+
+                if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
+                    wrapper.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
+                }
                 wrapper.eq("arr.adminssid",base_admininfo.getSsid());
                 wrapper.or("arr.otheradminssid",base_admininfo.getSsid());
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
@@ -322,19 +333,21 @@ public class Arraignment_countService extends BaseService {
                 Integer arraignmentCount = arraignmentCountMapper.getArraignmentListCount(wrapper);
                 getArraignmentCountParam.setArraignmentcount(arraignmentCount);
 
-                //查询记录人2总量
+                //查询记录人总量
                 EntityWrapper<Base_admininfo> wrapper2 = new EntityWrapper<>();
+                wrapper2.ne("arr.adminssid",base_admininfo.getSsid());
                 wrapper2.eq("arr.recordadminssid",base_admininfo.getSsid());
                 if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
                     wrapper2.between("DATE(arr.createtime)", param.getStarttime(), param.getEndtime());//时间类型不一样所以要转换date()
-//                    ew.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
-//                    ew.le("DATE(arr.createtime)",param.getEndtime()); //<=
+//                    wrapper2.ge("DATE(arr.createtime)",param.getStarttime() ); //>=  时间类型不一样所以要转换date()
+//                    wrapper2.le("DATE(arr.createtime)",param.getEndtime()); //<=
                 }
                 Integer recordadmincount = arraignmentCountMapper.getArraignmentListCount(wrapper2);
                 getArraignmentCountParam.setRecordadmincount(recordadmincount);
 
                 //两个加起来
                 getArraignmentCountParam.setRecordcount(arraignmentCount + recordadmincount);
+                getArraignmentCountParam.setWorkname(base_admininfo.getWorkname());
 
                 list.add(getArraignmentCountParam);
             }
@@ -350,12 +363,33 @@ public class Arraignment_countService extends BaseService {
         sheet.setColumnWidth(3, 5000);
         sheet.setColumnWidth(4, 5000);
         sheet.setColumnWidth(5, 5000);
-        sheet.setColumnWidth(6, 5000);
+//        sheet.setColumnWidth(6, 5000);
+//        sheet.setColumnWidth(7, 5000);
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
+
+        CellRangeAddress cra = new CellRangeAddress(0, 0, 0, 5);
+        sheet.addMergedRegion(cra);
+        HSSFRow row0 = sheet.createRow((int) 0);
+
+        HSSFRow row = sheet.createRow((int) 1);
         // 第四步，创建单元格，并设置值表头 设置表头居中
         HSSFCellStyle style = wb.createCellStyle();
         style.setAlignment(HorizontalAlignment.CENTER); // 创建一个居中格式
+
+        SimpleDateFormat df2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String format2 = df2.format(new Date());// new Date()为获取当前系统时间
+
+        HSSFCell cell0 = row0.createCell((short) 0);
+        if(StringUtils.isNotEmpty(param.getStarttime()) && StringUtils.isNotEmpty(param.getEndtime())){
+            if(StringUtils.isNotBlank(param.getUsername())) {
+                cell0.setCellValue("查询：" + param.getUsername() + "  " + param.getStarttime() + "~" + param.getEndtime() + " 笔录统计");
+            }else {
+                cell0.setCellValue(param.getStarttime() + "~" + param.getEndtime() + " 笔录统计");
+            }
+        }else{
+            cell0.setCellValue("笔录统计 " + format2);
+        }
+        cell0.setCellStyle(style);
 
         HSSFCell cell = row.createCell((short) 0);
         cell.setCellValue("序号");
@@ -364,37 +398,42 @@ public class Arraignment_countService extends BaseService {
         cell.setCellValue("人员名称");
         cell.setCellStyle(style);
         cell = row.createCell((short) 2);
-        cell.setCellValue("询问总次数");
+        cell.setCellValue("工作单位");
         cell.setCellStyle(style);
         cell = row.createCell((short) 3);
-        cell.setCellValue("记录总次数");
+        cell.setCellValue("询问总次数");
         cell.setCellStyle(style);
         cell = row.createCell((short) 4);
+        cell.setCellValue("记录总次数");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 5);
         cell.setCellValue("笔录总数");
         cell.setCellStyle(style);
-//        cell = row.createCell((short) 5);
+//        cell = row.createCell((short) 6);
 //        cell.setCellValue("录音时长");
 //        cell.setCellStyle(style);
-//        cell = row.createCell((short) 6);
+//        cell = row.createCell((short) 7);
 //        cell.setCellValue("笔录字数");
 //        cell.setCellStyle(style);
 
-        for (int i = 0; i < list.size(); i++) {
 
-            GetArraignmentCountParam getArraignmentCountParam = list.get(i);
+        for (int i = 1; i <= list.size(); i++) {
+
+            GetArraignmentCountParam getArraignmentCountParam = list.get(i - 1);
 
             row = sheet.createRow((int) i + 1);
-            row.createCell((short) 0).setCellValue((double) (i + 1)); // 序号
+            row.createCell((short) 0).setCellValue((double) (i)); // 序号
             if (null != getArraignmentCountParam) {
                 /*Integer timeCount = base_arraignmentCount.getTimeCount();
                 Integer translatextCount = base_arraignmentCount.getTranslatextCount();*/
 
                 row.createCell((short) 1).setCellValue(getArraignmentCountParam.getUsername()); // 人员名称
-                row.createCell((short) 2).setCellValue(getArraignmentCountParam.getArraignmentcount());// 笔录总量
-                row.createCell((short) 3).setCellValue(getArraignmentCountParam.getRecordadmincount());// 语音笔录总量
-                row.createCell((short) 4).setCellValue(getArraignmentCountParam.getRecordcount());// 笔录总时长
-                /*row.createCell((short) 5).setCellValue(timeCount == null ? 0 : timeCount);// 录音时长
-                row.createCell((short) 6).setCellValue(translatextCount == null ? 0 : translatextCount);// 笔录字数*/
+                row.createCell((short) 2).setCellValue(getArraignmentCountParam.getWorkname());// 工作单位
+                row.createCell((short) 3).setCellValue(getArraignmentCountParam.getArraignmentcount());// 询问总次数
+                row.createCell((short) 4).setCellValue(getArraignmentCountParam.getRecordadmincount());// 记录总次数
+                row.createCell((short) 5).setCellValue(getArraignmentCountParam.getRecordcount());// 笔录总数
+                /*row.createCell((short) 6).setCellValue(timeCount == null ? 0 : timeCount);// 录音时长
+                row.createCell((short) 7).setCellValue(translatextCount == null ? 0 : translatextCount);// 笔录字数*/
             }
 
         }

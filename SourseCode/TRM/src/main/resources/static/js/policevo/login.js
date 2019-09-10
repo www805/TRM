@@ -109,10 +109,30 @@ $(function () {
 
         //自定义验证规则
         form.verify({
-            loginaccount:[/\S/,'请输入账号'], password: [/\S/,'请输入密码']
+            loginaccount:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入登录账号";
+                }
+                if (!(/^(?!.*\s).{5,12}$/.test(value))) {
+                    return "请输入5-12个字符不含空格的登录账号";
+                }
+            },
+            password:function (value) {
+                if (!(/\S/).test(value)) {
+                    return "请输入密码";
+                }
+                if (!(/^[a-zA-Z]\w{4,11}$/.test(value))) {
+                    return "请输入5-12位以字母开头由字母、数字或者下划线组成的密码";
+                }
+            }
         });
-        form.on('submit(loginbtn)', function (data) {
-            userlogin();
+
+        // 监听提交
+        form.on('submit(loginbtn)', function(data){
+
+            if(isNotEmpty(data.field.loginaccount) && isNotEmpty(data.field.password)){
+                login_login();
+            }
             return false;
         });
     });

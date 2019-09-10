@@ -1,3 +1,4 @@
+var counttime = null;
 
 function getArraignment_count_init(currPage,pageSize) {
 
@@ -35,8 +36,14 @@ function getArraignment_count_search(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countList);
 
     var username=$("#username").val();
-    var starttime=$("#starttime").val();
-    var endtime=$("#endtime").val();
+    var starttime = "";
+    var endtime = "";
+
+    if (isNotEmpty(counttime)){
+        var arr = counttime.split("~");
+        starttime=arr[0].trim();
+        endtime=arr[1].trim();
+    }
 
     var data={
         username:username,
@@ -51,8 +58,14 @@ function getArraignment_count_search(currPage,pageSize) {
 function getArraignment_count_Excel(){
     var url=getActionURL(getactionid_manage().arraignment_count_getArraignment_countPrint);
     var username=$("#username").val();
-    var starttime=$("#starttime").val();
-    var endtime=$("#endtime").val();
+    var starttime = "";
+    var endtime = "";
+
+    if (isNotEmpty(counttime)){
+        var arr = counttime.split("~");
+        starttime=arr[0].trim();
+        endtime=arr[1].trim();
+    }
 
     var data={
         username:username,
@@ -102,7 +115,7 @@ function getArraignment_countByParam(){
     // alert(len);
     if(len==0){
         var currPage=1;
-        var pageSize=10;//测试
+        var pageSize=3;//测试
         getArraignment_count_init(currPage,pageSize);
     }else if (len==2){
         getArraignment_countList('',arguments[0],arguments[1]);
@@ -120,13 +133,21 @@ function showpagetohtml(){
         var currPage=pageparam.currPage;
 
         var username=pageparam.username;
-        var starttime=pageparam.starttime;
-        var endtime=pageparam.endtime;
-        var times=pageparam.times;
+        // var counttime=pageparam.counttime;
+        var starttime="";
+        var endtime="";
+
+        if (isNotEmpty(counttime)){
+            var arr = counttime.split("~");
+            starttime=arr[0].trim();
+            endtime=arr[1].trim();
+        }
+
         var arrparam=new Array();
         arrparam[0] = username;
-        arrparam[1]=starttime;
-        arrparam[2]=endtime;
+        arrparam[1] = starttime;
+        arrparam[2] = endtime;
+
         showpage("paging",arrparam,'getArraignment_countByParam',currPage,pageCount,pageSize);
     }
 }

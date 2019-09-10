@@ -137,6 +137,21 @@ $(function () {
             getServerIpALL(data.value);
         });
 
+        form.verify({
+            setip: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(''==value){
+                    return "IP地址不能为空";
+                }
+                if(!(/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}/.test(value))){
+                    return '请输入一个正确的IP地址';
+                }
+            }
+        });
+
+        form.on('submit(formDemo)', function (data) {
+            updateServerIp();
+            return false;
+        });
 
     });
 });

@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.sweb.req.policereq;
 public class GetArraignmentCountParam {
 
     private String username; //用户名
+    private String workname; //用户名
     private Integer arraignmentcount;   //询问总次数
     private Integer recordadmincount;  //记录总次数
     private Integer recordcount;   //笔录总次数
@@ -13,6 +14,14 @@ public class GetArraignmentCountParam {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getWorkname() {
+        return workname;
+    }
+
+    public void setWorkname(String workname) {
+        this.workname = workname;
     }
 
     public Integer getArraignmentcount() {
@@ -43,6 +52,7 @@ public class GetArraignmentCountParam {
     public String toString() {
         return "GetArraignmentCountParam{" +
                 "username='" + username + '\'' +
+                ", workname='" + workname + '\'' +
                 ", arraignmentcount=" + arraignmentcount +
                 ", recordadmincount=" + recordadmincount +
                 ", recordcount=" + recordcount +

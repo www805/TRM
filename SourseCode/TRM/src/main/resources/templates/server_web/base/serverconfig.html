@@ -72,14 +72,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>服务器IP   (暂无用)</label>
             <div class="layui-input-block">
-                <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="required" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
+                <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="setip" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>服务器端口(暂无用)</label>
             <div class="layui-input-block">
-                <input type="text" name="serverport" required th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="required" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
+                <input type="number" name="serverport" required th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="number" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
             </div>
         </div>
 
@@ -101,26 +101,26 @@
             <label class="layui-form-label">工作开始时间</label>
             <div class="layui-input-block">
 
-                <input type="text" name="workstarttime" disabled th:value="${#dates.format(configModel.RResult.data.serverconfig.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="required" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
+                <input type="text" name="workstarttime" disabled th:value="${#dates.format(configModel.RResult.data.serverconfig.workstarttime, 'yyyy-MM-dd HH:mm:ss')}" lay-verify="" placeholder="请输入上级机构" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">同步工作天数</label>
             <div class="layui-input-block">
-                <input type="text" name="workdays" required disabled th:value="*{workdays}" lay-verify="required" placeholder="请输入节点单位名称" autocomplete="off" class="layui-input">
+                <input type="text" name="workdays" required disabled th:value="*{workdays}" lay-verify="" placeholder="请输入节点单位名称" autocomplete="off" class="layui-input">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">授权的单位编号</label>
             <div class="layui-input-block">
-                <input type="text" name="authorizesortnum" disabled th:value="*{authorizesortnum}"  lay-verify="required" placeholder="请输入授权信息" autocomplete="off" class="layui-input">
+                <input type="text" name="authorizesortnum" disabled th:value="*{authorizesortnum}"  lay-verify="" placeholder="请输入授权信息" autocomplete="off" class="layui-input">
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class="layui-btn layui-btn-normal" lay-filter="formDemo" onclick="getUpdateServerConfig()">保存配置</button>
+                <button class="layui-btn layui-btn-normal" lay-filter="formDemo" lay-submit="">保存配置</button>
             </div>
         </div>
     </form>
@@ -140,13 +140,30 @@
 
     layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload'], function () {
         var $ = layui.jquery
-            , upload = layui.upload;
+            , upload = layui.upload
+            , form = layui.form;
 
         var url=getActionURL(getactionid_manage().serverconfig_uploadByImg);
         var url2=getActionURL(getactionid_manage().serverconfig_uploadByClientImg);
 
         updateLogo(upload, '#test1', url, '#demo1', "syslogo_filesavessid", '#demoText');
         updateLogo(upload, '#test2', url2, '#demo2', "client_filesavessid", '#demoText2');
+
+        form.verify({
+            setip: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(''==value){
+                    return "IP地址不能为空";
+                }
+                if(!(/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}/.test(value))){
+                    return '请输入一个正确的IP地址';
+                }
+            }
+        });
+
+        form.on('submit(formDemo)', function (data) {
+            getUpdateServerConfig();
+            return false;
+        });
 
     });
 

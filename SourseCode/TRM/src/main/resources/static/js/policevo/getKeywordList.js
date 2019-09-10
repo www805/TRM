@@ -138,6 +138,7 @@ function callbackgetKeyWordPage(data){
     }
     layui.use('form', function(){
         var form = layui.form;
+        form.render();
 
         //监听指定开关
         form.on('switch(switchTest)', function(data){
@@ -147,7 +148,7 @@ function callbackgetKeyWordPage(data){
             }
             updateShieldbool(data.value, shieldbool);
         });
-        form.render();
+
     });
 }
 

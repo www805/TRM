@@ -27,6 +27,18 @@
             updateurl = getActionURL(getactionid_manage().getKeyword_getAddOrUpdateKeyword);
             deleteurl = getActionURL(getactionid_manage().getKeyword_deleteKeyword);
             getKeyWordByParam();
+
+            document.onkeydown = function (event) {
+                var e = event || window.event;
+                if (e && e.keyCode == 13) { //回车键的键值为13
+                    event.preventDefault();
+                    $("#savebtn").click();
+                }
+            }
+
+            $('#kText').on('input propertychange', function() {
+                $("#savebtn").click();
+            });
         });
     </script>
 
@@ -42,9 +54,9 @@
     <form class="layui-form-item">
         <label class="layui-form-label" style="width: auto;">关键字</label>
         <div class="layui-input-inline">
-            <input type="text" name="text" id="kText" required lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+            <input type="text" name="text" id="kText" placeholder="请输入关键字" autocomplete="off" class="layui-input">
         </div>
-        <input type="button" id="btn" class="layui-btn layui-btn-normal" onclick="getKeyword_search(1,10);" value="查询">
+        <input type="button" id="savebtn" class="layui-btn layui-btn-normal" onclick="getKeyword_search(1,10);" value="查询">
         <a class="layui-btn layui-btn-normal"  onclick="window.location.href=updateurl;"shiro:hasPermission='getAddOrUpdateKeyword'  >添加关键字</a>
     </form>
 

@@ -22,6 +22,17 @@ function callbackuserloginout(data) {
     }
 }
 
+//心跳
+function getPant() {
+    // var url=getActionURL(getactionid_manage().main_getNavList);
+    var url = "/cweb/base/main/getPant";
+    var data={
+        token:INIT_CLIENTKEY
+    };
+    ajaxSubmitByJson(url,data,callgetPant);
+}
+
+//请求外部文件数据
 function getNavList() {
     var url=getActionURL(getactionid_manage().main_getNavList);
     var data={
@@ -89,6 +100,12 @@ function callgetNavList(data) {
         });
     }else{
         layer.msg(data.message,{icon: 5});
+    }
+}
+
+function callgetPant(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        console.log(data.message);
     }
 }
 

@@ -260,6 +260,20 @@ public class MainAction extends BaseAction {
     }
 
     /**
+     * 心跳
+     * @return
+     */
+    @RequestMapping("/getPant")
+    @ResponseBody
+    public  RResult getPant(){
+        RResult result=this.createNewResultOfFail();
+        result.setMessage("心跳正常");
+        changeResultToSuccess(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
      * 获取全部管理员
      */
     @RequestMapping("/getAdminList")
