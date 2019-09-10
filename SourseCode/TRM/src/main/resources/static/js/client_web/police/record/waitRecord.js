@@ -25,6 +25,8 @@ var dq_previewurl=null;//当前预览地址
 var record_pausebool=-1;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
 var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
 
+var occurrencetime_format;//案发时间
+
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -328,87 +330,6 @@ function copy_text(obj,event) {
 }
 
 
-
-//编辑框下面按钮事件-------------------------------start-------------------------------
-var currenttime;//当前时间
-var yesterdaytime;//昨日时间
-var occurrencetime_format;//案发时间
-function btn(obj) {
-    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
-    if (isNotEmpty(selected)&&selected=="false"){
-        $("div[name='btn_div']").attr("showorhide","false");
-        $("div[name='btn_div']").removeClass("layui-form-selected");
-        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
-        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
-    }else if (isNotEmpty(selected)&&selected=="true") {
-        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
-        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
-    }
-}
-function get_case_time(obj) {
-
-    if (isNotEmpty(occurrencetime_format)){
-        $("#recorddetail label").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            var value=$(this).attr("name");
-            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-                $(this).append(occurrencetime_format);
-               /* setRecordreal();*/
-            }
-        });
-        btn(obj);
-    }
-}
-function get_current_time(obj) {
-    getTime();
-    if (isNotEmpty(currenttime)){
-        $("#recorddetail label").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            var value=$(this).attr("name");
-            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-                $(this).append(currenttime);
-                /*setRecordreal();*/
-            }
-        });
-        btn(obj);
-    }
-}
-function get_yesterday_time(obj) {
-    getTime();
-    if (isNotEmpty(yesterdaytime)){
-        $("#recorddetail label").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            var value=$(this).attr("name");
-            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
-                $(this).append(yesterdaytime);
-                /*setRecordreal();*/
-            }
-        });
-        btn(obj);
-    }
-}
-//获取当期时间
-function getTime() {
-    var url=getActionURL(getactionid_manage().waitRecord_getTime);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetTime);
-}
-function callbackgetTime(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            currenttime=data.currenttime;
-            yesterdaytime=data.yesterdaytime;
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//编辑框下面按钮事件-------------------------------end-------------------------------
-
-
 //获取笔录信息
 function getRecordById() {
     var url=getActionURL(getactionid_manage().waitRecord_getRecordById);
@@ -437,7 +358,6 @@ function callbackgetRecordById(data) {
             } else {
                 $("#adjourn_btn").hide();
             }
-
 
             var record=data.record;
             if (isNotEmpty(record)){
@@ -508,6 +428,7 @@ function callbackgetRecordById(data) {
                                 layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
                             });
                         } else if (mcbool==3&&record_pausebool==1) {
+                            $("#pauserecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
                             $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
@@ -547,6 +468,10 @@ function callbackgetRecordById(data) {
                 var case_=record.case_;
                 $("#caseAndUserInfo_html").html("");
                 if (isNotEmpty(case_)){
+                    var occurrencetime_format_=case_.occurrencetime_format;
+                    if (isNotEmpty(occurrencetime_format_)){
+                        occurrencetime_format=occurrencetime_format_;
+                    }
                     var casename=case_.casename==null?"":case_.casename;
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
@@ -696,6 +621,7 @@ function callbackstartMC(data) {
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
+        $("#pauserecord").attr("src","/uimaker/images/record.gif").css({"width":"100px","height":"100px"});
         var tips_msg="笔录制作中~";
         if (record_pausebool==1){
             tips_msg="点击我可以暂停制作~";
@@ -1056,37 +982,11 @@ var overRecord_loadindex =null;
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
             typy:1,
             icon: 16,
-            shade: [0.1, 'transparent']
+            shade: [0.1, 'transparent'],
+            time:10000
         });
     }, function(index){
         layer.close(index);
-    });
-}
-
-
-
-
-//导出word
-var exportWord_index=null;
-function exportWord(obj){
-    recordbool=-1; //不存在数据库
-    addRecord();
-    btn(obj);
-    exportWord_index=layer.msg("导出中，请稍等...", {
-        icon: 16,
-        shade: [0.1, 'transparent'],
-        time:-1
-    });
-}
-var exportPdf_index=null;
-function exportPdf(obj) {
-    recordbool=-2; //不存在数据库
-    addRecord();
-    btn(obj);
-    exportPdf_index=layer.msg("导出中，请稍等...", {
-        icon: 16,
-        shade: [0.1, 'transparent'],
-
     });
 }
 
@@ -1783,18 +1683,7 @@ function contextMenu() {
             document.execCommand('backColor',false,'yellow');
         }
     });
-
-   /* $('#recorddetail label').bind('input', function() {
-        setRecordreal();
-    });*/
 }
-
-
-
-
-//右侧标记的文本：当前
-var dqtag_right=[];//{key:0,value:"q",txt:["哈哈","哈哈"]}
-
 
 
 //自动甄别初始化
@@ -1814,23 +1703,21 @@ var ww_prev="";
 
 //定时器关闭
 var setinterval1=null;
+//导出word
+var exportWord_index=null;
+var exportPdf_index=null;
+
+var currenttime;
+var yesterdaytime;
+
 $(function () {
-
-    /*对于trm.exe不适应会卡死
-     $(window).bind('beforeunload',function(){
-          return '确定要离开当前页面吗';
-      });*/
-
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
         td_lastindex["value"]=$(this).attr("name");
     });
-   /* $('#recorddetail label').bind('mouseout', function() {
-        setRecordreal();
-    });*/
+
    //初始化第一行的焦点
     contextMenu();
-
 
     $(document).keypress(function (e) {
         if (e.which == 13) {
@@ -1839,27 +1726,87 @@ $(function () {
         }
     });
 
-
-
-    $("#dl_dd dd").click(function () {
-        var text=$(this).attr('lay-value');
-        //文本
+    //导出
+    $("#dc_li li").click(function () {
+        var type=$(this).attr("type");
+        if (type==1){
+                recordbool=-1; //不存在数据库
+                addRecord();
+                exportWord_index=layer.msg("导出中，请稍等...", {
+                    icon: 16,
+                    shade: [0.1, 'transparent'],
+                    time:10000
+                });
+        }else  if(type==2){
+                recordbool=-2; //不存在数据库
+                addRecord();
+                exportPdf_index=layer.msg("导出中，请稍等...", {
+                    icon: 16,
+                    shade: [0.1, 'transparent'],
+                    time:10000
+                });
+        }
+    });
+    //常用问答点击
+    $("#cywd_li li").click(function () {
+        var text=$(this).text();
         $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
-          /*  if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {*/
-           if (lastindex==td_lastindex["key"]&&value=="w") {
+            if (lastindex==td_lastindex["key"]&&value=="w") {
                 $(this).append(text);
-              /* setRecordreal();*/
             }
         });
-        btn(this);
+    });
+    //常用时间点击
+    $("#cysj_li li").click(function () {
+        var type=$(this).attr("type");
+        var text=$(this).text();
+        if (type==1){
+           //当前时间
+            if (isNotEmpty(currenttime)){
+                $("#recorddetail label").each(function(){
+                    var lastindex=$(this).closest("tr").index();
+                    var value=$(this).attr("name");
+                    if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                        $(this).append(currenttime);
+                    }
+                });
+            }
+        }else  if(type==2){
+            //昨天时间
+            if (isNotEmpty(yesterdaytime)){
+                $("#recorddetail label").each(function(){
+                    var lastindex=$(this).closest("tr").index();
+                    var value=$(this).attr("name");
+                    if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                        $(this).append(yesterdaytime);
+                    }
+                });
+            }
+        }else  if(type==3){
+        //案发时间
+            if (isNotEmpty(occurrencetime_format)){
+                $("#recorddetail label").each(function(){
+                    var lastindex=$(this).closest("tr").index();
+                    var value=$(this).attr("name");
+                    if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                        $(this).append(occurrencetime_format);
+                    }
+                });
+            }else {
+                layer.msg("案发时间未设置",{icon:6})
+            }
+        }
     })
+
 
     var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
     var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
     var newDate = new Date();
+    var preDate = new Date(newDate.getTime()-24*60*60*1000);
     newDate.setDate(newDate.getDate());
+    preDate.setDate(preDate.getDate())
     $('#Date').html(newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()]);
     setinterval1= setInterval( function() {
         var seconds = new Date().getSeconds();
@@ -1868,15 +1815,18 @@ $(function () {
         $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
         var hours = new Date().getHours();
         $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
+        currenttime=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日' + dayNames[newDate.getDay()]+( hours < 10 ? "0" : "" ) + hours+"时"+( minutes < 10 ? "0" : "" ) + minutes+"分"+( seconds < 10 ? "0" : "" ) + seconds+"秒";
+        yesterdaytime=preDate.getFullYear() + "年" + monthNames[preDate.getMonth()] + '月' + preDate.getDate() + '日' + dayNames[preDate.getDay()]+( hours < 10 ? "0" : "" ) + hours+"时"+( minutes < 10 ? "0" : "" ) + minutes+"分"+( seconds < 10 ? "0" : "" ) + seconds+"秒";
+
 
         if (isNotEmpty(select_monitorall_iframe_body)) {
-           /* select_monitorall_iframe_body.find("#dqtime").html($('#Date').html() + $("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html());*/
             var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ';
             var week=dayNames[newDate.getDay()];
             var time=$("#hours").html() + "：" + $("#min").html() + "：" + $("#sec").html();
             select_monitorall_iframe_body.find("#dqtime1").html(date);
             select_monitorall_iframe_body.find("#dqtime2").html(week+time);
         }
+
 
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
@@ -1896,7 +1846,6 @@ $(function () {
         }else {
             $("#webkit2").empty();
         }
-
 
 
     },1000);
