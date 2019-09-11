@@ -49,14 +49,14 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping(value = "/userlogin")
     @ResponseBody
-    public RResult userlogin(@RequestBody ReqParam<UserloginParam> param, HttpSession httpSession) {
+    public RResult userlogin(@RequestBody ReqParam<UserloginParam> param,HttpServletRequest request) {
         RResult result=this.createNewResultOfFail();
         if(null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            mainService.userlogin(result,param,httpSession);
+            mainService.userlogin(result,param,request);
             AppCache.delAppCacheParam();
         }
         result.setEndtime(DateUtil.getDateAndMinute());

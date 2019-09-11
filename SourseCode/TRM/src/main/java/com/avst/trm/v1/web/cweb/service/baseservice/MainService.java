@@ -90,7 +90,7 @@ public class MainService extends BaseService {
         return  CommonCache.getinit_CLIENT();
     }
 
-    public void  userlogin(RResult result, ReqParam<UserloginParam> param, HttpSession httpSession){
+    public void  userlogin(RResult result, ReqParam<UserloginParam> param, HttpServletRequest request){
         UserloginVO userloginVO=new UserloginVO();
         String type= CommonCache.getCurrentServerType();
 
@@ -146,11 +146,11 @@ public class MainService extends BaseService {
                     }
 
 
+
                     subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
                     LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
                     if(!subject.isPermitted("userlogin")&&subject.isAuthenticated()) {
                         result.setMessage("不好意思~您没有权限登录，请联系管理员");
-                        subject.logout();
                         return;
                     }
 
@@ -161,7 +161,9 @@ public class MainService extends BaseService {
                     }
 
                     //session存储
-                    httpSession.setAttribute(Constant.MANAGE_CLIENT,user);
+                    request.getSession().setAttribute(Constant.MANAGE_CLIENT,user);
+
+
 
                     //登录成功
                     LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登录成功--");
