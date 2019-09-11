@@ -21,7 +21,7 @@ function callbackuserlogin(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
-            layer.msg("登录成功",{icon: 6,time:500},function () {
+            layer.msg("登录成功",{icon: 6,time:500,shade: [0.1,'#fff']},function () {
                 var url=getActionURL(getactionid_manage().login_gotomain);
                 window.location.href=url;
             });

@@ -1125,11 +1125,7 @@ public class RecordService extends BaseService {
 
         //需要新增人员信息
         String usertotypessid=null;
-        EntityWrapper userparam_=new EntityWrapper();
-        userparam_.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
-        userparam_.eq("ut.cardnum",addUserInfo.getCardnum());
-        List<UserInfo> userinfos_=police_userinfoMapper.getUserByCard(userparam_);
-        if ((null==userinfos_||userinfos_.size()<1)&&StringUtils.isBlank(userssid)){
+        if (StringUtils.isBlank(userssid)){
             LogUtil.intoLog(this.getClass(),"需要新增人员____");
             addUserInfo.setSsid(OpenUtil.getUUID_32());
             addUserInfo.setCreatetime(new Date());
@@ -1148,7 +1144,7 @@ public class RecordService extends BaseService {
                LogUtil.intoLog(this.getClass(),"新增的人员ssid____"+userssid);
                usertotypessid=police_userinfototype.getSsid();
            }
-        }else  if(userinfos_.size()==1){
+        }else{
           //修改用户信息
             EntityWrapper updateuserinfoParam=new EntityWrapper();
             updateuserinfoParam.eq("ssid",userssid);

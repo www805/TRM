@@ -276,7 +276,7 @@ function open_startConversation() {
         title: '填写基础信息',
         shade: 0.3,
         resize:false,
-        area: ['50%', '600px'],
+        area: ['50%', '650px'],
         skin: 'startconversation_btn', //样式类名
         content: startConversationURL,
     });
