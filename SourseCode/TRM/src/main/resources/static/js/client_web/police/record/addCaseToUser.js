@@ -96,7 +96,7 @@ function addCaseToArraignment() {
             var bool=  checkIDCard(cardnum);
             if (!bool){
                 $(this).find("input[name='tab_cardnum']").focus();
-                ck_msg="其他在场人员下身份证号码无效";
+                ck_msg="其他在场人员身份证号码无效";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;
@@ -107,7 +107,7 @@ function addCaseToArraignment() {
 
             if (!isNotEmpty(username)){
                 $(this).find("input[name='tab_username']").focus();
-                ck_msg="其他在场人员下姓名不能为空";
+                ck_msg="其他在场人员姓名不能为空";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;
@@ -118,7 +118,7 @@ function addCaseToArraignment() {
 
             if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
                 $(this).find("input[name='tab_phone']").focus();
-                ck_msg="其他在场人员下联系电话无效";
+                ck_msg="其他在场人员联系电话无效";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;

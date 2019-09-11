@@ -866,8 +866,25 @@ public class MainService extends BaseService {
 
 
     public static void main(String[] args) {
+        String text="我是张三，北京人，今年30岁。我住在深圳市实验宝安孵化中心19楼。我的电话号码是17598735168.我的身份证号码为130503196704010016";
+       /*
+        JiebaSegmenter jiebaSegmenter = new JiebaSegmenter();
+        System.out.println(jiebaSegmenter.process(text, JiebaSegmenter.SegMode.INDEX));*/
+
+       /* nlyAnalys(text);*/
+
 
     }
+
+
+    //nly分词
+   /* public static void nlyAnalys(String strbuf){
+        Result parse = NlpAnalysis.parse(strbuf);
+        System.out.println("nly分词:"+parse);
+    }*/
+
+
+
 
 
 
