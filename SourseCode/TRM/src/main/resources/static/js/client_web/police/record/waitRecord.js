@@ -274,9 +274,9 @@ function img_bool(obj,type){
             $("#startrecord").css("display","block");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips("笔录制作中~" ,'#startrecord',{time:0, tips: 2});
+                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 2});
             });
-            layer.msg("笔录制作中~");
+            layer.msg("笔录中~");
         }
     }else if(type==-1) {
         $("#endrecord").css("display","block");
@@ -404,7 +404,7 @@ function callbackgetRecordById(data) {
                     $("#asritem").addClass("layui-show");
                     $("#record_switch_HTML").css("visibility","visible");
                     $("#overRecord_btn").html("结束笔录")
-                    $("#adjourn_btn").html("笔录暂停");
+                    $("#adjourn_btn").html("审讯暂停");
 
                     $("#pauserecord").attr("src","/uimaker/images/record.png").css({"width":"150px","height":"100px"});
                     $("#startrecord").attr("src","/uimaker/images/record2.png").css({"width":"150px","height":"100px"});
@@ -440,9 +440,9 @@ function callbackgetRecordById(data) {
                         //存在会议状态正常
                         if (mcbool==1){
                             $("#startrecord").css("display","block");
-                            var tips_msg="笔录制作中~";
+                            var tips_msg="笔录中~";
                             if (record_pausebool==1) {
-                                tips_msg="点击我可以暂停制作~";
+                                tips_msg="点击我可以暂停~";
                             }
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
@@ -641,9 +641,9 @@ function callbackstartMC(data) {
         $("#record_img img").css("display","none");
         $("#startrecord").css("display","block");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
-        var tips_msg="笔录制作中~";
+        var tips_msg="笔录作中~";
         if (record_pausebool==1){
-            tips_msg="点击我可以暂停制作~";
+            tips_msg="点击我可以暂停~";
         }
         if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
             $("#pauserecord").attr("src","/uimaker/images/record7.png").css({"width":"150px","height":"100px"});
