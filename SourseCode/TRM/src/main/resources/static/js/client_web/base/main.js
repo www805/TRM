@@ -86,10 +86,19 @@ function callgetNavList(data) {
 
             if (isNotEmpty(appCache.data.bottom) && isNotEmpty(appCache.data.bottom.name) && isNotEmpty(appCache.data.bottom.declaration) && isNotEmpty(appCache.data.bottom.url)) {
                 //页脚
+                var bottom_html = "";
                 var bottom_name = appCache.data.bottom.name;
                 var bottom_declaration = appCache.data.bottom.declaration;
                 var bottom_url = appCache.data.bottom.url;
-                var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+
+                if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
+                    $(".layui-footer").css("height", "50px").css("line-height","43px");
+                    $("#bottom_mian").css("margin-top", "5px");
+                    $("#login_img").css("width", "90px").css("height", "90px");
+                    bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 5px;' width='" + appCache.data.bottom.img.width + "' height='" + appCache.data.bottom.img.height + "' src='" + appCache.data.bottom.img.src + "'>" + "</a>";
+                } else {
+                    bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+                }
                 $("#bottom_mian").html(bottom_html);
             }
 

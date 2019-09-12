@@ -227,7 +227,7 @@ public class Scheduler {
                 JexlEngine jexlEngine = new JexlBuilder().create();
                 String formulas=PropertiesListenerConfig.getProperty("record.cache.maxTime");
                 JexlExpression expression = jexlEngine.createExpression(formulas);
-                Integer maxTime = (Integer) expression.evaluate(null);
+                long maxTime = (long) expression.evaluate(null);
 
                 long nowtime=new Date().getTime();
 
