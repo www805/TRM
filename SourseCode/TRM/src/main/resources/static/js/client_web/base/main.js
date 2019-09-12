@@ -84,12 +84,15 @@ function callgetNavList(data) {
                 $("#nav_list").html(nav_list_HTML);
             }
 
-            if (isNotEmpty(appCache.data.bottom) && isNotEmpty(appCache.data.bottom.name) && isNotEmpty(appCache.data.bottom.declaration) && isNotEmpty(appCache.data.bottom.url)) {
+            if (isNotEmpty(appCache.data.bottom) && isNotEmpty(appCache.data.bottom.name) && isNotEmpty(appCache.data.bottom.declaration) ) {
                 //页脚
                 var bottom_html = "";
                 var bottom_name = appCache.data.bottom.name;
                 var bottom_declaration = appCache.data.bottom.declaration;
                 var bottom_url = appCache.data.bottom.url;
+                if(!isNotEmpty(bottom_url)){
+                    bottom_url="#";
+                }
 
                 if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
                     $(".layui-footer").css("height", "50px").css("line-height","43px");

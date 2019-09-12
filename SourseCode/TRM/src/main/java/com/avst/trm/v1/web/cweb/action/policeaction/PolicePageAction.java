@@ -162,7 +162,7 @@ public class PolicePageAction {
         if (StringUtils.isNotBlank(record.getRecordtypessid())&&StringUtils.isNotBlank(recordtype_conversation2)&&recordtype_conversation2.equals(record.getRecordtypessid())){
             model.addAttribute("title","审讯控制台");
         }else {
-            model.addAttribute("title","笔录制作中");
+            model.addAttribute("title","笔录中");
         }
 
 

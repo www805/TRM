@@ -29,7 +29,8 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
         try {
             //获取session，判断用户
-            HttpSession session=request.getSession();
+            HttpSession session=request.getSession(true);
+
             boolean disbool=true;
             InitVO initVO;
             if(null==session.getAttribute(Constant.INIT_CLIENT)
@@ -60,6 +61,9 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                     session.setAttribute(Constant.SOCKETIO_PORT,socketio_port);
                 }
             }
+
+
+
             String url=request.getRequestURI();
             if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
                 LogUtil.intoLog(this.getClass(),url+":url，跳过进入登录页面的拦截");
@@ -113,6 +117,46 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             throws Exception {
         LogUtil.intoLog(this.getClass(),"执行afterCompletion方法-->03");
         super.afterCompletion(request, response, handler, ex);
+    }
+
+    /**
+     * (暂时不用)
+     * 处理session超时的情况
+     * @return
+     */
+    public boolean sessionout(HttpServletRequest request, HttpServletResponse response,HttpSession session){
+
+        //session持续时间
+        int maxInactiveInterval = session.getMaxInactiveInterval();
+        //session创建时间
+        long creationTime = session.getCreationTime();
+        //session最新链接时间
+        long lastAccessedTime = session.getLastAccessedTime();
+
+        System.out.println("-----> maxInactiveInterval: "+maxInactiveInterval);
+        System.out.println("-----> creationTime: "+creationTime);
+        System.out.println("-----> lastAccessedTime: "+lastAccessedTime);
+
+        //从session获取上次链接时间
+        Long operateTime = (Long)session.getAttribute("operateTime");
+        System.out.println("-----> operateTime: "+operateTime);
+
+        //如果operateTime是空，说明是第一次链接，对operateTime进行初始化
+        if(operateTime ==null){
+            session.setAttribute("operateTime",lastAccessedTime);
+            return true;
+        }else{
+            //计算最新链接时间和上次链接时间的差值
+            long intervalTime = lastAccessedTime - operateTime;
+            System.out.println("-----> intervalTime: "+intervalTime);
+            //如果超过十秒没有交互的话，就跳转到超时界面
+            if(intervalTime > maxInactiveInterval*1000){
+                return false;
+            }
+            //更新operateTime
+            session.setAttribute("operateTime",lastAccessedTime);
+            return true;
+        }
     }
 
 }
