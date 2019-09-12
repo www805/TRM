@@ -65,15 +65,15 @@ function callgetNavList(data) {
             var appCache = data.data;
 
             //替换logo图标
-            if (isNotEmpty(appCache.syslogoimage)) {
-                $("#systemlogo").css("background-image", "url(\"" + appCache.syslogoimage + "\")");
-            }else{
-                $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");
-            }
+            // if (isNotEmpty(appCache.syslogoimage)) {
+            //     $("#systemlogo").css("background-image", "url(\"" + appCache.syslogoimage + "\")");
+            // }else{
+            //     $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");
+            // }
 
             if (isNotEmpty(appCache.data)) {
 
-                if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) || !isNotEmpty(appCache.data.bottom.url)) {
+                if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration)) {
                     return;
                 }
                 //页脚
@@ -81,13 +81,19 @@ function callgetNavList(data) {
                 var bottom_name = appCache.data.bottom.name;
                 var bottom_declaration = appCache.data.bottom.declaration;
                 var bottom_url = appCache.data.bottom.url;
-
-                if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
-                    $(".layui-footer").css("height", appCache.data.bottom.img.height + "px");
-                    bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 5px;' width='" + appCache.data.bottom.img.width + "' height='" + appCache.data.bottom.img.height + "' src='" + appCache.data.bottom.img.src + "'>" + "</a>";
-                }else{
-                    var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+                if(!isNotEmpty(bottom_url)){
+                    bottom_url = "#";
                 }
+
+                if (isNotEmpty(appCache.data.bottom.image.src) && appCache.data.bottom.image.src != '/') {
+                    $(".systemlogo").css({"background-image":"url(" + appCache.data.bottom.image.src + ")"});
+                    if(isNotEmpty(appCache.data.bottom.image.width) && isNotEmpty(appCache.data.bottom.image.height)){
+                        $(".systemlogo").css("background-size", appCache.data.bottom.image.width + "px " + appCache.data.bottom.image.height + 'px');
+                    }
+                }else{
+                    $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");
+                }
+                var bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
                 $("#bottom_mian").html(bottom_html);
             }
         }
