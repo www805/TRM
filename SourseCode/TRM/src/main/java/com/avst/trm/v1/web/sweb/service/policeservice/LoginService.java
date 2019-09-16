@@ -59,9 +59,6 @@ public class LoginService extends BaseService {
             }
 
             Subject subject =  SecurityUtils.getSubject();
-            if (subject.isAuthenticated()){
-                subject.logout();
-            }
 
             if (null!=adminManage&&adminManage.size()>0){
                     if (adminManage.size()==1){
