@@ -34,7 +34,7 @@ public class ArraignmentAction extends BaseAction{
     public ModelAndView getArraignment(Model model) {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("getArraignment")) {
-            model.addAttribute("title", "笔录提讯");
+            model.addAttribute("title", "提讯笔录");
             return new ModelAndView("server_web/police/arraignment/arraignment", "arraignmentModel", model);
         } else {
             return new ModelAndView("redirect:/sweb/base/home/unauth");

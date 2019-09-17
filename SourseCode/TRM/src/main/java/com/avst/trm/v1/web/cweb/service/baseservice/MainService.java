@@ -118,9 +118,6 @@ public class MainService extends BaseService {
         }
 
         Subject subject =  SecurityUtils.getSubject();
-        if (subject.isAuthenticated()){
-            subject.logout();
-        }
 
         //检查用户登录
         EntityWrapper ew=new EntityWrapper();
