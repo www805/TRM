@@ -40,7 +40,10 @@ public class CommonCache {
 
     /**
      * 授权客户端的功能列表
-     * 客户端的功能列表，暂时只有：record、asr、tts、fd、ph(笔录管理、语音识别、语音播报、设备控制、测谎仪)
+     * 客户端的功能列表，暂时只有：record_f、asr_f、tts_f、fd_f、ph_f(笔录管理、语音识别、语音播报、设备控制、测谎仪)
+     * 单机版/联机版（s_v、o_v）
+     * 分支版本：公安、纪委、监察委（ga_t、jw_t、jcw_t）
+     * OEM版本：通用、HK（common_o、hk_o）
      * @return
      */
     public static List<String> gnlist(){
