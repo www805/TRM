@@ -40,13 +40,13 @@
     }
 
     .layui-nav * {
-        font-size: 16px
+        font-size: 18px
     }
     cite{
-        font-size: 16px
+        font-size: 18px
     }
     .layui-nav .layui-nav-item{
-        line-height: 45px;
+        line-height: 60px;
     }
 
     body .startconversation_btn .layui-layer-btn a{
@@ -60,9 +60,9 @@
 <body class="layui-layout-body" id="">
 
 <div class="layui-layout layui-layout-admin" >
-    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 45px">
-        <a th:href="@{/cweb/base/main/gotomain}"><h1 class="layui-logo"  style="color: #fff; font-size: 22px; font-weight:bold; font-style:italic;line-height: 45px" th:text="${mainModel.title}"></h1></a>
-        <ul class="layui-nav layui-layout-left" id="nav_list">
+    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 60px">
+        <a th:href="@{/cweb/base/main/gotomain}"  class="layui-nav-item" >   <img src="/uimaker/images/login_logo.png" class="layui-nav-img" style="width: 60px;height: 60px;margin: 2px"><h1 class="layui-logo" style="width:200px;color: #fff; font-size: 22px; font-weight:bold; font-style:italic;line-height: 60px;left: 60px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" th:text="${mainModel.title}" th:title="${mainModel.title}"></h1></a>
+        <ul class="layui-nav layui-layout-left" id="nav_list" style="left: 220px">
             <li class="layui-nav-item">
                 <a target="option" th:href="@{/cweb/police/policePage/toaddCaseToUser}">
                     <i class="layui-icon layui-icon-survey"></i>

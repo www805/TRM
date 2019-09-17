@@ -979,7 +979,7 @@ public class RecordService extends BaseService {
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
             recordtypessid=PropertiesListenerConfig.getProperty("recordtype_conversation1");
-            String time=new SimpleDateFormat("yyyy-MM-dd-hhmmss").format(new Date());
+            String time=new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date());
             String conversationmsg="一键审讯_"+time;
 
 
