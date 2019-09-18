@@ -1069,13 +1069,15 @@ function callbackgetgetRecordrealing(data) {
                         if (data.userssid==userssid){
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"...":data.txt;//翻译文本
+                            var txt=data.txt==null?"...":data.txt;//翻译文本
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
+                            var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
-                            translatext= checkKeyword(translatext);
-                            console.log(translatext)
+
+                            /*translatext= checkKeyword(translatext);
+                            console.log(translatext)*/
 
                             //实时会议数据
                             if (usertype==1){
@@ -1919,13 +1921,14 @@ $(function () {
                         if (data.userssid==userssid){
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"":data.txt;//翻译文本
+                            var txt=data.txt==null?"":data.txt;//翻译文本
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
+                            var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
-                            translatext=checkKeyword(translatext);
-                            console.log(translatext)
+                           /* translatext=checkKeyword(translatext);
+                            console.log(translatext)*/
 
 
                             var p_span_HTML="";

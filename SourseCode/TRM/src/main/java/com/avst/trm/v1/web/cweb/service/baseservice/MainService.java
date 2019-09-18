@@ -21,6 +21,7 @@ import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.vo.basevo.*;
@@ -28,6 +29,12 @@ import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
+import org.ansj.app.keyword.KeyWordComputer;
+import org.ansj.app.keyword.Keyword;
+import org.ansj.domain.Result;
+import org.ansj.domain.Term;
+import org.ansj.splitWord.analysis.NlpAnalysis;
+import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -44,6 +51,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service("mainService")
 public class MainService extends BaseService {
@@ -615,9 +624,14 @@ public class MainService extends BaseService {
         if (update != 1) {
             result.setMessage("修改错误");
         } else {
-            AdminAndWorkunit user = (AdminAndWorkunit) request.getSession().getAttribute(Constant.MANAGE_CLIENT);
-            user.setUsername(paramParam.getUsername());
-            request.getSession().setAttribute(Constant.MANAGE_CLIENT, user);
+            //重新查询并且更新session
+            EntityWrapper session_ew = new EntityWrapper();
+            session_ew.eq("a.ssid", paramParam.getSsid());
+            List<AdminAndWorkunit> users= base_admininfoMapper.getAdminListAndWorkunit(session_ew);
+            if (null!=users&&users.size()==1){
+                AdminAndWorkunit user=users.get(0);
+                request.getSession().setAttribute(Constant.MANAGE_CLIENT, user);
+            }
         }
 
         result.setData(update);
@@ -690,6 +704,7 @@ public class MainService extends BaseService {
 
 
     public  void checkKeyword(RResult result, ReqParam<CheckKeywordParam> param){
+        long starttime=new Date().getTime();
 
         CheckKeywordVO vo=new CheckKeywordVO();
         CheckKeywordParam checkKeywordParam=param.getParam();
@@ -702,10 +717,21 @@ public class MainService extends BaseService {
         String defaultstyle="color:#fff;background-color:red";//默认样式
         if (StringUtils.isNotBlank(txt)){
 
+            //2.获取ansj列表（二次过滤）
+            List<String> word=getkeywords(txt);
+            if (null!=word&&word.size()>0){
+                for (String text : word) {
+                    if (txt.indexOf(text)>=0){
+                        String replacetext= "<text style='"+defaultstyle+"'>"+text+"</text>";
+                        txt=txt.replaceAll(text,replacetext);
+                    }
+                }
+            }
+
+
             //开始检测文本
-            //1、获取关键字列表
-            EntityWrapper keywords_ew=new EntityWrapper();
-            List<Base_keyword> keywords= base_keywordMapper.selectList(keywords_ew);
+            //1、获取关键字列表(一次过滤)
+            List<Base_keyword> keywords= KeywordCache.getKeywordList();
             if (null!=keywords&&keywords.size()>0)
             {
                 for (Base_keyword keyword : keywords) {
@@ -731,16 +757,22 @@ public class MainService extends BaseService {
                         LogUtil.intoLog(this.getClass(),"关键字过滤后的文本__"+txt);
                     }
                 }
-                vo.setTxt(txt);
-                result.setData(vo);
-                changeResultToSuccess(result);
-                return;
             }else {
                 LogUtil.intoLog(this.getClass(),"关键字检测：检测列表为空__");
             }
+
+
+
+            vo.setTxt(txt);
+            result.setData(vo);
+            changeResultToSuccess(result);
+            long endtime=new Date().getTime();
+            System.out.println("开始检测关键字当前时间__start___"+starttime+"____end___"+endtime+"___相差___"+(endtime-starttime));
+            return;
         }else {
             LogUtil.intoLog(this.getClass(),"关键字检测：没有要检测的文本__");
         }
+
         return;
     }
 
@@ -861,24 +893,73 @@ public class MainService extends BaseService {
         return;
     }
 
+    public static List<String> getkeywords(String text){
+        List<String> keywords=new ArrayList<>();
+        if (StringUtils.isNotBlank(text)){
+            //词性过滤
 
-    public static void main(String[] args) {
-        String text="我是张三，北京人，今年30岁。我住在深圳市实验宝安孵化中心19楼。我的电话号码是17598735168.我的身份证号码为130503196704010016";
-       /*
-        JiebaSegmenter jiebaSegmenter = new JiebaSegmenter();
-        System.out.println(jiebaSegmenter.process(text, JiebaSegmenter.SegMode.INDEX));*/
+            //词性筛选
+            Set<String> expectedNature = new HashSet<String>();
+            expectedNature.add("nr");//人名
+            expectedNature.add("ns");//数组
+            expectedNature.add("t");//时间词
+            expectedNature.add("m");//数值
+            Result result = ToAnalysis.parse(text);
 
-       /* nlyAnalys(text);*/
+            List<Term> terms = result.getTerms(); //拿到terms
+            for(int i=0; i<terms.size(); i++) {
+                String word = terms.get(i).getName(); //拿到词
+                String natureStr = terms.get(i).getNatureStr(); //拿到词性
+                if(expectedNature.contains(natureStr)) {
+                    if ("m".equals(natureStr)) {
+                        //检测电话号码
+                        if (word.length() == 11) {
+                            String regExp = "^((13[0-9])|(15[^4])|(18[0,2,3,5-9])|(17[0-8])|(147))\\d{8}$";
+                            Pattern p = Pattern.compile(regExp);
+                            Matcher m = p.matcher(word);
+                            if (m.matches()) {
+                                keywords.add(word);
+                            }
+                        }
+                        //检测身份证
+                        if (word.length() == 18) {
+                            keywords.add(word);
+                        } else if (word.length() == 17) {
+                            Term to = terms.get(i).to();
+                            if ("x".equals(to.getName())) {
+                                terms.get(i).merage(to);
+                                to.setName(null);
+                                keywords.add( terms.get(i).getName());
+                            }
+                        }
+                    }else {
+                        keywords.add(word);
+                    }
 
+                }
+            }
 
+            //检测车牌号
+            String regEx_1="[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[警京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{0,1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}";
+            Pattern p_1 = Pattern.compile(regEx_1);
+            Matcher m_1= p_1.matcher(text);
+            while (m_1.find()) {
+                keywords.add(m_1.group());
+            }
+        }
+        return keywords;
     }
 
 
-    //nly分词
-   /* public static void nlyAnalys(String strbuf){
-        Result parse = NlpAnalysis.parse(strbuf);
-        System.out.println("nly分词:"+parse);
-    }*/
+    public static void main(String[] args) {
+        String text="昨天我叫刘德华，男，初中文化，电话号码是17534789453身份证号码是13282619771220503X户籍所在地萍乡市湘东区东关镇红星村粤B12345，粤B54321现住址萍乡市开发区平安小小区3栋3单元501车牌号粤B12345";
+        List<String> texts=getkeywords(text);
+        for (String s : texts) {
+            System.out.println(s);
+        }
+
+    }
+
 
 
 

@@ -7,6 +7,11 @@ function userlogin() {
     var loginaccount =$("#loginaccount").val().trim();
     var password =$("#password").val().trim();
 
+    $("#loginaccount").attr("readonly","readonly");
+    $("#password").attr("readonly","readonly");
+    $("#loginbtn").attr('disabled','disabled');
+
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -24,11 +29,19 @@ function callbackuserlogin(data) {
             layer.msg("登录成功",{icon: 6,time:500,shade: [0.1,'#fff']},function () {
                 var url=getActionURL(getactionid_manage().login_gotomain);
                 window.location.href=url;
+                setTimeout(function () {
+                    $("#loginaccount").removeAttr("readonly");
+                    $("#password").removeAttr("readonly");
+                    $("#loginbtn").removeAttr("disabled");
+                },3000)
             });
         }
     }else{
         $("#loginbtn").html('登录')
         layer.msg(data.message, {icon: 5,anim: 6});
+        $("#loginaccount").removeAttr("readonly");
+        $("#password").removeAttr("readonly");
+        $("#loginbtn").removeAttr("disabled");
     }
 }
 

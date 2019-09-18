@@ -40,14 +40,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>关键字名称</label>
             <div class="layui-input-block">
-                <input type="text" name="text" id="text" required th:value="*{text}" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
+                <input type="text" name="text" id="text" required th:value="*{text}" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input" oninput="oninput_text()">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>替换字符</label>
             <div class="layui-input-block">
-                <input type="text" name="replacetext" id="replacetext" required th:value="*{replacetext}" lay-verify="required" placeholder="请输入替换字符" autocomplete="off" class="layui-input">
+                <input type="text" name="replacetext" id="replacetext" required th:value="*{replacetext}" lay-verify="required" placeholder="请输入替换字符(默认*)" autocomplete="off" class="layui-input">
             </div>
         </div>
 

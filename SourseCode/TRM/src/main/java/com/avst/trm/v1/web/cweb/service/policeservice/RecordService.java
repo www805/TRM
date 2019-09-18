@@ -36,6 +36,7 @@ import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetTdByModelSsidParam_out;
+import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.GetTdByModelSsidVO;
 import com.avst.trm.v1.feignclient.mc.vo.param.Avstmt_modeltd;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
@@ -47,6 +48,7 @@ import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
 import com.avst.trm.v1.web.cweb.conf.AddRecord_Thread;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -136,6 +138,9 @@ public class RecordService extends BaseService {
 
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private MainService mainService;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -601,6 +606,29 @@ public class RecordService extends BaseService {
                         getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
                         if (null!=getMCVO){
                             iid=getMCVO.getIid();
+                            List<AsrTxtParam_toout> asrTxtParam_toouts=getMCVO.getList();
+                            if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                                for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
+                                    String txt=asrTxtParam_toout.getTxt();
+                                    String keyword_txt=txt;
+
+                                    //开始检测关键字
+                                    RResult checkkeyword_rr=new RResult();
+                                    CheckKeywordParam checkKeywordParam=new CheckKeywordParam();
+                                    checkKeywordParam.setTxt(txt);
+                                    ReqParam checkkeyword_param=new ReqParam();
+                                    checkkeyword_param.setParam(checkKeywordParam);
+                                    mainService.checkKeyword(checkkeyword_rr,checkkeyword_param);
+                                    if (null!=checkkeyword_rr&&checkkeyword_rr.getActioncode().equals(Code.SUCCESS.toString())&&null!=checkkeyword_rr.getData()){
+                                        CheckKeywordVO vo=gson.fromJson(gson.toJson(checkkeyword_rr.getData()),CheckKeywordVO.class);
+                                        if (null!=vo&&null!=vo.getTxt()){
+                                            keyword_txt=vo.getTxt();
+                                            asrTxtParam_toout.setKeyword_txt(keyword_txt);
+                                        }
+                                    }
+                                }
+                            }
+
                             getRecordByIdVO.setGetMCVO(getMCVO);
                         }
                         LogUtil.intoLog(this.getClass()," outService.getRecord__请求成功");
@@ -3841,7 +3869,7 @@ public class RecordService extends BaseService {
     /**
      * 获取线程打包的进度
      * @param result
-     * @param param
+     * @param
      * @return
      */
     public RResult zIPVodProgress(RResult result, ReqParam<GZIPVodParam> paramReqParam){

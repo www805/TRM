@@ -7,6 +7,8 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRol
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_keywordMapper;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.ReadWriteFile;
+import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.Getlist3Param;
@@ -28,7 +30,7 @@ import java.util.List;
 public class KeywordService extends BaseService {
 
     @Autowired
-    private Base_keywordMapper keywordMapper;
+    private  Base_keywordMapper keywordMapper;
 
 
     /**
@@ -260,6 +262,37 @@ public class KeywordService extends BaseService {
             return false;
         }*/
         return true;
+    }
+
+
+
+    public static void main(String[] args) {
+        //用于默认关键字添加
+        /*List<String> prolist= ReadWriteFile.readTxtFileToList("C:\\Users\\admin\\Desktop\\mgz.txt","GBK");
+        for (String s : prolist) {
+            s=s.replace(" ", "");
+            System.out.println(s);
+            if (StringUtils.isNotBlank(s)){
+                AddOrUpdateKeywordParam keyword=new AddOrUpdateKeywordParam();
+                keyword.setText(s);
+                Integer len=s.length();
+                String a="";
+                if (null!=len){
+                    for (int i = 0; i < len; i++) {
+                        a+="*";
+
+                    }
+                }
+                keyword.setReplacetext(a);
+                keyword.setShieldbool(1);
+                keyword.setCreatetime(new Date());
+                keyword.setSsid(OpenUtil.getUUID_32());
+                Integer insert = keywordMapper.insert(keyword);
+                if (insert > 0) {
+                    System.out.println("添加成功");
+                }
+            }
+        }*/
     }
 
 

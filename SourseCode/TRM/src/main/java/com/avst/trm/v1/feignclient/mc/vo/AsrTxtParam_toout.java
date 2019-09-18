@@ -22,6 +22,17 @@ public class AsrTxtParam_toout {
     private long subtractime;//时间差
 
 
+
+    private String keyword_txt;//关键字检测之后的文本:trm加的
+
+    public String getKeyword_txt() {
+        return keyword_txt;
+    }
+
+    public void setKeyword_txt(String keyword_txt) {
+        this.keyword_txt = keyword_txt;
+    }
+
     public long getSubtractime() {
         return subtractime;
     }

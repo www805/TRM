@@ -1236,8 +1236,7 @@ function callbackgnlist(data) {
 
 
 //*******************************************************************关键字start****************************************************************//
-//未使用==后台执行了 此处使用同步因为不能及时接受到它关键字检测的值
-
+//未使用==后台执行了 此处使用同步因为不能及时接受到它关键字检测的值:不在前端使用太慢耗内存
 function checkKeyword(txt) {
     var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
     var data={

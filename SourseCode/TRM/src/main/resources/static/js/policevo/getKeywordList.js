@@ -51,6 +51,11 @@ function getKeywordList(){
         shieldbool = -1;
     }
 
+    if (text.length!=replacetext.length){
+        layer.msg("关键字名称和替换字符长度需保持一致",{icon:5})
+        return false;
+    }
+
     var data={
         ssid:ssid,
         text:text,
@@ -212,5 +217,27 @@ function showpagetohtml(){
         var arrparam=new Array();
         arrparam[0]=text;
         showpage("paging",arrparam,'getKeyWordByParam',currPage,pageCount,pageSize);
+    }
+}
+
+
+function oninput_text() {
+    var text=$("#text").val();
+    var replacetext=$("#replacetext").val();
+    if (isNotEmpty(text)){
+        var len=text.length;
+        if (isNotEmpty(replacetext)){
+            var replacetextlen=replacetext.length;
+            len=(len-replacetextlen)<1?0:(len-replacetextlen);
+        }
+
+        if (isNotEmpty(len)){
+            for (let i = 0; i < len; i++) {
+                replacetext+="*";
+            }
+        }
+        $("#replacetext").val(replacetext);
+    }else {
+        $("#replacetext").val("");
     }
 }

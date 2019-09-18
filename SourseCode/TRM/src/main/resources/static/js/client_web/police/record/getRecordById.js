@@ -241,13 +241,14 @@ function set_getRecord(data){
                     if (data.userssid==userssid){
                         var username=user.username==null?"未知":user.username;//用户名称
                         var usertype=user.grade;//1、询问人2被询问人
-                        var translatext=data.txt==null?"...":data.txt;//翻译文本
+                        var txt=data.txt==null?"...":data.txt;//翻译文本
                         var asrtime=data.asrtime;//时间
                         var starttime=data.starttime;
                         var asrstartime=data.asrstartime;
                         var subtractime=data.subtractime;//时间差
                         //实时会议数据
                         var recordrealshtml="";
+                        var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
 
                         //实时会议数据

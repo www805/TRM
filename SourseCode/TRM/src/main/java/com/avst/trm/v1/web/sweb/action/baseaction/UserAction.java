@@ -34,7 +34,7 @@ public class UserAction extends BaseAction{
     public ModelAndView getUser(Model model) {
        Subject subject = SecurityUtils.getSubject();
        if(subject.isPermitted("getUser")) {
-           model.addAttribute("title","管理员列表");
+           model.addAttribute("title","用户列表");
            return new ModelAndView("server_web/base/users/getUserList", "userModel", model);
        } else {
            return new ModelAndView("redirect:/sweb/base/home/unauth");
