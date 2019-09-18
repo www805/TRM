@@ -1973,7 +1973,7 @@ $(function () {
                                     //初始化，开始有问就开始追加一行
                                     if (usertype==1){//初始化上墙，
 
-                                        qq=translatext;
+                                        qq=txt;
 
                                         setrecord_html();
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
@@ -1990,10 +1990,10 @@ $(function () {
                                     if (usertype==1){
                                         //最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
                                         if (laststarttime_qq==starttime){//修改最后一条数据
-                                            qq=translatext;
+                                            qq=txt;
                                         }else{//追加这条数据
                                             qqq+=qq;//把上一条数据加到qqq，说明上一条数据已经完成，qqq记录的都是已经完成的问
-                                            qq=translatext;
+                                            qq=txt;
                                         }
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qqq+qq);
                                         laststarttime_qq=starttime;
@@ -2002,9 +2002,9 @@ $(function () {
                                         if (laststarttime_ww==starttime){//判断这次答的时间跟上一句答的时间是否一样，一样的话
                                             console.log("修改即可————————————————————————————w")
                                             console.log("www_______________________________"+www);
-                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").text(www+translatext);
+                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").text(www+txt);
                                         }else {//建立新答
-                                            ww=translatext;
+                                            ww=txt;
                                             www="";
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(ww);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
@@ -2019,10 +2019,10 @@ $(function () {
 
                                     if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
                                         if (laststarttime_ww==starttime){//答的修改最后一句
-                                            ww=translatext;
+                                            ww=txt;
                                         }else{//答的追加最后一句
                                             www+=ww;
-                                            ww=translatext;
+                                            ww=txt;
                                         }
                                         $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").text(www+ww);
                                         laststarttime_ww=starttime;
@@ -2031,13 +2031,13 @@ $(function () {
                                         //判断本次问是否和上一次问相同时间，相同改变否则追加一行
                                         if (laststarttime_qq==starttime){//只需要修改最后一个问
                                             console.log("修改即可————————————————————————————q")
-                                            qq=translatext;
+                                            qq=txt;
 
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").text(qqq+qq);
                                         }else {//追加一个新问
                                             console.log("从这里开始追加新的一行_________")
                                             qqq="";
-                                            qq=translatext;
+                                            qq=txt;
                                             setrecord_html();
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").text(qq);
                                             $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
