@@ -20,11 +20,6 @@ public class GetRecordByIdVO {
 
     private List<Avstmt_modeltd> modeltds;//会议模板通道list
 
-
-    private String recordtype_conversation1;//默认谈话笔录ssid:一键笔录
-
-    private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
-
     private String record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许
 
     private String record_adjournbool;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
@@ -43,22 +38,6 @@ public class GetRecordByIdVO {
 
     public void setRecord_pausebool(String record_pausebool) {
         this.record_pausebool = record_pausebool;
-    }
-
-    public String getRecordtype_conversation1() {
-        return recordtype_conversation1;
-    }
-
-    public void setRecordtype_conversation1(String recordtype_conversation1) {
-        this.recordtype_conversation1 = recordtype_conversation1;
-    }
-
-    public String getRecordtype_conversation2() {
-        return recordtype_conversation2;
-    }
-
-    public void setRecordtype_conversation2(String recordtype_conversation2) {
-        this.recordtype_conversation2 = recordtype_conversation2;
     }
 
     public List<Avstmt_modeltd> getModeltds() {

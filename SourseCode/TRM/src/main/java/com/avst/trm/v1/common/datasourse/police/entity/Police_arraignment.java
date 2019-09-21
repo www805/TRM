@@ -84,6 +84,15 @@ public class Police_arraignment extends Model<Police_arraignment> {
      */
     private String userssid;
 
+
+    /**多功能状态
+     * 主要用于控制审讯
+     * 1：单功能（一键审讯只有视频）
+     * 2：第二多功能（开启审讯视频和笔录）
+     * 3：多功能（普通笔录都有）
+     */
+    private Integer multifunctionbool;
+
     private String ssid;
 
     private String string1;
@@ -93,6 +102,14 @@ public class Police_arraignment extends Model<Police_arraignment> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public Integer getMultifunctionbool() {
+        return multifunctionbool;
+    }
+
+    public void setMultifunctionbool(Integer multifunctionbool) {
+        this.multifunctionbool = multifunctionbool;
+    }
 
     public String getUserssid() {
         return userssid;

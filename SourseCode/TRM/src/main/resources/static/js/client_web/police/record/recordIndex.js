@@ -211,22 +211,36 @@ function showpagetohtml(){
 
 }
 
-//跳转笔录编辑页
-function towaitRecord(recordssid,recordbool,creator,creatorname) {
+/*
+跳转笔录编辑页
+multifunctionbool:控制跳转界面
+ */
+function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionbool) {
     if (!isNotEmpty(recordssid)){
         return false;
     }
-
     if (recordbool==1||recordbool==0){
+        //进入制作页面
         if (isNotEmpty(creator)&&creator==sessionadminssid){
-            var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
-            window.location.href=url+"?ssid="+recordssid;
+            if (multifunctionbool==1){
+                var url=getActionURL(getactionid_manage().recordIndex_towaitconversation);
+                window.location.href=url+"?ssid="+recordssid;
+            } else if (multifunctionbool==2||multifunctionbool==3){
+                var url=getActionURL(getactionid_manage().recordIndex_towaitRecord);
+                window.location.href=url+"?ssid="+recordssid;
+            }
         }else {
             layer.msg(creatorname+"正在制作笔录...")
         }
     } else  if (recordbool==2||recordbool==3){
-        var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
-        window.location.href=url+"?ssid="+recordssid;
+        //进入回放界面
+        if (multifunctionbool==1||multifunctionbool==2){
+            var url=getActionURL(getactionid_manage().recordIndex_toconversationById);
+            window.location.href=url+"?ssid="+recordssid;
+        }else if(multifunctionbool==3){
+            var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
+            window.location.href=url+"?ssid="+recordssid;
+        }
     }
 }
 
@@ -249,7 +263,7 @@ function changeboolRecord(obj) {
             ajaxSubmitByJson(url,d,function (data) {
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     if (isNotEmpty(data)) {
-                        layer.msg("删除成功", {time: 500}, function () {
+                        layer.msg("删除成功", {time: 500,icon:6}, function () {
                             ggetRecordsByParam();
                         });
                     }

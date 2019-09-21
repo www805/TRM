@@ -1,10 +1,18 @@
 
 function userloginout() {
-    var url=getActionURL(getactionid_manage().main_userloginout);
-    var data={
-        token:INIT_CLIENTKEY
-    };
-    ajaxSubmitByJson(url,data,callbackuserloginout);
+    layer.confirm('确定要退出系统吗？', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().main_userloginout);
+        var data={
+            token:INIT_CLIENTKEY
+        };
+        ajaxSubmitByJson(url,data,callbackuserloginout);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
 }
 
 function callbackuserloginout(data) {

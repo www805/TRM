@@ -32,24 +32,24 @@
     <form class="layui-form" action="">
         <div class="layui-form-item">
 
-            <label class="layui-form-label" style="width: auto;">案件名称</label>
+            <label class="layui-form-label" style="width: auto;">案件名</label>
             <div class="layui-input-inline">
-                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名称" autocomplete="off" class="layui-input">
+                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名" autocomplete="off" class="layui-input">
             </div>
 
-            <label class="layui-form-label" style="width: auto;">案件编号</label>
+            <label class="layui-form-label" style="width: auto;">涉案人</label>
             <div class="layui-input-inline">
-                <input type="text" name="casenum" id="casenum" lay-verify="required" placeholder="请输入案件编号" autocomplete="off" class="layui-input">
-            </div>
-
-            <label class="layui-form-label" style="width: auto;">案件人名称</label>
-            <div class="layui-input-inline">
-                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入案件人名称" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入涉案人" autocomplete="off" class="layui-input">
             </div>
 
             <label class="layui-form-label" style="width: auto;">案发时间</label>
             <div class="layui-input-inline"  style="width: 300px;">
                 <input type="text" name="occurrencetime" id="occurrencetime" lay-verify="required" placeholder="请输入案发时间" autocomplete="off" class="layui-input" >
+            </div>
+
+            <label class="layui-form-label" style="width: auto;">谈话时间</label>
+            <div class="layui-input-inline" style="width: 300px;">
+                <input type="text" name="starttime" id="starttime" lay-verify="required" placeholder="请输入谈话时间" autocomplete="off" class="layui-input" >
             </div>
 
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getArraignmentListByParam();" >
@@ -71,13 +71,12 @@
         <tr>
             <th>序号</th>
             <th>案件状态</th>
-            <th>案件编号</th>
-            <th>案件名称</th>
-            <th>案件人</th>
-            <th style="width: 150px">案件发生时间</th>
-            <th>案件创建人</th>
-            <th style="width:80px">笔录次数</th>
-            <th style="width: 150px">操作</th>
+            <th>案件名</th>
+            <th>涉案人</th>
+            <th>案发时间</th>
+            <th style="width: 300px">谈话时间</th>
+            <th>笔录次数</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody id="pagelisttemplates_tbody">
@@ -86,7 +85,6 @@
             <td>{{index+1}}</td>
             {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #000000'>暂停中</span>";}else{caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}  }}
             <td>{{caseboolbooltext}}</td>
-            <td title="{{value.casenum==null?'':value.casenum}}">{{value.casenum==null?"":value.casenum}}</td>
             <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
             {{# var USERHTNL="";var userInfos=value.userInfos;    }}
             {{# if(null!=userInfos){ for (let i = 0; i < userInfos.length; i++) { }}
@@ -95,7 +93,7 @@
             {{# } USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;} }}
             <td style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;" title="{{USERHTNL}}">{{USERHTNL}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
-            <td>{{value.creatorname==null?"":value.creatorname}}</td>
+            <td>{{value.starttime==null?"未知":value.starttime}} ~ {{value.endtime==null?"未知":value.endtime}}</td>
             <td  class="noline"  onclick="openModel('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
             <td>
                 <button onclick="openModel('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}')"   title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}"      class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >查看</button>
@@ -133,6 +131,15 @@
                 occurrencetime=value;
                getArraignmentListByParam();
         }
+        });
+        laydate.render({
+            elem: '#starttime'
+            ,type: 'datetime'
+            ,range: "~"
+            ,done: function(value, date, endDate){
+                starttime=value;
+                getArraignmentListByParam();
+            }
         });
     });
 

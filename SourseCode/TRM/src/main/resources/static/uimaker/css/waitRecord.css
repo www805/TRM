@@ -385,7 +385,7 @@ table td {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
-div>img{
+/*div>img{
 position: absolute!important;
 width: 100%;
 left: 0;
@@ -394,7 +394,7 @@ right:0;
 bottom:0;
 margin:auto;
 display: block;
-}
+}*/
 #layui-row1 .layui-table td{
     word-break: break-all;/*必须*/
     white-space: normal;

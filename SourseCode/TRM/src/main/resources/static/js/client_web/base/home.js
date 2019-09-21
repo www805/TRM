@@ -309,7 +309,7 @@ function callbackaddCaseToArraignment(data) {
                     location.href=window.waitconversationURL+"?ssid="+recordssid
                 });
             }else if(toUrltype==2){
-                location.href =  window.conversationIndexURL;
+                location.href =  window.recordIndexURL;
             }
         }
     }else{

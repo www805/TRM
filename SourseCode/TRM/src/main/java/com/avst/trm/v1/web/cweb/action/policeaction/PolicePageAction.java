@@ -29,7 +29,7 @@ public class PolicePageAction {
 
     @GetMapping("totemplateIndex")
     public ModelAndView totemplateIndex(Model model){
-        model.addAttribute("title","笔录模板");
+        model.addAttribute("title","模板管理");
         return new ModelAndView("client_web/police/template/templateIndex", "templateIndex", model);
     }
 
@@ -73,7 +73,7 @@ public class PolicePageAction {
      */
     @GetMapping("notificationList")
     public ModelAndView notificationList(Model model){
-        model.addAttribute("title", "告知书列表");
+        model.addAttribute("title", "告知书");
         return new ModelAndView("client_web/police/notification/notificationList", "notificationListModel", model);
     }
 
@@ -111,7 +111,7 @@ public class PolicePageAction {
     /*********************************关于笔录 start*********************************/
     @GetMapping("torecordIndex")
     public ModelAndView torecordIndex(Model model){
-        model.addAttribute("title","笔录查看");
+        model.addAttribute("title","审讯查看");
         return new ModelAndView("client_web/police/record/recordIndex", "recordIndexModel", model);
     }
 
@@ -132,7 +132,7 @@ public class PolicePageAction {
 
     @GetMapping("torecordTypeList")
     public ModelAndView torecordTypeList(Model model){
-        model.addAttribute("title","笔录类型查看");
+        model.addAttribute("title","笔录类型");
         return new ModelAndView("client_web/police/record/recordTypeList", "recordTypeListModel", model);
     }
 
@@ -145,7 +145,7 @@ public class PolicePageAction {
 
     @GetMapping("toaddCaseToUser")
     public ModelAndView toaddCaseToUser(Model model){
-        model.addAttribute("title","笔录制作");
+        model.addAttribute("title","谈话办案");
         return new ModelAndView("client_web/police/record/addCaseToUser", "addCaseToUserModel", model);
     }
 
@@ -244,7 +244,7 @@ public class PolicePageAction {
     /*********************************关于案件 end*********************************/
     @GetMapping("towordTemplateList")
     public ModelAndView towordTemplateList(Model model){
-        model.addAttribute("title","笔录word模板列表");
+        model.addAttribute("title","笔录word模板");
         return new ModelAndView("client_web/police/record/wordTemplateList", "wordTemplateListModel", model);
     }
 
@@ -256,6 +256,8 @@ public class PolicePageAction {
         model.addAttribute("parentbool",parentbool);//用于控制页面跳转
         return new ModelAndView("client_web/police/conversation/startConversation", "startConversationModel", model);
     }
+
+
 
 
 

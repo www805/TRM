@@ -27,10 +27,7 @@ var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存�
 
 var occurrencetime_format;//案发时间
 
-var recordtype_conversation1;
-var recordtype_conversation2;
-var recordtypessid;
-
+var multifunctionbool;
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -261,7 +258,7 @@ function img_bool(obj,type){
             $("#startrecord").css("display","block");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 2});
+                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 1});
             });
             layer.msg("笔录中~");
         }
@@ -269,7 +266,7 @@ function img_bool(obj,type){
         $("#endrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
+            layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:1});
         });
         console.log("会议已结束")
         layer.msg("该笔录已经制作过啦~");
@@ -349,69 +346,65 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             getRecordById_data=data;
 
-             recordtype_conversation1=data.recordtype_conversation1;
-             recordtype_conversation2=data.recordtype_conversation2;
-            record_pausebool=data.record_pausebool;//
-            record_adjournbool=data.record_adjournbool;
-            if (record_adjournbool==1||record_adjournbool=="1"){
-                //显示暂停按钮
-                $("#adjourn_btn").show();
-            } else {
-                $("#adjourn_btn").hide();
-            }
+            record_pausebool=data.record_pausebool;//暂停是否
+            record_adjournbool=data.record_adjournbool;//休庭是否（案件暂停）
+            if (record_adjournbool==1||record_adjournbool=="1"){ $("#adjourn_btn").show(); } else {$("#adjourn_btn").hide();}
 
             var record=data.record;
             if (isNotEmpty(record)){
-                 recordtypessid=record.recordtypessid;
-
-                if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
-                    console.log("我是谈话笔录隐藏")
-                    $("#fd").show();
-                    $("#initec ul li").removeClass("layui-this");
-                    $("#initec .layui-tab-item").removeClass("layui-show");
-                    $("#fd").addClass("layui-this");
-                    $("#fditem").addClass("layui-show");
-
-                    $("#initheart_click").removeClass("layui-show");
-                    $(".layui-tab-content").css("height","650px");
-
-                    $("#overRecord_btn").html("结束审讯");
-                    $("#adjourn_btn").html("暂停");
-
-                    if (record_pausebool==1){
-                        $("#startrecord").attr("src","/uimaker/images/record6.png");
-                    }else {
-                        $("#startrecord").attr("src","/uimaker/images/record10.png");
-                    }
-                    $("#pauserecord").attr("src","/uimaker/images/record5.png");
-                    $("#endrecord").attr("src","/uimaker/images/record8.png");
-                } else {
-                    console.log("我不是谈话笔录")
-                    $("#asr").show();
-                    $("#fd").show();
-                    $("#ph").show();
-                    $("#xthtml").css("visibility","visible");
-                    $("#initec ul li").removeClass("layui-this");
-                    $("#initec .layui-tab-item").removeClass("layui-show");
-                    $("#asr").addClass("layui-this");
-                    $("#asritem").addClass("layui-show");
-                    $("#record_switch_HTML").css("visibility","visible");
-                    $("#overRecord_btn").html("结束笔录")
-                    $("#adjourn_btn").html("暂停");
-
-                    if (record_pausebool==1){
-                        $("#startrecord").attr("src","/uimaker/images/record2.png");
-                    }else {
-                        $("#startrecord").attr("src","/uimaker/images/record9.png");
-                    }
-                    $("#pauserecord").attr("src","/uimaker/images/record.png");
-                    $("#endrecord").attr("src","/uimaker/images/record4.png");
-                }
+                mcbool=record.mcbool;
 
                 //获取提讯会议ssid
-                mcbool=record.mcbool;
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
+                    //按钮显示控制
+                     multifunctionbool=police_arraignment.multifunctionbool;//按钮显示控制
+                    if (multifunctionbool==2){
+                        console.log("我是谈话笔录隐藏")
+                        $("#fd").show();
+                        $("#initec ul li").removeClass("layui-this");
+                        $("#initec .layui-tab-item").removeClass("layui-show");
+                        $("#case").addClass("layui-this");
+                        $("#caseitem").addClass("layui-show");
+
+                        $("#initheart_click").addClass("layui-show");
+                        $(".layui-tab-content").css("height","300px");
+
+                        $("#overRecord_btn").attr("src","/uimaker/images/record_stop_2.png");
+                        $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
+
+                        if (record_pausebool==1){
+                            $("#startrecord").attr("src","/uimaker/images/record6.png");
+                        }else {
+                            $("#startrecord").attr("src","/uimaker/images/record10.png");
+                        }
+                        $("#pauserecord").attr("src","/uimaker/images/record5.png");
+                        $("#endrecord").attr("src","/uimaker/images/record8.png");
+                    } else if (multifunctionbool==3) {
+                        console.log("我不是谈话笔录")
+                        $("#asr").show();
+                        $("#fd").show();
+                        $("#ph").show();
+                        $("#xthtml").css("visibility","visible");
+                        $("#initec ul li").removeClass("layui-this");
+                        $("#initec .layui-tab-item").removeClass("layui-show");
+                        $("#asr").addClass("layui-this");
+                        $("#asritem").addClass("layui-show");
+                        $("#record_switch_HTML").css("visibility","visible");
+                        $("#overRecord_btn").attr("src","/uimaker/images/record_stop_1.png");
+                        $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
+
+                        if (record_pausebool==1){
+                            $("#startrecord").attr("src","/uimaker/images/record2.png");
+                        }else {
+                            $("#startrecord").attr("src","/uimaker/images/record9.png");
+                        }
+                        $("#pauserecord").attr("src","/uimaker/images/record.png");
+                        $("#endrecord").attr("src","/uimaker/images/record4.png");
+                    }
+
+
+                    //获取会议ssid
                     var mtssiddata=police_arraignment.mtssid;
                     if (isNotEmpty(mtssiddata)){
                         mtssid=mtssiddata;
@@ -424,13 +417,13 @@ function callbackgetRecordById(data) {
                         $("#endrecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
-                            layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
+                            layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 1});
                         });
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
-                        if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
-                            $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record7.png","onclick":"img_bool(this,1);"});
-                        }else {
-                            $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record3.png","onclick":"img_bool(this,1);"});
+                        if (multifunctionbool==2){
+                            $("#pauserecord").attr({"src":"/uimaker/images/record7.png","onclick":"img_bool(this,1);"});
+                        }else if (multifunctionbool==3) {
+                            $("#pauserecord").attr({"src":"/uimaker/images/record3.png","onclick":"img_bool(this,1);"});
                         }
                         //存在会议状态正常
                         if (mcbool==1){
@@ -441,22 +434,25 @@ function callbackgetRecordById(data) {
                             }
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
+                                layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
                             });
                         } else if (mcbool==3&&record_pausebool==1) {
+                            $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 2});
+                                layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 1});
                             });
                         }
                     }else {
-                           $("#pauserecord").css("display","block");
-                            layui.use(['layer','element','form'], function(){
-                                var layer=layui.layer;
-                                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
-                            });
+                        $("#pauserecord").css("display","block");
+                        layui.use(['layer','element','form'], function(){
+                            var layer=layui.layer;
+                            layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
+                        });
                     }
                 }
+
+
 
                 //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
@@ -621,14 +617,14 @@ function startMC() {
         layer.msg("请稍等",{time:1000},function () {
             getRecordById();
             $("#record_img img").css("display","none");
-            if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+            if (multifunctionbool==2){
                 $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record5.png","onclick":"img_bool(this,1);"});
-            }else {
+            }else  if (multifunctionbool==3){
                 $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record.png","onclick":"img_bool(this,1);"});
             }
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
+                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
             });
         });
     }
@@ -642,25 +638,25 @@ function callbackstartMC(data) {
         if (record_pausebool==1){
             tips_msg="点击我可以暂停~";
             //制作暂停 ，判断是笔录还是审讯
-            if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+            if (multifunctionbool==2){
                 $("#startrecord").attr("src","/uimaker/images/record6.png");
                 $("#pauserecord").attr("src","/uimaker/images/record7.png");
-            }else {
+            }else if (multifunctionbool==3) {
                 $("#startrecord").attr("src","/uimaker/images/record2.png");
                 $("#pauserecord").attr("src","/uimaker/images/record3.png");
             }
         }else {
             //制作中 ，判断是笔录还是审讯
-            if (recordtype_conversation1==recordtypessid||recordtypessid==recordtype_conversation2){
+            if (multifunctionbool==2){
                 $("#startrecord").attr("src","/uimaker/images/record10.png");
-            }else {
+            }else  if (multifunctionbool==3) {
                 $("#startrecord").attr("src","/uimaker/images/record9.png");
             }
         }
         $("#startrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
+            layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
         });
 
         var data=data.data;
@@ -714,13 +710,13 @@ function callbackstartMC(data) {
                 $("#endrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
+                    layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 1});
                 });
             }else {
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
+                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:1});
                 });
             }
 
@@ -779,13 +775,13 @@ function callbackpauseOrContinueRercord(data) {
                 $("#pauserecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
+                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
                 });
             } else {
                 $("#startrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
+                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
                 });
             }
 
@@ -799,13 +795,13 @@ function callbackpauseOrContinueRercord(data) {
                 $("#startrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
+                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
                 });
             } else if (pauseOrContinue==2){//请求继续
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
+                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
                 });
             }
         }
@@ -1265,7 +1261,7 @@ function setrecord_html() {
               <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" ></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
-                <td\
+                <td\>\
                     <div class="layui-btn-group">\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
@@ -1290,46 +1286,18 @@ function setrecord_html() {
 //*******************************************************************点击start****************************************************************//
 //身心检测
 function initheart() {
-    $("#initheart_click").removeClass("layui-show");
-    $(".layui-tab-content").css("height","650px");
-
-    if (isNotEmpty($("#living3_2").html())) {
-        $("#living3_1").html($("#living3_2").html());
-        $("#living3_2").html("");
-        if (isNotEmpty(recorduser)){
-            for (var i = 0; i < recorduser.length; i++) {
-                var useret = recorduser[i];
-                var userssid1=useret.userssid;
-                if (userssid1==dq_recorduser){
-                    liveurl=dq_livingurl;
-                    console.log("当前liveurl————"+liveurl)
-                }
-            }
-        }
-    }
-
-    layui.use(['element'], function(){
-        var element = layui.element;
-        //使用模块
-        element.render();
-    });
-    initplayer();
-    main1();
-
+    $("#initheart_click").addClass("layui-show");
+    $(".layui-tab-content").css("height","300px");
 }
 //语音识别
 function initasr() {
     $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","450px");
-    liveurl=null;
-    initplayer();
+    $(".layui-tab-content").css("height","300px");
 }
 //案件
 function initcase() {
     $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","450px");
-    liveurl=null;
-    initplayer();
+    $(".layui-tab-content").css("height","300px");
 }
 function initcase_header() {
     $("#initec ul li").removeClass("layui-this");
@@ -1338,14 +1306,12 @@ function initcase_header() {
     $("#caseitem").addClass("layui-show");
 
     $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","450px");
-    liveurl=null;
-    initplayer();
+    $(".layui-tab-content").css("height","300px");
 }
 //直播
 function initliving() {
     $("#initheart_click").removeClass("layui-show");
-    $(".layui-tab-content").css("height","650px");
+    $(".layui-tab-content").css("height","300px");
 
 
     var html=$("#living3_2").html();
@@ -1580,14 +1546,14 @@ function clearRecord() {
             if (isNotEmpty(recordToProblems)){
 
             }
-            var data={
+            var data2={
                 token:INIT_CLIENTKEY,
                 param:{
                     recordssid: recordssid,
                     recordToProblems:recordToProblems
                 }
             };
-            ajaxSubmitByJson(url, data, function (data) {
+            ajaxSubmitByJson(url, data2, function (data) {
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     var data=data.data;
                     if (isNotEmpty(data)){

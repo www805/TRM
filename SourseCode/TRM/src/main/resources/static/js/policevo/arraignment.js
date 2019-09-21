@@ -1,39 +1,48 @@
 var occurrencetime=null;
-
+var starttime=null;//谈话时间
 function getArraignmentList_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
     var casename=$("#casename").val();
-    var casenum=$("#casenum").val();
     var username=$("#username").val();
+
     var occurrencetime_start=null;//案发时间开始
     var occurrencetime_end=null;//案发结束时间
-
     if (isNotEmpty(occurrencetime)){
         var arr = occurrencetime.split("~");
         occurrencetime_start=arr[0].trim();
         occurrencetime_end=arr[1].trim();
     }
 
+    var starttime_start=null;//谈话时间开始
+    var starttime_end=null;//谈话时间结束
+    if (isNotEmpty(starttime)){
+        var arr = starttime.split("~");
+        starttime_start=arr[0].trim();
+        starttime_end=arr[1].trim();
+    }
+
     var data={
         casename:casename,
-        casenum:casenum,
         username:username,
         occurrencetime_start:occurrencetime_start,
         occurrencetime_end:occurrencetime_end,
+        starttime_start:starttime_start,
+        starttime_end:starttime_end,
         currPage:currPage,
         pageSize:pageSize
     };
     ajaxSubmit(url,data,callbackgetArraignmentList);
 }
 
-function getArraignmentList(casename,casenum,username,occurrencetime_start,occurrencetime_end,currPage,pageSize) {
+function getArraignmentList(casename,casenum,occurrencetime_start,occurrencetime_end,starttime_start,starttime_end,currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
     var data={
         casename:casename,
-        casenum:casenum,
         username:username,
         occurrencetime_start:occurrencetime_start,
         occurrencetime_end:occurrencetime_end,
+        starttime_start:starttime_start,
+        starttime_end:starttime_end,
         currPage:currPage,
         pageSize:pageSize
     };
@@ -59,7 +68,7 @@ function getArraignmentListByParam(){
     }else if (len==2){
         getArraignmentList('',arguments[0],arguments[1]);
     }else if(len>2){
-        getArraignmentList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
+        getArraignmentList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6],arguments[7]);
     }
 }
 
@@ -71,18 +80,19 @@ function showpagetohtml(){
         var currPage=pageparam.currPage;
 
         var casename=pageparam.casename;
-        var casenum=pageparam.casenum;
         var username=pageparam.username;
         var occurrencetime_start=pageparam.occurrencetime_start;
         var occurrencetime_end=pageparam.occurrencetime_end;
+        var starttime_start=pageparam.starttime_start;
+        var starttime_end=pageparam.starttime_end;
 
         var arrparam=new Array();
         arrparam[0] = casename;
-        arrparam[1]=casenum;
-        arrparam[2]=username;
-        arrparam[3]=occurrencetime_start;
-        arrparam[4]=occurrencetime_end;
-
+        arrparam[1]=username;
+        arrparam[2]=occurrencetime_start;
+        arrparam[3]=occurrencetime_end;
+        arrparam[4]=starttime_start;
+        arrparam[5]=starttime_end;
         showpage("paging",arrparam,'getArraignmentListByParam',currPage,pageCount,pageSize);
     }
 }
@@ -175,7 +185,7 @@ function callbackgetArraignmentByCaseSsid(data) {
                         var recordssid=arraignment.recordssid;
                         var recordbool=arraignment.recordbool;
                         var creator=$("#openModelhtml").attr("creator");
-                        /*   towaitRecord(recordssid,recordbool,creator);*/
+
                     }
                 });
             });
@@ -186,19 +196,6 @@ function callbackgetArraignmentByCaseSsid(data) {
 
 }
 
-//跳转笔录编辑页
-function towaitRecord(recordssid,recordbool,creator) {
-    if (!isNotEmpty(recordssid)){
-        return false;
-    }
-
-    if (recordbool==2){
-        var url=getActionURL(getactionid_manage().arraignment_getArraignmentShow);
-        window.location.href=url+"?ssid="+recordssid;
-    } else{
-        layer.msg("笔录正在制作中...",{icon: 5})
-    }
-}
 
 
 

@@ -14,11 +14,15 @@ public class AddCaseToArraignmentVO {
 
     private boolean caseingbool=false;//案件是否需要在暂停中 true 暂停中false正常
 
-    private String recordtypessid;
+    private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
 
-    private String recordtype_conversation1;//默认谈话笔录ssid:一键笔录
+    public Integer getMultifunctionbool() {
+        return multifunctionbool;
+    }
 
-    private String recordtype_conversation2;//默认谈话笔录ssid:开启笔录
+    public void setMultifunctionbool(Integer multifunctionbool) {
+        this.multifunctionbool = multifunctionbool;
+    }
 
     public Case getCase_() {
         return case_;
@@ -60,41 +64,6 @@ public class AddCaseToArraignmentVO {
         this.caseingbool = caseingbool;
     }
 
-    public String getRecordtypessid() {
-        return recordtypessid;
-    }
 
-    public void setRecordtypessid(String recordtypessid) {
-        this.recordtypessid = recordtypessid;
-    }
 
-    public String getRecordtype_conversation1() {
-        return recordtype_conversation1;
-    }
-
-    public void setRecordtype_conversation1(String recordtype_conversation1) {
-        this.recordtype_conversation1 = recordtype_conversation1;
-    }
-
-    public String getRecordtype_conversation2() {
-        return recordtype_conversation2;
-    }
-
-    public void setRecordtype_conversation2(String recordtype_conversation2) {
-        this.recordtype_conversation2 = recordtype_conversation2;
-    }
-
-    @Override
-    public String toString() {
-        return "AddCaseToArraignmentVO{" +
-                "recordingbool=" + recordingbool +
-                ", checkStartRecordVO=" + checkStartRecordVO +
-                ", recordssid='" + recordssid + '\'' +
-                ", case_=" + case_ +
-                ", caseingbool=" + caseingbool +
-                ", recordtypessid='" + recordtypessid + '\'' +
-                ", recordtype_conversation1='" + recordtype_conversation1 + '\'' +
-                ", recordtype_conversation2='" + recordtype_conversation2 + '\'' +
-                '}';
-    }
 }

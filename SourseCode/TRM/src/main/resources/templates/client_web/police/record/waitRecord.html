@@ -44,8 +44,8 @@
         </div>
     </div>
 
-    <div class="layui-row layui-form" id="layui-row1">
-        <div class="layui-col-md3 " style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
+    <div class="layui-row layui-form" id="layui-row1" >
+        <div class="layui-col-md3 " style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
             <!---->
             <div class="layui-col-md12 layui-collapse"  lay-accordion style="border: 0" >
                 <div class="layui-colla-item">
@@ -55,23 +55,25 @@
                     </h2>
                     <div id="initheart_click" class="layui-colla-content  layui-card-body layui-row layui-show" style="padding: 0;" >
                         <div class="layui-col-lg12">
-                            <div style="height: 200px; overflow-x: hidden; overflow-y: scroll;">
-                                <table class="layui-table" lay-skin="line" style="table-layout: fixed;">
-                                    <tbody id="templatetoproblem_html">
-                                    </tbody>
-                                </table>
+                            <div id="livetypes" style="padding: 0;height:260px;overflow-x: hidden; overflow-y: scroll;" >
+                                <span class="layui-badge" onclick="select_liveurl(this,1);" isn="1" type="1">标清</span>
+                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);" isn="-1" type="2">高清</span>
+                                <div id="living3_2">
+                                    <!--视频直播区域-->
+                                    <div th:replace="living4 :: living"  >...</div>
+                                </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" id="initec">
                     <ul class="layui-tab-title">
                         <li onclick="initasr()" id="asr" style="display: none">语音识别 <span id="webkit2"></span></li>
-                        <li onclick="initliving()"id="fd" style="display: none">设备控制</li>
                         <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
                         <li onclick="initcase()" id="case"  class="layui-this" > 案件信息</li>
                     </ul>
-                    <div class="layui-tab-content" id="leftdiv" style="height: 450px">
+                    <div class="layui-tab-content" id="leftdiv" style="height:300px">
                         <div class="layui-tab-item  layui-show"  id="asritem" >
                             <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                                 <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
@@ -86,9 +88,8 @@
                                     </button>
                                 </div>
                             </div>
-                            <div class="layui-card">
-                               <!-- <div style="height: 300px; overflow-x: hidden; overflow-y: scroll;margin-bottom: 100px;"  class="talk_show" id="recordreals">-->
-                                    <div style="height:400px;  overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                            <div class="layui-card" style="box-shadow: initial;">
+                                    <div style="height:280px;  overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
                                         <div class="layui-card-body" >
                                             <div class="talk_show"  id="recordreals" style="margin-bottom: 100px;">
 
@@ -97,42 +98,8 @@
                                     </div>
                             </div>
                         </div>
-                        <div class="layui-tab-item"  id="fditem">
-                            <div style="margin-bottom: 10px;border: 1px solid #d6d6d6;padding:0 5px 5px 5px;">
-                                <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
-                                    <b class="biaoti_cu">双光驱同步: </b>
-                                    <span class="biaoti" id="burn_mode">直刻模式</span>
-                                    <b class="biaoti_cu">&nbsp;&nbsp;&nbsp;&nbsp;选时: </b>
-                                    <span class="biaoti" id="bsettimerrecburntime">1小时</span>
-                                </div>
-                                <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
-                                    <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
-                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
-                                    <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
-                                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
-                                </div>
-                                <div style="padding: 5px;">
-                                    <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
-                                    <p class="biaoti_cu">开始时间: <span class="biaoti" id="diskrec_begintime">00:00</span> 录像时间: <span class="biaoti" id="diskrec_continuettime">00:00</span> </p>
-                                </div>
-                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="recordSet" onclick="recordSet();">设备操作</button>
-                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
-                                <!--<button onclick="location.reload();">刷新</button>-->
-                            </div>
-                            <div id="livetypes">
-                                <span class="layui-badge" onclick="select_liveurl(this,1);" isn="1" type="1">标清</span>
-                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);" isn="-1" type="2">高清</span>
-                                <div id="living3_2">
-                                    <!--视频直播区域-->
-                                    <div th:replace="living4 :: living"  >...</div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="layui-tab-item"  id="phitem">
                            <div style="height:100%; overflow-x: hidden; margin-bottom: 100px;overflow-y: scroll;"  >
-                               <div  id="living3_1">
-
-                               </div>
                                  <div class="layui-col-md12" >
                                     <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height: 35px;line-height: 35px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
                                 </div>
@@ -155,7 +122,7 @@
                             </div>
                         </div>
                         <div class="layui-tab-item " id="caseitem">
-                                <div style="height:350px; overflow-x: hidden; overflow-y: scroll; " >
+                                <div style="height:300px; overflow-x: hidden; overflow-y: scroll; " >
                                     <div class="layui-card-body">
                                         <table class="layui-table" lay-skin="line" style="table-layout: fixed">
                                             <tbody id="caseAndUserInfo_html">
@@ -165,20 +132,27 @@
                                     </div>
                                 </div>
                         </div>
-                        <div class="layui-col-md12 " style="height: 100px;position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" id="record_img" >
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 150px;display: block;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 150px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
-                            <img src="/uimaker/images/record_loading.gif" style="height: 100px;width: 150px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
-                        </div>
                     </div>
 
+                </div>
+                <div class="layui-col-md12">
+                    <div id="" class="layui-colla-content  layui-card-body layui-row layui-show" style="padding: 0;" >
+                    <div class="layui-col-lg12">
+                        <div style="height: 120px; overflow-x: hidden; overflow-y: scroll;">
+                            <table class="layui-table" lay-skin="line" style="table-layout: fixed;"lay-size="sm">
+                                <tbody id="templatetoproblem_html">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
             <!---->
 
             <!---->
         </div>
-        <div class="layui-col-md9"  style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
+        <div class="layui-col-md6"  style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html1">
             <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px" id="www">
                 <div class="layui-inline" >
                     <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
@@ -266,13 +240,60 @@
                     </div>
 
                 </div>
-                <div class="layui-col-md4"  >
-                    <div class="layui-inline" style="margin-bottom:0;float: right">
-                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord(1);" id="adjourn_btn" style="display: none;">加载中</button>
-                        <button class=" layui-btn layui-btn-warm "  onclick="overRecord(0);" id="overRecord_btn">加载中</button>
+
+            </div>
+        </div>
+        <div class="layui-col-md3" style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;"id="notshrink_html2" >
+            <div class="layui-card-body layui-row " style="padding: 0">
+                <div class="layui-card" style="border-width: 0;box-shadow:none" >
+                    <div class="layui-card-header">
+                        <div class="layui-input-inline layui-col-md6" >
+                            <span>设备控制</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-card-body layui-row ">
+                    <div style="margin-bottom: 10px;border: 1px solid #d6d6d6;padding:0 5px 5px 5px;">
+                        <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
+                            <b class="biaoti_cu">双光驱同步: </b>
+                            <span class="biaoti" id="burn_mode">直刻模式</span>
+                            <b class="biaoti_cu">&nbsp;&nbsp;&nbsp;&nbsp;选时: </b>
+                            <span class="biaoti" id="bsettimerrecburntime">1小时</span>
+                        </div>
+                        <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
+                            <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
+                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
+                            <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
+                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
+                        </div>
+                        <div style="padding: 5px;">
+                            <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
+                            <p class="biaoti_cu">开始时间: <span class="biaoti" id="diskrec_begintime">00:00</span> 录像时间: <span class="biaoti" id="diskrec_continuettime">00:00</span> </p>
+                        </div>
+                        <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="recordSet" onclick="recordSet();">设备操作</button>
+                        <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
+                        <!--<button onclick="location.reload();">刷新</button>-->
                     </div>
                 </div>
             </div>
+            <!--底部按钮组start-->
+            <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;" >
+                <div class="layui-col-md4 "  id="record_img" style="width: 110px;" >
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display: block;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
+                </div>
+
+                <div class="layui-col-md8  " style="float: right;">
+                    <!--<button class=" layui-btn layui-btn-warm "  onclick="overRecord(1);" id="adjourn_btn" style="display: none;">加载中</button>
+                    <button class=" layui-btn layui-btn-warm "  onclick="overRecord(0);" id="overRecord_btn">加载中</button>-->
+                    <div style="float:right;">
+                        <img src="/uimaker/images/record_loading.gif" style="height: 80px;width:110px;display: none;border-radius: 50%;cursor:pointer"   onclick="overRecord(1);"  id="adjourn_btn">
+                        <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;border-radius: 50%;cursor:pointer"   onclick="overRecord(0);"  id="overRecord_btn">
+                    </div>
+                   </div>
+            </div>
+            <!--底部按钮组end-->
         </div>
     </div>
 

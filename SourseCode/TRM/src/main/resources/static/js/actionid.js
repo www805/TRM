@@ -141,6 +141,8 @@ function getactionid_manage() {
         recordIndex_togetRecordById:"recordIndex_togetRecordById",
         recordIndex_towaitRecord:"recordIndex_towaitRecord",
         recordIndex_changeboolRecord:"recordIndex_changeboolRecord",
+        recordIndex_towaitconversation:"recordIndex_towaitconversation",
+        recordIndex_toconversationById:"recordIndex_toconversationById",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
@@ -280,6 +282,8 @@ function getactionid_manage() {
         home_toconversationIndex:"home_toconversationIndex",
         home_towaitconversation:"home_towaitconversation",
         home_addCaseToArraignment:"home_addCaseToArraignment",
+        home_torecordIndex:"home_torecordIndex",
+        home_toaddCaseToUser:"home_toaddCaseToUser",
 
 
         startConversation_getUserinfoList:"startConversation_getUserinfoList",

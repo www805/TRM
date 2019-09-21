@@ -35,6 +35,12 @@
     .layui-col-md2 .layui-table td{
         padding-left:20px;
     }
+    #multifunctionbool{
+       height: 42px;line-height: 42px;
+        border: 1px solid #E5F4FD;
+        background-color: #E5F4FD;
+        color: black;
+    }
 </style>
 <body>
 <div class="layadmin-message-fluid" style="margin: 10px;">
@@ -44,40 +50,22 @@
         <h3 th:text="${addCaseToUserModel.title}">智能提讯系统</h3>
     </div>
     <div class="layui-form layui-row" >
-                <div class="layui-col-md2" style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+                <div class="layui-col-md2" style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card" >
                         <div class="layui-card-header">
-                            选择笔录类型
+                            选择审讯类型
+                            <div style=" float: right;display: inline">
+                                <input  type="checkbox" name="switch" lay-skin="switch" id="multifunctionbool" lay-text="单组件|多组件"  checked="checked"  lay-filter="multifunctionbool_filter"   title="审讯功能类型" >
+                            </div>
                         </div>
                              <div class="layui-card-body" >
                                 <div class="layui-collapse" lay-filter="test" id="recotdtypes" style="border:0">
-                                    <!--<div class="layui-colla-item">
-                                        <h2 class="layui-colla-title layui-elem-quote" style="background-color: #FFFFFF;margin-bottom:0;border-left: 5px solid #1E9FFF;">一级类型1</h2>
-                                        <div class="layui-colla-content" style="padding: 0;border: 0">
-                                            <table class="layui-table"  lay-skin="nob" >
-                                                <tr>
-                                                    <td>孟子</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>孟子</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>孟子</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>孟子</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>孟子</td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>-->
+
                                 </div>
                             </div>
                     </div>
                 </div>
-                <iframe name="ifranmehtml" id="ifranmehtml" class="layui-col-md10" style="height: 780px;border:1px  solid #F2F2F2" frameborder="0" src="/cweb/police/policePage/toaddCaseToUserDetail"></iframe>
+                <iframe name="ifranmehtml" id="ifranmehtml" class="layui-col-md10" style="height: 850px;border:1px  solid #F2F2F2" frameborder="0" src="/cweb/police/policePage/toaddCaseToUserDetail"></iframe>
     </div>
 
 

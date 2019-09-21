@@ -60,19 +60,18 @@ public class ArraignmentService extends BaseService {
         if (StringUtils.isNotBlank(param.getCasename())){
             ew.like(true,"c.casename",param.getCasename().trim());
         }
-        if (StringUtils.isNotBlank(param.getCasenum())){
-            ew.like(true,"c.casenum",param.getCasenum().trim());
-        }
+
         if (StringUtils.isNotBlank(param.getUsername())){
             ew.like(true,"u.username",param.getUsername().trim());
         }
-      if(StringUtils.isNotEmpty(param.getOccurrencetime_start()) && StringUtils.isNotEmpty(param.getOccurrencetime_end())){
-          ew.between("c.occurrencetime", param.getOccurrencetime_start(), param.getOccurrencetime_end());
-      }
+        if(StringUtils.isNotEmpty(param.getOccurrencetime_start()) && StringUtils.isNotEmpty(param.getOccurrencetime_end())){
+              ew.between("c.occurrencetime", param.getOccurrencetime_start(), param.getOccurrencetime_end());
+        }
+        if(StringUtils.isNotEmpty(param.getStarttime_start()) && StringUtils.isNotEmpty(param.getStarttime_end())){
+          ew.between("c.starttime", param.getStarttime_start(), param.getStarttime_end());
+        }
 
-      AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_WEB)), AdminAndWorkunit.class);
-      ew.eq("c.creator",user.getSsid());
-
+        ew.ne("c.casebool",-1);//案件状态不能为删除状态
 
         int count = police_caseMapper.countgetCaseList(ew);
         param.setRecordCount(count);

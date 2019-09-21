@@ -1,5 +1,5 @@
 /*
-   开启谈话
+   开启谈话:废弃不用
  */
 
 var dquserssid;//当前用户ssid

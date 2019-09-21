@@ -1,5 +1,5 @@
 /*
-* 谈话列表
+* 谈话列表:废弃不用
 * */
 
 var recordtype_conversation1;

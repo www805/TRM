@@ -35,6 +35,16 @@ public class AddCaseToArraignmentParam {
 
     private Integer conversationbool=-1;//是否为谈话 默认-1 非谈话类型(信息全需) 1开始谈话(填写基本信息即可) 2一键谈话（默认基本信息）
 
+    private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
+
+    public Integer getMultifunctionbool() {
+        return multifunctionbool;
+    }
+
+    public void setMultifunctionbool(Integer multifunctionbool) {
+        this.multifunctionbool = multifunctionbool;
+    }
+
     public Integer getSkipCheckCasebool() {
         return skipCheckCasebool;
     }

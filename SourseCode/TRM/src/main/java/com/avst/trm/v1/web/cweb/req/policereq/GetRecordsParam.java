@@ -11,16 +11,6 @@ public class GetRecordsParam extends Page {
 
     private boolean creatorbool=false;//是否只看创建人的
 
-    private Integer conversationbool=-1;//是否谈话类型的笔录 默认-1 不筛选（除开谈话以外的类型）1筛选（只需要谈话类型的）
-
-    public Integer getConversationbool() {
-        return conversationbool;
-    }
-
-    public void setConversationbool(Integer conversationbool) {
-        this.conversationbool = conversationbool;
-    }
-
     public boolean isCreatorbool() {
         return creatorbool;
     }

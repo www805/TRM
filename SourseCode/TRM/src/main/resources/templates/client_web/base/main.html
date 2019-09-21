@@ -63,7 +63,7 @@
     <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 60px">
         <a th:href="@{/cweb/base/main/gotomain}"  class="layui-nav-item" >   <img src="/uimaker/images/login_logo.png" class="layui-nav-img" style="width: 60px;height: 60px;margin: 2px"><h1 class="layui-logo" style="width:200px;color: #fff; font-size: 22px; font-weight:bold; font-style:italic;line-height: 60px;left: 60px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" th:text="${mainModel.title}" th:title="${mainModel.title}"></h1></a>
         <ul class="layui-nav layui-layout-left" id="nav_list" style="left: 220px">
-            <li class="layui-nav-item">
+           <!-- <li class="layui-nav-item">
                 <a target="option" th:href="@{/cweb/police/policePage/toaddCaseToUser}">
                     <i class="layui-icon layui-icon-survey"></i>
                     <cite>笔录制作</cite>
@@ -100,7 +100,7 @@
                     <dd><a target="option" th:href="@{/cweb/police/policePage/notificationList}">告知书</a></dd>
                     <dd><a target="option" th:href="@{/cweb/base/main/gotopackdownList}">插件下载</a></dd>
                 </dl>
-            </li>
+            </li>-->
         </ul>
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
@@ -124,14 +124,15 @@
                 <dl class="layui-nav-child">
                     <dd><a target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}">个人信息</a></dd>
                     <dd><a target="option" th:href="@{/cweb/base/main/gotoupdatePassword}">修改密码</a></dd>
+                    <dd><a href="javascript:;"  onclick="userloginout();">退出登录</a></dd>
+                   <!-- <dd><a href="javascript:;" >关闭系统</a></dd>-->
                 </dl>
             </li>
             <li class="layui-nav-item">
-                <a target="option" th:href="@{/cweb/base/main/gotoupdateServerconfig}">
-                    <i class="layui-icon layui-icon-set-fill"></i>
+                <a target="option" title="关于">
+                    <i class="layui-icon layui-icon-about"></i>
                 </a>
             </li>
-            <li class="layui-nav-item" id="logout"><a href="javascript:;" onclick="userloginout();">退出</a></li>
         </ul>
     </div>
 

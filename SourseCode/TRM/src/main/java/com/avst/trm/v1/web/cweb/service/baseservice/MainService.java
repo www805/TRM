@@ -767,7 +767,7 @@ public class MainService extends BaseService {
             result.setData(vo);
             changeResultToSuccess(result);
             long endtime=new Date().getTime();
-            System.out.println("开始检测关键字当前时间___txt___"+txt+"__start___"+starttime+"____end___"+endtime+"___相差___"+(endtime-starttime));
+           /* System.out.println("开始检测关键字当前时间___txt___"+txt+"__start___"+starttime+"____end___"+endtime+"___相差___"+(endtime-starttime));*/
             return;
         }else {
             LogUtil.intoLog(this.getClass(),"关键字检测：没有要检测的文本__");

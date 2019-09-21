@@ -30,6 +30,14 @@ function addCaseToArraignment() {
         return;
     }
 
+    var multifunctionbool;//功能类型:
+    var multifunction_bool=$("#multifunctionbool",parent.document).prop("checked");
+    if (multifunction_bool){
+        multifunctionbool=2;
+    } else{
+        multifunctionbool=3;
+    }
+
     var cardnum=$("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();
     if (!isNotEmpty(cardnum)){
@@ -235,6 +243,7 @@ function addCaseToArraignment() {
             otherworkname:otherworkname,
             skipCheckbool:skipCheckbool,
             skipCheckCasebool:skipCheckCasebool,
+            multifunctionbool:multifunctionbool,
         }
     };
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
@@ -246,18 +255,18 @@ function callbackaddCaseToArraignment(data) {
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
 
-            var recordtype_conversation1=data.recordtype_conversation1;
-            var recordtype_conversation2=data.recordtype_conversation2;
-            var recordtypessid=data.recordtypessid;
-            if (isNotEmpty(recordssid)&&toUrltype==1){
+            //控制跳转
+            var multifunctionbool=data.multifunctionbool;//功能控制跳转
+
+            if (isNotEmpty(recordssid)&&toUrltype==1&&isNotEmpty(multifunctionbool)){
                 //跳转笔录制作
                 var index = parent.layer.msg('开始进行笔录', {shade:[0.1,"#fff"],icon:6,time:500
                 },function () {
-                    if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&recordtypessid==recordtype_conversation1) {
+                    if (multifunctionbool==1){
                         //跳转一键提讯
                         var toUrl=getActionURL(getactionid_manage().addCaseToUser_towaitconversation);
                         parent.location.href=toUrl+"?ssid="+recordssid;
-                    }else {
+                    } else if (multifunctionbool==2||multifunctionbool==3){
                         var nextparam=getAction(getactionid_manage().addCaseToUser_addCaseToArraignment);
                         if (isNotEmpty(nextparam.gotopageOrRefresh)&&nextparam.gotopageOrRefresh==1){
                             setpageAction(INIT_CLIENT,nextparam.nextPageId);
@@ -265,22 +274,12 @@ function callbackaddCaseToArraignment(data) {
                             parent.location.href=toUrl+"?ssid="+recordssid;
                         }
                     }
-
                 });
             }else if(toUrltype==2){
-                //跳转笔录查看列表
-
-                if (isNotEmpty(recordtypessid)&&isNotEmpty(recordtype_conversation1)&&isNotEmpty(recordtype_conversation2)&&recordtypessid==recordtype_conversation1||recordtypessid==recordtype_conversation2) {
-                    //跳转一键提讯
-                    var url = getActionURL(getactionid_manage().addCaseToUser_toconversationIndex);
-                    parent.location.href = url;
-                }else {
-                    setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
-                    var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
-                    parent.location.href = url;
-                }
-
-
+                //跳转笔录查看列表:后期统一列表显示页面
+                setpageAction(INIT_CLIENT, "client_web/police/record/addCaseToUser");
+                var url = getActionURL(getactionid_manage().addCaseToUser_torecordIndex);
+                parent.location.href = url
             }
         }
     }else{
@@ -333,7 +332,7 @@ function callbackaddCaseToArraignment(data) {
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
                         parent.layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始笔录',"查看笔录列表","取消"], //按钮
+                            btn: ['开始笔录',"查看审讯列表","取消"], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                              btn1:function(index) {
                                  console.log("跳转笔录制作中");
@@ -1710,6 +1709,18 @@ $(function () {
             getUserByCard();
             form.render('select');
         });
+
+        form.on('switch(multifunctionbool_filter)', function(switchdata){
+            var obj=switchdata.elem.checked;
+            if (obj){
+                $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").hide();
+            } else {
+                $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
+            }
+
+
+        });
+
     });
 
 

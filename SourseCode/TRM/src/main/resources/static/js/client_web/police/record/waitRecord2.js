@@ -820,24 +820,24 @@ function main1() {
 function shrink(obj) {
     var shrink_bool=$(obj).attr("shrink_bool");
     if (shrink_bool==1){
-        layer.closeAll('tips');
+
         $("#shrink_html").hide();
         $(obj).attr("shrink_bool","-1");
         $("i",obj).attr("class","layui-icon layui-icon-spread-left");
-        $("#notshrink_html").attr("class","layui-col-md12");
 
+        $("#notshrink_html1").attr("class","layui-col-md9");
         $("#layui-layer"+recordstate_index).hide();
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
     }else{
         $("#shrink_html").show();
         $(obj).attr("shrink_bool","1");
-        $("#notshrink_html").attr("class","layui-col-md9");
         $("i",obj).attr("class","layui-icon layui-icon-shrink-right");
+
+        $("#notshrink_html1").attr("class","layui-col-md6");
         $("#layui-layer"+recordstate_index).show();
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-
-        //显示tips
     }
+
 
 }
 //*******************************************************************伸缩按钮end****************************************************************//

@@ -77,7 +77,7 @@
     </div>
 
     <div class="layui-row layui-form" >
-            <div class="layui-col-md4 "style="height: 780px;border:1px  solid #F2F2F2; " >
+            <div class="layui-col-md4 "style="height: 850px;border:1px  solid #F2F2F2; " >
                <div style="margin-top: 5px">
                    <label class="layui-form-label" style="width: auto;">关键字</label>
                    <div class="layui-input-inline" style="float: left; ">
@@ -113,7 +113,7 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md8" style="height: 780px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <div class="layui-col-md8" style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <div class="layui-card">
                     <div class="layui-card-header" id="www">
                        当前笔录： <span id="recordtitle"  recordtitle_first="false">笔录标题</span>
@@ -151,7 +151,8 @@
         {{#  if(1==recordbool){recordbooltext="<span style='color: red'>进行中</span>";}else  if(2==recordbool||recordbool==3){recordbooltext="<span style='color: #00FF00'>已完成</span>";}else  if(0==recordbool){recordbooltext="<span style='color: #8c8c8c'>未开始</span>";}else{recordbooltext="未知"}  }}
         {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var case_=value.case_;var creator=null;var creatorname="";var sessionssid="[[${session.MANAGE_CLIENT.ssid}]]";var showname=""; if(null!=case_){creator=case_.creator;creatorname=case_.creatorname; if(sessionssid!=creator){showname=creatorname+"：";} }  }}
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
-        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}');" style="background-color: {{backgroundcolor}}">
+        {{#  var multifunctionbool;var police_arraignment=value.police_arraignment;   if(null!=police_arraignment){multifunctionbool=police_arraignment.multifunctionbool} }}
+        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{multifunctionbool}}');" style="background-color: {{backgroundcolor}}">
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
         </tr>
