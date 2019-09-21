@@ -34,7 +34,7 @@ function getArraignmentList_init(currPage,pageSize) {
     ajaxSubmit(url,data,callbackgetArraignmentList);
 }
 
-function getArraignmentList(casename,casenum,occurrencetime_start,occurrencetime_end,starttime_start,starttime_end,currPage,pageSize) {
+function getArraignmentList(casename,username,occurrencetime_start,occurrencetime_end,starttime_start,starttime_end,currPage,pageSize) {
     var url=getActionURL(getactionid_manage().arraignment_getArraignmentList);
     var data={
         casename:casename,
@@ -63,7 +63,7 @@ function getArraignmentListByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=3;//测试
+        var pageSize=10;//测试
         getArraignmentList_init(currPage,pageSize);
     }else if (len==2){
         getArraignmentList('',arguments[0],arguments[1]);

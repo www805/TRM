@@ -38,7 +38,7 @@ function getCases_init(currPage,pageSize) {
     ajaxSubmitByJson(url,data,callbackgetCases);
 }
 
-function getCases(casename,casenum,occurrencetime_start,occurrencetime_end,starttime_start,starttime_end,currPage,pageSize) {
+function getCases(casename,username,occurrencetime_start,occurrencetime_end,starttime_start,starttime_end,currPage,pageSize) {
     var url=getActionURL(getactionid_manage().caseIndex_getCases);
     var data={
         token:INIT_CLIENTKEY,
