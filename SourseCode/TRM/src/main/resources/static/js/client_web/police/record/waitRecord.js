@@ -673,9 +673,9 @@ function callbackstartMC(data) {
                     var useret = useretlist[i];
                     var userssid1 = useret.userssid;
                     if (userssid1 == dq_recorduser) {
-                        liveurl = useret.previewurl;//开始会议后默认使用副麦预览地址
                         dq_livingurl=useret.livingurl;//当前直播地址
                         dq_previewurl=useret.previewurl;//当前预览地址
+                        liveurl = dq_livingurl;//开始会议后默认使用副麦预览地址
                         console.log("当前liveurl————"+liveurl)
                     }
                 }
@@ -1045,9 +1045,9 @@ function callbackgetgetRecordrealing(data) {
         if (isNotEmpty(fdCacheParams)){
             for (var i = 0; i < fdCacheParams.length; i++) {
                 var fdCacheParam = fdCacheParams[i];
-                    liveurl=fdCacheParam.previewurl;//开始会议后默认使用副麦预览地址
                     dq_livingurl= fdCacheParam.livingUrl;
                     dq_previewurl= fdCacheParam.previewurl;
+                    liveurl = dq_livingurl;//开始会议后默认使用副麦预览地址
                     console.log("当前liveurl————"+liveurl)
             }
             initplayer();
@@ -1113,8 +1113,8 @@ function callbackgetgetRecordrealing(data) {
  */
 
 function select_liveurl(obj,type){
-    $(obj).removeClass("layui-bg-gray").attr("isn","1");
-    $(obj).siblings().addClass("layui-bg-gray").attr("isn","-1");
+    /*$(obj).removeClass("layui-bg-gray").attr("isn","1");
+    $(obj).siblings().addClass("layui-bg-gray").attr("isn","-1");*/
     for (let i = 0; i < recorduser.length; i++) {
         const user = recorduser[i];
         if (user.userssid==dq_recorduser){

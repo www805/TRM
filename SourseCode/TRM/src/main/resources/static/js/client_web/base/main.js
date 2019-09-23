@@ -80,7 +80,7 @@ function callgetNavList(data) {
                         nav_icon_HTML = "<span class='iconfont'>&#" + nav.iconh + "</span>\n";
                     }
                     if(isNotEmpty(nav.space)){
-                        nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 12px;right: 0;width: 2px;height: 35px;'></i>\n";
+                        nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 15px;right: 0;width: 2px;height: 40px;'></i>\n";
                     }
 
                     nav_list_HTML += "<li class=\"layui-nav-item\">\n" +

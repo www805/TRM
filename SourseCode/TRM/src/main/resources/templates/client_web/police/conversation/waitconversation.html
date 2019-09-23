@@ -243,9 +243,12 @@
     .detection{
         padding: 3px 0;
     }
+    .layui-form-radio{
+        margin: 0px;
+    }
 </style>
 <body>
-<div class=" layadmin-message-fluid" style="margin: 10px;">
+<div class=" layadmin-message-fluid" style="margin: 20px;">
     <div th:replace="header :: header">...</div>
 
 
@@ -268,7 +271,10 @@
     </div>
 
     <div class="layui-row layui-form" id="layui-row1">
-        <div class="layui-col-md3 " style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
+        <div class="layui-col-md9"  style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="phitem">
+            <div th:replace="living4 :: living"  >...</div>
+        </div>
+        <div class="layui-col-md3 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
             <!---->
             <div class="layui-col-md12 " style="border: 0" >
                 <div style="margin-bottom: 10px;padding:0 5px 5px 5px;" id="fditem">
@@ -320,7 +326,7 @@
                                 <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
                             </div>
                         </div>
-                        <div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">
+                        <div class="layui-form layui-row" style="border-bottom: 1px solid #1193D6;padding: 5px;">
                             <span class="biaoti_cu">云台控制：</span><br>
                             <div style="margin-bottom: 20px;z-index: 88;">
                                     <div class="">
@@ -362,31 +368,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="layui-form layui-row" style="padding: 5px;">
+                            <b class="biaoti_cu">画质: </b>
+                            <input type="radio" name="imagequality" value="bq" title="标清" lay-filter="bq_filter">
+                            <input type="radio" name="imagequality" value="gq" title="高清" lay-filter="gq_filter" checked>
+                        </div>
                     </div>
                 </div>
 
             </div>
-            <!---->
-            <div class="layui-col-md12" style=" position: absolute;bottom:0px;visibility: hidden" >
-                <div class="layui-inline" style="float: left">
-                    <button class=" layui-btn layui-btn-warm "  onclick="startMC();" id="startbtn">开始审讯</button>
+            <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;">
+                <div class="layui-col-md4 " id="record_img" style="width: 110px;">
+                    <img src="/uimaker/images/record5.png" style="height: 80px; width: 110px; visibility: hidden; margin: auto; border-radius: 50%; cursor: pointer;" onclick="startMC();" id="startbtn" title="点击将开启场景模板对应的设备，进行制作">
                 </div>
-            </div>
-            <!---->
-        </div>
-        <div class="layui-col-md9"  style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html">
-            <div class="layui-col-md12"  id="phitem">
-                <span class="layui-badge" onclick="select_liveurl(this,1);">标清</span>
-                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);">高清</span>
-                <div style="height:700px;width: 95%; overflow-x: hidden; overflow-y: scroll;margin: auto" ><!--phitem此处用：live4调用的是这个的宽度-->
-                    <!--视频直播区域-->
-                    <div th:replace="living4 :: living"  >...</div>
-                </div>
-            </div>
-            <div class="layui-col-md12" style=" position: absolute;bottom:0px;">
-                <div class="layui-inline" style="float: right">
-                    <button class=" layui-btn layui-btn-warm "  onclick="overRecord(1);" id="adjourn_btn" style="display: none">审讯暂停</button>
-                    <button class=" layui-btn layui-btn-warm "  onclick="overRecord(0);" id="overRecord_btn">结束审讯</button>
+                <div class="layui-col-md8  " style="float: right;">
+                    <div style="float:right;">
+                        <img src="/uimaker/images/record_zt.png" style="height: 80px; width: 110px; border-radius: 50%; cursor: pointer;" onclick="overRecord(1);" id="adjourn_btn">
+                        <img src="/uimaker/images/record_stop_2.png" style="height: 80px;width: 110px;border-radius: 50%;cursor:pointer" onclick="overRecord(0);" id="overRecord_btn">
+                    </div>
                 </div>
             </div>
         </div>
@@ -426,6 +425,23 @@
         form.on('select(burntime)', function (data) {
             updateBurnTime();
         });
+
+        form.on('radio(bq_filter)', function(data){
+            var data=data.value;
+            if (data=="bq") {
+                select_liveurl(this,1);
+            }
+        });
+
+        form.on('radio(gq_filter)', function(data){
+            var data=data.value;
+            if (data=="gq") {
+                select_liveurl(this,2);
+            }
+        });
+
+
+
 
     });
 

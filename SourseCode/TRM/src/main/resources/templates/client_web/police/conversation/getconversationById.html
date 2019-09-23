@@ -139,7 +139,7 @@
     }
 </style>
 <body>
-<div class=" layadmin-message-fluid" style="margin: 10px;">
+<div class=" layadmin-message-fluid" style="margin: 20px;">
     <div th:replace="header :: header">...</div>
 
     <div class="layui-elem-quote" style=" padding: 10px;">
@@ -147,7 +147,29 @@
     </div>
 
     <div class="layui-row layui-form " >
-            <div class="layui-col-md4 " style="height: 850px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+            <div class="layui-col-md8"  style="height: 830px;border:1px  solid #F2F2F2; " >
+            <div class="layui-card">
+                <div class="layui-card-header">审讯回放 </div>
+                <div class="layui-card-body">
+                    <!--视频点播区域-->
+                    <div class="layui-row" style="">
+                        <div class="layui-col-md12">
+                            <div class="layui-col-md12" style="overflow-x: hidden; overflow-y: scroll;height:  600px;">
+                                <div th:replace="video :: video" >...</div>
+                            </div>
+                        </div>
+                        <div class="layui-col-md12" style="line-height: 50px">
+                            <div style="width: 95%">
+                                <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width: 100%;margin:5px;" id="videos">
+                                    视频加载中...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="layui-col-md4 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                 <div class="layui-card" style="margin-bottom: 0;"  >
                     <div class="layui-card-header" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-right: 0;">
                         当前审讯：<span id="recordtitle" >标题加载中请稍等...</span>
@@ -188,28 +210,6 @@
                             </div>
                         </div>
                     </div>
-            </div>
-            <div class="layui-col-md8"  style="height: 850px;border:1px  solid #F2F2F2; " >
-                <div class="layui-card">
-                    <div class="layui-card-header">审讯回放 </div>
-                    <div class="layui-card-body">
-                        <!--视频点播区域-->
-                        <div class="layui-row" style="">
-                            <div class="layui-col-md12">
-                                    <div class="layui-col-md12" style="overflow-x: hidden; overflow-y: scroll;height:  600px;">
-                                        <div th:replace="video :: video" >...</div>
-                                    </div>
-                            </div>
-                            <div class="layui-col-md12" style="line-height: 50px">
-                                <div style="width: 95%">
-                                    <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width: 100%;margin:5px;" id="videos">
-                                        视频加载中...
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="layui-col-md12"style=" position: absolute;bottom:0px;">
                     <div class="layui-inline" style="float: right">
                         <button class=" layui-btn layui-btn-normal  "  onclick="javascript:window.history.go(-1);return false;" id="overRecord_btn">返回列表</button>
