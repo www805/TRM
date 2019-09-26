@@ -232,7 +232,7 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping("/getHome")
     @ResponseBody
-    public RResult getHome(@RequestBody  ReqParam<GetHomeParam> param){
+    public RResult getHome(@RequestBody  ReqParam<GetHomeParam> param, HttpSession session){
         RResult result=this.createNewResultOfFail();
 
         if (null==param){
@@ -240,7 +240,7 @@ public class MainAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            mainService.getHome(result,param);
+            mainService.getHome(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

@@ -257,6 +257,14 @@ public class PolicePageAction {
         return new ModelAndView("client_web/police/conversation/startConversation", "startConversationModel", model);
     }
 
+    @GetMapping("tocaseStatistics")
+    public ModelAndView tocaseStatistics(Model model,String parentbool){
+        model.addAttribute("title","案件统计");
+        return new ModelAndView("client_web/police/record/caseStatistics", "caseStatisticsModel", model);
+    }
+
+
+
 
 
 

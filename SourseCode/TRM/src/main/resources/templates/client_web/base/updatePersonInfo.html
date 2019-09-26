@@ -6,6 +6,24 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
+<style>
+    #userinfos{
+       width: 100%;
+    }
+    #userinfos div {
+        margin: 10px;
+    }
+    #userinfos div div{
+        width: 40%;
+        text-align: right;
+        display: inline-block;
+    }
+    #userinfos div p{
+        width: 40%;
+        text-align: left;
+        display: inline-block;
+    }
+</style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
     <div th:replace="header :: header">...</div>
@@ -13,31 +31,65 @@
     <div class="layui-elem-quote" style=" padding: 10px;">
         <h3 th:text="${updatePersonInfoModel.title}">智能提讯系统</h3>
     </div>
-    <form class="layui-form layui-form-pane layui-main site-inline" style="margin-top: 20px">
-        <div class="layui-progress " lay-showpercent="true" lay-filter="progress_demo" style="visibility:hidden;margin-bottom: 10px">
-            <div class="layui-progress-bar "  ><span class="layui-progress-text">10%</span></div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>用户名称</label>
+
+   <form class="layui-form  layui-main site-inline" style="margin-top: 20px;">
+        <!--<div class="layui-form-item">
+            <label class="layui-form-label">我的角色：</label>
             <div class="layui-input-block">
-                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input"  value="普通管理员">
             </div>
         </div>
 
         <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>工作单位</label>
+            <label class="layui-form-label">工作单位：</label>
             <div class="layui-input-block">
-                <select name="workunitssid" id="workunitssid">
-                    <option value="">请选择工作单位</option>
-                </select>
+                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input"  value="工作单位1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">账号：</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input"  value="admin">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名：</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input"  value="用户名1">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">注册时间：</label>
+            <div class="layui-input-block">
+                <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input"  value="2019-03-12">
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <button class=" layui-btn layui-btn-normal" onclick="updatePersonInfo();" id="saveapkbtn" type="button">确认修改</button>
                 <button class=" layui-btn layui-btn-normal" onClick="javascript :history.back(-1);" type="button">返回</button>
             </div>
-        </div>
+        </div>-->
+      <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color: red;">*</span>用户名称</label>
+           <div class="layui-input-block">
+               <input type="text" name="username" id="username" lay-verify="pass" autocomplete="off" placeholder="请输入用户名称" class="layui-input">
+           </div>
+       </div>
+
+       <div class="layui-form-item">
+           <label class="layui-form-label"><span style="color: red;">*</span>工作单位</label>
+           <div class="layui-input-block">
+               <select name="workunitssid" id="workunitssid">
+                   <option value="">请选择工作单位</option>
+               </select>
+           </div>
+       </div>
+       <div class="layui-form-item">
+           <div class="layui-input-block">
+               <button class=" layui-btn layui-btn-normal" onclick="updatePersonInfo();" id="saveapkbtn" type="button">确认修改</button>
+               <button class=" layui-btn layui-btn-normal" onClick="javascript :history.back(-1);" type="button">返回</button>
+           </div>
+       </div>
     </form>
 
 
@@ -71,6 +123,9 @@
         var element = layui.element;
         var form = layui.form;
         //使用模块
+
+
+
     });
 </script>
 </body>

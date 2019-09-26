@@ -2,10 +2,8 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.cache.PtdjmapCache;
-import com.avst.trm.v1.common.cache.RecordStatusCache;
+import com.avst.trm.v1.common.cache.*;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.conf.CreateVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
@@ -141,6 +139,9 @@ public class RecordService extends BaseService {
 
     @Autowired
     private MainService mainService;
+
+    @Autowired
+    private Police_templateMapper police_templateMapper;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -3908,4 +3909,159 @@ public class RecordService extends BaseService {
         return result;
     }
 
+
+    public void getCaseStatistics(RResult result,ReqParam<GetCaseStatisticsParam> paramReqParam, HttpSession session){
+        GetCaseStatisticsVO vo=new GetCaseStatisticsVO();
+
+        GetCaseStatisticsParam param=paramReqParam.getParam();
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+        SimpleDateFormat df = new SimpleDateFormat("yyyy");//设置日期格式
+        Calendar c = Calendar.getInstance();
+
+        String years=param.getYearstype();
+        System.out.println(years);
+        if (!StringUtils.isNotBlank(years)){
+            years=df.format(new Date());
+        }
+
+        //仅仅看自己的案件
+        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
+
+
+        EntityWrapper record_num_ew=new EntityWrapper();
+        record_num_ew.eq("c.creator",user.getSsid());
+        record_num_ew.ne("c.casebool",-1);
+        record_num_ew.ne("r.recordbool",-1);
+
+        EntityWrapper case_num_ew=new EntityWrapper();
+        case_num_ew.ne("casebool",-1);
+        case_num_ew.eq("creator",user.getSsid());
+
+        Integer record_num=police_arraignmentMapper.getArraignmentCount(record_num_ew);//审讯数量
+        Integer case_num= police_caseMapper.selectCount(case_num_ew);//案件数量
+
+
+        //================================================1
+        Integer case_startnum=police_caseMapper.getCase_startnum(case_num_ew);//案件开始提讯数量
+        Integer case_endnum=police_caseMapper.Getcase_endnum(case_num_ew);//案件未开始提讯数量
+
+        EntityWrapper record_num_ew2=new EntityWrapper();
+        record_num_ew2.eq("c.creator",user.getSsid());
+        record_num_ew2.ne("c.casebool",-1);
+        List<Integer> recordbools=new ArrayList<>();
+        recordbools.add(2);
+        recordbools.add(3);
+        record_num_ew2.in("r.recordbool",recordbools);
+        Integer record_finishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew2);//已完成笔录数量
+        EntityWrapper record_num_ew3=new EntityWrapper();
+        record_num_ew3.eq("c.creator",user.getSsid());
+        record_num_ew3.ne("c.casebool",-1);
+        record_num_ew3.eq("r.recordbool",1);
+        Integer record_unfinishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew3);//进行中的笔录数量
+        EntityWrapper record_num_ew4=new EntityWrapper();
+        record_num_ew4.eq("c.creator",user.getSsid());
+        record_num_ew4.ne("c.casebool",-1);
+        record_num_ew4.eq("r.recordbool",0);
+        Integer record_waitnum=police_arraignmentMapper.getArraignmentCount(record_num_ew4);///未开始笔录数量
+
+        vo.setCase_num(case_num==null?0:case_num);
+        vo.setRecord_num(record_num==null?0:record_num);
+        vo.setCase_startnum(case_startnum==null?0:case_startnum);
+        vo.setCase_endnum(case_endnum==null?0:case_endnum);
+        vo.setRecord_finishnum(record_finishnum==null?0:record_finishnum);
+        vo.setRecord_unfinishnum(record_unfinishnum==null?0:record_unfinishnum);
+        vo.setRecord_waitnum(record_waitnum==null?0:record_waitnum);
+        //================================================1
+
+        //-----------------------------------------------------------------------------------------------------2
+
+        List<Integer> case_monthnum_y=new ArrayList<>();//12月案件
+        List<Integer> record_monthnum_y=new ArrayList<>();//12月审讯
+        for (int i = 1; i < 13; i++) {
+            EntityWrapper case_monthnum_y_ew=new EntityWrapper();
+            case_monthnum_y_ew.ne("casebool",-1);
+            case_monthnum_y_ew.eq("creator",user.getSsid());
+            case_monthnum_y_ew.where("date_format(createtime,'%m')={0} and  date_format(createtime,'%Y')={1}",String.format("%02d",i),years);
+            Integer now_case=police_caseMapper.selectCount(case_monthnum_y_ew);
+            case_monthnum_y.add(now_case==null?0:now_case);
+
+            EntityWrapper record_monthnum_y_ew=new EntityWrapper();
+            record_monthnum_y_ew.eq("c.creator",user.getSsid());
+            record_monthnum_y_ew.ne("c.casebool",-1);
+            record_monthnum_y_ew.ne("r.recordbool",-1);
+            record_monthnum_y_ew.where("date_format(r.createtime,'%m')={0} and  date_format(r.createtime,'%Y')={1}",String.format("%02d",i),years);
+            Integer now_record=police_arraignmentMapper.getArraignmentCount(record_monthnum_y_ew);
+            record_monthnum_y.add(now_record==null?0:now_record);
+        }
+        vo.setRecord_monthnum_y(record_monthnum_y);
+        vo.setCase_monthnum_y(case_monthnum_y);
+        //-----------------------------------------------------------------------------------------------------2
+
+
+
+        //-----------------------------------------------------------------------------------------------------3
+        case_num_ew.where(" date_format(createtime,'%Y')={0}",years);
+        Integer case_num_y=police_caseMapper.selectCount(case_num_ew);//案件总数
+        Integer case_startnum_y=police_caseMapper.getCase_startnum(case_num_ew);//案件开始提讯数量
+        Integer case_endnum_y=police_caseMapper.Getcase_endnum(case_num_ew);//案件未开始提讯数量
+
+
+
+        //总
+        EntityWrapper recordparam3=new EntityWrapper();
+        recordparam3.eq("c.creator",user.getSsid());
+        recordparam3.ne("c.casebool",-1);
+        recordparam3.ne("r.recordbool",-1);
+        recordparam3.where(" date_format(r.createtime,'%Y')={0}",years);
+        Integer record_num_y=police_arraignmentMapper.getArraignmentCount(recordparam3);//笔录总数
+        //进行中
+        EntityWrapper recordparam1=new EntityWrapper();
+        recordparam1.eq("c.creator",user.getSsid());
+        recordparam1.ne("c.casebool",-1);
+        recordparam1.eq("r.recordbool",1);
+        recordparam1.where(" date_format(r.createtime,'%Y')={0}",years);
+        Integer record_unfinishnum_y= police_arraignmentMapper.getArraignmentCount(recordparam1);
+        //已完成
+        EntityWrapper recordparam2=new EntityWrapper();
+        recordparam2.eq("c.creator",user.getSsid());
+        recordparam2.ne("c.casebool",-1);
+        List<Integer> recordbools2=new ArrayList<>();
+        recordbools2.add(2);
+        recordbools2.add(3);
+        recordparam2.in("r.recordbool",recordbools2);
+        recordparam2.where(" date_format(r.createtime,'%Y')={0}",years);
+        Integer record_finishnum_y =police_arraignmentMapper.getArraignmentCount(recordparam2);
+        //未开始
+        EntityWrapper recordparam4=new EntityWrapper();
+        recordparam4.eq("c.creator",user.getSsid());
+        recordparam4.ne("c.casebool",-1);
+        recordparam4.eq("r.recordbool",0);
+        recordparam4.where(" date_format(r.createtime,'%Y')={0}",years);
+        Integer record_waitnum_y= police_arraignmentMapper.getArraignmentCount(recordparam4);
+     //-----------------------------------------------------------------------------------------------------3
+
+
+        vo.setCase_num_y(case_num_y==null?0:case_num_y);
+        vo.setRecord_num_y(record_num_y==null?0:record_num_y);
+        vo.setRecord_finishnum_y(record_finishnum_y==null?0:record_finishnum_y);
+        vo.setRecord_unfinishnum_y(record_unfinishnum_y==null?0:record_unfinishnum_y);
+        vo.setRecord_waitnum_y(record_waitnum_y==null?0:record_waitnum_y);
+        vo.setCase_startnum_y(case_startnum_y==null?0:case_startnum_y);
+        vo.setCase_endnum_y(case_endnum_y==null?0:case_endnum_y);
+
+
+        AppCacheParam appCacheParam = AppCache.getAppCacheParam();
+        vo.setClientname(appCacheParam.getTitle());
+
+
+
+
+        vo.setDq_y(years);
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
 }

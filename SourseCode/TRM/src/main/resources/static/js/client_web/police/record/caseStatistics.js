@@ -1,10 +1,13 @@
-var clientName="加载中";//默认
+/**
+ * 案件统计
+ */
+
 
 //yearstype 1 今年 2去年
-function getHome(yearstype) {
+function getCaseStatistics(yearstype) {
     myChart.showLoading();
     myChart2.showLoading();
-    var url=getActionURL(getactionid_manage().home_getHome);
+    var url=getActionURL(getactionid_manage().caseStatistics_getCaseStatistics);
 
     var data={
         token:INIT_CLIENTKEY,
@@ -12,16 +15,12 @@ function getHome(yearstype) {
             yearstype:yearstype
         }
     };
-    ajaxSubmitByJson(url,data,callbackgetHome);
+    ajaxSubmitByJson(url,data,callbackgetCaseStatistics);
 }
 
-function callbackgetHome(data) {
+function callbackgetCaseStatistics(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
-        $("#record_num").text(0);
-        $("#case_num").text(0);
-        $("#template_num").text(0);
-        $("#userinfo_num").text(0);
         if (isNotEmpty(data)){
             $("#record_num").text(data.record_num==null?0:data.record_num);
             $("#case_num").text(data.case_num==null?0:data.case_num);
@@ -30,8 +29,6 @@ function callbackgetHome(data) {
             $("#record_finishnum").text(data.record_finishnum==null?0:data.record_finishnum);
             $("#record_unfinishnum").text(data.record_unfinishnum==null?0:data.record_unfinishnum);
             $("#record_waitnum").text(data.record_waitnum==null?0:data.record_waitnum);
-
-
 
             var clientname=data.clientname==null?"":data.clientname;
             myChart.hideLoading();
@@ -58,44 +55,16 @@ function callbackgetHome(data) {
                         {value:data.case_endnum_y, name:'未提讯案件'},
                         {value:data.case_startnum_y, name:'已提讯案件'}]
                 },{
-                    name: '数据来源',
+            name: '数据来源',
                     data: [ {value:data.record_num_y, name:'审讯', selected:true},
                         {value:data.case_num_y, name:'案件'}]
                 }]
             });
-
-
-            var sqEntity = data.sqEntity; //授权信息
-            var sqgnList = data.sqgnList; //授权功能信息
-            clientName=sqEntity.clientName;
-            var sqEntityHTML = "<p>单位名称：" + sqEntity.clientName + "</p>";//单位名称
-            if(sqEntity.foreverBool == true){
-                sqEntityHTML += "<p>授权期限：永久</p>";//授权时间
-                sqEntityHTML += "<p>单位代码：" + sqEntity.unitCode + "</p>";//单位机器码
-                sqEntityHTML += "<p>客户端序号：" + sqEntity.sortNum + "</p>";//排序
-            }else{
-                sqEntityHTML += "<p>授权期限：临时</p>";//授权总天数
-                sqEntityHTML += "<p>授权总天数：" + sqEntity.sqDay + "</p>";//授权已用天数
-                var startTime = "";
-                if(isNotEmpty(sqEntity.startTime)){
-                    startTime = sqEntity.startTime.substring(0, sqEntity.startTime.indexOf(" "));
-                }
-                sqEntityHTML += "<p>授权开始时间：" + startTime + "</p>";//授权开始时间
-            }
-
-            var sqgnListHTML = "";
-            for (var i = 0; i < sqgnList.length; i++) {
-                sqgnListHTML += "<span class=\"layui-badge layui-bg-blue\" style='margin-right: 5px;'>" + sqgnList[i] + "</span>";//功能
-            }
-
-            $("#sqEntity").html(sqEntityHTML);
-            $("#sqgnList").html(sqgnListHTML);
         }
     }else{
         layer.msg(data.message,{icon: 5});
     }
 }
-
 
 var myChart;
 var myChart2;
@@ -269,94 +238,3 @@ $(function () {
     };
     myChart2.setOption(option2);
 });
-
-//打开开始审讯弹出框
-function open_startConversation() {
-    var HTML='';
-    layer.open({
-        id:"startconversation_id",
-        type:2,
-        title: '填写基础信息',
-        shade: 0.3,
-        resize:false,
-        area: ['50%', '700px'],
-        skin: 'startconversation_btn', //样式类名
-        content: startConversationURL,
-    });
-}
-
-//一键谈话添加基础数据跳转审讯页面
-var skipCheckbool=-1;//是否跳过检测：默认-1
-var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
-function to_waitconversationURL() {
-
-    var url=getActionURL(getactionid_manage().home_addCaseToArraignment);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            skipCheckbool:skipCheckbool,
-            conversationbool:2,//一键谈话
-        }
-    };
-    ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
-}
-
-function callbackaddCaseToArraignment(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var recordssid=data.recordssid;
-            if (isNotEmpty(recordssid)&&toUrltype==1){
-                var index = layer.msg('开始进行审讯', {icon: 6,shade:0.1,time:500
-                },function () {
-                    location.href=window.waitconversationURL+"?ssid="+recordssid
-                });
-            }else if(toUrltype==2){
-                location.href =  window.recordIndexURL;
-            }
-        }
-    }else{
-        var data2=data.data;
-        if (isNotEmpty(data2)){
-            var recordingbool=data2.recordingbool
-            var recordssid=data2.recordssid;
-            var checkStartRecordVO=data2.checkStartRecordVO;
-
-            if (null!=recordingbool&&recordingbool==true){
-                //存在笔录正在进行中，跳转笔录列表，给出提示：建议他先结束制作中的
-                if (isNotEmpty(checkStartRecordVO)){
-                    var msg=checkStartRecordVO.msg;
-                    if (isNotEmpty(msg)){
-                        layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始审讯',"查看审讯列表","取消"], //按钮
-                            shade: [0.1,'#fff'], //不显示遮罩
-                            btn1:function(index) {
-                                console.log("跳转审讯制作控制台");
-                                //保存
-                                skipCheckbool = 1;
-                                to_waitconversationURL();
-                                layer.close(index);
-                            },
-                            btn2: function(index) {
-                                console.log("跳转审讯列表")
-                                toUrltype=2;
-                                skipCheckbool =1;
-                                to_waitconversationURL();
-                                layer.close(index);
-                            },
-                            btn3: function(index) {
-                                layer.close(index);
-                            }
-                        });
-                    }
-                }
-            }else {
-                layer.msg(data.message,{icon: 5});
-            }
-        }else {
-            layer.msg(data.message,{icon: 5});
-        }
-    }
-}
-
-

@@ -227,7 +227,18 @@ function callbackgetRecordByCasessid(data) {
                             });
                             layer.close(index);
                         });
-                    } 
+                    }
+                    if(obj.event === 'detail'&&isNotEmpty(recordssid)){
+                        var arraignment=dada=obj.data;
+                        if (isNotEmpty(arraignment)){
+                            var recordssid=arraignment.recordssid;
+                            var recordbool=arraignment.recordbool;
+                            var multifunctionbool=arraignment.multifunctionbool;
+                            var creator=$("#openModelhtml").attr("creator");
+                            var creatorname=$("#openModelhtml").attr("creatorname");
+                            towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionbool);
+                        }
+                    }
                 });
 
             });

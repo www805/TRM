@@ -1,10 +1,9 @@
-package com.avst.trm.v1.web.cweb.vo.basevo;
-
-import com.avst.trm.v1.common.util.sq.SQEntity;
+package com.avst.trm.v1.web.cweb.vo.policevo;
 
 import java.util.List;
 
-public class GetHomeVO {
+public class GetCaseStatisticsVO {
+
     private Integer case_startnum;//案件开始提讯数量
 
     private Integer case_endnum;//案件未开始提讯数量
@@ -44,13 +43,13 @@ public class GetHomeVO {
 
     private String clientname;//客户端名称
 
+    public String getClientname() {
+        return clientname;
+    }
 
-    private SQEntity sqEntity; //系统授权信息
-
-    private List<String> sqgnList; //授权功能集合
-
-    private Integer workdays; //授权信息，同步工作天数
-
+    public void setClientname(String clientname) {
+        this.clientname = clientname;
+    }
 
     public Integer getCase_startnum() {
         return case_startnum;
@@ -186,37 +185,5 @@ public class GetHomeVO {
 
     public void setDq_y(String dq_y) {
         this.dq_y = dq_y;
-    }
-
-    public String getClientname() {
-        return clientname;
-    }
-
-    public void setClientname(String clientname) {
-        this.clientname = clientname;
-    }
-
-    public SQEntity getSqEntity() {
-        return sqEntity;
-    }
-
-    public void setSqEntity(SQEntity sqEntity) {
-        this.sqEntity = sqEntity;
-    }
-
-    public List<String> getSqgnList() {
-        return sqgnList;
-    }
-
-    public void setSqgnList(List<String> sqgnList) {
-        this.sqgnList = sqgnList;
-    }
-
-    public Integer getWorkdays() {
-        return workdays;
-    }
-
-    public void setWorkdays(Integer workdays) {
-        this.workdays = workdays;
     }
 }

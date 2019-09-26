@@ -257,6 +257,7 @@ function getactionid_manage() {
         caseIndex_toconversationById:"caseIndex_toconversationById",
         caseIndex_toconversationIndex:"caseIndex_toconversationIndex",
         caseIndex_torecordIndex:"caseIndex_torecordIndex",
+        caseIndex_tocaseStatistics:"caseIndex_tocaseStatistics",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",
@@ -311,6 +312,8 @@ function getactionid_manage() {
         packdownList_getPackdownList:"packdownList_getPackdownList",
         packdownList_changeboolPackdown:"packdownList_changeboolPackdown",
         packdownList_uploadPackdown:"packdownList_uploadPackdown",
+
+        caseStatistics_getCaseStatistics:"caseStatistics_getCaseStatistics",
 
     };
 }

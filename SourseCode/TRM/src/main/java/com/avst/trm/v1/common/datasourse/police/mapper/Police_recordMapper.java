@@ -59,22 +59,4 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
             " LEFT JOIN base_admininfo a3 on a3.ssid=a.recordadminssid " +
             " where 1=1 ${ew.sqlSegment} ")
     RecordUserInfos getRecordUserInfosByRecordSsid(@Param("ew") EntityWrapper ew);
-
-    @Select(" select record_monthnum_y as 'record_monthnum_y' from (  " +
-            "    select count(ssid) as record_monthnum_y  from police_record  where date_format(createtime,'%m')='01' and date_format(createtime,'%Y')=#{years}  union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='02' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='03' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='04' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='05' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='06' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='07' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='08' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='09' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='10' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='11' and date_format(createtime,'%Y')=#{years} union all  " +
-            "    select count(ssid)  from police_record  where date_format(createtime,'%m')='12' and date_format(createtime,'%Y')=#{years} " +
-            ") u1 ")
-    List<Integer> getRecord_monthnum_y(@Param("years") String years);
-
-
 }
