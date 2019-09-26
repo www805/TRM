@@ -177,8 +177,24 @@ public class MainService extends BaseService {
                     //登录成功
                     LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"登录成功--");
                     result.setMessage("登录成功");
+
+
+                    //检测是否为第一次登陆
+                    Integer firstloginbool=-1;
+                    String lastlogintime=user.getLastlogintime().toString();
+                    System.out.println("——————————————————————"+lastlogintime);
+                    if (StringUtils.isBlank(lastlogintime)){
+                        firstloginbool=1;//需要初始化密码
+                    }
+
+
+
+
+
+
+
                     //修改最后一次登录时间
-                    user.setLastlogintime(new Date());
+                   /* user.setLastlogintime(new Date());*/
                     int updateById_bool=base_admininfoMapper.updateById(user);
                     LogUtil.intoLog(this.getClass(),"updateById_bool--"+updateById_bool);
 

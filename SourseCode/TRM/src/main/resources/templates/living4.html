@@ -18,7 +18,6 @@
 
         //播放器加载
         var swfurl = "/flowplayer/flowplayer-3.2.18.swf";
-
         var play_x=2.5;
         var playerwh=$("#recordreals").width();
         var playerwhht=playerwh*play_x/4;
@@ -41,6 +40,7 @@
                     autoPlay: true,
                     autoBuffering: true,
 
+
                     onMetaDataChange: function () {
                         var clip = myplayer.getClip()
                         viode_w = clip.metaData.width;
@@ -55,10 +55,25 @@
                     }
                 },
                 plugins: {
-                    controls: null,
+                    controls: {
+                        volume: true, //音量按钮
+                        mute: true, //静音按钮
+                        fullscreen: false, //全屏按钮
+                        scrubber: false,//进度条
+                        time: false, //是否显示时间信息
+                        stop: false,//停止按钮
+                        play:false,
+                        url: "/flowplayer/flowplayer.controls-3.2.12.swf",
+                        autoHide: true, //功能条是否自动隐藏
+                        tooltips: {
+                            volume:'音量',
+                            mute: '静音',
+                            unmute:'取消静音'
+                        }
+                    }
                 },
                 onLoad: function () {
-
+                    this.setVolume(0);    // 设置音量0-100，默认50
                 }
             });
 

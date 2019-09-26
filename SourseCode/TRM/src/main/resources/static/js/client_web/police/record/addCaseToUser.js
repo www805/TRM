@@ -792,7 +792,7 @@ function tabAdd(){
                                                             </div>\
                                                             <div class="layui-col-lg12">\
                                                                   <input name="tab_otheruserssid" style="display: none;">\
-                                                                   <button  class="layui-btn layui-btn-danger  layui-btn-sm"  onclick="tab_reset(this)" style="float: right">重置</button>\
+                                                                   <button  class="layui-btn layui-btn-danger  layui-btn-sm"  onclick="tab_reset(this);return false;" style="float: right">重置</button>\
                                                             </div>\
                                                         </div>';
 

@@ -416,6 +416,8 @@ public class MainAction extends BaseAction {
 
 
 
+
+
     /**
      * 跳转==》修改个人信息页面
      * @param model
@@ -504,6 +506,13 @@ public class MainAction extends BaseAction {
         model.addAttribute("parentbool",parentbool);//用于控制页面跳转
         return new ModelAndView("client_web/base/packdownList", "packdownListModel", model);
     }
+
+    @GetMapping("toabout")
+    public ModelAndView toabout(Model model){
+        model.addAttribute("title","关于");
+        return new ModelAndView("client_web/base/about", "aboutModel", model);
+    }
+
 
 
 
