@@ -1,6 +1,6 @@
 
 function userloginout() {
-    layer.confirm('确定要退出系统吗？', {
+    layer.confirm('确定要退出登录吗？', {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){

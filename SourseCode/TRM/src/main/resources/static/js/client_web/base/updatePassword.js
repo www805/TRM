@@ -29,7 +29,8 @@ function updatePassword() {
             ssid: ssid,
             oldpassword: oldpassword,
             newpassword:newpassword,
-            password:password
+            password:password,
+            firstloginbool:-1,//不是第一次登录
         }
     };
     ajaxSubmitByJson(url,data,callupdatePassword);

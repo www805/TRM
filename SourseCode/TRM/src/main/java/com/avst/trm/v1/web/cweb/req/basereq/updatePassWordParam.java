@@ -7,6 +7,16 @@ public class updatePassWordParam {
     private String newpassword;
     private String password;
 
+    private Integer firstloginbool;//是否为第一次登陆：1是 -1不是
+
+    public Integer getFirstloginbool() {
+        return firstloginbool;
+    }
+
+    public void setFirstloginbool(Integer firstloginbool) {
+        this.firstloginbool = firstloginbool;
+    }
+
     public String getSsid() {
         return ssid;
     }

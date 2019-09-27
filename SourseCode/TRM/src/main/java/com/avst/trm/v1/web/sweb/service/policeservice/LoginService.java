@@ -92,8 +92,8 @@ public class LoginService extends BaseService {
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
 
 
-                        //修改用户最后一次登录
-                        base_admininfo.setLastlogintime(new Date());
+                        //修改用户最后一次登录：服务器端是否需要判断第一次登录重置密码？
+                       /* base_admininfo.setLastlogintime(new Date());*/
                         int updateById_bool=admininfoMapper.updateById(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
                         this.changeResultToSuccess(result);

@@ -169,9 +169,22 @@ public class MainService extends BaseService {
                         return;
                     }
 
+                    userloginVO.setSsid(user.getSsid());
+
+                    //检测是否为第一次登陆
+                    Integer firstloginbool=-1;
+                    if (null==user.getLastlogintime()){
+                        firstloginbool=1;//需要初始化密码
+                        userloginVO.setFirstloginbool(firstloginbool);
+
+                        result.setData(userloginVO);
+                        result.setMessage("密码需要重置");
+                        LogUtil.intoLog(this.getClass(),"账户:"+loginaccount1+"需要重置密码--");
+                        return;
+                    }
+
                     //session存储
                     request.getSession().setAttribute(Constant.MANAGE_CLIENT,user);
-
 
 
                     //登录成功
@@ -179,22 +192,11 @@ public class MainService extends BaseService {
                     result.setMessage("登录成功");
 
 
-                    //检测是否为第一次登陆
-                    Integer firstloginbool=-1;
-                    String lastlogintime=user.getLastlogintime().toString();
-                    System.out.println("——————————————————————"+lastlogintime);
-                    if (StringUtils.isBlank(lastlogintime)){
-                        firstloginbool=1;//需要初始化密码
-                    }
-
-
-
-
 
 
 
                     //修改最后一次登录时间
-                   /* user.setLastlogintime(new Date());*/
+                    user.setLastlogintime(new Date());
                     int updateById_bool=base_admininfoMapper.updateById(user);
                     LogUtil.intoLog(this.getClass(),"updateById_bool--"+updateById_bool);
 
@@ -644,6 +646,8 @@ public class MainService extends BaseService {
             return;
         }
 
+
+
         //查询旧密码是否正确
         Base_admininfo base_admininfo = new Base_admininfo();
         base_admininfo.setSsid(paramParam.getSsid());
@@ -660,6 +664,12 @@ public class MainService extends BaseService {
 
         Base_admininfo admininfo = new Base_admininfo();
         admininfo.setPassword(paramParam.getNewpassword());
+
+        Integer firstloginbool=paramParam.getFirstloginbool();
+        if (null!=firstloginbool&&firstloginbool==1){
+            //修改最后登录密码
+            admininfo.setLastlogintime(new Date());
+        }
 
         Integer update = base_admininfoMapper.update(admininfo, ew);
         if (update != 1) {
