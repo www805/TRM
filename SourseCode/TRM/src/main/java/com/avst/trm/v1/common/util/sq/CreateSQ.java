@@ -54,10 +54,10 @@ public class CreateSQ {
         sqEntity.setClientName("智能审讯系统");
         sqEntity.setCpuCode("53575653575357574141414541474642424642454A4741434441");
 
-        sqEntity.setGnlist("record|asr|fd|ph");
+        sqEntity.setGnlist("record|asr|fd|ph"); //通过集合转成字符串，以|的方式分割
         sqEntity.setStartTime(DateUtil.getDateAndMinute());
 
-        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));
+        LogUtil.intoLog(CreateSQ.class,deSQ(sqEntity,"E:\\trmshouquan"));//最后生成
 
 
     }

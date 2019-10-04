@@ -118,6 +118,15 @@ public interface EquipmentControl {
 //    public RResult getFDState(@RequestBody ReqParam<GetFDStateParam> param);
 
     /**
+     * 获取默认的视频直播地址
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getToOutDefaulturl")
+    @ResponseBody
+    public RResult getToOutDefaulturl(@RequestBody ReqParam<GetToOutFlushbonadingListParam> param);
+
+    /**
      * 获取设备状态信息
      * @param param
      * @return

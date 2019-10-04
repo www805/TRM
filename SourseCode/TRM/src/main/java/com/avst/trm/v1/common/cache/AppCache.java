@@ -6,7 +6,7 @@ public class AppCache {
 
     private static AppCacheParam appCacheParam;
 
-    public static AppCacheParam getAppCacheParam() {
+    public static synchronized AppCacheParam getAppCacheParam() {
 
         if(null == appCacheParam){
             appCacheParam = new AppCacheParam();
@@ -14,11 +14,11 @@ public class AppCache {
         return appCacheParam;
     }
 
-    public static void setAppCacheParam(AppCacheParam appCacheParam) {
+    public static synchronized void setAppCacheParam(AppCacheParam appCacheParam) {
         AppCache.appCacheParam = appCacheParam;
     }
 
-    public static void delAppCacheParam(){
+    public static synchronized void delAppCacheParam(){
         appCacheParam = null;
     }
 }

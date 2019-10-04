@@ -20,6 +20,8 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
@@ -97,6 +99,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private Police_arraignmentMapper police_arraignmentMapper;
+
+    @Autowired
+    private EquipmentControl equipmentControl;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -1050,9 +1055,13 @@ public class MainService extends BaseService {
     }
 
 
+    public RResult getDefaulturl() {
 
+        ReqParam<GetToOutFlushbonadingListParam> param = new ReqParam<>();
 
+        //远程获取
+        RResult result = equipmentControl.getToOutDefaulturl(param);
 
-
-
+        return result;
+    }
 }

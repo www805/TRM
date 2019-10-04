@@ -227,9 +227,10 @@ public class Scheduler {
                 JexlEngine jexlEngine = new JexlBuilder().create();
                 String formulas=PropertiesListenerConfig.getProperty("record.cache.maxTime");
                 JexlExpression expression = jexlEngine.createExpression(formulas);
-                long maxTime = (long) expression.evaluate(null);
+                Integer maxTimeInt = (Integer) expression.evaluate(null);
+                long maxTime = maxTimeInt.longValue();
 
-                long nowtime=new Date().getTime();
+                long nowtime = new Date().getTime();
 
                 for (int i = 0; i < paramList.size(); i++) {
                     RecordStatusCacheParam param = paramList.get(i);
