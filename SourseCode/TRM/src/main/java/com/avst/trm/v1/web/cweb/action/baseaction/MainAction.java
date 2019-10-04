@@ -193,7 +193,6 @@ public class MainAction extends BaseAction {
     @RequestMapping(value = "/getDefaulturl")
     @ResponseBody
     public RResult getDefaulturl(){
-//        RResult result=this.createNewResultOfFail();
         RResult result = mainService.getDefaulturl();
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;

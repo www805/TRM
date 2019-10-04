@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
@@ -1058,6 +1059,9 @@ public class MainService extends BaseService {
     public RResult getDefaulturl() {
 
         ReqParam<GetToOutFlushbonadingListParam> param = new ReqParam<>();
+        GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
+        listParam.setFdType(FDType.FD_AVST);
+        param.setParam(listParam);
 
         //远程获取
         RResult result = equipmentControl.getToOutDefaulturl(param);

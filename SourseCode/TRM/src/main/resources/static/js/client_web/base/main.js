@@ -46,12 +46,12 @@ function getNavList() {
     var data={
         token:INIT_CLIENTKEY
     };
+
     ajaxSubmitByJson(url,data,callgetNavList);
 }
 
 function callgetNavList(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
-
         if (isNotEmpty(data.data.data)) {
             var appCache = data.data;
             var nav_list_HTML = "";
