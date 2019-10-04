@@ -152,11 +152,9 @@ function callbackuserlogin(data) {
 }
 
 function getNavList() {
-    // setpageAction(INIT_CLIENT,"client_web/base/main");
-    // var url=getActionURL(getactionid_manage().main_getNavList);
-    // setpageAction(INIT_CLIENT,"client_web/base/login");
-
-    var url = "http://localhost/cweb/base/main/getServerconfig";
+    setpageAction(INIT_CLIENT,"client_web/base/main");
+    var url=getActionURL(getactionid_manage().main_getNavList);
+    setpageAction(INIT_CLIENT,"client_web/base/login");
 
     ajaxSubmitByJson(url,null,callgetNavList);
 }
@@ -165,48 +163,46 @@ function callgetNavList(data) {
     // $("#clientimage").attr('src',"/uimaker/images/login-img.png");
     if(null!=data&&data.actioncode=='SUCCESS'){
 
-        console.log(data);
+        if (isNotEmpty(data.data)) {
+            var appCache = data.data;
 
-        // if (isNotEmpty(data.data)) {
-        //     var appCache = data.data;
-        //
-        //     //替换logo图标
-        //     // $("#clientimage").css("background-image", "url(\"" + appCache.clientimage + "\")");
-        //     if (isNotEmpty(appCache.clientimage)) {
-        //         $("#clientimage").attr('src',appCache.clientimage);
-        //     }
-        //
-        //     if (isNotEmpty(appCache.data)) {
-        //
-        //         if (isNotEmpty(appCache.data.login.img) && appCache.data.login.img != '/') {
-        //             $("#login_img").attr("src", appCache.data.login.img).css("width", "90px").css("height", "90px");
-        //         }
-        //
-        //         if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) ) {
-        //             return;
-        //         }
-        //         //页脚
-        //         var bottom_html = "";
-        //         var bottom_name = appCache.data.bottom.name;
-        //         var bottom_declaration = appCache.data.bottom.declaration;
-        //         var bottom_url = appCache.data.bottom.url;
-        //         if(!isNotEmpty(bottom_url)){
-        //             bottom_url="#";
-        //         }
-        //
-        //         if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
-        //             $(".layui-footer").css("height", "50px").css("margin-top","5px");
-        //             bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 7px;' width='" + appCache.data.bottom.img.width + "' height='" + appCache.data.bottom.img.height + "' src='" + appCache.data.bottom.img.src + "'>" + "</a>";
-        //         }else{
-        //             bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
-        //         }
-        //         $("#bottom_mian").html(bottom_html);
-        //     }
-        // }
-        // layui.use('element', function(){
-        //     var element =  layui.element;
-        //     element.render();
-        // });
+            //替换logo图标
+            // $("#clientimage").css("background-image", "url(\"" + appCache.clientimage + "\")");
+            if (isNotEmpty(appCache.clientimage)) {
+                $("#clientimage").attr('src',appCache.clientimage);
+            }
+
+            if (isNotEmpty(appCache.data)) {
+
+                if (isNotEmpty(appCache.data.login.img) && appCache.data.login.img != '/') {
+                    $("#login_img").attr("src", appCache.data.login.img).css("width", "90px").css("height", "90px");
+                }
+
+                if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) ) {
+                    return;
+                }
+                //页脚
+                var bottom_html = "";
+                var bottom_name = appCache.data.bottom.name;
+                var bottom_declaration = appCache.data.bottom.declaration;
+                var bottom_url = appCache.data.bottom.url;
+                if(!isNotEmpty(bottom_url)){
+                    bottom_url="#";
+                }
+
+                if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
+                    $(".layui-footer").css("height", "50px").css("margin-top","5px");
+                    bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 7px;' width='" + appCache.data.bottom.img.width + "' height='" + appCache.data.bottom.img.height + "' src='" + appCache.data.bottom.img.src + "'>" + "</a>";
+                }else{
+                    bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
+                }
+                $("#bottom_mian").html(bottom_html);
+            }
+        }
+        layui.use('element', function(){
+            var element =  layui.element;
+            element.render();
+        });
     }else{
         layer.msg(data.message,{icon: 5});
     }
