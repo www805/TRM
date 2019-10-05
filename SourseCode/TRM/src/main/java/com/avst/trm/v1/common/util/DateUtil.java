@@ -33,7 +33,7 @@ public class DateUtil {
      * @return yyyy-mm-dd
      */
     public static String getDate() {
-        return getYear() + "-" + getMonth() + "-" + getDay();
+        return getYear() + "-" + (getMonth()<10? "0":"")+getMonth() + "-" + (getDay() < 10 ? "0":"")+getDay();
     }
     
 
@@ -434,6 +434,24 @@ public class DateUtil {
 			e.printStackTrace();
 		}
     	return null;
+    }
+
+    /**
+     * 将字符串转成Date后在转成序列号一边(只要年月日)
+     * @param str
+     * @return
+     */
+    public static String strToDateToFormatYMD(String str){
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = df.parse(str);
+            String dateString = df.format(date);
+            return dateString;
+        } catch (ParseException e) {
+            LogUtil.intoLog(DateUtil.class,"转换失败");
+            e.printStackTrace();
+        }
+        return null;
     }
     
     /**
@@ -861,7 +879,7 @@ public class DateUtil {
     	}
     public static void main(String[] args) {
 
-		System.out.println(getHH(new Date()));
+		System.out.println(strToDateToFormatYMD("2019-08-03 12:23:21"));
 			
 	}
  
