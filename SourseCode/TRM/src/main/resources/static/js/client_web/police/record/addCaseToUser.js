@@ -4,10 +4,12 @@ var otheruserinfos=null;//其他询问人员数据
 var cards=null;//全部证件类型
 var workunits=null;//全部的工作单位
 var modelList=null;//全部模板列表
+var wordList=null;//全部模板列表
 
 var dquserssid=null;//当前用户的ssid
 var dqcasessid=null;//当前案件ssid
 var dqmodelssid=null;//当前所选的会议模板ssid
+var dqwordssid=null;//当前笔录模板ssid
 var dqotheruserinfossid=null;//当前询问人(新增询问人回显)
 var dqotherworkssid=null;//当前询问人对应的工作单位
 var dqothercasessid;//当前其他案件的ssid
@@ -236,6 +238,7 @@ function addCaseToArraignment() {
             recordtypessid:recordtypessid,
             recordname:recordname,
             mtmodelssid:dqmodelssid,
+            wordtemplatessid:dqwordssid,
             usertos:usertos,
             addUserInfo:addUserInfo,
             addPolice_case:addPolice_case,
@@ -399,26 +402,7 @@ function gettree(data){
             if (l.police_recordtypes.length>0){
                 for (var j = 0; j < l.police_recordtypes.length; j++) {
                     var ls = l.police_recordtypes[j];
-                    var spanhtml='';
-                    if (isNotEmpty(ls.wordTemplates)){
-                        var defaultbool=0;
-                        for (let k = 0; k < ls.wordTemplates.length; k++) {
-                            const words = ls.wordTemplates[k];
-                            if (words.defaultbool==1){
-                                defaultbool++;
-                            }
-                        }
-                        if (defaultbool>0){
-                            spanhtml+=' <span class="layui-badge layui-bg-blue" title="word模板数：'+ls.wordTemplates.length+'|已设置默认"> <i class="layui-icon layui-icon-vercode"></i> </span>';
-                        } else {
-                            spanhtml+=' <span class="layui-badge layui-bg-orange" title="word模板数：'+ls.wordTemplates.length+'|未设置默认"> <i class="layui-icon layui-icon-tips"></i> </span>';
-                        }
-
-                    }else {
-                        spanhtml+=' <span class="layui-badge layui-bg-gray" title="word模板数：0"> <i class="layui-icon layui-icon-tips"></i>  </span>';
-                    }
-
-                    html+=' <tr><td recordtype='+ls.ssid+' recordtypebool="false">'+ls.typename+''+spanhtml+'</td></tr>';
+                    html+=' <tr><td recordtype='+ls.ssid+' recordtypebool="false">'+ls.typename+'</td></tr>';
                 }
             }
             html+='</table> </div></div>';
@@ -1700,6 +1684,98 @@ function callbackgetDefaultMtModelssid(data){
 }
 
 
+
+//获取全部笔录模板以及默认笔录模板
+function select_Model2(ssid,wordname){
+    if (isNotEmpty(ssid)){
+        dqwordssid=ssid;
+        $("#wordssid").val(wordname);
+        layer.close(model_index2);
+    }
+}
+var model_index2=null;
+function open_model2() {
+    var html= '<table class="layui-table"  lay-skin="nob" style="margin-bottom: 30px;">\
+       <thead>\
+        <tr>\
+        <th>序号</th>\
+        <th>模板名称</th>\
+        <th>创建时间</th>\
+        <th>操作</th>\
+        </tr>\
+        </thead>\
+        <tbody id="wordList">\
+        </tbody>\
+        </table>';
+     model_index2= layer.open({
+        type:1,
+        title: '选中笔录模板',
+        shade: 0.3,
+        resize:false,
+        area: ['800px', '500px'],
+        content: html,
+        success: function(layero,index){
+            if (isNotEmpty(wordList)){
+                $("#wordList").html("");
+                for (let i = 0; i < wordList.length; i++) {
+                    var word = wordList[i];
+                    var html="<tr>\
+                                       <td>"+(i+1)+"</td>\
+                                       <td>"+word.wordtemplatename+"</td>\
+                                       <td>"+word.createtime+"</td>\
+                                       <td style='padding-bottom: 0;'>\
+                                          <div class='layui-btn-container'>\
+                                            <button  class='layui-btn layui-btn-warm layui-btn-sm' onclick='select_Model2(\""+word.ssid+"\",\""+word.wordtemplatename+"\")'>选定</button>\
+                                          </div>\
+                                          </td>\
+                                 </tr>";
+                    $("#wordList").append(html);
+                }
+            }
+        }
+    });
+}
+function getWordTemplates(){
+    var url=getActionURL(getactionid_manage().addCaseToUser_getWordTemplates);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+        }
+    };
+    ajaxSubmitByJson(url,data,callbackgetWordTemplates);
+}
+function callbackgetWordTemplates(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var wordTemplates=data.wordTemplates;
+            var default_word=data.default_word;
+            if (isNotEmpty(wordTemplates)&&isNotEmpty(default_word)) {
+                wordList=wordTemplates;
+
+                var defaultnum=0;//默认模板数量
+                var default_wordTemplate=null;
+                for (let i = 0; i < wordTemplates.length; i++) {
+                    const wordTemplate = wordTemplates[i];
+                    if (wordTemplate.defaultbool==1){
+                        defaultnum++;
+                        dqwordssid=wordTemplate.ssid;
+                        $("#wordssid").val(wordTemplate.wordtemplatename);
+                    }
+                    if (wordTemplate.ssid==default_word) {
+                        default_wordTemplate=wordTemplate;
+                    }
+                }
+                if (defaultnum==0){
+                    dqwordssid=default_wordTemplate.ssid;
+                    $("#wordssid").val(default_wordTemplate.wordtemplatename);
+                }
+            }
+        }
+    }else {
+        console.log("获取会议默认模板ssid"+data.message)
+    }
+}
 
 $(function () {
     layui.use(['form','jquery','laydate'], function() {

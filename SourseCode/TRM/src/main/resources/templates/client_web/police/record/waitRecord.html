@@ -54,15 +54,9 @@
             <!---->
             <div class="layui-col-md12 layui-collapse"  lay-accordion style="border: 0" >
                 <div class="layui-colla-item">
-                    <h2 class=" layui-card-header " onclick="initcase_header();"><!--layui-colla-title-->
-                        问答模板<span style="color: red;font-weight: normal">（提示;双击模板内容自动新增到中文区域）</span>
-                        <a class="layui-a-tips" onclick="opneModal_1();" style="float: right;" title="点击变更模板">变更模板</a>
-                    </h2>
                     <div id="initheart_click" class="layui-colla-content  layui-card-body layui-row layui-show" style="padding: 0;" >
                         <div class="layui-col-lg12">
                             <div id="livetypes" style="padding: 0;height:260px;overflow-x: hidden; overflow-y: scroll;" >
-                              <!--  <span class="layui-badge" onclick="select_liveurl(this,1);" isn="1" type="1">标清</span>
-                                <span class="layui-badge layui-bg-gray"  onclick="select_liveurl(this,2);" isn="-1" type="2">高清</span>-->
                                 <div id="living3_2">
                                     <!--视频直播区域-->
                                     <div th:replace="living4 :: living"  >...</div>
@@ -141,6 +135,10 @@
 
                 </div>
                 <div class="layui-col-md12">
+                    <h2 class=" layui-card-header " onclick="initcase_header();"><!--layui-colla-title-->
+                        问答模板<span style="color: red;font-weight: normal">（提示;双击模板内容自动新增到中文区域）</span>
+                        <a class="layui-a-tips" onclick="opneModal_1();" style="float: right;" title="点击变更模板">变更模板</a>
+                    </h2>
                     <div id="" class="layui-colla-content  layui-card-body layui-row layui-show" style="padding: 0;" >
                     <div class="layui-col-lg12">
                         <div style="height: 120px; overflow-x: hidden; overflow-y: scroll;">

@@ -15,6 +15,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
+import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -23,6 +24,7 @@ import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
@@ -570,6 +572,30 @@ public class MainService extends BaseService {
         vo.setSqgnList(gnArrayList);
 
         vo.setDq_y(years);
+
+
+
+        Integer stateSQ=-1;
+        if (null!=CommonCache.getServerSQCode()&&!CommonCache.getServerSQCode().equals("-1")&&CommonCache.clientSQbool)
+        {
+            stateSQ=1;//系统正常
+        }
+        vo.setStateSQ(stateSQ);
+
+        //获取首页视频地址
+        String liveurl=null;
+        ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
+        GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
+        listParam.setFdType(FDType.FD_AVST);
+        param_.setParam(listParam);
+        RResult result_ = equipmentControl.getToOutDefaulturl(param_);
+        if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())) {
+            liveurl= String.valueOf(result_.getData());
+        }else{
+            LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefaulturl__出错");
+        }
+        vo.setLiveurl(liveurl);
+
         result.setData(vo);
         changeResultToSuccess(result);
         return;
@@ -1053,19 +1079,5 @@ public class MainService extends BaseService {
             System.out.println(s);
         }
 
-    }
-
-
-    public RResult getDefaulturl() {
-
-        ReqParam<GetToOutFlushbonadingListParam> param = new ReqParam<>();
-        GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
-        listParam.setFdType(FDType.FD_AVST);
-        param.setParam(listParam);
-
-        //远程获取
-        RResult result = equipmentControl.getToOutDefaulturl(param);
-
-        return result;
     }
 }

@@ -143,6 +143,45 @@ function  open_startConversation() {
     });
 }
 
+//我的资料
+function getuserinfo(){
+    if (!isNotEmpty(userssid)){
+        layer.msg("系统异常",{icon: 5});
+        return;
+    }
+    var url=getActionURL(getactionid_manage().main_getUserBySsid);
+    var data={
+        ssid:userssid
+    };
+    ajaxSubmit(url,data,callbackgetUserBySsid);
+}
+function callbackgetUserBySsid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                $("#loginaccountm").html(data.loginaccount);
+                $("#usernamem").html(data.username);
+                $("#workunitnamem").html(data.workname);
+
+                var roles=data.roles;
+                var rolesname="";
+                if(isNotEmpty(roles)){
+                    for (var i = 0; i < roles.length; i++) {
+                        var rs=roles[i];
+                        rolesname+=rs.rolename+"、";
+                    }
+                    rolesname = (rolesname .substring(rolesname .length - 1) == '、') ? rolesname .substring(0, rolesname .length - 1) : rolesname ;
+                }
+                $("#rolesm").html(rolesname);
+                $("#registertimem").html(data.registertime);
+
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
 
 $(function () {
     /*  var _t;
@@ -159,4 +198,30 @@ $(function () {
    $(window).bind('beforeunload',function(){
         return '确定要离开当前页面吗';
     });*/
+
+
+
+    $("#userinfos").click(function () {
+        var html=' <div class="layui-row layui-main " id="userinfoshtml">\
+                    <div class="layui-col-sm12" ><div>我的角色：</div><p id="rolesm">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>工作单位：</div><p id="workunitnamem">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>账号：</div><p id="loginaccountm">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>用户名：</div><p id="usernamem">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>注册时间：</div><p id="registertimem">加载中...</p></div>\
+                    </div>';
+        var layer = layui.layer;
+        layer.open({
+            type: 1,
+            title: "我的资料",
+            shade: 0.5,
+            shadeClose : true,
+            area: ['40%', '50%'],
+            content: html,
+            btn: ['确定'],
+            yes: function(index, layero){
+                layer.close(index);
+            }
+        });
+        getuserinfo();
+    });
 })

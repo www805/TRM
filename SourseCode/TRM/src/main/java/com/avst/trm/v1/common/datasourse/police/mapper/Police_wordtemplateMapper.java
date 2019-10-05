@@ -21,17 +21,14 @@ import java.util.List;
 public interface Police_wordtemplateMapper extends BaseMapper<Police_wordtemplate> {
 
     @Select(" select count(w.ssid) from police_wordtemplate w  " +
-            " left join police_recordtype r on r.ssid=w.recordtypessid " +
             " left join base_filesave f on f.ssid=w.wordtemplate_filesavessid  where 1=1 ${ew.sqlSegment}")
     int countgetWordTemplateList(@Param("ew") EntityWrapper ew);
 
-    @Select(" select w.*,f.recorddownurl as 'wordtemplate_downurl',f.recordrealurl as 'wordtemplate_realurl',r.typename as 'recordtypename' from police_wordtemplate w  " +
-            " left join police_recordtype r on r.ssid=w.recordtypessid " +
+    @Select(" select w.*,f.recorddownurl as 'wordtemplate_downurl',f.recordrealurl as 'wordtemplate_realurl' from police_wordtemplate w  " +
             " left join base_filesave f on f.ssid=w.wordtemplate_filesavessid  where 1=1 ${ew.sqlSegment}")
     List<WordTemplate> getWordTemplateList(Page page, @Param("ew") EntityWrapper ew);
 
-    @Select(" select w.*,f.recorddownurl as 'wordtemplate_downurl',f.recordrealurl as 'wordtemplate_realurl',r.typename as 'recordtypename' from police_wordtemplate w  " +
-            " left join police_recordtype r on r.ssid=w.recordtypessid " +
+    @Select(" select w.*,f.recorddownurl as 'wordtemplate_downurl',f.recordrealurl as 'wordtemplate_realurl' from police_wordtemplate w  " +
             " left join base_filesave f on f.ssid=w.wordtemplate_filesavessid  where 1=1 ${ew.sqlSegment}")
     List<WordTemplate> getWordTemplate(@Param("ew") EntityWrapper ew);
 

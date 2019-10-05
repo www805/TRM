@@ -937,6 +937,20 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping(value = "/getWordTemplates")
+    public RResult getWordTemplates(@RequestBody ReqParam<GetWordTemplatesParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.getWordTemplates(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 }

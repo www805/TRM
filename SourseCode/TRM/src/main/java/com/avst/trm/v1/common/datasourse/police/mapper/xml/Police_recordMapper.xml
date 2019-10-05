@@ -6,10 +6,6 @@
     <resultMap id="BaseResultMap" type="com.avst.trm.v1.common.datasourse.police.entity.Police_record">
         <id column="id" property="id" />
         <result column="recordname" property="recordname" />
-        <result column="recordtemplatessid" property="recordtemplatessid" />
-        <result column="record_filesavessid" property="record_filesavessid" />
-        <result column="recordtime" property="recordtime" />
-        <result column="recordstarttime" property="recordstarttime" />
         <result column="recordbool" property="recordbool" />
         <result column="pdf_filesavessid" property="pdf_filesavessid" />
         <result column="word_filesavessid" property="word_filesavessid" />
@@ -21,6 +17,7 @@
         <result column="integer1" property="integer1" />
         <result column="integer2" property="integer2" />
         <result column="gz_iid" property="gz_iid" />
+        <result column="wordtemplatessid" property="wordtemplatessid" />
 
     </resultMap>
 

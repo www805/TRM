@@ -42,11 +42,6 @@ public class Police_wordtemplate extends Model<Police_wordtemplate> {
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date createtime;
 
-    /**
-     * 笔录类型:不同笔录类型对应不同模板
-     */
-    private String recordtypessid;
-
     private String ssid;
 
     private String string1;
@@ -106,13 +101,7 @@ public class Police_wordtemplate extends Model<Police_wordtemplate> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
-    public String getRecordtypessid() {
-        return recordtypessid;
-    }
 
-    public void setRecordtypessid(String recordtypessid) {
-        this.recordtypessid = recordtypessid;
-    }
     public String getSsid() {
         return ssid;
     }
@@ -154,19 +143,5 @@ public class Police_wordtemplate extends Model<Police_wordtemplate> {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "Police_wordtemplate{" +
-        "id=" + id +
-        ", wordtemplatename=" + wordtemplatename +
-        ", wordtemplate_filesavessid=" + wordtemplate_filesavessid +
-        ", createtime=" + createtime +
-        ", recordtypessid=" + recordtypessid +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
-    }
+
 }

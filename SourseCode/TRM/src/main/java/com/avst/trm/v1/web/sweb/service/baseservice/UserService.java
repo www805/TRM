@@ -149,6 +149,16 @@ public class UserService extends BaseService {
                 if (null!=roles&&roles.size()>0){
                     adminAndWorkunit.setRoles(roles);
                 }
+
+                //查找工作单位
+                Police_workunit police_workunit=new Police_workunit();
+                police_workunit.setSsid(adminAndWorkunit.getWorkunitssid());
+                police_workunit=police_workunitMapper.selectOne(police_workunit);
+                if (null!=police_workunit){
+                    adminAndWorkunit.setWorkname(police_workunit.getWorkname());
+                }
+
+
                 result.setData(adminAndWorkunit);
                 changeResultToSuccess(result);
             }else{

@@ -17,6 +17,16 @@ public class Case extends Police_case {
     @JsonFormat(pattern="yyyy年MM月dd日HH时mm分ss秒",timezone="GMT+8")
     private Date occurrencetime_format;//案发时间换格式
 
+    private String record_pausebool;//案件是否允许继续暂停，用于是否显示列表的继续按钮
+
+    public String getRecord_pausebool() {
+        return record_pausebool;
+    }
+
+    public void setRecord_pausebool(String record_pausebool) {
+        this.record_pausebool = record_pausebool;
+    }
+
     public Date getOccurrencetime_format() {
         return occurrencetime_format;
     }

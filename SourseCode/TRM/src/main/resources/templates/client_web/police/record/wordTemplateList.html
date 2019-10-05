@@ -21,24 +21,16 @@
 
     <form class="layui-form" >
         <div class="layui-form-item">
-            <label class="layui-form-label" style="width: auto;">word模板名称</label>
+            <label class="layui-form-label" style="width: auto;">笔录模板名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="wordtemplatename" id="wordtemplatename" lay-verify="required" placeholder="请输入word模板名称" autocomplete="off" class="layui-input" oninput=" getWordTemplateListByParam();">
+                <input type="text" name="wordtemplatename" id="wordtemplatename" lay-verify="required" placeholder="请输入笔录模板名称" autocomplete="off" class="layui-input" oninput=" getWordTemplateListByParam();">
             </div>
 
-            <label class="layui-form-label" style="width: auto;">笔录类型</label>
-            <div class="layui-input-inline">
-                <select name="recordtypessid" lay-verify="" id="recordtypessid" lay-filter="recordtypessid_filter" >
-                    <option value="">全部</option>
-
-                </select>
-            </div>
-
-            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCases_init(1,10);" >
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getWordTemplateListByParam();" >
             <input type="button" class="layui-btn layui-btn-normal" value="上传模板" onclick="open_uploadword(null)" >
             <div style="display: inline;float: right">
                 <input type="button" class="layui-btn layui-btn-primary" value="查看模板制作说明" onclick="open_getWordexplain()" >
-                <input type="button" class="layui-btn layui-btn-primary" value="上传模板制作" onclick="open_uploadWordexplain()" >
+               <!-- <input type="button" class="layui-btn layui-btn-primary" value="上传模板制作" onclick="open_uploadWordexplain()" >-->
                 <input id="wordexplainfile" type="file" style="display: none;" onchange="uploadWordexplain();">
             </div>
         </div>
@@ -54,8 +46,8 @@
         <tr>
             <th>序号</th>
             <th>是否为默认</th>
-            <th>笔录类型</th>
-            <th>word模板名称</th>
+           <!-- <th>笔录类型</th>-->
+            <th>笔录模板名称</th>
             <th>创建时间</th>
             <th>操作</th>
         </tr>
@@ -67,11 +59,10 @@
             <td>
                 <input  type="checkbox" name="defaultbool" lay-skin="switch" id="defaultbool" lay-text="默认|非默认"   lay-filter="defaultbool_filter" {{value.defaultbool==1?"checked":""}} value="{{value.ssid}}" >
             </td>
-            <td>{{value.recordtypename==null?"":value.recordtypename}}</td>
             <td>{{value.wordtemplatename==null?"":value.wordtemplatename}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
             <td>
-                <a href="#" onclick="preview('{{value.wordtemplate_downurl_html}}')"  title="{{value.wordtemplate_downurl_html==null?'请先上传word模板':'点击预览'}}"     class="layui-btn {{value.wordtemplate_downurl_html==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >预览</a>
+                <a href="#" onclick="preview('{{value.wordtemplate_downurl_html}}')"  title="{{value.wordtemplate_downurl_html==null?'请先上传笔录模板':'点击预览'}}"     class="layui-btn {{value.wordtemplate_downurl_html==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-sm"  >预览</a>
                 <a href="#" class="layui-btn layui-btn-normal layui-btn-sm" onclick="exportWord('{{value.wordtemplate_downurl}}')">导出</a>
                 <a href="#" class="layui-btn layui-btn-normal layui-btn-sm" onclick="open_uploadword('{{value.ssid}}')">修改</a>
             </td>
@@ -95,7 +86,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/wordTemplateList");
-        word_getRecordtypes();
+        /*word_getRecordtypes();word 不和笔录类型相关了*/
         getWordTemplateListByParam();
 
     });

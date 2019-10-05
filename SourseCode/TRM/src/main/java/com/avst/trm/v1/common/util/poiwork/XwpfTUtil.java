@@ -15,6 +15,7 @@ import org.apache.poi.hwpf.usermodel.CharacterRun;
 import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.hwpf.usermodel.Range;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.util.StringUtil;
 import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlToken;
@@ -34,8 +35,47 @@ import java.util.regex.Pattern;
  */
 public class XwpfTUtil {
 
-
     public static  void main(String[] args) {
+       /* String content = "<p class='MsoNormal' style='text-indent:28pt;' align='left'>  <br /></p><p class='MsoNormal' style='text-align:center;' align='left'> <span style='font-size:24px;color:red'>××××××××××</span></p><p class='MsoNormal' style='margin-left:28pt;text-indent:-7pt;' align='left'>   <span style='font-size:14px;'>×××××：</span></p><p class='MsoNormal' style='text-indent:28pt;' align='left'><span style='font-size:14px;'>×××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××</span></p>";
+        try {
+            InputStream is = new ByteArrayInputStream(content.getBytes("GBK"));
+            OutputStream os = new FileOutputStream("f:\\1.doc");
+            POIFSFileSystem fs = new POIFSFileSystem();
+            fs.createDocument(is, "WordDocument");
+            fs.writeFilesystem(os);
+            os.close();
+            is.close();
+            System.out.println("生成完毕！");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+
+        String oldfilepath="D:\\trmfile\\upload\\zips\\wordtemplate\\2019/08\\14\\行政询问笔录_1565773871945.doc";
+        String newfilepath="C:\\Users\\admin\\Desktop\\ceshi2.docx";
+      try {
+            Map<String, String> params = new HashMap<>();
+            String content = "<p class='MsoNormal' style='text-indent:28pt;' align='left'>  <br /></p><p class='MsoNormal' style='text-align:center;' align='left'> <span style='font-size:24px;color:red'>××××××××××</span></p><p class='MsoNormal' style='margin-left:28pt;text-indent:-7pt;' align='left'>   <span style='font-size:14px;'>×××××：</span></p><p class='MsoNormal' style='text-indent:28pt;' align='left'><span style='font-size:14px;'>×××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××××</span></p>";
+            params.put("${开始时间}", "152315455");
+            params.put("${问答}", content);
+
+            File oldfile=new File(oldfilepath);
+            HWPFDocument document2 = new HWPFDocument(new FileInputStream(oldfile));
+            Range range = document2.getRange();
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                range.replaceText(entry.getKey(), entry.getValue());
+            }
+            FileOutputStream outStream = new FileOutputStream(newfilepath);
+            document2.write(outStream);
+            outStream.close();
+            document2.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    /*public static  void main(String[] args) {
         Map<String, String> params = new HashMap<>();
 
         params.put("${recordstarttime}", "152315455");
@@ -119,7 +159,7 @@ public class XwpfTUtil {
 //            e.printStackTrace();
 //        }
 
-    }
+    }*/
 
     /**
      *套用模板文件生成对应的笔录文件
@@ -270,6 +310,8 @@ public class XwpfTUtil {
                 for (Map.Entry<String, String> entry : map.entrySet()) {
                     range.replaceText(entry.getKey(), entry.getValue());
                 }
+
+
 
                 outStream = new FileOutputStream(newfile);
                 document2.write(outStream);
@@ -438,5 +480,6 @@ public class XwpfTUtil {
         return null;
 
     }
+
 
 }

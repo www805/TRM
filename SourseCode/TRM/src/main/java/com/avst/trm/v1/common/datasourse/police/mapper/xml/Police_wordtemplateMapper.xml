@@ -8,7 +8,6 @@
         <result column="wordtemplatename" property="wordtemplatename" />
         <result column="wordtemplate_filesavessid" property="wordtemplate_filesavessid" />
         <result column="createtime" property="createtime" />
-        <result column="recordtypessid" property="recordtypessid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

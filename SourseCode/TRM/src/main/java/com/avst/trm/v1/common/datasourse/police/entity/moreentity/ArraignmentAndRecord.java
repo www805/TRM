@@ -12,8 +12,6 @@ public class ArraignmentAndRecord extends Police_arraignment {
 
         private String recordbool;
 
-        private Integer recordtime;
-
         private  String recordadminname;
 
         private String adminname;
@@ -82,11 +80,4 @@ public class ArraignmentAndRecord extends Police_arraignment {
         this.recordbool = recordbool;
     }
 
-    public Integer getRecordtime() {
-        return recordtime;
-    }
-
-    public void setRecordtime(Integer recordtime) {
-        this.recordtime = recordtime;
-    }
 }

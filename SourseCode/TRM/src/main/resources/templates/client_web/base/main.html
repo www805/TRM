@@ -56,22 +56,22 @@
         line-height: 44px !important;
         padding: 0 20px;}
 
-    /*#userinfos{
+   #userinfoshtml{
         width: 90%;
     }
-    #userinfos div {
+    #userinfoshtml div {
         margin: 10px;
     }
-    #userinfos div div{
+    #userinfoshtml div div{
         width: 40%;
         text-align: right;
         display: inline-block;
     }
-    #userinfos div p{
+    #userinfoshtml div p{
         width: 40%;
         text-align: left;
         display: inline-block;
-    }*/
+    }
 </style>
 <body class="layui-layout-body" id="">
 
@@ -101,7 +101,7 @@
                     <span th:text="${session.MANAGE_CLIENT.username}">管理员</span>
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a id="userinfos" target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}">我的资料</a></dd> <!--target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}" -->
+                    <dd><a id="userinfos">我的资料</a></dd> <!--target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}" -->
                     <dd><a target="option" th:href="@{/cweb/base/main/gotoupdatePassword}">修改密码</a></dd>
                     <dd><a href="javascript:;"  onclick="userloginout();">退出登录</a></dd>
                     <dd><a href="javascript:;" >退出系统</a></dd>
@@ -137,6 +137,7 @@
     var out_btn;
     var  INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
+    var  userssid=[[${session.MANAGE_CLIENT.ssid}]];
         setpageAction(INIT_CLIENT,"client_web/base/main");
         var homeUrl=getActionURL(getactionid_manage().mian_home);
 
@@ -191,28 +192,6 @@
         });*/
         form.render();
 
-        /*$("#userinfos").click(function () {
-            var html=' <div class="layui-row layui-main " id="userinfos">\
-                    <div class="layui-col-sm12" ><div>我的角色：</div><p>普通管理员</p></div>\
-                    <div class="layui-col-sm12"><div>工作单位：</div><p>工作单位1</p></div>\
-                    <div class="layui-col-sm12"><div>账号：</div><p>admin</p></div>\
-                    <div class="layui-col-sm12"><div>用户名：</div><p>用户名1</p></div>\
-                    <div class="layui-col-sm12"><div>注册时间：</div><p>2019-03-12</p></div>\
-                    </div>';
-            var layer = layui.layer;
-            layer.open({
-                type: 1,
-                title: "我的资料",
-                shade: 0.5,
-                shadeClose : true,
-                area: ['40%', '50%'],
-                content: html,
-                btn: ['确定'],
-                yes: function(index, layero){
-                    layer.close(index);
-                }
-            });
-        });*/
     });
 </script>
 </body>

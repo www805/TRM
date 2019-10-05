@@ -2,8 +2,10 @@ var clientName="加载中";//默认
 
 //yearstype 1 今年 2去年
 function getHome(yearstype) {
-    myChart.showLoading();
-    myChart2.showLoading();
+    if (isNotEmpty(myChart)&&isNotEmpty(myChart2)) {
+        myChart.showLoading();
+        myChart2.showLoading();
+    }
     var url=getActionURL(getactionid_manage().home_getHome);
 
     var data={
@@ -31,38 +33,52 @@ function callbackgetHome(data) {
             $("#record_unfinishnum").text(data.record_unfinishnum==null?0:data.record_unfinishnum);
             $("#record_waitnum").text(data.record_waitnum==null?0:data.record_waitnum);
 
+            var liveurl_=data.liveurl;
+            if (isNotEmpty(liveurl_)){
+                liveurl=liveurl_;
+            }
+            initplayer();//初始化地址
+
+            var stateSQ=data.stateSQ;
+            if (isNotEmpty(stateSQ)&&stateSQ==1){
+                $("#stateSQtxt").html("<span style='color: #00FF00'>正常运行中</span>")
+            }else {
+                $("#stateSQtxt").html("<span style='color: red'>异常，请注意</span>")
+            }
 
 
             var clientname=data.clientname==null?"":data.clientname;
-            myChart.hideLoading();
-            myChart2.hideLoading();
-            myChart.setOption({
-                title: {
-                    text: data.dq_y+'年'+clientname+'案件审讯统计',
-                    subtext: '数据来源'+clientname,
-                },
-                series: [{
-                    name: '审讯数',
-                    data: data.record_monthnum_y
-                },{
-                    name: '案件数',
-                    data: data.case_monthnum_y
-                }]
-            });
-            myChart2.setOption({
-                series: [{
-                    name: '详情来源',
-                    data: [{value:data.record_waitnum_y,name:'未开始审讯'},
-                        {value:data.record_unfinishnum_y, name:'进行中审讯'},
-                        {value:data.record_finishnum_y, name:'已完成审讯'},
-                        {value:data.case_endnum_y, name:'未提讯案件'},
-                        {value:data.case_startnum_y, name:'已提讯案件'}]
-                },{
-                    name: '数据来源',
-                    data: [ {value:data.record_num_y, name:'审讯', selected:true},
-                        {value:data.case_num_y, name:'案件'}]
-                }]
-            });
+            if (isNotEmpty(myChart)&&isNotEmpty(myChart2)) {
+                myChart.hideLoading();
+                myChart2.hideLoading();
+                myChart.setOption({
+                    title: {
+                        text: data.dq_y+'年'+clientname+'案件审讯统计',
+                        subtext: '数据来源'+clientname,
+                    },
+                    series: [{
+                        name: '审讯数',
+                        data: data.record_monthnum_y
+                    },{
+                        name: '案件数',
+                        data: data.case_monthnum_y
+                    }]
+                });
+                myChart2.setOption({
+                    series: [{
+                        name: '详情来源',
+                        data: [{value:data.record_waitnum_y,name:'未开始审讯'},
+                            {value:data.record_unfinishnum_y, name:'进行中审讯'},
+                            {value:data.record_finishnum_y, name:'已完成审讯'},
+                            {value:data.case_endnum_y, name:'未提讯案件'},
+                            {value:data.case_startnum_y, name:'已提讯案件'}]
+                    },{
+                        name: '数据来源',
+                        data: [ {value:data.record_num_y, name:'审讯', selected:true},
+                            {value:data.case_num_y, name:'案件'}]
+                    }]
+                });
+            }
 
 
             var sqEntity = data.sqEntity; //授权信息
@@ -97,9 +113,9 @@ function callbackgetHome(data) {
 }
 
 
-var myChart;
-var myChart2;
-$(function () {
+var myChart=null;
+var myChart2=null;
+function myChart_(){
     $(window).resize(function() {
         myChart.resize();
         myChart2.resize();
@@ -268,6 +284,9 @@ $(function () {
         ]
     };
     myChart2.setOption(option2);
+}
+$(function () {
+   /* myChart_();*/
 });
 
 //打开开始审讯弹出框

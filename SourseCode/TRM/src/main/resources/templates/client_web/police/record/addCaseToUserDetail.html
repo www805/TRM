@@ -517,6 +517,12 @@
                                 <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn">开始笔录</button>
                             </div>
                         </div>
+                        <div class="layui-col-lg6" >
+                            <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model2()">
+                            </div>
+                        </div>
                         <div class="layui-col-lg6" id="multifunctionbool_showorhide" style="display: none">
                             <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">办案地点</label>
                             <div class="layui-input-block">
@@ -562,7 +568,7 @@
         getAdminList();
         getCards();
         getMc_model();//获取全部的会议模板
-
+        getWordTemplates();
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块

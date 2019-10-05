@@ -738,15 +738,6 @@ public class RecordService extends BaseService {
             }
             for (int i = 0; i < recordtypes.size(); i++) {
                 GetRecordtypesVOParam m= recordtypes.get(i);
-                if (null!=m){
-                    String recordtypessid=m.getSsid();
-                    EntityWrapper word_ew=new EntityWrapper();
-                    word_ew.eq("r.ssid",recordtypessid);
-                    List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
-                    if (null!=wordTemplates&&wordTemplates.size()>0){
-                        m.setWordTemplates(wordTemplates);
-                    }
-                }
                 if(recordtypes.get(i).getPid()==0){
                     getRecordtypesVOParamList.add(m);
                 }
@@ -788,13 +779,7 @@ public class RecordService extends BaseService {
             result.setMessage("系统错误");
         }
         recordtype=gson.fromJson(gson.toJson(police_recordtype),Recordtype.class);
-            String recordtypessid=recordtype.getSsid();
-            EntityWrapper word_ew=new EntityWrapper();
-            word_ew.eq("r.ssid",recordtypessid);
-            List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
-            if (null!=wordTemplates&&wordTemplates.size()>0){
-                recordtype.setWordTemplates(wordTemplates);
-            }
+        String recordtypessid=recordtype.getSsid();
 
 
 
@@ -806,15 +791,6 @@ public class RecordService extends BaseService {
         records_son =  police_recordtypeMapper.selectList(ew);
         if (null!=records_son&&records_son.size()>0) {
           List<RecordtypeToWord> recordtypes=gson.fromJson(gson.toJson(records_son), new TypeToken<List<RecordtypeToWord>>(){}.getType());
-            for (RecordtypeToWord recordtypeToWord : recordtypes) {
-                String recordtypessid_=recordtypeToWord.getSsid();
-                EntityWrapper word_ew_=new EntityWrapper();
-                word_ew_.eq("r.ssid",recordtypessid);
-                List<WordTemplate> wordTemplates_=police_wordtemplateMapper.getWordTemplate(word_ew_);
-                if (null!=wordTemplates_&&wordTemplates_.size()>0){
-                    recordtypeToWord.setWordTemplates(wordTemplates_);
-                }
-            }
           recordtype.setRecordtypes(recordtypes);
         }
 
@@ -960,6 +936,7 @@ public class RecordService extends BaseService {
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
+        String wordtemplatessid=addCaseToArraignmentParam.getWordtemplatessid();//笔录模板ssid
         //笔录信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
         String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录名称
@@ -1353,6 +1330,26 @@ public class RecordService extends BaseService {
         record.setRecordbool(0);//1进行中0未开始
         record.setRecordtypessid(recordtypessid);
         record.setRecordname(recordname);
+        if (StringUtils.isBlank(wordtemplatessid)){
+            //选用默认的
+            EntityWrapper word_ew=new EntityWrapper();
+            word_ew.ne("wordtype",2);
+            List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
+            if (null!=wordTemplates&&wordTemplates.size()>0){
+                for (WordTemplate wordTemplate : wordTemplates) {
+                    if (wordTemplate.getDefaultbool()==1){
+                        wordtemplatessid=wordTemplate.getSsid();
+                    }
+                }
+            }
+            //选用原始默认的
+            if (StringUtils.isBlank(wordtemplatessid)){
+                record.setWordtemplatessid(PropertiesListenerConfig.getProperty("wordtemplate8520"));
+            }
+        }else {
+            record.setWordtemplatessid(wordtemplatessid);
+        }
+
         int insertrecord_bool=police_recordMapper.insert(record);
         LogUtil.intoLog(this.getClass(),"insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
@@ -1688,7 +1685,7 @@ public class RecordService extends BaseService {
             //1、获取模板的真实地址
             String wordtemplate_realurl=null;//模板路径
             EntityWrapper wordew=new EntityWrapper();
-            wordew.eq("w.recordtypessid",record.getRecordtypessid());
+            wordew.eq("w.ssid",record.getWordtemplatessid());
             List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
             if (null!=wordTemplate&&wordTemplate.size()>0){
                 for (WordTemplate template : wordTemplate) {
@@ -1823,7 +1820,7 @@ public class RecordService extends BaseService {
          //1、获取模板的真实地址
           String wordtemplate_realurl=null;//模板路径
            EntityWrapper wordew=new EntityWrapper();
-           wordew.eq("w.recordtypessid",record.getRecordtypessid());
+            wordew.eq("w.ssid",record.getWordtemplatessid());
            List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
            if (null!=wordTemplate&&wordTemplate.size()>0){
                for (WordTemplate template : wordTemplate) {
@@ -2231,6 +2228,7 @@ public class RecordService extends BaseService {
                     Base_admininfo admininfo = base_admininfoMapper.selectOne(base_admininfo);
                     case_.setCreatorname(admininfo.getUsername());
                 }
+                case_.setRecord_pausebool(PropertiesListenerConfig.getProperty("record.pausebool"));
             }
             getCasesVO.setPagelist(list);
         }
@@ -2790,24 +2788,32 @@ public class RecordService extends BaseService {
             return;
         }
         String ssid=uploadWordTemplateParam.getSsid();
-        String recordtypessid=uploadWordTemplateParam.getRecordtypessid();
         Integer defaultbool=uploadWordTemplateParam.getDefaultbool();
         String wordtemplatename=uploadWordTemplateParam.getWordtemplatename();
         Integer wordtype=uploadWordTemplateParam.getWordtype();
 
         if (null!=wordtype&&wordtype==2){
-            wordtemplatename="笔录word模板制作说明";
+            wordtemplatename="笔录模板制作说明";
         }
 
 
         Police_wordtemplate police_wordtemplate=new Police_wordtemplate();
         police_wordtemplate.setDefaultbool(defaultbool);
-        police_wordtemplate.setRecordtypessid(recordtypessid);
         police_wordtemplate.setWordtemplatename(wordtemplatename);
         police_wordtemplate.setWordtype(wordtype);
 
         String wordtemplate_filesavessid=null;
         if(StringUtils.isNotBlank(ssid)){
+            EntityWrapper wordtemplate_param=new EntityWrapper();
+            wordtemplate_param.eq("wordtemplatename",wordtemplatename);
+            wordtemplate_param.ne("ssid",ssid);
+            List<Police_case> police_cases_=police_wordtemplateMapper.selectList(wordtemplate_param);
+            if (null!=police_cases_&&police_cases_.size()>0){
+                result.setMessage("笔录模板名称不能重复");
+                return;
+            }
+
+
             EntityWrapper oldew=new EntityWrapper();
             oldew.eq("w.ssid",ssid);
             List<WordTemplate> oldwordTemplates=police_wordtemplateMapper.getWordTemplate(oldew);
@@ -2913,6 +2919,15 @@ public class RecordService extends BaseService {
                 changeResultToSuccess(result);
             }
         }else {
+            EntityWrapper wordtemplate_param=new EntityWrapper();
+            wordtemplate_param.eq("wordtemplatename",wordtemplatename);
+            List<Police_case> police_cases_=police_wordtemplateMapper.selectList(wordtemplate_param);
+            if (null!=police_cases_&&police_cases_.size()>0){
+                result.setMessage("笔录模板名称不能重复");
+                return;
+            }
+
+
             if (null!=multipartfile){
                 //开始进行文件上传
                 try {
@@ -2989,7 +3004,6 @@ public class RecordService extends BaseService {
         if (null!=defaultbool&&defaultbool==1){
             //获取该模板的类型，并且将该类型的处理ssi全部1改为-1
             EntityWrapper updateew=new EntityWrapper();
-            updateew.eq("recordtypessid",recordtypessid);
             updateew.ne("ssid",ssid);
             List<Police_wordtemplate> police_wordtemplates=police_wordtemplateMapper.selectList(updateew);
             for (Police_wordtemplate policeWordtemplate : police_wordtemplates) {
@@ -3073,9 +3087,7 @@ public class RecordService extends BaseService {
         if (null!=police_wordtemplate){
                 if (defaultbool==1){
                     //获取该模板的类型，并将该类型的都改为默认
-                    String recordtypessid=police_wordtemplate.getRecordtypessid();
                     EntityWrapper updateew=new EntityWrapper();
-                    updateew.eq("recordtypessid",recordtypessid);
                     List<Police_wordtemplate> police_wordtemplates=police_wordtemplateMapper.selectList(updateew);
                     for (Police_wordtemplate policeWordtemplate : police_wordtemplates) {
                         if (policeWordtemplate.getDefaultbool()==1){
@@ -3084,7 +3096,6 @@ public class RecordService extends BaseService {
                         }
                     }
                 }
-
                 EntityWrapper update=new EntityWrapper();
                 update.eq("ssid",ssid);
                 police_wordtemplate.setDefaultbool(defaultbool);
@@ -4060,6 +4071,20 @@ public class RecordService extends BaseService {
 
 
         vo.setDq_y(years);
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getWordTemplates(RResult result,ReqParam<GetWordTemplatesParam> paramReqParam){
+        GetWordTemplatesVO vo=new GetWordTemplatesVO();
+        EntityWrapper word_ew=new EntityWrapper();
+        word_ew.ne("wordtype",2);
+        List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
+        if (null!=wordTemplates&&wordTemplates.size()>0){
+            vo.setWordTemplates(wordTemplates);
+        }
+        vo.setDefault_word(PropertiesListenerConfig.getProperty("wordtemplate_default"));//默认
         result.setData(vo);
         changeResultToSuccess(result);
         return;

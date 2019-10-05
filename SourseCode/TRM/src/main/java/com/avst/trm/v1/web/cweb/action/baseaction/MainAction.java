@@ -185,19 +185,6 @@ public class MainAction extends BaseAction {
         return  result;
     }
 
-
-    /**
-     * 获取默认直播视频地址
-     * @return
-     */
-    @RequestMapping(value = "/getDefaulturl")
-    @ResponseBody
-    public RResult getDefaulturl(){
-        RResult result = mainService.getDefaulturl();
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return  result;
-    }
-
     /**
      * 获取全部国籍
      * @param param

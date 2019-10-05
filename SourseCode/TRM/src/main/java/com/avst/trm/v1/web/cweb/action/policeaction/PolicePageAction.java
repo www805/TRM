@@ -244,7 +244,7 @@ public class PolicePageAction {
     /*********************************关于案件 end*********************************/
     @GetMapping("towordTemplateList")
     public ModelAndView towordTemplateList(Model model){
-        model.addAttribute("title","笔录word模板");
+        model.addAttribute("title","笔录模板");
         return new ModelAndView("client_web/police/record/wordTemplateList", "wordTemplateListModel", model);
     }
 

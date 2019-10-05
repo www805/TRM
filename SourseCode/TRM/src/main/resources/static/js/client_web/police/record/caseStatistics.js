@@ -177,7 +177,7 @@ $(function () {
                 name:'详情来源',
                 type:'pie',
                 radius: ['40%', '55%'],
-                label: {
+               /* label: {
                     normal: {
                         formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                         backgroundColor: '#eee',
@@ -208,8 +208,8 @@ $(function () {
                             }
                         }
                     }
-                },
-                /*label:{
+                },*/
+                label:{
                     align: 'left',
                     normal:{
                         formatter(v) {
@@ -231,7 +231,7 @@ $(function () {
                             fontSize : 8
                         }
                     }
-                },*/
+                },
                 data:[]
             }
         ]

@@ -127,6 +127,7 @@ function getactionid_manage() {
         addCaseToUser_torecordIndex:"addCaseToUser_torecordIndex",
         addCaseToUser_towaitconversation:"addCaseToUser_towaitconversation",
         addCaseToUser_toconversationIndex:"addCaseToUser_toconversationIndex",
+        addCaseToUser_getWordTemplates:"addCaseToUser_getWordTemplates",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

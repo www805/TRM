@@ -10,8 +10,6 @@ public class WordTemplate extends Police_wordtemplate {
 
     private String wordtemplate_downurl_html;//word下载地址转html地址
 
-    private String recordtypename;//笔录类型名称
-
     public String getWordtemplate_downurl_html() {
         return wordtemplate_downurl_html;
     }
@@ -34,13 +32,5 @@ public class WordTemplate extends Police_wordtemplate {
 
     public void setWordtemplate_realurl(String wordtemplate_realurl) {
         this.wordtemplate_realurl = wordtemplate_realurl;
-    }
-
-    public String getRecordtypename() {
-        return recordtypename;
-    }
-
-    public void setRecordtypename(String recordtypename) {
-        this.recordtypename = recordtypename;
     }
 }

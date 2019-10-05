@@ -33,26 +33,6 @@ public class Police_record extends Model<Police_record> {
     private String recordname;
 
     /**
-     *  笔录模板id
-     */
-    private String recordtemplatessid;
-
-    /**
-     * 总录音地址
-     */
-    private String record_filesavessid;
-
-    /**
-     * 总录音时长
-     */
-    private Integer recordtime;
-
-    /**
-     * 笔录开始时间 ms
-     */
-    private Long recordstarttime;
-
-    /**
      * 笔录状态：1进行中2已完成
      */
     private Integer recordbool;
@@ -103,6 +83,16 @@ public class Police_record extends Model<Police_record> {
 
     private Integer integer2;
 
+    private String wordtemplatessid;//笔录模板ssid
+
+    public String getWordtemplatessid() {
+        return wordtemplatessid;
+    }
+
+    public void setWordtemplatessid(String wordtemplatessid) {
+        this.wordtemplatessid = wordtemplatessid;
+    }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -137,34 +127,7 @@ public class Police_record extends Model<Police_record> {
     public void setRecordname(String recordname) {
         this.recordname = recordname;
     }
-    public String getRecordtemplatessid() {
-        return recordtemplatessid;
-    }
 
-    public void setRecordtemplatessid(String recordtemplatessid) {
-        this.recordtemplatessid = recordtemplatessid;
-    }
-    public String getRecord_filesavessid() {
-        return record_filesavessid;
-    }
-
-    public void setRecord_filesavessid(String record_filesavessid) {
-        this.record_filesavessid = record_filesavessid;
-    }
-    public Integer getRecordtime() {
-        return recordtime;
-    }
-
-    public void setRecordtime(Integer recordtime) {
-        this.recordtime = recordtime;
-    }
-    public Long getRecordstarttime() {
-        return recordstarttime;
-    }
-
-    public void setRecordstarttime(Long recordstarttime) {
-        this.recordstarttime = recordstarttime;
-    }
     public Integer getRecordbool() {
         return recordbool;
     }
@@ -232,12 +195,10 @@ public class Police_record extends Model<Police_record> {
         return "Police_record{" +
                 "id=" + id +
                 ", recordname='" + recordname + '\'' +
-                ", recordtemplatessid='" + recordtemplatessid + '\'' +
-                ", record_filesavessid='" + record_filesavessid + '\'' +
-                ", recordtime=" + recordtime +
-                ", recordstarttime=" + recordstarttime +
                 ", recordbool=" + recordbool +
                 ", pdf_filesavessid='" + pdf_filesavessid + '\'' +
+                ", word_filesavessid='" + word_filesavessid + '\'' +
+                ", gz_iid='" + gz_iid + '\'' +
                 ", recordtypessid='" + recordtypessid + '\'' +
                 ", createtime=" + createtime +
                 ", ssid='" + ssid + '\'' +
@@ -245,9 +206,9 @@ public class Police_record extends Model<Police_record> {
                 ", string2='" + string2 + '\'' +
                 ", integer1=" + integer1 +
                 ", integer2=" + integer2 +
+                ", wordtemplatessid='" + wordtemplatessid + '\'' +
                 '}';
     }
-
 
     public static void main(String[] args) {
         long a=1556245697000L;

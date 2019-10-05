@@ -9,10 +9,6 @@ import java.util.List;
  * 笔录录音文件
  */
 public class Record extends Police_record {
-    private String recorddownurl;//总录音下载地址
-
-    private String recordrealurl;//总录音真实地址
-
     private String pdfdownurl;//pdf下载地址
 
     private String pdfrealurl;//pdf真实地址
@@ -95,22 +91,6 @@ public class Record extends Police_record {
 
     public void setProblems(List<RecordToProblem> problems) {
         this.problems = problems;
-    }
-
-    public String getRecorddownurl() {
-        return recorddownurl;
-    }
-
-    public void setRecorddownurl(String recorddownurl) {
-        this.recorddownurl = recorddownurl;
-    }
-
-    public String getRecordrealurl() {
-        return recordrealurl;
-    }
-
-    public void setRecordrealurl(String recordrealurl) {
-        this.recordrealurl = recordrealurl;
     }
 
     public String getPdfdownurl() {

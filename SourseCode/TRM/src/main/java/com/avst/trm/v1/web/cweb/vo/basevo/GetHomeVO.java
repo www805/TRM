@@ -52,6 +52,26 @@ public class GetHomeVO {
     private Integer workdays; //授权信息，同步工作天数
 
 
+    private Integer stateSQ;//授权状态 1正常 -1不正常
+
+    private String liveurl;//首页直播地址
+
+    public String getLiveurl() {
+        return liveurl;
+    }
+
+    public void setLiveurl(String liveurl) {
+        this.liveurl = liveurl;
+    }
+
+    public Integer getStateSQ() {
+        return stateSQ;
+    }
+
+    public void setStateSQ(Integer stateSQ) {
+        this.stateSQ = stateSQ;
+    }
+
     public Integer getCase_startnum() {
         return case_startnum;
     }

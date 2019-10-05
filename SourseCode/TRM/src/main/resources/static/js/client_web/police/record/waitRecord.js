@@ -348,7 +348,7 @@ function callbackgetRecordById(data) {
 
             record_pausebool=data.record_pausebool;//暂停是否
             record_adjournbool=data.record_adjournbool;//休庭是否（案件暂停）
-            if (record_adjournbool==1||record_adjournbool=="1"){ $("#adjourn_btn").show(); } else {$("#adjourn_btn").hide();}
+            if ((record_adjournbool==1||record_adjournbool=="1")&&record_pausebool==1){ $("#adjourn_btn").show(); } else {$("#adjourn_btn").hide();}
 
             var record=data.record;
             if (isNotEmpty(record)){

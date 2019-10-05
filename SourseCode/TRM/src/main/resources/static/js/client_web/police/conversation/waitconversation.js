@@ -31,7 +31,8 @@ function callbackgetRecordById(data) {
 
             if(isNotEmpty(getRecordById_data)){
                var record_adjournbool=getRecordById_data.record_adjournbool;
-                if (record_adjournbool==1||record_adjournbool=="1"){
+                var  record_pausebool=getRecordById_data.record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
+                if ((record_adjournbool==1||record_adjournbool=="1")&&record_pausebool==1){
                     //显示暂停按钮
                     $("#adjourn_btn").show();
                 }
@@ -68,15 +69,15 @@ function callbackgetRecordById(data) {
 
                         if ((!isNotEmpty(mcbool)||!(mcbool==1||mcbool==3))&&isNotEmpty(mtssiddata)){
                             //存在会议但是状态为空或者不等于1
-                            $("#mtbool_txt").text("审讯已结束");
-                            layer.confirm('审讯已结束', function(index){
+                            $("#mtbool_txt").text("谈话已结束");
+                            layer.confirm('谈话已结束', function(index){
                                 //do something
                                 overRecord();
                                 layer.close(index);
                             });
                         }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
                             //存在会议状态正常
-                            $("#mtbool_txt").text("审讯中");
+                            $("#mtbool_txt").text("谈话中");
                             getRecordrealing();
                         }else {
                             layui.use(['layer','element','form'], function(){
@@ -85,20 +86,18 @@ function callbackgetRecordById(data) {
                                 layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                             });
                         }
-
-
-
+                        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else if (mcbool!=1&&!isNotEmpty(mtssid)) {
-                        layer.confirm('是否直接开启审讯', {
+                        layer.confirm('是否直接开启谈话', {
                             btn: ['确认','取消'], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                         }, function(index){
-                            $("#mtbool_txt").text("审讯启动中");
                             startMC();
                             $("#startbtn").css({"visibility":"hidden"});
                             layer.close(index);
                         }, function(index){
                             $("#startbtn").css({"visibility":"visible"});
+                            $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
                             layer.close(index);
                         });
 
@@ -120,7 +119,7 @@ function callbackgetRecordById(data) {
                     };
                     recorduser.push(user1);
                     recorduser.push(user2);
-                    dq_recorduser=recordUserInfosdata.userssid;//当前被审讯人
+                    dq_recorduser=recordUserInfosdata.userssid;//当前被谈话人
                 }
                 var case_=record.case_;
                 if (isNotEmpty(case_)){
@@ -180,6 +179,7 @@ var useretlist=null;
 var startMC_index=null;
 function startMC() {
     $("#startbtn").attr("onclick","");
+    $("#start_over_btn").text("谈话开启中").attr("onclick","");
      startMC_index = layer.msg("加载中，请稍等...", {
         icon: 16,
         time:100000
@@ -249,6 +249,7 @@ function startMC() {
         layer.msg("请稍等",{time:1000,icon:5},function () {
             getRecordById();
             $("#startbtn").attr("onclick","startMC();")
+            $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
         });
     }
 }
@@ -282,11 +283,12 @@ function callbackstartMC(data) {
             }
             mtssid=mtssiddata;
             mcbool=1;//正常开启
-            $("#mtbool_txt").text("审讯中");
+            $("#mtbool_txt").text("谈话中");
 
-            var con="审讯已开启";
+            var con="谈话已开启";
             layer.msg(con, {time: 2000,icon:6});
             $("#startbtn").css({"visibility":"hidden"}).attr("onclick","");
+            $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
         }
     }else{
         var data2=data.data;
@@ -294,20 +296,21 @@ function callbackstartMC(data) {
             var checkStartRecordVO=data2.checkStartRecordVO;
             if (null!=checkStartRecordVO){
                 var msg=checkStartRecordVO.msg;
-                parent.layer.confirm("审讯开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的审讯", {
+                parent.layer.confirm("谈话开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的谈话", {
                     btn: ['好的'], //按钮
                     shade: [0.1,'#fff'], //不显示遮罩
                     closeBtn:0,
-                    shade: [0.1,'#fff'], //不显示遮罩
                 }, function(index){
+                    $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
                     parent.layer.close(index);
                 });
                 return;
             }
         }
         $("#startbtn").css({"visibility":"visible"}).attr("onclick","startMC();");
+        $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
 
-        layer.msg("审讯开启失败",{icon:5});
+        layer.msg("谈话开启失败",{icon:5});
     }
 }
 
@@ -344,7 +347,7 @@ function overRecord(state) {
         var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
         var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
         if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
-            msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
+            msgtxt="<span style='color: red'>*存在光驱正在刻录中，谈话关闭将会停止刻录</span>"
         }
     }
 
@@ -366,10 +369,10 @@ function overRecord(state) {
                     recordbool:2,//关闭
                     recordToProblems:recordToProblems,
                     casebool:casebool,
-                    mtssid:mtssid //会议ssid用于审讯结束时关闭会议
+                    mtssid:mtssid //会议ssid用于谈话结束时关闭会议
                 }
             };
-            $("#overRecord_btn").attr("click","");
+            $("#overRecord_btn").attr("onclick","");
 
             ajaxSubmitByJson(url, data, calladdRecord);
         }else{
@@ -393,14 +396,14 @@ function calladdRecord(data) {
             if (isNotEmpty(overRecord_loadindex)) {
                 layer.close(overRecord_loadindex);
             }
-            layer.msg("审讯结束",{time:500,icon:6},function () {
+            layer.msg("谈话结束",{time:500,icon:6},function () {
                 window.history.go(-1);
             })
         }
     }else{
         layer.msg(data.message,{icon:5});
     }
-    $("#overRecord_btn").attr("click","overRecord();");
+    $("#overRecord_btn").attr("onclick","overRecord();");
 }
 
 $(function () {
