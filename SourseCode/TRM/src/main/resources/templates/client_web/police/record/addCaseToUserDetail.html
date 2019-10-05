@@ -505,18 +505,13 @@
                                 <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
                             </div>
                         </div>
-                        <div class="layui-col-lg6">
+                        <div class="layui-col-lg6 ">
                             <label class="layui-form-label">办案部门</label>
                             <div class="layui-input-block">
                                 <input type="text" name="department" id="department"  placeholder="" autocomplete="off" class="layui-input"  >
                             </div>
                         </div>
-                        <div class="layui-col-lg6 ">
-                            <div class="layui-input-block">
-                                <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="init_form(); return false;">重置信息</button>
-                                <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn">开始笔录</button>
-                            </div>
-                        </div>
+                        <div class="layui-col-lg6 "></div>
                         <div class="layui-col-lg6" >
                             <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板</label>
                             <div class="layui-input-block">
@@ -529,8 +524,14 @@
                                 <input type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
                             </div>
                         </div>
+                        <div class="layui-col-lg6 "></div>
+                        <div class="layui-col-lg6 layui-col-lg-offset6 ">
+                            <div class="layui-input-block" >
+                                <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="init_form(); return false;">重置信息</button>
+                                <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn">开始笔录</button>
+                            </div>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>

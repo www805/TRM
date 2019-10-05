@@ -1685,13 +1685,9 @@ public class RecordService extends BaseService {
             EntityWrapper wordew=new EntityWrapper();
             wordew.eq("w.ssid",record.getWordtemplatessid());
             List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
-            if (null!=wordTemplate&&wordTemplate.size()>0){
-                for (WordTemplate template : wordTemplate) {
-                    if (template.getDefaultbool()==1){
-                        wordtemplate_realurl=template.getWordtemplate_realurl();
-                        break;
-                    }
-                }
+            if (null!=wordTemplate&&wordTemplate.size()==1){
+                WordTemplate wordTemplate_=wordTemplate.get(0);
+                wordtemplate_realurl=wordTemplate_.getWordtemplate_realurl();
             }
             LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板真实地址__"+wordtemplate_realurl);
             if (StringUtils.isBlank(wordtemplate_realurl)){
@@ -1820,13 +1816,9 @@ public class RecordService extends BaseService {
            EntityWrapper wordew=new EntityWrapper();
             wordew.eq("w.ssid",record.getWordtemplatessid());
            List<WordTemplate> wordTemplate=police_wordtemplateMapper.getWordTemplate(wordew);
-           if (null!=wordTemplate&&wordTemplate.size()>0){
-               for (WordTemplate template : wordTemplate) {
-                    if (template.getDefaultbool()==1){
-                        wordtemplate_realurl=template.getWordtemplate_realurl();
-                        break;
-                    }
-               }
+           if (null!=wordTemplate&&wordTemplate.size()==1){
+               WordTemplate wordTemplate_=wordTemplate.get(0);
+                wordtemplate_realurl=wordTemplate_.getWordtemplate_realurl();
            }
             LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板真实地址__"+wordtemplate_realurl);
            if (StringUtils.isBlank(wordtemplate_realurl)){
@@ -2070,7 +2062,7 @@ public class RecordService extends BaseService {
             }
 
             //talk 问答
-            talk = talk.replaceAll("\\<.*?>", "");
+            talk = talk.replaceAll("\\<.*?>", "").replaceAll("\\&[a-zA-Z]{1,10};", "");
 
 
 

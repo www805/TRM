@@ -376,10 +376,6 @@ function btn(obj) {
     }
 }
 function exportWord(obj){
-    if (isNotEmpty(worddownurl)){
-        window.location.href = worddownurl;
-        layer.msg("导出成功,等待下载中...",{icon: 6});
-    }else {
         //调用导出方法
         layer.msg("导出中，请稍等...", {
             icon: 16,
@@ -405,24 +401,9 @@ function exportWord(obj){
                 layer.msg(data.message,{icon: 5});
             }
         });
-    }
     btn(obj);
 }
 function exportPdf(obj) {
-    if (isNotEmpty(pdfdownurl)){
-        layer.open({
-            id:"pdfid",
-            type: 1,
-            title: '导出PDF笔录',
-            shadeClose: true,
-            shade: false,
-            maxmin: true, //开启最大化最小化按钮
-            area: ['893px', '600px'],
-        });
-
-        showPDF("pdfid",pdfdownurl);
-        layer.msg("导出成功,等待下载中...",{icon: 6});
-    }else{
         //调用导出方法
         layer.msg("导出中，请稍等...", {
             icon: 16,
@@ -456,7 +437,6 @@ function exportPdf(obj) {
                 layer.msg(data.message,{icon: 5});
             }
         });
-    }
     btn(obj);
 }
 

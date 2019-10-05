@@ -898,7 +898,7 @@ function calladdRecord(data) {
 
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
-                    window.history.go(-1);
+                    window.history.go(-1);location.reload();
                 })
             }else if (recordbool==-1){//导出word
                 var url=getActionURL(getactionid_manage().waitRecord_exportWord);
