@@ -1,11 +1,9 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
-import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
-import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -15,7 +13,6 @@ import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,27 +20,16 @@ import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.POIXMLDocument;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.spring5.context.SpringContextUtils;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 
 @Service
 public class TemplateService extends BaseService {

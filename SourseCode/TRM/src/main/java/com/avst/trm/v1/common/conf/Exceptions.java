@@ -1,7 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import org.apache.shiro.authz.UnauthenticatedException;
 import org.apache.shiro.authz.UnauthorizedException;
@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 全局异常捕捉类

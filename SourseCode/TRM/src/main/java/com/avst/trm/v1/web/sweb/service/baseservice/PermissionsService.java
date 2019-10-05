@@ -5,7 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_permissions;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_roletopermissions;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_permissionsMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_roletopermissionsMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;

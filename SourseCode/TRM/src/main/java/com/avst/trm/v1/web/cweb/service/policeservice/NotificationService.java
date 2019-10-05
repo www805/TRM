@@ -5,7 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_notification;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Notification;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_notificationMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -19,26 +19,17 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.POIXMLDocument;
-import org.apache.poi.POIXMLTextExtractor;
-import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service("NotificationService")
 public class NotificationService extends BaseService {

@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.conf.socketio;
 
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.corundumstudio.socketio.*;
 import com.corundumstudio.socketio.listener.ConnectListener;

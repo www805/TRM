@@ -14,7 +14,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.converter.PicturesManager;

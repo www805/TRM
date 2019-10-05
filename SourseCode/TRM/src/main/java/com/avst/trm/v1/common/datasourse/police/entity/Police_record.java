@@ -1,6 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity;
 
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;

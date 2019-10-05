@@ -2,7 +2,7 @@ package com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action;
 
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;

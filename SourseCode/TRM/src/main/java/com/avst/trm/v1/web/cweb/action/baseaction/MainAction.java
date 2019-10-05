@@ -6,7 +6,6 @@ import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;

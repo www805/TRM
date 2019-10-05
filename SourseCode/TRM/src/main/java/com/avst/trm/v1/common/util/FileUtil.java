@@ -1,9 +1,9 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

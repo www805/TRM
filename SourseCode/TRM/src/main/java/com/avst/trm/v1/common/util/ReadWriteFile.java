@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -79,7 +80,7 @@ public class ReadWriteFile {
         InputStreamReader inp=null;
         try {
         	List<String> readList=new ArrayList<String>();	
-        	LogUtil.intoLog(ReadWriteFile.class,"文件路径为："+path);
+        	LogUtil.intoLog(ReadWriteFile.class,"读取文件文本,文件路径为："+path);
             
             
             input = new FileInputStream(path);
@@ -125,7 +126,7 @@ public class ReadWriteFile {
         InputStream input = null;
         InputStreamReader inp=null;
         try {
-        	LogUtil.intoLog(ReadWriteFile.class,"文件路径为："+path);
+        	LogUtil.intoLog(ReadWriteFile.class,"读取文件文本,文件路径为："+path);
             
             
             input = new FileInputStream(path);

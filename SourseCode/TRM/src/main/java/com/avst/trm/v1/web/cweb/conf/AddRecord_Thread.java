@@ -1,27 +1,15 @@
 package com.avst.trm.v1.web.cweb.conf;
 
 import com.avst.trm.v1.common.conf.type.MCType;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtoproblem;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_answerMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordtoproblemMapper;
-import com.avst.trm.v1.common.util.LogUtil;
-import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.web.cweb.req.policereq.ExportPdfParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  *笔录保存

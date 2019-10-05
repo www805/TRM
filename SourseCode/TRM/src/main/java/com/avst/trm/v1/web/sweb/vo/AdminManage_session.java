@@ -30,9 +30,9 @@ public class AdminManage_session  {
     private Integer adminbool;
 
     /**
-     * 工作单位id
+     * 工作单位名称
      */
-    private Integer workunitid;
+    private String workunitname;
 
     /**
      * 单位中的排序,用于客户端的使用者（办案人员）
@@ -90,12 +90,12 @@ public class AdminManage_session  {
         this.adminbool = adminbool;
     }
 
-    public Integer getWorkunitid() {
-        return workunitid;
+    public String getWorkunitname() {
+        return workunitname;
     }
 
-    public void setWorkunitid(Integer workunitid) {
-        this.workunitid = workunitid;
+    public void setWorkunitname(String workunitname) {
+        this.workunitname = workunitname;
     }
 
     public Integer getUnitsort() {

@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

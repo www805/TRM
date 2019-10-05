@@ -12,7 +12,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -31,14 +31,12 @@ import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.vo.basevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
+import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
-import org.ansj.app.keyword.KeyWordComputer;
-import org.ansj.app.keyword.Keyword;
 import org.ansj.domain.Result;
 import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.NlpAnalysis;
 import org.ansj.splitWord.analysis.ToAnalysis;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -211,17 +209,31 @@ public class MainService extends BaseService {
 
                     result.setData(userloginVO);
                     changeResultToSuccess(result);
+
+                    //写入缓存用户
+                    AdminManage_session admin=new AdminManage_session();
+                    admin.setAdminbool(user.getAdminbool());
+                    admin.setLastlogintime(user.getLastlogintime());
+                    admin.setLoginaccount(user.getLoginaccount());
+                    admin.setWorkunitname(user.getWorkname());
+                    admin.setUsername(user.getUsername());
+                    admin.setUpdatetime(user.getUpdatetime());
+                    admin.setUnitsort(user.getUnitsort());
+                    admin.setSsid(user.getSsid());
+                    admin.setRegistertime(user.getRegistertime());
+                    CommonCache.setAdminManage_session(admin);
+
                     return;
                 }else {
                     LogUtil.intoLog(this.getClass(),"登录异常了--账户"+loginaccount1+"--密码--"+password);
                 }
             }else{
-                LogUtil.intoLog(this.getClass(),"多个用户异常--"+loginaccount1);
+                LogUtil.intoLog(3,this.getClass(),"多个用户异常--登录名："+loginaccount1+"",loginaccount1);
                 result.setMessage("系统异常");
                 return;
             }
         }else{
-            LogUtil.intoLog(this.getClass(),"用户不存在--"+loginaccount1);
+            LogUtil.intoLog(3,this.getClass(),"用户不存在--"+loginaccount1,loginaccount1);
             result.setMessage("没有找到该用户");
             return;
         }
@@ -236,6 +248,9 @@ public class MainService extends BaseService {
             subject.logout();
             LogUtil.intoLog(this.getClass(),"退出成功");
             result.setMessage("退出成功");
+
+            CommonCache.setAdminManage_session(null);//清空用户缓存
+
         changeResultToSuccess(result);
         return;
     }

@@ -2,7 +2,7 @@ package com.avst.trm.v1.web.sweb.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import org.springframework.web.servlet.ModelAndView;

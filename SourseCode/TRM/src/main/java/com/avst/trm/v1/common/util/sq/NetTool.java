@@ -1,13 +1,12 @@
 package com.avst.trm.v1.common.util.sq;
 import java.io.*;
 
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Scanner;
 
 /**
  * 授权已经到了第三阶段 使用CPU序列号+C盘序列号

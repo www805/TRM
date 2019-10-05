@@ -1,7 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.util.FileUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class SysStartTimer implements ApplicationRunner {
      */
     private void delGZIP(){
 
-        LogUtil.intoLog(1,this.getClass(),"准备清理上一次开启产生的zip压缩包");
+        LogUtil.intoLog(1,this.getClass(),"准备清理上一次开启产生的zip压缩包","监测自身的定时器");
         //先获取要删除文件的格式
         String gztype= PropertiesListenerConfig.getProperty("gztype");
         if(StringUtils.isEmpty(gztype)){

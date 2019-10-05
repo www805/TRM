@@ -16,6 +16,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;

@@ -1,6 +1,5 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
-import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
@@ -8,26 +7,22 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

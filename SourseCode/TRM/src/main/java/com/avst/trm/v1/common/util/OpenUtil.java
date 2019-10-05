@@ -1,10 +1,8 @@
 package com.avst.trm.v1.common.util;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -17,6 +15,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.ndktools.javamd5.core.MD5;
 import org.apache.commons.codec.digest.DigestUtils;
 

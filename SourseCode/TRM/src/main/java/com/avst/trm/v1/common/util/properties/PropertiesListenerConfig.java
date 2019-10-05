@@ -1,7 +1,6 @@
 package com.avst.trm.v1.common.util.properties;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -9,14 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.avst.trm.v1.common.util.LogUtil;
-import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import org.springframework.beans.BeansException;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.PropertiesLoaderUtils;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class PropertiesListenerConfig {
     public static Map<String, String> propertiesMap = new HashMap<>();

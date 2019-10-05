@@ -5,7 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndAdminRole;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.Getlist3Param;

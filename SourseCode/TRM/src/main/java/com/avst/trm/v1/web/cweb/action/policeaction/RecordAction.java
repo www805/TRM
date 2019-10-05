@@ -4,7 +4,6 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_recordtype;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;

@@ -2,7 +2,6 @@ package com.avst.trm.v1.common.util.poiwork;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_answer;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
-import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.poiwork.param.Answer;
 import com.avst.trm.v1.common.util.poiwork.param.Talk;

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.util;
 
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;

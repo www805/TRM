@@ -1,9 +1,10 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -37,7 +37,7 @@ public class LoginService extends BaseService {
 
         if(!StringUtils.isNotBlank(loginaccount) || !StringUtils.isNotBlank(password)){
             result.setMessage("用户名密码不能为空");
-            LogUtil.intoLog(this.getClass(),"LogAction gotologin loginParam is null");
+            LogUtil.intoLog(4,this.getClass(),"LogAction gotologin loginParam is null");
             return;
         }
 
@@ -75,14 +75,12 @@ public class LoginService extends BaseService {
 
 
                         subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
-                        LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
+                        LogUtil.intoLog(1,this.getClass(),"用户是否登录："+subject.isAuthenticated(),base_admininfo.getUsername());
                       if(!subject.isPermitted("checklogin")&&subject.isAuthenticated()) {
                             result.setMessage("不好意思~您没有权限登录，请联系管理员");
-                           subject.logout();
+                            subject.logout();
                             return;
                         }
-
-
 
                         if (null!=base_admininfo.getTemporaryaskbool()&&base_admininfo.getTemporaryaskbool()==1){
                             result.setMessage("临时询问人不可登录");
@@ -91,16 +89,28 @@ public class LoginService extends BaseService {
 
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
 
-
                         //修改用户最后一次登录：服务器端是否需要判断第一次登录重置密码？
                        /* base_admininfo.setLastlogintime(new Date());*/
                         int updateById_bool=admininfoMapper.updateById(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"updateById_bool__"+updateById_bool);
                         this.changeResultToSuccess(result);
 
+                        //写入缓存用户
+                        AdminManage_session admin=new AdminManage_session();
+                        admin.setAdminbool(base_admininfo.getAdminbool());
+                        admin.setLastlogintime(base_admininfo.getLastlogintime());
+                        admin.setLoginaccount(base_admininfo.getLoginaccount());
+                        admin.setWorkunitname(base_admininfo.getWorkunitssid());//这里没有去查工作单位，暂时不用这个参数
+                        admin.setUsername(base_admininfo.getUsername());
+                        admin.setUpdatetime(base_admininfo.getUpdatetime());
+                        admin.setUnitsort(base_admininfo.getUnitsort());
+                        admin.setSsid(base_admininfo.getSsid());
+                        admin.setRegistertime(base_admininfo.getRegistertime());
+                        CommonCache.setAdminManage_session(admin);
+
 
                     }else{
-                        LogUtil.intoLog(this.getClass(),"系统异常--登录账号多个："+loginaccount);
+                        LogUtil.intoLog(3,this.getClass(),"系统异常--登录账号多个,登录名："+loginaccount,loginaccount);
                         result.setMessage("系统异常");
                         return;
                     }

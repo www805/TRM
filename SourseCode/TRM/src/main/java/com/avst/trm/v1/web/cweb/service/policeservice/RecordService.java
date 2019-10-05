@@ -1,7 +1,6 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.avst.trm.v1.common.cache.*;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
@@ -15,7 +14,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -54,7 +53,6 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

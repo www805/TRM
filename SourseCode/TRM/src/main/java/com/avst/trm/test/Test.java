@@ -2,9 +2,8 @@ package com.avst.trm.test;
 
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.util.HttpRequest;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
-import com.avst.trm.v1.common.util.sq.NetTool;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;

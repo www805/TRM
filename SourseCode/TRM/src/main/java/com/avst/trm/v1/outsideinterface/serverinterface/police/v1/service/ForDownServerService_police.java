@@ -3,13 +3,12 @@ package com.avst.trm.v1.outsideinterface.serverinterface.police.v1.service;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datasheet_upserver;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_datasynchroni_upserver;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.GetSynchronizedDataSheet_UpServer;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasheet_upserverMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_upserverMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.JacksonUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -29,9 +28,7 @@ import com.avst.trm.v1.outsideinterface.serverinterface.common.vo.Param.StartSyn
 import com.avst.trm.v1.outsideinterface.serverinterface.common.vo.StartSynchronizedataVO;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.mapper.Wrapper;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +36,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.*;
 
 @Service

@@ -7,12 +7,8 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
-import com.avst.trm.v1.common.util.OpenUtil;
-import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -26,21 +22,14 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.Contro
 import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -78,22 +67,22 @@ public class Scheduler {
     @Scheduled(cron = "1 58 1/1 * * ?")
     public void testTasks2() {
 
-        LogUtil.intoLog(this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()));
+        LogUtil.intoLog(1,this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()),"循环定时器");
 
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         //检测授权
         int authorizebool=serverconfig.getAuthorizebool();
         if(authorizebool!=1){//还没有生成隐性授权文件
             boolean bool= AnalysisSQ.createClientini(serverconfig);
-            LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
+            LogUtil.intoLog(3,this.getClass(),"initClient authorizebool:"+bool,"循环定时器");
             return;
         }
 
         SQEntity sqEntity=AnalysisSQ.getSQEntity();
         if(null==sqEntity){
-            LogUtil.intoLog(4,this.getClass(),"sqEntity==null,testTasks2 is over");
+            LogUtil.intoLog(4,this.getClass(),"sqEntity==null,testTasks2 is over","循环定时器");
             boolean bool= AnalysisSQ.createClientini(serverconfig);
-            LogUtil.intoLog(this.getClass(),"initClient authorizebool:"+bool);
+            LogUtil.intoLog(3,this.getClass(),"initClient authorizebool:"+bool,"循环定时器");
             return ;
         }
 
@@ -101,10 +90,10 @@ public class Scheduler {
 
         String databasetime=DateUtil.format(date);//数据库中的开始时间
         String sqfiletime=sqEntity.getStartTime();//授权文件中的开始时间
-        LogUtil.intoLog(this.getClass(),databasetime+":databasetime:DateUtil.format(date)----sqEntity.getStartTime():sqfiletime:"+sqfiletime);
+        LogUtil.intoLog(3,this.getClass(),databasetime+":databasetime:DateUtil.format(date)----sqEntity.getStartTime():sqfiletime:"+sqfiletime,"循环定时器");
         if(!databasetime.equals(sqfiletime)){//对比数据库和ini的开始时间，以防篡改
             boolean bool= AnalysisSQ.createClientini(serverconfig);
-            LogUtil.intoLog(this.getClass(),"时间不对授权重新初始化授权initClient authorizebool:"+bool);
+            LogUtil.intoLog(4,this.getClass(),"时间不对授权重新初始化授权initClient authorizebool:"+bool,"循环定时器");
             serverconfig=base_serverconfigMapper.selectById(1);
         }
 
@@ -114,7 +103,7 @@ public class Scheduler {
         AnalysisSQ.updateClientini(workday);
 
         int bool=AnalysisSQ.checkUseTime();
-        LogUtil.intoLog(1,this.getClass(),"AnalysisSQ.checkUseTime()---bool:"+bool);
+        LogUtil.intoLog(1,this.getClass(),"AnalysisSQ.checkUseTime()---bool:"+bool,"循环定时器");
         if(bool > -1){//授权正确
             CommonCache.clientSQbool=true;
             int workdays=serverconfig.getWorkdays();
@@ -122,7 +111,7 @@ public class Scheduler {
             if(workdays!=workday){//如果数据库的使用时间跟授权文件中的使用时间不一致，就修改数据库
                 serverconfig.setWorkdays(workday);
                 int updateById=base_serverconfigMapper.updateById(serverconfig);
-                LogUtil.intoLog(1,this.getClass(),"base_serverconfigMapper.updateById--修改数据库最新使用时间-updateById:"+updateById);
+                LogUtil.intoLog(1,this.getClass(),"base_serverconfigMapper.updateById--修改数据库最新使用时间-updateById:"+updateById,"循环定时器");
             }
 
         }else{
@@ -131,7 +120,7 @@ public class Scheduler {
                 //重新授权
                 CommonCache.clientSQbool=AnalysisSQ.createClientini(serverconfig);
             }
-            LogUtil.intoLog(4,this.getClass(),"授权异常，异常码:"+bool);
+            LogUtil.intoLog(4,this.getClass(),"授权异常，异常码:"+bool,"循环定时器");
         }
 
 
@@ -146,7 +135,7 @@ public class Scheduler {
 
         InitVO initVO_WEB = CommonCache.getinit_WEB();
         if(null==initVO_WEB||null==initVO_WEB.getPageList()||initVO_WEB.getPageList().size() == 0){
-            LogUtil.intoLog(4,this.getClass(),"查看授权是否出问题了，CommonCache.getinit_WEB() is null");
+            LogUtil.intoLog(4,this.getClass(),"查看授权是否出问题了，CommonCache.getinit_WEB() is null","循环定时器");
             return ;
         }
         /**提供给总控，服务端的登录地址（从动作缓存中获取）**/
@@ -179,6 +168,7 @@ public class Scheduler {
         Base_admininfo admininfo = CommonCache.getAdmininfo();
         if(null == admininfo){
             admininfo = base_admininfoMapper.selectById(1);
+            CommonCache.setAdmininfo(admininfo);
         }
 
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
@@ -209,7 +199,7 @@ public class Scheduler {
         try {
             zkControl.getHeartbeat(param);
         } catch (Exception e) {
-            LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败");
+            LogUtil.intoLog(4,this.getClass(),"Scheduler.testTasks is error, 上报心跳到总控失败","循环定时器");
         }
     }
 
@@ -254,7 +244,7 @@ public class Scheduler {
 
                         recordService.addRecord(result, reqParam);
 
-                        LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功");
+                        LogUtil.intoLog(1, this.getClass(), "Scheduler.testTasks is info, 笔录ssid = " + ssid + " 设置休庭成功","循环定时器");
                     }
                 }
 

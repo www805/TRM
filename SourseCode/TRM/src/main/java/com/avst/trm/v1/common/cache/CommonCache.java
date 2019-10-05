@@ -7,7 +7,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ActionAndinterfaceAndPage;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_actionMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -585,7 +585,7 @@ public class CommonCache {
 
 
     /**
-     * 用户在session中的缓存
+     * 用户在session中的缓存(客户端还是服务端都需要缓存这个用户，永远只有一个用户，登录之后就改过来)
      */
     private static  AdminManage_session adminManage_session;
 

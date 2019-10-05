@@ -2,10 +2,8 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_arraignmentCount;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.util.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -14,7 +12,6 @@ import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.sweb.req.basereq.AdmininfoOrWorkunitParam;
 import com.avst.trm.v1.web.sweb.req.basereq.Arraignment_countParam;
 import com.avst.trm.v1.web.sweb.req.policereq.GetArraignmentCountParam;
-import com.avst.trm.v1.web.sweb.vo.basevo.ArraignmentCountVO;
 import com.avst.trm.v1.web.sweb.vo.basevo.KeywordListVO;
 import com.avst.trm.v1.web.sweb.vo.policevo.GetArraignmentCountVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -23,9 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.RegionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

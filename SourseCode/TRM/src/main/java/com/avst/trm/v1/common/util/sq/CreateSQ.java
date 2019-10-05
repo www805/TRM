@@ -2,7 +2,7 @@ package com.avst.trm.v1.common.util.sq;
 
 
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.wb.deencode.EncodeUtil;
 

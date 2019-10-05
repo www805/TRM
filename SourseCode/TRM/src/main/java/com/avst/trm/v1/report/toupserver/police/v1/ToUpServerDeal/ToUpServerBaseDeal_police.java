@@ -9,7 +9,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_datasynchroni_downserv
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.JacksonUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RRParam;

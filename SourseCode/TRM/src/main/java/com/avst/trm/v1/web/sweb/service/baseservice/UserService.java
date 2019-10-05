@@ -10,7 +10,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admintoroleMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_workunitMapper;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;

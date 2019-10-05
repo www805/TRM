@@ -2,7 +2,7 @@ package com.avst.trm.v1.web.cweb.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 
 /**
  * 客户端管理员拦截器
@@ -24,7 +23,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
     //在控制器执行前调用
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response, Object handler) throws Exception {
-        LogUtil.intoLog(this.getClass(),"执行preHandle方法-->01");
+//        LogUtil.intoLog(this.getClass(),"执行preHandle方法-->01");
 
 
         try {
@@ -50,7 +49,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             }else{
                 clientkey = AnalysisSQ.getClientKey();
                 session.setAttribute(Constant.INIT_CLIENTKEY,clientkey);
-                LogUtil.intoLog(this.getClass(),"clientkey is null 53,clientkey="+clientkey);
+                LogUtil.intoLog(4,this.getClass(),"clientkey is null 53,clientkey="+clientkey);
             }
             if(null==session.getAttribute(Constant.SOCKETIO_HOST)||
                     null==session.getAttribute(Constant.SOCKETIO_PORT)){
@@ -66,11 +65,11 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
 
             String url=request.getRequestURI();
             if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截
-                LogUtil.intoLog(this.getClass(),url+":url，跳过进入登录页面的拦截");
+                LogUtil.intoLog(3,this.getClass(),url+":url，跳过进入登录页面的拦截");
                 return true;
             }
             if( url.endsWith("/uploadNotification")){//测试上传接口
-                LogUtil.intoLog(this.getClass(),url+":url，测试上传接口");
+                LogUtil.intoLog(3,this.getClass(),url+":url，测试上传接口");
                 return true;
             }
 
@@ -91,7 +90,7 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
             if (disbool&&!url.equals("/cweb/")) {
                 return true;  //通过拦截器，继续执行请求
             } else {//跳转登录界面
-                LogUtil.intoLog(1,this.getClass(),firstinterface+":firstinterface，跳转登录界面");
+                LogUtil.intoLog(3,this.getClass(),firstinterface+":firstinterface，跳转登录界面");
                 request.getRequestDispatcher(firstinterface).forward(request, response);
                 return false;  //没有通过拦截器，返回登录页面
             }
@@ -101,21 +100,21 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        LogUtil.intoLog(this.getClass(),"clientkey is null 53,clientkey="+CommonCache.getClientKey());
+        LogUtil.intoLog(3,this.getClass(),"clientkey is null 53,clientkey="+CommonCache.getClientKey());
         return false;  //没有通过拦截器，返回登录页面
     }
     //在后端控制器执行后调用
     public void postHandle(HttpServletRequest request,
                            HttpServletResponse response, Object handler,
                            ModelAndView modelAndView) throws Exception {
-        LogUtil.intoLog(this.getClass(),"执行postHandle方法-->02");
+//        LogUtil.intoLog(this.getClass(),"执行postHandle方法-->02");
         super.postHandle(request, response, handler, modelAndView);
     }
     //整个请求执行完成后调用
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception ex)
             throws Exception {
-        LogUtil.intoLog(this.getClass(),"执行afterCompletion方法-->03");
+//        LogUtil.intoLog(this.getClass(),"执行afterCompletion方法-->03");
         super.afterCompletion(request, response, handler, ex);
     }
 

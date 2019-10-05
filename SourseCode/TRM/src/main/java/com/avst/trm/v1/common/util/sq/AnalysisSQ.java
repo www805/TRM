@@ -4,15 +4,13 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.*;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.wb.deencode.DeCodeUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
 
 /**
  * 客户端服务器有的类

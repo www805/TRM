@@ -6,7 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.GetSynchronizedDataSheet_DownServer;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
 import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.LogUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.report.toupserver.common.reqparam.StartSynchronizedata_2_Param;
 import com.avst.trm.v1.report.toupserver.common.reqparam.SynchronizedataParam;

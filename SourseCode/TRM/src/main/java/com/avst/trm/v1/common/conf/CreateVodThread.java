@@ -1,6 +1,5 @@
 package com.avst.trm.v1.common.conf;
 
-import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
@@ -8,24 +7,18 @@ import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.*;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetSaveFilePath_localParam;
-import com.avst.trm.v1.feignclient.ec.req.GetSavePathParam;
-import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
-import com.avst.trm.v1.feignclient.ec.vo.GetURLToPlayVO;
-import com.avst.trm.v1.feignclient.ec.vo.SaveFile_localParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
-import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
 import com.avst.trm.v1.web.cweb.vo.policevo.GetRecordByIdVO;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 /**
