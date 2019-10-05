@@ -266,7 +266,7 @@ public class MainAction extends BaseAction {
     @ResponseBody
     public  RResult getPant(){
         RResult result=this.createNewResultOfFail();
-        result.setMessage("心跳正常");
+        result.setData("心跳正常");
         changeResultToSuccess(result);
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

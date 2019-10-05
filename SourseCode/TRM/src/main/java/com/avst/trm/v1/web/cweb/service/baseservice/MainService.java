@@ -808,7 +808,9 @@ public class MainService extends BaseService {
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
 
+                //判断如果是单机版，就获取单机版的菜单栏
                 String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
+//                String cwebFile=PropertiesListenerConfig.getProperty("nav.file.oem");
                 String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
@@ -821,7 +823,7 @@ public class MainService extends BaseService {
 
                 cacheParam.setData(fileYml);
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
-
+                LogUtil.intoLog(1, this.getClass(), "外部配置文件，获取菜单栏成功");
             } catch (IOException e) {
                 LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
             }finally {

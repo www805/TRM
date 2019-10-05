@@ -94,6 +94,7 @@ function getactionid_manage() {
         main_torecordTypeList:"main_torecordTypeList",
         main_gotoupdateServerconfig:"main_gotoupdateServerconfig",
         main_getNavList:"main_getNavList",
+        main_getPant:"main_getPant",
         main_tostartConversation:"main_tostartConversation",
         main_toconversationIndex:"main_toconversationIndex",
 

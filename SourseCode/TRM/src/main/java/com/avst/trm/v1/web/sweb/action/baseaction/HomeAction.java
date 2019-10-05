@@ -128,12 +128,7 @@ public class HomeAction extends BaseAction{
     @ResponseBody
     public RResult logout(Model model,HttpServletRequest request) {
         RResult rResult=createNewResultOfFail();
-        this.changeResultToSuccess(rResult);
-        AppServiceCache.delAppServiceCache();//清空logo导航栏缓存
-        rResult.setMessage("退出成功");
-        request.getSession().setAttribute(Constant.MANAGE_WEB,null);
-        Subject subject = SecurityUtils.getSubject();
-        subject.logout();
+        loginService.logout(rResult, request);
         return rResult;
     }
 
@@ -146,6 +141,20 @@ public class HomeAction extends BaseAction{
     public  RResult getNavList(){
         RResult result=this.createNewResultOfFail();
         homeService.getNavList(result);
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 心跳
+     * @return
+     */
+    @RequestMapping("/getPant")
+    @ResponseBody
+    public  RResult getPant(){
+        RResult result=this.createNewResultOfFail();
+        result.setData("心跳正常");
+        changeResultToSuccess(result);
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }

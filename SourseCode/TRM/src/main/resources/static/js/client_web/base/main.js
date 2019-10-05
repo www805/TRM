@@ -32,8 +32,8 @@ function callbackuserloginout(data) {
 
 //心跳
 function getPant() {
-    // var url=getActionURL(getactionid_manage().main_getNavList);
-    var url = "/cweb/base/main/getPant";
+    var url=getActionURL(getactionid_manage().main_getPant);
+    // var url = "/cweb/base/main/getPant";
     var data={
         token:INIT_CLIENTKEY
     };

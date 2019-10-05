@@ -78,6 +78,19 @@ function callgetNavList(data) {
     }
 }
 
+//心跳
+function getPant() {
+    var url=getActionURL(getactionid_manage().main_getPant);
+    // var url = "/cweb/base/main/getPant";
+    ajaxSubmitByJson(url,null,callgetPant);
+}
+
+function callgetPant(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        console.log(data.message);
+    }
+}
+
 // layui.use(['laypage', 'form', 'layer', 'layedit', 'laydate','element', 'upload'], function(){
 //     var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到
 //         ,form = layui.form
