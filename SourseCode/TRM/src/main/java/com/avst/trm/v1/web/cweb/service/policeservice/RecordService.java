@@ -1326,7 +1326,7 @@ public class RecordService extends BaseService {
         record.setSsid(OpenUtil.getUUID_32());
         record.setCreatetime(new Date());
         record.setRecordbool(0);//1进行中0未开始
-        record.setRecordtypessid(recordtypessid);
+        record.setRecordtypessid(recordtypessid==null?PropertiesListenerConfig.getProperty("recordtype_default"):recordtypessid);
         record.setRecordname(recordname);
         if (StringUtils.isBlank(wordtemplatessid)){
             //选用默认的

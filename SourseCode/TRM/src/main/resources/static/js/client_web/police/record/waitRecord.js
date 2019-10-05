@@ -419,6 +419,7 @@ function callbackgetRecordById(data) {
                             var layer=layui.layer;
                             layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 1});
                         });
+                        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
                         if (multifunctionbool==2){
                             $("#pauserecord").attr({"src":"/uimaker/images/record7.png","onclick":"img_bool(this,1);"});
@@ -443,12 +444,15 @@ function callbackgetRecordById(data) {
                                 layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 1});
                             });
                         }
+
+                        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else {
                         $("#pauserecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
                             layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
                         });
+                        $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
                     }
                 }
 
@@ -506,8 +510,7 @@ function callbackgetRecordById(data) {
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
                                   <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>\
-                                  <tr><td>类型</td><td>"+recordtypename+"</td> </tr>";
+                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
                 getMCCacheParamByMTssid();//获取缓存
@@ -535,6 +538,7 @@ function callbackgetRecordById(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
+    layer.closeAll('tips');//###
 }
 
 
@@ -542,6 +546,7 @@ function callbackgetRecordById(data) {
 var mtssid=null;//会议ssid
 var useretlist=null;
 function startMC() {
+    $("#start_over_btn").text("谈话开启中").attr("onclick","");
     if (isNotEmpty(getRecordById_data)){
         $("#MtState").text("加载中");
         $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
@@ -626,6 +631,7 @@ function startMC() {
                 var layer=layui.layer;
                 layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
             });
+            $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
         });
     }
 }
@@ -690,6 +696,7 @@ function callbackstartMC(data) {
             var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录像数："+recordnum;
             layer.msg(con, {time: 2000});
         }
+        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
     }else{
         $("#MtState").text("未启动");
         $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
@@ -734,8 +741,10 @@ function callbackstartMC(data) {
             }
         }
         layer.msg("开启失败");
-
+        $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
     }
+
+    layer.closeAll('tips');//###
 }
 
 
@@ -898,7 +907,7 @@ function calladdRecord(data) {
 
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
-                    window.history.go(-1);location.reload();
+                    window.history.go(-1);
                 })
             }else if (recordbool==-1){//导出word
                 var url=getActionURL(getactionid_manage().waitRecord_exportWord);
@@ -1286,28 +1295,58 @@ function setrecord_html() {
 //*******************************************************************点击start****************************************************************//
 //身心检测
 function initheart() {
-    $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","300px");
+    $(".layui-tab-content").css("height","90%");
+    $("#templatetoproblem").css("height","initial");
 }
 //语音识别
 function initasr() {
-    $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","300px");
+    $(".layui-tab-content").css("height","90%");
+    $("#templatetoproblem").css("height","initial");
 }
 //案件
 function initcase() {
-    $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","300px");
+    $(".layui-tab-content").css("height","90%");
+    $("#templatetoproblem").css("height","initial");
 }
 function initcase_header() {
-    $("#initec ul li").removeClass("layui-this");
-    $("#initec .layui-tab-item").removeClass("layui-show");
-    $("#case").addClass("layui-this");
-    $("#caseitem").addClass("layui-show");
-
-    $("#initheart_click").addClass("layui-show");
-    $(".layui-tab-content").css("height","300px");
+    $(".layui-tab-content").css("height","0%");
+    $("#templatetoproblem").css("height","62%");
 }
+
+function switchbtn(type,obj) {
+    if (type==1){
+        $(".phitem1").css("display","block");
+        $("#shrink_html").css("display","none");
+        $("#notshrink_html1").css("display","none");
+
+        var html=$("#living3_2").html();
+        if (!isNotEmpty(html)){
+            $("#living3_2").html($("#living3_1").html());
+            $("#living3_1").empty();
+        }
+
+        $(".phitem2").attr("id","");
+        $(".phitem1").attr("id","phitem");
+    } else {
+        $(".phitem1").css("display","none");
+        $("#shrink_html").css("display","block");
+        $("#notshrink_html1").css("display","block");
+
+        var html=$("#living3_1").html();
+        if (!isNotEmpty(html)){
+            $("#living3_1").html($("#living3_2").html());
+            $("#living3_2").empty();
+        }
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        $(".phitem1").attr("id","");
+        $(".phitem2").attr("id","phitem");
+        main1();
+    }
+
+    initplayer();//启动设备画面预览
+    $(obj).removeClass("layui-btn-primary").addClass("layui-btn-normal").siblings().removeClass("layui-btn-normal").addClass("layui-btn-primary");
+}
+
 //直播
 function initliving() {
     $("#initheart_click").removeClass("layui-show");
@@ -1829,7 +1868,7 @@ $(function () {
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-            if (usepolygraph==1){//使用测谎仪开启获取
+            if (usepolygraph==1&&isNotEmpty(myChart)){//使用测谎仪开启获取
                 getPolygraphdata();
             }
             if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){
