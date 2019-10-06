@@ -19,9 +19,49 @@ public class RecordUserInfos {
 
     private String workunitssid1;
 
+    private String workunitname1;
+
     private String workunitssid2;
 
+    private String workunitname2;
+
     private String workunitssid3;
+
+    private String workunitname3;
+
+    private UserInfo userInfo;//嫌疑人详细信息
+
+    public String getWorkunitname1() {
+        return workunitname1;
+    }
+
+    public void setWorkunitname1(String workunitname1) {
+        this.workunitname1 = workunitname1;
+    }
+
+    public String getWorkunitname2() {
+        return workunitname2;
+    }
+
+    public void setWorkunitname2(String workunitname2) {
+        this.workunitname2 = workunitname2;
+    }
+
+    public String getWorkunitname3() {
+        return workunitname3;
+    }
+
+    public void setWorkunitname3(String workunitname3) {
+        this.workunitname3 = workunitname3;
+    }
+
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
+    }
 
     public String getWorkunitssid1() {
         return workunitssid1;

@@ -47,13 +47,16 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
     int countgetRecords(@Param("ew") EntityWrapper ew);
 
 
-    @Select(" select a.adminssid,a1.username as adminname,a1.workunitssid as workunitssid1,a.otheradminssid,a2.username as otheradminname,a2.workunitssid as workunitssid2,a.recordadminssid,a3.username as recordadminname,a3.workunitssid as workunitssid3,a.userssid,u.username as username from police_arraignment a " +
+    @Select(" select a.adminssid,a1.username as adminname,a1.workunitssid as workunitssid1,a.otheradminssid,a2.username as otheradminname,a2.workunitssid as workunitssid2,a.recordadminssid,a3.username as recordadminname,a3.workunitssid as workunitssid3,w1.workname as workunitname1,w2.workname as workunitname2,w3.workname as workunitname3,a.userssid,u.username as username from police_arraignment a " +
             " left join police_casetoarraignment ca on a.ssid=ca.arraignmentssid " +
             " left join police_case c on c.ssid=ca.casessid " +
-            " LEFT JOIN police_userinfo u on u.ssid=a.userssid " +
-            " left JOIN base_admininfo a1 on a1.ssid=a.adminssid " +
-            " LEFT JOIN base_admininfo a2 on a2.ssid=a.otheradminssid " +
-            " LEFT JOIN base_admininfo a3 on a3.ssid=a.recordadminssid " +
+            " left join police_userinfo u on u.ssid=a.userssid " +
+            " left join base_admininfo a1 on a1.ssid=a.adminssid " +
+            " left join base_admininfo a2 on a2.ssid=a.otheradminssid " +
+            " left join base_admininfo a3 on a3.ssid=a.recordadminssid " +
+            " left join police_workunit w1 on w1.ssid=a1.workunitssid " +
+            " left join police_workunit w2 on w2.ssid=a2.workunitssid " +
+            " left join police_workunit w3 on w3.ssid=a3.workunitssid " +
             " where 1=1 ${ew.sqlSegment} ")
     RecordUserInfos getRecordUserInfosByRecordSsid(@Param("ew") EntityWrapper ew);
 }

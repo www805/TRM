@@ -388,8 +388,8 @@ function callbackgetRecordById(data) {
                         $("#xthtml").css("visibility","visible");
                         $("#initec ul li").removeClass("layui-this");
                         $("#initec .layui-tab-item").removeClass("layui-show");
-                        $("#asr").addClass("layui-this");
-                        $("#asritem").addClass("layui-show");
+                        $("#case").addClass("layui-this");
+                        $("#caseitem").addClass("layui-show");;
                         $("#record_switch_HTML").css("visibility","visible");
                         $("#overRecord_btn").attr("src","/uimaker/images/record_stop_1.png");
                         $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
@@ -471,6 +471,7 @@ function callbackgetRecordById(data) {
                         ,userssid:recordUserInfosdata.adminssid
                         ,grade:1
                     };
+                    recorduser=[];
                     recorduser.push(user1);
                     recorduser.push(user2);
                     dq_recorduser=recordUserInfosdata.userssid;

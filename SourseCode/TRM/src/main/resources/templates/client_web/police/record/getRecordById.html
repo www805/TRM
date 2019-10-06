@@ -176,7 +176,7 @@
                 <div >
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
-                            <li class="layui-this">案件信息</li>
+                            <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
                             <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                         </ul>
                         <div class="layui-tab-content" >
@@ -359,6 +359,7 @@
     var INIT_CLIENTKEY;
     var recordssid;
     var togetPolygraphurl;//打开身心检测数据
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

@@ -70,7 +70,7 @@
                 <ul class="layui-tab-title">
                     <li onclick="initasr()" id="asr" style="display: none">语音识别 <span id="webkit2"></span></li>
                     <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
-                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息</li>
+                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
                 </ul>
                 <div class="layui-tab-content" id="leftdiv"  style="height:0%;overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-tab-item  layui-show"  id="asritem" style="height: 100%" >
@@ -325,6 +325,7 @@
     var socket;
     var SOCKETIO_HOST=[[${session.SOCKETIO_HOST}]];
     var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
 
     var recordstate_index=null;//笔录状态栏的下标
 

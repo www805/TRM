@@ -154,6 +154,11 @@ function getactionid_manage() {
         getRecordById_exportPdf:"getRecordById_exportPdf",
         getRecordById_gZIPVod:"getRecordById_gZIPVod",
         getRecordById_zIPVodProgress:"getRecordById_zIPVodProgress",
+        getRecordById_getAdminList:"getRecordById_getAdminList",
+        getRecordById_getNationalitys:"getRecordById_getNationalitys",
+        getRecordById_getNationals:"getRecordById_getNationals",
+        getRecordById_updateCaseToUser:"getRecordById_updateCaseToUser",
+
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -180,6 +185,10 @@ function getactionid_manage() {
         waitRecord_setRecordreal_Last:"waitRecord_setRecordreal_Last",
         waitRecord_getRecordreal_LastByRecordssid:"waitRecord_getRecordreal_LastByRecordssid",
         waitRecord_checkKeyword:"waitRecord_checkKeyword",
+        waitRecord_getNationalitys:"waitRecord_getNationalitys",
+        waitRecord_getNationals:"waitRecord_getNationals",
+        waitRecord_getAdminList:"waitRecord_getAdminList",
+        waitRecord_updateCaseToUser:"waitRecord_updateCaseToUser",
 
         waitRecord_getFDState:"waitRecord_getFDState",
         waitRecord_getptdjconst:"waitRecord_getptdjconst",
