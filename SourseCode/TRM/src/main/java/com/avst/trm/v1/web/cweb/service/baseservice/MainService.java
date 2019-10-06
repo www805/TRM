@@ -808,9 +808,17 @@ public class MainService extends BaseService {
                 Yaml yaml = new Yaml();
                 Map<String,Object> map = yaml.load(fis);
 
-                //判断如果是单机版，就获取单机版的菜单栏
+                //获取授权信息
+                CommonCache.gnlist();
+                SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
+                String gnlist = getSQEntity.getGnlist();
+
                 String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
-//                String cwebFile=PropertiesListenerConfig.getProperty("nav.file.oem");
+                //判断如果是单机版，就获取单机版的菜单栏
+                if(gnlist.indexOf("s_v") != -1){
+                    cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
+                }
+
                 String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
@@ -819,7 +827,19 @@ public class MainService extends BaseService {
                 Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
                 String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
+                fileYml.put("login", avstYml.get("login"));
+                fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
+
+                Map<String,Object> logoYml = (Map<String, Object>) avstYml.get("logo");
+                //判断是公安、纪委、监察委那个版本
+                if(gnlist.indexOf("ga_t") != -1){
+                    fileYml.put("logotitle", logoYml.get("ga_t"));
+                }else if(gnlist.indexOf("jw_t") != -1){
+                    fileYml.put("logotitle", logoYml.get("jw_t"));
+                }else if(gnlist.indexOf("jcw_t") != -1){
+                    fileYml.put("logotitle", logoYml.get("jcw_t"));
+                }
 
                 cacheParam.setData(fileYml);
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);

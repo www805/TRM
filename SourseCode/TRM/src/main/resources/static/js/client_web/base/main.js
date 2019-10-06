@@ -77,19 +77,41 @@ function callgetNavList(data) {
                         nav_icon_HTML = "<i class=\"" + nav.icon + "\"></i>\n";
                     }
                     if(isNotEmpty(nav.iconh)){
-                        nav_icon_HTML = "<span class='iconfont'>&#" + nav.iconh + "</span>\n";
+                        nav_icon_HTML = "<span class='iconfont iconsizetop'>&#" + nav.iconh + "</span>\n";
                     }
                     if(isNotEmpty(nav.space)){
-                        nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 15px;right: 0;width: 2px;height: 40px;'></i>\n";
+                        var right = -2;
+                        if(isNotEmpty(nav.spaceright)){
+                            right = nav.spaceright;
+                        }
+                        nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 15px;right: " + right + "px;width: 2px;height: 50px;'></i>\n";
                     }
 
                     nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
-                        "                <a target=\"option\" href=\"" + nav.url + "\">\n" + nav_icon_HTML+
+                        "                <a target=\"option\" style='display:block; padding-top:45px; height:32px; line-height:32px' href=\"" + nav.url + "\">\n" + nav_icon_HTML+
                         "                    <cite>" + nav.name + "</cite>\n" +
                         "                </a>\n" + dd_HTML + nav_space +
                         "            </li>";
                 }
                 $("#nav_list").html(nav_list_HTML);
+
+                var gnlist = appCache.data.gnlist;
+                if (isNotEmpty(gnlist) && gnlist.indexOf("s_v") != -1) {
+                    $("#guidepage").hide();
+                    $("#pagehome").hide();
+                    $("#nav_list").css("right", 250);
+                }
+
+                //设置logo和标题
+                var logo_title = appCache.data.logotitle;
+                if(isNotEmpty(logo_title)){
+                    $("#logoimg").attr("src", logo_title.img);
+                    if (logo_title.imgtitle != '' && logo_title.imgtitle != '/') {
+                        $("#logotitle").html("").css("background", "url(" + logo_title.imgtitle + ") no-repeat").css("background-size", "100% 100%");
+                    } else {
+                        $("#logotitle").html(logo_title.title);
+                    }
+                }
             }
 
             if (isNotEmpty(appCache.data.bottom) && isNotEmpty(appCache.data.bottom.name) && isNotEmpty(appCache.data.bottom.declaration) ) {

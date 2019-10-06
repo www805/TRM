@@ -40,15 +40,30 @@
     }
 
     .layui-nav * {
-        font-size: 18px
+        font-size: 16px
     }
     cite{
-        font-size: 18px
+        font-size: 16px
     }
     .layui-nav .layui-nav-item{
-        line-height: 70px;
+        line-height: 80px;
+        height: 80px;
     }
-
+    .layui-nav-child {
+        top: 80px;
+    }
+    .layui-icon{
+        font-size: 34px;position: absolute;top: 10px;left: 34.5%;
+    }
+    .layui-nav .layui-nav-more {
+        top: 75%;
+    }
+    .iconsizetop{
+        font-size: 34px;
+        position: absolute;
+        top: 10px;
+        left: 34.5%;
+    }
     body .startconversation_btn .layui-layer-btn a{
         border-color: #FFB800 !important;
         background-color: #FFB800 !important;
@@ -76,28 +91,31 @@
 <body class="layui-layout-body" id="">
 
 <div class="layui-layout layui-layout-admin" >
-    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 70px">
-        <a th:href="@{/cweb/base/main/gotomain}"  class="layui-nav-item" >   <img src="/uimaker/images/mainlogo.jpg" class="layui-nav-img" style="width: 65px;height: 65px;margin-left: 1%;margin-top: 1px"><h1 class="layui-logo" style="text-align: left; width:300px;color: #fff; font-size:30px; font-weight:bold; font-family: SimSun;line-height: 70px;left:5%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" th:text="${mainModel.title}" th:title="${mainModel.title}"></h1></a>
-        <ul class="layui-nav layui-layout-right" id="nav_list" style="right: 25%">
+    <div class="layui-header layui-bg-blue"  style="background-color: #01AAED;height: 80px">
+        <a th:href="@{/cweb/base/main/gotomain}"  class="layui-nav-item" >
+            <img src="/uimaker/images/mainlogo.jpg" class="layui-nav-img" id="logoimg" style="width: 65px;height: 65px;margin-left: 1%;margin-top: 6px">
+            <h1 class="layui-logo" id="logotitle" style="text-align: left; width:500px;color: #fff; font-size:30px; font-weight:bold; font-family: SimSun;line-height: 70px;left:5%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" th:text="${mainModel.title}" th:title="${mainModel.title}"></h1>
+        </a>
+        <ul class="layui-nav layui-layout-right" id="nav_list" style="right: 420px">
 
         </ul>
         <ul class="layui-nav layui-layout-right">
-            <li class="layui-nav-item">
-                <a href="/cweb/base/main/gotomain" >
-                    <i class="layui-icon layui-icon-home" style="font-size: 20px;"></i>
+            <li class="layui-nav-item" id="pagehome">
+                <a href="/cweb/base/main/gotomain" style="display:block; padding-top:45px; height:32px; line-height:32px" >
+                    <i class="layui-icon layui-icon-home" style="left: 27%;"></i>
                     <span>首页</span>
                 </a>
             </li>
             <li class="layui-nav-item" id="guidepage">
-                <a th:href="${mainModel.guidepageUrl}">
-                    <i class="layui-icon layui-icon-flag" style="font-size: 20px;"></i>
+                <a th:href="${mainModel.guidepageUrl}" style="display:block; padding-top:45px; height:32px; line-height:32px" >
+                    <i class="layui-icon layui-icon-flag"></i>
                     <span>引导页</span>
                 </a>
             </li>
 
             <li class="layui-nav-item">
-                <a href="javascript:;" >
-                    <img src="/uimaker/images/login_logo.png" class="layui-nav-img">
+                <a href="javascript:;" style="display:block; padding-top:45px; height:32px; line-height:32px" >
+                    <i class="layui-icon layui-icon-username"></i>
                     <span th:text="${session.MANAGE_CLIENT.username}">管理员</span>
                 </a>
                 <dl class="layui-nav-child">
@@ -108,15 +126,16 @@
                 </dl>
             </li>
             <li class="layui-nav-item">
-                <a target="option" href="/cweb/base/main/toabout" title="关于">
-                    <i class="layui-icon layui-icon-about" style="font-size: 28px"></i>
+                <a target="option" href="/cweb/base/main/toabout" title="关于" style="display:block; padding-top:45px; height:32px; line-height:32px" >
+                    <i class="layui-icon layui-icon-about" style="left: 28%;"></i>
+                    <span>关于</span>
                 </a>
             </li>
         </ul>
     </div>
 
 
-    <div class="layui-body" style="left: 0">
+    <div class="layui-body" style="left: 0;top: 70px;">
         <div class="layui-show">
             <iframe th:src="@{/cweb/base/main/gotohome}"  frameborder="0" class="layui-iframe"  id="option" name="option"></iframe>
         </div>

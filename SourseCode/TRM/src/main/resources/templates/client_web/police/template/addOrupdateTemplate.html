@@ -109,7 +109,7 @@
     </div>
 
     <div class="layui-row" id="layui-row1">
-        <div class="layui-col-md5" style="border:1px solid #F2F2F2;padding-top: 5px;">
+        <div class="layui-col-md5 layui-form" style="border:1px solid #F2F2F2;padding-top: 5px;">
             <label class="layui-form-label" style="width: auto;">关键字</label>
 
             <div class="layui-input-inline" style="float: left; ">
@@ -128,7 +128,7 @@
                 <input type="button" class="layui-btn layui-btn-normal" value="添加问题" onclick="addUpdateinfo('',0,1);" >
             </div>
 
-            <div style="overflow:auto;width: 100%; height: 725px; min-height:725px; ">
+            <div style="overflow:auto;width: 100%; height: 685px; min-height:685px; ">
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;">
                     【问题列表】双击问题或点击导入，即可插入到模板中<i class="layui-icon">&#xe623;</i>
                 </div>
@@ -142,27 +142,9 @@
                 <button class="layui-btn layui-btn-normal" style="margin-left: 0px;" onclick="getDataAll();">保存</button>
                 <button class="layui-btn layui-btn-warm" style="margin-left: 0px;" onclick="trObj=null;addTr('','','');">添加自定义问答</button>
                 <span style="margin-left: 10px;color: #9F9F9F;">（以下问答红色是问题，灰色是参考答案）</span>
-                <!--<button class="layui-btn layui-btn-normal" style="margin-left: 0px;">打印</button>-->
-                <!--<button class="layui-btn layui-btn-normal" onclick="alert(trObj)" style="margin-left: 0px;">导入</button>-->
-
-                <!--<div class="layui-inline" style="margin-bottom:0">-->
-                <!--<div class="layui-unselect layui-form-select" name="btn_div">-->
-                <!--<div class="layui-select-title">-->
-                <!--<button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="iconfont icon-daochu" ></i> 导出</button>-->
-                <!--</div>-->
-                <!--<dl class="layui-anim layui-anim-upbit" >-->
-                <!--<dd onclick="exportWord(this);">导出word</dd>-->
-                <!--&lt;!&ndash;<dd onclick="exportEcxcel(this);">导出Ecxcel</dd>&ndash;&gt;-->
-                <!--</dl>-->
-                <!--</div>-->
-                <!--</div>-->
-
-                <!--<button class="layui-btn layui-btn-normal " style="margin-left: 0px;"><i class="layui-icon layui-icon-up" ></i>上移</button>-->
-                <!--<button class="layui-btn layui-btn-normal " style="margin-left: 0px;"><i class="layui-icon layui-icon-down"></i>下移</button>-->
-
             </div>
 
-            <div class="layui-card-header" style="margin-top: 8px;padding:0 8px 8px 8px;margin-bottom: 0px;">
+            <div class="layui-card-header layui-form" style="margin-top: 8px;padding:0 8px 8px 8px;margin-bottom: 0px;">
                 <div style="">
                     <label class="layui-form-label" style="width: auto;margin-top: 6px;padding-left: 0;padding-right: 5px;"><span style="color: red;">*</span>模板名称：</label>
                     <div class="layui-input-inline" style="float: left; ">
@@ -187,7 +169,7 @@
 
             <div class="layui-form-item layui-form-text" >
 
-                <div style="overflow:auto;width: 100%; height: 648px; min-height:648px;" >
+                <div style="overflow:auto;width: 100%; height: 608px; min-height:608px;" >
                     <table class="layui-table" id="testTable" lay-skin="nob" style="table-layout: fixed;">
                         <colgroup>
                             <col>
@@ -295,9 +277,10 @@
             var text = $("#keyword").val();
             if(text.replace(/\s*/g,"") == ""){
             }
-            getProblems_init(1,11);
+            getProblems_init(1,10);
         });
 
+        form.render();
     });
 
     function upp(obj) {
