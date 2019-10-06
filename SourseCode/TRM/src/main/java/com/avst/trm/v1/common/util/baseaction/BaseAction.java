@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.util.DateUtil;
 import org.springframework.util.StringUtils;
 
@@ -65,7 +66,20 @@ public class BaseAction {
 		//LogUtil.intoLog(this.getClass(),JacksonUtil.objebtToString(rresult));
 	}
 
-	
+	/**
+	 * 检测是否授权
+	 * @return
+	 */
+	public boolean checkToken( String token){
+		String clientkey= CommonCache.getClientKey();
+		if (org.apache.commons.lang.StringUtils.isEmpty(token)|| org.apache.commons.lang.StringUtils.isEmpty(clientkey)){
+			return  false;
+		}
+		if (!token.trim().equals(clientkey.trim())){
+			return  false;
+		}
+		return  true;
+	}
 
 	
 

@@ -60,6 +60,10 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getFDListByFdid(@RequestBody GetFDListByFdidParam param);
 
+    @RequestMapping("/flushbonading/v1/getFDLog")
+    @ResponseBody
+    public RResult getFDLog(@RequestBody GetFDLogParam param);
+
 //ph测谎仪
 
     /**

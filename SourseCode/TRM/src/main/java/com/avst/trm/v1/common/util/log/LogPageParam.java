@@ -4,7 +4,7 @@ public class LogPageParam {
 
     private int totalpage;
 
-    private int currentpage=0;//当前页
+    private int currentpage=1;//当前页
 
     private int pagesize=10;
 

@@ -1031,7 +1031,7 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 	}
 
 	var pagetxt = addbutton("首页", getdatafun + '(' + reqparamdata + 1 + ','
-			+ pageSize + ')', noFirstClass, null, null, "padding:3px 15px;", null,
+			+ pageSize + ')', noFirstClass, null, null, "padding:3px 15px;cursor: pointer;", null,
 		null);
 	buttonnum++;
 	if (startsize > 1) {// 还可以往前翻页
@@ -1040,18 +1040,18 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton("«", 'gotobackpage(' + getdatafun + ',\''
 				+ reqparamdataprv + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;",
+				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;cursor: pointer;",
 				null, null);
 	}
 
 	for (var i = startsize; i <= stopsize; i++) {
 		if (currPage == i) {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', null, null, null, "color:#fff;background-color: #1e9fff;border-color: #1e9fff;padding:3px 15px;",
+					+ pageSize + ')', null, null, null, "color:#fff;background-color: #1e9fff;border-color: #1e9fff;padding:3px 15px;cursor: pointer;",
 					null, null);
 		} else {
 			pagetxt += addbutton(i, getdatafun + '(' + reqparamdata + i + ','
-					+ pageSize + ')', null, null, null, "padding:3px 15px;", null,
+					+ pageSize + ')', null, null, null, "padding:3px 15px;cursor: pointer;", null,
 				null);
 			// pagetxt +='<a href="javascript:;" onclick="getdatafun + \'(\' + reqparamdata + i + \',\'+ pageSize + \')\'" data-page="3">3</a>';
 
@@ -1064,11 +1064,11 @@ function showpage(pageid, arrparam, getdatafun, currPage, pageCount, pageSize) {
 		buttonnum++;
 		pagetxt += addbutton('»', 'gotonextpage(' + getdatafun + ',\''
 				+ reqparamdatanext + '\',' + arrparam.length + ',' + (currPage)
-				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;",
+				+ ',' + pageSize + ')', null, null, null, "padding:3px 15px;cursor: pointer;",
 				null, null);
 	}
 	pagetxt += addbutton("末页", getdatafun + '(' + reqparamdata + pageCount
-			+ ',' + pageSize + ')', noLastClass, null, null, "padding:3px 15px;", null,
+			+ ',' + pageSize + ')', noLastClass, null, null, "padding:3px 15px;cursor: pointer;", null,
 		null);
 	buttonnum++;
 	if (pageCount <= 1) {

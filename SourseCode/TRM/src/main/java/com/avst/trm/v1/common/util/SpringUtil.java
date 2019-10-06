@@ -16,14 +16,14 @@ public class SpringUtil implements ApplicationContextAware {
         if(SpringUtil.applicationContext == null) {
             SpringUtil.applicationContext = applicationContext;
         }
-        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
+//        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
 
-        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
+//        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
 
 
         LogUtil.intoLog(this.getClass(),"========ApplicationContext配置成功,在普通类可以通过调用SpringUtils.getAppContext()获取applicationContext对象,applicationContext="+SpringUtil.applicationContext+"========");
 
-        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
+//        LogUtil.intoLog(this.getClass(),"---------------------------------------------------------------------");
     }
 
     //获取applicationContext

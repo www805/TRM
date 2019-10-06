@@ -400,6 +400,21 @@ public class DateUtil {
 		}
     	return null;
     }
+
+	/**
+	 * @param str
+	 * @return
+	 */
+	public static Date strToDate2(String str){
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date date = df.parse(str);
+			return date;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
     
     /**
      * 
@@ -619,7 +634,7 @@ public class DateUtil {
     public static String getYear(Date date) {
 		String currentTime = DateUtil.getDefaultDateFormat(date.getTime());
 		String year = currentTime.substring(0, 4);
-		// String month = currentTime.substring(5, 7);
+
 		return year;
 
 	}
@@ -637,6 +652,7 @@ public class DateUtil {
 		return day;
 
 	}
+
 
 	public static String getHH(Date date) {
 		String currentTime = DateUtil.getDefaultDateFormat(date.getTime());

@@ -327,5 +327,9 @@ function getactionid_manage() {
 
         caseStatistics_getCaseStatistics:"caseStatistics_getCaseStatistics",
 
+        main_gotoLogShow:"main_gotoLogShow",
+        logShow_getLogListByType:"logShow_getLogListByType",
+        logShow_getLogTypeList:"logShow_getLogTypeList",
+
     };
 }
