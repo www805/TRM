@@ -20,12 +20,13 @@ function callbackgetLogTypeList(data){
         if (isNotEmpty(data)){
             var list=data.data;
             if (isNotEmpty(list)){
-
+                $("#logtype").empty();
                 for (var i = 0; i < list.length; i++) {
                     var logtype = list[i];
                     $("#logtype").append("<option value='"+logtype.value+"' >"+logtype.name+"</option>");
                 }
             }
+            layui.form.render('select');
         }
     }else{
         layer.msg(data.message,{icon: 5});
