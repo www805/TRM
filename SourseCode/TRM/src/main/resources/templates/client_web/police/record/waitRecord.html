@@ -64,7 +64,6 @@
                             </div>
                         </div>
                     </div>
-
             </div>
             <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:60%;">
                 <ul class="layui-tab-title">
@@ -72,8 +71,8 @@
                     <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
                     <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
                 </ul>
-                <div class="layui-tab-content" id="leftdiv"  style="height:0%;overflow-x: hidden; overflow-y: scroll;">
-                    <div class="layui-tab-item  layui-show"  id="asritem" style="height: 100%" >
+                <div class="layui-tab-content" id="leftdiv"  style="height:100%;overflow-x: hidden; overflow-y: scroll;">
+                    <div class="layui-tab-item "  id="asritem"  >
                         <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                             <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
                                 <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
@@ -116,7 +115,7 @@
                                 <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
                             </div>
                     </div>
-                    <div class="layui-tab-item " id="caseitem">
+                    <div class="layui-tab-item layui-show" id="caseitem" >
                             <div class="layui-card-body">
                                 <table class="layui-table" lay-skin="line" style="table-layout: fixed">
                                     <tbody id="caseAndUserInfo_html">

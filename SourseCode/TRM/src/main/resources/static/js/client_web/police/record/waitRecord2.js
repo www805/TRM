@@ -1635,6 +1635,8 @@ function  open_casetouser() {
                     recordadminssid:recordadminssid,
                 }
 
+                var recordname=$("#recordname").val();
+
                 var url=getActionURL(getactionid_manage().waitRecord_updateCaseToUser);
                 var d_={
                     token:INIT_CLIENTKEY,
@@ -1642,7 +1644,8 @@ function  open_casetouser() {
                         userInfo:userInfo,
                         case_:case_,
                         arraignment:arraignment,
-                        recordssid:recordssid
+                        recordssid:recordssid,
+                        recordname:recordname
                     }
                 };
                 ajaxSubmitByJson(url,d_,function (data) {

@@ -1112,6 +1112,20 @@ public class RecordService extends BaseService {
         }
 
 
+        //-----检测结束
+
+        if (StringUtils.isNotBlank(recordname)){
+            EntityWrapper recordname_ew=new EntityWrapper();
+            recordname_ew.eq("recordname",recordname);
+            List<Police_record> police_records=police_recordMapper.selectList(recordname_ew);
+            if (null!=police_records&&police_records.size()>0){
+                result.setMessage("笔录名称不能重复");
+                LogUtil.intoLog(3,this.getClass(),"updateCaseToUser_笔录名称不能重复");
+                return;
+            }
+        }
+
+
         if (StringUtils.isBlank(otherworkssid)&&StringUtils.isNotBlank(otherworkname)){
             LogUtil.intoLog(this.getClass(),"需要新增工作单位____"+otherworkname);
             Police_workunit workunit=new Police_workunit();
@@ -4123,12 +4137,36 @@ public class RecordService extends BaseService {
          Police_case case_=param.getCase_();
          Police_arraignment arraignment=param.getArraignment();
          String recordssid=param.getRecordssid();
+         String recordname=param.getRecordname();
 
-         if (StringUtils.isBlank(recordssid)){
-             result.setMessage("系统异常");
-             LogUtil.intoLog(3,this.getClass(),"updateCaseToUser_recordssid is null");
-             return;
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("系统异常");
+            LogUtil.intoLog(3,this.getClass(),"updateCaseToUser_recordssid is null");
+            return;
+        }
+
+
+         if (StringUtils.isNotBlank(recordname)){
+             EntityWrapper recordname_ew=new EntityWrapper();
+             recordname_ew.eq("recordname",recordname);
+             recordname_ew.ne("ssid",recordssid);
+             List<Police_record> police_records=police_recordMapper.selectList(recordname_ew);
+             if (null!=police_records&&police_records.size()>0){
+                 result.setMessage("笔录名称不能重复");
+                 LogUtil.intoLog(3,this.getClass(),"updateCaseToUser_笔录名称不能重复");
+                 return;
+             }
          }
+
+         Police_record police_record=new Police_record();
+         police_record.setRecordname(recordname);
+         EntityWrapper record_ew=new EntityWrapper();
+         record_ew.eq("ssid",recordssid);
+         int police_recordMapper_update_bool=police_recordMapper.update(police_record,record_ew);
+         LogUtil.intoLog(1,this.getClass(),"police_recordMapper_update_bool___"+police_recordMapper_update_bool);
+
+
+
 
          //根据笔录ssid获取提讯信息
         Police_arraignment police_arraignment=new Police_arraignment();

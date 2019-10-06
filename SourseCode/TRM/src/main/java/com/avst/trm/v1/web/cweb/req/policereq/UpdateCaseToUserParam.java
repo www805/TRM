@@ -14,6 +14,16 @@ public class UpdateCaseToUserParam {
 
     private String recordssid;//笔录ssid
 
+    private String recordname;//笔录名称
+
+    public String getRecordname() {
+        return recordname;
+    }
+
+    public void setRecordname(String recordname) {
+        this.recordname = recordname;
+    }
+
     public UserInfo getUserInfo() {
         return userInfo;
     }
