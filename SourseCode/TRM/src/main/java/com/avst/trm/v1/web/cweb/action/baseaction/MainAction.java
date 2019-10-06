@@ -9,6 +9,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/cweb/base/main")
@@ -412,11 +414,6 @@ public class MainAction extends BaseAction {
         return  result;
     }
 
-
-
-
-
-
     /**
      * 跳转==》修改个人信息页面
      * @param model
@@ -482,6 +479,8 @@ public class MainAction extends BaseAction {
                 param.setTitle(base_serverconfig.getClientname());
             }
         }
+        Map<String, Object> data = param.getData();
+        model.addAttribute("homeurl",(String) data.get("homeurl"));
         model.addAttribute("title",param.getTitle());
         model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
         return  new ModelAndView("client_web/base/main","mainModel", model);

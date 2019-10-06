@@ -22,6 +22,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
@@ -815,7 +816,7 @@ public class MainService extends BaseService {
 
                 String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
                 //判断如果是单机版，就获取单机版的菜单栏
-                if(gnlist.indexOf("s_v") != -1){
+                if(gnlist.indexOf(SQVersion.S_V) != -1){
                     cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
                 }
 
@@ -828,17 +829,18 @@ public class MainService extends BaseService {
                 String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
                 fileYml.put("login", avstYml.get("login"));
+                fileYml.put("homeurl",fileYml.get("home-url"));//设置首页
                 fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
 
                 Map<String,Object> logoYml = (Map<String, Object>) avstYml.get("logo");
                 //判断是公安、纪委、监察委那个版本
-                if(gnlist.indexOf("ga_t") != -1){
-                    fileYml.put("logotitle", logoYml.get("ga_t"));
-                }else if(gnlist.indexOf("jw_t") != -1){
-                    fileYml.put("logotitle", logoYml.get("jw_t"));
-                }else if(gnlist.indexOf("jcw_t") != -1){
-                    fileYml.put("logotitle", logoYml.get("jcw_t"));
+                if(gnlist.indexOf(SQVersion.GA_T) != -1){
+                    fileYml.put("logotitle", logoYml.get(SQVersion.GA_T));
+                }else if(gnlist.indexOf(SQVersion.JW_T) != -1){
+                    fileYml.put("logotitle", logoYml.get(SQVersion.JW_T));
+                }else if(gnlist.indexOf(SQVersion.JCW_T) != -1){
+                    fileYml.put("logotitle", logoYml.get(SQVersion.JCW_T));
                 }
 
                 cacheParam.setData(fileYml);
