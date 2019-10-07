@@ -331,5 +331,10 @@ function getactionid_manage() {
         logShow_getLogListByType:"logShow_getLogListByType",
         logShow_getLogTypeList:"logShow_getLogTypeList",
 
+        homepage_towaitconversation:"homepage_towaitconversation",
+        homepage_toaddCaseToUser:"homepage_toaddCaseToUser",
+        homepage_getHome:"homepage_getHome",
+        homepage_addCaseToArraignment:"homepage_addCaseToArraignment",
+
     };
 }

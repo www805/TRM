@@ -572,15 +572,15 @@ public class MainService extends BaseService {
 
             for (int i = 0; i < strings.length; i++) {
                 String str = strings[i];
-                if("asr".equals(str)){
+                if("asr_f".equals(str)){
                     gnArrayList.add(SQGN.asr);
-                }else if("fd".equals(str)){
+                }else if("fd_f".equals(str)){
                     gnArrayList.add(SQGN.fd);
-                }else if("ph".equals(str)){
+                }else if("ph_f".equals(str)){
                     gnArrayList.add(SQGN.ph);
-                }else if("record".equals(str)){
+                }else if("record_f".equals(str)){
                     gnArrayList.add(SQGN.record);
-                }else if("tts".equals(str)){
+                }else if("tts_f".equals(str)){
                     gnArrayList.add(SQGN.tts);
                 }
             }

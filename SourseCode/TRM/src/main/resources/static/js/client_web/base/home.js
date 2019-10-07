@@ -33,20 +33,6 @@ function callbackgetHome(data) {
             $("#record_unfinishnum").text(data.record_unfinishnum==null?0:data.record_unfinishnum);
             $("#record_waitnum").text(data.record_waitnum==null?0:data.record_waitnum);
 
-            var liveurl_=data.liveurl;
-            if (isNotEmpty(liveurl_)){
-                liveurl=liveurl_;
-            }
-            initplayer();//初始化地址
-
-            var stateSQ=data.stateSQ;
-            if (isNotEmpty(stateSQ)&&stateSQ==1){
-                $("#stateSQtxt").html("<span style='color: #00FF00'>正常运行中</span>")
-            }else {
-                $("#stateSQtxt").html("<span style='color: red'>异常，请注意</span>")
-            }
-
-
             var clientname=data.clientname==null?"":data.clientname;
             if (isNotEmpty(myChart)&&isNotEmpty(myChart2)) {
                 myChart.hideLoading();
@@ -224,7 +210,7 @@ function myChart_(){
                 name:'详情来源',
                 type:'pie',
                 radius: ['40%', '55%'],
-                label: {
+               /* label: {
                     normal: {
                         formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
                         backgroundColor: '#eee',
@@ -255,8 +241,8 @@ function myChart_(){
                             }
                         }
                     }
-                },
-                /*label:{
+                },*/
+                label:{
                     align: 'left',
                     normal:{
                         formatter(v) {
@@ -278,7 +264,7 @@ function myChart_(){
                             fontSize : 8
                         }
                     }
-                },*/
+                },
                 data:[]
             }
         ]
@@ -286,7 +272,7 @@ function myChart_(){
     myChart2.setOption(option2);
 }
 $(function () {
-   /* myChart_();*/
+   myChart_();
 });
 
 //打开开始审讯弹出框

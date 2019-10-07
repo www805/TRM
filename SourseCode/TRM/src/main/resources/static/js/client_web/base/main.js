@@ -67,7 +67,11 @@ function callgetNavList(data) {
                     if(isNotEmpty(nav.list)){
                         for (var j = 0; j < nav.list.length; j++) {
                             var dd = nav.list[j];
-                            dd_HTML += "<dd><a target=\"option\" href=\"" + dd.url + "\">" + dd.name + "</a></dd>";
+                            var target="option";
+                            if (isNotEmpty(dd.target)) {
+                                target=dd.target;
+                            }
+                            dd_HTML += "<dd><a target=\""+target+"\" href=\"" + dd.url + "\">" + dd.name + "</a></dd>";
                         }
 
                         dd_HTML = "<dl class=\"layui-nav-child\">" + dd_HTML + "</dl>";

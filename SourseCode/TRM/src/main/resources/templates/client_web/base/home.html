@@ -11,9 +11,6 @@
     <link rel="stylesheet" href="/uimaker/css/common.css">
     <link rel="stylesheet" href="/uimaker/css/admin.css">
     <style>
-        html{
-            background-color: white;
-        }
         .btn_color {
             background-color: #197fcc;
             cursor:pointer
@@ -62,49 +59,7 @@
 </head>
 <body>
 <div class="" style="padding: 20px;">
-    <div class="layui-col-sm12 layui-col-md12"  style="height: 860px;overflow-x: hidden; overflow-y: scroll;" >
-        <div class="layui-col-sm9 layui-col-md9" style="height: 100%" id="phitem" >
-            <!--视频直播区域-->
-            <div th:replace="living4 :: living"  >...</div>
-        </div>
-        <div class="layui-col-sm3 layui-col-md3" style="height: 100%">
-                <div class="layui-col-sm12 layui-col-md12" style="height: 30%">
-                    <div class="layui-col-sm12 layui-col-md8  layui-col-space4 layui-col-md-offset2" style="margin-top:15%">
-                        <span style="font-size: 20px">
-                          <a><cite>系统状态 >></cite></a>
-                          <a><cite id="stateSQtxt" >加载中...</cite></a>
-                        </span>
-                    </div>
-                </div>
-                <div class="layui-col-sm12 layui-col-md12" style="height: 70%;">
-                    <div class="layui-col-sm12 layui-col-md8  layui-col-space4 layui-col-md-offset2" style="margin-top: 20%">
-                        <a onclick="to_waitconversationURL();" >
-                            <div class="layui-card btn_color " title="点击进行快速谈话">
-                                <div class="layui-card-body layuiadmin-card-list layui-row topbottom ">
-                                    <div style="text-align: center">
-                                        <p class="diy-font" ><span class="iconfont">&#xe62c;</span>快速谈话</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-
-                    <div class="layui-col-sm12 layui-col-md8 layui-col-space4 layui-col-md-offset2" style="margin-top: 20%">
-                        <a onclick="window.location.href=addCaseToUserURL">
-                            <div class="layui-card btn_color" title="点击进行谈话办案">
-                                <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
-                                    <div style="text-align: center">
-                                        <p class="diy-font" ><span class="iconfont" >&#xe600;</span>谈话办案</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-        </div>
-    </div>
-
-    <!--<div style="margin-bottom: 10px;" class=" layui-col-space15">
+  <div style="margin-bottom: 10px;" class=" layui-col-space15">
         <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
             <div class="layui-col-sm3 layui-col-md3">
                 <a onclick="to_waitconversationURL();" >
@@ -250,7 +205,7 @@
                 </div>
             </div>
         </div>
-    </div>-->
+    </div>
 </div>
 </div>
 
