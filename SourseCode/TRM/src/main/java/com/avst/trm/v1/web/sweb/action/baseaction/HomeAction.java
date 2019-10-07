@@ -109,8 +109,6 @@ public class HomeAction extends BaseAction{
         model.addAttribute("title", "欢迎登录后台" + param.getTitle());//欢迎登录后台管理界面平台
 
         request.getSession().setAttribute(Constant.INIT_WEB,CommonCache.getinit_WEB());
-//        request.getSession().setAttribute(Constant.MANAGE_WEB,"123");
-
         return new ModelAndView("server_web/base/login", "login", model);
     }
 

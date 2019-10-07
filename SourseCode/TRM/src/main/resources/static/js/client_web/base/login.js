@@ -172,6 +172,11 @@ function callgetNavList(data) {
                 $("#clientimage").attr('src',appCache.clientimage);
             }
 
+            //如果是单机版就隐藏按钮
+            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf("s_v") != -1) {
+                $("#guidepage").hide();
+            }
+
             if (isNotEmpty(appCache.data)) {
 
                 if (isNotEmpty(appCache.data.login.img) && appCache.data.login.img != '/') {

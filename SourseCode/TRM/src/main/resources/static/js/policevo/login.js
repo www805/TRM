@@ -71,6 +71,11 @@ function callgetNavList(data) {
             //     $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");
             // }
 
+            //如果是单机版就修改名称
+            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf("s_v") != -1) {
+                $("#guidepage a").html("返回客户端");
+            }
+
             if (isNotEmpty(appCache.data)) {
 
                 if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration)) {

@@ -15,6 +15,7 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -165,15 +166,28 @@ public class HomeService extends BaseService {
                 String application_name= PropertiesListenerConfig.getProperty("spring.application.name");
                 String swebFile=PropertiesListenerConfig.getProperty("nav.file.service");
 
+                //获取授权信息
+                CommonCache.gnlist();
+                SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
+                String gnlist = getSQEntity.getGnlist();
+
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
                 Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(swebFile);
                 Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
                 Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
                 String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
+                fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
 
                 cacheParam.setData(fileYml);
+
+                if(gnlist.indexOf(SQVersion.S_V) != -1){
+//                    String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
+//                    fileYml = (Map<String, Object>) avstYml.get(cwebFile);
+//                    guidepageUrl = (String) fileYml.get("home-url");//设置首页
+                    guidepageUrl = "/cweb/base/main/gotomain";//设置首页
+                }
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
 
             } catch (IOException e) {

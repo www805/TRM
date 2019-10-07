@@ -829,7 +829,6 @@ public class MainService extends BaseService {
                 String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
                 fileYml.put("login", avstYml.get("login"));
-                fileYml.put("homeurl",fileYml.get("home-url"));//设置首页
                 fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
 

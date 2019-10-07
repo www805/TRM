@@ -480,9 +480,10 @@ public class MainAction extends BaseAction {
             }
         }
         Map<String, Object> data = param.getData();
-        model.addAttribute("homeurl",(String) data.get("homeurl"));
+        model.addAttribute("homeurl",(String) data.get("home-url"));
         model.addAttribute("title",param.getTitle());
         model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
+        //通过授权判断，返回笔录系统
         return  new ModelAndView("client_web/base/main","mainModel", model);
     }
 
