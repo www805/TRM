@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@FeignClient(value="zk",url="192.168.17.176:8079/")
+@FeignClient(value="zk")
 public interface ZkControl {
 
     //获取注册的服务器
