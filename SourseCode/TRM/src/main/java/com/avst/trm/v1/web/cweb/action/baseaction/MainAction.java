@@ -506,11 +506,7 @@ public class MainAction extends BaseAction {
         return new ModelAndView("client_web/base/packdownList", "packdownListModel", model);
     }
 
-    @GetMapping("toabout")
-    public ModelAndView toabout(Model model){
-        model.addAttribute("title","关于");
-        return new ModelAndView("client_web/base/about", "aboutModel", model);
-    }
+
 
 
 

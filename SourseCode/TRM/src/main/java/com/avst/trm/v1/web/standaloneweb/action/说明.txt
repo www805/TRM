@@ -3,3 +3,9 @@
 后期会重新整合功能，有些功能单机版和连机版都会用的就需要提出来
 
 action的@Controller前缀还是用/cweb/police/
+
+setup:设置
+recordcase:谈话办案和案件查看以及笔录模板
+user:我，关于
+cdplayback:光盘回放
+

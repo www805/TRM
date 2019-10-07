@@ -697,12 +697,13 @@ public class MainService extends BaseService {
 
 
         //查询旧密码是否正确
-        Base_admininfo base_admininfo = new Base_admininfo();
-        base_admininfo.setSsid(paramParam.getSsid());
-        base_admininfo.setPassword(paramParam.getOldpassword());
-        Base_admininfo baseAdmininfo = base_admininfoMapper.selectOne(base_admininfo);
+        EntityWrapper ew1=new EntityWrapper();
+        ew1.eq("ssid",paramParam.getSsid());
+        ew1.eq("BINARY  password",paramParam.getOldpassword());
 
-        if (null == baseAdmininfo) {
+        List<Base_admininfo> baseAdmininfo = base_admininfoMapper.selectList(ew1);
+
+        if (null == baseAdmininfo||baseAdmininfo.size()==0) {
             result.setMessage("旧密码错误");
             return;
         }
