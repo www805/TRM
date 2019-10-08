@@ -275,102 +275,101 @@
             <!---->
             <div class="layui-col-md12 " style="border: 0" >
                 <div style="margin-bottom: 10px;padding:0 5px 5px 5px;" id="fditem">
-                    <div style="border-bottom: 1px solid #1193d6;padding: 5px;">
-                        <b class="biaoti_cu">双光驱同步: </b>
-                        <span class="biaoti" id="burn_mode">直刻模式</span>
-                        <b class="biaoti_cu">&nbsp;&nbsp;&nbsp;&nbsp;选时: </b>
-                        <span class="biaoti" id="bsettimerrecburntime">1小时</span>
-                    </div>
-                    <div style="border-bottom: 1px solid #1193D6;padding: 5px;" id="guangqu">
-                        <div id="dvd1" style="display: none;">
-                            <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
-                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
-                        </div>
-                        <div id="dvd2" style="display: none;">
-                            <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
-                            <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <i class="layui-icon layui-icon-video"></i>
+                            <span>视频录制</span>
+                            <span style="float: right;">未开始</span></div>
+                        <div class="layui-card-body" style="overflow: hidden;">
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
+                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
+                            </div>
+                            <div style="float: right;margin-top: 5px;">800G可用/共1024G</div>
                         </div>
                     </div>
-                    <div style="border-bottom: 1px solid #1193D6;padding: 5px;">
-                        <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
-                        <p class="biaoti_cu">开始时间: <span class="biaoti" id="diskrec_begintime">00:00</span> 录像时间: <span class="biaoti" id="diskrec_continuettime">00:00</span> </p>
-                    </div>
-                    <div>
-                        <div class="layui-form layui-row" style="border-bottom: 1px solid #1193D6;padding: 5px;">
-                            <span class="biaoti_cu">设备操作：</span><br>
-                            <div style="margin-bottom: 20px;z-index: 88;">
-                                <div class="">
-                                    <label class="layui-form-label" style="width: auto;">刻录选时</label>
-                                    <div class="layui-input-inline" style="width: 100px;">
-                                        <select name="burntime" id="burntime" lay-filter="burntime">
-                                            <option value="1">1小时</option>
-                                            <option value="4">4小时</option>
-                                            <option value="8">8小时</option>
-                                            <option value="12">12小时</option>
-                                            <option value="16">16小时</option>
-                                            <option value="20">20小时</option>
-                                            <option value="24">24小时</option>
-                                        </select>
-                                    </div>
-                                </div>
 
-                                <input type="button" class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getdvdOutOrIn(this);" value="光盘出仓" />
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" id="kelumoshi" onclick="changeBurnMode();">刻录模式</button>
-                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getstartRec_Rom();">光盘刻录</button>
-                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;padding: 0 4px;" onclick="getstopRec_Rom();">停止光盘刻录</button>
-                                <button class="layui-btn layui-btn-normal guangpan" style="margin-top: 10px;" onclick="getCDNumber();">光盘序号</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="addptdj(true);">信息叠加</button>
-                                <button class="layui-btn layui-btn-normal" style="margin-top: 10px;" onclick="getptdjconst();">案件信息</button>
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <i class="layui-icon layui-icon-radio"></i>
+                            <span>刻录信息</span>
+                            <span style="float: right;">未开始</span></div>
+                        <div class="layui-card-body" >
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
+                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
+                            </div>
+                            <div style="overflow: hidden;">
+                                <span style="float: left;">未开始</span>
+                                <span style="float: right;">没有光盘</span>
+                            </div>
+                            <div style="overflow: hidden;">
+                                <div style="float: right;">800G可用/共1024G</div>
                             </div>
                         </div>
-                        <div class="layui-form layui-row" style="border-bottom: 1px solid #1193D6;padding: 5px;">
-                            <span class="biaoti_cu">云台控制：</span><br>
-                            <div style="margin-bottom: 20px;z-index: 88;">
-                                    <div class="">
-                                        <label class="layui-form-label" style="width: auto;">通道1</label>
-                                        <div class="layui-input-inline" style="width: 60px;">
-                                            <select name="ptzch" id="ptzch">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                            </select>
-                                        </div>
-                                    </div>
+
+                        <div class="layui-card-body" >
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
+                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
                             </div>
-                            <div style="float: left;margin-right: 50px;">
-                                <div style="padding-left: 55px;">
-                                    <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl('up');">&#xeb9b;</button>
-                                </div>
-                                <div class="layui-btn-group">
-                                    <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl('left');">&#xe604;</button>
-                                    <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl('down');">&#xeb9c;</button>
-                                    <button class="layui-btn layui-btn-normal iconfont2" onclick="getyuntaiControl('right');">&#xeb9d;</button>
-                                </div>
+                            <div style="overflow: hidden;">
+                                <span style="float: left;">已开始</span>
+                                <span style="float: right;">刻录中</span>
                             </div>
-                            <div style="float: left;">
-                                <div class="layui-form-item" style="margin-bottom: 5px;">
-                                    <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl('focus_decrease');" >&#xe611;</button>
-                                    <label class="layui-form-label" style="width: auto;float: left;">聚焦</label>
-                                    <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl('focus_increase');" >&#xe638;</button>
-                                </div>
-                                <div class="layui-form-item" style="margin-bottom: 5px;">
-                                    <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl('depth_near');" >&#xe611;</button>
-                                    <label class="layui-form-label" style="width: auto;float: left;">镜头</label>
-                                    <button class="layui-btn layui-btn-normal layui-btn-sm layui-btn-radius layui-btn-normal icon-diy iconfont2" onclick="getyuntaiControl('depth_far');" >&#xe638;</button>
-                                </div>
+                            <div style="overflow: hidden;">
+                                <div style="float: right;">800G可用/共1024G</div>
                             </div>
-                        </div>
-                        <div class="layui-form layui-row" style="padding: 5px;">
-                            <b class="biaoti_cu">画质: </b>
-                            <input type="radio" name="imagequality" value="bq" title="标清" lay-filter="bq_filter">
-                            <input type="radio" name="imagequality" value="gq" title="高清" lay-filter="gq_filter" checked>
                         </div>
                     </div>
+
+                    <div class="layui-card">
+                        <div class="layui-card-header">
+                            <i class="layui-icon layui-icon-list"></i>
+                            <span>谈话信息</span>
+                        </div>
+
+                        <form class="layui-form" action="" lay-filter="example">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">光盘刻录：</label>
+                                <div class="layui-input-block" >
+                                    <div style="padding-top: 10px;">不刻录</div>
+                                    <div style="margin-top: 20px;">
+                                        <span style="margin-right: 30px;"><i class="layui-badge-dot layui-bg-green"></i>单盘接力刻录</span>
+                                        <span><i class="layui-badge-dot layui-bg-green"></i>双盘同步直刻</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">温湿度叠加</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="close" lay-skin="switch" >
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">现场声音</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" name="close" lay-skin="switch" >
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">音频波形</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" name="close" lay-skin="switch" >
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button type="button" class="layui-btn layui-btn-normal" >重点标记</button>
+                                    <button type="button" class="layui-btn layui-btn-normal" >云台控制</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <button onclick="location.reload();">刷新</button>
                 </div>
 
             </div>
