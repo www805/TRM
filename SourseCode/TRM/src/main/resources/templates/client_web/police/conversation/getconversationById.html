@@ -137,6 +137,29 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
         background-color: rgba(203, 203, 203, 0.1);
     }
+    .table_td_tt{padding: 7px 7px 7px 15px;white-space: normal;border-bottom: 1px solid #CCCCCC;outline: none;}
+    .table_td_tt label{padding: 0px;white-space: normal;outline: none;font-size: 16px;vertical-align:middle;}
+    .table_td_tt span{padding: 0px;white-space: normal;outline: none;font-size: 16px;}
+
+
+    label[name='w']:empty:before{
+        content: attr(placeholder);
+        color:#CCCCCC;
+    }
+    label[name='w']:focus:before{
+        content:none;
+    }
+
+    label[name='q']:empty:before{
+        content: attr(placeholder);
+        color:#CCCCCC;
+    }
+    label[name='q']:focus:before{
+        content:none;
+    }
+    #btnadd{
+        text-align: center;
+    }
 </style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
@@ -149,7 +172,7 @@
     <div class="layui-row layui-form " >
             <div class="layui-col-md8"  style="height: 830px;border:1px  solid #F2F2F2; " >
             <div class="layui-card">
-                <div class="layui-card-header">审讯回放 </div>
+                <div class="layui-card-header">谈话回放 </div>
                 <div class="layui-card-body">
                     <!--视频点播区域-->
                     <div class="layui-row" style="">
@@ -172,7 +195,7 @@
             <div class="layui-col-md4 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
                 <div class="layui-card" style="margin-bottom: 0;"  >
                     <div class="layui-card-header" style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding-right: 0;">
-                        当前审讯：<span id="recordtitle" >标题加载中请稍等...</span>
+                        当前谈话：<span id="recordtitle" >标题加载中请稍等...</span>
                     </div>
                 </div>
                 <div class="layui-tab layui-tab-brief" style="margin-top: 0;" lay-filter="docDemoTabBrief" >
@@ -181,7 +204,7 @@
                                 <!--   <div class="layui-card-header">案件信息</div>-->
 
                                     <div class="layui-card-body" >
-                                        <div><strong>【审讯信息】</strong></div>
+                                        <div><strong>【谈话信息】</strong><i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></div>
                                         <table class="layui-table" lay-skin="line" style="table-layout: fixed" id="www">
                                             <tbody id="caseAndUserInfo_html">
                                             <tr><td>案件名称</td><td></td></tr>
@@ -194,11 +217,21 @@
                                             </tbody>
                                         </table>
                                         <hr>
-                                        <div><strong id="recorddetail_strong"></strong></div>
+                                        <div class="layui-col-md12">
+                                            <div class="layui-col-md3">
+                                                <strong id="recorddetail_strong"></strong>
+                                            </div>
+                                            <div class="layui-col-md9">
+                                                <div style="float: right;display: none" id="wqutil">
+                                                    <button class="layui-btn layui-btn-warm" onclick="focuslable(null,2,'q');" >添加自定义问答</button>
+                                                    <button class="layui-btn layui-btn-normal"  id="baocun" >保存</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div id="recorddetail_webkit">
                                             <div style="" id="recorddetail_scrollhtml" >
                                                 <div>
-                                                <table class="layui-table" lay-even="" lay-skin="nob">
+                                                <table class="layui-table"  lay-skin="nob">
                                                     <tbody id="recorddetail">
 
                                                     </tbody>
@@ -233,6 +266,7 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     var recordssid;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
@@ -240,6 +274,7 @@
         setpageAction(INIT_CLIENT,"client_web/police/conversation/getconversationById");
         recordssid=[[${conversationByIdModel.recordssid}]];
         getRecordById();//获取笔录案件等信息
+        getRecordrealByRecordssid()
 
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         $(window).resize(function(){

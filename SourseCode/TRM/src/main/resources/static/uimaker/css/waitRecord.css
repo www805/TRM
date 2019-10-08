@@ -567,3 +567,6 @@ label[name='q']:focus:before{
 #cysj_li li,#cywd_li li,#dc_li li{
     text-align: center;
 }
+.layui-form-radio{
+    margin: 0px;
+}

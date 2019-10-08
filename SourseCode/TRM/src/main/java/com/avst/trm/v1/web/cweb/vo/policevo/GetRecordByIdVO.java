@@ -1,5 +1,8 @@
 package com.avst.trm.v1.web.cweb.vo.policevo;
 
+import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
 import com.avst.trm.v1.feignclient.mc.vo.param.Avstmt_modeltd;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
@@ -23,6 +26,39 @@ public class GetRecordByIdVO {
     private String record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许
 
     private String record_adjournbool;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
+
+
+    /**
+     * 用于编辑人员笔录信息
+     */
+    private  List<AdminAndWorkunit> adminList;//全部用户，
+    private  List<Base_nationality> nationalityList;//全部国籍
+    private  List<Base_national> nationalList;//全部民族
+
+
+    public List<AdminAndWorkunit> getAdminList() {
+        return adminList;
+    }
+
+    public void setAdminList(List<AdminAndWorkunit> adminList) {
+        this.adminList = adminList;
+    }
+
+    public List<Base_nationality> getNationalityList() {
+        return nationalityList;
+    }
+
+    public void setNationalityList(List<Base_nationality> nationalityList) {
+        this.nationalityList = nationalityList;
+    }
+
+    public List<Base_national> getNationalList() {
+        return nationalList;
+    }
+
+    public void setNationalList(List<Base_national> nationalList) {
+        this.nationalList = nationalList;
+    }
 
     public String getRecord_adjournbool() {
         return record_adjournbool;

@@ -154,11 +154,11 @@ function getactionid_manage() {
         getRecordById_exportPdf:"getRecordById_exportPdf",
         getRecordById_gZIPVod:"getRecordById_gZIPVod",
         getRecordById_zIPVodProgress:"getRecordById_zIPVodProgress",
-        getRecordById_getAdminList:"getRecordById_getAdminList",
-        getRecordById_getNationalitys:"getRecordById_getNationalitys",
-        getRecordById_getNationals:"getRecordById_getNationals",
         getRecordById_updateCaseToUser:"getRecordById_updateCaseToUser",
-
+        getRecordById_addRecord:"getRecordById_addRecord",
+        getRecordById_getRecordrealByRecordssid:"getRecordById_getRecordrealByRecordssid",
+        getRecordById_setRecordreal:"getRecordById_setRecordreal",
+        getRecordById_addRecord:"getRecordById_addRecord",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -185,9 +185,6 @@ function getactionid_manage() {
         waitRecord_setRecordreal_Last:"waitRecord_setRecordreal_Last",
         waitRecord_getRecordreal_LastByRecordssid:"waitRecord_getRecordreal_LastByRecordssid",
         waitRecord_checkKeyword:"waitRecord_checkKeyword",
-        waitRecord_getNationalitys:"waitRecord_getNationalitys",
-        waitRecord_getNationals:"waitRecord_getNationals",
-        waitRecord_getAdminList:"waitRecord_getAdminList",
         waitRecord_updateCaseToUser:"waitRecord_updateCaseToUser",
 
         waitRecord_getFDState:"waitRecord_getFDState",
@@ -302,12 +299,10 @@ function getactionid_manage() {
         startConversation_getUserinfoList:"startConversation_getUserinfoList",
         startConversation_getUserByCard:"startConversation_getUserByCard",
         startConversation_getCaseById:"startConversation_getCaseById",
-        startConversation_getAdminList:"startConversation_getAdminList",
         startConversation_addCaseToArraignment:"startConversation_addCaseToArraignment",
         startConversation_getCards:"startConversation_getCards",
         startConversation_towaitRecord:"startConversation_towaitRecord",
-        startConversation_getNationalitys:"startConversation_getNationalitys",
-        startConversation_getNationals:"startConversation_getNationals",
+
 
         conversationIndex_getRecords:"conversationIndex_getRecords",
         conversationIndex_changeboolRecord:"conversationIndex_changeboolRecord",
@@ -320,6 +315,11 @@ function getactionid_manage() {
         waitconversation_addRecord:"waitconversation_addRecord",
 
         getconversationById_getRecordById:"getconversationById_getRecordById",
+        getconversationById_updateCaseToUser:"getconversationById_updateCaseToUser",
+        getconversationById_getRecordrealByRecordssid:"getconversationById_getRecordrealByRecordssid",
+        getconversationById_setRecordreal:"getconversationById_setRecordreal",
+        getconversationById_addRecord:"getconversationById_addRecord",
+
 
         packdownList_getPackdownList:"packdownList_getPackdownList",
         packdownList_changeboolPackdown:"packdownList_changeboolPackdown",

@@ -1395,117 +1395,6 @@ function callbackgetEquipmentsState(data) {
 
 
 //*******************************************************************案件人员信息编辑start****************************************************************//
-//获取全部管理员
-function getAdminList() {
-    var url=getActionURL(getactionid_manage().waitRecord_getAdminList);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{}
-    };
-    ajaxSubmitByJson(url,data,callbackgetAdminList);
-}
-function callbackgetAdminList(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var otheruserinfos=data.data;
-        $('#recordadmin option').not(":lt(1)").remove();
-        $('#otheruserinfos option').not(":lt(1)").remove();
-        if (isNotEmpty(otheruserinfos)){
-            for (var i = 0; i < otheruserinfos.length; i++) {
-                var u= otheruserinfos[i];
-                if (u.ssid!=sessionadminssid) {
-                    $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                    $("#otheruserinfos").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                }
-            }
-          /*  $("#recordadmin").val(otheruserinfos[0].ssid);//默认选择第一个
-            $("#otheruserinfos").val(otheruserinfos[0].ssid);//默认选择第一个*/
-            layui.use('form', function(){
-                var $ = layui.$;
-                var form = layui.form;
-                form.on('select(otheruserinfos_filter)', function(data){
-                    $("#otherworkname").val("");
-                    var otheruserinfosssid=data.value;
-                    for (var i = 0; i < otheruserinfos.length; i++) {
-                        var u = otheruserinfos[i];
-                        if (otheruserinfosssid==u.ssid){
-                            $("#otherworkname").val(u.workname);
-                        }
-                    }
-                });
-                form.render();
-            });
-
-        }
-    }else{
-        layer.msg(data.message,{icon:5});
-    }
-    layui.use('form', function(){
-        var $ = layui.$;
-        var form = layui.form;
-        form.render();
-    });
-}
-/**
- * 获取国籍
- */
-function getNationalitys(){
-    var url=getActionURL(getactionid_manage().waitRecord_getNationalitys);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{}
-    };
-    ajaxSubmitByJson(url,data,callbackgetNationalitys);
-}
-function callbackgetNationalitys(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        $('#nationality option').not(":lt(1)").remove();
-        if (isNotEmpty(data)){
-            if (isNotEmpty(data)) {
-                for (var i = 0; i < data.length; i++) {
-                    var l = data[i];
-                    $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
-                }
-            }
-        }
-    }else{
-       layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
-
-/**
- * 获取民族
- */
-function getNationals(){
-    var url=getActionURL(getactionid_manage().waitRecord_getNationals);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{}
-    };
-    ajaxSubmitByJson(url,data,callbackgetNationals);
-}
-function callbackgetNationals(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        $('#national option').not(":lt(1)").remove();
-        if (isNotEmpty(data)) {
-            for (var i = 0; i < data.length; i++) {
-                var l = data[i];
-                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
 
 function  open_casetouser() {
     layui.use(['layer','laydate','form'], function(){
@@ -1538,6 +1427,113 @@ function  open_casetouser() {
                 layero.addClass('layui-form');//添加form标识
                 layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
                 form.render();
+
+                //开始回填数据
+                if (isNotEmpty(getRecordById_data)) {
+                    var otheruserinfos=getRecordById_data.adminList;//全部用户，
+                    var nationalityList=getRecordById_data.nationalityList;//全部国籍
+                    var nationalList=getRecordById_data.nationalList;//全部民族
+
+                    //全部用户
+                    if(isNotEmpty(otheruserinfos)){
+                        $('#recordadmin option').not(":lt(1)").remove();
+                        $('#otheruserinfos option').not(":lt(1)").remove();
+                        if (isNotEmpty(otheruserinfos)){
+                            for (var i = 0; i < otheruserinfos.length; i++) {
+                                var u= otheruserinfos[i];
+                                if (u.ssid!=sessionadminssid) {
+                                    $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                                    $("#otheruserinfos").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                                }
+                            }
+                            form.on('select(otheruserinfos_filter)', function(data){
+                                $("#otherworkname").val("");
+                                var otheruserinfosssid=data.value;
+                                for (var i = 0; i < otheruserinfos.length; i++) {
+                                    var u = otheruserinfos[i];
+                                    if (otheruserinfosssid==u.ssid){
+                                        $("#otherworkname").val(u.workname);
+                                    }
+                                }
+                            });
+                            form.render();
+                        }
+                    }
+                    //全部国籍
+                    if (isNotEmpty(nationalityList)) {
+                        for (var i = 0; i < nationalityList.length; i++) {
+                            var l = nationalityList[i];
+                            $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
+                        }
+                        form.render();
+                    }
+                    //全部民族
+                    if (isNotEmpty(nationalList)) {
+                        for (var i = 0; i < nationalList.length; i++) {
+                            var l = nationalList[i];
+                            $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
+                        }
+                        form.render();
+                    }
+
+
+
+                    var record=getRecordById_data.record;
+                    if (isNotEmpty(record)){
+                        //回显嫌疑人信息
+                        var recordUserInfos=record.recordUserInfos;
+                        var case_=record.case_;
+                        var police_arraignment=record.police_arraignment;
+                        $("#recordname").val(record.recordname);
+                        if (isNotEmpty(recordUserInfos)) {
+                            var userinfo=recordUserInfos.userInfo;
+                            if (isNotEmpty(userinfo)) {
+                                $("#cards").val(userinfo.cardtypename);
+                                $("#cardnum").val(userinfo.cardnum);
+                                $("#username").val(userinfo.username);
+                                $("#beforename").val(userinfo.beforename);
+                                $("#nickname").val(userinfo.nickname);
+                                $("#both").val(userinfo.both);
+                                $("#professional").val(userinfo.professional);
+                                $("#phone").val(userinfo.phone);
+                                $("#domicile").val(userinfo.domicile);
+                                $("#residence").val(userinfo.residence);
+                                $("#workunits").val(userinfo.workunits);
+                                $("#age").val(userinfo.age);
+
+                                $("#sex").val(userinfo.sex);
+                                $("#national").val(userinfo.nationalssid);
+                                $("#nationality").val(userinfo.nationalityssid);
+                                $("#educationlevel").val(userinfo.educationlevel);
+                                $("#politicsstatus").val(userinfo.politicsstatus);
+                            }
+                            //回显询问人信息
+                            $("#adminname").val(recordUserInfos.adminname);
+                            $("#otheruserinfos").val(recordUserInfos.otheradminssid);
+                            $("#recordadmin").val(recordUserInfos.recordadminssid);
+                            $("#workname").val(recordUserInfos.workunitname1);
+                            $("#otherworkname").val(recordUserInfos.workunitname2);
+                        }
+                        //回显案件人信息
+                        if (isNotEmpty(case_)){
+                            $("#casename").val(case_.casename);
+                            $("#cause").val(case_.cause);
+                            $("#casenum").val(case_.casenum);
+                            $("#occurrencetime").val(case_.occurrencetime);
+                            $("#starttime").val(case_.starttime);
+                            $("#endtime").val(case_.endtime);
+                            $("#caseway").val(case_.caseway);
+                            $("#department").val(case_.department);
+
+                        }
+                        if (isNotEmpty(police_arraignment)){
+                            $("#askobj").val(police_arraignment.askobj);
+                            $("#asknum").val(police_arraignment.asknum);
+                            $("#recordplace").val(police_arraignment.recordplace);
+                        }
+
+                    }
+                }
             },
             yes:function(index, layero){
                 //开始收集数据
@@ -1668,72 +1664,7 @@ function  open_casetouser() {
                 layer.close(index);
             }
         });
-
-        getNationalitys();
-        getNationals();
-        getAdminList();
-
-        setTimeout(function () {
-            //开始回填数据
-            if (isNotEmpty(getRecordById_data)) {
-                var record=getRecordById_data.record;
-                if (isNotEmpty(record)){
-                    //回显嫌疑人信息
-                    var recordUserInfos=record.recordUserInfos;
-                    var case_=record.case_;
-                    var police_arraignment=record.police_arraignment;
-                    $("#recordname").val(record.recordname);
-                    if (isNotEmpty(recordUserInfos)) {
-                        var userinfo=recordUserInfos.userInfo;
-                        if (isNotEmpty(userinfo)) {
-                            $("#cards").val(userinfo.cardtypename);
-                            $("#cardnum").val(userinfo.cardnum);
-                            $("#username").val(userinfo.username);
-                            $("#beforename").val(userinfo.beforename);
-                            $("#nickname").val(userinfo.nickname);
-                            $("#both").val(userinfo.both);
-                            $("#professional").val(userinfo.professional);
-                            $("#phone").val(userinfo.phone);
-                            $("#domicile").val(userinfo.domicile);
-                            $("#residence").val(userinfo.residence);
-                            $("#workunits").val(userinfo.workunits);
-                            $("#age").val(userinfo.age);
-
-                            $("#sex").val(userinfo.sex);
-                            $("#national").val(userinfo.nationalssid);
-                            $("#nationality").val(userinfo.nationalityssid);
-                            $("#educationlevel").val(userinfo.educationlevel);
-                            $("#politicsstatus").val(userinfo.politicsstatus);
-                        }
-                        //回显询问人信息
-                        $("#adminname").val(recordUserInfos.adminname);
-                        $("#otheruserinfos").val(recordUserInfos.otheradminssid);
-                        $("#recordadmin").val(recordUserInfos.recordadminssid);
-                        $("#workname").val(recordUserInfos.workunitname1);
-                        $("#otherworkname").val(recordUserInfos.workunitname2);
-                    }
-                    //回显案件人信息
-                    if (isNotEmpty(case_)){
-                        $("#casename").val(case_.casename);
-                        $("#cause").val(case_.cause);
-                        $("#casenum").val(case_.casenum);
-                        $("#occurrencetime").val(case_.occurrencetime);
-                        $("#starttime").val(case_.starttime);
-                        $("#endtime").val(case_.endtime);
-                        $("#caseway").val(case_.caseway);
-                        $("#department").val(case_.department);
-
-                    }
-                    if (isNotEmpty(police_arraignment)){
-                        $("#askobj").val(police_arraignment.askobj);
-                        $("#asknum").val(police_arraignment.asknum);
-                        $("#recordplace").val(police_arraignment.recordplace);
-                    }
-
-                }
-            }
-            form.render();
-        },500)
+        form.render();
     });
 }
 var open_casetouser_html='<form class="layui-form layui-row" style="margin: 10px" id="user_form">\

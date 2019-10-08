@@ -146,6 +146,35 @@
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.25);
         background-color: rgba(203, 203, 203, 0.1);
     }
+
+
+
+    .table_td_tt{padding: 7px 7px 7px 15px;white-space: normal;border-bottom: 1px solid #CCCCCC;outline: none;}
+    .table_td_tt label{padding: 0px;white-space: normal;outline: none;font-size: 16px;vertical-align:middle;}
+    .table_td_tt span{padding: 0px;white-space: normal;outline: none;font-size: 16px;}
+
+
+    label[name='w']:empty:before{
+        content: attr(placeholder);
+        color:#CCCCCC;
+    }
+    label[name='w']:focus:before{
+        content:none;
+    }
+
+    label[name='q']:empty:before{
+        content: attr(placeholder);
+        color:#CCCCCC;
+    }
+    label[name='q']:focus:before{
+        content:none;
+    }
+    #btnadd{
+        text-align: center;
+    }
+   /* #recorddetail{
+        cursor:text
+    }*/
 </style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
@@ -319,11 +348,24 @@
                                 </div>
                                 <div class="layui-col-md7" id="record_qw_HTML" >
                                     <div class="layui-card">
-                                        <div><strong>【笔录问答】</strong></div>
+                                        <div class="layui-col-md12">
+                                            <div class="layui-col-md3">
+                                                <strong id="recorddetail_strong"></strong>
+                                            </div>
+                                            <div class="layui-col-md9">
+                                                <div style="float: right;display: none" id="wqutil">
+                                                    <button class="layui-btn layui-btn-warm" onclick="focuslable(null,2,'q');" >添加自定义问答</button>
+                                                    <button class="layui-btn layui-btn-normal"  id="baocun" >保存</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div id="recorddetail_webkit">
                                             <div style="" id="recorddetail_scrollhtml">
                                                 <div class="layui-card-body">
-                                                    <table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed;margin-bottom: 30px;">
+                                                    <div class="layui-col-md12  layui-show" style="height: 300px">
+                                                        <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
+                                                    </div>
+                                                    <table class="layui-table"  lay-skin="nob" style="table-layout: fixed;margin-bottom: 30px;">
                                                         <tbody id="recorddetail">
 
                                                         </tbody>
@@ -366,6 +408,7 @@
         setpageAction(INIT_CLIENT,"client_web/police/record/getRecordById");
         recordssid=[[${getRecordByIdModel.recordssid}]];
         getRecordById();//获取笔录案件等信息
+
       /*  main1();//身心统计回放*/
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
 

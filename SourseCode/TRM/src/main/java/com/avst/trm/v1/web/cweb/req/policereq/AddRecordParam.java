@@ -15,6 +15,16 @@ public class AddRecordParam {
 
     private String mtssid;//会议ssid
 
+    private boolean justqwbool=false;//是否只需要替换笔录问答，默认false
+
+    public boolean isJustqwbool() {
+        return justqwbool;
+    }
+
+    public void setJustqwbool(boolean justqwbool) {
+        this.justqwbool = justqwbool;
+    }
+
     public Integer getCasebool() {
         return casebool;
     }

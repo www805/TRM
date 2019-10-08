@@ -141,6 +141,9 @@ public class RecordService extends BaseService {
     @Autowired
     private Police_templateMapper police_templateMapper;
 
+    @Autowired
+    private Base_nationalMapper base_nationalMapper;
+
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
 
@@ -257,7 +260,8 @@ public class RecordService extends BaseService {
     //提供给笔录问答实时记录初始化使用
     public  List<Record> initRecordrealingCache(){
         EntityWrapper recordparam=new EntityWrapper();
-        recordparam.eq("recordbool",1).or().eq("recordbool",0);//获取进行中的笔录
+        List<Integer> recordbools=new ArrayList<>();
+        recordparam.ne("recordbool",-1);//笔录
         List<Police_record> list=police_recordMapper.selectList(recordparam);
         List<Record> records=new ArrayList<>();
         if (null!=list&&list.size()>0){
@@ -299,8 +303,9 @@ public class RecordService extends BaseService {
             return;
         }
         String recordssid=addRecordParam.getRecordssid();//笔录ssid
-      /*  List<RecordToProblem> recordToProblems1=addRecordParam.getRecordToProblems();//笔录携带的题目答案集合*/
+        boolean justqwbool=addRecordParam.isJustqwbool();//是否只需要普通的修改问答
 
+      /*  List<RecordToProblem> recordToProblems1=addRecordParam.getRecordToProblems();//笔录携带的题目答案集合*/
         List<RecordToProblem> recordToProblems1=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
 
         if (StringUtils.isBlank(recordssid)){
@@ -320,7 +325,7 @@ public class RecordService extends BaseService {
             return;
         }
 
-        if (police_record.getRecordbool()==2||police_record.getRecordbool()==-1||police_record.getRecordbool()==3){
+        if ((police_record.getRecordbool()==2||police_record.getRecordbool()==-1||police_record.getRecordbool()==3)&&!justqwbool){
             //2已完成或者-1已删除状态
             result.setMessage("该笔录已结束...");
             LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
@@ -379,6 +384,13 @@ public class RecordService extends BaseService {
             }
         }else{
             LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
+        }
+
+        if (justqwbool){
+            //不需要进行下一步
+            result.setData(recordssid);
+            changeResultToSuccess(result);
+            return;
         }
 
 
@@ -723,6 +735,18 @@ public class RecordService extends BaseService {
                         LogUtil.intoLog(this.getClass()," outService.getPHDataBack__请求失败__"+msg);
                     }
                 }
+
+
+                //用于编辑人员案件信息
+                List<Base_nationality> nationalityList=base_nationalityMapper.selectList(null);
+                List<Base_national> nationalList=base_nationalMapper.selectList(null);
+                EntityWrapper adminparam=new EntityWrapper();
+                adminparam.eq("a.adminbool",1);//正常人
+                adminparam.orderBy("a.registerTime",false);
+                List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
+                getRecordByIdVO.setNationalityList(nationalityList);
+                getRecordByIdVO.setNationalList(nationalList);
+                getRecordByIdVO.setAdminList(adminList);
 
 
                 //获取实时数据
