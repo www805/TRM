@@ -82,6 +82,12 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
      */
     private Integer authorizesortnum;
 
+    private String sysmsg;
+
+    private String companymsg;
+
+    private String runbook_filesavessid;
+
     private String ssid;
 
     private String string1;
@@ -91,6 +97,30 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public String getSysmsg() {
+        return sysmsg;
+    }
+
+    public void setSysmsg(String sysmsg) {
+        this.sysmsg = sysmsg;
+    }
+
+    public String getCompanymsg() {
+        return companymsg;
+    }
+
+    public void setCompanymsg(String companymsg) {
+        this.companymsg = companymsg;
+    }
+
+    public String getRunbook_filesavessid() {
+        return runbook_filesavessid;
+    }
+
+    public void setRunbook_filesavessid(String runbook_filesavessid) {
+        this.runbook_filesavessid = runbook_filesavessid;
+    }
 
     public Integer getId() {
         return id;

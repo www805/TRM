@@ -18,7 +18,7 @@
         <result column="integer2" property="integer2" />
         <result column="gz_iid" property="gz_iid" />
         <result column="wordtemplatessid" property="wordtemplatessid" />
-
+        <result column="wordhead_filesavessid" property="wordhead_filesavessid" />
     </resultMap>
 
 </mapper>

@@ -21,16 +21,18 @@ import java.util.List;
  */
 public interface Police_recordMapper extends BaseMapper<Police_record> {
 
-    @Select(" select r.*,t.typename as recordtypename,f2.recorddownurl as pdfdownurl,f2.recordrealurl as pdfrealurl,f3.recorddownurl as worddownurl,f3.recordrealurl as wordrealurl from police_record r " +
+    @Select(" select r.*,t.typename as recordtypename,f2.recorddownurl as pdfdownurl,f2.recordrealurl as pdfrealurl,f3.recorddownurl as worddownurl,f3.recordrealurl as wordrealurl,f1.recorddownurl as wordheaddownurl,f1.recordrealurl as wordheadrealurl from police_record r " +
             " left join base_filesave f2 on f2.ssid=r.pdf_filesavessid " +
             " left join base_filesave f3 on f3.ssid=r.word_filesavessid " +
+            " left join base_filesave f1 on f1.ssid=r.wordhead_filesavessid " +
             " left join police_recordtype t on t.ssid=r.recordtypessid "+
             " where 1=1 ${ew.sqlSegment} ")
     Record getRecordBySsid(@Param("ew") EntityWrapper ew);
 
-    @Select(" select r.*,t.typename as recordtypename,f2.recorddownurl as pdfdownurl,f2.recordrealurl as pdfrealurl ,f3.recorddownurl as worddownurl,f3.recordrealurl as wordrealurl from police_record r " +
+    @Select(" select r.*,t.typename as recordtypename,f2.recorddownurl as pdfdownurl,f2.recordrealurl as pdfrealurl ,f3.recorddownurl as worddownurl,f3.recordrealurl as wordrealurl,f1.recorddownurl as wordheaddownurl,f1.recordrealurl as wordheadrealurl from police_record r " +
             " left join base_filesave f2 on f2.ssid=r.pdf_filesavessid "+
             " left join base_filesave f3 on f3.ssid=r.word_filesavessid " +
+            " left join base_filesave f1 on f1.ssid=r.wordhead_filesavessid " +
             " left join police_arraignment a on r.ssid=a.recordssid " +
             " left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
             " left join police_recordtype t on t.ssid=r.recordtypessid "+
@@ -40,6 +42,7 @@ public interface Police_recordMapper extends BaseMapper<Police_record> {
     @Select(" select count(r.id) from police_record r " +
             " left join base_filesave f2 on f2.ssid=r.pdf_filesavessid "+
             " left join base_filesave f3 on f3.ssid=r.word_filesavessid " +
+            " left join base_filesave f1 on f1.ssid=r.wordhead_filesavessid " +
             " left join police_arraignment a on r.ssid=a.recordssid " +
             " left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
             " left join police_recordtype t on t.ssid=r.recordtypessid "+

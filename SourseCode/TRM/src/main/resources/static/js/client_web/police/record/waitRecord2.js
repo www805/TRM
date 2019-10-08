@@ -1204,7 +1204,7 @@ function callbackgnlist(data) {
             var lists=data.lists;
             if (isNotEmpty(lists)){
                 gnlist=lists;
-                if (!isNotEmpty(gnlist)||!gnlist.includes("record")){
+                if (!isNotEmpty(gnlist)||!gnlist.includes("record_f")){
                     layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
                         window.history.go(-1);
                         return false;
@@ -1213,15 +1213,15 @@ function callbackgnlist(data) {
                 //控制显示
                 for (var i = 0; i < gnlist.length; i++) {
                     var list = gnlist[i];
-                    if (list=="asr") {
+                    if (list=="asr_f") {
                         /*  $("#asr").show();
                           $("#initec ul li").removeClass("layui-this");
                           $("#initec .layui-tab-item").removeClass("layui-show");
                           $("#asr").addClass("layui-this");
                           $("#asritem").addClass("layui-show");*/
-                    }else if (list=="fd") {
+                    }else if (list=="fd_f") {
                         /*$("#fd").show();*/
-                    }else if (list=="ph") {
+                    }else if (list=="ph_f") {
                         /* $("#ph").show();*/
                        /* $("#xthtml").css("visibility","visible");*/
                     }
@@ -1452,6 +1452,7 @@ function getNationalitys(){
     var url=getActionURL(getactionid_manage().waitRecord_getNationalitys);
     var data={
         token:INIT_CLIENTKEY,
+        param:{}
     };
     ajaxSubmitByJson(url,data,callbackgetNationalitys);
 }
@@ -1483,6 +1484,7 @@ function getNationals(){
     var url=getActionURL(getactionid_manage().waitRecord_getNationals);
     var data={
         token:INIT_CLIENTKEY,
+        param:{}
     };
     ajaxSubmitByJson(url,data,callbackgetNationals);
 }
@@ -1506,9 +1508,10 @@ function callbackgetNationals(data) {
 }
 
 function  open_casetouser() {
-    layui.use(['layer','element','form','laydate'], function() {
+    layui.use(['layer','laydate','form'], function(){
         var form = layui.form;
-        var laydate=layui.laydate;
+        var laydate = layui.laydate;
+
         layer.open({
             type: 1,
             title:'人员案件基本信息',
@@ -1531,7 +1534,6 @@ function  open_casetouser() {
                     elem: '#endtime' //指定元素
                     ,type:"datetime"
                 });
-
 
                 layero.addClass('layui-form');//添加form标识
                 layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
@@ -1674,8 +1676,6 @@ function  open_casetouser() {
         setTimeout(function () {
             //开始回填数据
             if (isNotEmpty(getRecordById_data)) {
-                console.log(getRecordById_data)
-
                 var record=getRecordById_data.record;
                 if (isNotEmpty(record)){
                     //回显嫌疑人信息
@@ -1733,11 +1733,8 @@ function  open_casetouser() {
                 }
             }
             form.render();
-        },200)
-
-
+        },500)
     });
-
 }
 var open_casetouser_html='<form class="layui-form layui-row" style="margin: 10px" id="user_form">\
     <div class="layui-col-md6" >\

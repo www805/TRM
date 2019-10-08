@@ -159,7 +159,7 @@
                 <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
                 <button class="layui-btn layui-btn-primary" onclick="getRecordreal_LastByRecordssid();" id="getRecordreal_LastByRecordssid" style="display: none">获取重置</button>
                 <button class="layui-btn layui-btn-warm " onclick="focuslable(null,2,'q');">添加自定义问答</button>
-                <div style="float: right">
+                <div style="float: right;display: none">
                         <button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
                  </div>
             </div>
@@ -180,6 +180,9 @@
                         <div style="" id="recorddetail_scrollhtml">
                             <div class="layui-card-body layui-row ">
                                 <div class="layui-col-lg12 ">
+                                    <div class="layui-col-md12  layui-show" style="height: 300px">
+                                        <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
+                                    </div>
                                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
                                         <tbody id="recorddetail">
                                         <tr id="first_originaltr">

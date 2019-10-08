@@ -11,6 +11,27 @@ public class ServerconfigAndFilesave extends Base_serverconfig {
 
     private String syslogo_realurl;//服务端logo真实地址
 
+    private String runbook_downurl;
+
+    private String runbook_realurl;
+
+
+    public String getRunbook_downurl() {
+        return runbook_downurl;
+    }
+
+    public void setRunbook_downurl(String runbook_downurl) {
+        this.runbook_downurl = runbook_downurl;
+    }
+
+    public String getRunbook_realurl() {
+        return runbook_realurl;
+    }
+
+    public void setRunbook_realurl(String runbook_realurl) {
+        this.runbook_realurl = runbook_realurl;
+    }
+
     public String getClient_downurl() {
         return client_downurl;
     }

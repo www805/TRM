@@ -337,14 +337,14 @@ public class RecordAction extends BaseAction {
      * @return
      */
     @RequestMapping("/exportWord")
-    public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param, HttpServletRequest request){
+    public  RResult exportWord(@RequestBody ReqParam<ExportWordParam> param){
         RResult<ExportWordVO> result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.exportWord(result,param,request);
+            recordService.exportWord(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

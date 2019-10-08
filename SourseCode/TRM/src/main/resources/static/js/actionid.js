@@ -336,5 +336,7 @@ function getactionid_manage() {
         homepage_getHome:"homepage_getHome",
         homepage_addCaseToArraignment:"homepage_addCaseToArraignment",
 
+        about_getAbout:"about_getAbout",
+
     };
 }

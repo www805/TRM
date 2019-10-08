@@ -186,13 +186,14 @@
 
     });
 
-    layui.use(['laypage', 'form', 'layer', 'layedit','element','laytpl'], function(){
+    layui.use(['laypage', 'form', 'layer', 'layedit','element','laytpl','util'], function(){
         var layer = layui.layer; //获得layer模块
         var form = layui.form;
         var layedit = layui.layedit;
         var laypage = layui.laypage;
         var element = layui.element;
         var laytpl = layui.laytpl;
+        var util = layui.util;
         //使用模块
         var data = { //数据
             "homeUrl":homeUrl
@@ -209,6 +210,10 @@
         laytpl(getTpl).render(data, function(html){
             view.innerHTML = html;
         });*/
+
+
+
+
         form.render();
 
     });

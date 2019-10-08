@@ -17,6 +17,12 @@ public class Record extends Police_record {
 
     private String wordrealurl;
 
+    private String wordheaddownurl;
+
+    private String wordheadrealurl;
+
+    private String wordheaddownurl_html;
+
     private List<RecordToProblem> problems;//笔录问题
 
     private RecordUserInfos recordUserInfos;//笔录询问 和被询问人信息
@@ -28,6 +34,30 @@ public class Record extends Police_record {
     private Integer mcbool;//会议状态
 
     private String recordtypename;//案件类型名称
+
+    public String getWordheaddownurl_html() {
+        return wordheaddownurl_html;
+    }
+
+    public void setWordheaddownurl_html(String wordheaddownurl_html) {
+        this.wordheaddownurl_html = wordheaddownurl_html;
+    }
+
+    public String getWordheaddownurl() {
+        return wordheaddownurl;
+    }
+
+    public void setWordheaddownurl(String wordheaddownurl) {
+        this.wordheaddownurl = wordheaddownurl;
+    }
+
+    public String getWordheadrealurl() {
+        return wordheadrealurl;
+    }
+
+    public void setWordheadrealurl(String wordheadrealurl) {
+        this.wordheadrealurl = wordheadrealurl;
+    }
 
     public Case getCase_() {
         return case_;

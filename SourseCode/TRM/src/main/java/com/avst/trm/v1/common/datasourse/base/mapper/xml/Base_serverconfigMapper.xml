@@ -16,6 +16,9 @@
         <result column="workstarttime" property="workstarttime" />
         <result column="workdays" property="workdays" />
         <result column="authorizesortnum" property="authorizesortnum" />
+        <result column="sysmsg" property="sysmsg" />
+        <result column="companymsg" property="companymsg" />
+        <result column="runbook_filesavessid" property="runbook_filesavessid" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

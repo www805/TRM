@@ -451,6 +451,30 @@ public class RecordService extends BaseService {
             Record record=police_recordMapper.getRecordBySsid(recordParam);
 
             if (null!=record){
+                //获取头文件
+                String realurl=record.getWordheadrealurl();
+                String downurl=record.getWordheaddownurl();
+                String wordheaddownurl_html=null;
+                if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                    if(realurl.endsWith(".doc")){
+                        String replace = realurl.replace(".doc", ".html");
+                        File f = new File(replace);
+                        if (f.exists()) {
+                            LogUtil.intoLog(this.getClass(),"word模板doc转html文件存在:"+replace);
+                            wordheaddownurl_html=downurl.replace(".doc", ".html");
+                        }
+                    }else if(realurl.endsWith(".docx")){
+                        String replace = realurl.replace(".docx", ".html");
+                        File f = new File(replace);
+                        if (f.exists()) {
+                            LogUtil.intoLog(this.getClass(),"word模板docx转html文件存在:"+replace);
+                            wordheaddownurl_html=downurl.replace(".docx", ".html");
+                        }
+                    }
+                }
+                record.setWordheaddownurl_html(wordheaddownurl_html);
+
+
                 Integer recordbool=record.getRecordbool();
                 try {
                     /**
@@ -1392,6 +1416,9 @@ public class RecordService extends BaseService {
             record.setWordtemplatessid(wordtemplatessid);
         }
 
+
+
+
         int insertrecord_bool=police_recordMapper.insert(record);
         LogUtil.intoLog(this.getClass(),"insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
@@ -1526,6 +1553,23 @@ public class RecordService extends BaseService {
                 }
             }
         }
+
+
+        //生成初始化word头文件
+        RResult exportwordhead_rr=new RResult();
+        ExportWordParam exportwordheadParam=new ExportWordParam();
+        exportwordheadParam.setRecordssid(record.getSsid());
+        exportwordheadParam.setWordheadbool(false);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(exportwordheadParam);
+        recordService.exportWord(exportwordhead_rr, reqParam);
+        if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
+        }else{
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
+        }
+
+
         addCaseToArraignmentVO.setRecordssid(record.getSsid());
          result.setData(addCaseToArraignmentVO);//返回开始笔录的ssid
 
@@ -1716,7 +1760,7 @@ public class RecordService extends BaseService {
             return result;
         }
 
-        Map<String,String> dataMap=exportData(recordssid);
+        Map<String,String> dataMap=exportData(recordssid,true);
 
         //根据笔录ssid获取录音数据
         EntityWrapper recordParam=new EntityWrapper();
@@ -1765,6 +1809,15 @@ public class RecordService extends BaseService {
                 String word_filesavessid=record.getWord_filesavessid();
                 //将地址保存在文件存储表以及修改笔录标的文件存储ssid
                 if (StringUtils.isNotBlank(wordrealurl)&&StringUtils.isNotBlank(worddownurl)){
+                    //word转html-----------------start---------------
+                    if(wordrealurl.endsWith(".doc")){
+                        String replace = wordrealurl.replace(".doc", ".html");
+                        WordToHtmlUtil.wordToHtml(wordrealurl, replace);
+                    }else if(wordrealurl.endsWith(".docx")){
+                        String replace = wordrealurl.replace(".docx", ".html");
+                        WordToHtmlUtil.wordToHtml(wordrealurl, replace);
+                    }
+                    //word转html-----------------end-----------------
                     Base_filesave base_filesave=new Base_filesave();
                     base_filesave.setDatassid(recordssid);
                     base_filesave.setUploadfilename(wordfilename);
@@ -1834,7 +1887,7 @@ public class RecordService extends BaseService {
         return result;
     }
 
-    public void exportWord(RResult<ExportWordVO> result, ReqParam<ExportWordParam> param, HttpServletRequest request){
+    public void exportWord(RResult<ExportWordVO> result, ReqParam<ExportWordParam> param){
         ExportWordVO exportWordVO=new ExportWordVO();
         ExportWordParam exportWordParam=param.getParam();
         if (null==exportWordParam){
@@ -1847,7 +1900,9 @@ public class RecordService extends BaseService {
             return;
         }
 
-        Map<String,String> dataMap=exportData(recordssid);
+        boolean wordhead=exportWordParam.isWordheadbool();
+
+        Map<String,String> dataMap=exportData(recordssid,wordhead);
 
         //根据笔录ssid获取录音数据
         EntityWrapper recordParam = new EntityWrapper();
@@ -1877,6 +1932,11 @@ public class RecordService extends BaseService {
 
                 //获取生成的真实地址
                 String filename=record.getRecordname().replace(" ", "").replace("\"", "");
+
+                if (!wordhead){
+                    filename= filename+"_头文件";
+                }
+
                 String suffix =wordtemplate_realurl.substring(wordtemplate_realurl.lastIndexOf(".") + 1);
 
                 String wordfilename=filename+"."+suffix;
@@ -1896,6 +1956,16 @@ public class RecordService extends BaseService {
                 //将地址保存在文件存储表以及修改笔录标的文件存储ssid
                 String word_filesavessid=record.getWord_filesavessid();
                 if (StringUtils.isNotBlank(wordrealurl)&&StringUtils.isNotBlank(worddownurl)){
+                    //word转html-----------------start---------------
+                    if(wordrealurl.endsWith(".doc")){
+                        String replace = wordrealurl.replace(".doc", ".html");
+                        WordToHtmlUtil.wordToHtml(wordrealurl, replace);
+                    }else if(wordrealurl.endsWith(".docx")){
+                        String replace = wordrealurl.replace(".docx", ".html");
+                        WordToHtmlUtil.wordToHtml(wordrealurl, replace);
+                    }
+                    //word转html-----------------end-----------------
+
                     Base_filesave base_filesave=new Base_filesave();
                     base_filesave.setDatassid(recordssid);
                     base_filesave.setUploadfilename(wordfilename);
@@ -1919,7 +1989,11 @@ public class RecordService extends BaseService {
 
                 EntityWrapper e=new EntityWrapper();
                 e.eq("ssid",recordssid);
-                record.setWord_filesavessid(word_filesavessid);
+                if (wordhead){
+                   record.setWord_filesavessid(word_filesavessid);
+                }else {
+                    record.setWordhead_filesavessid(word_filesavessid);
+                }
                 int police_recordMapper_updatebool=police_recordMapper.update(record,e);
                 LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
 
@@ -1934,67 +2008,50 @@ public class RecordService extends BaseService {
     }
 
 
+
+
     /**
      * 收集导出数据
      * @param recordssid
-     * @return
+     * @return talkbool 是否需要笔录问答
      */
-    public  Map<String,String> exportData(String recordssid) {
+    public  Map<String,String> exportData(String recordssid,boolean talkbool) {
         //根据笔录ssid获取录音数据
         EntityWrapper recordParam = new EntityWrapper();
         recordParam.eq("r.ssid", recordssid);
         Record record = police_recordMapper.getRecordBySsid(recordParam);
         Map<String, String> dataMap = new HashMap<String, String>();
         if (null != record) {
-
-            EntityWrapper ew = new EntityWrapper();
-            ew.eq("r.ssid", record.getSsid());
-            ew.orderBy("p.ordernum", true);
-            ew.orderBy("p.createtime", true);
-            List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
             String talk="";
-            if (null != questionandanswer && questionandanswer.size() > 0) {
-                for (RecordToProblem problem : questionandanswer) {
-                    talk+="问："+problem.getProblem()+"\r";
-                    String problemssid = problem.getSsid();
-                    if (StringUtils.isNotBlank(problemssid)) {
-                        EntityWrapper answerParam = new EntityWrapper();
-                        answerParam.eq("recordtoproblemssid", problemssid);
-                        answerParam.orderBy("ordernum", true);
-                        answerParam.orderBy("createtime", true);
-                        List<Police_answer> answers = police_answerMapper.selectList(answerParam);
-                        if (null != answers && answers.size() > 0) {
-                            for (Police_answer answer : answers) {
-                                talk+="答："+answer.getAnswer()+"\r";
+            if (talkbool){
+                EntityWrapper ew = new EntityWrapper();
+                ew.eq("r.ssid", record.getSsid());
+                ew.orderBy("p.ordernum", true);
+                ew.orderBy("p.createtime", true);
+                List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);
+                if (null != questionandanswer && questionandanswer.size() > 0) {
+                    for (RecordToProblem problem : questionandanswer) {
+                        talk+="问："+problem.getProblem()+"\r";
+                        String problemssid = problem.getSsid();
+                        if (StringUtils.isNotBlank(problemssid)) {
+                            EntityWrapper answerParam = new EntityWrapper();
+                            answerParam.eq("recordtoproblemssid", problemssid);
+                            answerParam.orderBy("ordernum", true);
+                            answerParam.orderBy("createtime", true);
+                            List<Police_answer> answers = police_answerMapper.selectList(answerParam);
+                            if (null != answers && answers.size() > 0) {
+                                for (Police_answer answer : answers) {
+                                    talk+="答："+answer.getAnswer()+"\r";
+                                }
+                                problem.setAnswers(answers);
+                            } else {
+                                talk+="答：\r";
                             }
-                            problem.setAnswers(answers);
-                        } else {
-                            talk+="答：\r";
                         }
                     }
                 }
             }
 
-            /**
-             *  获取题目答案
-             */
-
-            if (null!=questionandanswer&&questionandanswer.size()>0){
-                //根据题目和笔录查找对应答案
-                for (RecordToProblem problem : questionandanswer) {
-                    String problemssid=problem.getSsid();
-                    if (StringUtils.isNotBlank(problemssid)){
-                        EntityWrapper answerParam=new EntityWrapper();
-                        answerParam.eq("recordtoproblemssid",problemssid);
-                        answerParam.orderBy("ordernum",true);
-                        answerParam.orderBy("createtime",true);
-                        List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                        if (null!=answers&&answers.size()>0){
-                            problem.setAnswers(answers);
-                        }
-                    }
-                }
-            }
 
             //根据笔录ssid获取案件信息
             Case case_ =new Case();
@@ -2043,7 +2100,8 @@ public class RecordService extends BaseService {
             police_recordtype.setSsid(record.getRecordtypessid());
             police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
 
-            String recordtypename = police_recordtype.getTypename();
+            String recordtypename= recordtypename= police_recordtype.getTypename();
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
             String recordstarttime = sdf.format(record.getCreatetime());
             String recordendtime = sdf.format(new Date());
@@ -4253,6 +4311,22 @@ public class RecordService extends BaseService {
                 }
             }
         }
+
+
+        //生成初始化word头文件
+        RResult exportwordhead_rr=new RResult();
+        ExportWordParam exportwordheadParam=new ExportWordParam();
+        exportwordheadParam.setRecordssid(recordssid);
+        exportwordheadParam.setWordheadbool(false);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(exportwordheadParam);
+        recordService.exportWord(exportwordhead_rr, reqParam);
+        if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
+        }else{
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
+        }
+
        result.setData(1);
         changeResultToSuccess(result);
         return;

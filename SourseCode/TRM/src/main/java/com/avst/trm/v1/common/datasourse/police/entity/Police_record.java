@@ -85,6 +85,16 @@ public class Police_record extends Model<Police_record> {
 
     private String wordtemplatessid;//笔录模板ssid
 
+    private String wordhead_filesavessid;//word文件头
+
+    public String getWordhead_filesavessid() {
+        return wordhead_filesavessid;
+    }
+
+    public void setWordhead_filesavessid(String wordhead_filesavessid) {
+        this.wordhead_filesavessid = wordhead_filesavessid;
+    }
+
     public String getWordtemplatessid() {
         return wordtemplatessid;
     }

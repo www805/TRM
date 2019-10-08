@@ -352,6 +352,14 @@ function callbackgetRecordById(data) {
 
             var record=data.record;
             if (isNotEmpty(record)){
+                var wordheaddownurl_html=record.wordheaddownurl_html;
+                if (isNotEmpty(wordheaddownurl_html)){
+                    $("#wordheaddownurl").attr("src",wordheaddownurl_html);
+                } else {
+                    layer.msg("未找到模板头文件",{icon:5});
+                }
+
+
                 mcbool=record.mcbool;
 
                 //获取提讯会议ssid
