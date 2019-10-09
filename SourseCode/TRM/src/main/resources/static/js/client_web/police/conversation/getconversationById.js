@@ -3,12 +3,11 @@ var worddownurl=null;
 
 var videourl=null;//视频地址
 var dq_play=null;//当前播放视频
-var recordPlayParams=null;//所有视频
+var first_playstarttime=0;//第一个视频的开始时间
+var recordPlayParams=[];//全部视频数据集合
 
 var getRecordById_data=null;
 var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
-var subtractime_q=0;//问的时间差
-var subtractime_w=0;//答的时间差
 
 //获取案件信息
 function getRecordById() {
@@ -99,17 +98,18 @@ function sortPlayUrl(a, b) {
 }
 
 var oldname=[];
+
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
         var iiddata=data.iid;
         var recordFileParams=data.recordFileParams;
          recordPlayParams=data.recordPlayParams;
         var state;
-        $("#videos").html("");
+        $("#videos").empty();
         if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
             recordPlayParams.sort(sortPlayUrl);//重新排序一边
             dq_play=recordPlayParams[0];
-
+            first_playstarttime=parseFloat(dq_play.recordstarttime);
 
             for (let i = 0; i < recordPlayParams.length; i++) {
                 var play=recordPlayParams[i];
@@ -120,6 +120,9 @@ function  set_getPlayUrl(data) {
                     if (filename==playname&&oldname.indexOf(filename)<0){
                         var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
                         $("#videos").append(VIDEO_HTML);
+                        play["start_range"]=parseFloat(play.recordstarttime)-parseFloat(first_playstarttime);
+                        play["end_range"]=parseFloat(play.recordendtime)-parseFloat(first_playstarttime);
+                        recordPlayParams[i]=play;
                         oldname.push(filename)
                     }
                 }
@@ -706,9 +709,7 @@ function open_recordqw() {
     $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
     $("#wqutil").show();
 
-    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
-        qw_keydown(this,event);
-    })
+
 }
 
 //tr工具按钮==start
@@ -770,6 +771,27 @@ function focuslable(html,type,qw) {
     }
     addbtn();
     contextMenu();
+
+    $("#recorddetail .table_td_tt").dblclick(function () {
+        var contenteditable=$("label",this).attr("contenteditable");
+        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
+            //开始定位视频位置
+            var times=$("label",this).attr("times");
+            if (times!="-1"&&isNotEmpty(times)){
+                var name=$("label",this).attr("name");
+                if (name == "q"){
+                    times=parseInt(times);
+                }else if( name=="w") {
+                    times=parseInt(times);
+                }
+                showrecord(times,null);
+            }
+        }
+    })
+
+    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
+        qw_keydown(this,event);
+    })
 }
 
 //聚焦
@@ -871,10 +893,10 @@ function setRecordreal() {
         var arr={};
         var answers=[];//答案集合
         var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
+        var q_starttime=$(this).find("label[name='q']").attr("times");
         //经过筛选的q
         var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
+        var w_starttime=$(this).find("label[name='w']").attr("times");
         if (isNotEmpty(q)){
             if (null!=ws&&ws.length>0){
                 for (var j = 0; j < ws.length; j++) {
@@ -955,25 +977,25 @@ function setqw(problems) {
             var problem = problems[z];
 
             var problemstarttime=problem.starttime;
-            var q_starttime=parseFloat(problemstarttime)+parseFloat(subtractime_q);
+            var q_starttime=problemstarttime;
 
             var problemtext=problem.problem==null?"未知":problem.problem;
             problemhtml+= '<tr>\
                         <td style="padding: 0;width: 95%;" class="onetd" id="record_qw">\
-                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q"  ondblclick="showrecord('+q_starttime+',null)" times="'+q_starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q"  contenteditable="false" times="'+q_starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
                     var answer = answers[j];
 
                     var answerstarttime=answer.starttime;
-                    var w_starttime=parseFloat(answerstarttime)+parseFloat(subtractime_w);
+                    var w_starttime=answerstarttime;
 
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  ondblclick="showrecord('+w_starttime+',null)" times="'+w_starttime+'" >'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" times="'+w_starttime+'" >'+answertext+'</label></div>';
                 }
             }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"   ></label></div>';
+                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" ></label></div>';
 
             }
             problemhtml+=' <div  id="btnadd" style="display: none;"></div></td>\
@@ -991,6 +1013,71 @@ function setqw(problems) {
         return problemhtml;
     }
     return "";
+}
+
+//视频进度
+function showrecord(times,oldtime) {
+    $("#recorddetail label").removeClass("highlight_right");
+    times=parseFloat(times);
+    if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
+        var isnvideo=0;//是否有视频定位点
+        //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
+        for (let i = 0; i < recordPlayParams.length; i++) {
+            const recordPlayParam = recordPlayParams[i];
+            var start_range=recordPlayParam.start_range;
+            var end_range=recordPlayParam.end_range;
+            if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
+                if (dq_play.filenum==recordPlayParam.filenum){
+                    var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    changeProgrss(parseFloat(locationtime));
+                } else {
+                    //赋值新视频,计算新的时间
+                    dq_play=recordPlayParam;
+                    videourl=dq_play.playUrl;
+                    var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    initplayer(parseFloat(locationtime));
+
+                    //样式跟着改变
+                    $("#videos span").each(function () {
+                        var filenum=$(this).attr("filenum");
+                        if (filenum==dq_play.filenum){
+                            $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                        }
+                    });
+                }
+                isnvideo++;
+            }
+        }
+        if (isnvideo==0){
+            layer.msg("没有找到视频定位点",{time:500})
+        }
+
+
+        var recorddetailtrlen= $("#recorddetail label").length;
+        $("#recorddetail label").each(function (i,e) {
+            var t1=$(this).attr("times");
+            if (t1==times) {
+                $(this).addClass("highlight_right");
+                var top=$(this).position().top;
+                var div = document.getElementById('recorddetail_scrollhtml');
+                div.scrollTop = top;
+                return false;
+            }
+        });
+
+        $("#recordreals div").each(function (i,e) {
+            var t2=$(this).attr("times");
+            if (t2==times) {
+                $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                var top=$(this).position().top;
+                var div = document.getElementById('recordreals_scrollhtml');
+                div.scrollTop = top;
+                return false;
+            }
+        });
+    }
 }
 
 
@@ -1047,12 +1134,12 @@ function contextMenu() {
 }
 //默认问答
 var trtd_html='<tr>\
-        <td style="padding: 0;width: 80%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
-               <div  id="btnadd"></div>\
+        <td style="padding: 0;width: 75%;" class="onetd" id="record_qw">\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" times=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"   times=""></label></div>\
+               <div  id="btnadd" ></div>\
                 </td>\
-                <td>\
+                <td id="record_util">\
                     <div class="layui-btn-group">\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\

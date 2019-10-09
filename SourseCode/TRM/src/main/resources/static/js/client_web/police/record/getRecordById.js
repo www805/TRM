@@ -87,7 +87,7 @@ function setqw(problems) {
             var problem = problems[z];
 
             var problemstarttime=problem.starttime;
-            var q_starttime=parseFloat(problemstarttime)+parseFloat(subtractime_q);
+            var q_starttime=problemstarttime;
 
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
@@ -99,7 +99,7 @@ function setqw(problems) {
                     var answer = answers[j];
 
                     var answerstarttime=answer.starttime;
-                    var w_starttime=parseFloat(answerstarttime)+parseFloat(subtractime_w);
+                    var w_starttime=answerstarttime;
 
                     var answertext=answer.answer==null?"未知":answer.answer;
                     problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" times="'+w_starttime+'" >'+answertext+'</label></div>';
@@ -118,7 +118,7 @@ function setqw(problems) {
                         </td>\
                         </tr>';
         }
-        $("#recorddetail_strong").html('【谈话笔录】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_recordqw()"></i>');
+        $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_recordqw()"></i>');
 
         return problemhtml;
     }
@@ -322,6 +322,7 @@ function sortPlayUrl(a, b) {
     return a.filenum - b.filenum;//由低到高
 }
 
+var oldname=[];
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
          iid=data.iid;
@@ -331,26 +332,24 @@ function  set_getPlayUrl(data) {
         $("#videos").empty();
         if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
             recordPlayParams.sort(sortPlayUrl);//重新排序一边
-
             dq_play=recordPlayParams[0];
             first_playstarttime=parseFloat(dq_play.recordstarttime);
-
 
             for (let i = 0; i < recordPlayParams.length; i++) {
                 var play=recordPlayParams[i];
                 var playname=play.filename;
                 for (let j = 0; j < recordFileParams.length; j++) {
-                    const file = recordFileParams[j];
+                    const file = recordFileParams[j]
                     var filename= file.filename;
-                    if (filename==playname){
+                    if (filename==playname&&oldname.indexOf(filename)<0){
                         var VIDEO_HTML='<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="'+play.filenum+'"  state="'+file.state+'">视频'+play.filenum+'</span>';
                         $("#videos").append(VIDEO_HTML);
                         play["start_range"]=parseFloat(play.recordstarttime)-parseFloat(first_playstarttime);
                         play["end_range"]=parseFloat(play.recordendtime)-parseFloat(first_playstarttime);
                         recordPlayParams[i]=play;
                         //时间毫秒区域计算结束------
-                        console.log("["+play["start_range"]+","+play["end_range"]+"]");
-                    }
+                        oldname.push(filename);
+
                 }
             }
 
@@ -976,8 +975,8 @@ function select_monitorall(obj) {
 function showrecord(times,oldtime) {
     $("#recorddetail label").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+    times=parseFloat(times);
     if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
-        times=parseFloat(times);
         var isnvideo=0;//是否有视频定位点
         //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
         for (let i = 0; i < recordPlayParams.length; i++) {
@@ -2526,6 +2525,27 @@ function focuslable(html,type,qw) {
     }
     addbtn();
     contextMenu();
+
+    $("#recorddetail .table_td_tt").dblclick(function () {
+        var contenteditable=$("label",this).attr("contenteditable");
+        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
+            //开始定位视频位置
+            var times=$("label",this).attr("times");
+            if (times!="-1"&&isNotEmpty(times)){
+                var name=$("label",this).attr("name");
+                if (name == "q"){
+                    times=parseInt(times)+subtractime_q;
+                }else if( name=="w") {
+                    times=parseInt(times)+subtractime_w;
+                }
+                showrecord(times,null);
+            }
+        }
+    })
+
+    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
+        qw_keydown(this,event);
+    })
 }
 
 //聚焦
@@ -2691,14 +2711,7 @@ function callbackgetRecordrealByRecordssid(data) {
             if (isNotEmpty(problems)) {
                 var problemhtml= setqw(problems);
                 focuslable(problemhtml,2,'w');
-                $("#recorddetail .table_td_tt").dblclick(function () {
-                    var contenteditable=$("label",this).attr("contenteditable");
-                    if (isNotEmpty(contenteditable)&&contenteditable=="false") {
-                        //开始定位视频位置
-                        var times=$("label",this).attr("times");
-                        showrecord(times,null);
-                    }
-                })
+
             }else {
                 $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
             }
@@ -2763,9 +2776,9 @@ function contextMenu() {
 //默认问答
 var trtd_html='<tr>\
         <td style="padding: 0;width: 80%;" class="onetd" id="record_qw">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
-               <div  id="btnadd"></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" times=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"   times=""></label></div>\
+               <div  id="btnadd" ></div>\
                 </td>\
                 <td id="record_util">\
                     <div class="layui-btn-group">\
