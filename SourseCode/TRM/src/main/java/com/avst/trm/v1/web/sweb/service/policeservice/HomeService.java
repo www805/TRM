@@ -187,7 +187,8 @@ public class HomeService extends BaseService {
 //                    String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
 //                    fileYml = (Map<String, Object>) avstYml.get(cwebFile);
 //                    guidepageUrl = (String) fileYml.get("home-url");//设置首页
-                    guidepageUrl = "/cweb/base/main/gotomain";//设置首页
+//                    guidepageUrl = "/cweb/base/main/gotomain";//设置首页
+                    guidepageUrl = (String) fileYml.get("guidepageUrl");//设置首页
                 }
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
 

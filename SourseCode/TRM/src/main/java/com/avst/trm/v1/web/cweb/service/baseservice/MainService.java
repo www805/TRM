@@ -824,7 +824,7 @@ public class MainService extends BaseService {
                 Map<String, Object> commonYml = (Map<String, Object>) avstYml.get(oem);//取出通用版
 
                 //判断如果是单机版，就获取单机版的菜单栏
-                if(gnlist.indexOf(SQVersion.S_V) != -1){
+                if(gnlist.indexOf(SQVersion.S_V) != -1 || gnlist.indexOf(SQVersion.FY_T) != -1){
                     cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
                     oem = "oem";
                 }
@@ -848,6 +848,8 @@ public class MainService extends BaseService {
                     logoYml = (Map<String, Object>) branchYml.get(SQVersion.JW_T);
                 }else if(gnlist.indexOf(SQVersion.JCW_T) != -1){
                     logoYml = (Map<String, Object>) branchYml.get(SQVersion.JCW_T);
+                }else if(gnlist.indexOf(SQVersion.FY_T) != -1){
+                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.FY_T);
                 }
 
                 fileYml.put("logotitle", logoYml.get("logo"));

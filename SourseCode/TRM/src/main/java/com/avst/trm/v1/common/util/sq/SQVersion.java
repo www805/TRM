@@ -7,5 +7,6 @@ public class SQVersion {
     public static String GA_T = "ga_t";//公安版
     public static String JW_T = "jw_t";//纪委版
     public static String JCW_T = "jcw_t";//监察委版
+    public static String FY_T = "fy_t";//监察委版
 
 }
