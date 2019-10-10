@@ -816,32 +816,41 @@ public class MainService extends BaseService {
                 String gnlist = getSQEntity.getGnlist();
 
                 String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
-                //判断如果是单机版，就获取单机版的菜单栏
-                if(gnlist.indexOf(SQVersion.S_V) != -1){
-                    cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
-                }
 
                 String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
 
-                Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
-                Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(cwebFile);
+                Map<String, Object> avstYml = (Map<String, Object>) map.get(application_name);
+                String oem = "common";
+                Map<String, Object> commonYml = (Map<String, Object>) avstYml.get(oem);//取出通用版
+
+                //判断如果是单机版，就获取单机版的菜单栏
+                if(gnlist.indexOf(SQVersion.S_V) != -1){
+                    cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
+                    oem = "oem";
+                }
+
+                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get(oem);
+                Map<String, Object> fileYml = (Map<String, Object>) oemYml.get(cwebFile);
                 Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
                 Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
                 String guidepageUrl = (String) guidepage.get("url");
-                fileYml.put("bottom", map.get("bottom"));
-                fileYml.put("login", avstYml.get("login"));
+                fileYml.put("bottom", commonYml.get("bottom"));
+                fileYml.put("login", commonYml.get("login"));
                 fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
 
-                Map<String,Object> logoYml = (Map<String, Object>) avstYml.get("logo");
-                //判断是公安、纪委、监察委那个版本
+                Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支
+                Map<String, Object> logoYml = null;
+                //判断是公安、纪委、监察委那个版本，取出该版本的logo
                 if(gnlist.indexOf(SQVersion.GA_T) != -1){
-                    fileYml.put("logotitle", logoYml.get(SQVersion.GA_T));
+                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.GA_T);
                 }else if(gnlist.indexOf(SQVersion.JW_T) != -1){
-                    fileYml.put("logotitle", logoYml.get(SQVersion.JW_T));
+                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.JW_T);
                 }else if(gnlist.indexOf(SQVersion.JCW_T) != -1){
-                    fileYml.put("logotitle", logoYml.get(SQVersion.JCW_T));
+                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.JCW_T);
                 }
+
+                fileYml.put("logotitle", logoYml.get("logo"));
 
                 cacheParam.setData(fileYml);
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);

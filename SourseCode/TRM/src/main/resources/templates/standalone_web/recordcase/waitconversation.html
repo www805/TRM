@@ -17,7 +17,6 @@
         width: 0px;
     }
 
-
     #layui-row1 .layui-table td{
         text-align: left;
         overflow: hidden;
@@ -244,6 +243,17 @@
     .layui-form-radio{
         margin: 0px;
     }
+    .layui-badge-dot {
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+    }
+    .off-dot{
+        background-color: #ccc;
+    }
+    .success-dot{
+        background-color: #00a800;
+    }
 </style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
@@ -274,104 +284,7 @@
         <div class="layui-col-md3 " style="height: 830px; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
             <!---->
             <div class="layui-col-md12 " style="border: 0" >
-                <div style="margin-bottom: 10px;padding:0 5px 5px 5px;" id="fditem">
-                    <div class="layui-card">
-                        <div class="layui-card-header">
-                            <i class="layui-icon layui-icon-video"></i>
-                            <span>视频录制</span>
-                            <span style="float: right;">未开始</span></div>
-                        <div class="layui-card-body" style="overflow: hidden;">
-                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
-                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
-                            </div>
-                            <div style="float: right;margin-top: 5px;">800G可用/共1024G</div>
-                        </div>
-                    </div>
-
-                    <div class="layui-card">
-                        <div class="layui-card-header">
-                            <i class="layui-icon layui-icon-radio"></i>
-                            <span>刻录信息</span>
-                            <span style="float: right;">未开始</span></div>
-                        <div class="layui-card-body" >
-                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
-                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
-                            </div>
-                            <div style="overflow: hidden;">
-                                <span style="float: left;">未开始</span>
-                                <span style="float: right;">没有光盘</span>
-                            </div>
-                            <div style="overflow: hidden;">
-                                <div style="float: right;">800G可用/共1024G</div>
-                            </div>
-                        </div>
-
-                        <div class="layui-card-body" >
-                            <div class="layui-progress layui-progress-big" lay-showpercent="true">
-                                <div class="layui-progress-bar layui-bg-cyan" lay-percent="30%" style="width: 30%;"><span class="layui-progress-text">30%</span></div>
-                            </div>
-                            <div style="overflow: hidden;">
-                                <span style="float: left;">已开始</span>
-                                <span style="float: right;">刻录中</span>
-                            </div>
-                            <div style="overflow: hidden;">
-                                <div style="float: right;">800G可用/共1024G</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="layui-card">
-                        <div class="layui-card-header">
-                            <i class="layui-icon layui-icon-list"></i>
-                            <span>谈话信息</span>
-                        </div>
-
-                        <form class="layui-form" action="" lay-filter="example">
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">光盘刻录：</label>
-                                <div class="layui-input-block" >
-                                    <div style="padding-top: 10px;">不刻录</div>
-                                    <div style="margin-top: 20px;">
-                                        <span style="margin-right: 30px;"><i class="layui-badge-dot layui-bg-green"></i>单盘接力刻录</span>
-                                        <span><i class="layui-badge-dot layui-bg-green"></i>双盘同步直刻</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <label class="layui-form-label">温湿度叠加</label>
-                                <div class="layui-input-block">
-                                    <input type="checkbox" name="close" lay-skin="switch" >
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">现场声音</label>
-                                    <div class="layui-input-block">
-                                        <input type="checkbox" name="close" lay-skin="switch" >
-                                    </div>
-                                </div>
-                                <div class="layui-inline">
-                                    <label class="layui-form-label">音频波形</label>
-                                    <div class="layui-input-block">
-                                        <input type="checkbox" name="close" lay-skin="switch" >
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="layui-form-item">
-                                <div class="layui-input-block">
-                                    <button type="button" class="layui-btn layui-btn-normal" >重点标记</button>
-                                    <button type="button" class="layui-btn layui-btn-normal" >云台控制</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <button onclick="location.reload();">刷新</button>
-                </div>
-
+                <div th:replace="ecControl :: ecControl"  >...</div>
             </div>
             <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;text-align: center">
                 <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="width:180px;height: 80px;line-height: 80px;font-size: 20px;" id="start_over_btn" onclick="" >加载中</button>

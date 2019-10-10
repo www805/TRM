@@ -42,6 +42,7 @@ public class TemplateAction extends MainAction {
      * ⑰  查询单个模板类型：/cweb/police/template/getTemplateTypeById √
      * ⑱  查询单个问题类型：/cweb/police/template/getProblemTypeById √
      * ⑲  获取模板主页数据：/cweb/police/template/templateIndex
+     * ⒇  获取授权功能列表：/cweb/police/template/getSQGnlist
      */
     /**
      * 获取模板列表
@@ -447,6 +448,24 @@ public class TemplateAction extends MainAction {
     }
 
 
+    /**
+     * 获取授权功能列表（用来判断当前是否是单机版）
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getSQGnlist")
+    public RResult getSQGnlist(@RequestBody ReqParam<GetSQGnlistParam> param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            templateService.getSQGnlist(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
 

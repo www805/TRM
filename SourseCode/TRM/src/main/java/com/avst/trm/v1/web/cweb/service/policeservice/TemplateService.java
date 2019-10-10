@@ -1,5 +1,8 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
+import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -11,6 +14,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -56,6 +60,8 @@ public class TemplateService extends BaseService {
     @Autowired
     private Police_problemtotypeMapper police_problemtotypeMapper;
 
+    @Autowired
+    private MainService mainService;
 
     public void getTemplates(RResult result, ReqParam<GetTemplatesParam>  param){
         GetTemplatesVO getTemplatesVO=new GetTemplatesVO();
@@ -1514,6 +1520,17 @@ public class TemplateService extends BaseService {
         }
     }
 
+    public void getSQGnlist(RResult result, ReqParam<GetSQGnlistParam> params) {
+
+        AppCacheParam param = AppCache.getAppCacheParam();
+        if (null == param.getData() || param.getData().size() == 0) {
+            mainService.getNavList(result);
+            param = AppCache.getAppCacheParam();
+        }
+
+
+
+    }
 
 
 /***/

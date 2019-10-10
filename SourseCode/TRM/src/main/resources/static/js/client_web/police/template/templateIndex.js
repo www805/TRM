@@ -7,6 +7,7 @@ var xiazai = false;
 var xiazai2 = false;
 var updateTemplateType;
 var repeatStatus = null;
+var SQGnlist;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
@@ -64,6 +65,16 @@ function getTmplateTypess() {
     ajaxSubmitByJson(url,data,callTmplateTypes);
 }
 
+//获取授权功能列表
+function getSQGnlist() {
+    var url=getActionURL(getactionid_manage().templateIndex_getSQGnlist);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{}
+    };
+    ajaxSubmitByJson(url,data,callSQGnlist);
+}
+
 function callTmplates(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
@@ -113,6 +124,13 @@ function callTmplateTypes(data){
     }
 }
 
+function callSQGnlist(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        console.log(data);
+    }else{
+        layer.msg(data.message, {icon: 5});
+    }
+}
 
 /**
  * 局部刷新

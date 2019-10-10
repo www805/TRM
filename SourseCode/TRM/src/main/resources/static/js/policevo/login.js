@@ -82,18 +82,19 @@ function callgetNavList(data) {
                     return;
                 }
                 //页脚
+                var trmBottom = appCache.data.bottom;
                 var bottom_html = "";
-                var bottom_name = appCache.data.bottom.name;
-                var bottom_declaration = appCache.data.bottom.declaration;
-                var bottom_url = appCache.data.bottom.url;
+                var bottom_name = trmBottom.name;
+                var bottom_declaration = trmBottom.declaration;
+                var bottom_url = trmBottom.url;
                 if(!isNotEmpty(bottom_url)){
                     bottom_url = "#";
                 }
 
-                if (isNotEmpty(appCache.data.bottom.image.src) && appCache.data.bottom.image.src != '/') {
-                    $(".systemlogo").css({"background-image":"url(" + appCache.data.bottom.image.src + ")"});
-                    if(isNotEmpty(appCache.data.bottom.image.width) && isNotEmpty(appCache.data.bottom.image.height)){
-                        $(".systemlogo").css("background-size", appCache.data.bottom.image.width + "px " + appCache.data.bottom.image.height + 'px');
+                if (isNotEmpty(trmBottom.image.src) && trmBottom.image.src != '/') {
+                    $(".systemlogo").css({"background-image":"url(" + trmBottom.image.src + ")"});
+                    if(isNotEmpty(trmBottom.image.width) && isNotEmpty(trmBottom.image.height)){
+                        $(".systemlogo").css("background-size", trmBottom.image.width + "px " + trmBottom.image.height + 'px');
                     }
                 }else{
                     $("#systemlogo").css("background-image", "url(\"/uimaker/images/loginlogo-5aa2cf210dbf067bd57c42a470703719.png\")");

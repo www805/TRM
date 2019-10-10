@@ -236,6 +236,7 @@ function getactionid_manage() {
         templateIndex_exportWord: "templateIndex_exportWord",
         templateIndex_exportExcel: "templateIndex_exportExcel",
         templateIndex_uploadFile: "templateIndex_uploadFile",
+        templateIndex_getSQGnlist: "templateIndex_getSQGnlist",
 
         addOrupdateTemplate_getProblemTypes:"addOrupdateTemplate_getProblemTypes",
         addOrupdateTemplate_getTemplateTypes:"addOrupdateTemplate_getTemplateTypes",

@@ -108,10 +108,12 @@
                     <input type="text" name="keyword" id="keyword" style="width: 120px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
                 </div>
 
-                <label class="layui-form-label" style="width: auto;">模板类型</label>
-                <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-                    <select name="templatetypeid" lay-verify="" id="templateTypes" lay-filter="pid">
-                    </select>
+                <div id="templateType">
+                    <label class="layui-form-label" style="width: auto;">模板类型</label>
+                    <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
+                        <select name="templatetypeid" lay-verify="" id="templateTypes" lay-filter="pid">
+                        </select>
+                    </div>
                 </div>
 
                 <div style="float: left;">
@@ -202,6 +204,7 @@
         setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
         getTmplateTypess();
         getTmplateTypesParams();
+        // getSQGnlist();
 
         document.onkeydown = function (event) {
             var e = event || window.event;
@@ -210,6 +213,8 @@
                 getTmplates_init(1,15);
             }
         };
+
+
 
         $('#keyword').on('input propertychange', function() {
             getTmplates_init(1,15);

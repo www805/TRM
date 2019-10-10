@@ -172,7 +172,8 @@ public class HomeService extends BaseService {
                 String gnlist = getSQEntity.getGnlist();
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
-                Map<String,Object> fileYml = (Map<String, Object>) avstYml.get(swebFile);
+                Map<String, Object> commonYml = (Map<String, Object>) avstYml.get("common");//取出通用版
+                Map<String,Object> fileYml = (Map<String, Object>) commonYml.get(swebFile);
                 Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
                 Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
                 String guidepageUrl = (String) guidepage.get("url");
