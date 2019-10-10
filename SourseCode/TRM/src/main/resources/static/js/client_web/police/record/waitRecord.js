@@ -2046,7 +2046,7 @@ $(function () {
                                             console.log("修改即可————————————————————————————q")
                                             qq=translatext;
 
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").text(qqq+qq);
+                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").html(qqq+qq);
                                         }else {//追加一个新问
                                             console.log("从这里开始追加新的一行_________")
                                             qqq="";

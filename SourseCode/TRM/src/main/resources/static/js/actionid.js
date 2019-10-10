@@ -159,6 +159,7 @@ function getactionid_manage() {
         getRecordById_getRecordrealByRecordssid:"getRecordById_getRecordrealByRecordssid",
         getRecordById_setRecordreal:"getRecordById_setRecordreal",
         getRecordById_addRecord:"getRecordById_addRecord",
+        getRecordById_tocaseToUser:"getRecordById_tocaseToUser",
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -199,6 +200,7 @@ function getactionid_manage() {
         waitRecord_changeBurnMode:"waitRecord_changeBurnMode",
         waitRecord_getCDNumber:"waitRecord_getCDNumber",
         waitRecord_putRecessStatus:"waitRecord_putRecessStatus",
+        waitRecord_tocaseToUser:"waitRecord_tocaseToUser",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
@@ -320,6 +322,7 @@ function getactionid_manage() {
         getconversationById_getRecordrealByRecordssid:"getconversationById_getRecordrealByRecordssid",
         getconversationById_setRecordreal:"getconversationById_setRecordreal",
         getconversationById_addRecord:"getconversationById_addRecord",
+        getconversationById_tocaseToUser:"getconversationById_tocaseToUser",
 
 
         packdownList_getPackdownList:"packdownList_getPackdownList",
@@ -338,6 +341,8 @@ function getactionid_manage() {
         homepage_addCaseToArraignment:"homepage_addCaseToArraignment",
 
         about_getAbout:"about_getAbout",
+
+        caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",
 
     };
 }
