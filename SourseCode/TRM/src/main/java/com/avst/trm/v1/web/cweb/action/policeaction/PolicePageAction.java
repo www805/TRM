@@ -263,6 +263,14 @@ public class PolicePageAction {
         return new ModelAndView("client_web/police/record/caseStatistics", "caseStatisticsModel", model);
     }
 
+    @GetMapping("tocaseToUser")
+    public ModelAndView tocaseToUser(Model model){
+        model.addAttribute("title","人员案件");
+        return new ModelAndView("client_web/police/record/caseToUser", "caseToUserModel", model);
+    }
+
+
+
 
 
 

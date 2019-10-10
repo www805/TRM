@@ -268,11 +268,13 @@
     var INIT_CLIENTKEY;
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     var recordssid;
+    var tocaseToUserURL;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/conversation/getconversationById");
         recordssid=[[${conversationByIdModel.recordssid}]];
+        tocaseToUserURL= getActionURL(getactionid_manage().getconversationById_tocaseToUser);
         getRecordById();//获取笔录案件等信息
         getRecordrealByRecordssid()
 

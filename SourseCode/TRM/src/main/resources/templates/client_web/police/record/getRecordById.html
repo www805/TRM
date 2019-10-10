@@ -401,6 +401,7 @@
     var INIT_CLIENTKEY;
     var recordssid;
     var togetPolygraphurl;//打开身心检测数据
+    var tocaseToUserURL;
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
@@ -411,6 +412,7 @@
 
       /*  main1();//身心统计回放*/
         togetPolygraphurl= getActionURL(getactionid_manage().getRecordById_togetPolygraph);
+        tocaseToUserURL= getActionURL(getactionid_manage().getRecordById_tocaseToUser);
 
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});
         $(window).resize(function(){
