@@ -102,19 +102,27 @@ function callbackgetRecords(data) {
                 if (isNotEmpty(l)) {
                     var problems=l.problems;
                     if (isNotEmpty(problems)) {
+                        var q="问：";
+                        var w="答：";
+                        if (gnlist.indexOf("fy_t") != -1){
+                            q="";
+                            w="";
+                        }
                         for (var z = 0; z< problems.length;z++) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
-                            var answers=problem.answers;
-                            if (isNotEmpty(answers)){
-                                for (var j = 0; j < answers.length; j++) {
-                                    var answer = answers[j];
-                                    var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
+                            var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
+                            if (gnlist.indexOf("fy_t")<0) {//法院版本不需要答
+                                var answers=problem.answers;
+                                if (isNotEmpty(answers)){
+                                    for (var j = 0; j < answers.length; j++) {
+                                        var answer = answers[j];
+                                        var answertext=answer.answer==null?"未知":answer.answer;
+                                        problemhtml+='<tr> <td class="font_blue_color">'+w+''+answertext+' </td></tr>';
+                                    }
+                                }else{
+                                    problemhtml+='<tr> <td class="font_blue_color">'+w+'</td></tr>';
                                 }
-                            }else{
-                                problemhtml+='<tr> <td class="font_blue_color">答：</td></tr>';
                             }
                             $("#recorddetail").append(problemhtml);
                         }
@@ -154,22 +162,27 @@ function setproblems(recordssid,obj) {
                 recordssid_go=l.ssid;
                 var problems=l.problems;
                 if (isNotEmpty(problems)) {
+                    var q="问：";
+                    var w="答：";
                     if (gnlist.indexOf("fy_t") != -1){
-
+                        q="";
+                        w="";
                     }
                     for (var z = 0; z< problems.length;z++) {
                         var problem = problems[z];
                         var problemtext=problem.problem==null?"未知":problem.problem;
-                        var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
-                        var answers=problem.answers;
-                        if (isNotEmpty(answers)){
-                            for (var j = 0; j < answers.length; j++) {
-                                var answer = answers[j];
-                                var answertext=answer.answer==null?"未知":answer.answer;
-                                problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
+                        var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
+                        if (gnlist.indexOf("fy_t")<0) {//法院版本不需要答
+                            var answers=problem.answers;
+                            if (isNotEmpty(answers)){
+                                for (var j = 0; j < answers.length; j++) {
+                                    var answer = answers[j];
+                                    var answertext=answer.answer==null?"未知":answer.answer;
+                                    problemhtml+='<tr> <td class="font_blue_color">'+w+''+answertext+' </td></tr>';
+                                }
+                            }else{
+                                problemhtml+='<tr> <td class="font_blue_color">'+w+' </td></tr>';
                             }
-                        }else{
-                            problemhtml+='<tr> <td class="font_blue_color">答： </td></tr>';
                         }
                         $("#recorddetail").append(problemhtml);
                     }

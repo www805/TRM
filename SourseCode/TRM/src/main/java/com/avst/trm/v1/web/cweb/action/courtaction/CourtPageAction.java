@@ -34,14 +34,5 @@ public class CourtPageAction {
     }
 
 
-    @GetMapping("tobeforeCourtDetail")
-    public ModelAndView toaddCaseToUserDetail(Model model){
-        model.addAttribute("title","庭审办案详情");
-        return new ModelAndView("client_web/court/beforeCourtDetail", "Model", model);
-    }
-
-
-
-
 
 }

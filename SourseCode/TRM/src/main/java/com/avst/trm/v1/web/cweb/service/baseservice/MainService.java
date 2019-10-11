@@ -38,10 +38,10 @@ import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.google.gson.Gson;
+import com.google.gson.Gson;/*
 import org.ansj.domain.Result;
 import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.ToAnalysis;
+import org.ansj.splitWord.analysis.ToAnalysis;*/
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -1099,7 +1099,7 @@ public class MainService extends BaseService {
             expectedNature.add("ns");//数组
             expectedNature.add("t");//时间词
             expectedNature.add("m");//数值
-            Result result = ToAnalysis.parse(text);
+           /* Result result = ToAnalysis.parse(text);
 
             List<Term> terms = result.getTerms(); //拿到terms
             for(int i=0; i<terms.size(); i++) {
@@ -1132,7 +1132,7 @@ public class MainService extends BaseService {
                     }
 
                 }
-            }
+            }*/
 
             //检测车牌号
             String regEx_1="[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[警京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{0,1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}";

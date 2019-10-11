@@ -61,11 +61,13 @@
     <div th:replace="page :: page">...</div>
     <div th:replace="footer :: footer">...</div>
 </div>
-<script id="pagelisttemplates" type="text/html">
-    <table class="layui-table" style="table-layout: fixed">
+<script id="pagelisttemplates" type="text/html"  >
+    <table class="layui-table" style="table-layout: fixed" >
         <thead>
         <tr>
             <th style="width: 45px">序号</th>
+           <!--  <th>案件状态</th>
+             <th>庭审次数</th>-->
             <th>案件名</th>
             <th>涉案人</th>
             <th>案发时间</th>
@@ -79,7 +81,9 @@
         <tr>
             <td>{{index+1}}</td>
             {{# var caseboolbooltext="未知",casebool=value.casebool;  if(1==casebool){caseboolbooltext="<span style='color: red'>进行中</span>";}else if(casebool==2){caseboolbooltext="<span style='color: #00FF00'>已归档</span>";}else if(casebool==3){caseboolbooltext="<span style='color: #1e33ff'>暂停中</span>";}else if(casebool==0){caseboolbooltext="<span style='color: #8c8c8c'>未开始</span>";}else{caseboolbooltext="未知";}  }}
-            <td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
+           <!-- <td >{{caseboolbooltext}}</td>
+             <td ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>第{{value.arraignments==null?"0":value.arraignments.length}}次庭审</a></td>
+            --><td title="{{value.casename==null?'':value.casename}}">{{value.casename==null?"":value.casename}}</td>
             {{# var USERHTNL="";var userInfos=value.userInfos;    }}
             {{# if(null!=userInfos){ for (let i = 0; i < userInfos.length; i++) { }}
             {{# const u = userInfos[i]; }}
@@ -97,8 +101,8 @@
                     <a href="#"  class="layui-btn layui-btn-danger layui-btn-xs" onclick="delcase('{{value.ssid}}','{{casebool}}')">删除</a>
                     {{#  if(value.record_pausebool==1){  }}
                         <a href="#" {{casebool==2?'disabled':(casebool==3?'':'disabled')}}   class="layui-btn {{casebool==2?'layui-btn-disabled':(casebool==3?'layui-btn-normal':'layui-btn-disabled')}} layui-btn-xs"  title="点击继续案件" onclick="continueCase('{{value.ssid}}','{{casebool}}')"  >继续</a>
+                        <a href="#" {{casebool==2?'disabled':''}}   class="layui-btn {{casebool==2?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs"  onclick="changeboolCase('{{value.ssid}}','{{casebool}}')">{{casebool==2?'已归档':'归档'}}</a>
                     {{#  }  }}
-                   <!-- <a href="#" {{casebool==2?'disabled':''}}   class="layui-btn {{casebool==2?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs"  onclick="changeboolCase('{{value.ssid}}','{{casebool}}')">{{casebool==2?'已归档':'归档'}}</a>-->
                </div>
             </td>
         </tr>
@@ -130,6 +134,7 @@
     var addOupdateurl;//笔录添加修改页
     var caseStatisticsURL;//统计界面
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -137,6 +142,9 @@
         addOupdateurl=getActionURL(getactionid_manage().caseIndex_toaddOrUpdateCase);
         caseStatisticsURL=getActionURL(getactionid_manage().caseIndex_tocaseStatistics);
         getCasesByParam();
+
+
+
 
 
     });
