@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title  th:text="${Model.title}">智能提讯系统</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
+    <link rel="stylesheet" href="/uimaker/css/waitRecord.css">
+</head>
+<style>
+
+</style>
+
+<body>
+<div class=" layadmin-message-fluid" style="margin: 20px;">
+    <div th:replace="header :: header">...</div>
+
+    <div class="layui-elem-quote layui-row" style=" padding: 10px;">
+        <div class="layui-col-md2 ">
+                <h3 th:text="${Model.title}">智能提讯系统</h3>
+        </div>
+        <div class="layui-col-md3 clock layui-col-md-offset7 " >
+            <ul>
+                <li id="Date">0000年00月00日</li>
+                <li id="hours">00</li>
+                <li id="point">:</li>
+                <li id="min">00 </li>
+                <li id="point">:</li>
+                <li id="sec"> 00</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-row layui-form" id="layui-row1" >
+       <div class="layui-col-md3 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="shrink_html" >
+            <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:80%;">
+                <ul class="layui-tab-title">
+                    <li onclick="initasr()" id="asr" style="">语音识别 <span id="webkit2"></span></li>
+                    <li onclick="initheart();"id="ph" style="">身心监测</li>
+                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
+                </ul>
+                <div class="layui-tab-content" id="leftdiv"  style="height:100%;">
+                    <div class="layui-tab-item "  id="asritem" style="height:100%;" >
+                        <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
+                            <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
+                                <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
+                            </div>
+                            <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
+                                <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
+                                    <i class="layui-icon">&#xe619;</i>
+                                </button>
+                                <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
+                                    <i class="layui-icon">&#xe61a;</i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                                <div class="layui-card-body" >
+                                    <div class="talk_show"  id="recordreals" >
+
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="layui-tab-item phitem2"  id="phitem" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
+                        <div  style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">请先获取身心检测授权...</div>
+                    </div>
+                    <div class="layui-tab-item layui-show" id="caseitem"  style="height:100%;overflow-x: hidden; overflow-y: scroll;">
+                            <div class="layui-card-body">
+                                <table class="layui-table" lay-skin="line" style="table-layout: fixed">
+                                    <tbody id="caseAndUserInfo_html">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+            </div>
+           <!--底部按钮组start-->
+           <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;text-align: center;" >
+               <div class="layui-col-md4 "  id="record_img" style="width: 110px;" >
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display: block;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,1);" id="pauserecord" title="点击将开启场景模板对应的设备，进行制作">
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,2);" id="startrecord" title="制作中">
+                    <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;display:none;margin: auto;border-radius: 50%;cursor:pointer"  onclick="img_bool(this,-1);" id="endrecord"title="已结束制作">
+                </div>
+                <div class="layui-col-md8  " style="float: right;">
+                    <div style="float:right;">
+                        <img src="/uimaker/images/record_loading.gif" style="height: 80px;width:110px;display: none;border-radius: 50%;cursor:pointer"   onclick="overRecord(1);"  id="adjourn_btn">
+                        <img src="/uimaker/images/record_loading.gif" style="height: 80px;width: 110px;border-radius: 50%;cursor:pointer"   onclick="overRecord(0);"  id="overRecord_btn">
+                    </div>
+                   </div>
+           </div>
+           <!--底部按钮组end-->
+        </div>
+       <div class="layui-col-md9"  style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html1">
+            <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px" id="www">
+                <div class="layui-inline" >
+                    <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
+                    <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
+                </div>
+                <div class="layui-inline" >
+                    <div class="btn-group">
+                        <button class="layui-btn layui-btn-normal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="dc_li">
+                            <li type="1"><a href="#" >导出word</a></li>
+                            <li type="2"><a href="#" >导出pdf</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
+                <button class="layui-btn layui-btn-primary" onclick="getRecordreal_LastByRecordssid();" id="getRecordreal_LastByRecordssid" style="display: none">获取重置</button>
+                <button class="layui-btn layui-btn-warm " onclick="focuslable(null,2,'q');">添加自定义问答</button>
+                <div style="float: right;">
+                        <button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
+                 </div>
+            </div>
+            <div class="layui-col-md12 " >
+                <div class="layui-card-body layui-row " style="padding: 0">
+                    <div class="layui-card" style="border-width: 0;box-shadow:none" >
+                        <div class="layui-card-header">
+                            <div class="layui-input-inline layui-col-md6" >
+                            <span th:text="${Model.title}">加载中</span>
+                            </div>
+                            <div class="layui-input-inline layui-col-md6"> </div>
+                        </div>
+                        <div id="recorddetail_webkit">
+                        <div style="" id="recorddetail_scrollhtml">
+                            <div class="layui-card-body layui-row ">
+                                <div class="layui-col-lg12 ">
+                                    <div class="layui-col-md12  layui-show" style="height: 300px">
+                                        <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
+                                    </div>
+                                    <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
+                                        <tbody id="recorddetail">
+                                        <tr id="first_originaltr">
+                                            <td style="padding: 0;width:95%;" class="onetd">
+                                                <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>
+                                                <div id="btnadd"><button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="focuslable(trtd_html,2,'q');"><i class="layui-icon" style="font-size: 45px"></i></button></div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;text-align: center;" >
+                <div class="layui-col-md8" style="margin-bottom:0;">
+                    <div class="" style="float: left;">
+                            <div class="dropup btn-group">
+                                <button class="layui-btn layui-btn-normal" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">常用时间<span class="caret"></span></button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2" id="cysj_li">
+                                    <li type="1"><a href="#" >当前时间</a></li>
+                                    <li type="2"><a href="#" >昨天时间</a></li>
+                                    <li type="3"><a href="#" >案发时间</a></li>
+                                </ul>
+                            </div>
+                            <div class="dropup btn-group">
+                                <button class="layui-btn layui-btn-normal" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">常用问答<span class="caret"></span></button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu3" id="cywd_li">
+                                    <li><a href="#">我明白了。</a></li>
+                                    <li><a href="#">我知道了。</a></li>
+                                    <li><a href="#">我清楚了。</a></li>
+                                    <li><a href="#">没有。</a></li>
+                                    <li><a href="#">是事实。</a></li>
+                                </ul>
+                            </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="footer :: footer">...</div>
+</div>
+
+<script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}"  type="text/javascript" ></script>
+<script th:src="@{/js/actionid.js}" type="text/javascript"></script>
+<script th:src="@{/js/list.js}" type="text/javascript"></script>
+<script th:src="@{/js/url.js}" type="text/javascript"></script>
+<script th:src="@{/js/echarts.min.js}" type="text/javascript"></script>
+<script th:src="@{/js/socket.io.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui.js}"type="text/javascript"></script>
+<script th:src="@{/uimaker/js/bootstrap.js}"type="text/javascript"></script>
+<script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
+<script th:src="@{/js/client_web/court/waitCourt.js}" type="text/javascript"></script>
+<script th:src="@{/js/client_web/court/recordSettings.js}" type="text/javascript"></script>
+<script th:src="@{/pdfjs/pdf.js}" type="text/javascript"></script>
+
+<script th:inline="javascript">
+    var INIT_CLIENT=[[${session.INIT_CLIENT}]];
+    var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
+    var recordssid =[[${Model.recordssid}]];
+    var SOCKETIO_HOST=[[${session.SOCKETIO_HOST}]];
+    var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
+    var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var tocaseToUserURL;//人员案件编辑页
+    var socket;
+    var recordstate_index=null;//笔录状态栏的下标
+
+    $(function(){
+        setpageAction(INIT_CLIENT,"client_web/court/waitCourt");
+        tocaseToUserURL= getActionURL(getactionid_manage().waitCourt_tocaseToUser);
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        $(window).resize(function(){
+            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+        })
+        getgnlist();
+        getRecordById();
+        getRecordrealByRecordssid();
+    });
+    layui.use(['layer','element','form'], function(){
+        var layer = layui.layer; //获得layer模块
+        var element = layui.element;
+        var form=layui.form;
+
+        //使用模块
+        var html='<table class="layui-table"  lay-skin="nob" lay-size="sm">\
+                        <colgroup>\
+                        <col width="50">\
+                         <col>\
+                       </colgroup> \
+                                <tbody>\
+                                    <tr>\
+                                         <td>庭审状态</td>\
+                                        <td>\
+                                        <span class="layui-badge layui-bg-gray" id="MtState" MtState="0" >未开启</span>\
+                                        </td>\
+                                    </tr>\
+                                    <tr>\
+                                        <td>语音识别</td>\
+                                        <td>\
+                                              <span class="layui-badge layui-bg-gray" id="AsrState" AsrState="0" >未开启</span>\
+                                        </td>\
+                                    </tr>\
+                                </tbody>\
+                        </table>';
+
+        recordstate_index = layer.open({
+            type:1,
+            title: '状态栏',
+            closeBtn: 0,
+            skin: 'layui-layer-lan',
+            shade: 0,
+            offset: 'lb',
+            area: ['250px', '130px'],
+            maxmin: true,
+            resize:false,
+            content: html,
+            success: function(layero,index){
+                layer.min(index);
+            }
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

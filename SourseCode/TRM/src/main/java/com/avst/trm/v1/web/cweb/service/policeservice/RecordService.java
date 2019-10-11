@@ -1583,7 +1583,7 @@ public class RecordService extends BaseService {
         RResult exportwordhead_rr=new RResult();
         ExportWordParam exportwordheadParam=new ExportWordParam();
         exportwordheadParam.setRecordssid(record.getSsid());
-        exportwordheadParam.setWordheadbool(false);
+        exportwordheadParam.setWordheadbool(true);
         ReqParam reqParam=new ReqParam();
         reqParam.setParam(exportwordheadParam);
         recordService.exportWord(exportwordhead_rr, reqParam);
@@ -1784,7 +1784,7 @@ public class RecordService extends BaseService {
             return result;
         }
 
-        Map<String,String> dataMap=exportData(recordssid,true);
+        Map<String,String> dataMap=exportData(recordssid,false);
 
         //根据笔录ssid获取录音数据
         EntityWrapper recordParam=new EntityWrapper();
@@ -1957,7 +1957,7 @@ public class RecordService extends BaseService {
                 //获取生成的真实地址
                 String filename=record.getRecordname().replace(" ", "").replace("\"", "");
 
-                if (!wordhead){
+                if (wordhead){
                     filename= filename+"_头文件";
                 }
 
@@ -2014,9 +2014,9 @@ public class RecordService extends BaseService {
                 EntityWrapper e=new EntityWrapper();
                 e.eq("ssid",recordssid);
                 if (wordhead){
-                   record.setWord_filesavessid(word_filesavessid);
-                }else {
                     record.setWordhead_filesavessid(word_filesavessid);
+                }else {
+                    record.setWord_filesavessid(word_filesavessid);
                 }
                 int police_recordMapper_updatebool=police_recordMapper.update(record,e);
                 LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
@@ -2047,7 +2047,7 @@ public class RecordService extends BaseService {
         Map<String, String> dataMap = new HashMap<String, String>();
         if (null != record) {
             String talk="";
-            if (talkbool){
+            if (!talkbool){
                 EntityWrapper ew = new EntityWrapper();
                 ew.eq("r.ssid", record.getSsid());
                 ew.orderBy("p.ordernum", true);
@@ -4341,7 +4341,7 @@ public class RecordService extends BaseService {
         RResult exportwordhead_rr=new RResult();
         ExportWordParam exportwordheadParam=new ExportWordParam();
         exportwordheadParam.setRecordssid(recordssid);
-        exportwordheadParam.setWordheadbool(false);
+        exportwordheadParam.setWordheadbool(true);
         ReqParam reqParam=new ReqParam();
         reqParam.setParam(exportwordheadParam);
         recordService.exportWord(exportwordhead_rr, reqParam);

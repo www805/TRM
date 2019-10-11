@@ -2,7 +2,9 @@ package com.avst.trm.v1.web.cweb.action.baseaction;
 
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.cache.param.SysYmlParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -493,6 +496,13 @@ public class MainAction extends BaseAction {
     @RequestMapping(value = "/gotohome")
     public ModelAndView gotohome(Model model){
         model.addAttribute("title","智能提讯系统");
+        SysYmlParam sysYmlParam=SysYmlCache.getSysYmlParam();
+        if (null!=sysYmlParam){
+            Map<String, Object> branchYml=sysYmlParam.getBranchYml();
+            if (null!=branchYml){
+                model.addAttribute("home",branchYml.get("home"));//分支特性
+            }
+        }
         return  new ModelAndView("client_web/base/home","homeModel", model);
     }
 

@@ -31,8 +31,19 @@ public class Constant {
      */
     public static final String MANAGE_CLIENT="MANAGE_CLIENT";
 
+    /**
+     * socketio
+     */
     public static final String SOCKETIO_HOST="SOCKETIO_HOST";
     public static final String SOCKETIO_PORT="SOCKETIO_PORT";
+
+
+    /**
+     * 客户端授权信息
+     */
+    public static final String AUTHORIZATIONALL_CLIENT="AUTHORIZATIONALL_CLIENT";
+
+
 
 
 }

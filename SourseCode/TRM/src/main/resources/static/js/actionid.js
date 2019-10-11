@@ -344,5 +344,32 @@ function getactionid_manage() {
 
         caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",
 
+        //以下为法庭的接口===============================start
+
+        getCourtDetail_tocaseToUser:'getCourtDetail_tocaseToUser',
+        getCourtDetail_getRecordById:"getCourtDetail_getRecordById",
+        getCourtDetail_exportWord:'getCourtDetail_exportWord',
+        getCourtDetail_exportPdf:'getCourtDetail_exportPdf',
+        getCourtDetail_setRecordreal:'getCourtDetail_setRecordreal',
+        getCourtDetail_getRecordrealByRecordssid:'getCourtDetail_getRecordrealByRecordssid',
+        getCourtDetail_addRecord:'getCourtDetail_addRecord',
+
+        waitCourt_tocaseToUser:"waitCourt_tocaseToUser",
+        waitCourt_getRecordById:"waitCourt_getRecordById",
+        waitCourt_addRecord:"waitCourt_addRecord",
+        waitCourt_exportWord:"waitCourt_exportWord",
+        waitCourt_exportPdf:"waitCourt_exportPdf",
+        waitCourt_setRecordreal:"waitCourt_setRecordreal",
+        waitCourt_getRecordrealByRecordssid:"waitCourt_getRecordrealByRecordssid",
+        waitCourt_setRecordreal_Last:"waitCourt_setRecordreal_Last",
+        waitCourt_getRecordreal_LastByRecordssid:"waitCourt_getRecordreal_LastByRecordssid",
+        waitCourt_getNotifications:"waitCourt_getNotifications",
+        waitCourt_uploadNotification:"waitCourt_uploadNotification",
+        waitCourt_downloadNotification:"waitCourt_downloadNotification",
+        waitCourt_gnlist:"waitCourt_gnlist",
+
+
+        //以下为法庭的接口===============================end
+
     };
 }

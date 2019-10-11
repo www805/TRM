@@ -2,11 +2,13 @@ package com.avst.trm.v1.web.cweb.interceptor;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.CodeForSQ;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.AnalysisSQ;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
+import com.avst.trm.v1.web.cweb.action.baseaction.MainAction;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -61,7 +63,11 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                 }
             }
 
-
+            if(null==session.getAttribute(Constant.AUTHORIZATIONALL_CLIENT)){
+                if (null!= SysYmlCache.getSysYmlParam()){
+                    session.setAttribute(Constant.AUTHORIZATIONALL_CLIENT, SysYmlCache.getSysYmlParam());
+                }
+            }
 
             String url=request.getRequestURI();
             if( url.endsWith("/cweb/base/main/gotologin")|| url.endsWith("/cweb/base/main/userlogin")){//跳过进入登录页面的拦截

@@ -1409,6 +1409,7 @@ function  open_casetouser() {
             casetouser_body=layer.getChildFrame('body', index);
             casetouser_iframe.recordssid=recordssid;
             casetouser_iframe.setcaseToUser(getRecordById_data);
+
         },
         yes:function(index, layero){
             var formSubmit=layer.getChildFrame('body', index);

@@ -60,37 +60,41 @@
 <body>
 <div class="" style="padding: 20px;">
   <div style="margin-bottom: 10px;" class=" layui-col-space15">
-        <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
-            <div class="layui-col-sm3 layui-col-md3">
+     <!-- <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="window.location.href='/cweb/court/courtPage/towaitCourt'">1</button>
+      <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="window.location.href='/cweb/court/courtPage/togetCourtDetail'">2</button>
+      <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="window.location.href='/cweb/court/courtPage/tobeforeCourt'">3</button>-->
+      <div class="layui-col-sm12 layui-col-md8 layui-col-space15">
+
+            <div class="layui-col-sm3 layui-col-md3"  th:if="${homeModel.home?.btn1?.showhidebool}==1">
                 <a onclick="to_waitconversationURL();" >
                     <div class="layui-card btn_color " title="点击进行快速谈话">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom ">
                             <div style="text-align: center">
-                                <p class="diy-font" ><span class="iconfont">&#xe62c;</span>快速谈话</p>
+                                <p class="diy-font" ><span class="iconfont"  >&#xe62c;</span><span th:text="${homeModel.home?.btn1?.name}">快速谈话</span></p>
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div class="layui-col-sm3 layui-col-md3">
+            <div class="layui-col-sm3 layui-col-md3"   th:if="${homeModel.home.btn2.showhidebool}==1">
                 <a onclick="window.location.href=addCaseToUserURL">
                     <div class="layui-card btn_color" title="点击进行谈话办案">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
-                                <p class="diy-font" ><span class="iconfont" >&#xe600;</span>谈话办案</p>
+                                <p class="diy-font" ><span class="iconfont" >&#xe600;</span><span th:text="${homeModel.home.btn2.name}">谈话办案</span></p>
                             </div>
                         </div>
                     </div>
                 </a>
             </div>
 
-            <div class="layui-col-sm3 layui-col-md3">
+            <div class="layui-col-sm3 layui-col-md3"  th:if="${homeModel.home.btn3.showhidebool}==1">
                 <a onclick="window.location.href=recordIndexURL">
                     <div class="layui-card btn_color" title="点击进行审讯查看">
                         <div class="layui-card-body layuiadmin-card-list layui-row topbottom">
                             <div style="text-align: center">
-                                <p class="diy-font" ><span class="iconfont" >&#xe647;</span>审讯查看</p>
+                                <p class="diy-font" ><span class="iconfont" >&#xe647;</span><span th:text="${homeModel.home.btn3.name}">审讯查看</span></p>
                             </div>
                         </div>
                     </div>
@@ -227,7 +231,7 @@
     var waitconversationURL;
     var addCaseToUserURL;
 
-
+    var AUTHORIZATIONALL_CLIENT=[[${session.AUTHORIZATIONALL_CLIENT}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];

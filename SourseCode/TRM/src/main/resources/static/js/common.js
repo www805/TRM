@@ -169,7 +169,6 @@ function getTime() {
 	var currentdate = date.getFullYear() + seperator1 + month + seperator1
 			+ strDate + " " + shi + ":" + fen + ":" + miao;
 	return currentdate;
-
 }
 
 // 上下文路径

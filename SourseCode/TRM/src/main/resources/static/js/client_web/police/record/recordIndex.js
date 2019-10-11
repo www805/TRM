@@ -154,6 +154,9 @@ function setproblems(recordssid,obj) {
                 recordssid_go=l.ssid;
                 var problems=l.problems;
                 if (isNotEmpty(problems)) {
+                    if (gnlist.indexOf("fy_t") != -1){
+
+                    }
                     for (var z = 0; z< problems.length;z++) {
                         var problem = problems[z];
                         var problemtext=problem.problem==null?"未知":problem.problem;

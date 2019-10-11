@@ -3,7 +3,9 @@ package com.avst.trm.v1.web.cweb.service.baseservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.cache.param.SysYmlParam;
 import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
@@ -28,6 +30,7 @@ import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
+import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.vo.basevo.*;
@@ -718,6 +721,18 @@ public class MainService extends BaseService {
         if (null!=firstloginbool&&firstloginbool==1){
             //修改最后登录密码
             admininfo.setLastlogintime(new Date());
+
+            //生成key
+            String encryptedtext="123";//加密文本
+            String loginaccount=admininfo.getLoginaccount();//登录账号
+            Date registertime=admininfo.getRegistertime();//注册时间
+            String ssid=admininfo.getSsid();
+
+            //获取生成字符串
+            if (StringUtils.isNotBlank(encryptedtext)){
+                //开始保存本地
+                System.out.println(CheckPasswordKey.key_path);
+            }
         }
 
         Integer update = base_admininfoMapper.update(admininfo, ew);
@@ -840,7 +855,7 @@ public class MainService extends BaseService {
                 String hostAddress = NetTool.getMyIP();
 
                 Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支
-                Map<String, Object> logoYml = null;
+                Map<String, Object> logoYml = null;//分支特性
                 //判断是公安、纪委、监察委那个版本，取出该版本的logo
                 if(gnlist.indexOf(SQVersion.GA_T) != -1){
                     logoYml = (Map<String, Object>) branchYml.get(SQVersion.GA_T);
@@ -857,6 +872,15 @@ public class MainService extends BaseService {
                 cacheParam.setData(fileYml);
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
                 LogUtil.intoLog(1, this.getClass(), "外部配置文件，获取菜单栏成功");
+
+
+                //更新缓存
+                SysYmlParam sysYmlParam=new SysYmlParam();
+                sysYmlParam.setAvstYml(avstYml);
+                sysYmlParam.setBranchYml(logoYml);
+                sysYmlParam.setOemYml(fileYml);
+                sysYmlParam.setGnlist(gnlist);
+                SysYmlCache.setSysYmlParam(sysYmlParam);
             } catch (IOException e) {
                 LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
             }finally {
