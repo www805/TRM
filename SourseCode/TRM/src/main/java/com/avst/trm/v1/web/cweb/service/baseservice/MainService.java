@@ -27,7 +27,6 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
-import com.avst.trm.v1.feignclient.ec.vo.param.RecordPlayParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
@@ -837,14 +836,42 @@ public class MainService extends BaseService {
                 Map<String, Object> avstYml = (Map<String, Object>) map.get(application_name);
                 String oem = "common";
                 Map<String, Object> commonYml = (Map<String, Object>) avstYml.get(oem);//取出通用版
+                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get(oem);
 
-                //判断如果是单机版，就获取单机版的菜单栏
-                if(gnlist.indexOf(SQVersion.S_V) != -1 || gnlist.indexOf(SQVersion.FY_T) != -1){
-                    cwebFile = PropertiesListenerConfig.getProperty("nav.file.oem");
-                    oem = "oem";
+                //判断如果是通用版，就获取通用版的菜单栏，如果不是通用版就从avst里面匹配出当前公司指定的菜单栏
+                if(gnlist.indexOf("common_o") == -1){
+                    String oemListStr = "";
+                    //取出公司分类
+                    oemYml = (Map<String, Object>) avstYml.get("oem");
+
+                    for(Map.Entry<String, Object> entry: oemYml.entrySet()){
+//                    System.out.println("Key: "+ entry.getKey()+ " Value: "+entry.getValue());
+                        if("".equals(oemListStr)){
+                            oemListStr += entry.getKey();
+                        }else {
+                            oemListStr += "|" + entry.getKey();
+                        }
+                    }
+                    if (StringUtils.isNotBlank(oemListStr)) {
+                        String[] split = gnlist.split("\\|");
+                        String[] gnlit = oemListStr.split("\\|");
+                        oemListStr = "";
+                        for (int i = 0; i < split.length; i++) {
+                            for (int j = 0; j < gnlit.length; j++) {
+                                if (split[i].equals(gnlit[j])) {
+                                    oemListStr = gnlit[j];
+                                    break;
+                                }
+                            }
+                            if(!"".equals(oemListStr)){
+                                cwebFile = oemListStr;
+                                break;
+                            }
+                        }
+                    }
                 }
 
-                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get(oem);
+
                 Map<String, Object> fileYml = (Map<String, Object>) oemYml.get(cwebFile);
                 Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
                 Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
@@ -853,6 +880,7 @@ public class MainService extends BaseService {
                 fileYml.put("login", commonYml.get("login"));
                 fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
+
 
                 Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支
                 Map<String, Object> logoYml = null;//分支特性

@@ -1528,8 +1528,8 @@ public class TemplateService extends BaseService {
             param = AppCache.getAppCacheParam();
         }
 
-
-
+        this.changeResultToSuccess(result);
+        result.setData(param);
     }
 
 
