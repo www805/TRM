@@ -28,7 +28,7 @@ function callbackuserlogin(data) {
         if (isNotEmpty(data)){
             layer.msg("登录成功",{icon: 6,time:500,shade: [0.1,'#fff']},function () {
                 var url=getActionURL(getactionid_manage().login_gotomain);
-                window.location.href=url;appCache.data.login
+                window.location.href=url;
                 setTimeout(function () {
                     $("#loginaccount").removeAttr("readonly");
                     $("#password").removeAttr("readonly");

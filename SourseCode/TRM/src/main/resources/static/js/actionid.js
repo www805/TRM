@@ -245,6 +245,7 @@ function getactionid_manage() {
         addOrupdateTemplate_getProblems: "addOrupdateTemplate_getProblems",
         addOrupdateTemplate_getTemplateById: "addOrupdateTemplate_getTemplateById",
         addOrupdateTemplate_addTemplate: "addOrupdateTemplate_addTemplate",
+        addOrupdateTemplate_getSQGnlist: "addOrupdateTemplate_getSQGnlist",
 
 
         notification_getNotifications: "notification_getNotifications",

@@ -30,6 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/sweb/base/home")
@@ -64,6 +65,8 @@ public class HomeAction extends BaseAction{
                 param.setTitle(base_serverconfig.getSysname());
             }
         }
+        Map<String, Object> data = param.getData();
+        model.addAttribute("homeurl",(String) data.get("home-url"));//这里key的下划线可能需要改一下
         model.addAttribute("title",param.getTitle());
         model.addAttribute("guidepageUrl",param.getGuidepageUrl());
         return new ModelAndView("server_web/base/main", "main", model);

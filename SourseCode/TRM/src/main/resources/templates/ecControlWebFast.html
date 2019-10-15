@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备直播</title>
+</head>
+<body>
+<div  data-th-fragment="ecControlWebFast">
+
+    <div class="layui-card-body layui-row " style="padding: 0">
+        <div class="layui-card" style="border-width: 0;box-shadow:none" >
+            <div class="layui-card-header">
+                <div class="layui-input-inline layui-col-md6" >
+                    <span>设备控制</span>
+                </div>
+            </div>
+        </div>
+        <div class="layui-card-body layui-row ">
+            <div style="margin-bottom: 10px;border: 1px solid #d6d6d6;padding:0 5px 5px 5px;">
+                <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
+                    <b class="biaoti_cu">双光驱同步: </b>
+                    <span class="biaoti" id="burn_mode">直刻模式</span>
+                    <b class="biaoti_cu">&nbsp;&nbsp;&nbsp;&nbsp;选时: </b>
+                    <span class="biaoti" id="bsettimerrecburntime">1小时</span>
+                </div>
+                <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
+                    <div class="biaoti_cu">光驱1: &nbsp;<span class="biaoti" id="roma_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd_hint">光驱1：<span class="biaoti" id="cd_bin">出仓</span></span></div>
+                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="roma_begintime">00:00</span> 剩余时间: <span class="biaoti" id="roma_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="roma_setburntime">无</span></div>
+                    <div class="biaoti_cu">光驱2: &nbsp;<span class="biaoti" id="romb_status" style="font-weight: bold;">未知</span><span style="margin-left: 20px;display:none;" id="cd2_hint">光驱2：<span class="biaoti" id="cd2_bin">出仓</span></span></div>
+                    <div class="biaoti_cu">开始时间: <span class="biaoti" id="romb_begintime">00:00</span> 剩余时间: <span class="biaoti" id="romb_lefttime">00:00</span> 刻录选时:<span class="biaoti" style="margin-right: 0px;" id="romb_setburntime">无</span> </div>
+                </div>
+                <div style="border-bottom: 1px solid #d6d6d6;padding: 5px;">
+                    <p class="biaoti_cu">硬盘：<span class="biaoti" id="diskrec_isrec">未录像</span>  使用: <span class="biaoti" id="disk_freespace">0%</span>  总容量:<span class="biaoti" id="disk_totalspace">1000G</span></p>
+                    <p class="biaoti_cu">开始时间: <span class="biaoti" id="diskrec_begintime">00:00</span> 录像时间: <span class="biaoti" id="diskrec_continuettime">00:00</span> </p>
+                </div>
+                <div style="padding: 5px;">
+                    <b class="biaoti_cu">画质: </b>
+                    <input type="radio" name="imagequality" value="bq" title="标清" lay-filter="bq_filter">
+                    <input type="radio" name="imagequality" value="gq" title="高清" lay-filter="gq_filter" checked>
+                </div>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="recordSet" onclick="recordSet();">设备操作</button>
+                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" id="yuntaikz" onclick="yuntaikz();">云台控制</button>
+                <!--<button onclick="location.reload();">刷新</button>-->
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

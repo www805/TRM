@@ -2,13 +2,16 @@ package com.avst.trm.v1.common.cache.param;
 
 import java.util.Map;
 
+/**
+ * avst外部配置文件缓存
+ */
 public class AppCacheParam {
 
-    private String title;
-    private Map<String,Object> data;
-    private String syslogoimage;
-    private String clientimage;
-    private String guidepageUrl;
+    private String title;/**客户端登录页左上角标题（授权公司的名字）**/
+    private Map<String,Object> data;/**客户端授权其他数据**/
+    private String syslogoimage;/**服务端logo图片**/
+    private String clientimage;/**客户端logo图片**/
+    private String guidepageUrl;/**引导页地址**/
 
     public String getTitle() {
         return title;

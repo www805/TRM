@@ -6,6 +6,8 @@ var problemtypessidV;
 var trObj;
 var NoDelele = false;
 var modelban_index;
+var typeSsId, tlist;
+var TtemplateinfoData = "";
 
 //初始化获取模板列表
 function getProblems_init(currPage,pageSize) {
@@ -15,11 +17,16 @@ function getProblems_init(currPage,pageSize) {
 
     var keyword =$("#keyword").val();
     var problemtypeid = $("#problemType").val();
+
+    if(isNotEmpty(typeSsId)){
+        problemtypeid = typeSsId;
+    }
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
             keyword: keyword,
-            problemtypeid: parseInt(problemtypeid),
+            problemtypeid: problemtypeid,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -37,7 +44,7 @@ function getProblems(keyword, problemtypeid, currPage, pageSize) {
         token:INIT_CLIENTKEY,
         param:{
             keyword: keyword,
-            problemtypeid: parseInt(problemtypeid),
+            problemtypeid: problemtypeid,
             currPage:currPage,
             pageSize:pageSize
         }
@@ -66,6 +73,97 @@ function getTmplateTypes() {
         }
     };
     ajaxSubmitByJson(url,data,callTmplateTypes);
+}
+
+/**
+ * 笔录类型
+ */
+function getTmplateTypes() {
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getTemplateTypes);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{}
+    };
+    ajaxSubmitByJson(url,data,callTmplateTypes);
+}
+
+//获取授权功能列表
+function getSQGnlist() {
+    var url=getActionURL(getactionid_manage().addOrupdateTemplate_getSQGnlist);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{}
+    };
+    ajaxSubmitByJson(url,data,callSQGnlist);
+}
+
+function callSQGnlist(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+
+        var gnlist = data.data.data.gnlist;
+        if (gnlist.indexOf("s_v") != -1) {
+            if(isNotEmpty(list)){
+
+                var type = null;
+                for (var i = 0; i < list.length; i++) {
+                    type = list[i];
+                    if (type.typename == "谈话") {
+                        // typeSsId = type.ssid;
+                        break;
+                    }
+                }
+                $("#templateType").html("<option selected value='" + type.id + "' >" + type.typename + "</option>");
+            }
+
+            // plist
+            if(isNotEmpty(plist)){
+
+                var type = null;
+                for (var i = 0; i < plist.length; i++) {
+                    type = plist[i];
+                    if (type.typename == "谈话") {
+                        typeSsId = type.ssid;
+                        break;
+                    }
+                }
+            }
+            $("#problemTypes").remove();
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render();
+            });
+        }
+        getProblemTypesParam(); //查询模板
+
+    }else{
+        layer.msg(data.message, {icon: 5});
+    }
+}
+
+function callTmplateTypes(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var list=data.pagelist;
+                tlist = list;
+                if (isNotEmpty(list)) {
+                    for (var i = 0; i < list.length; i++) {
+                        var templateType = list[i];
+                        $("#templatetypessid").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
+                    }
+                }
+            }
+            // typeId
+            console.log(typeSsId);
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
 }
 
 function callTmplates(data){
@@ -194,6 +292,7 @@ function callTemplateById(data){
                     trObj = null;
                 });
             }
+
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -218,6 +317,8 @@ function callTmplateTypes(data){
                     }
                 }
             }
+
+            getSQGnlist();//获取授权判断是否单机版
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -310,6 +411,11 @@ function showpagetohtml(){
 
         var keyword=$("input[name='keyword']").val();
         var problemType = $("#problemType").val();
+
+        if(isNotEmpty(typeSsId)){
+            problemType = typeSsId;
+        }
+
         var arrparam=new Array();
         arrparam[0]=keyword;
         arrparam[1]=problemType;
@@ -435,10 +541,18 @@ function addUpdateinfo(ssid, problemtypessid, type) {
     tableProblems = ""; //清空以前的
     for (var i = 0; i < plist.length; i++) {
         var problemType = plist[i];
-        if (problemtypessid == problemType.ssid) {
-            tableProblems += "<option selected value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
+
+        if(isNotEmpty(typeSsId)){
+            if (problemType.ssid == typeSsId) {
+                tableProblems += "<option selected value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
+                break;
+            }
         }else{
-            tableProblems += "<option value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
+            if (problemtypessid == problemType.ssid) {
+                tableProblems += "<option selected value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
+            }else{
+                tableProblems += "<option value='" + problemType.ssid + "' >" + problemType.typename + "</option>";
+            }
         }
     }
 
@@ -618,10 +732,17 @@ function getDataAll() {
         }
     };
 
-    if(ssid){
-        ajaxSubmitByJson(url, data, callUpdateTmplate);
-    }else{
-        ajaxSubmitByJson(url, data, callAddTmplate);
+    //判断如果是重复数据就不提交
+    var Ttemplateinfo = JSON.stringify(data.param);
+    if(TtemplateinfoData != Ttemplateinfo){
+        TtemplateinfoData = Ttemplateinfo;
+
+        if(ssid){
+            ajaxSubmitByJson(url, data, callUpdateTmplate);
+        }else{
+            ajaxSubmitByJson(url, data, callAddTmplate);
+        }
+
     }
 }
 

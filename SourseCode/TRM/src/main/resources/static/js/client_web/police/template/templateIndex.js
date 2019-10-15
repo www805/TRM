@@ -8,6 +8,7 @@ var xiazai2 = false;
 var updateTemplateType;
 var repeatStatus = null;
 var SQGnlist;
+var typeId;
 
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().templateIndex_getTemplates);
@@ -16,6 +17,10 @@ function getTmplates_init(currPage,pageSize) {
 
     if(!templatetypeid){
         templatetypeid = -1;
+    }
+
+    if(isNotEmpty(typeId)){
+        templatetypeid = typeId;
     }
 
     var data={
@@ -118,6 +123,8 @@ function callTmplateTypes(data){
                 }
                 $("#templateTypes").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
             }
+
+            getSQGnlist();//获取授权判断是否单机版
         }
     }else{
         layer.msg(data.message, {icon: 5});
@@ -126,14 +133,20 @@ function callTmplateTypes(data){
 
 function callSQGnlist(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        console.log(data);
 
         var gnlist = data.data.data.gnlist;
         if (gnlist.indexOf("s_v") != -1) {
             $("#templateType").remove();
-            console.log(list);
-        }
 
+            for (var i = 0; i < list.length; i++) {
+                var type = list[i];
+                if (type.typename == "谈话") {
+                    typeId = type.id;
+                    break;
+                }
+            }
+        }
+        getTmplateTypesParams(); //查询模板
     }else{
         layer.msg(data.message, {icon: 5});
     }
@@ -166,6 +179,9 @@ function showpagetohtml(){
 
         var keyword=$("input[name='keyword']").val();
         var templateType = $("#templateTypes").val();
+        if(isNotEmpty(typeId)){
+            templateType = typeId;
+        }
         var arrparam=new Array();
         arrparam[0]=keyword;
         arrparam[1]=templateType;
@@ -220,7 +236,16 @@ function modelbanUpdateTemplate() {
         if (i == 0) {
             updateTemplateType = templateType.id; //把第一个类型给他
         }
-        templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
+
+        if(isNotEmpty(typeId)){
+            if (templateType.typename == "谈话") {
+                templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
+                break;
+            }
+
+        }else{
+            templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
+        }
     }
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 0px;padding-right: 20px;'>\n" +

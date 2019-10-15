@@ -5,7 +5,7 @@ import com.avst.trm.v1.common.util.baseaction.Page;
 public class GetProblemsParam extends Page {
     private String keyword;//关键字
 
-    private Integer problemtypeid;//问题类型ID
+    private String problemtypeid;//问题类型ID
 
     public String getKeyword() {
         return keyword;
@@ -15,11 +15,11 @@ public class GetProblemsParam extends Page {
         this.keyword = keyword;
     }
 
-    public Integer getProblemtypeid() {
+    public String getProblemtypeid() {
         return problemtypeid;
     }
 
-    public void setProblemtypeid(Integer problemtypeid) {
+    public void setProblemtypeid(String problemtypeid) {
         this.problemtypeid = problemtypeid;
     }
 }

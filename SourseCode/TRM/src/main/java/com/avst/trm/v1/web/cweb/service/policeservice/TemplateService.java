@@ -391,6 +391,9 @@ public class TemplateService extends BaseService {
                         problem.setCreatetime(new Date());
                         problem.setOrdernum(0);
                         problem.setId(null);
+                        if(StringUtils.isBlank(problem.getReferanswer())){
+                            problem.setReferanswer("");
+                        }
 
                         Integer insert = police_problemMapper.insert(problem);
 
@@ -649,7 +652,7 @@ public class TemplateService extends BaseService {
 
         //分页处理
         EntityWrapper ew=new EntityWrapper();
-        if (null!=getProblemsParam.getProblemtypeid()){
+        if (StringUtils.isNotBlank(getProblemsParam.getProblemtypeid())){
             ew.eq(true,"pp.problemtypessid",getProblemsParam.getProblemtypeid());
         }
         if (StringUtils.isNotBlank(getProblemsParam.getKeyword())){

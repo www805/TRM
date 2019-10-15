@@ -483,7 +483,7 @@ public class MainAction extends BaseAction {
             }
         }
         Map<String, Object> data = param.getData();
-        model.addAttribute("homeurl",(String) data.get("home-url"));
+        model.addAttribute("homeurl",(String) data.get("home-url"));//这里key的下划线可能需要改一下
         model.addAttribute("title",param.getTitle());
         model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
         //通过授权判断，返回笔录系统

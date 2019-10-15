@@ -116,14 +116,16 @@
                 <input type="text" name="keyword" id="keyword" style="width: 120px;" lay-verify="required" placeholder="请输入关键字" autocomplete="off" class="layui-input">
             </div>
 
-            <label class="layui-form-label" style="width: auto;">问题类型</label>
-            <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
-                <select name="templatetypeid" lay-verify="" id="problemType" lay-filter="pid">
-                    <option value="">全部</option>
-                </select>
+            <div id="problemTypes">
+                <label class="layui-form-label" style="width: auto;">问题类型</label>
+                <div class="layui-input-inline" style="width: 120px;float: left;margin-right: 10px;">
+                    <select name="problemTypeid" lay-verify="" id="problemType" lay-filter="pid">
+                        <option value="">全部</option>
+                    </select>
+                </div>
             </div>
 
-            <div style="float: left;">
+            <div style="float: left;margin-left: 10px;">
                 <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getProblems_init(1,10);" >
                 <input type="button" class="layui-btn layui-btn-normal" value="添加问题" onclick="addUpdateinfo('',0,1);" >
             </div>
@@ -238,7 +240,7 @@
         templateInit();
         getProblemTypes();
         getTmplateTypes();
-        getProblemTypesParam();
+        // getProblemTypesParam();
 
         $("#templateTitle").focus(function(){
             $("#templateTitle").css("background-color","#FFFFCC");

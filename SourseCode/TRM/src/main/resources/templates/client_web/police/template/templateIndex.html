@@ -116,7 +116,7 @@
                     </div>
                 </div>
 
-                <div style="float: left;">
+                <div style="float: left;margin-left: 10px;">
                     <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getTmplates_init(1,15);" >
                     <input type="button" class="layui-btn layui-btn-normal" value="新增模板" onclick="window.location.href='toaddOrupdateTemplate';" >
                 </div>
@@ -203,8 +203,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT, "client_web/police/template/templateIndex");
         getTmplateTypess();
-        getTmplateTypesParams();
-        getSQGnlist();
+        // getTmplateTypesParams();
 
         document.onkeydown = function (event) {
             var e = event || window.event;
