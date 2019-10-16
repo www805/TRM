@@ -8,7 +8,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class CheckPasswordKey {
 
-    public static String key_path="";//文件地址
+    public static String key_path="";//检测文件地址
 
 
     /**

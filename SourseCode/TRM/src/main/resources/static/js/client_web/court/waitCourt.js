@@ -25,6 +25,8 @@ var occurrencetime_format;//案发时间
 
 var multifunctionbool;
 
+
+
 //录音按钮显示隐藏 type:1开始录音
 var startMC_index;
 function img_bool(obj,type){
@@ -67,7 +69,7 @@ function img_bool(obj,type){
             $("#startrecord").css("display","block");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 1});
+                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 2});
             });
             layer.msg("笔录中~");
         }
@@ -75,7 +77,7 @@ function img_bool(obj,type){
         $("#endrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:1});
+            layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:2});
         });
         console.log("会议已结束")
         layer.msg("该笔录已经制作过啦~");
@@ -91,42 +93,31 @@ function copy_text(obj,event) {
     var classc=$(obj).closest("div").attr("class");
     var starttime=$(obj).closest("div").attr("starttime");
 
-    var qw=null;
-    if ((classc=="atalk"&&1 == event.which)||(classc=="btalk"&&3 == event.which)) {//左键并且为问||右键并且为答
-        qw="q";
-    }else  if ((classc=="btalk"&&1 == event.which)||(classc=="atalk"&&3 == event.which)){//左键并且为答 || 右键并且为问
-        qw="w";
-    }
 
 
     //鼠标双击事件
     if( new Date().getTime() - touchtime < 350 ){
         console.log("现在是双击事件")
-        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
-        var old= $html.attr(qw+"_starttime");
+        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
+        var old= $html.attr("q_starttime");
         var h=$html.html();
         $html.append(copy_text_html);
         if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-            $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
+            $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
         }
     }else{
         console.log("现在是单击事件")
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         var dqselec_left= txt.toString();
         if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1&&new Date().getTime() - touchtime >700){
-            if (classc=="btalk") {
-                qw="w";
-            }else if(classc=="atalk"){
-                qw="q";
-            }
-            var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
-            var old= $html.attr(qw+"_starttime");
+            var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
+            var old= $html.attr("q_starttime");
             var h=$html.html();
             $html.append(dqselec_left);
             dqselec_left="";
             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
             if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-                $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
+                $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
             }
         }
         touchtime = new Date().getTime();
@@ -233,7 +224,7 @@ function callbackgetRecordById(data) {
                         $("#endrecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
-                            layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 1});
+                            layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
                         });
                         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
@@ -251,13 +242,13 @@ function callbackgetRecordById(data) {
                             }
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
+                                layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
                             });
                         } else if (mcbool==3&&record_pausebool==1) {
                             $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
-                                layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 1});
+                                layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 2});
                             });
                         }
 
@@ -266,7 +257,7 @@ function callbackgetRecordById(data) {
                         $("#pauserecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
-                            layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
+                            layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                         });
                         $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
                     }
@@ -290,6 +281,21 @@ function callbackgetRecordById(data) {
                     recorduser=[];
                     recorduser.push(user1);
                     recorduser.push(user2);
+
+
+                    //其他角色添加
+                    var usergrades=recordUserInfosdata.usergrades;
+                    if (isNotEmpty(usergrades)) {
+                        for (let i = 0; i < usergrades.length; i++) {
+                            const other = usergrades[i];
+                            var user={
+                                username:other.username
+                                ,userssid:other.userssid
+                                ,grade:other.grade
+                            };
+                            recorduser.push(user);
+                        }
+                    }
                     dq_recorduser=recordUserInfosdata.userssid;
                 }
 
@@ -306,7 +312,7 @@ function callbackgetRecordById(data) {
                     var casename=case_.casename==null?"":case_.casename;
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
-                    var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                    var starttime=case_.starttime==null?"":case_.starttime;
                     var casenum=case_.casenum==null?"":case_.casenum;
                     var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
@@ -319,15 +325,19 @@ function callbackgetRecordById(data) {
                     var USERHTNL="";
                     if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
-                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
+                                  <tr><td>被告</td><td>"+username+"</td> </tr>\
+                                  <tr><td>嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
-                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
-                                  <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
-                                  <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>";
+                                  <tr><td>审讯长</td><td>"+adminname+"</td></tr>";
+                    var usergrades=recordUserInfosdata.usergrades;
+                    if (isNotEmpty(usergrades)) {
+                        for (let i = 0; i < usergrades.length; i++) {
+                            const other = usergrades[i];
+                            init_casehtml+="<tr><td>"+other.gradename+"</td><td>"+other.username+"</td> </tr>";
+                        }
+                    }
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
                 getMCCacheParamByMTssid();//获取缓存
@@ -423,7 +433,7 @@ function startMC() {
             }
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
+                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
             });
             $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
         });
@@ -456,7 +466,7 @@ function callbackstartMC(data) {
         $("#startrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
+            layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
         });
 
         var data=data.data;
@@ -468,6 +478,18 @@ function callbackstartMC(data) {
 
             var mtssiddata=startMCVO.mtssid;
             useretlist=startMCVO.useretlist;
+
+            /*if (isNotEmpty(useretlist)) {
+                for (var i = 0; i < useretlist.length; i++) {
+                    var useret = useretlist[i];
+                    var userssid1 = useret.userssid;
+                    if (userssid1 == dq_recorduser) {
+                        liveurl = useret.livingurl;//开始会议后默认使用副麦预览地址
+                        console.log("当前liveurl————"+liveurl)
+                    }
+                }
+                initplayer();//初始化地址
+            }*/
 
             mtssid=mtssiddata;
             mcbool=1;//正常开启
@@ -495,13 +517,13 @@ function callbackstartMC(data) {
                 $("#endrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 1});
+                    layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
                 });
             }else {
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:1});
+                    layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:2});
                 });
             }
 
@@ -562,13 +584,13 @@ function callbackpauseOrContinueRercord(data) {
                 $("#pauserecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
+                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
                 });
             } else {
                 $("#startrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
+                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
                 });
             }
 
@@ -582,13 +604,13 @@ function callbackpauseOrContinueRercord(data) {
                 $("#startrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
+                    layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips:2});
                 });
             } else if (pauseOrContinue==2){//请求继续
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
+                    layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
                 });
             }
         }
@@ -829,7 +851,14 @@ function callbackgetgetRecordrealing(data) {
 
         var list= datas.list;
         var fdCacheParams= datas.fdCacheParams;
-
+        /*if (isNotEmpty(fdCacheParams)){
+            for (var i = 0; i < fdCacheParams.length; i++) {
+                var fdCacheParam = fdCacheParams[i];
+                liveurl = fdCacheParam.livingUrl;//开始会议后默认使用副麦预览地址
+                console.log("当前liveurl————"+liveurl)
+            }
+            initplayer();
+        }*/
         if (isNotEmpty(list)) {
             layer.close(loadindex);
             $("#recordreals").html("");
@@ -855,14 +884,16 @@ function callbackgetgetRecordrealing(data) {
 
                             //实时会议数据
                             if (usertype==1){
+                                //1放左边
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+' </p>\
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
-                            }else if (usertype==2){
+                            }else{
+                                var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> \
                                                       </div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
@@ -926,6 +957,42 @@ function qw_keydown(obj,event) {
 function setFocus(el) {
     if (isNotEmpty(el)){
         el = el[0];
+
+        var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
+        if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
+            //回车加锚点：先判断语音识别是否开启
+            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
+                var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
+                var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
+                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
+                if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    var dqtime=new Date().getTime();
+                    var qw_type=el.getAttribute("name");
+                    if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                        console.log("开始使用直播时间~")
+                        if (qw_type=="w"){
+                            var w_starttime=el.getAttribute("w_starttime");
+                            if ((!isNotEmpty(w_starttime)||w_starttime<0)){
+                                //计算时间戳
+                                w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                                el.setAttribute("w_starttime",w_starttime);
+                            }
+                        }else  if (qw_type=="q"){
+                            var q_starttime=el.getAttribute("q_starttime");
+                            if ((!isNotEmpty(q_starttime)||q_starttime<0)){
+                                //计算时间戳
+                                q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                                el.setAttribute("q_starttime",q_starttime);
+                            }
+                        }
+                    }
+                }else {
+                    console.log("使用语音识别时间~")
+                }
+            }
+        }else {
+            console.log("这是模板里面的题目~")
+        }
 
         if (window.getSelection) {//ie11 10 9 ff safari
             el.focus(); //解决ff不获取焦点无法定位问题
@@ -1496,9 +1563,10 @@ $(function () {
                                             <span onmousedown="copy_text(this,event)"  >'+translatext+'</span>';
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
 
-                            }else if (usertype==2){
+                            }else{
+                                var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                                 p_span_HTML= '<p>'+asrstartime+' 【'+username+'】 </p>\
-                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> ';
+                                             <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> ';
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
@@ -2128,3 +2196,6 @@ function callbackgetEquipmentsState(data) {
     }
 }
 //*******************************************************************获取各个状态end****************************************************************//
+
+//语音识别颜色
+var asrcolor=["#AA66CC","#0099CC","#ef8201","#99CC00","#CC0000"," #ff80bf","#00b8e6","#00802b","#b30000","#3333ff","#e64d00","#739900","#b35900","#5c8a8a","#999966","#b3b3b3","##3366cc"];

@@ -210,6 +210,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
+
             recordService.addCaseToArraignment(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());

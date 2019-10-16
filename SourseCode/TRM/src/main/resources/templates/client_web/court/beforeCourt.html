@@ -59,7 +59,7 @@
         </div>
     <div class="layui-col-md12 ">
          <form class="layui-form layui-row" >
-            <div class="layui-col-md6">
+            <div class="layui-col-md6" id="case">
                 <div class="layui-card" >
                     <div class="layui-card-header">案件基本信息</div>
                     <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
@@ -67,7 +67,7 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">案件类型：</label>
                                 <div class="layui-input-block">
-                                    <select name=""  id=""  lay-search="" lay-verify="" >
+                                    <select name="recotdtypes"  id="recotdtypes"  lay-search="" lay-verify="recotdtypes" >
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -87,53 +87,81 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">原告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                                    <input type="text" name="court_user1" id="原告"   court_user="" placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)">
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,1)" title="重置原告个人信息"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">被告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                                    <input type="text" name="court_user2" id="username"  court_user=""  placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,2)">
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,2)" title="重置被告个人信息"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">审判长：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                                    <select name="审判长"  id="审判长"   lay-verify=""   >
+                                        <option value=""  th:value="${session.MANAGE_CLIENT.username}"  selected = "selected">[[${session.MANAGE_CLIENT.username}]]</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">辩护人</label>
+                                <label class="layui-form-label">辩护人：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                                    <input type="text" name="court_user3" id="辩护人"  court_user="" placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,3)">
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,3)"  title="重置辩护人个人信息"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
                                 <label class="layui-form-label">承办人：</label>
                                 <div class="layui-input-block">
-                                    <select name=""  id=" "  lay-search="" lay-verify="" >
-                                        <option value=""></option>
+                                    <select name="承办人"  id="承办人"   lay-verify=""   >
+                                        <option value=""  th:value="${session.MANAGE_CLIENT.username}"  selected = "selected">[[${session.MANAGE_CLIENT.username}]]</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
                                 <label class="layui-form-label">承办庭：</label>
                                 <div class="layui-input-block">
-                                    <select name=""  id=" "  lay-search="" lay-verify="" >
-                                        <option value=""></option>
+                                    <select name="recordplace"  id="recordplace" lay-verify=""  >
+                                        <option value=""th:value="${session.MANAGE_CLIENT.workname}"  selected = "selected">[[${session.MANAGE_CLIENT.workname}]]</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">案由：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                                    <div class="layui-form-select">
+                                        <div class="layui-select-title">
+                                            <input type="text" name="cause"  placeholder="" autocomplete="off" class="layui-input" id="cause" oninput="getCauseList()"  onblur="select_causeblur();" onfocus="getCauseList()">
+                                        </div>
+                                        <dl class="layui-anim layui-anim-upbit"  id="cause_text"   >
+
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-lg6">
+                                <label class="layui-form-label">案件名称</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-col-lg12">
+                                        <div class="layui-form-select">
+                                            <div class="layui-select-title">
+                                                <input type="text" name="casename" lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
+                                                <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;" title="选择其他案件" onclick="open_othercases();"></i>
+                                            </div>
+                                            <dl class="layui-anim layui-anim-upbit"  id="casename_ssid"   >
+
+                                            </dl>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
                                 <label class="layui-form-label">书记员：</label>
                                 <div class="layui-input-block">
-                                    <select name=""  id=" "  lay-search="" lay-verify="" >
+                                    <select name="recordadminssid"  id="recordadminssid"  lay-search="" lay-verify="" >
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -141,27 +169,37 @@
                             <div class="layui-col-lg12">
                                 <label class="layui-form-label">陪审员：</label>
                                 <div class="layui-input-block">
-                                    <select name=""  id=" "  lay-search="" lay-verify="" >
+                                    <select name="otheradminssid"  id="otheradminssid"  lay-search="" lay-verify="" >
                                         <option value=""></option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-col-lg6">
-                                <label class="layui-form-label">询问次数：</label>
+                            <div class="layui-col-lg6" style="margin-right: 50%">
+                                    <label class="layui-form-label">询问次数：</label>
+                                    <div class="layui-input-block">
+                                        <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
+                                    </div>
+                            </div>
+
+                            <div class="layui-col-lg6" id="multifunctionbool_showorhide" >
+                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">选择场景</label>
                                 <div class="layui-input-block">
-                                    <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
+                                    <input type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
                                 </div>
                             </div>
-                            <div class="layui-col-lg6"></div>
+                            <div class="layui-col-lg6" >
+                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model2()">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md6" >
+            <div class="layui-col-md6" id="user">
                      <div class="layui-card" >
-                         <div class="layui-card-header">个人信息
-                             <i class="layui-icon layui-icon-template " id="getCardreader_btn" title="点击开始读卡" style="position: absolute;right: 15px;color: #1E9FFF;cursor: pointer"></i>
-                         </div>
+                         <div class="layui-card-header"><span id="usertype"><span style='color: red;font-weight: bold'>被告</span>个人信息</span></div>
                          <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                              <div class="layui-card-body  layui-row layui-col-space10"  >
 
@@ -238,7 +276,7 @@
                                  <div class="layui-col-lg12">
                                      <label class="layui-form-label">住址：</label>
                                      <div class="layui-input-block">
-                                         <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                                         <input type="text" name="domicile" id="domicile"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
                                  </div>
 
@@ -246,14 +284,14 @@
                                  <div class="layui-col-lg12">
                                      <label class="layui-form-label">签发机关：</label>
                                      <div class="layui-input-block">
-                                         <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                                         <input type="text" name="issuingauthority" id="issuingauthority"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
                                  </div>
 
                                  <div class="layui-col-lg12">
                                      <label class="layui-form-label">身份证有效期：</label>
                                      <div class="layui-input-block">
-                                         <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                                         <input type="text" name="validity" id="validity"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
                                  </div>
 
@@ -267,13 +305,13 @@
                                  <div class="layui-col-lg12">
                                      <label class="layui-form-label">联系方式：</label>
                                      <div class="layui-input-block">
-                                         <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                                         <input type="text" name="phone" id="phone"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
                                  </div>
                                  <div class="layui-col-lg12">
                                      <label class="layui-form-label">工作单位：</label>
                                      <div class="layui-input-block">
-                                         <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                                         <input type="text" name="workunits" id="workunits"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
                                  </div>
                                  <div class="layui-col-lg6 layui-col-lg-offset6 ">
@@ -313,6 +351,12 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/court/beforeCourt");
+        getRecordtypes();
+        getNationals();
+        getAdminList();
+        getDefaultMtModelssid();//获取默认的会议模板ssid
+        getMc_model();//获取全部的会议模板
+        getWordTemplates();
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块
@@ -326,50 +370,23 @@
             elem: '#both' //指定元素
         });
         laydate.render({
-            elem: '#occurrencetime' //指定元素
-            ,type:"datetime"
-            ,value: new Date(Date.parse(new Date()))
-            ,format: 'yyyy-MM-dd HH:mm:ss'
+            elem: '#validity' //指定元素
         });
+
+
+
         laydate.render({
             elem: '#starttime' //指定元素
             ,type:"datetime"
             ,value: new Date(Date.parse(new Date()))
             ,format: 'yyyy-MM-dd HH:mm:ss'
         });
-        laydate.render({
-            elem: '#endtime' //指定元素
-            ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-            ,format: 'yyyy-MM-dd HH:mm:ss'
-        });
-
 
 
         form.verify({
-            cardnum:function (value) {
-                var cardtypetext = $("#cards option:selected").text();
-                var nationality = $("#nationality option:selected").text();//国籍
-                if (!(/\S/).test(value)) {
-                    return "请输入证件号码"
-                }
-                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
-                    var checkidcard_bool=checkIDCard(value);
-                    if (!checkidcard_bool) {
-                        return "请输入有效的18位居民身份证号码";
-                    }
-                }
-            },
-            username:[ /\S/,"请输入姓名"],
-            phone:function (value) {
-                if (isNotEmpty(value)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(value))){
-                        return "请输入正确联系电话";
-                }
-            },
+            username:[ /\S/,"请输入被告人"],
+            recotdtypes:[ /\S/,"请选择案件类型"],
             casename:[ /\S/,"请输入案件名称"],
-            recordname:[ /\S/,"请输入笔录名称"],
-            recordadmin:[ /\S/,"请输入记录人"],
-            askobj:[ /\S/,"请输入询问对象"],
             casenum:function (value) {
                 if (isNotEmpty(value)) {
                     if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/).test(value)||!(/^[^ ]+$/).test(value)){
@@ -380,6 +397,7 @@
         });
 
         form.on('submit(startrecord_btn)', function (data) {
+            addCaseToArraignment();
             return false;
         });
     });

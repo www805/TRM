@@ -146,6 +146,8 @@ function getactionid_manage() {
         recordIndex_changeboolRecord:"recordIndex_changeboolRecord",
         recordIndex_towaitconversation:"recordIndex_towaitconversation",
         recordIndex_toconversationById:"recordIndex_toconversationById",
+        recordIndex_towaitCourt:"recordIndex_towaitCourt",
+        recordIndex_togetCourtDetail:"recordIndex_togetCourtDetail",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
@@ -271,6 +273,8 @@ function getactionid_manage() {
         caseIndex_toconversationIndex:"caseIndex_toconversationIndex",
         caseIndex_torecordIndex:"caseIndex_torecordIndex",
         caseIndex_tocaseStatistics:"caseIndex_tocaseStatistics",
+        caseIndex_towaitCourt:"caseIndex_towaitCourt",
+        caseIndex_togetCourtDetail:"caseIndex_togetCourtDetail",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",
@@ -298,6 +302,7 @@ function getactionid_manage() {
         home_addCaseToArraignment:"home_addCaseToArraignment",
         home_torecordIndex:"home_torecordIndex",
         home_toaddCaseToUser:"home_toaddCaseToUser",
+        home_tobeforeCourt:"home_tobeforeCourt",
 
 
         startConversation_getUserinfoList:"startConversation_getUserinfoList",
@@ -369,8 +374,20 @@ function getactionid_manage() {
         waitCourt_downloadNotification:"waitCourt_downloadNotification",
         waitCourt_gnlist:"waitCourt_gnlist",
 
+        beforeCourt_getRecordtypes:"beforeCourt_getRecordtypes",
+        beforeCourt_getNationals:"beforeCourt_getNationals",
+        beforeCourt_addCaseToArraignment:"beforeCourt_addCaseToArraignment",
+        beforeCourt_getUserinfoList:"beforeCourt_getUserinfoList",
+        beforeCourt_getUserByCard:"beforeCourt_getUserByCard",
+        beforeCourt_getAdminList:"beforeCourt_getAdminList",
+        beforeCourt_getCaseById:"beforeCourt_getCaseById",
+        beforeCourt_towaitCourt:"beforeCourt_towaitCourt",
+        beforeCourt_torecordIndex:"beforeCourt_torecordIndex",
+        beforeCourt_getDefaultMtModelssid:"beforeCourt_getDefaultMtModelssid",
+        beforeCourt_getWordTemplates:"beforeCourt_getWordTemplates",
 
-        //以下为法庭的接口===============================end
+
+        //以上为法庭的接口===============================end
 
     };
 }

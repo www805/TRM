@@ -33,13 +33,13 @@
 
     <div class="layui-row layui-form" id="layui-row1" >
        <div class="layui-col-md3 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="shrink_html" >
-            <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:80%;">
+            <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:90%;">
                 <ul class="layui-tab-title">
                     <li onclick="initasr()" id="asr" style="">语音识别 <span id="webkit2"></span></li>
                     <li onclick="initheart();"id="ph" style="">身心监测</li>
-                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
+                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<!--<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i>--></li>
                 </ul>
-                <div class="layui-tab-content" id="leftdiv"  style="height:100%;">
+                <div class="layui-tab-content" id="leftdiv"  style="height:90%;">
                     <div class="layui-tab-item "  id="asritem" style="height:100%;" >
                         <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                             <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
@@ -62,7 +62,7 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="layui-tab-item phitem2"  id="phitem" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
+                    <div class="layui-tab-item phitem2"   style="height:100%;overflow-x: hidden; overflow-y: scroll;">
                         <div  style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">请先获取身心检测授权...</div>
                     </div>
                     <div class="layui-tab-item layui-show" id="caseitem"  style="height:100%;overflow-x: hidden; overflow-y: scroll;">
@@ -76,6 +76,8 @@
                     </div>
                 </div>
             </div>
+
+
            <!--底部按钮组start-->
            <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;text-align: center;" >
                <div class="layui-col-md4 "  id="record_img" style="width: 110px;" >

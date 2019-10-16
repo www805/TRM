@@ -1,5 +1,6 @@
 var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
+var videourl=null;//视频地址
 
 var recordnameshow="";
 
@@ -10,6 +11,10 @@ var iid=null;//打包iid
 
 var getRecordById_data=null;
 var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
+
+var first_playstarttime=0;//第一个视频的开始时间
+var dq_play=null;//当前视频数据
+var recordPlayParams=[];//全部视频数据集合
 
 
 //获取案件信息
@@ -89,6 +94,18 @@ function callbackgetRecordById(data) {
                     recorduser=[];
                     recorduser.push(user1);
                     recorduser.push(user2);
+                    var usergrades=recordUserInfosdata.usergrades;
+                    if (isNotEmpty(usergrades)) {
+                        for (let i = 0; i < usergrades.length; i++) {
+                            const other = usergrades[i];
+                            var user={
+                                username:other.username
+                                ,userssid:other.userssid
+                                ,grade:other.grade
+                            };
+                            recorduser.push(user);
+                        }
+                    }
                 }
 
                 //案件信息
@@ -98,7 +115,7 @@ function callbackgetRecordById(data) {
                     var casename=case_.casename==null?"":case_.casename;
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
-                    var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                    var starttime=case_.starttime==null?"":case_.starttime;
                     var casenum=case_.casenum==null?"":case_.casenum;
                     var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
@@ -109,16 +126,19 @@ function callbackgetRecordById(data) {
                     var USERHTNL="";
                     if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
                     var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
-                                  <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
+                                  <tr><td>被告</td><td>"+username+"</td> </tr>\
+                                  <tr><td>嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
-                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
-                                  <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
-                                  <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\
-                                  <tr><td>记录人</td><td>"+recordadminname+"</td> </tr>\
-                                  <tr><td>办案部门</td><td>"+department+"</td> </tr>\
-                                  <tr><td>笔录类型</td><td>"+recordtypename+"</td> </tr>";
+                                  <tr><td>审讯长</td><td>"+adminname+"</td></tr>";
+                            var usergrades=recordUserInfosdata.usergrades;
+                            if (isNotEmpty(usergrades)) {
+                                for (let i = 0; i < usergrades.length; i++) {
+                                    const other = usergrades[i];
+                                    init_casehtml+="<tr><td>"+other.gradename+"</td><td>"+other.username+"</td> </tr>";
+                                }
+                            }
                     $("#caseAndUserInfo_html").html(init_casehtml);
                 }
             }
@@ -133,6 +153,17 @@ function callbackgetRecordById(data) {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
 
+            var getPlayUrlVO=data.getPlayUrlVO;
+            if (isNotEmpty(getPlayUrlVO)) {
+                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
+                $("#record_qw_HTML").attr("class","layui-col-md7").show();
+                $("#fd_HTML").show();
+                set_getPlayUrl(getPlayUrlVO);
+            }else {
+                $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
+            }
+
+
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
@@ -142,7 +173,6 @@ function callbackgetRecordById(data) {
                     //不存在会议
                 }
             }
-
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -180,16 +210,17 @@ function set_getRecord(data){
                         if (usertype==1){
                             subtractime_q=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'  times='+starttime+'>\
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
-                        }else if (usertype==2){
+                        }else{
+                            var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                             subtractime_w=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'  times='+starttime+'>\
+                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)"  times='+starttime+'>\
                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span>'+translatext+'</span> \
+                                                            <span style="background-color: '+color+'">'+translatext+'</span> \
                                                       </div >';
                         }
 
@@ -390,6 +421,66 @@ $(function () {
     setInterval( function() {
         setRecordreal();//5秒实时保存
     },3000)
+
+    //检测视频是否播完，播完自动进入下一个视频
+    SewisePlayer.onPlayTime(function(time, id){
+        var totaltime=SewisePlayer.duration()==null?0:SewisePlayer.duration();
+        if (parseFloat(time)==parseFloat(totaltime)&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)) {
+            var dqfilenum=dq_play.filenum; //1
+            if (dqfilenum<recordPlayParams.length){  //3
+                dq_play=recordPlayParams[dqfilenum];
+                videourl=dq_play.playUrl;
+                initplayer();
+                //样式跟着改变
+                $("#videos span").each(function () {
+                    var filenum=$(this).attr("filenum");
+                    if (filenum==dq_play.filenum){
+                        $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                        return false;
+                    }
+                });
+            }
+        }
+
+
+        /!*此处开始定位*!/
+        if (isNotEmpty(time)&&time>0){
+            var locationtime=time*1000<0?0:time*1000; //秒转时间戳
+            locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
+
+            //左侧
+            var recordrealsdivlen=$("#recordreals div").length;//识别长度
+            $("#recordreals div").each(function (i,e) {
+                var t=$(this).attr("times");
+                var start=t;
+                var end=0;
+                if (i>=recordrealsdivlen-1) {
+                    end= t;//下一个区间
+                }else {
+                    end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
+                }
+                if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
+                    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+                    $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+
+                    $("#record_hoverhtml").hover(
+                        function(){
+                            mouseoverbool=1
+                        } ,
+                        function(){
+                            mouseoverbool=-1;
+                        });
+
+                    if (parseInt(mouseoverbool)==-1&&parseInt(mouseoverbool)!=1){
+                        var top=$(this).position().top;
+                        var div = document.getElementById('recordreals_scrollhtml');
+                        div.scrollTop = top;
+                    }
+                    return false;
+                }
+            });
+        }
+    });
 
 
 
@@ -709,6 +800,136 @@ function calladdRecord(data) {
     }
 }
 
+function  set_getPlayUrl(data) {
+    if (isNotEmpty(data)){
+        iid=data.iid;
+        var recordFileParams=data.recordFileParams;
+        recordPlayParams=data.recordPlayParams;
+        var state;
+        $("#videos").empty();
+        if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
+            recordPlayParams.sort(sortPlayUrl);//重新排序一边
+            dq_play=recordPlayParams[0];
+            first_playstarttime=parseFloat(dq_play.recordstarttime);
+            var oldname=[];
+            for (let i = 0; i < recordPlayParams.length; i++) {
+                var play=recordPlayParams[i];
+                var playname=play.filename;
+                for (let j = 0; j < recordFileParams.length; j++) {
+                    const file = recordFileParams[j]
+                    var filename= file.filename;
+                    if (filename==playname&&oldname.indexOf(filename)<0) {
+                        var VIDEO_HTML = '<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="' + play.filenum + '"  state="' + file.state + '">视频' + play.filenum + '</span>';
+                        $("#videos").append(VIDEO_HTML);
+                        play["start_range"] = parseFloat(play.recordstarttime) - parseFloat(first_playstarttime);
+                        play["end_range"] = parseFloat(play.recordendtime) - parseFloat(first_playstarttime);
+                        recordPlayParams[i] = play;
+                        //时间毫秒区域计算结束------
+                        oldname.push(filename);
+                    }
+                }
+            }
+
+            var firststate= $("#videos span:eq(0)").attr("state");
+            //文件状态,0文件未获取，等待中；1文件正常，生成请求地址中；2文件可以正常使用；-1文件未正常获取，需强制获取；-2文件请求地址有误，需重新生成
+            if (firststate==2) {
+                videourl=dq_play.playUrl;
+                initplayer();
+            }else {
+                layer.msg("文件获取中...",{icon: 5})
+            }
+
+            $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
+            $("#videos span").click(function () {
+                $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                var filenum= $(this).attr("filenum");
+                var state= $(this).attr("state");
+                if (state==2) {
+                    for (let i = 0; i < recordPlayParams.length; i++) {
+                        const dqdata = recordPlayParams[i];
+                        if (dqdata.filenum==filenum){
+                            dq_play=dqdata;
+                        }
+                    }
+                    videourl=dq_play.playUrl;
+                    initplayer();
+                }else {
+                    layer.msg("文件获取中...",{icon: 5})
+                }
+            });
+        }
+    }else {
+        $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
+    }
+}
+
+//视频进度
+function showrecord(times,oldtime) {
+    $("#recorddetail label").removeClass("highlight_right");
+    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+    times=parseFloat(times);
+    if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
+        var isnvideo=0;//是否有视频定位点
+        //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
+        for (let i = 0; i < recordPlayParams.length; i++) {
+            const recordPlayParam = recordPlayParams[i];
+            var start_range=recordPlayParam.start_range;
+            var end_range=recordPlayParam.end_range;
+            if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
+                if (dq_play.filenum==recordPlayParam.filenum){
+                    var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    changeProgrss(parseFloat(locationtime));
+                } else {
+                    //赋值新视频,计算新的时间
+                    dq_play=recordPlayParam;
+                    videourl=dq_play.playUrl;
+                    var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    initplayer(parseFloat(locationtime));
+
+                    //样式跟着改变
+                    $("#videos span").each(function () {
+                        var filenum=$(this).attr("filenum");
+                        if (filenum==dq_play.filenum){
+                            $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
+                        }
+                    });
+                }
+                isnvideo++;
+            }
+        }
+        if (isnvideo==0){
+            layer.msg("没有找到视频定位点",{time:500})
+        }
+
+
+        var recorddetailtrlen= $("#recorddetail label").length;
+        $("#recorddetail label").each(function (i,e) {
+            var t1=$(this).attr("times");
+            var name=$(this).attr("name");
+            if (t1==times) {//需要减去差值
+                $(this).addClass("highlight_right");
+                var top=$(this).position().top;
+                var div = document.getElementById('recorddetail_scrollhtml');
+                div.scrollTop = top;
+                return false;
+            }
+        });
+
+        $("#recordreals div").each(function (i,e) {
+            var t2=$(this).attr("times");
+            if (t2==times) {
+                $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                var top=$(this).position().top;
+                var div = document.getElementById('recordreals_scrollhtml');
+                div.scrollTop = top;
+                return false;
+            }
+        });
+    }
+}
+
 
 //默认问答
 var trtd_html='<tr>\
@@ -717,3 +938,5 @@ var trtd_html='<tr>\
                <div  id="btnadd" ></div>\
                 </td></tr>';
 //*******************************************************************笔录问答编辑end****************************************************************//
+//语音识别颜色
+var asrcolor=["#AA66CC","#0099CC","#ef8201","#99CC00","#CC0000"," #ff80bf","#00b8e6","#00802b","#b30000","#3333ff","#e64d00","#739900","#b35900","#5c8a8a","#999966","#b3b3b3","##3366cc"];

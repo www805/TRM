@@ -927,7 +927,7 @@ public class MainService extends BaseService {
 
 
     public  void checkKeyword(RResult result, ReqParam<CheckKeywordParam> param){
-        long starttime=new Date().getTime();
+        /*long starttime=new Date().getTime();
 
         CheckKeywordVO vo=new CheckKeywordVO();
         CheckKeywordParam checkKeywordParam=param.getParam();
@@ -990,12 +990,11 @@ public class MainService extends BaseService {
             result.setData(vo);
             changeResultToSuccess(result);
             long endtime=new Date().getTime();
-           /* System.out.println("开始检测关键字当前时间___txt___"+txt+"__start___"+starttime+"____end___"+endtime+"___相差___"+(endtime-starttime));*/
+           *//* System.out.println("开始检测关键字当前时间___txt___"+txt+"__start___"+starttime+"____end___"+endtime+"___相差___"+(endtime-starttime));*//*
             return;
         }else {
             LogUtil.intoLog(this.getClass(),"关键字检测：没有要检测的文本__");
-        }
-
+        }*/
         return;
     }
 
@@ -1116,6 +1115,7 @@ public class MainService extends BaseService {
         return;
     }
 
+    /*关键字屏蔽
     public static List<String> getkeywords(String text){
         List<String> keywords=new ArrayList<>();
         if (StringUtils.isNotBlank(text)){
@@ -1127,7 +1127,7 @@ public class MainService extends BaseService {
             expectedNature.add("ns");//数组
             expectedNature.add("t");//时间词
             expectedNature.add("m");//数值
-           /* Result result = ToAnalysis.parse(text);
+           Result result = ToAnalysis.parse(text);
 
             List<Term> terms = result.getTerms(); //拿到terms
             for(int i=0; i<terms.size(); i++) {
@@ -1160,7 +1160,7 @@ public class MainService extends BaseService {
                     }
 
                 }
-            }*/
+            }
 
             //检测车牌号
             String regEx_1="[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[警京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼]{0,1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}";
@@ -1171,15 +1171,15 @@ public class MainService extends BaseService {
             }
         }
         return keywords;
-    }
+    }*/
 
 
     public static void main(String[] args) {
         String text="昨天我叫刘德华，男，初中文化，电话号码是17534789453身份证号码是13282619771220503X户籍所在地萍乡市湘东区东关镇红星村粤B12345，粤B54321现住址萍乡市开发区平安小小区3栋3单元501车牌号粤B12345";
-        List<String> texts=getkeywords(text);
+        /*List<String> texts=getkeywords(text);
         for (String s : texts) {
             System.out.println(s);
-        }
+        }*/
 
     }
 }

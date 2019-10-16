@@ -14,10 +14,37 @@ public class UserInfo extends Police_userinfo {
     private String usertotypessid;//当前证件人员关系的ssid
 
 
+    //多角色使用
+    private String userinfogradessid;//人员级别表ssid
+    private Integer grade;//人员级别
+    private String gradename;//级别名称
 
 
-    List<UserInfoAndCard> cards;//多证件证件
+    public String getGradename() {
+        return gradename;
+    }
 
+    public void setGradename(String gradename) {
+        this.gradename = gradename;
+    }
+
+    private List<UserInfoAndCard> cards;//多证件证件
+
+    public Integer getGrade() {
+        return grade;
+    }
+
+    public void setGrade(Integer grade) {
+        this.grade = grade;
+    }
+
+    public String getUserinfogradessid() {
+        return userinfogradessid;
+    }
+
+    public void setUserinfogradessid(String userinfogradessid) {
+        this.userinfogradessid = userinfogradessid;
+    }
 
     public String getUsertotypessid() {
         return usertotypessid;

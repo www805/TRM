@@ -197,17 +197,15 @@
                        <!-- <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>-->
                     </div>
                 </div>
-                <div >
-                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="height: 60%">
                         <ul class="layui-tab-title">
-                            <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
+                            <li class="layui-this">案件信息<!--<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i>--></li>
                             <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                         </ul>
-                        <div class="layui-tab-content" >
-                            <div class="layui-tab-item layui-show">
+                        <div class="layui-tab-content" style="height: 90%" >
+                            <div class="layui-tab-item layui-show" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
                                 <div class="layui-card">
-                                 <!--   <div class="layui-card-header">案件信息</div>-->
-                                    <div style="height: 640px; overflow-x: hidden; overflow-y: scroll; " >
+                                    <div  >
                                         <div class="layui-card-body">
                                                 <table class="layui-table" lay-skin="line" style="table-layout: fixed" >
                                                    <tbody id="caseAndUserInfo_html">
@@ -237,8 +235,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="layui-tab-item" id="record_hoverhtml">
-                                <div class="layui-card-header" style="font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
+                            <div class="layui-tab-item" id="record_hoverhtml"style="height:100%;">
+                                <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                                     <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
                                         <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();" >
                                     </div>
@@ -251,20 +249,29 @@
                                             </button>
                                     </div>
                                 </div>
-                                <div class="layui-card">
-                                    <!--<div class="layui-card-header">笔录实时回访</div>-->
-                                    <div style="height:590px; overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
-                                        <div class="layui-card-body" >
-                                            <div class="talk_show"  id="recordreals">
-                                            </div>
+                                <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                                    <div class="layui-card-body" >
+                                        <div class="talk_show"  id="recordreals" >
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
                            <!-- <div class="layui-tab-item">身心监测</div>-->
                         </div>
+                </div>
+                <div class="layui-col-md12" style="height: 32%">
+                    <div class="layui-col-md12">
+                        <div th:replace="video :: video"   >...</div>
                     </div>
-
+                    <div class="layui-col-md12" style="line-height: 50px">
+                        <div style="width: 95%">
+                            <!--<button type="button" id="goleft" class="layui-btn layui-btn-sm layui-btn-primary" style="float: left;"><i class="layui-icon layui-icon-left"></i></button>-->
+                            <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width:100%;margin:5px;" id="videos">
+                            </div>
+                            <!--<button type="button" id="goright"  class="layui-btn layui-btn-sm layui-btn-primary" style="float: right;"><i class="layui-icon layui-icon-right"></i></button>-->
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="layui-col-md9"  style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >

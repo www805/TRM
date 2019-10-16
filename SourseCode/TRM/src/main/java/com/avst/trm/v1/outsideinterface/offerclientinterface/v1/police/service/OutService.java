@@ -4,19 +4,22 @@ import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.*;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_typeMapper;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordUserInfos;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_arraignmentMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Usergrade;
+import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.sq.SQEntity;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.req.ph.CheckPolygraphStateParam;
@@ -55,6 +58,8 @@ import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static com.avst.trm.v1.common.cache.CommonCache.getSQEntity;
+
 @Service
 public class OutService  extends BaseService {
     @Autowired
@@ -80,6 +85,18 @@ public class OutService  extends BaseService {
 
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private Police_arraignmentexpandMapper police_arraignmentexpandMapper;
+
+    @Autowired
+    private Police_userinfogradeMapper police_userinfogradeMapper;
+
+    @Autowired
+    private Police_userinfoMapper police_userinfoMapper;
+
+    @Autowired
+    private Base_admininfoMapper base_admininfoMapper;
 
 
     private Gson gson = new Gson();
@@ -192,16 +209,18 @@ public class OutService  extends BaseService {
             }
 
 
-            Integer userecord=-1;
 
+            //只判断主要被询问人和主要询问人
+            Integer userecord=-1;
             Integer useasr1=-1;
             Integer usepolygraph1=-1;
             Integer useasr2=-1;
             Integer usepolygraph2=-1;
+            List<Avstmt_modeltdAll> avstmt_modeltdAlls=new ArrayList<>();
             if (null!=modelAlls&&modelAlls.size()==1){
                 Avstmt_modelAll modelAll=modelAlls.get(0);
                 userecord=modelAll.getUserecord();
-                List<Avstmt_modeltdAll> avstmt_modeltdAlls=modelAll.getAvstmt_modeltdAlls(); 
+                avstmt_modeltdAlls=modelAll.getAvstmt_modeltdAlls();
                 if (null!=avstmt_modeltdAlls&&avstmt_modeltdAlls.size()>0){
                     for (Avstmt_modeltdAll avstmt_modeltdAll : avstmt_modeltdAlls) {
                         if (avstmt_modeltdAll.getGrade()==1){
@@ -240,13 +259,71 @@ public class OutService  extends BaseService {
             tdAndUserAndOtherParam2.setUsepolygraph(usepolygraph2);//使用测谎仪
             tdAndUserAndOtherParam2.setUseasr(useasr2);//使用语音识别
 
-
             tdList.add(tdAndUserAndOtherParam1);
             tdList.add(tdAndUserAndOtherParam2);
+
+            //查询提讯拓展表，查找其他角色
+            String gnlist=getSQEntity.getGnlist();
+            if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+                EntityWrapper arre=new EntityWrapper();
+                arre.eq("arraignmentssid",police_arraignment.getSsid());
+                List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                    for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
+                        String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
+                        String userssid=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
+                        if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid)){
+                            //查找等级
+                            Police_userinfograde police_userinfograde=new Police_userinfograde();
+                            police_userinfograde.setSsid(gradessid);
+                            police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+
+
+                            //查找用户:人员表
+                            Police_userinfo police_userinfo=new Police_userinfo();
+                            police_userinfo.setSsid(userssid);
+                            police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+
+                            //查找用户：管理员表
+                            Base_admininfo admininfo=new Base_admininfo();
+                            admininfo.setSsid(userssid);
+                            admininfo=base_admininfoMapper.selectOne(admininfo);
+
+                            if (null!=police_userinfograde){
+                                Integer useasr=-1;
+                                Integer usepolygraph=-1;
+                                if (null!=avstmt_modeltdAlls&&avstmt_modeltdAlls.size()>0) {
+                                    for (Avstmt_modeltdAll avstmt_modeltdAll : avstmt_modeltdAlls) {
+                                        if (avstmt_modeltdAll.getGrade()==police_userinfograde.getGrade()){
+                                            useasr=avstmt_modeltdAll.getUseasr();
+                                            usepolygraph=avstmt_modeltdAll.getUsepolygraph();
+                                        }
+                                    }
+                                }
+
+                                TdAndUserAndOtherParam tdAndUserAndOtherParam=new TdAndUserAndOtherParam();
+                                tdAndUserAndOtherParam.setGrade(police_userinfograde.getGrade());
+                                tdAndUserAndOtherParam.setUsepolygraph(usepolygraph);//使用测谎仪
+                                tdAndUserAndOtherParam.setUseasr(useasr);//使用语音识别
+                                if (null!=police_userinfo){
+                                    tdAndUserAndOtherParam.setUserssid(police_userinfo.getSsid());
+                                    tdAndUserAndOtherParam.setUsername(police_userinfo.getUsername());
+                                    tdList.add(tdAndUserAndOtherParam);
+                                }else if (null!=admininfo){
+                                    tdAndUserAndOtherParam.setUserssid(admininfo.getSsid());
+                                    tdAndUserAndOtherParam.setUsername(admininfo.getUsername());
+                                    tdList.add(tdAndUserAndOtherParam);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
 
 
             if (null!=tdList&&tdList.size()>0){
+                LogUtil.intoLog(1,this.getClass(),"会议人员应该为__________________________________________"+tdList.size());
                 for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
                     tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
                     tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
@@ -409,6 +486,8 @@ public class OutService  extends BaseService {
                         keyword_txt=vo.getTxt();
                         setMCAsrTxtBackVO.setKeyword_txt(keyword_txt);
                     }
+                }else {
+                    setMCAsrTxtBackVO.setKeyword_txt(keyword_txt);
                 }
 
 
@@ -531,6 +610,8 @@ public class OutService  extends BaseService {
                                 keyword_txt=vo.getTxt();
                                 asrTxtParam_toout.setKeyword_txt(keyword_txt);
                             }
+                        }else {
+                            asrTxtParam_toout.setKeyword_txt(keyword_txt);
                         }
                     }
                     LogUtil.intoLog(this.getClass(),"排序后时间1：——————"+asrTxtParam_toouts.get(0).getAsrstartime());

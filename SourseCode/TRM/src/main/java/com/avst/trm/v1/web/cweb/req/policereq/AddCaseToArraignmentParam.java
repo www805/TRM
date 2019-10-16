@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.moreentity.UserInfo;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Userto;
 
 import java.util.List;
+import java.util.Map;
 
 public class AddCaseToArraignmentParam {
     private String userssid;//被询问人的ssid
@@ -37,6 +38,16 @@ public class AddCaseToArraignmentParam {
     private Integer conversationbool=-1;//是否为谈话 默认-1 非谈话类型(信息全需) 1开始谈话(填写基本信息即可) 2一键谈话（默认基本信息）
 
     private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
+
+    private List<UserInfo> arraignmentexpand;//拓展表数据
+
+    public List<UserInfo> getArraignmentexpand() {
+        return arraignmentexpand;
+    }
+
+    public void setArraignmentexpand(List<UserInfo> arraignmentexpand) {
+        this.arraignmentexpand = arraignmentexpand;
+    }
 
     public String getWordtemplatessid() {
         return wordtemplatessid;

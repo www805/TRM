@@ -1,6 +1,10 @@
 package com.avst.trm.v1.common.datasourse.police.entity.moreentity;
 
+import java.util.List;
+
 public class RecordUserInfos {
+    private String arraignmentssid;//本次提讯ssid
+
     private String userssid;//被询问用户ssid
 
     private String username;//被询问用户名称
@@ -30,6 +34,24 @@ public class RecordUserInfos {
     private String workunitname3;
 
     private UserInfo userInfo;//嫌疑人详细信息
+
+    private List<Usergrade> usergrades;//其他角色 提讯拓展表
+
+    public String getArraignmentssid() {
+        return arraignmentssid;
+    }
+
+    public void setArraignmentssid(String arraignmentssid) {
+        this.arraignmentssid = arraignmentssid;
+    }
+
+    public List<Usergrade> getUsergrades() {
+        return usergrades;
+    }
+
+    public void setUsergrades(List<Usergrade> usergrades) {
+        this.usergrades = usergrades;
+    }
 
     public String getWorkunitname1() {
         return workunitname1;

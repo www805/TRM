@@ -231,7 +231,9 @@
     var waitconversationURL;
     var addCaseToUserURL;
 
+
     var AUTHORIZATIONALL_CLIENT=[[${session.AUTHORIZATIONALL_CLIENT}]];
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -241,7 +243,13 @@
         startConversationURL=getActionURL(getactionid_manage().home_tostartConversation);//跳转到开启谈话页面
         recordIndexURL=getActionURL(getactionid_manage().home_torecordIndex);//跳转到笔录列表
         waitconversationURL=getActionURL(getactionid_manage().home_towaitconversation);//跳转到开启谈话页面
-        addCaseToUserURL=getActionURL(getactionid_manage().home_toaddCaseToUser);//跳转到笔录制作
+        if (gnlist.indexOf("fy_t")!= -1){
+           //法院
+            addCaseToUserURL=getActionURL(getactionid_manage().home_tobeforeCourt);//跳转到笔录制作
+        }else {
+            addCaseToUserURL=getActionURL(getactionid_manage().home_toaddCaseToUser);//跳转到笔录制作
+        }
+
 
     });
     layui.use(['layer','element','laydate'], function(){

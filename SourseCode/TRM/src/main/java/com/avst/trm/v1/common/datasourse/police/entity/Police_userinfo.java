@@ -116,18 +116,30 @@ public class Police_userinfo extends Model<Police_userinfo> {
      */
     private Integer specialtype;
 
+    /**
+     * 签证机关
+     */
+    private String issuingauthority;
+
+    /**
+     * 身份证有效期
+     */
+    private String validity;
+
+
     private String ssid;
 
     private String string1;
 
     private String string2;
 
-    /**
-     * 特殊人员
-     */
     private Integer integer1;
 
-    private Integer integer2;
+
+    @Override
+    protected Serializable pkVal() {
+        return this.id;
+    }
 
     public Integer getId() {
         return id;
@@ -136,6 +148,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setId(Integer id) {
         this.id = id;
     }
+
     public String getUsername() {
         return username;
     }
@@ -143,6 +156,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setUsername(String username) {
         this.username = username;
     }
+
     public String getBeforename() {
         return beforename;
     }
@@ -150,6 +164,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setBeforename(String beforename) {
         this.beforename = beforename;
     }
+
     public String getNickname() {
         return nickname;
     }
@@ -157,6 +172,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
     public Integer getAge() {
         return age;
     }
@@ -164,6 +180,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setAge(Integer age) {
         this.age = age;
     }
+
     public Integer getSex() {
         return sex;
     }
@@ -171,6 +188,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setSex(Integer sex) {
         this.sex = sex;
     }
+
     public Date getBoth() {
         return both;
     }
@@ -178,6 +196,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setBoth(Date both) {
         this.both = both;
     }
+
     public String getNationalssid() {
         return nationalssid;
     }
@@ -185,6 +204,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setNationalssid(String nationalssid) {
         this.nationalssid = nationalssid;
     }
+
     public String getNationalityssid() {
         return nationalityssid;
     }
@@ -192,6 +212,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setNationalityssid(String nationalityssid) {
         this.nationalityssid = nationalityssid;
     }
+
     public String getProfessional() {
         return professional;
     }
@@ -199,6 +220,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setProfessional(String professional) {
         this.professional = professional;
     }
+
     public String getEducationlevel() {
         return educationlevel;
     }
@@ -206,6 +228,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setEducationlevel(String educationlevel) {
         this.educationlevel = educationlevel;
     }
+
     public String getPoliticsstatus() {
         return politicsstatus;
     }
@@ -213,6 +236,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setPoliticsstatus(String politicsstatus) {
         this.politicsstatus = politicsstatus;
     }
+
     public String getPhone() {
         return phone;
     }
@@ -220,6 +244,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
     public String getDomicile() {
         return domicile;
     }
@@ -227,6 +252,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setDomicile(String domicile) {
         this.domicile = domicile;
     }
+
     public String getResidence() {
         return residence;
     }
@@ -234,6 +260,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setResidence(String residence) {
         this.residence = residence;
     }
+
     public String getWorkunits() {
         return workunits;
     }
@@ -241,6 +268,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setWorkunits(String workunits) {
         this.workunits = workunits;
     }
+
     public Date getCreatetime() {
         return createtime;
     }
@@ -248,6 +276,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
+
     public Integer getSpecialtype() {
         return specialtype;
     }
@@ -255,6 +284,23 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setSpecialtype(Integer specialtype) {
         this.specialtype = specialtype;
     }
+
+    public String getIssuingauthority() {
+        return issuingauthority;
+    }
+
+    public void setIssuingauthority(String issuingauthority) {
+        this.issuingauthority = issuingauthority;
+    }
+
+    public String getValidity() {
+        return validity;
+    }
+
+    public void setValidity(String validity) {
+        this.validity = validity;
+    }
+
     public String getSsid() {
         return ssid;
     }
@@ -262,6 +308,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setSsid(String ssid) {
         this.ssid = ssid;
     }
+
     public String getString1() {
         return string1;
     }
@@ -269,6 +316,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setString1(String string1) {
         this.string1 = string1;
     }
+
     public String getString2() {
         return string2;
     }
@@ -276,6 +324,7 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setString2(String string2) {
         this.string2 = string2;
     }
+
     public Integer getInteger1() {
         return integer1;
     }
@@ -283,45 +332,34 @@ public class Police_userinfo extends Model<Police_userinfo> {
     public void setInteger1(Integer integer1) {
         this.integer1 = integer1;
     }
-    public Integer getInteger2() {
-        return integer2;
-    }
-
-    public void setInteger2(Integer integer2) {
-        this.integer2 = integer2;
-    }
-
-    @Override
-    protected Serializable pkVal() {
-        return this.id;
-    }
 
     @Override
     public String toString() {
         return "Police_userinfo{" +
-        "id=" + id +
-        ", username=" + username +
-        ", beforename=" + beforename +
-        ", nickname=" + nickname +
-        ", age=" + age +
-        ", sex=" + sex +
-        ", both=" + both +
-        ", nationalssid=" + nationalssid +
-        ", nationalityssid=" + nationalityssid +
-        ", professional=" + professional +
-        ", educationlevel=" + educationlevel +
-        ", politicsstatus=" + politicsstatus +
-        ", phone=" + phone +
-        ", domicile=" + domicile +
-        ", residence=" + residence +
-        ", workunits=" + workunits +
-        ", createtime=" + createtime +
-        ", specialtype=" + specialtype +
-        ", ssid=" + ssid +
-        ", string1=" + string1 +
-        ", string2=" + string2 +
-        ", integer1=" + integer1 +
-        ", integer2=" + integer2 +
-        "}";
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", beforename='" + beforename + '\'' +
+                ", nickname='" + nickname + '\'' +
+                ", age=" + age +
+                ", sex=" + sex +
+                ", both=" + both +
+                ", nationalssid='" + nationalssid + '\'' +
+                ", nationalityssid='" + nationalityssid + '\'' +
+                ", professional='" + professional + '\'' +
+                ", educationlevel='" + educationlevel + '\'' +
+                ", politicsstatus='" + politicsstatus + '\'' +
+                ", phone='" + phone + '\'' +
+                ", domicile='" + domicile + '\'' +
+                ", residence='" + residence + '\'' +
+                ", workunits='" + workunits + '\'' +
+                ", createtime=" + createtime +
+                ", specialtype=" + specialtype +
+                ", issuingauthority='" + issuingauthority + '\'' +
+                ", validity='" + validity + '\'' +
+                ", ssid='" + ssid + '\'' +
+                ", string1='" + string1 + '\'' +
+                ", string2='" + string2 + '\'' +
+                ", integer1=" + integer1 +
+                '}';
     }
 }

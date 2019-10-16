@@ -428,8 +428,16 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
                 var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
                 window.location.href=url+"?ssid="+recordssid;
             } else if (multifunctionbool==2||multifunctionbool==3){
-                var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
-                window.location.href=url+"?ssid="+recordssid;
+                if (gnlist.indexOf("fy_t")!=-1)
+                {
+                    //法庭跳转
+                    var url=getActionURL(getactionid_manage().caseIndex_towaitCourt);
+                    window.location.href=url+"?ssid="+recordssid;
+                }else {
+                    //其他跳转
+                    var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
+                    window.location.href=url+"?ssid="+recordssid;
+                }
             }
         }else {
             layer.msg(creatorname+"正在制作笔录...")
@@ -440,8 +448,16 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
             var url=getActionURL(getactionid_manage().caseIndex_toconversationById);
             window.location.href=url+"?ssid="+recordssid;
         }else if(multifunctionbool==3){
-            var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
-            window.location.href=url+"?ssid="+recordssid;
+            if (gnlist.indexOf("fy_t")!= -1)
+            {
+                //法庭跳转
+                var url=getActionURL(getactionid_manage().caseIndex_togetCourtDetail);
+                window.location.href=url+"?ssid="+recordssid;
+            }else {
+                //其他跳转
+                var url=getActionURL(getactionid_manage().caseIndex_togetRecordById);
+                window.location.href=url+"?ssid="+recordssid;
+            }
         }
     }
 }
