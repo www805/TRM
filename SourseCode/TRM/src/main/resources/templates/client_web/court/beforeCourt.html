@@ -116,8 +116,8 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">审判长：</label>
                                 <div class="layui-input-block">
-                                    <select name="presidingjudge"  id="presidingjudge"   lay-verify=""   >
-                                        <option value=""  th:value="${session.MANAGE_CLIENT.ssid}"  selected = "selected">[[${session.MANAGE_CLIENT.username}]]</option>
+                                    <select name="presidingjudge"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" >
+                                        <option value=""></option>
                                     </select>
                                 </div>
                             </div>
@@ -399,7 +399,8 @@
         form.on('select(otheradminssid)', function(data){
             var recordadminssid=$("#recordadminssid").val();
             var judges=$("#judges").val();
-            if ((isNotEmpty(recordadminssid)&&recordadminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)) {
+            var presidingjudge=$("#presidingjudge").val();
+            if ((isNotEmpty(recordadminssid)&&recordadminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)||(isNotEmpty(presidingjudge)&&presidingjudge==data.value)) {
                 $('#otheradminssid').prop('selectedIndex', 0);
                 layer.msg("用户不能重复使用",{icon: 5});
                 form.render();
@@ -409,7 +410,8 @@
         form.on('select(recordadminssid)', function(data){
             var otheradminssid=$("#otheradminssid").val();
             var judges=$("#judges").val();
-            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)) {
+            var presidingjudge=$("#presidingjudge").val();
+            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)||(isNotEmpty(presidingjudge)&&presidingjudge==data.value)) {
                 $('#recordadminssid').prop('selectedIndex', 0);
                 layer.msg("用户不能重复使用",{icon: 5});
                 form.render();
@@ -419,12 +421,26 @@
         form.on('select(judges)', function(data){
             var otheradminssid=$("#otheradminssid").val();
             var recordadminssid=$("#recordadminssid").val();
-            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(recordadminssid)&&recordadminssid==data.value)) {
+            var presidingjudge=$("#presidingjudge").val();
+            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(recordadminssid)&&recordadminssid==data.value)||(isNotEmpty(presidingjudge)&&presidingjudge==data.value)) {
                 $('#judges').prop('selectedIndex', 0);
                 layer.msg("用户不能重复使用",{icon: 5});
                 form.render();
             }
         });
+
+        form.on('select(presidingjudge)', function(data){
+            var otheradminssid=$("#otheradminssid").val();
+            var recordadminssid=$("#recordadminssid").val();
+            var judges=$("#judges").val();
+            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(recordadminssid)&&recordadminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)) {
+                $('#presidingjudge').prop('selectedIndex', 0);
+                layer.msg("用户不能重复使用",{icon: 5});
+                form.render();
+            }
+        });
+
+
 
 
 

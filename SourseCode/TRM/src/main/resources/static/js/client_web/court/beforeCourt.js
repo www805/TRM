@@ -129,7 +129,7 @@ function addCaseToArraignment() {
     var oldusername=$("input[name="+userinfogradessid+"]").val();
     var olduserinfo=null;
     //只有身份证号码和姓名不为空时保存
-    if (isNotEmpty(oldusername)&&isNotEmpty(oldcardnum)){
+    if (isNotEmpty(oldusername)){
         var olduserinfo={
             cardnum:oldcardnum,
             username:oldusername,
@@ -200,11 +200,15 @@ function addCaseToArraignment() {
         for(var i=0;i<arraignmentexpand.length;i++){
             var bool=true;
             for(var j=0;j<newarraignmentexpand.length;j++){
-                if(arraignmentexpand[i].cardnum == newarraignmentexpand[j].cardnum){
+                if((isNotEmpty(arraignmentexpand[i].cardnum)&&isNotEmpty(newarraignmentexpand[j].cardnum)&& arraignmentexpand[i].cardnum==newarraignmentexpand[j].cardnum)){
                     bool=false;
                     layer.msg("用户不能重复使用",{icon: 5});
                     return;
-                };
+                }else if (arraignmentexpand[i].username==newarraignmentexpand[j].username){//先只判断名称不能重复  &&(!isNotEmpty(arraignmentexpand[i].cardnum)&&!isNotEmpty(newarraignmentexpand[j].cardnum))
+                    bool=false;
+                    layer.msg("用户不能重复使用",{icon: 5});
+                    return;
+                }
             };
             if (bool){
                 newarraignmentexpand.push(arraignmentexpand[i]);
@@ -458,7 +462,7 @@ function getUserByCard(obj,usertype){
         var oldusername=$("input[name="+userinfogradessid+"]").val();
         var olduserinfo=null;
         //只有身份证号码和姓名不为空时保存
-        if (isNotEmpty(oldusername)&&isNotEmpty(oldcardnum)){
+        if (isNotEmpty(oldusername)){
             var olduserinfo={
                 cardnum:oldcardnum,
                 username:oldusername,
@@ -603,15 +607,15 @@ function callbackgetAdminList(data) {
 
         $('#otheradminssid option').not(":lt(1)").remove();
         $('#recordadminssid option').not(":lt(1)").remove();
+        $('#presidingjudge option').not(":lt(1)").remove();
         $('#judges option').not(":lt(1)").remove();
         if (isNotEmpty(otheruserinfos)){
             for (var i = 0; i < otheruserinfos.length; i++) {
                 var u= otheruserinfos[i];
-                if (u.ssid!=sessionadminssid) {
                     $("#otheradminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                     $("#recordadminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                    $("#presidingjudge").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                     $("#judges").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                }
             }
         }
     }else{
@@ -1036,12 +1040,12 @@ function checkuserinfograde(userinfograde,type) {
             setuserval(userinfograde,type);
             return false;
         }
-        if (!isNotEmpty(cardnum)){
+       /* if (!isNotEmpty(cardnum)){
             layer.msg(con+"身份证号码不能为空",{icon: 5});
             $("#cardnum").focus();
             setuserval(userinfograde,type);
             return false;
-        }
+        }*/
         if (isNotEmpty(cardnum)){
             var bool=checkout_cardnum(cardnum);
             if (!bool){

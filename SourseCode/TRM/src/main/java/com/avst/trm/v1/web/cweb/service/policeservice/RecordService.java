@@ -1689,39 +1689,45 @@ public class RecordService extends BaseService {
                         userInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
                     }
 
-                    //检测是否需要新增用户
-                    EntityWrapper userparam=new EntityWrapper();
-                    userparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
-                    userparam.eq("ut.cardnum",userInfo.getCardnum());
-                    List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
-                    if (null==userinfos||userinfos.size()<1){
-                        LogUtil.intoLog(this.getClass(),"需要新增人员____");
-                        userInfo.setSsid(OpenUtil.getUUID_32());
-                        userInfo.setCreatetime(new Date());
-                        Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
-                        int insertuserinfo_bool = police_userinfoMapper.insert(police_userinfo);
-                        LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
-                        if (insertuserinfo_bool>0){
-                            userInfossid=police_userinfo.getSsid();
-                            Police_userinfototype police_userinfototype=new Police_userinfototype();
-                            police_userinfototype.setCardnum(userInfo.getCardnum());
-                            police_userinfototype.setSsid(OpenUtil.getUUID_32());
-                            police_userinfototype.setCreatetime(new Date());
-                            police_userinfototype.setCardtypessid(userInfo.getCardtypessid());
-                            police_userinfototype.setUserssid(userInfo.getSsid());
-                            int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
-                            LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
-                        }
-                    }else if (userinfos.size()==1){
-                        UserInfo userinfo_=userinfos.get(0);
-                        //修改用户信息
-                        EntityWrapper updateuserinfoParam=new EntityWrapper();
-                        updateuserinfoParam.eq("ssid",userinfo_.getSsid());
-                        Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
-                        int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
-                        LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
-                        userInfossid=userinfo_.getSsid();
+                    if (StringUtils.isBlank(userInfo.getCardnum())){
+                        userInfo.setCardnum(OpenUtil.getUUID_32());//随机给个默认的
                     }
+                        //检测是否需要新增用户
+                        EntityWrapper userparam=new EntityWrapper();
+                        userparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
+                        userparam.eq("ut.cardnum",userInfo.getCardnum());
+                        List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+                        if (null==userinfos||userinfos.size()<1){
+                            LogUtil.intoLog(this.getClass(),"需要新增人员____");
+                            userInfo.setSsid(OpenUtil.getUUID_32());
+                            userInfo.setCreatetime(new Date());
+                            Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                            int insertuserinfo_bool = police_userinfoMapper.insert(police_userinfo);
+                            LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
+                            if (insertuserinfo_bool>0){
+                                userInfossid=police_userinfo.getSsid();
+                                Police_userinfototype police_userinfototype=new Police_userinfototype();
+                                police_userinfototype.setCardnum(userInfo.getCardnum());
+                                police_userinfototype.setSsid(OpenUtil.getUUID_32());
+                                police_userinfototype.setCreatetime(new Date());
+                                police_userinfototype.setCardtypessid(userInfo.getCardtypessid());
+                                police_userinfototype.setUserssid(userInfo.getSsid());
+                                int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
+                                LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
+                            }
+                        }else if (userinfos.size()==1){
+                            UserInfo userinfo_=userinfos.get(0);
+                            //修改用户信息
+                            EntityWrapper updateuserinfoParam=new EntityWrapper();
+                            updateuserinfoParam.eq("ssid",userinfo_.getSsid());
+                            Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                            int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
+                            LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                            userInfossid=userinfo_.getSsid();
+                        }
+
+
+
 
                     Police_arraignmentexpand police_arraignmentexpand=new Police_arraignmentexpand();
                     police_arraignmentexpand.setArraignmentssid(arraignmentssid);

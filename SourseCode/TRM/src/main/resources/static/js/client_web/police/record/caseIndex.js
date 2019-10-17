@@ -466,8 +466,8 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
 //导出下载
 var gZIPVod_index;
 var gZIPVod_Url;
-function gZIPVod(){
-    if (isNotEmpty(iid)){
+function gZIPVod(ssid,casename){
+    if (isNotEmpty(ssid)){
         $("#gZIPVod_html").css("display","none");
         gZIPVod_index=layer.msg("打包中，请稍等...", {
             icon: 16,
@@ -478,8 +478,8 @@ function gZIPVod(){
         var data={
             token:INIT_CLIENTKEY,
             param:{
-                iid:iid,
-                zipfilename:recordnameshow
+                iid:ssid,
+                zipfilename:casename
             }
         };
         ajaxSubmitByJson(url,data,callbackgZIPVod);
