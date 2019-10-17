@@ -350,6 +350,7 @@
     var recordssid =[[${Model.recordssid}]];
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
     var tocaseToUserURL;
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     $(function(){
         setpageAction(INIT_CLIENT,"client_web/court/getCourtDetail");
         tocaseToUserURL= getActionURL(getactionid_manage().getCourtDetail_tocaseToUser);

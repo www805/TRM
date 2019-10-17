@@ -39,13 +39,13 @@
         display:none!important;
     }
     .layui-form-label{
-        width: 100px;
+        width: 120px;
     }
    .layui-input-block {
-         margin-left: 130px;
+         margin-left: 150px;
      }
     .layui-col-space10>* {
-        padding: 12px;
+        padding: 10px;
     }
 
 </style>
@@ -87,30 +87,46 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">原告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="court_user1" id="原告"   court_user="" placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)">
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,1)" title="重置原告个人信息"></i>
+                                    <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)">
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,1)" title="重置原告个人信息"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">被告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="court_user2" id="username"  court_user=""  placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,2)">
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,2)" title="重置被告个人信息"></i>
+                                    <input type="text" name="userinfograde2"  id="username"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,2)">
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,2)" title="重置被告个人信息"></i>
+                                </div>
+                            </div>
+                            <div class="layui-col-lg6">
+                                <label class="layui-form-label">原告诉讼代理人：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,8)"  >
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"    onclick="resetuser(this,8)" title="重置原告诉讼代理人"></i>
+                                </div>
+                            </div>
+
+                            <div class="layui-col-lg6">
+                                <label class="layui-form-label">被告诉讼代理人：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="userinfograde3" id="defendant_agent"  placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,3)" >
+                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"  onclick="resetuser(this,3)"  title="重置被告诉讼代理人"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">审判长：</label>
                                 <div class="layui-input-block">
-                                    <select name="审判长"  id="审判长"   lay-verify=""   >
-                                        <option value=""  th:value="${session.MANAGE_CLIENT.username}"  selected = "selected">[[${session.MANAGE_CLIENT.username}]]</option>
+                                    <select name="presidingjudge"  id="presidingjudge"   lay-verify=""   >
+                                        <option value=""  th:value="${session.MANAGE_CLIENT.ssid}"  selected = "selected">[[${session.MANAGE_CLIENT.username}]]</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">辩护人：</label>
+                                <label class="layui-form-label">审判员：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="court_user3" id="辩护人"  court_user="" placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,3)">
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="resetuser(this,3)"  title="重置辩护人个人信息"></i>
+                                    <select name="judges"  id="judges"  lay-search="" lay-filter="judges" >
+                                        <option value=""></option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
@@ -381,22 +397,37 @@
         });
 
         form.on('select(otheradminssid)', function(data){
-            var other=$("#recordadminssid").val();
-            if (isNotEmpty(other)&&other==data.value) {
+            var recordadminssid=$("#recordadminssid").val();
+            var judges=$("#judges").val();
+            if ((isNotEmpty(recordadminssid)&&recordadminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)) {
                 $('#otheradminssid').prop('selectedIndex', 0);
-                layer.msg("该用户已被使用",{icon: 5});
+                layer.msg("用户不能重复使用",{icon: 5});
                 form.render();
             }
         });
 
         form.on('select(recordadminssid)', function(data){
-            var other=$("#otheradminssid").val();
-            if (isNotEmpty(other)&&other==data.value) {
+            var otheradminssid=$("#otheradminssid").val();
+            var judges=$("#judges").val();
+            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(judges)&&judges==data.value)) {
                 $('#recordadminssid').prop('selectedIndex', 0);
-                layer.msg("该用户已被使用",{icon: 5});
+                layer.msg("用户不能重复使用",{icon: 5});
                 form.render();
             }
         });
+
+        form.on('select(judges)', function(data){
+            var otheradminssid=$("#otheradminssid").val();
+            var recordadminssid=$("#recordadminssid").val();
+            if ((isNotEmpty(otheradminssid)&&otheradminssid==data.value)||(isNotEmpty(recordadminssid)&&recordadminssid==data.value)) {
+                $('#judges').prop('selectedIndex', 0);
+                layer.msg("用户不能重复使用",{icon: 5});
+                form.render();
+            }
+        });
+
+
+
 
         form.verify({
             username:[ /\S/,"请输入被告人"],

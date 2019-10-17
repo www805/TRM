@@ -209,32 +209,8 @@ public class OutService  extends BaseService {
             }
 
 
-
-            //只判断主要被询问人和主要询问人
-            Integer userecord=-1;
-            Integer useasr1=-1;
-            Integer usepolygraph1=-1;
-            Integer useasr2=-1;
-            Integer usepolygraph2=-1;
             List<Avstmt_modeltdAll> avstmt_modeltdAlls=new ArrayList<>();
-            if (null!=modelAlls&&modelAlls.size()==1){
-                Avstmt_modelAll modelAll=modelAlls.get(0);
-                userecord=modelAll.getUserecord();
-                avstmt_modeltdAlls=modelAll.getAvstmt_modeltdAlls();
-                if (null!=avstmt_modeltdAlls&&avstmt_modeltdAlls.size()>0){
-                    for (Avstmt_modeltdAll avstmt_modeltdAll : avstmt_modeltdAlls) {
-                        if (avstmt_modeltdAll.getGrade()==1){
-                            useasr1=avstmt_modeltdAll.getUseasr();
-                            usepolygraph1=avstmt_modeltdAll.getUsepolygraph();
-                        }else if (avstmt_modeltdAll.getGrade()==2){
-                            useasr2=avstmt_modeltdAll.getUseasr();
-                            usepolygraph2=avstmt_modeltdAll.getUsepolygraph();
-                        }
-                    }
-                }
-            }
-
-
+            List<TdAndUserAndOtherParam> tdList=new ArrayList<>();
             StartMCParam_out startMCParam_out=new StartMCParam_out();
             startMCParam_out.setMcType(MCType.AVST);
             startMCParam_out.setYwSystemType(YWType.RECORD_TRM);
@@ -244,23 +220,14 @@ public class OutService  extends BaseService {
             startMCParam_out.setMtmodelssid(mtmodelssid);//查询会议模板ssid
             startMCParam_out.setStartRecordAndCaseParam(startRecordAndCaseParam);
 
-            List<TdAndUserAndOtherParam> tdList=new ArrayList<>();
-            TdAndUserAndOtherParam tdAndUserAndOtherParam1=new TdAndUserAndOtherParam();
-            tdAndUserAndOtherParam1.setGrade(1);//主麦：默认询问人一
-            tdAndUserAndOtherParam1.setUserssid(recordUserInfos.getAdminssid());
-            tdAndUserAndOtherParam1.setUsername(recordUserInfos.getAdminname());
-            tdAndUserAndOtherParam1.setUsepolygraph(usepolygraph1);//使用测谎仪
-            tdAndUserAndOtherParam1.setUseasr(useasr1);//使用语音识别
 
-            TdAndUserAndOtherParam tdAndUserAndOtherParam2=new TdAndUserAndOtherParam();
-            tdAndUserAndOtherParam2.setGrade(2);//副麦：默认被询问人
-            tdAndUserAndOtherParam2.setUserssid(recordUserInfos.getUserssid());
-            tdAndUserAndOtherParam2.setUsername(recordUserInfos.getUsername());
-            tdAndUserAndOtherParam2.setUsepolygraph(usepolygraph2);//使用测谎仪
-            tdAndUserAndOtherParam2.setUseasr(useasr2);//使用语音识别
 
-            tdList.add(tdAndUserAndOtherParam1);
-            tdList.add(tdAndUserAndOtherParam2);
+            //是否需要录像
+            Integer userecord=-1;
+            if (null!=modelAlls&&modelAlls.size()==1) {
+                Avstmt_modelAll modelAll = modelAlls.get(0);
+                userecord = modelAll.getUserecord();
+            }
 
             //查询提讯拓展表，查找其他角色
             String gnlist=getSQEntity.getGnlist();
@@ -318,6 +285,44 @@ public class OutService  extends BaseService {
                         }
                     }
                 }
+            }else {
+                //非法院版本
+                //只判断主要被询问人和主要询问人
+                Integer useasr1=-1;
+                Integer usepolygraph1=-1;
+                Integer useasr2=-1;
+                Integer usepolygraph2=-1;
+                if (null!=modelAlls&&modelAlls.size()==1){
+                    Avstmt_modelAll modelAll=modelAlls.get(0);
+                    avstmt_modeltdAlls=modelAll.getAvstmt_modeltdAlls();
+                    if (null!=avstmt_modeltdAlls&&avstmt_modeltdAlls.size()>0){
+                        for (Avstmt_modeltdAll avstmt_modeltdAll : avstmt_modeltdAlls) {
+                            if (avstmt_modeltdAll.getGrade()==1){
+                                useasr1=avstmt_modeltdAll.getUseasr();
+                                usepolygraph1=avstmt_modeltdAll.getUsepolygraph();
+                            }else if (avstmt_modeltdAll.getGrade()==2){
+                                useasr2=avstmt_modeltdAll.getUseasr();
+                                usepolygraph2=avstmt_modeltdAll.getUsepolygraph();
+                            }
+                        }
+                    }
+                }
+                TdAndUserAndOtherParam tdAndUserAndOtherParam1=new TdAndUserAndOtherParam();
+                tdAndUserAndOtherParam1.setGrade(1);//主麦：默认询问人一
+                tdAndUserAndOtherParam1.setUserssid(recordUserInfos.getAdminssid());
+                tdAndUserAndOtherParam1.setUsername(recordUserInfos.getAdminname());
+                tdAndUserAndOtherParam1.setUsepolygraph(usepolygraph1);//使用测谎仪
+                tdAndUserAndOtherParam1.setUseasr(useasr1);//使用语音识别
+
+                TdAndUserAndOtherParam tdAndUserAndOtherParam2=new TdAndUserAndOtherParam();
+                tdAndUserAndOtherParam2.setGrade(2);//副麦：默认被询问人
+                tdAndUserAndOtherParam2.setUserssid(recordUserInfos.getUserssid());
+                tdAndUserAndOtherParam2.setUsername(recordUserInfos.getUsername());
+                tdAndUserAndOtherParam2.setUsepolygraph(usepolygraph2);//使用测谎仪
+                tdAndUserAndOtherParam2.setUseasr(useasr2);//使用语音识别
+
+                tdList.add(tdAndUserAndOtherParam1);
+                tdList.add(tdAndUserAndOtherParam2);
             }
 
 

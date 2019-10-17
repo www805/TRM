@@ -81,30 +81,35 @@ function callbackgetRecordById(data) {
                 //会议人员
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
-                    var user1={
-                        username:recordUserInfosdata.username
-                        ,userssid:recordUserInfosdata.userssid
-                        ,grade:2
-                    };
-                    var user2={
-                        username:recordUserInfosdata.adminname
-                        ,userssid:recordUserInfosdata.adminssid
-                        ,grade:1
-                    };
                     recorduser=[];
-                    recorduser.push(user1);
-                    recorduser.push(user2);
-                    var usergrades=recordUserInfosdata.usergrades;
-                    if (isNotEmpty(usergrades)) {
-                        for (let i = 0; i < usergrades.length; i++) {
-                            const other = usergrades[i];
-                            var user={
-                                username:other.username
-                                ,userssid:other.userssid
-                                ,grade:other.grade
-                            };
-                            recorduser.push(user);
+                    if (gnlist.indexOf("fy_t")!= -1){
+                        //法院：人员从拓展表获取
+                        var usergrades=recordUserInfosdata.usergrades;
+                        if (isNotEmpty(usergrades)) {
+                            for (let i = 0; i < usergrades.length; i++) {
+                                const other = usergrades[i];
+                                var user={
+                                    username:other.username
+                                    ,userssid:other.userssid
+                                    ,grade:other.grade
+                                };
+                                recorduser.push(user);
+                            }
                         }
+                    }else {
+                        var user1={
+                            username:recordUserInfosdata.username
+                            ,userssid:recordUserInfosdata.userssid
+                            ,grade:2
+                        };
+                        var user2={
+                            username:recordUserInfosdata.adminname
+                            ,userssid:recordUserInfosdata.adminssid
+                            ,grade:1
+                        };
+
+                        recorduser.push(user1);
+                        recorduser.push(user2);
                     }
                 }
 
@@ -125,13 +130,11 @@ function callbackgetRecordById(data) {
                     var userInfos=case_.userInfos;
                     var USERHTNL="";
                     if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
-                    var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被告</td><td>"+username+"</td> </tr>\
+                    var  init_casehtml="<tr><td style='width: 40%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
-                                  <tr><td>审讯长</td><td>"+adminname+"</td></tr>";
+                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>";
                             var usergrades=recordUserInfosdata.usergrades;
                             if (isNotEmpty(usergrades)) {
                                 for (let i = 0; i < usergrades.length; i++) {

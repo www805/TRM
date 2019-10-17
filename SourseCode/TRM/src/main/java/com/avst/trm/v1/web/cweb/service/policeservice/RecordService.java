@@ -47,6 +47,7 @@ import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
 import com.avst.trm.v1.web.cweb.conf.AddRecord_Thread;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.param.GetRecordtypesVOParam;
@@ -1094,6 +1095,7 @@ public class RecordService extends BaseService {
         Integer multifunctionbool=addCaseToArraignmentParam.getMultifunctionbool();
 
         List<UserInfo> arraignmentexpand=addCaseToArraignmentParam.getArraignmentexpand();
+        List<ArrUserExpandParam> arrUserExpandParams=addCaseToArraignmentParam.getArrUserExpandParams();
 
 
         //需要判断是否新增或者修改的参数******************************end
@@ -1555,37 +1557,6 @@ public class RecordService extends BaseService {
             return;
         }
 
-        //如果是法院版本:
-        String gnlist = getSQEntity.getGnlist();
-        if (gnlist.indexOf(SQVersion.FY_T)!=0) {
-            if (StringUtils.isNotBlank(otheradminssid)) {
-                //询问人二
-                Police_arraignmentexpand police_arraignmentexpand1 = new Police_arraignmentexpand();
-                police_arraignmentexpand1.setArraignmentssid(arraignment.getSsid());
-                police_arraignmentexpand1.setSsid(OpenUtil.getUUID_32());
-                police_arraignmentexpand1.setCreatetime(new Date());
-                police_arraignmentexpand1.setExpandname("userinfograde6");//此处不灵活
-                police_arraignmentexpand1.setExpandvalue(otheradminssid);
-                int police_arraignmentexpandMappe1_insertbool = police_arraignmentexpandMapper.insert(police_arraignmentexpand1);
-                LogUtil.intoLog(1, this.getClass(), "police_arraignmentexpandMappe1_insertbool__" + police_arraignmentexpandMappe1_insertbool);
-            }
-            if (StringUtils.isNotBlank(recordadminssid)) {
-                //记录人员
-                Police_arraignmentexpand police_arraignmentexpand2 = new Police_arraignmentexpand();
-                police_arraignmentexpand2.setArraignmentssid(arraignment.getSsid());
-                police_arraignmentexpand2.setSsid(OpenUtil.getUUID_32());
-                police_arraignmentexpand2.setCreatetime(new Date());
-                police_arraignmentexpand2.setExpandname("userinfograde5");//此处不灵活
-                police_arraignmentexpand2.setExpandvalue(recordadminssid);
-                int police_arraignmentexpandMappe2_insertbool = police_arraignmentexpandMapper.insert(police_arraignmentexpand2);
-                LogUtil.intoLog(1, this.getClass(), "police_arraignmentexpandMappe2_insertbool__" + police_arraignmentexpandMappe2_insertbool);
-
-            }
-        }
-
-
-
-
 
 
         //添加案件提讯信息
@@ -1694,9 +1665,8 @@ public class RecordService extends BaseService {
 
 
         //添加提讯表拓展数据
+        String arraignmentssid=arraignment.getSsid();
         if (null!=arraignmentexpand&&arraignmentexpand.size()>0){
-            String arraignmentssid=arraignment.getSsid();
-
             for (UserInfo userInfo : arraignmentexpand) {
                 if (null!=userInfo){
                     String userInfossid=null;
@@ -1732,10 +1702,10 @@ public class RecordService extends BaseService {
                         //修改用户信息
                         EntityWrapper updateuserinfoParam=new EntityWrapper();
                         updateuserinfoParam.eq("ssid",userinfo_.getSsid());
-                        Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userinfo_),Police_userinfo.class);
+                        Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
                         int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
                         LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
-                        userInfossid=police_userinfo.getSsid();
+                        userInfossid=userinfo_.getSsid();
                     }
 
                     Police_arraignmentexpand police_arraignmentexpand=new Police_arraignmentexpand();
@@ -1749,6 +1719,29 @@ public class RecordService extends BaseService {
                 }
             }
         }
+
+        //添加拓展表数据：一般内部人员
+        if (null!=arrUserExpandParams&&arrUserExpandParams.size()>0){
+            for (ArrUserExpandParam arrUserExpandParam : arrUserExpandParams) {
+                if (null!=arrUserExpandParam){
+                    String userssid_=arrUserExpandParam.getUserssid();
+                    String userinfogradessid=arrUserExpandParam.getUserinfogradessid();
+                    if (StringUtils.isNotBlank(userssid_)&StringUtils.isNotBlank(userinfogradessid)){
+                        Police_arraignmentexpand police_arraignmentexpand=new Police_arraignmentexpand();
+                        police_arraignmentexpand.setArraignmentssid(arraignmentssid);
+                        police_arraignmentexpand.setSsid(OpenUtil.getUUID_32());
+                        police_arraignmentexpand.setCreatetime(new Date());
+                        police_arraignmentexpand.setExpandname(userinfogradessid);
+                        police_arraignmentexpand.setExpandvalue(userssid_);
+                        int police_arraignmentexpandMappe_insertbool=police_arraignmentexpandMapper.insert(police_arraignmentexpand);
+                        LogUtil.intoLog(1,this.getClass(),"police_arraignmentexpandMappe_insertbool__"+police_arraignmentexpandMappe_insertbool);
+                    }else {
+                        LogUtil.intoLog(1,this.getClass(),"police_arraignmentexpandMappe_insertbool__userssid_"+userssid_+"__userinfogradessid__"+userinfogradessid);
+                    }
+                }
+            }
+        }
+        LogUtil.intoLog(1,this.getClass(),"添加拓展表数据外部人员数__"+arraignmentexpand.size()+"__内部人员数"+arrUserExpandParams.size());
 
 
         //生成初始化word头文件
@@ -2233,7 +2226,7 @@ public class RecordService extends BaseService {
                 if (null != questionandanswer && questionandanswer.size() > 0) {
                     for (RecordToProblem problem : questionandanswer) {
                         String gnlist=getSQEntity.getGnlist();
-                        if (gnlist.indexOf("fy_t")!= -1){
+                        if (gnlist.indexOf(SQVersion.FY_T)!= -1){
                             //法院的
                             talk+= problem.getProblem()+"\r";
                         }else {
@@ -3712,58 +3705,78 @@ public class RecordService extends BaseService {
                 }
             }
 
-            //开始检测被询问人是否已经被使用
-            if (null!=userinfo){
-                if (null!=userssidList&&userssidList.size()>0){
-                    LogUtil.intoLog(this.getClass(),"userssidList__"+userssidList.toString());
-                    for (String s : userssidList) {
-                        if(s.equals(userinfo)){
-                            vo.setUserinfo_ssid(userinfo);
-                            vo.setMsg("*该被询问人正在被讯问中");
-                            result.setData(vo);
-                            LogUtil.intoLog(this.getClass(),"该被询问人已在笔录中__"+userinfo);
-                            return false;
-                        }
-                    }
-                }
-            }
-
-            //开始检测询问人是否已经被使用
-            if (null!=admininfos&&admininfos.size()>0){
-                if (null!=adminssidList&&adminssidList.size()>0){
-                    LogUtil.intoLog(this.getClass(),"adminssidList__"+adminssidList.toString());
-                    List<String> admininfos_ssid=new ArrayList<>();
-                    for (String s : adminssidList) {
-                        for (String admininfo : admininfos) {
-                            if(null!=admininfo&&s!=null&&s.equals(admininfo)){
-                                if (session_adminssid.equals(admininfo)){
-                                    vo.setMsg("*您有一份笔录/审讯正在制作中");
-                                }else {
-                                    vo.setMsg("*询问人二已被选用");
-                                }
-                                admininfos_ssid.add(admininfo);
-                                vo.setAdmininfos_ssid(admininfos_ssid);
+            String gnlist=getSQEntity.getGnlist();
+            if (gnlist.indexOf(SQVersion.FY_T)!= -1&&gnlist.indexOf(SQVersion.S_E)!= -1){
+                //法院的只需要检测模板
+                //开始检测会议模板是否已经被使用
+                if (null!=mtmodelssid){
+                    if (null!=mtmodelssidList&&mtmodelssidList.size()>0){
+                        LogUtil.intoLog(this.getClass(),"mtmodelssidList__"+mtmodelssidList.toString());
+                        for (String s : mtmodelssidList) {
+                            if(s.equals(mtmodelssid)){
+                                vo.setMtmodel_ssid(mtmodelssid);
+                                vo.setMsg("*所选模板已被占用");
                                 result.setData(vo);
-                                LogUtil.intoLog(this.getClass(),"该询问人已在笔录中__"+admininfo);
+                                LogUtil.intoLog(this.getClass(),"该模板已在笔录中__"+mtmodelssid);
                                 return false;
                             }
                         }
                     }
                 }
-            }
+            }else {
+                //开始检测被询问人是否已经被使用
+                if (null!=userinfo){
+                    if (null!=userssidList&&userssidList.size()>0){
+                        LogUtil.intoLog(this.getClass(),"userssidList__"+userssidList.toString());
+                        for (String s : userssidList) {
+                            if(s.equals(userinfo)){
+                                vo.setUserinfo_ssid(userinfo);
+                                vo.setMsg("*该被询问人正在被讯问中");
+                                result.setData(vo);
+                                LogUtil.intoLog(this.getClass(),"该被询问人已在笔录中__"+userinfo);
+                                return false;
+                            }
+                        }
+                    }
+                }
+
+                //开始检测询问人是否已经被使用
+                if (null!=admininfos&&admininfos.size()>0){
+                    if (null!=adminssidList&&adminssidList.size()>0){
+                        LogUtil.intoLog(this.getClass(),"adminssidList__"+adminssidList.toString());
+                        List<String> admininfos_ssid=new ArrayList<>();
+                        for (String s : adminssidList) {
+                            for (String admininfo : admininfos) {
+                                if(null!=admininfo&&s!=null&&s.equals(admininfo)){
+                                    if (session_adminssid.equals(admininfo)){
+                                        vo.setMsg("*您有一份笔录/审讯正在制作中");
+                                    }else {
+                                        vo.setMsg("*询问人二已被选用");
+                                    }
+                                    admininfos_ssid.add(admininfo);
+                                    vo.setAdmininfos_ssid(admininfos_ssid);
+                                    result.setData(vo);
+                                    LogUtil.intoLog(this.getClass(),"该询问人已在笔录中__"+admininfo);
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
 
 
-            //开始检测会议模板是否已经被使用
-            if (null!=mtmodelssid){
-                if (null!=mtmodelssidList&&mtmodelssidList.size()>0){
-                    LogUtil.intoLog(this.getClass(),"mtmodelssidList__"+mtmodelssidList.toString());
-                    for (String s : mtmodelssidList) {
-                        if(s.equals(mtmodelssid)){
-                            vo.setMtmodel_ssid(mtmodelssid);
-                            vo.setMsg("*所选模板已被占用");
-                            result.setData(vo);
-                            LogUtil.intoLog(this.getClass(),"该模板已在笔录中__"+mtmodelssid);
-                            return false;
+                //开始检测会议模板是否已经被使用
+                if (null!=mtmodelssid){
+                    if (null!=mtmodelssidList&&mtmodelssidList.size()>0){
+                        LogUtil.intoLog(this.getClass(),"mtmodelssidList__"+mtmodelssidList.toString());
+                        for (String s : mtmodelssidList) {
+                            if(s.equals(mtmodelssid)){
+                                vo.setMtmodel_ssid(mtmodelssid);
+                                vo.setMsg("*所选模板已被占用");
+                                result.setData(vo);
+                                LogUtil.intoLog(this.getClass(),"该模板已在笔录中__"+mtmodelssid);
+                                return false;
+                            }
                         }
                     }
                 }

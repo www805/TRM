@@ -69,18 +69,18 @@ function img_bool(obj,type){
             $("#startrecord").css("display","block");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
-                layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 2});
+                layer.tips("庭审中~" ,'#startrecord',{time:0, tips: 2});
             });
-            layer.msg("笔录中~");
+            layer.msg("庭审中~");
         }
     }else if(type==-1) {
         $("#endrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
-            layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:2});
+            layer.tips("该庭审已经制作过啦~" ,'#endrecord',{time:0, tips:2});
         });
         console.log("会议已结束")
-        layer.msg("该笔录已经制作过啦~");
+        layer.msg("该庭审已经制作过啦~");
     }
 }
 
@@ -224,7 +224,7 @@ function callbackgetRecordById(data) {
                         $("#endrecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
-                            layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
+                            layer.tips('该庭审已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
                         });
                         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
@@ -236,7 +236,7 @@ function callbackgetRecordById(data) {
                         //存在会议状态正常
                         if (mcbool==1){
                             $("#startrecord").css("display","block");
-                            var tips_msg="笔录中~";
+                            var tips_msg="庭审中~";
                             if (record_pausebool==1) {
                                 tips_msg="点击我可以暂停~";
                             }
@@ -268,34 +268,36 @@ function callbackgetRecordById(data) {
                 //询问人和被询问人信息
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
-                    var user1={
-                        username:recordUserInfosdata.username
-                        ,userssid:recordUserInfosdata.userssid
-                        ,grade:2
-                    };
-                    var user2={
-                        username:recordUserInfosdata.adminname
-                        ,userssid:recordUserInfosdata.adminssid
-                        ,grade:1
-                    };
                     recorduser=[];
-                    recorduser.push(user1);
-                    recorduser.push(user2);
+                   if (gnlist.indexOf("fy_t")!= -1){
+                       //法院：人员从拓展表获取
+                       var usergrades=recordUserInfosdata.usergrades;
+                       if (isNotEmpty(usergrades)) {
+                           for (let i = 0; i < usergrades.length; i++) {
+                               const other = usergrades[i];
+                               var user={
+                                   username:other.username
+                                   ,userssid:other.userssid
+                                   ,grade:other.grade
+                               };
+                               recorduser.push(user);
+                           }
+                       }
+                   }else {
+                       var user1={
+                           username:recordUserInfosdata.username
+                           ,userssid:recordUserInfosdata.userssid
+                           ,grade:2
+                       };
+                       var user2={
+                           username:recordUserInfosdata.adminname
+                           ,userssid:recordUserInfosdata.adminssid
+                           ,grade:1
+                       };
 
-
-                    //其他角色添加
-                    var usergrades=recordUserInfosdata.usergrades;
-                    if (isNotEmpty(usergrades)) {
-                        for (let i = 0; i < usergrades.length; i++) {
-                            const other = usergrades[i];
-                            var user={
-                                username:other.username
-                                ,userssid:other.userssid
-                                ,grade:other.grade
-                            };
-                            recorduser.push(user);
-                        }
-                    }
+                       recorduser.push(user1);
+                       recorduser.push(user2);
+                   }
                     dq_recorduser=recordUserInfosdata.userssid;
                 }
 
@@ -324,13 +326,11 @@ function callbackgetRecordById(data) {
                     var userInfos=case_.userInfos;
                     var USERHTNL="";
                     if(null!=userInfos) {for (let i = 0; i < userInfos.length; i++) {const u = userInfos[i];USERHTNL += u.username + "、";} USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;}
-                    var  init_casehtml="<tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
-                                  <tr><td>被告</td><td>"+username+"</td> </tr>\
+                    var  init_casehtml="<tr><td style='width: 40%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
-                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
-                                  <tr><td>审讯长</td><td>"+adminname+"</td></tr>";
+                                  <tr><td>案件编号</td><td>"+casenum+"</td> </tr>";
                     var usergrades=recordUserInfosdata.usergrades;
                     if (isNotEmpty(usergrades)) {
                         for (let i = 0; i < usergrades.length; i++) {
@@ -444,7 +444,7 @@ function callbackstartMC(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         $("#record_img img").css("display","none");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
-        var tips_msg="笔录作中~";
+        var tips_msg="庭审作中~";
         if (record_pausebool==1){
             tips_msg="点击我可以暂停~";
             //制作暂停 ，判断是笔录还是审讯
@@ -517,7 +517,7 @@ function callbackstartMC(data) {
                 $("#endrecord").css("display","block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
-                    layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
+                    layer.tips("该庭审已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
                 });
             }else {
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
@@ -529,7 +529,7 @@ function callbackstartMC(data) {
 
             if (null!=checkStartRecordVO){
                 var msg=checkStartRecordVO.msg;
-                parent.layer.confirm("开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的笔录", {
+                parent.layer.confirm("开启失败(<span style='color:red'>"+msg+"</span>)，请先结束正在进行中的庭审", {
                     btn: ['好的'], //按钮
                     shade: [0.1,'#fff'], //不显示遮罩
                     closeBtn:0,
@@ -1131,7 +1131,7 @@ function focuslable(html,type,qw) {
 }
 //最后一行添加按钮初始化
 function addbtn() {
-    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
+    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
     $("#recorddetail tr").each(function () {
         $("#btnadd",this).html("");
     });

@@ -1,9 +1,11 @@
 package com.avst.trm.v1.web.cweb.req.policereq;
 
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_case;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userto;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.UserInfo;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Userto;
+import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 
 import java.util.List;
 import java.util.Map;
@@ -39,7 +41,18 @@ public class AddCaseToArraignmentParam {
 
     private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
 
-    private List<UserInfo> arraignmentexpand;//拓展表数据
+    private List<UserInfo> arraignmentexpand;//拓展表数据：针对未存在用户，主要用于外来人员
+
+    private List<ArrUserExpandParam> arrUserExpandParams;//拓展表数据;针对已存在用户：主要用于内部管理员
+
+
+    public List<ArrUserExpandParam> getArrUserExpandParams() {
+        return arrUserExpandParams;
+    }
+
+    public void setArrUserExpandParams(List<ArrUserExpandParam> arrUserExpandParams) {
+        this.arrUserExpandParams = arrUserExpandParams;
+    }
 
     public List<UserInfo> getArraignmentexpand() {
         return arraignmentexpand;

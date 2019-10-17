@@ -11,13 +11,13 @@ var skipCheckbool=-1;//是否跳过检测：默认-1
 var skipCheckCasebool=-1;//是否跳过案件检查(法庭)
 var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 
-//当前用户类型 1原告 2被告  3辩护人 4审判长
+//当前用户类型 1原告 2被告  3被代理人 8原代理人
 var dq_usertype=2;//默认为被告
 
 var userinfograde1=null;//原告信息
 var userinfograde2=null;//被告信息
-var userinfograde3=null;//辩护人信息
-var userinfogrades=[];//检验用户是否存在
+var userinfograde3=null;//被代理人
+var userinfograde8=null;//原代理人
 
 // 获取基础信息===================================================================start
 function getRecordtypes() {
@@ -97,85 +97,11 @@ function addCaseToArraignment() {
         return;
     }
 
-
-
-
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
         layer.msg("被告不能为空",{icon: 5});
         return;
     }
-
-
-
-    //收集人员信息
-    var inputname="court_user"+dq_usertype;
-    var userinfogradessid="userinfograde"+dq_usertype;
-    var  age=$("#age").val();
-    var  sex=$("#sex").val();
-    var  both=$("#both").val();
-    var  nationalssid=$("#national").val();
-    var  educationlevel=$("#educationlevel").val();
-    var  phone=$("#phone").val();
-    var  domicile=$("#domicile").val();
-    var  residence=$("#residence").val();
-    var  workunits=$("#workunits").val();
-    var  issuingauthority=$("#issuingauthority").val();
-    var  validity=$("#validity").val();
-    var username=$("input[name="+inputname+"]").val();
-    var cardnum=$("#cardnum").val();
-    var userinfo=null;
-    if (isNotEmpty(username)&&isNotEmpty(cardnum)){
-        var ckbool=true;
-        /*if (isNotEmpty(userinfogrades)){
-            for (var i = 0; i < userinfogrades.length; i++) {
-                var grade = userinfogrades[i];
-                if(null!=grade){
-                    var username_=grade.username;
-                    var cardnum_=grade.cardnum;
-                    var userinfogradessid_=grade.userinfogradessid;
-                    if (isNotEmpty(cardnum_)&&cardnum==cardnum_&&userinfogradessid_!=userinfogradessid){
-                        layer.msg(username+"用户已被使用"+dq_usertype,{icon:5});
-                        ckbool=false;
-                        return;
-                    }
-                }
-            }
-        }*/
-        if (!ckbool){
-            return;
-        }
-        userinfo={
-            cardnum:cardnum,
-            username:$("input[name="+inputname+"]").val(),
-            age:age,
-            sex:sex,
-            both:both,
-            nationalssid:nationalssid,
-            educationlevel:educationlevel,
-            phone:phone,
-            domicile:domicile,
-            residence:residence,
-            workunits:workunits,
-            issuingauthority:issuingauthority,
-            validity:validity,
-            userinfogradessid:userinfogradessid
-        }
-    }
-    if (dq_usertype==1){userinfograde1=userinfo;} else if (dq_usertype==2){ userinfograde2=userinfo;}else if (dq_usertype==3){userinfograde3=userinfo;}
-   /* if (isNotEmpty(userinfo)){
-        if (isNotEmpty(userinfogrades)) {
-            for (let i = 0; i < userinfogrades.length; i++) {
-                const userinfogradessid_ = userinfogrades[i];
-                if (userinfogradessid_==userinfogradessid){
-                    userinfogrades[i]=userinfo;
-                }
-            }
-        }else {
-            userinfogrades.push(userinfo);
-        }
-    }*/
-
 
     //收集案件信息
     var  casename=$("#casename").val();
@@ -186,35 +112,72 @@ function addCaseToArraignment() {
     var cause=$("#cause").val();
     var casenum=$("#casenum").val();
     var starttime=$("#starttime").val();
-    addPolice_case={
+    var addPolice_case={
         cause:cause,
         casenum:casenum,
         starttime:starttime,
         casename:casename
     }
 
-    //检测被告是否为空
-    if (isNotEmpty(userinfograde2)){ //被告
+    var asknum=$("#asknum").val();
+    var recordplace=$("#recordplace").val();
+
+
+    //收集当前显示人员的人员信息
+    var userinfogradessid="userinfograde"+dq_usertype;
+    var oldcardnum=$("#cardnum").val();
+    var oldusername=$("input[name="+userinfogradessid+"]").val();
+    var olduserinfo=null;
+    //只有身份证号码和姓名不为空时保存
+    if (isNotEmpty(oldusername)&&isNotEmpty(oldcardnum)){
+        var olduserinfo={
+            cardnum:oldcardnum,
+            username:oldusername,
+            age:$("#age").val(),
+            sex:$("#sex").val(),
+            both:$("#both").val(),
+            nationalssid:$("#national").val(),
+            educationlevel:$("#educationlevel").val(),
+            phone:$("#phone").val(),
+            domicile:$("#domicile").val(),
+            residence:$("#residence").val(),
+            workunits:$("#workunits").val(),
+            issuingauthority:$("#issuingauthority").val(),
+            validity:$("#validity").val(),
+            userinfogradessid:userinfogradessid,
+        }
+    }
+    if (dq_usertype==1){userinfograde1=olduserinfo;} else if (dq_usertype==2){ userinfograde2=olduserinfo;}else if (dq_usertype==3){userinfograde3=olduserinfo;}else if (dq_usertype==8){userinfograde8=olduserinfo;}
+
+
+    /**
+     * 收集外部人员
+     * @type {Array}
+     */
+    var arraignmentexpand=[];
+    if (isNotEmpty(userinfograde2)){
+        //被告
         var bool=checkuserinfograde(userinfograde2,2);
         if (!bool){
             return;
         }
-       /* setuserval(userinfograde2,2)*/
+        arraignmentexpand.push(userinfograde2);
     }else {
         layer.msg("被告个人信息不能为空",{icon: 5});
         return;
     }
 
-
-    var arraignmentexpand=[];
-    if (isNotEmpty(userinfograde1)){ //原告
+    if (isNotEmpty(userinfograde1)){
+        //原告
        var bool=checkuserinfograde(userinfograde1,1);
         if (!bool){
             return;
         }
         arraignmentexpand.push(userinfograde1);
     }
-    if (isNotEmpty(userinfograde3)){//辩护人
+
+    if (isNotEmpty(userinfograde3)){
+        //被告代理人
         var bool=checkuserinfograde(userinfograde3,3);
         if (!bool){
             return;
@@ -222,12 +185,71 @@ function addCaseToArraignment() {
         arraignmentexpand.push(userinfograde3);
     }
 
+    if (isNotEmpty(userinfograde8)){
+        //原告代理人
+        var bool=checkuserinfograde(userinfograde8,3);
+        if (!bool){
+            return;
+        }
+        arraignmentexpand.push(userinfograde8);
+    }
+
+    //检测是否重复
+    if (isNotEmpty(arraignmentexpand)){
+        var newarraignmentexpand = [];//新数组
+        for(var i=0;i<arraignmentexpand.length;i++){
+            var bool=true;
+            for(var j=0;j<newarraignmentexpand.length;j++){
+                if(arraignmentexpand[i].cardnum == newarraignmentexpand[j].cardnum){
+                    bool=false;
+                    layer.msg("用户不能重复使用",{icon: 5});
+                    return;
+                };
+            };
+            if (bool){
+                newarraignmentexpand.push(arraignmentexpand[i]);
+            }
+        };
+    }
 
 
-    var asknum=$("#asknum").val();
-    var recordplace=$("#recordplace").val();
+    /**
+     * 收集内部人员------------------------
+     * @type {Array}
+     */
+    var arrUserExpandParams=[];
     var otheradminssid=$("#otheradminssid").val();
+   if (isNotEmpty(otheradminssid)) {
+       //陪审员
+       arrUserExpandParams.push({
+           userssid:otheradminssid,
+           userinfogradessid:"userinfograde6",
+       });
+   }
     var recordadminssid=$("#recordadminssid").val();
+    if (isNotEmpty(otheradminssid)) {
+        //书记员
+        arrUserExpandParams.push({
+            userssid:recordadminssid,
+            userinfogradessid:"userinfograde5",
+        });
+    }
+    var judges=$("#judges").val();
+    if (isNotEmpty(judges)) {
+        //审判员
+        arrUserExpandParams.push({
+            userssid:judges,
+            userinfogradessid:"userinfograde7",
+        });
+    }
+    var presidingjudge=$("#presidingjudge").val();
+    if (isNotEmpty(presidingjudge)) {
+        //审判长
+        arrUserExpandParams.push({
+            userssid:presidingjudge,
+            userinfogradessid:"userinfograde4",
+        });
+    }
 
 
 
@@ -249,7 +271,8 @@ function addCaseToArraignment() {
             skipCheckbool:skipCheckbool,
             skipCheckCasebool:skipCheckCasebool,
             multifunctionbool:3,//庭审默认多功能
-            arraignmentexpand:arraignmentexpand
+            arraignmentexpand:arraignmentexpand,
+            arrUserExpandParams:arrUserExpandParams
         }
     };
     $("#startrecord_btn").attr("lay-filter","");
@@ -423,38 +446,19 @@ function select_cardnumblur() {
 
 
 
-//获取人员信息
+//获取人员信息：当前点击的usertype 当前dq_usertype
 function getUserByCard(obj,usertype){
     var cardnum =null;
     if (isNotEmpty(usertype)) {
-        cardnum=$(obj).attr("court_user");
+
 
         //收集切换前的用户信息
-        var inputname="court_user"+dq_usertype;
         var userinfogradessid="userinfograde"+dq_usertype;
         var oldcardnum=$("#cardnum").val();
-        var oldusername=$("input[name="+inputname+"]").val();
+        var oldusername=$("input[name="+userinfogradessid+"]").val();
         var olduserinfo=null;
+        //只有身份证号码和姓名不为空时保存
         if (isNotEmpty(oldusername)&&isNotEmpty(oldcardnum)){
-            var ckbool=true;
-            /*if (isNotEmpty(userinfogrades)){
-                for (var i = 0; i < userinfogrades.length; i++) {
-                    var grade = userinfogrades[i];
-                    if(null!=grade){
-                        var username=grade.username;
-                        var cardnum=grade.cardnum;
-                        var userinfogradessid_=grade.userinfogradessid;
-                        if (isNotEmpty(cardnum)&&oldcardnum==cardnum&&userinfogradessid_!=userinfogradessid){
-                            layer.msg(oldusername+"用户已被使用"+dq_usertype,{icon:5});
-                            ckbool=false;
-                            return;
-                        }
-                    }
-                }
-            }*/
-            if (!ckbool){
-                return;
-            }
             var olduserinfo={
                 cardnum:oldcardnum,
                 username:oldusername,
@@ -472,19 +476,8 @@ function getUserByCard(obj,usertype){
                 userinfogradessid:userinfogradessid,
             }
         }
-        if (dq_usertype==1){userinfograde1=olduserinfo;} else if (dq_usertype==2){ userinfograde2=olduserinfo;}else if (dq_usertype==3){userinfograde3=olduserinfo;}
-      /*  if (isNotEmpty(olduserinfo)){
-            if (isNotEmpty(userinfogrades)) {
-                for (let i = 0; i < userinfogrades.length; i++) {
-                    const userinfogradessid_ = userinfogrades[i];
-                    if (userinfogradessid_==userinfogradessid){
-                        userinfogrades[i]=olduserinfo;
-                    }
-                }
-            }else {
-                userinfogrades.push(olduserinfo);
-            }
-        }*/
+        if (dq_usertype==1){userinfograde1=olduserinfo;} else if (dq_usertype==2){ userinfograde2=olduserinfo;}else if (dq_usertype==3){userinfograde3=olduserinfo;}else if (dq_usertype==8){userinfograde8=olduserinfo;}
+
 
         //新的
         dq_usertype=usertype;
@@ -498,12 +491,13 @@ function getUserByCard(obj,usertype){
             othercases=null;
             $("#asknum").val(0);
         }else if (dq_usertype==3){
-            $("#usertype").html("<span style='color: red;font-weight: bold'>辩护人</span>个人信息")
-        }else {
-            $("#usertype").html("未知")
+            $("#usertype").html("<span style='color: red;font-weight: bold'>被告诉讼代理人</span>个人信息")
+        }else if (dq_usertype==8){
+            $("#usertype").html("<span style='color: red;font-weight: bold'>原告诉讼代理人</span>个人信息")
         }
 
 
+        //判断是否存在回显
         var virtualuser=null;
         if (isNotEmpty(userinfograde1)&&dq_usertype==1) {
             virtualuser=userinfograde1;
@@ -514,30 +508,11 @@ function getUserByCard(obj,usertype){
         if (isNotEmpty(userinfograde3)&&dq_usertype==3) {
             virtualuser=userinfograde3;
         }
+        if (isNotEmpty(userinfograde8)&&dq_usertype==8) {
+            virtualuser=userinfograde8;
+        }
         if (isNotEmpty(virtualuser)){
-            /*人员信息*/
-            $("#cardnum").val(virtualuser.cardnum);
-            $("#beforename").val(virtualuser.beforename);
-            $("#nickname").val(virtualuser.nickname);
-            $("#both").val(virtualuser.both);
-            $("#professional").val(virtualuser.professional);
-            $("#phone").val(virtualuser.phone);
-            $("#domicile").val(virtualuser.domicile);
-            $("#residence").val(virtualuser.residence);
-            $("#workunits").val(virtualuser.workunits);
-            $("#age").val(virtualuser.age);
-            $("#sex").val(virtualuser.sex);
-            $("#national").val(virtualuser.nationalssid);
-            $("#nationality").val(virtualuser.nationalityssid);
-            $("#educationlevel").val(virtualuser.educationlevel);
-            $("#politicsstatus").val(virtualuser.politicsstatus);
-            $("#issuingauthority").val(virtualuser.issuingauthority);
-            $("#validity").val(virtualuser.validity);
-            layui.use('form', function(){
-                var $ = layui.$;
-                var form = layui.form;
-                form.render();
-            });
+            setuserval(virtualuser,dq_usertype);
             return;
         }
     }else {
@@ -568,14 +543,12 @@ function callbackgetUserByCard(data){
             if (isNotEmpty(userinfo)){
 
 
-                var inputname="court_user"+dq_usertype;
+                var inputname="userinfograde"+dq_usertype;
                 $("input[name="+inputname+"]").val(userinfo.username);
-                $("input[name="+inputname+"]").attr("court_user",userinfo.cardnum);
 
                 if (dq_usertype==2){//被告时候才需要更换
                     dquserssid=userinfo.ssid;
                 }
-
                 /*人员信息*/
                 $("#cardnum").val(userinfo.cardnum);
                 $("#beforename").val(userinfo.beforename);
@@ -630,12 +603,14 @@ function callbackgetAdminList(data) {
 
         $('#otheradminssid option').not(":lt(1)").remove();
         $('#recordadminssid option').not(":lt(1)").remove();
+        $('#judges option').not(":lt(1)").remove();
         if (isNotEmpty(otheruserinfos)){
             for (var i = 0; i < otheruserinfos.length; i++) {
                 var u= otheruserinfos[i];
                 if (u.ssid!=sessionadminssid) {
                     $("#otheradminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                     $("#recordadminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                    $("#judges").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                 }
             }
         }
@@ -979,19 +954,19 @@ function resetuser(obj,type) {
     getUserByCard(obj,type);
 
     var con="";
-    if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="辩护人";}
+    if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="被告诉讼代理人";}else if (type==8){con="原告诉讼代理人";}
 
     layer.open({
-        content:"确定要重置"+con+"的个人信息吗？"
+        content:"确定要重置【"+con+"】的个人信息吗？"
         ,btn: ['确定', '取消']
         ,yes: function(index, layero){
-            var inputname="court_user"+type;
+            var inputname="userinfograde"+type;
             var oldusername=$("input[name="+inputname+"]").val();
             $("input[name="+inputname+"]").val("");
             $("#user input").val("");
             $('#user  select').prop('selectedIndex', 0);
-            $(obj).attr("court_user","");
-            if (type==1){userinfograde1=null;} else if (type==2){ userinfograde2=null;}else if (type==3){userinfograde3=null;}
+            $(obj).attr("userinfograde","");
+            if (type==1){userinfograde1=null;} else if (type==2){ userinfograde2=null;}else if (type==3){userinfograde3=null;}else if (type==8){userinfograde8=null;}
             layer.msg(con+"个人信息已重置",{icon:6});
             layer.close(index);
         }
@@ -1052,7 +1027,7 @@ function checkout_cardnum(cardnum) {
 function checkuserinfograde(userinfograde,type) {
     if (isNotEmpty(userinfograde)&&isNotEmpty(type)){
         var con="";
-        if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="辩护人";}
+        if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="被告诉讼代理人";}else if (type==8){con="原告诉讼代理人";}
         var username=userinfograde.username;
         var cardnum=userinfograde.cardnum;
         var phone=userinfograde.phone;
@@ -1108,15 +1083,21 @@ function setuserval(virtualuser,type) {
         $("#politicsstatus").val(virtualuser.politicsstatus);
         $("#issuingauthority").val(virtualuser.issuingauthority);
         $("#validity").val(virtualuser.validity);
+
         dq_usertype=type;
         if (dq_usertype==1){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告</span>个人信息")
         } else if (dq_usertype==2){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告</span>个人信息");
+            dquserssid=null;//当前用户的ssid
+            dqcasessid=null;//当前案件ssid
+            cases=null;
+            othercases=null;
+            $("#asknum").val(0);
         }else if (dq_usertype==3){
-            $("#usertype").html("<span style='color: red;font-weight: bold'>辩护人</span>个人信息")
-        }else {
-            $("#usertype").html("未知")
+            $("#usertype").html("<span style='color: red;font-weight: bold'>被告诉讼代理人</span>个人信息")
+        }else if (dq_usertype==8){
+            $("#usertype").html("<span style='color: red;font-weight: bold'>原告诉讼代理人</span>个人信息")
         }
         layui.use('form', function(){
             var $ = layui.$;
