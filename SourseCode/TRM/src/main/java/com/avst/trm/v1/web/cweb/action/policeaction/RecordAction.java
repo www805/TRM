@@ -219,7 +219,7 @@ public class RecordAction extends BaseAction {
 
 
     /**
-     * 根据证件类型和证件号
+     * 根据证件类型和证件号ge
      * @param param
      * @return
      */

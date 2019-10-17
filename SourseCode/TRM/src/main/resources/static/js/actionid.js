@@ -386,6 +386,13 @@ function getactionid_manage() {
         beforeCourt_getDefaultMtModelssid:"beforeCourt_getDefaultMtModelssid",
         beforeCourt_getWordTemplates:"beforeCourt_getWordTemplates",
 
+        userinfogradeIndex_getUserinfogradePage:"userinfogradeIndex_getUserinfogradePage",
+        userinfogradeIndex_toAddOrUpdateUserinfograde:"userinfogradeIndex_toAddOrUpdateUserinfograde",
+        AddOrUpdateUserinfograde_getUserinfogradeByssid:"AddOrUpdateUserinfograde_getUserinfogradeByssid",
+        AddOrUpdateUserinfograde_addUserinfograde:"AddOrUpdateUserinfograde_addUserinfograde",
+        AddOrUpdateUserinfograde_updateUserinfograde:"AddOrUpdateUserinfograde_updateUserinfograde",
+
+
 
         //以上为法庭的接口===============================end
 

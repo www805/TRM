@@ -799,7 +799,9 @@ function calladdRecord(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-
+function sortPlayUrl(a, b) {
+    return a.filenum - b.filenum;//由低到高
+}
 function  set_getPlayUrl(data) {
     if (isNotEmpty(data)){
         iid=data.iid;

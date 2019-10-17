@@ -10,8 +10,7 @@ var dquserssid=null;
  */
 function getCaseBySsid() {
     if (!isNotEmpty(ssid)){
-        layer.msg("系统异常",{icon: 5});
-        return;
+       return;
     }
 
     var url=getActionURL(getactionid_manage().addOrUpdateCase_getCaseBySsid);

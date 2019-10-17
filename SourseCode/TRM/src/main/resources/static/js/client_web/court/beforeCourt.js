@@ -17,6 +17,7 @@ var dq_usertype=2;//默认为被告
 var userinfograde1=null;//原告信息
 var userinfograde2=null;//被告信息
 var userinfograde3=null;//辩护人信息
+var userinfogrades=[];//检验用户是否存在
 
 // 获取基础信息===================================================================start
 function getRecordtypes() {
@@ -124,7 +125,26 @@ function addCaseToArraignment() {
     var username=$("input[name="+inputname+"]").val();
     var cardnum=$("#cardnum").val();
     var userinfo=null;
-    if (isNotEmpty(username)){
+    if (isNotEmpty(username)&&isNotEmpty(cardnum)){
+        var ckbool=true;
+        /*if (isNotEmpty(userinfogrades)){
+            for (var i = 0; i < userinfogrades.length; i++) {
+                var grade = userinfogrades[i];
+                if(null!=grade){
+                    var username_=grade.username;
+                    var cardnum_=grade.cardnum;
+                    var userinfogradessid_=grade.userinfogradessid;
+                    if (isNotEmpty(cardnum_)&&cardnum==cardnum_&&userinfogradessid_!=userinfogradessid){
+                        layer.msg(username+"用户已被使用"+dq_usertype,{icon:5});
+                        ckbool=false;
+                        return;
+                    }
+                }
+            }
+        }*/
+        if (!ckbool){
+            return;
+        }
         userinfo={
             cardnum:cardnum,
             username:$("input[name="+inputname+"]").val(),
@@ -143,6 +163,18 @@ function addCaseToArraignment() {
         }
     }
     if (dq_usertype==1){userinfograde1=userinfo;} else if (dq_usertype==2){ userinfograde2=userinfo;}else if (dq_usertype==3){userinfograde3=userinfo;}
+   /* if (isNotEmpty(userinfo)){
+        if (isNotEmpty(userinfogrades)) {
+            for (let i = 0; i < userinfogrades.length; i++) {
+                const userinfogradessid_ = userinfogrades[i];
+                if (userinfogradessid_==userinfogradessid){
+                    userinfogrades[i]=userinfo;
+                }
+            }
+        }else {
+            userinfogrades.push(userinfo);
+        }
+    }*/
 
 
     //收集案件信息
@@ -192,11 +224,9 @@ function addCaseToArraignment() {
 
 
 
-
-
     var asknum=$("#asknum").val();
     var recordplace=$("#recordplace").val();
-    var otheradminssid=$("#recordadminssid").val();
+    var otheradminssid=$("#otheradminssid").val();
     var recordadminssid=$("#recordadminssid").val();
 
 
@@ -405,7 +435,26 @@ function getUserByCard(obj,usertype){
         var oldcardnum=$("#cardnum").val();
         var oldusername=$("input[name="+inputname+"]").val();
         var olduserinfo=null;
-        if (isNotEmpty(oldusername)){
+        if (isNotEmpty(oldusername)&&isNotEmpty(oldcardnum)){
+            var ckbool=true;
+            /*if (isNotEmpty(userinfogrades)){
+                for (var i = 0; i < userinfogrades.length; i++) {
+                    var grade = userinfogrades[i];
+                    if(null!=grade){
+                        var username=grade.username;
+                        var cardnum=grade.cardnum;
+                        var userinfogradessid_=grade.userinfogradessid;
+                        if (isNotEmpty(cardnum)&&oldcardnum==cardnum&&userinfogradessid_!=userinfogradessid){
+                            layer.msg(oldusername+"用户已被使用"+dq_usertype,{icon:5});
+                            ckbool=false;
+                            return;
+                        }
+                    }
+                }
+            }*/
+            if (!ckbool){
+                return;
+            }
             var olduserinfo={
                 cardnum:oldcardnum,
                 username:oldusername,
@@ -424,6 +473,18 @@ function getUserByCard(obj,usertype){
             }
         }
         if (dq_usertype==1){userinfograde1=olduserinfo;} else if (dq_usertype==2){ userinfograde2=olduserinfo;}else if (dq_usertype==3){userinfograde3=olduserinfo;}
+      /*  if (isNotEmpty(olduserinfo)){
+            if (isNotEmpty(userinfogrades)) {
+                for (let i = 0; i < userinfogrades.length; i++) {
+                    const userinfogradessid_ = userinfogrades[i];
+                    if (userinfogradessid_==userinfogradessid){
+                        userinfogrades[i]=olduserinfo;
+                    }
+                }
+            }else {
+                userinfogrades.push(olduserinfo);
+            }
+        }*/
 
         //新的
         dq_usertype=usertype;

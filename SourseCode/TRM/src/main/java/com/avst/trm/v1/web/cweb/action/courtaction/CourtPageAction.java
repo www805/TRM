@@ -33,6 +33,23 @@ public class CourtPageAction {
         return new ModelAndView("client_web/court/beforeCourt", "Model", model);
     }
 
+    @GetMapping("touserinfograde")
+    public ModelAndView touserinfograde(Model model){
+        model.addAttribute("title","人员类型级别查看");
+        return new ModelAndView("client_web/court/userinfogradeIndex", "Model", model);
+    }
+
+    @GetMapping("toAddOrUpdateUserinfograde")
+    public ModelAndView toAddOrUpdateUserinfograde(Model model,String ssid){
+        model.addAttribute("title","人员类型级别编辑");
+        model.addAttribute("ssid",ssid);
+        return new ModelAndView("client_web/court/AddOrUpdateUserinfograde", "Model", model);
+    }
+
+
+
+
+
 
 
 }
