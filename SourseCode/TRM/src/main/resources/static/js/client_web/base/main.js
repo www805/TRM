@@ -101,9 +101,9 @@ function callgetNavList(data) {
 
                 var gnlist = appCache.data.gnlist;
                 if (isNotEmpty(gnlist) && gnlist.indexOf("s_v") != -1) {
-                    $("#guidepage").hide();
+                    // $("#guidepage").hide();
                     $("#pagehome").hide();
-                    $("#nav_list").css("right", 250);
+                    $("#nav_list").css("right", 350);
                 }
 
                 //设置logo和标题
@@ -149,6 +149,8 @@ function callgetNavList(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
+
+
 
 function callgetPant(data) {
     if (null != data && data.actioncode == 'SUCCESS') {

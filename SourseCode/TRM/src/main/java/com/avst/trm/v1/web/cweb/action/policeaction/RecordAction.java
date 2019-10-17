@@ -868,6 +868,22 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 获得 设备现场的音频振幅
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getFDAudPowerMap")
+    public RResult getFDAudPowerMap(@RequestBody  ReqParam<GetFDAudPowerMapParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.getFDAudPowerMap(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
 
     /**
@@ -886,6 +902,7 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
 
 
     /**

@@ -46,6 +46,9 @@ function callbackgetRecordById(data) {
                     getFDState();
                 }, 1000);
 
+                // setInterval(function () {
+                //     getFDAudPowerMap();
+                // }, 500);
 
                 setInterval(function () {
                     putRecessStatus();

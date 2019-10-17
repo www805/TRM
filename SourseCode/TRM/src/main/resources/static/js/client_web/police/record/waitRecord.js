@@ -28,6 +28,7 @@ var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存�
 var occurrencetime_format;//案发时间
 
 var multifunctionbool;
+var FDAudPowerMapTimer; //音频定时器
 
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
@@ -535,6 +536,10 @@ function callbackgetRecordById(data) {
               /*  console.log("刷新，获取设备状态");*/
                 getFDState();
             }, 1000);
+
+            FDAudPowerMapTimer = setInterval(function () {
+                getFDAudPowerMap();
+            }, 500);
 
             setInterval(function () {
                 putRecessStatus();
@@ -2112,5 +2117,22 @@ $(function () {
     });
 });
 
+layui.use('form', function(){
+    var form=layui.form;
 
+    form.on('switch(voicebool)', function (data) {
+
+        if (data.elem.checked) {
+            FDAudPowerMapTimer = setInterval(function () {
+                getFDAudPowerMap();
+            }, 500);
+            $("#voice").show();
+        }else{
+            $("#voice").hide();
+            clearInterval(FDAudPowerMapTimer);
+        }
+
+    });
+
+});
 

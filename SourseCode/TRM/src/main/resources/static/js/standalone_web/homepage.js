@@ -31,7 +31,40 @@ function callbackgetHome(data) {
     }
 }
 
+//获取总控服务器状态
+function getServerStatus() {
+    var url=getActionURL(getactionid_manage().homepage_getServerStatus);
+    // var url = "/cweb/base/main/getServerStatus";
+    var data={
+        token:INIT_CLIENTKEY
+    };
+    ajaxSubmitByJson(url,data,callgetServerStatus);
+}
 
+function callgetServerStatus(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        // console.log(data.data);
+
+        $("#ec").html("连接中").removeClass("success").addClass("error");
+        $("#mc").html("连接中").removeClass("success").addClass("error");
+
+        var serverStatus = data.data;
+        if (isNotEmpty(serverStatus) && serverStatus.length > 0) {
+
+            for (var i = 0; i < serverStatus.length; i++) {
+
+                var server = serverStatus[i];
+                if ("zk" == server.servername && server.status == 1) {
+                    $("#guidepage a").attr("href", server.url);
+                }else if ("ec" == server.servername && server.status == 1) {
+                    $("#ec").html("已启动").removeClass("error").addClass("success");
+                } else if ("mc" == server.servername && server.status == 1) {
+                    $("#mc").html("已启动").removeClass("error").addClass("success");
+                }
+            }
+        }
+    }
+}
 
 //一键谈话跳转审讯页面
 var skipCheckbool=-1;//是否跳过检测：默认-1

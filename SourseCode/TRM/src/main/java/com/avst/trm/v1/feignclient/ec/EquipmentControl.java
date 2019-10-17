@@ -228,4 +228,43 @@ public interface EquipmentControl {
     @RequestMapping("/flushbonading/v1/updateBurnTime")
     @ResponseBody
     public RResult updateBurnTime(@RequestBody ReqParam<GetBurnTimeParam> param);
+
+    /**
+     * 获得 设备现场的音频振幅
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getFDAudPowerMap")
+    @ResponseBody
+    public RResult getFDAudPowerMap(@RequestBody GetFDAudPowerMapParam_out param);
+
+
+    /**
+     * 配置设备网口 IP、子网掩码、网关
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/setFDnetwork")
+    @ResponseBody
+    public RResult setFDnetwork(@RequestBody SetFDnetworkParam_out param);
+
+    /**
+     * 设置设备某一个通道的通道音量
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/setFDAudioVolume")
+    @ResponseBody
+    public RResult setFDAudioVolume(@RequestBody SetFDAudioVolumeParam_out param);
+
+
+    /**
+     * 获得设备音频配置
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getFDAudioConf")
+    @ResponseBody
+    public RResult getFDAudioConf(@RequestBody GetFDAudioConfParam_out param);
+
 }

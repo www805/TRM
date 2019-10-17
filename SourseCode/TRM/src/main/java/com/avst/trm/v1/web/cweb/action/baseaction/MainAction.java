@@ -337,7 +337,25 @@ public class MainAction extends BaseAction {
     }
 
 
-
+    /**
+     * 获取总控服务器状态
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getServerStatus")
+    @ResponseBody
+    public RResult getServerStatus(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getServerStatus(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
     /***
      * 检测关键字

@@ -4100,6 +4100,20 @@ public class RecordService extends BaseService {
         }
     }
 
+    public void getFDAudPowerMap(RResult result, ReqParam<GetFDAudPowerMapParam_out> param) {
+
+        GetFDAudPowerMapParam_out paramParam = param.getParam();
+
+        RResult rResult = equipmentControl.getFDAudPowerMap(paramParam);
+
+        result.setData(rResult.getData());
+        result.setMessage(rResult.getMessage());
+        result.setVersion(rResult.getVersion());
+        result.setNextpageid(rResult.getNextpageid());
+        result.setActioncode(rResult.getActioncode());
+
+    }
+
     public void putRecessStatus(RResult result, ReqParam<RecordStatusCacheParam> param) {
 
         RecordStatusCacheParam paramParam = param.getParam();

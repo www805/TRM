@@ -55,6 +55,19 @@
         ::-webkit-scrollbar{
             width: 0px;
         }
+        .error {
+            background-color: #FF5722;
+            color: #fff;
+            padding: 2px 6px;
+            font-size: 14px;
+            margin-right: 6px;
+        }
+        .success {
+            background-color: #5FB878;
+            color: #fff;
+            font-size: 14px;
+            padding: 2px 6px;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +113,36 @@
                     </div>
                 </a>
             </div>
+
         </div>
+
+      <div class="layui-col-sm2 layui-col-md2" style="float: right;">
+          <div class="layui-card" style=" overflow:hidden;">
+              <div class="layui-card-header">
+                  服务信息
+                  <!--<span class="layui-badge layui-bg-black layuiadmin-badge">授权</span>-->
+              </div>
+              <div class="layui-card-body layuiadmin-card-list" style="padding-top: 5px;padding-bottom: 5px;">
+
+                  <table border="0" height="60">
+                      <tbody>
+                          <!--<tr>-->
+                              <!--<td align="right" class="detection">总控系统：</td>-->
+                              <!--<td><span class="error" id="zk">连接中</span></td>-->
+                          <!--</tr>-->
+                          <tr>
+                              <td align="right" class="detection">设备系统：</td>
+                              <td><span class="error" id="ec">连接中</span></td>
+                          </tr>
+                          <tr>
+                              <td align="right" class="detection">会议系统：</td>
+                              <td><span class="error" id="mc">连接中</span></td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+      </div>
     </div>
 
     <div class="layui-row layui-col-space15">
@@ -239,6 +281,8 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/home");
         getHome();
+
+        getServerStatus();
 
         startConversationURL=getActionURL(getactionid_manage().home_tostartConversation);//跳转到开启谈话页面
         recordIndexURL=getActionURL(getactionid_manage().home_torecordIndex);//跳转到笔录列表

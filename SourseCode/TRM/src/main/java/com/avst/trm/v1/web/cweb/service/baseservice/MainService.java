@@ -27,6 +27,7 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
@@ -106,6 +107,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private EquipmentControl equipmentControl;
+
+    @Autowired
+    private ZkControl zkControl;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -1180,6 +1184,19 @@ public class MainService extends BaseService {
         for (String s : texts) {
             System.out.println(s);
         }*/
+
+    }
+
+    public void getServerStatus(RResult result, ReqParam param) {
+
+
+        RResult controlInfoAll = zkControl.getServerStatus();
+
+        result.setActioncode(controlInfoAll.getActioncode());
+        result.setNextpageid(controlInfoAll.getNextpageid());
+        result.setVersion(controlInfoAll.getVersion());
+        result.setMessage(controlInfoAll.getMessage());
+        result.setData(controlInfoAll.getData());
 
     }
 }

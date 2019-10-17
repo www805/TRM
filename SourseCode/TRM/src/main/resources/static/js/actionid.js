@@ -98,6 +98,7 @@ function getactionid_manage() {
         main_getPant:"main_getPant",
         main_tostartConversation:"main_tostartConversation",
         main_toconversationIndex:"main_toconversationIndex",
+        main_getServerStatus:"main_getServerStatus",
 
 
 
@@ -190,6 +191,7 @@ function getactionid_manage() {
         waitRecord_getRecordreal_LastByRecordssid:"waitRecord_getRecordreal_LastByRecordssid",
         waitRecord_checkKeyword:"waitRecord_checkKeyword",
         waitRecord_updateCaseToUser:"waitRecord_updateCaseToUser",
+        waitRecord_getFDAudPowerMap:"waitRecord_getFDAudPowerMap",
 
         waitRecord_getFDState:"waitRecord_getFDState",
         waitRecord_getptdjconst:"waitRecord_getptdjconst",
@@ -347,6 +349,7 @@ function getactionid_manage() {
         homepage_toaddCaseToUser:"homepage_toaddCaseToUser",
         homepage_getHome:"homepage_getHome",
         homepage_addCaseToArraignment:"homepage_addCaseToArraignment",
+        homepage_getServerStatus:"homepage_getServerStatus",
 
         about_getAbout:"about_getAbout",
 

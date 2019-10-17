@@ -26,4 +26,10 @@ public interface ZkControl {
 
     @RequestMapping("/zk/getHeartbeat")
     public RResult getHeartbeat(@RequestBody ReqParam<ControlInfoParamVO> param);
+
+
+    //获取服务器时间
+    @RequestMapping("/main/getServerStatus")
+    @ResponseBody
+    public  RResult getServerStatus();
 }

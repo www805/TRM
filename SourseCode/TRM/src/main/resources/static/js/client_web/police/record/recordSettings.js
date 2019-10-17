@@ -16,6 +16,7 @@ var fdStateInfo;
 var CDNumModel_index;
 var getCDNumberMsg;
 
+
 //使用模块
 var html=
     '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
@@ -171,6 +172,8 @@ function yuntaikz() {
         '    </div>\n' +
         '</div>';
 
+
+
     yuntaikz_index = layer.open({
         type: 1,
         id: "layer_yuntaikz",
@@ -315,7 +318,7 @@ function updateBurnTime() {
 }
 
 //刻录模式选择
-function changeBurnMode() {
+function changeBurnMode(num) {
     var strtitle = "笔录";
     var url=getActionURL(getactionid_manage().waitRecord_changeBurnMode);
     if(!isNotEmpty(url)){
@@ -336,6 +339,11 @@ function changeBurnMode() {
     var burn_mode = 0;
     if (fdStateInfo.burn_mode == 0) {
         burn_mode = 2;
+    }
+
+    //单机版调的单选框，如果有传入指定的刻录模式就按照指定的来切换
+    if(isNotEmpty(num)){
+        burn_mode = num;
     }
 
     var data={
@@ -585,6 +593,57 @@ function putRecessStatus() {
     }
 }
 
+/**
+ * 获得 设备现场的音频振幅
+ */
+function getFDAudPowerMap() {
+
+    if(!isNotEmpty(getRecordById_data.modeltds[0].fdssid)){
+        layer.msg("必须开启会议才可以请求波形");
+        return;
+    }
+
+    var url=getActionURL(getactionid_manage().waitRecord_getFDAudPowerMap);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callFDAudPowerMap);
+}
+function callFDAudPowerMap(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var list=data.audpowList;
+                if (isNotEmpty(list)) {
+                    var audpowHTML = "";
+
+                    $("#bars").html("");
+                    for (var i = 0; i < list.length; i++) {
+                        var audpow = list[i];
+                        audpowHTML += '<div class="bar"><div style="height: ' + audpow + '%;"></div></div>\n';
+                    }
+                    $("#bars").html(audpowHTML);
+
+                }
+            }
+
+        }
+
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+
 function callputRecessStatus(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
 
@@ -787,6 +846,7 @@ function callFDState(data){
 
             fdStateInfo = data.data;
 
+
             if (fdStateInfo.dvdnum >= 1) {
                 //光驱1
                 $("#guangqu").show();
@@ -861,6 +921,72 @@ function callFDState(data){
             }else {
                 $("#kelumoshi").removeClass("layui-btn-disabled").addClass(" layui-btn-normal");
                 kelumoshi = 1;
+            }
+
+
+            /** 单机版开始 **/
+            var residueNum = 0;
+            if (fdStateInfo.disk_freespace > 0 && fdStateInfo.disk_totalspace > 0) {
+                residueNum = baifnebi(fdStateInfo.disk_freespace, fdStateInfo.disk_totalspace);
+            }
+
+            $("#cp_freespace").css("width", residueNum + "%");//硬盘剩余容量进度条
+            $("#cp_freespace span").html(residueNum + "%");//硬盘剩余容量文字显示
+            $("#cp_tag").html(getfilesize(fdStateInfo.disk_freespace + 100000) + "可用 / 共" + getfilesize(fdStateInfo.disk_totalspace + 100000));//硬盘总容量
+
+            $("#cp_isrec").html(fdStateInfo.diskrec_isrec == 1 ? "录像中" : "未开始");//是否正在本地硬盘录像
+
+
+
+            var roma_Num = 0;
+            if (fdStateInfo.roma_discCapUsed > 0 && fdStateInfo.roma_discCap > 0) {
+                roma_Num = 100 - baifnebi(fdStateInfo.roma_discCapUsed, fdStateInfo.roma_discCap);
+            }
+
+            $("#roma_freespace").css("width", roma_Num + "%");//硬盘剩余容量进度条
+            $("#roma_freespace span").html(roma_Num + "%");//硬盘剩余容量文字显示
+            var roma_discCapUsed = fdStateInfo.roma_discCap - fdStateInfo.roma_discCapUsed;
+            roma_discCapUsed = roma_discCapUsed ? getfilesize(roma_discCapUsed) : 0;
+            $("#roma_tag").html(roma_discCapUsed + "可用 / 共" + getfilesize(fdStateInfo.roma_discCap));//硬盘总容量
+
+
+            var romb_Num = 0;
+            if (fdStateInfo.roma_discCapUsed > 0 && fdStateInfo.roma_discCap > 0) {
+                romb_Num = 100 - baifnebi(fdStateInfo.romb_discCapUsed, fdStateInfo.romb_discCap);
+            }
+
+            $("#romb_freespace").css("width", romb_Num + "%");//硬盘剩余容量进度条
+            $("#romb_freespace span").html(romb_Num + "%");//硬盘剩余容量文字显示
+            var romb_discCapUsed = fdStateInfo.romb_discCap - fdStateInfo.romb_discCapUsed;
+            romb_discCapUsed = romb_discCapUsed ? getfilesize(romb_discCapUsed) : 0;
+            $("#romb_tag").html(romb_discCapUsed + "可用 / 共" + getfilesize(fdStateInfo.romb_discCap));//硬盘总容量
+
+            if(fdStateInfo.roma_isburn == 1){
+                $("#roma_state").html('<i class="layui-badge-dot layui-bg-green" style="background-color: #5FB878!important;margin-right: 5px;width: 10px;height: 10px;"></i>已开始');
+            }else{
+                $("#roma_state").html('<i class="layui-badge-dot off-dot" style="margin-right: 5px;width: 10px;height: 10px;"></i>未开始');
+            }
+
+            if(fdStateInfo.romb_isburn == 1){
+                $("#romb_state").html('<i class="layui-badge-dot layui-bg-green" style="background-color: #5FB878!important;margin-right: 5px;width: 10px;height: 10px;"></i>已开始');
+            }else{
+                $("#romb_state").html('<i class="layui-badge-dot off-dot" style="margin-right: 5px;width:10px;height: 10px;"></i>未开始');
+            }
+
+            if(fdStateInfo.roma_isburn == 1 || fdStateInfo.romb_isburn == 1){
+                $("#cp_isburn").html("已开始");
+            }else{
+                $("#cp_isburn").html("未开始");
+            }
+
+            $("#burn_mode_a").prop("checked",false);
+            $("#burn_mode_b").prop("checked",false);
+
+            //fdStateInfo.burn_mode
+            if(fdStateInfo.burn_mode == 0){
+                $("#burn_mode_a").prop("checked",true);
+            }else{
+                $("#burn_mode_b").prop("checked",true);
             }
 
         }

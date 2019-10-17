@@ -65,10 +65,10 @@ function callgetNavList(data) {
                 var bottom_declaration = appCache.data.bottom.declaration;
                 var bottom_url = appCache.data.bottom.url;
 
-                if (isNotEmpty(appCache.data.bottom.img.src) && appCache.data.bottom.img.src != '/') {
+                if (isNotEmpty(appCache.data.bottom.image.src) && appCache.data.bottom.image.src != '/') {
                     $(".layui-footer").css("height", "50px").css("margin-top", "5px");
                     $("#login_img").css("width", "90px").css("height", "90px");
-                    bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 3px;' width='" + appCache.data.bottom.img.width + "' height='" + appCache.data.bottom.img.height + "' src='" + appCache.data.bottom.img.src + "'>" + "</a>";
+                    bottom_html = " <a href=\"" + bottom_url + "\">" + "<img style='margin-top: 3px;' width='" + appCache.data.bottom.image.width + "' height='" + appCache.data.bottom.image.height + "' src='" + appCache.data.bottom.image.src + "'>" + "</a>";
                 } else {
                     bottom_html = bottom_declaration + " <a href=\"" + bottom_url + "\">" + bottom_name + "</a>";
                 }
