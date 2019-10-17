@@ -69,6 +69,7 @@ public class UserService extends BaseService {
        int count = base_admininfoMapper.countgetUserList(ew);
        param.setRecordCount(count);
 
+        ew.orderBy("a.superbool",false);
        ew.orderBy("a.unitsort",true);
        ew.orderBy("a.registertime",false);
         ew.orderBy("a.lastlogintime",false);

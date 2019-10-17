@@ -23,6 +23,10 @@
     .layui-form-label{
         width: 100px;
     }
+        #forgotpassword:hover{
+            color: #296cff;
+            text-decoration:underline;
+        }
     </style>
 </head>
 <body  class="layui-layout-body"  style="height:100%;">
@@ -48,6 +52,10 @@
                         <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="admin" lay-verify="loginaccount">
                         <input name="password" id="password" type="password" placeholder="密码" value="admin" lay-verify="password">
                         <button  type="button" id="loginbtn"  lay-filter="loginbtn" lay-submit="">登录</button>
+                        <div class="layui-col-md12 ">
+                            <div class="layui-col-md6">&nbsp;</div>
+                            <div class="layui-col-md6" ><a href="#" style="float: right" id="forgotpassword" title="忘记密码" >忘记密码</a></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -77,11 +85,13 @@
     var INIT_WEB;
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var forgotpasswordURL;
     $(function(){
         INIT_WEB=[[${session.INIT_WEB}]];
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/login");
+         forgotpasswordURL=getActionURL(getactionid_manage().login_gotoforgotpassword);
         getNavList();
 
         document.onkeydown = function (event) {
@@ -92,6 +102,13 @@
                 }
             }
         };
+
+        //跳转忘记密码页
+        $("#forgotpassword").click(function () {
+            if(isNotEmpty(forgotpasswordURL)) {
+                window.location.href=forgotpasswordURL;
+            }
+        });
 
         //如果在iframe中打开，就自动点击登录按钮
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {

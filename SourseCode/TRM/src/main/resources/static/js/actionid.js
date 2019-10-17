@@ -83,6 +83,7 @@ function getactionid_manage() {
         login_gotomain:"login_gotomain",
         login_gotologin:"login_gotologin",
         login_updatePassWord:"login_updatePassWord",
+        login_gotoforgotpassword:"login_gotoforgotpassword",
 
         main_userloginout:"main_userloginout",
         main_toaddCaseToUser:"main_toaddCaseToUser",

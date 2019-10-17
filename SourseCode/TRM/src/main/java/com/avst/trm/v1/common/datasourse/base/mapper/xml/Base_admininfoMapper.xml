@@ -21,6 +21,7 @@
         <result column="integer2" property="integer2" />
         <result column="creator" property="creator" />
         <result column="temporaryaskbool" property="temporaryaskbool" />
+        <result column="superbool" property="superbool" />
     </resultMap>
 
 </mapper>

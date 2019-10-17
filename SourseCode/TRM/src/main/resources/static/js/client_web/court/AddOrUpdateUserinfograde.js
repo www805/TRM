@@ -23,11 +23,7 @@ function callbackgetUserinfogradeByssid(data) {
                     $("#gradename").val(userinfograde.gradename);
                     $("#gradetype").val(userinfograde.gradetype);
                     $("#grade").val(userinfograde.grade);
-                    
-                    if (userinfograde.gradename!="审判长"&&userinfograde.gradename!="被告"){
-                        //审判长和被告不可改
-                        $("#addOrUpdate_btn").css({"visibility":"initial"});
-                    }
+
                 }
             }
         }

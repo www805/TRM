@@ -88,6 +88,22 @@ public class Base_admininfo extends Model<Base_admininfo> {
 
     private Integer temporaryaskbool;//是否为临时询问人1是临时询问人-1非临时询问人
 
+    /**
+     * 是否为超级管理员
+     * 1是
+     * -1不是 默认为-1
+     * 超级管理员只存在一个不可删除
+     */
+    private Integer superbool;
+
+    public Integer getSuperbool() {
+        return superbool;
+    }
+
+    public void setSuperbool(Integer superbool) {
+        this.superbool = superbool;
+    }
+
     public String getCreator() {
         return creator;
     }

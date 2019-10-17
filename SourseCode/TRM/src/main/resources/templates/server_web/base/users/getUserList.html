@@ -135,8 +135,8 @@
             <td>{{value.updatetime==null?"":value.updatetime}}</td>
             <td>{{value.lastlogintime==null?"":value.lastlogintime}}</td>
             <td>
-                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm" shiro:hasPermission='updateUser'>修改</a>
-                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" shiro:hasPermission='deleteUser'>删除</a>
+                <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm" shiro:hasPermission='updateUser' >修改</a>
+                <a onclick="deleteUser('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" shiro:hasPermission='deleteUser' {{value.superbool==1?"style='visibility:hidden'":"style='visibility:visible'"}}>删除</a>
             </td>
         </tr>
         {{#  }); }}

@@ -516,6 +516,17 @@ public class MainAction extends BaseAction {
         return new ModelAndView("client_web/base/packdownList", "packdownListModel", model);
     }
 
+    /**
+     * 跳转==》忘记密码界面
+     */
+    @GetMapping("gotoforgotpassword")
+    public ModelAndView gotoforgotpassword(Model model){
+        model.addAttribute("title","忘记密码");
+        return new ModelAndView("client_web/base/forgotpassword", "forgotpasswordModel", model);
+    }
+
+
+
 
 
 

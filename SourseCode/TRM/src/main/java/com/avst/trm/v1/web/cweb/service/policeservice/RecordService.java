@@ -1663,6 +1663,21 @@ public class RecordService extends BaseService {
             }
         }
 
+        //生成初始化word头文件
+        RResult exportwordhead_rr=new RResult();
+        ExportWordParam exportwordheadParam=new ExportWordParam();
+        exportwordheadParam.setRecordssid(record.getSsid());
+        exportwordheadParam.setWordheadbool(true);
+        ReqParam reqParam=new ReqParam();
+        reqParam.setParam(exportwordheadParam);
+        recordService.exportWord(exportwordhead_rr, reqParam);
+        if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
+        }else{
+            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
+        }
+
+
 
         //添加提讯表拓展数据
         String arraignmentssid=arraignment.getSsid();
@@ -1718,6 +1733,7 @@ public class RecordService extends BaseService {
                     LogUtil.intoLog(1,this.getClass(),"police_arraignmentexpandMappe_insertbool__"+police_arraignmentexpandMappe_insertbool);
                 }
             }
+            LogUtil.intoLog(1,this.getClass(),"添加拓展表数据外部人员数__"+arraignmentexpand.size());
         }
 
         //添加拓展表数据：一般内部人员
@@ -1740,23 +1756,11 @@ public class RecordService extends BaseService {
                     }
                 }
             }
+            LogUtil.intoLog(1,this.getClass(),"__内部人员数"+arrUserExpandParams.size());
         }
-        LogUtil.intoLog(1,this.getClass(),"添加拓展表数据外部人员数__"+arraignmentexpand.size()+"__内部人员数"+arrUserExpandParams.size());
 
 
-        //生成初始化word头文件
-        RResult exportwordhead_rr=new RResult();
-        ExportWordParam exportwordheadParam=new ExportWordParam();
-        exportwordheadParam.setRecordssid(record.getSsid());
-        exportwordheadParam.setWordheadbool(true);
-        ReqParam reqParam=new ReqParam();
-        reqParam.setParam(exportwordheadParam);
-        recordService.exportWord(exportwordhead_rr, reqParam);
-        if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
-        }else{
-            LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
-        }
+
 
 
         addCaseToArraignmentVO.setRecordssid(record.getSsid());

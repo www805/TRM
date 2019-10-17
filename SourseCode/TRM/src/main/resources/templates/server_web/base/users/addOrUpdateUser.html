@@ -40,13 +40,22 @@
         </div>
 
 
-
-        <div class="layui-form-item">
+        <div class="layui-form-item" th:if="${userModel.ssid}==null">
             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>密码</label>
             <div class="layui-input-inline">
-                <input type="password" name="password" id="password" required  lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                <input type="password" name="password" id="password" required  lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input"  >
             </div>
             <div class="layui-form-mid layui-word-aux" >请输入5-12位由字母、数字或者下划线组成的密码</div>
+        </div>
+
+        <div class="layui-form-item" th:if="${userModel.ssid}!=null">
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>重置密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="reset_password" id="reset_password" required  lay-verify="reset_password" placeholder="导入文件进行密码重置" autocomplete="off" class="layui-input" disabled >
+                </div>
+                <button class="layui-btn layui-btn-normal"   title="导入文件进行密码重置" onclick="keyfile_click()"><i class="layui-icon layui-icon-upload-circle"></i>选择文件</button>
+                <input id="keyfile" type="file" style="display: none;" onchange="reset_keyfile(this);">
+                 <div class="layui-form-mid layui-word-aux" style="width: 100%"><div style="display: inline;text-align: left;float: left" id="showfilename"></div></div>
         </div>
 
 
