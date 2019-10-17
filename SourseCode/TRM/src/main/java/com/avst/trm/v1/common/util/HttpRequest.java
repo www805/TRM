@@ -396,6 +396,136 @@ public class HttpRequest {
 	}
 
 
+	/**
+	 * 设备文件上传的方法
+	 * 可以携带参数
+	 * @param actionUrl：上传的路径
+	 * @param uploadFilePath：需要上传的文件路径
+	 * @return
+	 */
+	public static boolean uploadFile_fd(String actionUrl, String uploadFilePath,Map<String,String> map) {
+		String end = "\r\n";
+		String boundary = "--*****";
+
+		URLConnection urlConnection=null;
+		HttpURLConnection httpURLConnection=null;
+		OutputStream out=null;
+		InputStream inputStream = null;
+		InputStreamReader inputStreamReader = null;
+		DataInputStream dataIn=null;
+		BufferedReader reader = null;
+		StringBuffer resultBuffer = new StringBuffer();
+		String tempLine = null;
+		File file = new File(uploadFilePath);
+
+		//文件上传
+		String uploadFile = uploadFilePath;
+		String filename = file.getName();
+
+		try {
+
+			// 统一资源
+			URL url = new URL(actionUrl);
+			// 连接类的父类，抽象类
+			urlConnection = url.openConnection();
+			// http的连接类
+			httpURLConnection = (HttpURLConnection) urlConnection;
+			// 设置是否从httpUrlConnection读入，默认情况下是true;
+			httpURLConnection.setDoInput(true);
+			// 设置是否向httpUrlConnection输出
+			httpURLConnection.setDoOutput(true);
+			// Post 请求不能使用缓存
+			httpURLConnection.setUseCaches(false);
+			// 设定请求的方法，默认是GET
+			httpURLConnection.setRequestMethod("POST");
+
+			httpURLConnection.setReadTimeout(4000);
+			httpURLConnection.setConnectTimeout(4000);
+			// 设置字符编码连接参数
+			httpURLConnection.setRequestProperty("Connection", "Keep-alive");
+			httpURLConnection.setRequestProperty("Host", NetTool.getMyIP());
+			httpURLConnection.setRequestProperty("User-Agent",
+					"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36 SE 2.X MetaSr 1.0");
+			// 设置请求内容类型
+			httpURLConnection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+			httpURLConnection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+			httpURLConnection.setRequestProperty("Cookie", OpenUtil.getUUID_32()+"=admin");
+
+			// 获得输出流
+			out = new DataOutputStream(httpURLConnection.getOutputStream());
+
+			// 请求正文信息
+			// 第一部分：
+			StringBuilder sb = new StringBuilder();
+			sb.append(end+boundary+end);
+			if(null!=map){
+				for (Map.Entry<String, String> entry : map.entrySet()) {
+					sb.append("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"" );
+					sb.append(end+end);
+					sb.append(entry.getValue());
+					sb.append(end+boundary+end);
+				}
+			}
+
+			sb.append("Content-Disposition: form-data; name=\"filebinary\"; filename=\"" + filename + "\""+end);
+			//未知文件类型，以流的方式上传
+			sb.append("Content-Type: application/octet-stream"+end+end);
+
+			byte[] head = sb.toString().getBytes("UTF-8");
+
+			// 输出表头
+			out.write(head);
+			// 文件正文部分
+			// 把文件已流文件的方式 推入到url中
+			inputStream = new FileInputStream(file);
+			dataIn = new DataInputStream(inputStream);
+			int bytes = 0;
+			byte[] bufferOut = new byte[1024];
+			while ((bytes = dataIn.read(bufferOut)) != -1) {
+				out.write(bufferOut, 0, bytes);
+			}
+
+			// 结尾部分
+			byte[] foot = (end+boundary+"--"+end).getBytes("UTF-8");// 定义最后数据分隔线
+			out.write(foot);
+			out.flush();
+			out.close();
+
+			try {
+				System.out.println(httpURLConnection.getResponseCode()+"--httpURLConnection.getResponseCode()");
+				if (httpURLConnection.getResponseCode() >= 300) {
+					throw new Exception(
+							"HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("httpURLConnection-----"+httpURLConnection!=null?JacksonUtil.objebtToString(httpURLConnection):null);
+			}
+
+			//不能要返回值，一定会出错
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+
+			closecon(httpURLConnection,null,reader, null,inputStream,inputStreamReader);
+
+			try {
+				dataIn.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			if(null!=urlConnection){
+				urlConnection=null;
+			}
+
+		}
+		return false;
+	}
+
+
    private class TrustAnyHostnameVerifier implements HostnameVerifier {
 	   public boolean verify(String hostname, SSLSession session) {
 		// 直接返回true
@@ -531,15 +661,15 @@ public static String uploadFile_HttpPost(String actionURL,String filepath,Map<St
 		String uuid=OpenUtil.getUUID_32();
 		String actionUrl="http://192.168.17.186:80/uploadService/httpFileUpload";
 //		String actionUrl="http://192.168.17.175:8080/cweb/police/notification/uploadNotification";
-		String uploadFilePath="D:\\ftpdata\\sb3\\2019-08-21\\892eddc0bd0647419a3246d7a9d4d580_sxsba2\\NetTool.jar";
+		String uploadFilePath="D:\\ftpdata\\sb3\\2019-10-17\\ced20137b6404df0a7f53735a66559a0_sxsba2\\iidplay.txt";
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("upload_task_id","892eddc0bd0647419a3246d7a9d4d580_sxsba2");
-		map.put("dstPath","/tmp/hd0/2019-08-21/892eddc0bd0647419a3246d7a9d4d580_sxsba2/");
-		map.put("fileName","NetTool.jar");
+		map.put("dstPath","/tmp/hd0/2019-10-17/ced20137b6404df0a7f53735a66559a0_sxsba2/");
+		map.put("fileName","iidplay.txt");
 		map.put("linkaction","burn");
-		map.put("discFileName","NetTool.jar");
+		map.put("discFileName","iidplay.txt");
 		map.put("action","upload_file");
-		String rr=uploadFile(actionUrl,uploadFilePath,map);
+		boolean rr=uploadFile_fd(actionUrl,uploadFilePath,map);
 
 //		String rr=uploadFile_HttpPost(actionUrl,uploadFilePath,map);
 		System.out.println(rr);
