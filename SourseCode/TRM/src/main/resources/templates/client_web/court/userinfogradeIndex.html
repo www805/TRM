@@ -65,7 +65,7 @@
             {{# var gradetypetext="未知",gradetype=value.gradetype;  if(1==gradetype){gradetypetext="法官团";}else if(gradetype==2){gradetypetext="辩护人";}else if(gradetype==3){gradetypetext="原告";}else if(gradetype==4){gradetypetext="被告";}else if(gradetype==5){gradetypetext="其他";}else{gradetypetext="未知";}  }}
             <td>{{gradetypetext==null?"":gradetypetext}}</td>
             <td>
-                <a href="#"  onclick="toaddOupdateurl('{{value.ssid}}');"       class="layui-btn layui-btn-normal layui-btn-xs" >修改</a>
+                <a href="#"  onclick="toaddOupdateurl('{{value.ssid}}');"       class="layui-btn layui-btn-normal layui-btn-xs"  >编辑</a>
             </td>
         </tr>
         {{#  }); }}

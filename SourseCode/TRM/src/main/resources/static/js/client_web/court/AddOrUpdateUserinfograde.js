@@ -23,6 +23,11 @@ function callbackgetUserinfogradeByssid(data) {
                     $("#gradename").val(userinfograde.gradename);
                     $("#gradetype").val(userinfograde.gradetype);
                     $("#grade").val(userinfograde.grade);
+                    
+                    if (userinfograde.gradename!="审判长"&&userinfograde.gradename!="被告"){
+                        //审判长和被告不可改
+                        $("#addOrUpdate_btn").css({"visibility":"initial"});
+                    }
                 }
             }
         }
@@ -46,7 +51,7 @@ function addOrUpdateUserinfograde() {
     var gradename=$("#gradename").val();
     var gradetype=$("#gradetype").val();
     var grade=$("#grade").val();
-
+    gradename = gradename.replace(/\s/g, "");
 
     if (!isNotEmpty(gradename)) {
         layer.msg("请输入级别名称",{icon:5});
