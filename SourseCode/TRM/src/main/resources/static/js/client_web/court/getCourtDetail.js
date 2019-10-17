@@ -49,7 +49,7 @@ function setqw(problems) {
 
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 95%;" class="onetd" id="record_qw">\
+                        <td style="padding: 0;width: 100%;" class="onetd" id="record_qw">\
                             <div class="table_td_tt font_red_color" ><span>&nbsp;</span><label name="q" contenteditable="false" times="'+q_starttime+'">'+problemtext+'</label></div>';
             problemhtml+=' <div  id="btnadd" style="display: none;"></div></td>\
                         <td style="display: block" id="record_util"></td></tr>';
@@ -158,9 +158,6 @@ function callbackgetRecordById(data) {
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
-                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
-                $("#record_qw_HTML").attr("class","layui-col-md7").show();
-                $("#fd_HTML").show();
                 set_getPlayUrl(getPlayUrlVO);
             }else {
                 $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
@@ -525,7 +522,7 @@ function  open_casetouser() {
 //*******************************************************************笔录问答编辑start****************************************************************//
 function open_recordqw() {
     //切换界面
-    $("#recorddetail #record_qw").css({"width":"95%"});
+    $("#recorddetail #record_qw").css({"width":"100%"});
     $("#recorddetail #record_util,#btnadd").css({"display":"block"});
     $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
     $("#wqutil").show();
@@ -627,7 +624,7 @@ function setFocus(el) {
 
 //最后一行添加按钮初始化
 function addbtn() {
-    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
+    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
     $("#recorddetail tr").each(function () {
         $("#btnadd",this).html("");
     });
