@@ -204,6 +204,7 @@ function getactionid_manage() {
         waitRecord_getCDNumber:"waitRecord_getCDNumber",
         waitRecord_putRecessStatus:"waitRecord_putRecessStatus",
         waitRecord_tocaseToUser:"waitRecord_tocaseToUser",
+        waitRecord_torecordIndex:"waitRecord_torecordIndex",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
@@ -374,6 +375,7 @@ function getactionid_manage() {
         waitCourt_uploadNotification:"waitCourt_uploadNotification",
         waitCourt_downloadNotification:"waitCourt_downloadNotification",
         waitCourt_gnlist:"waitCourt_gnlist",
+        waitCourt_torecordIndex:"waitCourt_torecordIndex",
 
         beforeCourt_getRecordtypes:"beforeCourt_getRecordtypes",
         beforeCourt_getNationals:"beforeCourt_getNationals",
