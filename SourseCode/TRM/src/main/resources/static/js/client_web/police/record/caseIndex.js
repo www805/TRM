@@ -494,11 +494,12 @@ function callbackgZIPVod(data) {
         var data=data.data;
         layer.close(gZIPVod_index);
         gZIPVod_Url=data;
+        alert(gZIPVod_Url)
 
         //开始请求获取进度
-        timer_zIPVodProgress=setInterval(function () {
+      /*  timer_zIPVodProgress=setInterval(function () {
             zIPVodProgress();
-        },1000)
+        },1000)*/
 
     }else {
         layer.msg(data.message,{icon: 5});

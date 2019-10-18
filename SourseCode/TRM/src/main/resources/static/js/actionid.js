@@ -279,6 +279,7 @@ function getactionid_manage() {
         caseIndex_tocaseStatistics:"caseIndex_tocaseStatistics",
         caseIndex_towaitCourt:"caseIndex_towaitCourt",
         caseIndex_togetCourtDetail:"caseIndex_togetCourtDetail",
+        caseIndex_gZIPVod:"caseIndex_gZIPVod",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

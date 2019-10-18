@@ -45,6 +45,7 @@ public class CourtService extends BaseService {
              getew.eq("gradename",gradename);
          }
 
+        getew.orderBy("gradetype",true);
         getew.orderBy("createtime",false);
         int count=police_userinfogradeMapper.countgetUserinfogradePage(getew);
         param.setRecordCount(count);
