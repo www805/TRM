@@ -359,6 +359,27 @@ public class MainAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 调用光盘回放exe
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getCDPlayback")
+    @ResponseBody
+    public RResult getCDPlayback(@RequestBody ReqParam<String> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getCDPlayback(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
     /***
      * 检测关键字
      */

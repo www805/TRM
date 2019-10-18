@@ -23,16 +23,7 @@
 <body>
 <div class=" layadmin-message-fluid" style="margin: 40px 20px 20px 20px;">
 
-    <div style="float: left;padding-top: 68px;">
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">混音输出</p>
-            <div id="slideTest0" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 54</p>
-        </div>
-    </div>
-
-    <div style="float: left;border-left: 1px solid #ccc; padding-left: 10px;">
+    <div style="float: left;padding-left: 10px;">
         <h1 style="margin:0 0 30px 20px;">总计6路音频</h1>
         <div class="slideBoby" >
             <p style="text-align: center;font-size: 18px;">音频一</p>
@@ -78,7 +69,7 @@
 
     </div>
     <div style="float: left;margin-top: 420px;">
-        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">确定</button>
+        <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">保存</button>
     </div>
 
 
@@ -158,8 +149,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
-        getLogTypeList();
-        getLogListByTypeByParam();
+
     });
 
 

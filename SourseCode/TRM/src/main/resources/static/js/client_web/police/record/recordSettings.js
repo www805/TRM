@@ -604,6 +604,11 @@ function getFDAudPowerMap() {
     }
 
     var url=getActionURL(getactionid_manage().waitRecord_getFDAudPowerMap);
+
+    if (!isNotEmpty(url)) {
+        url = "/cweb/police/record/getFDAudPowerMap";
+    }
+
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -622,13 +627,17 @@ function callFDAudPowerMap(data){
                 var list=data.audpowList;
                 if (isNotEmpty(list)) {
                     var audpowHTML = "";
+                    var audpowHTML2 = "";
 
                     $("#bars").html("");
+                    $("#bars2").html("");
                     for (var i = 0; i < list.length; i++) {
                         var audpow = list[i];
                         audpowHTML += '<div class="bar"><div style="height: ' + audpow + '%;"></div></div>\n';
+                        audpowHTML2 += '<div class="bar2"><div style="height: ' + audpow + '%;"></div></div>\n';
                     }
                     $("#bars").html(audpowHTML);
+                    $("#bars2").html(audpowHTML2);
 
                 }
             }
@@ -979,14 +988,13 @@ function callFDState(data){
                 $("#cp_isburn").html("未开始");
             }
 
-            $("#burn_mode_a").prop("checked",false);
-            $("#burn_mode_b").prop("checked",false);
-
             //fdStateInfo.burn_mode
             if(fdStateInfo.burn_mode == 0){
-                $("#burn_mode_a").prop("checked",true);
+                $("#burn_mode_b").prop("checked",false);
+                $("#burn_mode_a").attr("checked",'checked');
             }else{
-                $("#burn_mode_b").prop("checked",true);
+                $("#burn_mode_a").prop("checked",false);
+                $("#burn_mode_b").attr("checked",'checked');
             }
 
         }

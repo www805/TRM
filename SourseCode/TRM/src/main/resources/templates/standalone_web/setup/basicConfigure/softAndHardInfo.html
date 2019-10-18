@@ -19,21 +19,58 @@
 
 
     <div>
-        <div class="layui-card">
-            <div class="layui-card-header">卡片面板</div>
-            <div class="layui-card-body">
-                卡片式面板面板通常用于非白色背景色的主体内<br>
-                从而映衬出边框投影
-            </div>
-        </div>
 
-        <div class="layui-card">
-            <div class="layui-card-header">卡片面板</div>
-            <div class="layui-card-body">
-                卡片式面板面板通常用于非白色背景色的主体内<br>
-                从而映衬出边框投影
-            </div>
-        </div>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>设备信息</legend>
+        </fieldset>
+
+
+        <table class="layui-table" lay-even="" lay-skin="line" style="width: 600px;">
+            <tbody>
+                <tr>
+                    <td>设备版本</td>
+                    <td>v2521.2356.3254.10</td>
+                </tr>
+                <tr>
+                    <td>硬件版本</td>
+                    <td>v2521.2356.3254.10</td>
+                </tr>
+                <tr>
+                    <td>软件版本</td>
+                    <td>v2521.2356.3254.10</td>
+                </tr>
+                <tr>
+                    <td>设备ID号</td>
+                    <td>v2521.2356.3254.10</td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>笔录系统信息</legend>
+        </fieldset>
+
+        <table class="layui-table" lay-even="" lay-skin="line" style="width: 600px;">
+            <tbody>
+                <tr>
+                    <td>软件版本</td>
+                    <td>v1.0</td>
+                </tr>
+                <tr>
+                    <td>所有公司</td>
+                    <td>海康威视</td>
+                </tr>
+                <tr>
+                    <td>开始使用时间</td>
+                    <td>2019-10-18</td>
+                </tr>
+                <tr>
+                    <td>系统运行时间</td>
+                    <td>1天01：32：12</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
 </div>
@@ -84,8 +121,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
-        getLogTypeList();
-        getLogListByTypeByParam();
+
     });
 
 

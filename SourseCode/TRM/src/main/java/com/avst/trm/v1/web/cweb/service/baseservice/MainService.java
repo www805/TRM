@@ -14,6 +14,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.OpenEXE;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -904,6 +905,8 @@ public class MainService extends BaseService {
 
                 cacheParam.setData(fileYml);
 
+                cacheParam.setGuidepageUrl("");//先给个空字符串
+
                 //请求总控获取提供过来的地址
                 RResult zkResult = new RResult();
                 this.getServerStatus(zkResult, null);
@@ -911,7 +914,7 @@ public class MainService extends BaseService {
                     List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
                     for (LinkedHashMap<String, Object> hashMap : data) {
                         if("zk".equals(hashMap.get("servername"))){
-                            cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url"));
+                            cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url"));//进入总控
                         }
                     }
                 }
@@ -1210,6 +1213,17 @@ public class MainService extends BaseService {
         result.setVersion(controlInfoAll.getVersion());
         result.setMessage(controlInfoAll.getMessage());
         result.setData(controlInfoAll.getData());
+
+    }
+
+    public void getCDPlayback(RResult result, ReqParam<String> param) {
+
+        String path = param.getParam();
+
+        if(StringUtils.isNotBlank(path)){
+            OpenEXE.openEXE(path);
+            changeResultToSuccess(result);
+        }
 
     }
 }

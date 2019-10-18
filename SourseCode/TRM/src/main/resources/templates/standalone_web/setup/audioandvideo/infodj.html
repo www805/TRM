@@ -76,7 +76,7 @@
             </div>
             <div class="layui-inline">
                 <div class="layui-input-block" style="position: absolute;top: 50px;right: -150px;">
-                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">确定</button>
+                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1">保存</button>
                 </div>
             </div>
         </div>
@@ -99,9 +99,6 @@
             ,layer = layui.layer
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
-        laydate.render({
-            elem: '#createtime'
-        });
 
         form.render();
     });
@@ -117,8 +114,7 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
-        getLogTypeList();
-        getLogListByTypeByParam();
+
     });
 
 

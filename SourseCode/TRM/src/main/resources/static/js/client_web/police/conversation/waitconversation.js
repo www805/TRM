@@ -11,6 +11,7 @@ var mcbool=null;
 
 var casebool=null;//案件状态
 
+var FDAudPowerMapTimer;
 
 function getRecordById() {
     var url=getActionURL(getactionid_manage().waitconversation_getRecordById);
@@ -46,9 +47,9 @@ function callbackgetRecordById(data) {
                     getFDState();
                 }, 1000);
 
-                // setInterval(function () {
-                //     getFDAudPowerMap();
-                // }, 500);
+                FDAudPowerMapTimer = setInterval(function () {
+                    getFDAudPowerMap();
+                }, 500);
 
                 setInterval(function () {
                     putRecessStatus();
@@ -391,6 +392,24 @@ function overRecord(state) {
     });
 }
 
+layui.use('form', function(){
+    var form=layui.form;
+
+    form.on('switch(voicebool)', function (data) {
+
+        if (data.elem.checked) {
+            FDAudPowerMapTimer = setInterval(function () {
+                getFDAudPowerMap();
+            }, 500);
+            $("#voice").show();
+        }else{
+            $("#voice").hide();
+            clearInterval(FDAudPowerMapTimer);
+        }
+
+    });
+
+});
 
 function calladdRecord(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){

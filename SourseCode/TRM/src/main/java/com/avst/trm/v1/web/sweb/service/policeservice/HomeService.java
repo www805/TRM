@@ -177,7 +177,7 @@ public class HomeService extends BaseService {
                 Map<String, Object> commonYml = (Map<String, Object>) oemYml.get("common_o");//取出通用版
                 Map<String,Object> fileYml = (Map<String, Object>) commonYml.get(swebFile);
 
-                Map<String,Object> clientYml = (Map<String, Object>) oemYml.get(client_name);//取出客户端
+                Map<String,Object> clientYml = (Map<String, Object>) commonYml.get(client_name);//取出客户端
                 String guidepageUrl = (String) clientYml.get("home-url");//获取客户端的首页
                 fileYml.put("bottom", commonYml.get("bottom"));
                 fileYml.put("gnlist", gnlist);

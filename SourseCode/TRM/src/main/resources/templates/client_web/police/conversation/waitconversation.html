@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
     <link rel="stylesheet" href="/layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="/uimaker/css/voice.css">
 </head>
 <style>
     .layui-card-header{
@@ -269,8 +270,13 @@
     </div>
 
     <div class="layui-row layui-form" id="layui-row1">
-        <div class="layui-col-md9"  style="height: 830px; overflow-x: hidden; overflow-y: scroll;" id="phitem">
-            <div th:replace="living4 :: living"  >...</div>
+        <div class="layui-col-md9 phitem1" style="height: 830px; overflow-x: hidden; overflow-y: scroll;" id="phitem">
+            <div id="living3_2">
+                <div th:replace="living4 :: living"  >...</div>
+            </div>
+            <div id="voice" style="position: absolute;right: 305px;top: 0px;" >
+                <div th:replace="voice :: voice"  >...</div>
+            </div>
         </div>
         <div class="layui-col-md3 " style="height: 830px; overflow-x: hidden; overflow-y: scroll;display: block" id="shrink_html" >
             <!---->
@@ -325,6 +331,16 @@
 
         form.on('select(burntime)', function (data) {
             updateBurnTime();
+        });
+
+        form.on('radio(kl_filter)', function(data){
+
+            if (data.value == "直刻模式") {
+                changeBurnMode(0);
+            }else{
+                changeBurnMode(2);
+            }
+
         });
 
         form.on('radio(bq_filter)', function(data){

@@ -41,7 +41,7 @@
                 <li id="hours">00</li>
                 <li id="point">:</li>
                 <li id="min">00 </li>
-                <li id="point">:</li>
+                <li id="point2">:</li>
                 <li id="sec"> 00</li>
             </ul>
             <div id="dqtime" style="display: none"></div>
@@ -63,6 +63,9 @@
                         <div class="layui-col-lg12">
                             <div id="livetypes"  >
                                 <div id="living3_1"></div>
+                            </div>
+                            <div id="voice2" style="position: absolute;left: -90px;top: 0px;" >
+                                <div th:replace="voice2 :: voice2"  >...</div>
                             </div>
                         </div>
                     </div>
@@ -96,7 +99,7 @@
                                 </div>
                         </div>
                     </div>
-                    <div class="layui-tab-item phitem2"  id="phitem" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
+                    <div class="layui-tab-item phitem2"  id="phitem2" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
                             <div class="layui-col-md12" >
                                 <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height: 35px;line-height: 35px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
                             </div>

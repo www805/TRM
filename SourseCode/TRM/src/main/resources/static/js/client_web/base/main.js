@@ -40,6 +40,20 @@ function getPant() {
     ajaxSubmitByJson(url,data,callgetPant);
 }
 
+//调用光盘回放exe
+function getCDPlayback() {
+    // var url=getActionURL(getactionid_manage().main_getNavList);
+    var url = "/cweb/base/main/getCDPlayback";
+    var CDPlayback = $("#CDPlayback").val();
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param: CDPlayback
+    };
+
+    ajaxSubmitByJson(url,data,callCommon);
+}
+
 //请求外部文件数据
 function getNavList() {
     var url=getActionURL(getactionid_manage().main_getNavList);
@@ -91,8 +105,15 @@ function callgetNavList(data) {
                         nav_space = "<i style='border-right: 3px solid #bce2ff;position: absolute;top: 15px;right: " + right + "px;width: 2px;height: 50px;'></i>\n";
                     }
 
-                    nav_list_HTML += "<li class=\"layui-nav-item\">\n" +
-                        "                <a target=\"option\" style='display:block; padding-top:45px; height:32px; line-height:32px' href=\"" + nav.url + "\">\n" + nav_icon_HTML+
+                    var nav_exePath = "";
+                    var nav_exePath_Click = "";
+                    if(isNotEmpty(nav.exePath)){
+                        nav_exePath = "<input type=\"hidden\" id='CDPlayback' value=\"" + nav.exePath + "\"> ";
+                        nav_exePath_Click = " onclick='getCDPlayback();'";
+                    }
+
+                    nav_list_HTML += "<li class=\"layui-nav-item\">\n" + nav_exePath + "\n" +
+                        "                <a target=\"option\" style='display:block; padding-top:45px; height:32px; line-height:32px' href=\"" + nav.url + "\"" + nav_exePath_Click + ">\n" + nav_icon_HTML +
                         "                    <cite>" + nav.name + "</cite>\n" +
                         "                </a>\n" + dd_HTML + nav_space +
                         "            </li>";
@@ -150,7 +171,13 @@ function callgetNavList(data) {
     }
 }
 
-
+function callCommon(data) {
+    if (null != data && data.actioncode == 'SUCCESS') {
+        layer.msg("操作成功",{icon: 6});
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
 
 function callgetPant(data) {
     if (null != data && data.actioncode == 'SUCCESS') {
