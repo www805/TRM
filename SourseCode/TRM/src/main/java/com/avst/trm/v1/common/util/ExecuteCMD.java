@@ -40,18 +40,41 @@ public class ExecuteCMD {
 	}
 
 	/**
+	 * 执行cmd命令(需要通道还执行)
+	 * @param cmd
+	 * @return
+	 */
+	public static String executeCMD_td(String cmd){
+
+
+		String[] arr=new String[]{ "sh", "-c", cmd };
+		return execute(null,arr);
+
+	}
+
+
+	public static String executeCMD(String cmd){
+
+		return execute(cmd,null);
+	}
+
+	/**
 	 * 执行cmd命令
 	 * @param cmd
 	 * @return
 	 */
-	public static String executeCMD(String cmd){
+	private static String execute(String cmd,String[] cmdarr){
 		OutputStream os = null;
 		InputStream in=null;
 		InputStream in2=null;
 		Process process=null;
 		try {
 			long start = System.currentTimeMillis();
-			process = Runtime.getRuntime().exec(new String[]{ "sh", "-c", cmd });
+			if(null==cmd){
+				process = Runtime.getRuntime().exec(cmdarr);
+			}else{
+				process = Runtime.getRuntime().exec(cmd);
+			}
 			os=process.getOutputStream();
 			in=process.getInputStream();
 			in2=process.getErrorStream();
@@ -67,33 +90,37 @@ public class ExecuteCMD {
 			e.printStackTrace();
 		}finally {
 
-			try {
-				if(null!=os){
-					os.flush();
-					os.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=process){
-					process.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			close(os,in,in2,process);
 		}
 
 		return null;
 
+	}
+
+	private static void close(OutputStream os,InputStream in,InputStream in2,Process process){
+		try {
+			if(null!=os){
+				os.flush();
+				os.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if(null!=process){
+				process.destroy();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if(null!=in){
+				in.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }  
