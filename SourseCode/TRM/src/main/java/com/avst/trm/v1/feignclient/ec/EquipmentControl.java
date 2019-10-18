@@ -50,7 +50,7 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getSaveFilePath_local(@RequestBody GetSaveFilePath_localParam param);
 
-    @RequestMapping("/ss/v1/getSaveFilePath_local")
+    @RequestMapping("/ss/v1/getSaveFilesPathByiid")
     @ResponseBody
     public RResult getSaveFilesPathByiid(@RequestBody GetSaveFilesPathByiidParam param);
 
@@ -122,13 +122,13 @@ public interface EquipmentControl {
 //    public RResult getFDState(@RequestBody ReqParam<GetFDStateParam> param);
 
     /**
-     * 获取默认的视频直播地址
+     * 获取默认的视频直播地址以及数据
      * @param param
      * @return
      */
-    @RequestMapping("/flushbonading/v1/getToOutDefaulturl")
+    @RequestMapping("/flushbonading/v1/getToOutDefault")
     @ResponseBody
-    public RResult getToOutDefaulturl(@RequestBody ReqParam<GetToOutFlushbonadingListParam> param);
+    public RResult getToOutDefault(@RequestBody ReqParam<GetToOutFlushbonadingListParam> param);
 
     /**
      * 获取设备状态信息

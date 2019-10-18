@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.cache.param.SysYmlParam;
 import com.avst.trm.v1.common.conf.CreateVodThread;
+import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
@@ -15,6 +16,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
+import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -29,8 +31,13 @@ import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQVersion;
+import com.avst.trm.v1.common.util.uploadfile.UploadFileThread;
+import com.avst.trm.v1.common.util.uploadfile.UploadType;
+import com.avst.trm.v1.common.util.uploadfile.param.FileParam;
+import com.avst.trm.v1.common.util.uploadfile.param.UploadParam_FD;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
+import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
@@ -4585,6 +4592,272 @@ public class RecordService extends BaseService {
 
        result.setData(1);
         changeResultToSuccess(result);
+        return;
+    }
+
+
+    public void exportUdisk(RResult result,ExportUdiskParam param){
+        ExportUdiskVO vo=new ExportUdiskVO();
+        if (null==param){
+            result.setMessage("参数为空");
+            LogUtil.intoLog(3,this.getClass(),"recordService.exportUdisk__请求参数param is null__"+param);
+            return;
+        }
+
+        String ssid=param.getSsid();
+        if (StringUtils.isBlank(ssid)){
+            result.setMessage("参数为空");
+            LogUtil.intoLog(3,this.getClass(),"recordService.exportUdisk__请求参数ssid is null__"+ssid);
+            return;
+        }
+
+        Police_case police_case=new Police_case();
+        police_case.setSsid(ssid);
+        police_case=police_caseMapper.selectOne(police_case);
+        if (null!=police_case){
+            List<String> folderPath=new ArrayList<>();//多文件
+            try {
+                //根据案件查找所有提讯下的文件iid
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",ssid);
+                ewarraignment.eq("recordbool",2).or().eq("recordbool",3);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                        String iid=arraignmentAndRecord.getIid();
+                        if (StringUtils.isNotBlank(iid)){
+                            //根据iid找到需要上传的所有文件
+                            GetSaveFilesPathByiidParam getSaveFilesPathByiidParam=new GetSaveFilesPathByiidParam();
+                            getSaveFilesPathByiidParam.setIid(iid);
+                            getSaveFilesPathByiidParam.setVideobool(0);//不需要上传视频文件
+                            getSaveFilesPathByiidParam.setSsType(SSType.AVST);
+                            RResult rResult=equipmentControl.getSaveFilesPathByiid(getSaveFilesPathByiidParam);
+                            //请求设备允许上传到设备中的路径，一个一个传过去
+                            if(null!=rResult&&null!=rResult.getData()){
+                                String pathlist=rResult.getData().toString();
+                                String[] patharr=pathlist.split(",");
+                                if(patharr!=null&&patharr.length > 0) {
+                                    String path=patharr[0];
+                                    String zippath=OpenUtil.getfile_folder(path);
+                                    LogUtil.intoLog(1,this.getClass(),"iid："+iid+"----打包的文件夹zippath:"+zippath);
+                                    folderPath.add(zippath);
+                                }
+                            }else{
+                                LogUtil.intoLog(4,this.getClass(),"根据iid获取文件路径异常，iid："+iid);
+                            }
+                        }else {
+                            LogUtil.intoLog(1,this.getClass(),"recordService.exportUdisk__该笔录未有打包文件recordssid___iid is null__"+arraignmentAndRecord.getRecordssid());
+                        }
+                    }
+                    if (null!=folderPath&&folderPath.size()>0){
+                        String gztype=PropertiesListenerConfig.getProperty("gztype");
+                        if(StringUtils.isEmpty(gztype)){
+                            gztype=".zip";
+                        }
+
+                        String exportfilename=police_case.getCasename();
+                        if(StringUtils.isEmpty(exportfilename)){
+                            exportfilename=ssid;
+                        }
+
+                        //地址
+                        String savePath=PropertiesListenerConfig.getProperty("file.casezip");
+                        String realurl = OpenUtil.createpath_fileByBasepath(savePath);
+                        LogUtil.intoLog(this.getClass(),"案件打包地址真实文件夹地址__"+realurl);
+
+
+                        GZIPThread gzipThread=new GZIPThread(folderPath,realurl,ssid,exportfilename,gztype);
+                        gzipThread.start();
+
+
+                        //获取下载路径
+                        String zipfilepath=realurl;
+                        if(zipfilepath.endsWith("\\")||zipfilepath.endsWith("/")){
+                            zipfilepath=zipfilepath.substring(0,zipfilepath.length()-1);
+                        }
+                        if(zipfilepath.indexOf("\\") > -1){
+                            zipfilepath+="\\\\"+exportfilename+gztype;
+                        }else {
+                            zipfilepath+="/"+exportfilename+gztype;
+                        }
+                        String uploadpath=PropertiesListenerConfig.getProperty("upload.basepath");
+                        String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+                        String httpzipfilepath=uploadpath+OpenUtil.strMinusBasePath(qg,zipfilepath);
+                        LogUtil.intoLog(1,this.getClass(),"打包下载的地址,httpzipfilepath:"+httpzipfilepath);
+                        if (StringUtils.isNotBlank(httpzipfilepath)){
+                            vo.setDownurl(httpzipfilepath);
+                            result.setData(vo);
+                            changeResultToSuccess(result);
+                            return;
+                        }else {
+                            LogUtil.intoLog(1,this.getClass(),"打包下载的地址,httpzipfilepath is null"+httpzipfilepath);
+                        }
+                    }else {
+                        result.setMessage("未找到可导出的文件可能正在生成中请稍等");
+                        LogUtil.intoLog(1,this.getClass(),"案件导出到U盘————未找到可导出的文件可能正在生成中请稍等"+ssid);
+                        return;
+                    }
+                }else {
+                    result.setMessage("该案件未找到可导出的文件");
+                    LogUtil.intoLog(1,this.getClass(),"案件导出到U盘————该案件未找到可导出的文件"+ssid);
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            result.setMessage("案件信息未找到");
+            LogUtil.intoLog(1,this.getClass(),"案件导出到U盘————案件信息未找到 case isn null"+ssid);
+            return;
+        }
+        return;
+    }
+
+    /**
+     * ==上传第三方先拼接默认模板里面的设备  后期需要更改
+     * @param result
+     * @param param
+     * @param session
+     */
+    public void exportLightdisk(RResult result,ExportLightdiskParam param,HttpSession session){
+        ExportLightdiskVO vo=new ExportLightdiskVO();
+        if (null==param){
+            result.setMessage("参数为空");
+            LogUtil.intoLog(3,this.getClass(),"recordService.exportLightdisk__请求参数param is null__"+param);
+            return;
+        }
+        String ssid=param.getSsid();
+        if (StringUtils.isBlank(ssid)){
+            result.setMessage("参数为空");
+            LogUtil.intoLog(3,this.getClass(),"recordService.exportLightdisk__请求参数ssid is null__"+ssid);
+            return;
+        }
+
+        Police_case police_case=new Police_case();
+        police_case.setSsid(ssid);
+        police_case=police_caseMapper.selectOne(police_case);
+        if (null!=police_case){
+            List<FileParam<UploadParam_FD>> fileList=new ArrayList<>();//上传的所有文件集合
+            try {
+                //根据案件查找所有提讯下的文件iid
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",ssid);
+                ewarraignment.eq("recordbool",2).or().eq("recordbool",3);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+
+                    //此处暂时采用默认设备的地址==后期变更
+                    String actionUrl_ip=null;
+                    Integer actionUrl_port=null;
+                    ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
+                    GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
+                    listParam.setFdType(FDType.FD_AVST);
+                    param_.setParam(listParam);
+                    RResult result_ = equipmentControl.getToOutDefault(param_);
+                    if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_.getData()) {
+                        Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
+                        if (null!=flushbonadinginfo){
+                            actionUrl_ip=flushbonadinginfo.getEtip();
+                            actionUrl_port=flushbonadinginfo.getPort();
+                        }
+                    }else{
+                        LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefault__出错");
+                    }
+                    if (null==actionUrl_port||StringUtils.isBlank(actionUrl_ip)){
+                        result.setMessage("上传服务器地址未找到");
+                        LogUtil.intoLog(4,this.getClass(),"案件导出到光盘————上传服务器地址未找到actionUrl_port is null and actionUrl_ip is null");
+                        return;
+                    }
+
+                    String actionUrl="http://"+actionUrl_ip+":"+actionUrl_port+"/uploadService/httpFileUpload";
+                    LogUtil.intoLog(1,this.getClass(),"案件导出到光盘————上传服务器地址____actionUrl____"+actionUrl);
+
+
+                    for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                        String iid=arraignmentAndRecord.getIid();
+                        if (StringUtils.isNotBlank(iid)){
+                            //根据iid找到需要上传的所有文件
+                            GetSaveFilePath_localParam getSaveFilePath_localParam=new GetSaveFilePath_localParam();
+                            getSaveFilePath_localParam.setIid(iid);
+                            getSaveFilePath_localParam.setSsType(SSType.AVST);
+                            RResult rResult=equipmentControl.getSaveFilePath_local(getSaveFilePath_localParam);
+                            //请求设备允许上传到设备中的路径，一个一个传过去
+                            if(null!=rResult&&null!=rResult.getData()){
+                                String pathlist=rResult.getData().toString();
+                                String[] patharr=pathlist.split(",");
+                                if(patharr!=null&&patharr.length > 0) {
+                                    String path=patharr[0];
+                                    String zippath=OpenUtil.getfile_folder(path);
+                                    LogUtil.intoLog(1,this.getClass(),"iid："+iid+"----打包的文件夹zippath:"+zippath);
+
+                                    //收集数据
+                                    List<String> filelist= FileUtil.getAllFilePath(zippath,2);
+                                    if(null!=filelist&&filelist.size() > 0){
+                                        for(String path_:filelist){
+                                            String staticpath=PropertiesListenerConfig.getProperty("staticpath");
+
+                                            File file=new File(path);
+                                            UploadParam_FD fd=new UploadParam_FD();
+                                            fd.setDiscFileName(file.getName());
+                                            fd.setDstPath("/tmp/hd0/2019-08-01/c4b46c6adfca421fa97f9ac73e68150e_sxsba2/");
+                                            fd.setFileName(file.getName());
+                                            fd.setUpload_task_id(iid);
+
+                                            FileParam<UploadParam_FD> fdFileParam=new FileParam<>();
+                                            fdFileParam.setUploadparam(fd);
+                                            fdFileParam.setActionURL(actionUrl);
+                                            fdFileParam.setFilePath(path_);
+                                            fileList.add(fdFileParam);
+                                        }
+                                    }
+
+                                }
+                            }else{
+                                LogUtil.intoLog(4,this.getClass(),"根据iid获取文件路径异常，iid："+iid);
+                            }
+                        }else {
+                            LogUtil.intoLog(1,this.getClass(),"recordService.exportUdisk__该笔录未有打包文件recordssid___iid is null__"+arraignmentAndRecord.getRecordssid());
+                        }
+                    }
+                    if (null!=fileList&&fileList.size()>0){
+                        String gztype=PropertiesListenerConfig.getProperty("gztype");
+                        if(StringUtils.isEmpty(gztype)){
+                            gztype=".zip";
+                        }
+
+                        String exportfilename=police_case.getCasename();
+                        if(StringUtils.isEmpty(exportfilename)){
+                            exportfilename=ssid;
+                        }
+                        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
+
+                        UploadParam_FD uploadParam_fd=new UploadParam_FD();
+                        UploadFileThread<UploadParam_FD> uploadFileThread=new UploadFileThread(fileList,UploadType.AVST_FD,ssid,user.getUsername(),exportfilename);
+                        uploadFileThread.start();
+
+                        changeResultToSuccess(result);
+                        return;
+
+                    }else {
+                        result.setMessage("未找到可导出的文件可能正在生成中请稍等");
+                        LogUtil.intoLog(1,this.getClass(),"案件导出到光盘————未找到可导出的文件可能正在生成中请稍等"+ssid);
+                        return;
+                    }
+                }else {
+                    result.setMessage("该案件未找到可导出的文件");
+                    LogUtil.intoLog(1,this.getClass(),"案件导出到光盘————该案件未找到可导出的文件"+ssid);
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            result.setMessage("案件信息未找到");
+            LogUtil.intoLog(1,this.getClass(),"案件导出到光盘————案件信息未找到 case isn null"+ssid);
+            return;
+        }
+
         return;
     }
 

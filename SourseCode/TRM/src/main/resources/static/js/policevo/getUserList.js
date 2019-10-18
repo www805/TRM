@@ -184,6 +184,8 @@ function callbackchangeUser(data){
 }
 
 
+
+
 $(function () {
     layui.use(['layer','form'], function(){
         var $ = layui.$ //由于layer弹层依赖jQuery，所以可以直接得到

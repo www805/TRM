@@ -28,6 +28,7 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.cache.KeywordCache;
@@ -611,11 +612,14 @@ public class MainService extends BaseService {
         GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
         listParam.setFdType(FDType.FD_AVST);
         param_.setParam(listParam);
-        RResult result_ = equipmentControl.getToOutDefaulturl(param_);
-        if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())) {
-            liveurl= String.valueOf(result_.getData());
+        RResult result_ = equipmentControl.getToOutDefault(param_);
+        if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_.getData()) {
+            Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
+            if (null!=flushbonadinginfo&&null!=flushbonadinginfo.getLivingurl()){
+                liveurl= flushbonadinginfo.getLivingurl();
+            }
         }else{
-            LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefaulturl__出错");
+            LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefault__出错");
         }
         vo.setLiveurl(liveurl);
 

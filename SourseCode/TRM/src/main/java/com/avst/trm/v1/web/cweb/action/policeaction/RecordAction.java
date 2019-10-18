@@ -940,6 +940,44 @@ public class RecordAction extends BaseAction {
     }
 
 
+    /**
+     * 导出到U盘（本地）
+     * @param param
+     * @return
+     */
+    @RequestMapping("/exportUdisk")
+    public RResult exportUdisk(@RequestBody ReqParam<ExportUdiskParam> param ){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.exportUdisk(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 导出到光盘
+     * @param param
+     * @return
+     */
+    @RequestMapping("/exportLightdisk")
+    public RResult exportLightdisk(@RequestBody ReqParam<ExportLightdiskParam> param,HttpSession session){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService.exportLightdisk(result, param.getParam(),session);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+
     @RequestMapping(value = "/getCaseStatistics")
     public RResult getCaseStatistics(@RequestBody ReqParam<GetCaseStatisticsParam> param,HttpSession session){
         RResult result=this.createNewResultOfFail();

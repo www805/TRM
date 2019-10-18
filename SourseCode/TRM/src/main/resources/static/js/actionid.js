@@ -20,22 +20,23 @@ function getactionid_manage() {
         getRoleList_deleteRole:"getRoleList_deleteRole",
         getRoleList_changeboolRole:"getRoleList_changeboolRole",
 
-        addOrUpdateRole_getRoleBySsid:"addOrUpdateRole_getRoleBySsid",//pp
-        addOrUpdateRole_addRole:"addOrUpdateRole_addRole",//pp
+        addOrUpdateRole_getRoleBySsid:"addOrUpdateRole_getRoleBySsid",
+        addOrUpdateRole_addRole:"addOrUpdateRole_addRole",
         addOrUpdateRole_updateRole:"addOrUpdateRole_updateRole",
 
 
         getUserList_getUserList:"getUserList_getUserList",
         getUserList_getAddOrUpdateUser:"getUserList_getAddOrUpdateUser",
         getUserList_deleteUser:"getUserList_deleteUser",
-        getUserList_getRoles:"getUserList_getRoles",//pp
-        getUserList_getWorkunits:"getUserList_getWorkunits",//pp
-        getUserList_changeboolUser:"getUserList_changeboolUser",//pp
+        getUserList_getRoles:"getUserList_getRoles",
+        getUserList_getWorkunits:"getUserList_getWorkunits",
+        getUserList_changeboolUser:"getUserList_changeboolUser",
+        getUserList_toresetPassword:"getUserList_toresetPassword",
 
-        addOrUpdateUser_getUserBySsid:"addOrUpdateUser_getUserBySsid",//pp
-        addOrUpdateUser_getWorkunits:"addOrUpdateUser_getWorkunits",//pp
-        addOrUpdateUser_getRoles:"addOrUpdateUser_getRoles",//pp
-        addOrUpdateUser_addUser:"addOrUpdateUser_addUser",//pp
+        addOrUpdateUser_getUserBySsid:"addOrUpdateUser_getUserBySsid",
+        addOrUpdateUser_getWorkunits:"addOrUpdateUser_getWorkunits",
+        addOrUpdateUser_getRoles:"addOrUpdateUser_getRoles",
+        addOrUpdateUser_addUser:"addOrUpdateUser_addUser",
         addOrUpdateUser_updateUser:"addOrUpdateUser_updateUser",
 
 
@@ -165,7 +166,7 @@ function getactionid_manage() {
         getRecordById_addRecord:"getRecordById_addRecord",
         getRecordById_tocaseToUser:"getRecordById_tocaseToUser",
 
-        moreRecord_getRecordtypes:"moreRecord_getRecordtypes",//pp
+        moreRecord_getRecordtypes:"moreRecord_getRecordtypes",
         moreRecord_getRecords:"moreRecord_getRecords",
 
         waitRecord_tomoreTemplate:"waitRecord_tomoreTemplate",
@@ -280,7 +281,8 @@ function getactionid_manage() {
         caseIndex_tocaseStatistics:"caseIndex_tocaseStatistics",
         caseIndex_towaitCourt:"caseIndex_towaitCourt",
         caseIndex_togetCourtDetail:"caseIndex_togetCourtDetail",
-        caseIndex_gZIPVod:"caseIndex_gZIPVod",
+        caseIndex_exportUdisk:"caseIndex_exportUdisk",
+        caseIndex_exportLightdisk:"caseIndex_exportLightdisk",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",

@@ -22,7 +22,17 @@ public class ArraignmentAndRecord extends Police_arraignment {
 
         private String recordtypename;
 
-        public String getRecordtypessid() {
+        private String iid;//打包文件iid
+
+    public String getIid() {
+        return iid;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+    }
+
+    public String getRecordtypessid() {
             return recordtypessid;
         }
 

@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.ChangeboolUserParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetUserListParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,6 +214,29 @@ public class UserAction extends BaseAction{
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
+    }
+
+
+    /**
+     * 跳转到重置密码界面
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/toresetPassword")
+    public ModelAndView toresetPassword(Model model,String ssid) {
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("toresetPassword")) {
+            model.addAttribute("title", "重置密码");
+            model.addAttribute("ssid", ssid);
+            RResult result = createNewResultOfFail(); // AddKeywordParam addKeywordParam,
+            if (StringUtils.isNotBlank(ssid)){
+                userService.getUserBySsid(result,ssid);
+                model.addAttribute("result", result);
+            }
+            return new ModelAndView("server_web/base/users/resetPassword", "resetPasswordModel", model);
+        } else {
+            return new ModelAndView("redirect:/sweb/base/home/unauth");
+        }
     }
 
 
