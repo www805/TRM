@@ -283,9 +283,6 @@
         getHome();
 
         getServerStatus();
-        getServerStatusTimer = setInterval(function () {
-            getServerStatus();
-        }, 5000);
 
         startConversationURL=getActionURL(getactionid_manage().home_tostartConversation);//跳转到开启谈话页面
         recordIndexURL=getActionURL(getactionid_manage().home_torecordIndex);//跳转到笔录列表

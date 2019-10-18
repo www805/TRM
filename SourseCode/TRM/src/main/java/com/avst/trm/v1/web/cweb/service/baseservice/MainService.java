@@ -838,15 +838,14 @@ public class MainService extends BaseService {
                 String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
 
                 Map<String, Object> avstYml = (Map<String, Object>) map.get(application_name);
-                String oem = "common";
-                Map<String, Object> commonYml = (Map<String, Object>) avstYml.get(oem);//取出通用版
-                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get(oem);
+                String oem = "common_o";
+                //取出公司分类
+                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get("oem");//取出通用版
+//                Map<String, Object> commonYml = (Map<String, Object>) oemYml.get(oem);
 
                 //判断如果是通用版，就获取通用版的菜单栏，如果不是通用版就从avst里面匹配出当前公司指定的菜单栏
-                if(gnlist.indexOf("common_o") == -1){
+                if(gnlist.indexOf(oem) == -1){
                     String oemListStr = "";
-                    //取出公司分类
-                    oemYml = (Map<String, Object>) avstYml.get("oem");
 
                     for(Map.Entry<String, Object> entry: oemYml.entrySet()){
 //                    System.out.println("Key: "+ entry.getKey()+ " Value: "+entry.getValue());
@@ -877,13 +876,15 @@ public class MainService extends BaseService {
 
 
                 Map<String, Object> fileYml = (Map<String, Object>) oemYml.get(cwebFile);
-                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
-                Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
-                String guidepageUrl = (String) guidepage.get("url");
-                fileYml.put("bottom", commonYml.get("bottom"));
-                fileYml.put("login", commonYml.get("login"));
+//                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
+//                String guidepageUrl = (String) zkYml.get("home-url");
+
+//                fileYml.put("bottom", commonYml.get("bottom"));
+//                fileYml.put("login", commonYml.get("login"));
                 fileYml.put("gnlist", gnlist);
-                String hostAddress = NetTool.getMyIP();
+//                String hostAddress = NetTool.getMyIP();
+
+
 
 
                 Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支
@@ -902,7 +903,19 @@ public class MainService extends BaseService {
                 fileYml.put("logotitle", logoYml.get("logo"));
 
                 cacheParam.setData(fileYml);
-                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
+
+                //请求总控获取提供过来的地址
+                RResult zkResult = new RResult();
+                this.getServerStatus(zkResult, null);
+                if(null != zkResult.getData()){
+                    List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
+                    for (LinkedHashMap<String, Object> hashMap : data) {
+                        if("zk".equals(hashMap.get("servername"))){
+                            cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url"));
+                        }
+                    }
+                }
+//                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
                 LogUtil.intoLog(1, this.getClass(), "外部配置文件，获取菜单栏成功");
 
 

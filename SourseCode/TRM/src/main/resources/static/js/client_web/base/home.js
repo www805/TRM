@@ -122,9 +122,7 @@ function callgetServerStatus(data) {
             for (var i = 0; i < serverStatus.length; i++) {
 
                 var server = serverStatus[i];
-                if ("zk" == server.servername && server.status == 1) {
-                    $("#guidepage a").attr("href", server.url);
-                }else if ("ec" == server.servername && server.status == 1) {
+                if ("ec" == server.servername && server.status == 1) {
                     $("#ec").html("已启动").removeClass("error").addClass("success");
                     serverInfoState++;
                 } else if ("mc" == server.servername && server.status == 1) {
@@ -138,7 +136,6 @@ function callgetServerStatus(data) {
 
             if (serverInfoState >= 3) {
                 $("#serverInfoState").addClass("layui-bg-green").html("正常");
-                window.clearInterval(getServerStatusTimer);
             }else{
                 $("#serverInfoState").removeClass("layui-bg-green").html("异常");
             }

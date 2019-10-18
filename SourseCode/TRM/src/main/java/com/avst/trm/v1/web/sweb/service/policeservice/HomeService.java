@@ -164,6 +164,7 @@ public class HomeService extends BaseService {
                 Map<String,Object> map = yaml.load(fis);
 
                 String application_name= PropertiesListenerConfig.getProperty("spring.application.name");
+                String client_name= PropertiesListenerConfig.getProperty("nav.file.client");
                 String swebFile=PropertiesListenerConfig.getProperty("nav.file.service");
 
                 //获取授权信息
@@ -172,24 +173,18 @@ public class HomeService extends BaseService {
                 String gnlist = getSQEntity.getGnlist();
 
                 Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
-                Map<String, Object> commonYml = (Map<String, Object>) avstYml.get("common");//取出通用版
+                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get("oem");//oem
+                Map<String, Object> commonYml = (Map<String, Object>) oemYml.get("common_o");//取出通用版
                 Map<String,Object> fileYml = (Map<String, Object>) commonYml.get(swebFile);
-                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
-                Map<String,Object> guidepage = (Map<String, Object>) zkYml.get("guidepage");
-                String guidepageUrl = (String) guidepage.get("url");
-                fileYml.put("bottom", map.get("bottom"));
+
+                Map<String,Object> clientYml = (Map<String, Object>) oemYml.get(client_name);//取出客户端
+                String guidepageUrl = (String) clientYml.get("home-url");//获取客户端的首页
+                fileYml.put("bottom", commonYml.get("bottom"));
                 fileYml.put("gnlist", gnlist);
                 String hostAddress = NetTool.getMyIP();
 
                 cacheParam.setData(fileYml);
 
-                if(gnlist.indexOf(SQVersion.S_V) != -1){
-//                    String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
-//                    fileYml = (Map<String, Object>) avstYml.get(cwebFile);
-//                    guidepageUrl = (String) fileYml.get("home-url");//设置首页
-//                    guidepageUrl = "/cweb/base/main/gotomain";//设置首页
-                    guidepageUrl = (String) fileYml.get("guidepageUrl");//设置首页
-                }
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
 
             } catch (IOException e) {
