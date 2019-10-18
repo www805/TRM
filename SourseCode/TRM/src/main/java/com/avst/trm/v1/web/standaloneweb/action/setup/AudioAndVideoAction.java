@@ -14,44 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class AudioAndVideoAction extends BaseAction {
 
 
-    /*
-     *查询日志列表
-     * @return
-     */
-//    @RequestMapping(value = "/getLogListByType")
-//    @ResponseBody
-//    public RResult getLogListByType(@RequestBody ReqParam<GetLogListByTypeParam> param) {
-//        RResult result=this.createNewResultOfFail();
-//        if(null==param){
-//            result.setMessage("参数为空");
-//        }else if (!checkToken(param.getToken())){
-//            result.setMessage("授权异常");
-//        }else{
-//            logService.getLogListByType(result,param.getParam());
-//        }
-//        result.setEndtime(DateUtil.getDateAndMinute());
-//        return result;
-//    }
-//
-//
-//    /*
-//     *查询日志类型列表
-//     * @return
-//     */
-//    @RequestMapping(value = "/getLogTypeList")
-//    @ResponseBody
-//    public RResult getLogTypeList(@RequestBody ReqParam<GetLogTypeListParam> param) {
-//        RResult result=this.createNewResultOfFail();
-//        if(null==param){
-//            result.setMessage("参数为空");
-//        }else if (!checkToken(param.getToken())){
-//            result.setMessage("授权异常");
-//        }else{
-//            logService.getLogTypeList(result,param.getParam());
-//        }
-//        result.setEndtime(DateUtil.getDateAndMinute());
-//        return result;
-//    }
 
 
 

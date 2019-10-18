@@ -118,6 +118,7 @@ function callgetServerStatus(data) {
         var serverStatus = data.data;
         if (isNotEmpty(serverStatus) && serverStatus.length > 0) {
 
+            var serverInfoState = 0;
             for (var i = 0; i < serverStatus.length; i++) {
 
                 var server = serverStatus[i];
@@ -125,10 +126,23 @@ function callgetServerStatus(data) {
                     $("#guidepage a").attr("href", server.url);
                 }else if ("ec" == server.servername && server.status == 1) {
                     $("#ec").html("已启动").removeClass("error").addClass("success");
+                    serverInfoState++;
                 } else if ("mc" == server.servername && server.status == 1) {
                     $("#mc").html("已启动").removeClass("error").addClass("success");
+                    serverInfoState++;
+                }else if ("trm" == server.servername && server.status == 1) {
+                    // $("#trm").html("已启动").removeClass("error").addClass("success");
+                    serverInfoState++;
                 }
             }
+
+            if (serverInfoState >= 3) {
+                $("#serverInfoState").addClass("layui-bg-green").html("正常");
+                window.clearInterval(getServerStatusTimer);
+            }else{
+                $("#serverInfoState").removeClass("layui-bg-green").html("异常");
+            }
+
         }
     }
 }

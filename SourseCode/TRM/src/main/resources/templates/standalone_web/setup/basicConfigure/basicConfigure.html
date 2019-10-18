@@ -22,7 +22,7 @@
                     <h3 th:text="${basicConfigureModel.title}" style="color: #000;height: 40px;line-height: 48px;">基本配置</h3>
                 </div>
                 <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item"><a href="javascript:void(0);" target="optionZK">软硬件信息</a></li>
+                    <li class="layui-nav-item"><a th:href="@{/cweb/setUp/basicConfigure/softAndHardInfo}" target="optionZK">软硬件信息</a></li>
                     <li class="layui-nav-item layui-this"><a th:href="@{/cweb/setUp/basicConfigure/gotoNetworkConfigure}" target="optionZK">网络配置</a></li>
                     <li class="layui-nav-item"><a th:href="@{/cweb/setUp/basicConfigure/gotoDateTime}" target="optionZK">日期时间</a></li>
                 </ul>
