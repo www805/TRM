@@ -2,9 +2,14 @@ package com.avst.trm.v1.common.util.uploadfile.param;
 
 import java.util.Map;
 
-public class FileParam {
+/**
+ * 上传文件的对象，这里可以上传文件的类型决定了T的参数对象
+ * 每一个上传接口需要的参数都不一样所以用T
+ * @param <T>
+ */
+public class FileParam<T> {
 
-    private Map<String,String> paramMap;//该上传文件的参数集合
+    private T uploadparam;//该上传文件的参数集合
 
     private String filePath;//上传文件本地存储的路径
 
@@ -12,12 +17,12 @@ public class FileParam {
 
     private boolean bool=false;//上传是否成功
 
-    public Map<String, String> getParamMap() {
-        return paramMap;
+    public T getUploadparam() {
+        return uploadparam;
     }
 
-    public void setParamMap(Map<String, String> paramMap) {
-        this.paramMap = paramMap;
+    public void setUploadparam(T uploadparam) {
+        this.uploadparam = uploadparam;
     }
 
     public String getActionURL() {

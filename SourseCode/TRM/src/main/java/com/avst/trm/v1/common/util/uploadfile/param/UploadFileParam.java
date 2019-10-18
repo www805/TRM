@@ -9,13 +9,13 @@ import java.util.Map;
 /**
  * 每一个上传任务的对象
  */
-public class UploadFileParam {
+public class UploadFileParam<T> {
 
     private String uploadFileType;//上传的类型
 
     private String ssid;//上传的唯一标识
 
-    private List<FileParam> fileList;//上传的文件集合
+    private List<FileParam<T>> fileList;//上传的文件集合
 
     private UploadFileThread uploadFileThread;//上传任务的执行线程
 
@@ -87,11 +87,11 @@ public class UploadFileParam {
         this.ssid = ssid;
     }
 
-    public List<FileParam> getFileList() {
+    public List<FileParam<T>> getFileList() {
         return fileList;
     }
 
-    public void setFileList(List<FileParam> fileList) {
+    public void setFileList(List<FileParam<T>> fileList) {
         this.fileList = fileList;
     }
 }

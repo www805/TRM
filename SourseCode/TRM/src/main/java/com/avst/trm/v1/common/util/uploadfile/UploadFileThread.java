@@ -5,17 +5,21 @@ import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.uploadfile.param.FileParam;
 import com.avst.trm.v1.common.util.uploadfile.param.UploadFileParam;
+import com.avst.trm.v1.common.util.uploadfile.param.UploadParam_FD;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  *
  */
-public class UploadFileThread extends Thread{
+public class UploadFileThread<T> extends Thread{
 
-    private List<FileParam> fileList;//上传的所有文件集合
+    private List<FileParam<T>> fileList;//上传的所有文件集合
 
     private String uploadType;//上传的类型
 
@@ -25,7 +29,10 @@ public class UploadFileThread extends Thread{
 
     private String uploadname;//上传任务的别名，没有什么特别大的意义，可以不写
 
-    public UploadFileThread(List<FileParam> fileList, String uploadType, String ssid, String username, String uploadname) {
+    private Gson gson=new Gson();
+
+
+    public UploadFileThread(List<FileParam<T>> fileList, String uploadType, String ssid, String username, String uploadname) {
         this.fileList = fileList;
         this.uploadType = uploadType;
         this.ssid = ssid;
@@ -74,11 +81,34 @@ public class UploadFileThread extends Thread{
         //开始执行上传
         for(FileParam fileParam:fileList){
             String filepath=fileParam.getFilePath();
-            Map<String,String> map=fileParam.getParamMap();
+            Map<String,String> map=new HashMap<String,String>();
+            try {
+                //转换成上传avst设备的参数
+                UploadParam_FD uploadParam_fd=gson.fromJson(gson.toJson(fileParam.getUploadparam()),UploadParam_FD.class);
+
+                if(null==uploadParam_fd){
+                    LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+                    continue;
+                }else{//给上传的map进行赋值
+                    map.put("upload_task_id",uploadParam_fd.getUpload_task_id());
+                    map.put("dstPath",uploadParam_fd.getDstPath());
+                    map.put("fileName",uploadParam_fd.getFileName());
+                    map.put("linkaction",uploadParam_fd.getLinkaction());
+                    map.put("discFileName",uploadParam_fd.getDiscFileName());
+                    map.put("action",uploadParam_fd.getAction());
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+                continue;
+            }
+
+
             String actionurl=fileParam.getActionURL();
             if(null==map||StringUtils.isEmpty(filepath)||StringUtils.isEmpty(actionurl)){
 
-                LogUtil.intoLog(4,this.getClass(),"上传的文件的参数异常，fileParam："+ JacksonUtil.objebtToString(fileParam) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+                LogUtil.intoLog(4,this.getClass(),"上传的文件的参数异常，fileParam：这个文件不上传，"+ JacksonUtil.objebtToString(fileParam) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
                 continue;
             }
             boolean bool=HttpRequest.uploadFile_fd(actionurl,filepath,map);
