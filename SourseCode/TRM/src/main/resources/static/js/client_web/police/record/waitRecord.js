@@ -920,8 +920,14 @@ function calladdRecord(data) {
 
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
-                    var url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
+                    if (gnlist_.indexOf("fy_t")!= -1){
+                        //法院跳转
+                        var url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
+                    }else {
+                        var url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
+                    }
                     window.location.href=url;
+
                 })
             }else if (recordbool==-1){//导出word
                 var url=getActionURL(getactionid_manage().waitRecord_exportWord);

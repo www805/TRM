@@ -150,15 +150,15 @@
             <div class="layui-col-sm6 layui-col-md6">
                 <div class="layui-card " >
                     <div class="layui-card-header">
-                        审讯
-                        <span class="layui-badge layui-bg-blue layuiadmin-badge">审讯总数：<span id="record_num">0</span></span>
+                        <span th:text="${homeModel.arraignment}">审讯</span>
+                        <span class="layui-badge layui-bg-blue layuiadmin-badge" ><span th:text="${homeModel.arraignment}">审讯</span>总数：<span id="record_num">0</span></span>
                     </div>
                     <div class="layui-card-body layuiadmin-card-list layui-row">
                         <div class="layui-col-md4">
                             <div style="text-align: center">
                                 <p class="layuiadmin-big-font" id="record_waitnum" >0</p>
                                 <p>
-                                    未开始审讯数
+                                    未开始<span th:text="${homeModel.arraignment}">审讯</span>数
                                 </p>
                             </div>
                         </div>
@@ -166,14 +166,14 @@
                             <div style="text-align: center">
                                 <p class="layuiadmin-big-font" id="record_unfinishnum" >0</p>
                                 <p>
-                                    进行中审讯数
+                                    进行中<span th:text="${homeModel.arraignment}">审讯</span>数
                                 </p>
                             </div>
                         </div>
                         <div class="layui-col-md4">
                             <div style="text-align: center">
                                 <p class="layuiadmin-big-font" id="record_finishnum" >0</p>
-                                <p>已完成审讯数
+                                <p>已完成<span th:text="${homeModel.arraignment}">审讯</span>数
                                 </p>
                             </div>
                         </div>
@@ -183,15 +183,15 @@
             <div class="layui-col-sm6 layui-col-md6">
                 <div class="layui-card">
                     <div class="layui-card-header">
-                        案件
-                        <span class="layui-badge layui-bg-cyan layuiadmin-badge">案件总数：<span id="case_num">0</span></span>
+                        <span th:text="${homeModel.case}">案件</span>
+                        <span class="layui-badge layui-bg-cyan layuiadmin-badge"><span th:text="${homeModel.case}">案件</span>总数：<span id="case_num">0</span></span>
                     </div>
                     <div class="layui-card-body layuiadmin-card-list layui-row">
                         <div class="layui-col-md6">
                             <div style="text-align: center">
                                 <p class="layuiadmin-big-font" id="case_endnum">0</p>
                                 <p>
-                                    未提讯案件数
+                                    未开始<span th:text="${homeModel.case}">案件</span>数
                                 </p>
                             </div>
                         </div>
@@ -199,7 +199,7 @@
                             <div style="text-align: center">
                                 <p class="layuiadmin-big-font" id="case_startnum">0</p>
                                 <p>
-                                    已提讯案件数
+                                    已开始<span th:text="${homeModel.case}">案件</span>数
                                 </p>
                             </div>
                         </div>
@@ -232,7 +232,7 @@
         <div class="layui-col-sm12">
             <div class="layui-card">
                 <div class="layui-card-header">
-                    <div class="layui-col-sm6"> 案件量</div>
+                    <div class="layui-col-sm6"> <span th:text="${homeModel.case}">案件</span>量</div>
                     <div class="layui-col-sm6" >
                         <div style="float: right;display: inline">
                        当前选择： <input type="button"  class="layui-btn layui-btn-primary layui-btn-sm" name="yearstype" id="yearstype" > 年
@@ -275,6 +275,8 @@
 
 
     var AUTHORIZATIONALL_CLIENT=[[${session.AUTHORIZATIONALL_CLIENT}]];
+    var casetext=[[${homeModel.case}]]==null?"未知":[[${homeModel.case}]];
+    var arraignmenttext=[[${homeModel.arraignment}]]==null?"未知":[[${homeModel.arraignment}]];
     var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];

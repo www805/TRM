@@ -55,7 +55,9 @@
 
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getCasesByParam();" >
             <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加案件</a>
-            <a onclick="window.location.href=caseStatisticsURL;"  class="layui-btn layui-btn-warm" ><i class="layui-icon layui-icon-chart"></i>统计</a>
+
+
+            <a onclick="window.location.href=caseStatisticsURL;"  class="layui-btn layui-btn-warm" th:if="${caseIndexModel.statisticsbool}==1"><i class="layui-icon layui-icon-chart"></i>统计</a>
         </div>
     </form>
     <div th:replace="page :: page">...</div>

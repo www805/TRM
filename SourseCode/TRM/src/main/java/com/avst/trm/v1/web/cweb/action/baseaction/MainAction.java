@@ -29,6 +29,8 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.avst.trm.v1.common.cache.CommonCache.getSQEntity;
+
 @Controller
 @RequestMapping("/cweb/base/main")
 public class MainAction extends BaseAction {
@@ -521,6 +523,16 @@ public class MainAction extends BaseAction {
                 model.addAttribute("home",branchYml.get("home"));//分支特性
             }
         }
+        String gnlist=getSQEntity.getGnlist();
+        if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+            //法院版
+            model.addAttribute("arraignment","庭审");//审讯字眼
+            model.addAttribute("case","案件");//审讯字眼
+        }else {
+            model.addAttribute("arraignment","审讯");//审讯字眼
+            model.addAttribute("case","案件");//审讯字眼
+        }
+
         return  new ModelAndView("client_web/base/home","homeModel", model);
     }
 

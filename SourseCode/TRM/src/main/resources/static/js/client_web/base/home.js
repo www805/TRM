@@ -39,29 +39,29 @@ function callbackgetHome(data) {
                 myChart2.hideLoading();
                 myChart.setOption({
                     title: {
-                        text: data.dq_y+'年'+clientname+'案件审讯统计',
+                        text: data.dq_y+'年'+clientname+casetext+arraignmenttext+'统计',
                         subtext: '数据来源'+clientname,
                     },
                     series: [{
-                        name: '审讯数',
+                        name: arraignmenttext+'数',
                         data: data.record_monthnum_y
                     },{
-                        name: '案件数',
+                        name: casetext+'数',
                         data: data.case_monthnum_y
                     }]
                 });
                 myChart2.setOption({
                     series: [{
                         name: '详情来源',
-                        data: [{value:data.record_waitnum_y,name:'未开始审讯'},
-                            {value:data.record_unfinishnum_y, name:'进行中审讯'},
-                            {value:data.record_finishnum_y, name:'已完成审讯'},
-                            {value:data.case_endnum_y, name:'未提讯案件'},
-                            {value:data.case_startnum_y, name:'已提讯案件'}]
+                        data: [{value:data.record_waitnum_y,name:'未开始'+arraignmenttext},
+                            {value:data.record_unfinishnum_y, name:'进行中'+arraignmenttext},
+                            {value:data.record_finishnum_y, name:'已完成'+arraignmenttext},
+                            {value:data.case_endnum_y, name:'未提讯'+casetext},
+                            {value:data.case_startnum_y, name:'已提讯'+casetext}]
                     },{
                         name: '数据来源',
-                        data: [ {value:data.record_num_y, name:'审讯', selected:true},
-                            {value:data.case_num_y, name:'案件'}]
+                        data: [ {value:data.record_num_y, name:arraignmenttext, selected:true},
+                            {value:data.case_num_y, name:casetext}]
                     }]
                 });
             }
@@ -144,14 +144,14 @@ function myChart_(){
     myChart = echarts.init(document.getElementById('main'));
     var option = {
         title: {
-            text: 'xxxx年案件审讯统计',
+            text: 'xxxx年xxxx统计',
             subtext: '',
         },
         tooltip: {
             trigger: 'axis'
         },
         legend: {
-            data:['案件数','审讯数']
+            data:['xx数','xx数']
         },
         toolbox: {
             show : true,
@@ -169,7 +169,7 @@ function myChart_(){
         },
         series: [
             {
-                name: '案件数',
+                name: casetext+'数',
                 type: 'bar',
                 data: [],
                 markPoint : {
@@ -185,7 +185,7 @@ function myChart_(){
                 }
             },
             {
-                name: '审讯数',
+                name: arraignmenttext+'数',
                 type: 'bar',
                 data: [],
                 markPoint : {
@@ -212,7 +212,7 @@ function myChart_(){
         legend: {
             orient: 'vertical',
             x: 'left',
-            data:['未开始审讯','进行中审讯','已完成审讯','未提讯案件','已提讯案件']
+            data:['未开始'+arraignmenttext,'进行中'+arraignmenttext,'已完成'+arraignmenttext,'未提讯'+casetext,'已提讯'+casetext]
         },
         toolbox: {
             show : true,
@@ -346,7 +346,7 @@ function callbackaddCaseToArraignment(data) {
         if (isNotEmpty(data)){
             var recordssid=data.recordssid;
             if (isNotEmpty(recordssid)&&toUrltype==1){
-                var index = layer.msg('开始进行审讯', {icon: 6,shade:0.1,time:500
+                var index = layer.msg('开始进行'+arraignmenttext, {icon: 6,shade:0.1,time:500
                 },function () {
                     location.href=window.waitconversationURL+"?ssid="+recordssid
                 });
@@ -367,17 +367,17 @@ function callbackaddCaseToArraignment(data) {
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
                         layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始审讯',"查看审讯列表","取消"], //按钮
+                            btn: ['开始'+arraignmenttext,"查看'"+arraignmenttext+"'列表","取消"], //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
-                                console.log("跳转审讯制作控制台");
+                                console.log("跳转'"+arraignmenttext+"'制作控制台");
                                 //保存
                                 skipCheckbool = 1;
                                 to_waitconversationURL();
                                 layer.close(index);
                             },
                             btn2: function(index) {
-                                console.log("跳转审讯列表")
+                                console.log("跳转'"+arraignmenttext+"'列表")
                                 toUrltype=2;
                                 skipCheckbool =1;
                                 to_waitconversationURL();

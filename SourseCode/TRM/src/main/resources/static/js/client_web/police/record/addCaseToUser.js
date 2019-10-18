@@ -160,7 +160,7 @@ function addCaseToArraignment() {
 
 
 
-    $("#startrecord_btn").attr("lay-filter","");
+    $("#startrecord_btn").attr({"lay-filter":"","disabled":"disabled"});
 
     //收集人员信息
     var  cardtypessid=$("#cards option:selected").val();
@@ -252,7 +252,7 @@ function addCaseToArraignment() {
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
-    $("#startrecord_btn").attr("lay-filter","startrecord_btn");
+    $("#startrecord_btn").attr({"lay-filter":"startrecord_btn","disabled":""});
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){

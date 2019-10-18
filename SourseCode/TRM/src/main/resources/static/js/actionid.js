@@ -207,6 +207,7 @@ function getactionid_manage() {
         waitRecord_putRecessStatus:"waitRecord_putRecessStatus",
         waitRecord_tocaseToUser:"waitRecord_tocaseToUser",
         waitRecord_torecordIndex:"waitRecord_torecordIndex",
+        waitRecord_tocaseIndex:"waitRecord_tocaseIndex",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
