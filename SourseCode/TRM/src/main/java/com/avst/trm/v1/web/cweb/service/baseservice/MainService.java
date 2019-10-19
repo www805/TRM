@@ -608,6 +608,7 @@ public class MainService extends BaseService {
 
         //获取首页视频地址
         String liveurl=null;
+        String flushbonadingetinfossid=null;
         ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
         GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
         listParam.setFdType(FDType.FD_AVST);
@@ -617,11 +618,13 @@ public class MainService extends BaseService {
             Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
             if (null!=flushbonadinginfo&&null!=flushbonadinginfo.getLivingurl()){
                 liveurl= flushbonadinginfo.getLivingurl();
+                flushbonadingetinfossid= flushbonadinginfo.getSsid();
             }
         }else{
             LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefault__出错");
         }
         vo.setLiveurl(liveurl);
+        vo.setFlushbonadingetinfossid(flushbonadingetinfossid);
 
         result.setData(vo);
         changeResultToSuccess(result);

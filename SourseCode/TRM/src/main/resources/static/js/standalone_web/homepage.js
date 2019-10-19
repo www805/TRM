@@ -14,14 +14,19 @@ function callbackgetHome(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var liveurl_=data.liveurl;
+            var flushbonadingetinfossid = data.flushbonadingetinfossid;
             if (isNotEmpty(liveurl_)){
                 liveurl=liveurl_;
             }
             initplayer();//初始化地址
+            FDAudPowerMapTimer = setInterval(function () {
+                getFDAudPowerMap(flushbonadingetinfossid);
+            }, 500);
+
 
             var stateSQ=data.stateSQ;
             if (isNotEmpty(stateSQ)&&stateSQ==1){
-                $("#stateSQtxt").html("<span style='color: #00FF00'>正常运行中</span>")
+                $("#stateSQtxt").html("<span style='color: #0adc0a;'>正常运行中</span>")
             }else {
                 $("#stateSQtxt").html("<span style='color: red'>异常，请注意</span>")
             }
@@ -89,7 +94,7 @@ function callbackaddCaseToArraignment(data) {
             if (isNotEmpty(recordssid)&&toUrltype==1){
                 var index = layer.msg('开始进行审讯', {icon: 6,shade:0.1,time:500
                 },function () {
-                    location.href=window.waitconversationURL+"?ssid="+recordssid
+                    location.href = window.waitconversationURL + "?ssid=" + recordssid;
                 });
             }else if(toUrltype==2){
                 location.href =  window.recordIndexURL;

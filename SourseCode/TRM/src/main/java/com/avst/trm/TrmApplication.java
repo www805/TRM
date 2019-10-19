@@ -55,8 +55,7 @@ public class TrmApplication {
         SpringApplication application = new SpringApplication(TrmApplication.class);
         application.setBeanNameGenerator(new CustomGenerator());
         application.addListeners(new PropertiesListener("application.properties","trm.properties"));
-        application.run( args);
-
+        application.run();
     }
 
 }
