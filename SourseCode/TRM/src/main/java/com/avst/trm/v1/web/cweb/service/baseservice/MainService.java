@@ -717,10 +717,18 @@ public class MainService extends BaseService {
 
         List<Base_admininfo> baseAdmininfo = base_admininfoMapper.selectList(ew1);
 
-        if (null == baseAdmininfo||baseAdmininfo.size()==0) {
+        if (null == baseAdmininfo||baseAdmininfo.size()<1) {
             result.setMessage("旧密码错误");
             return;
         }
+
+        if (baseAdmininfo.size()!=1){
+            result.setMessage("系统异常");
+            LogUtil.intoLog(4,this.getClass(),"用户修改密码找到多个人__ssid"+paramParam.getSsid());
+            return;
+        }
+
+        Base_admininfo base_admininfo=baseAdmininfo.get(0);
 
         EntityWrapper ew = new EntityWrapper();
         ew.eq("ssid", paramParam.getSsid());
@@ -733,16 +741,28 @@ public class MainService extends BaseService {
             //修改最后登录密码
             admininfo.setLastlogintime(new Date());
 
+
+            //开始进入重置密码操作
+
             //生成key
-            String encryptedtext="123";//加密文本
-            String loginaccount=admininfo.getLoginaccount();//登录账号
-            Date registertime=admininfo.getRegistertime();//注册时间
-            String ssid=admininfo.getSsid();
+            String encryptedtext=null;//加密文本
+            String loginaccount=base_admininfo.getLoginaccount();//登录账号
+            Date registertime=base_admininfo.getRegistertime();//注册时间
+            String ssid=base_admininfo.getSsid();//用户ssid
+
+            Map<String,String> encryptedMap=new HashMap<>();
+            encryptedMap.put("loginaccount",loginaccount);
+            encryptedMap.put("registertime",String.valueOf(registertime.getTime()));
+            encryptedMap.put("ssid",ssid);
+            encryptedtext = gson.toJson(encryptedMap);
 
             //获取生成字符串
             if (StringUtils.isNotBlank(encryptedtext)){
-                //开始保存本地
-                System.out.println(CheckPasswordKey.key_path);
+               boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext);
+               if (!forgotpasswordbool){
+                   result.setMessage("重置密码异常");
+                   return;
+               }
             }
         }
 

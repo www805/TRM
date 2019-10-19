@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.ChangeboolUserParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetUserListParam;
+import com.avst.trm.v1.web.sweb.req.basereq.ResetPasswordParam;
 import com.avst.trm.v1.web.sweb.service.baseservice.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
@@ -238,6 +240,26 @@ public class UserAction extends BaseAction{
             return new ModelAndView("redirect:/sweb/base/home/unauth");
         }
     }
+
+    @RequestMapping(value = "/resetPassword")
+    @ResponseBody
+    public RResult resetPassword(ResetPasswordParam param,@RequestParam(value="file",required=false) MultipartFile multipartfile) {
+        RResult result=createNewResultOfFail();
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("resetPassword")) {
+            if (null==param){
+                result.setMessage("参数为空");
+            }else{
+                userService.resetPassword(result,param,multipartfile);
+            }
+        }else {
+            result.setMessage("权限不足");
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 
