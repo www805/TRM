@@ -7,7 +7,7 @@ import java.io.File;
 
 /**
  * java后台调用打开某一个EXE程序
- * 测试说明，暂时可以打开EXE、bat、lnk3中类型
+ * 测试说明，暂时可以打开EXE、bat、lnk 3中类型
  */
 public class OpenEXE {
 
