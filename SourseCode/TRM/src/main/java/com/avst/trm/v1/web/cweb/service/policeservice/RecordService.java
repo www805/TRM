@@ -37,7 +37,9 @@ import com.avst.trm.v1.common.util.uploadfile.param.FileParam;
 import com.avst.trm.v1.common.util.uploadfile.param.UploadParam_FD;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
+import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
+import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
@@ -4778,40 +4780,71 @@ public class RecordService extends BaseService {
                         String iid=arraignmentAndRecord.getIid();
                         if (StringUtils.isNotBlank(iid)){
                             //根据iid找到需要上传的所有文件
-                            GetSaveFilePath_localParam getSaveFilePath_localParam=new GetSaveFilePath_localParam();
-                            getSaveFilePath_localParam.setIid(iid);
-                            getSaveFilePath_localParam.setSsType(SSType.AVST);
-                            RResult rResult=equipmentControl.getSaveFilePath_local(getSaveFilePath_localParam);
+                            GetSavePathParam getSavePathParam=new GetSavePathParam();
+                            getSavePathParam.setIid(iid);
+                            getSavePathParam.setSsType(SSType.AVST);
+                            RResult rResult=equipmentControl.getSavePath(getSavePathParam);
                             //请求设备允许上传到设备中的路径，一个一个传过去
                             if(null!=rResult&&null!=rResult.getData()){
-                                String pathlist=rResult.getData().toString();
-                                String[] patharr=pathlist.split(",");
-                                if(patharr!=null&&patharr.length > 0) {
-                                    String path=patharr[0];
-                                    String zippath=OpenUtil.getfile_folder(path);
-                                    LogUtil.intoLog(1,this.getClass(),"iid："+iid+"----打包的文件夹zippath:"+zippath);
-
-                                    //收集数据
-                                    List<String> filelist= FileUtil.getAllFilePath(zippath,2);
-                                    if(null!=filelist&&filelist.size() > 0){
-                                        for(String path_:filelist){
-                                            String staticpath=PropertiesListenerConfig.getProperty("staticpath");
-
-                                            File file=new File(path);
-                                            UploadParam_FD fd=new UploadParam_FD();
-                                            fd.setDiscFileName(file.getName());
-                                            fd.setDstPath("/tmp/hd0/2019-08-01/c4b46c6adfca421fa97f9ac73e68150e_sxsba2/");
-                                            fd.setFileName(file.getName());
-                                            fd.setUpload_task_id(iid);
-
-                                            FileParam<UploadParam_FD> fdFileParam=new FileParam<>();
-                                            fdFileParam.setUploadparam(fd);
-                                            fdFileParam.setActionURL(actionUrl);
-                                            fdFileParam.setFilePath(path_);
-                                            fileList.add(fdFileParam);
+                                GetSavepathVO getSavepathVO=gson.fromJson(gson.toJson(rResult.getData()), GetSavepathVO.class);
+                                if (null!=getSavepathVO){
+                                    List<RecordSavepathParam> recordList=getSavepathVO.getRecordList();
+                                    String pathlist=null;//文件所在地址
+                                    String dstpath=null;//需要上传到的文件夹地址
+                                    if (null!=recordList&&recordList.size()>0){
+                                        for (RecordSavepathParam recordSavepathParam : recordList) {
+                                            String datasavepath=recordSavepathParam.getSavepath();
+                                            dstpath=recordSavepathParam.getSoursedatapath();
+                                            if (StringUtils.isNotBlank(dstpath)){
+                                                dstpath=OpenUtil.getfile_folder(dstpath);
+                                                if(dstpath.indexOf("/") > 0){
+                                                    dstpath+="\\";
+                                                }else{
+                                                    dstpath+="/";
+                                                }
+                                            }
+                                            if(StringUtils.isNotEmpty(datasavepath)){
+                                                pathlist=OpenUtil.getfile_folder(datasavepath);
+                                                if(pathlist.indexOf("/") > 0){
+                                                    pathlist+="/";
+                                                }else{
+                                                    pathlist+="\\";
+                                                }
+                                                break;
+                                            }
                                         }
                                     }
 
+                                    String[] patharr=pathlist.split(",");
+                                    if(patharr!=null&&patharr.length > 0) {
+                                        String path=patharr[0];
+                                        String zippath=OpenUtil.getfile_folder(path);
+                                        LogUtil.intoLog(1,this.getClass(),"iid："+iid+"----打包的文件夹zippath:"+zippath);
+
+                                        if (StringUtils.isNotBlank(dstpath)&&StringUtils.isNotBlank(zippath)){
+                                            //收集数据
+                                            List<String> filelist= FileUtil.getAllFilePath(zippath,2);
+                                            if(null!=filelist&&filelist.size() > 0){
+                                                for(String path_:filelist){
+                                                    //去除视频类的文件
+                                                    if (!path_.endsWith("mp4")&&!path_.endsWith("st")){
+                                                        File file=new File(path_);
+                                                        UploadParam_FD fd=new UploadParam_FD();
+                                                        fd.setDiscFileName(file.getName());
+                                                        fd.setDstPath(dstpath);
+                                                        fd.setFileName(file.getName());
+                                                        fd.setUpload_task_id(iid);
+
+                                                        FileParam<UploadParam_FD> fdFileParam=new FileParam<>();
+                                                        fdFileParam.setUploadparam(fd);
+                                                        fdFileParam.setActionURL(actionUrl);
+                                                        fdFileParam.setFilePath(path_);
+                                                        fileList.add(fdFileParam);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }else{
                                 LogUtil.intoLog(4,this.getClass(),"根据iid获取文件路径异常，iid："+iid);
