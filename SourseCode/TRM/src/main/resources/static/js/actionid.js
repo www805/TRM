@@ -225,6 +225,7 @@ function getactionid_manage() {
         waitconversation_updateBurnTime:"waitconversation_updateBurnTime",
         waitconversation_getBurnTime:"waitconversation_getBurnTime",
         waitconversation_putRecessStatus:"waitconversation_putRecessStatus",
+        waitconversation_getFDAudPowerMap:"waitconversation_getFDAudPowerMap",
 
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
         templateTypeList_getTemplateTypeById: "templateTypeList_getTemplateTypeById",
@@ -354,6 +355,7 @@ function getactionid_manage() {
         homepage_getHome:"homepage_getHome",
         homepage_addCaseToArraignment:"homepage_addCaseToArraignment",
         homepage_getServerStatus:"homepage_getServerStatus",
+        homepage_getFDAudPowerMap:"homepage_getFDAudPowerMap",
 
         about_getAbout:"about_getAbout",
 

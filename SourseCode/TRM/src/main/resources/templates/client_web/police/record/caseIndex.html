@@ -116,7 +116,9 @@
                         <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" >
                             <li type="1"><a href="#" onclick="exportUdisk('{{value.ssid}}');" >导出U盘</a></li>
+                            {{#    if (gnlist.indexOf("s_v")!= -1){   }}
                             <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}');">导出光盘</a></li>
+                            {{#   }  }}
                         </ul>
                     </div>
                     <a href="#" {{casebool==2?'disabled':''}} onclick="toaddOupdateurl('{{value.ssid}}','{{casebool}}');" class="layui-btn {{casebool==2?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs" >修改</a>

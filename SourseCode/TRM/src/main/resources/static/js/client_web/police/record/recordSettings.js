@@ -596,24 +596,31 @@ function putRecessStatus() {
 /**
  * 获得 设备现场的音频振幅
  */
-function getFDAudPowerMap() {
+function getFDAudPowerMap(flushbonadingetinfossid) {
 
-    if(!isNotEmpty(getRecordById_data.modeltds[0].fdssid)){
-        layer.msg("必须开启会议才可以请求波形");
-        return;
+    if(!isNotEmpty(flushbonadingetinfossid)){
+        if(!isNotEmpty(getRecordById_data.modeltds[0].fdssid)){
+            layer.msg("必须开启会议才可以请求波形");
+            return;
+        }
+        flushbonadingetinfossid = getRecordById_data.modeltds[0].fdssid;
     }
 
     var url=getActionURL(getactionid_manage().waitRecord_getFDAudPowerMap);
 
     if (!isNotEmpty(url)) {
-        url = "/cweb/police/record/getFDAudPowerMap";
+        url=getActionURL(getactionid_manage().waitconversation_getFDAudPowerMap);
+        // url = "/cweb/police/record/getFDAudPowerMap";
+    }
+    if (!isNotEmpty(url)) {
+        url=getActionURL(getactionid_manage().homepage_getFDAudPowerMap);
     }
 
     var data={
         token:INIT_CLIENTKEY,
         param:{
             fdType: fdtype,
-            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+            flushbonadingetinfossid:flushbonadingetinfossid
         }
     };
     ajaxSubmitByJson(url,data,callFDAudPowerMap);

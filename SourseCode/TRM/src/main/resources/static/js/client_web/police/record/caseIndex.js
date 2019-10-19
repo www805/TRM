@@ -568,11 +568,12 @@ function exportLightdisk(ssid){
                 $("#progress_"+ssid+"").css("visibility","hidden");
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     var data=data.data;
-                    if (isNotEmpty(data)){
-                        layer.msg("导出成功,等待下载中...",{icon: 6});
+                    layer.msg("导出成功,等待下载中...",{icon: 6});
+                   /* if (isNotEmpty(data)){
+                        layer.msg("导出成功",{icon: 6});
                         var downurl=data.downurl;
                         window.location.href=downurl;
-                    }
+                    }*/
                 }else {
                     layer.msg(data.message,{icon: 5});
                 }

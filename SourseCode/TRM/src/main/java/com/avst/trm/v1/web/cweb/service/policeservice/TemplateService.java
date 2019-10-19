@@ -1,7 +1,9 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.cache.param.SysYmlParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
@@ -366,6 +368,18 @@ public class TemplateService extends BaseService {
             return;
         }
 
+
+        //取出授权，如果是单机版的，就自动选择谈话
+        String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
+        SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
+        String gnlist = ymlParam.getGnlist();
+        if (gnlist.indexOf("s_v") != -1 && gnlist.indexOf("hk_o") != -1) {
+            Police_problemtype problemtype = new Police_problemtype();
+            problemtype.setTypename("谈话");
+            Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
+            problemtypessid = selectOne.getSsid();
+        }
+
         //添加模板题目关联数据p
         List<Police_problem> ids=addTemplateParam.getTemplatetoproblemids();
         if (null!=ids&&ids.size()>0){
@@ -402,15 +416,15 @@ public class TemplateService extends BaseService {
                         problem.setId(problem.getId());
 
                         Police_problemtotype problemtotype = new Police_problemtotype();
-                        problemtotype.setProblemssid(problem.getId()+"");
-                        problemtotype.setProblemtypessid("1");
+                        problemtotype.setProblemssid(problem.getSsid()+"");
+                        problemtotype.setProblemtypessid(problemtypessid);
                         problemtotype.setSsid(OpenUtil.getUUID_32());
                         problemtotype.setCreatetime(new Date());
                         police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
 
                     }else{
                         EntityWrapper ewProblem=new EntityWrapper();
-                        ewProblem.eq("id",problem.getId());
+                        ewProblem.eq("ssid",problem.getSsid());
                         problem.setReferanswer(referanswer);
                         Integer update = police_problemMapper.update(problem, ewProblem);//修改问题
                     }
@@ -1375,6 +1389,17 @@ public class TemplateService extends BaseService {
 
         LogUtil.intoLog(this.getClass(),list);
 
+        //取出授权，如果是单机版的，就自动选择谈话
+        String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
+        SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
+        String gnlist = ymlParam.getGnlist();
+        if (gnlist.indexOf("s_v") != -1 && gnlist.indexOf("hk_o") != -1) {
+            Police_problemtype problemtype = new Police_problemtype();
+            problemtype.setTypename("谈话");
+            Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
+            problemtypessid = selectOne.getSsid();
+        }
+
         //插入模板表
         if(null != list && list.size() > 0){
             Template selectOne = null; //保存覆盖的模板
@@ -1489,7 +1514,7 @@ public class TemplateService extends BaseService {
                     Police_problem addProblemParam = null;
 
                     if(null == problemList || problemList.size()==0){
-                        //添加问题类型
+                        //添加问题
                         Police_problem police_problem = new Police_problem();
                         police_problem.setProblem(problem);
                         police_problem.setCreatetime(new Date());
@@ -1498,7 +1523,13 @@ public class TemplateService extends BaseService {
                         police_problem.setReferanswer("");
                         Integer insert = police_problemMapper.insert(police_problem);
                         addProblemParam = police_problem;
-//                        addProblemParam = police_problemMapper.selectOne(police_problem);
+                        //添加问题类型
+//                        if (insert >= 1) {
+//                            Police_problemtotype problemtotype = new Police_problemtotype();
+//                            problemtotype.setProblemssid(police_problem.getSsid());
+//                            problemtotype.setProblemtypessid(problemtypessid);
+//                            police_problemtotypeMapper.insert(problemtotype);
+//                        }
                     }else{
                         addProblemParam = problemList.get(0);
                     }

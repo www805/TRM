@@ -56,6 +56,16 @@ public class GetHomeVO {
 
     private String liveurl;//首页直播地址
 
+    private String flushbonadingetinfossid;//设备的ssid
+
+    public String getFlushbonadingetinfossid() {
+        return flushbonadingetinfossid;
+    }
+
+    public void setFlushbonadingetinfossid(String flushbonadingetinfossid) {
+        this.flushbonadingetinfossid = flushbonadingetinfossid;
+    }
+
     public String getLiveurl() {
         return liveurl;
     }
