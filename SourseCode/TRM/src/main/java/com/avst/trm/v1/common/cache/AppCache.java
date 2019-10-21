@@ -238,6 +238,9 @@ public class AppCache {
             }
         }
 
+        Map<String, Object> ptdj = (Map<String, Object>) avstYml.get("ptdj");
+        fileYml.put("ptdj", ptdj);
+
         cacheParam.setData(fileYml);
 
 //                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
