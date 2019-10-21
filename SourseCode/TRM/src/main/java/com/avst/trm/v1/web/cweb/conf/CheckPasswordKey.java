@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.cweb.conf;
 
 
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.google.gson.Gson;
@@ -9,6 +10,8 @@ import com.wb.deencode.DeCodeUtil;
 import com.wb.deencode.EncodeUtil;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +21,7 @@ import java.util.Map;
 public class CheckPasswordKey {
 
     private static String key_name="resetuser.ini";
-    public static String key_path="E:\\"+key_name;//检测文件夹地址
-
-    private static String keyname_hidden="resetpassword.ini";
+    public static String key_path=OpenUtil.getJDKorJREPath() +key_name;//检测文件夹地址
 
 
     /**
@@ -29,12 +30,18 @@ public class CheckPasswordKey {
      * @return
      */
     public static boolean CreateKey(String encryptedtext){
+
+        File file = new File(key_path);
+        if (file.exists()&& !file.isDirectory()) {
+            LogUtil.intoLog(1,CheckPasswordKey.class,"key存在不需要创建："+encryptedtext);
+            return true;
+        }
         if (StringUtils.isNotBlank(encryptedtext)){
             //检测是否存在key
-            LogUtil.intoLog(1,CheckPasswordKey.class,"重置密码加密___加密文本__前："+encryptedtext);
+            LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__前："+encryptedtext);
              encryptedtext= EncodeUtil.encoderByDES(encryptedtext);
              if (null!=encryptedtext){
-                 LogUtil.intoLog(1,CheckPasswordKey.class,"重置密码加密___加密文本__后："+encryptedtext);
+                 LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__后："+encryptedtext);
                  ReadWriteFile.writeTxtFile(encryptedtext,key_path,"utf8");
                  return true;
              }
@@ -51,26 +58,33 @@ public class CheckPasswordKey {
      */
     public static boolean CheckKey( String decryptiontext, Map<String,String> objectMap){
         if (null==objectMap){
-            LogUtil.intoLog(4,CheckPasswordKey.class,"重置密码解密失败___解密对象objectMap__"+objectMap);
+            LogUtil.intoLog(4,CheckPasswordKey.class,"密码解密失败___解密对象objectMap__"+objectMap);
             return false;
         }
 
         if (StringUtils.isBlank(decryptiontext)){
-            LogUtil.intoLog(4,CheckPasswordKey.class,"重置密码解密失败___解密文本decryptiontext__"+decryptiontext);
+            LogUtil.intoLog(4,CheckPasswordKey.class,"密码解密失败___解密文本decryptiontext__"+decryptiontext);
             return false;
         }
 
-        LogUtil.intoLog(1,CheckPasswordKey.class,"重置密码解密___解密文本__前："+decryptiontext);
+        LogUtil.intoLog(1,CheckPasswordKey.class,"密码解密___解密文本__前："+decryptiontext);
         decryptiontext= DeCodeUtil.decoderByDES(decryptiontext);
-        LogUtil.intoLog(1,CheckPasswordKey.class,"重置密码解密___解密文本__后："+decryptiontext);
+        LogUtil.intoLog(1,CheckPasswordKey.class,"密码解密___解密文本__后："+decryptiontext);
         Gson gson=new Gson();
+        Map<String,String> decryptionMap = null;
+
 
         try {
             //解密对象
-            Map<String,String> decryptionMap = gson.fromJson(decryptiontext,Map.class);
-            if (null==decryptionMap){
+            decryptionMap = gson.fromJson(decryptiontext, Map.class);
+        } catch (JsonSyntaxException e) {
+            return false;
+        }
+
+
+        if (null==decryptionMap){
                 return false;
-            }
+         }
             //盘对值是否相同
             boolean contain = false;
             for (Object o : objectMap.keySet()) {
@@ -84,10 +98,8 @@ public class CheckPasswordKey {
                 }
             }
             return true;
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        }
-        return false;
+
+
     }
 
     public static void main(String[] args) {

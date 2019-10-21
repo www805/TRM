@@ -74,7 +74,7 @@ public class RecordrealingCache {
         initCache_bool=true;
         if (null!=records&&records.size()>0){
             recordrealMap=new HashMap<String,List<RecordToProblem>>();
-            LogUtil.intoLog(RecordrealingCache.class,"------RecordrealingCache-----initCache------进行中笔录个数"+records.size());
+            LogUtil.intoLog(RecordrealingCache.class,"------RecordrealingCache-----initCache------笔录个数"+records.size());
             for (Record record : records) {
                 recordrealMap.put(record.getSsid(),record.getProblems());
             }

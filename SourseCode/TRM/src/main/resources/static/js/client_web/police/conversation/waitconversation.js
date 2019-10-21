@@ -42,7 +42,6 @@ function callbackgetRecordById(data) {
 
                 //获取默认的片头信息
                 getptdjconst(1);
-
                 setInterval(function () {
                     getFDState();
                 }, 1000);

@@ -295,18 +295,8 @@ public class UserService extends BaseService {
             return;
         }
 
-        if (null == multipartfile) {
-            result.setMessage("上传文件不能为空");
-            return;
-        }
 
-        String filename = multipartfile.getOriginalFilename();
-        if (!filename.endsWith(".ini")) {
-            result.setMessage("请上传后缀为ini的文件");
-            return;
-        }
-
-
+        //获取用户
         String userssid = param.getUserssid();
         String init_password = param.getInit_password();
         if (StringUtils.isBlank(userssid)) {
@@ -314,7 +304,6 @@ public class UserService extends BaseService {
             LogUtil.intoLog(3,this.getClass(),"重置密码验证用户__userssid__"+userssid);
             return;
         }
-
         EntityWrapper ew = new EntityWrapper();
         ew.eq(true, "ssid", userssid);
         List<Base_admininfo> list = base_admininfoMapper.selectList(ew);
@@ -323,72 +312,79 @@ public class UserService extends BaseService {
             LogUtil.intoLog(3,this.getClass(),"重置密码验证用户__user is null");
             return;
         }
-
-        //查询角色
+        Base_admininfo admininfo=new Base_admininfo();
         if (null != list && list.size() == 1) {
             if (list.size() == 1) {
-                Base_admininfo admininfo = list.get(0);
                 if (null != admininfo) {
-                    //收集验证数据
-                    Map<String, String> decryptionMap = new HashMap<>();
-                    decryptionMap.put("ssid", admininfo.getSsid());
-                    decryptionMap.put("loginaccount", admininfo.getLoginaccount());
-                    decryptionMap.put("registertime", String.valueOf(admininfo.getRegistertime().getTime()));
-
-
-                    String decryptiontext="";
-                    try {
-                        InputStream inputStream = multipartfile.getInputStream();
-                        BufferedReader bufread=null;
-                        InputStreamReader in = new InputStreamReader(inputStream,"utf-8");//字节流字符流转化的桥梁
-                        bufread = new BufferedReader(in);//以字符流方式读入
-                        try {
-                            StringBuffer sb = new StringBuffer();
-                            String read="";
-                            while ((read = bufread.readLine()) != null) {
-                                sb.append(read);
-                            }
-                            decryptiontext=sb.toString();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }finally{
-                            bufread.close();
-                        }
-
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    boolean CheckKeybool = CheckPasswordKey.CheckKey(decryptiontext, decryptionMap);
-                    if (!CheckKeybool) {
-                        result.setMessage("key验证失败");
-                        LogUtil.intoLog(3,this.getClass(),"重置密码验证用户__key验证失败");
-                        return;
-                    }
-                    //验证成功
-                    //开始修改重置用户
-                    EntityWrapper base_admininfos_param=new EntityWrapper();
-                    base_admininfos_param.eq("ssid",admininfo.getSsid());
-                    List<Base_admininfo> base_admininfos_=base_admininfoMapper.selectList(base_admininfos_param);
-                    if (null!=base_admininfos_&&base_admininfos_.size()==1){
-                        Base_admininfo base_admininfo = base_admininfos_.get(0);
-                        base_admininfo.setLastlogintime(null);
-                        base_admininfo.setPassword(init_password);
-                        int update_bool = base_admininfoMapper.update(base_admininfo,ew);
-                        LogUtil.intoLog(this.getClass(),"重置密码验证用户__update_bool__" + update_bool);
-                        if (update_bool>0){
-                            changeResultToSuccess(result);
-                            return;
-                        }
-                    }
+                    admininfo = list.get(0);
                 }
             }
-
         }else {
             result.setMessage("系统异常");
             LogUtil.intoLog(3,this.getClass(),"重置密码验证用户__找到多个用户");
             return;
         }
+
+        if (null != multipartfile) {
+            String filename = multipartfile.getOriginalFilename();
+            if (!filename.endsWith(".ini")) {
+                result.setMessage("请上传后缀为ini的文件");
+                return;
+            }
+            //收集验证数据
+            Map<String, String> decryptionMap = new HashMap<>();
+            decryptionMap.put("ssid", admininfo.getSsid());
+            decryptionMap.put("loginaccount", admininfo.getLoginaccount());
+            decryptionMap.put("registertime", String.valueOf(admininfo.getRegistertime().getTime()));
+
+            String decryptiontext="";
+            try {
+                InputStream inputStream = multipartfile.getInputStream();
+                BufferedReader bufread=null;
+                InputStreamReader in = new InputStreamReader(inputStream,"utf-8");//字节流字符流转化的桥梁
+                bufread = new BufferedReader(in);//以字符流方式读入
+                try {
+                    StringBuffer sb = new StringBuffer();
+                    String read="";
+                    while ((read = bufread.readLine()) != null) {
+                        sb.append(read);
+                    }
+                    decryptiontext=sb.toString();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }finally{
+                    bufread.close();
+                }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            boolean CheckKeybool = CheckPasswordKey.CheckKey(decryptiontext, decryptionMap);
+            if (!CheckKeybool) {
+                result.setMessage("key验证失败");
+                LogUtil.intoLog(3,this.getClass(),"重置密码验证用户__key验证失败");
+                return;
+            }
+        }
+
+        //验证成功
+        //开始修改重置用户
+        EntityWrapper base_admininfos_param=new EntityWrapper();
+        base_admininfos_param.eq("ssid",admininfo.getSsid());
+        List<Base_admininfo> base_admininfos_=base_admininfoMapper.selectList(base_admininfos_param);
+        if (null!=base_admininfos_&&base_admininfos_.size()==1){
+            Base_admininfo base_admininfo = base_admininfos_.get(0);
+            base_admininfo.setLastlogintime(null);
+            base_admininfo.setPassword(init_password);
+            int update_bool = base_admininfoMapper.update(base_admininfo,ew);
+            LogUtil.intoLog(this.getClass(),"重置密码验证用户__update_bool__" + update_bool);
+            if (update_bool>0){
+                changeResultToSuccess(result);
+                return;
+            }
+        }
+
         return;
     }
 

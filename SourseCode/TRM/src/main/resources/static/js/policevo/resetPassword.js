@@ -17,7 +17,7 @@ function reset_keyfile(obj) {
 var resetPasswordindex=null;
 function resetPassword(){
     if (isNotEmpty(ssid)){
-        resetPasswordindex=layer.msg("检测中，请稍等...", {
+        resetPasswordindex=layer.msg("密码重置中，请稍等...", {
             icon: 16,
             shade: [0.1, 'transparent']
         });
@@ -36,7 +36,6 @@ function resetPassword(){
 
         var file = document.getElementById("keyfile").files[0];
         var formData = new FormData();
-        formData.append("param", JSON.stringify(data));
         formData.append("userssid", ssid);
         formData.append("init_password", init_password);
         formData.append("file", file);
@@ -62,7 +61,7 @@ function callbackresetPassword(str) {
     var data = eval('(' + str + ')');
     $("#progress").css("visibility","hidden");
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg("检测成功,用户密码已重置",{icon: 6,time:500,shade: [0.1,'#fff']},function () {
+        layer.msg("用户密码已重置",{icon: 6,time:500,shade: [0.1,'#fff']},function () {
             window.history.go(-1);return false;
         });
 
