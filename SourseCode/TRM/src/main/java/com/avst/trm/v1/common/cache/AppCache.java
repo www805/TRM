@@ -140,7 +140,7 @@ public class AppCache {
         String oem = "common_o";
         //取出公司分类
         Map<String, Object> oemYml = (Map<String, Object>) avstYml.get("oem");//取出通用版
-//                Map<String, Object> commonYml = (Map<String, Object>) oemYml.get(oem);
+        Map<String, Object> commonYml = (Map<String, Object>) oemYml.get(oem);
 
         //判断如果是通用版，就获取通用版的菜单栏，如果不是通用版就从avst里面匹配出当前公司指定的菜单栏
         if(gnlist.indexOf(oem) == -1){
@@ -174,7 +174,12 @@ public class AppCache {
         }
 
 
-        Map<String, Object> fileYml = (Map<String, Object>) oemYml.get(cwebFile);
+        Map<String, Object> fileYml = null;
+        if (gnlist.indexOf("common_o") == -1) {
+            fileYml = (Map<String, Object>) oemYml.get(cwebFile);
+        } else {
+            fileYml = (Map<String, Object>) commonYml.get(cwebFile);
+        }
 //                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
 //                String guidepageUrl = (String) zkYml.get("home-url");
 

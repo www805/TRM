@@ -176,7 +176,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("s_v") != -1 && gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf("hk_o") != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
@@ -390,7 +390,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("s_v") != -1 && gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf("hk_o") != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
@@ -1417,7 +1417,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("s_v") != -1 && gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf("hk_o") != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
