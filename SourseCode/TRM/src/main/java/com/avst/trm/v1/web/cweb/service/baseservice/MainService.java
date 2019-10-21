@@ -717,10 +717,18 @@ public class MainService extends BaseService {
 
         List<Base_admininfo> baseAdmininfo = base_admininfoMapper.selectList(ew1);
 
-        if (null == baseAdmininfo||baseAdmininfo.size()==0) {
+        if (null == baseAdmininfo||baseAdmininfo.size()<1) {
             result.setMessage("旧密码错误");
             return;
         }
+
+        if (baseAdmininfo.size()!=1){
+            result.setMessage("系统异常");
+            LogUtil.intoLog(4,this.getClass(),"用户修改密码找到多个人__ssid"+paramParam.getSsid());
+            return;
+        }
+
+        Base_admininfo base_admininfo=baseAdmininfo.get(0);
 
         EntityWrapper ew = new EntityWrapper();
         ew.eq("ssid", paramParam.getSsid());
@@ -733,16 +741,28 @@ public class MainService extends BaseService {
             //修改最后登录密码
             admininfo.setLastlogintime(new Date());
 
+
+            //开始进入重置密码操作
+
             //生成key
-            String encryptedtext="123";//加密文本
-            String loginaccount=admininfo.getLoginaccount();//登录账号
-            Date registertime=admininfo.getRegistertime();//注册时间
-            String ssid=admininfo.getSsid();
+            String encryptedtext=null;//加密文本
+            String loginaccount=base_admininfo.getLoginaccount();//登录账号
+            Date registertime=base_admininfo.getRegistertime();//注册时间
+            String ssid=base_admininfo.getSsid();//用户ssid
+
+            Map<String,String> encryptedMap=new HashMap<>();
+            encryptedMap.put("loginaccount",loginaccount);
+            encryptedMap.put("registertime",String.valueOf(registertime.getTime()));
+            encryptedMap.put("ssid",ssid);
+            encryptedtext = gson.toJson(encryptedMap);
 
             //获取生成字符串
             if (StringUtils.isNotBlank(encryptedtext)){
-                //开始保存本地
-                System.out.println(CheckPasswordKey.key_path);
+               boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext);
+               if (!forgotpasswordbool){
+                   result.setMessage("重置密码异常");
+                   return;
+               }
             }
         }
 
@@ -803,151 +823,8 @@ public class MainService extends BaseService {
     }
 
     public void getNavList(RResult result) {
-        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
-
         AppCacheParam cacheParam = AppCache.getAppCacheParam();
-        String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
-        if(null == cacheParam.getData()){
-            String myIP = NetTool.getMyIP();
-            FileInputStream fis = null;
-            try {
-                Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
 
-                if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
-                    Base_filesave filesaveSyslogo = new Base_filesave();
-                    filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
-                    Base_filesave syslogo = base_filesaveMapper.selectOne(filesaveSyslogo);
-                    if (null!=syslogo){
-                        cacheParam.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
-                    }
-                }
-
-                if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
-                    Base_filesave filesaveClientlogo = new Base_filesave();
-                    filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
-                    Base_filesave clientlogo = base_filesaveMapper.selectOne(filesaveClientlogo);
-                    if (null!=clientlogo){
-                        cacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
-                    }
-                }
-
-                fis = new FileInputStream(path);
-
-                Yaml yaml = new Yaml();
-                Map<String,Object> map = yaml.load(fis);
-
-                //获取授权信息
-                CommonCache.gnlist();
-                SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
-                String gnlist = getSQEntity.getGnlist();
-
-                String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
-
-                String application_name=PropertiesListenerConfig.getProperty("spring.application.name");
-
-                Map<String, Object> avstYml = (Map<String, Object>) map.get(application_name);
-                String oem = "common_o";
-                //取出公司分类
-                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get("oem");//取出通用版
-//                Map<String, Object> commonYml = (Map<String, Object>) oemYml.get(oem);
-
-                //判断如果是通用版，就获取通用版的菜单栏，如果不是通用版就从avst里面匹配出当前公司指定的菜单栏
-                if(gnlist.indexOf(oem) == -1){
-                    String oemListStr = "";
-
-                    for(Map.Entry<String, Object> entry: oemYml.entrySet()){
-//                    System.out.println("Key: "+ entry.getKey()+ " Value: "+entry.getValue());
-                        if("".equals(oemListStr)){
-                            oemListStr += entry.getKey();
-                        }else {
-                            oemListStr += "|" + entry.getKey();
-                        }
-                    }
-                    if (StringUtils.isNotBlank(oemListStr)) {
-                        String[] split = gnlist.split("\\|");
-                        String[] gnlit = oemListStr.split("\\|");
-                        oemListStr = "";
-                        for (int i = 0; i < split.length; i++) {
-                            for (int j = 0; j < gnlit.length; j++) {
-                                if (split[i].equals(gnlit[j])) {
-                                    oemListStr = gnlit[j];
-                                    break;
-                                }
-                            }
-                            if(!"".equals(oemListStr)){
-                                cwebFile = oemListStr;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-
-                Map<String, Object> fileYml = (Map<String, Object>) oemYml.get(cwebFile);
-//                Map<String,Object> zkYml = (Map<String, Object>) map.get("zk");
-//                String guidepageUrl = (String) zkYml.get("home-url");
-
-//                fileYml.put("bottom", commonYml.get("bottom"));
-//                fileYml.put("login", commonYml.get("login"));
-                fileYml.put("gnlist", gnlist);
-//                String hostAddress = NetTool.getMyIP();
-
-
-
-
-                Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支
-                Map<String, Object> logoYml = null;//分支特性
-                //判断是公安、纪委、监察委那个版本，取出该版本的logo
-                if(gnlist.indexOf(SQVersion.GA_T) != -1){
-                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.GA_T);
-                }else if(gnlist.indexOf(SQVersion.JW_T) != -1){
-                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.JW_T);
-                }else if(gnlist.indexOf(SQVersion.JCW_T) != -1){
-                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.JCW_T);
-                }else if(gnlist.indexOf(SQVersion.FY_T) != -1){
-                    logoYml = (Map<String, Object>) branchYml.get(SQVersion.FY_T);
-                }
-
-                fileYml.put("logotitle", logoYml.get("logo"));
-
-                cacheParam.setData(fileYml);
-
-                cacheParam.setGuidepageUrl("");//先给个空字符串
-
-                //请求总控获取提供过来的地址
-                RResult zkResult = new RResult();
-                this.getServerStatus(zkResult, null);
-                if(null != zkResult.getData()){
-                    List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
-                    for (LinkedHashMap<String, Object> hashMap : data) {
-                        if("zk".equals(hashMap.get("servername"))){
-                            cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url"));//进入总控
-                        }
-                    }
-                }
-//                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
-                LogUtil.intoLog(1, this.getClass(), "外部配置文件，获取菜单栏成功");
-
-
-                //更新缓存
-                SysYmlParam sysYmlParam=new SysYmlParam();
-                sysYmlParam.setAvstYml(avstYml);
-                sysYmlParam.setBranchYml(logoYml);
-                sysYmlParam.setOemYml(fileYml);
-                sysYmlParam.setGnlist(gnlist);
-                SysYmlCache.setSysYmlParam(sysYmlParam);
-            } catch (IOException e) {
-                LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
-            }finally {
-                if(null != fis){
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
         result.setData(cacheParam);
         changeResultToSuccess(result);
     }

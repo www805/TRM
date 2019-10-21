@@ -127,6 +127,15 @@ function callgetNavList(data) {
                     $("#nav_list").css("right", 350);
                 }
 
+                //只有法院版才显示进入总控端
+                if (isNotEmpty(gnlist) && gnlist.indexOf("fy_t") == -1) {
+                    $("#guidepage").hide();
+                    $("#nav_list").css("right", 250);
+                }
+
+
+
+
                 //设置logo和标题
                 var logo_title = appCache.data.logotitle;
                 if(isNotEmpty(logo_title)){

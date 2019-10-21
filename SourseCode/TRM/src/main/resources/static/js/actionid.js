@@ -408,5 +408,7 @@ function getactionid_manage() {
 
         //以上为法庭的接口===============================end
 
+        resetPassword_resetPassword:"resetPassword_resetPassword",
+
     };
 }
