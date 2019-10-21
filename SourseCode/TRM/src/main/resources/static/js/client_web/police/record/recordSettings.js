@@ -780,10 +780,10 @@ function getptdjinfo() {
         ptdjct = 90;
     }
     return {
-        fdType: fdtype,
-        ct: parseInt(ptdjct),
-        lineList: ptjsonValues,
-        flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid
+        fdType: fdtype, //FD_AVST
+        ct: parseInt(ptdjct), //显示时间
+        lineList: ptjsonValues,  //显示内容
+        flushbonadingetinfossid: getRecordById_data.modeltds[0].fdssid   //设备ssid
     };
 }
 
