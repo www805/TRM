@@ -25,6 +25,7 @@
 
         var viode_w;
         var video_h;
+        var myplayer;
 
         function play(){
             playerwh=$("#phitem").width();
@@ -34,7 +35,7 @@
             playerwhht=playerwh*play_x/4;
 
 
-            var myplayer = $f("player", swfurl, {
+             myplayer = $f("player", swfurl, {
                 clip: {
                     url: liveurl,
                     autoPlay: true,
@@ -121,6 +122,15 @@
             var playerdom = document.getElementById("player");
             playerdom.style.width = now_w + "px";
             playerdom.style.height = now_h + "px";
+        }
+
+
+        //调整音量0-100
+        function setVolume(volume) {
+            if (isNotEmpty(myplayer)){
+                volume=volume==null?0:parseInt(volume);
+                myplayer.setVolume(volume);
+            }
         }
 
     </script>

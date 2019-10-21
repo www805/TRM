@@ -415,8 +415,7 @@ function gettree(data){
     $('#recotdtypes td').click(function() {
         var obj=this;
         var cardnum=$("#ifranmehtml").contents().find("#cardnum").val();
-        if (isNotEmpty(cardnum)) {
-            layer.confirm('人员案件信息将会重置，确定要切换笔录类型吗', {
+            layer.confirm('是否需要重置人员案件数据？', {
                 btn: ['确认','取消'], //按钮
                 shade: [0.1,'#fff'], //不显示遮罩
             }, function(index){
@@ -431,27 +430,15 @@ function gettree(data){
                 $("iframe").prop("src",url);
                 layer.close(index);
             }, function(index){
+                $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
+                $('#recotdtypes td').not(obj).attr("recordtypebool","false");
+
+                $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
+                $(obj).attr("recordtypebool","true");
+
                 layer.close(index);
             });
-        }else{
-            $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
-            $('#recotdtypes td').not(obj).attr("recordtypebool","false");
-
-            $(obj).css({"background-color":"#1E9FFF","color":"#FFFFFF"});
-            $(obj).attr("recordtypebool","true");
-
-            var url=getActionURL(getactionid_manage().addCaseToUser_toaddCaseToUserDetail);
-
-            $("iframe").prop("src",url);
-        }
     });
-    $('#recotdtypes span').mouseover(function(){
-        var title = $(this).attr("title");
-        layer.tips(title, this);
-    });
-
-
-
 
     layui.use(['element','form'], function(){
         var element = layui.element;

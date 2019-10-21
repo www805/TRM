@@ -5,12 +5,15 @@ import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -19,13 +22,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class LoginService extends BaseService {
 
     @Autowired
     private Base_admininfoMapper admininfoMapper;
+
+    private Gson gson=new Gson();
 
     /***
      * 登录验证
@@ -35,6 +43,8 @@ public class LoginService extends BaseService {
     public void gotologin(RResult<AdminManage_session> result, HttpServletRequest request, LoginParam loginParam){
         String loginaccount=loginParam.getLoginaccount();
         String password=loginParam.getPassword();
+
+
 
         if(!StringUtils.isNotBlank(loginaccount) || !StringUtils.isNotBlank(password)){
             result.setMessage("用户名密码不能为空");
@@ -46,7 +56,6 @@ public class LoginService extends BaseService {
             result=new RResult<AdminManage_session>();
         }
         try {
-
 
 
             EntityWrapper ew=new EntityWrapper();
@@ -64,6 +73,8 @@ public class LoginService extends BaseService {
             if (null!=adminManage&&adminManage.size()>0){
                     if (adminManage.size()==1){
                         Base_admininfo base_admininfo=adminManage.get(0);
+
+
                         String password1=base_admininfo.getPassword();
                         if (null==password1||!password.equals(password1)){
                             result.setMessage("请输入正确的密码");

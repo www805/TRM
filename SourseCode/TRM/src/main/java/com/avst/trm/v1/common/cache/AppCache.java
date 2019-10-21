@@ -229,7 +229,7 @@ public class AppCache {
                     List<Map<String, Object>> itemListMap = (List<Map<String, Object>>) stringObjectMap.get("list");
                     for (Map<String, Object> itemlist : itemListMap) {
                         String itemName = (String) itemlist.get("name");
-                        if (itemName.indexOf("总控") != -1) {
+                        if (itemName.indexOf("后台") != -1) {
                             itemlist.put("url", cacheParam.getGuidepageUrl());
                             break;
                         }
@@ -237,6 +237,9 @@ public class AppCache {
                 }
             }
         }
+
+        Map<String, Object> ptdj = (Map<String, Object>) avstYml.get("ptdj");
+        fileYml.put("ptdj", ptdj);
 
         cacheParam.setData(fileYml);
 

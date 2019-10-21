@@ -3943,36 +3943,10 @@ public class RecordService extends BaseService {
      */
     private Map<String, Object> ptdjmap() {
 
-        //获取片头叠加外部文件路径
-        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
-        String filepath = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
+        AppCacheParam cacheParam = AppCache.getAppCacheParam();
+        Map<String, Object> cweb = cacheParam.getData();
+        Map<String, Object> ptdj = (Map<String, Object>) cweb.get("ptdj");
 
-        //创建Properties属性对象用来接收ini文件中的属性
-        Map<String, Object> ptdj = null;
-        FileInputStream fis = null;
-
-        try {
-            //创建文件输入流
-            fis = new FileInputStream(filepath);
-
-            Yaml yaml = new Yaml();
-            Map<String,Object> map = yaml.load(fis);
-
-            Map<String,Object> trm = (Map<String, Object>) map.get("trm");
-            Map<String,Object> cweb = (Map<String, Object>) trm.get("cweb");
-            ptdj = (Map<String, Object>) cweb.get("ptdj");
-        }
-        catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.ptdjini  获取片头叠加外部文件错误...");
-        }finally {
-            if (null != fis) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
         return ptdj;
     }

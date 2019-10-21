@@ -42,7 +42,6 @@ function callbackgetRecordById(data) {
 
                 //获取默认的片头信息
                 getptdjconst(1);
-
                 setInterval(function () {
                     getFDState();
                 }, 1000);
@@ -409,6 +408,13 @@ layui.use('form', function(){
 
     });
 
+    form.on('switch(sceneVoice)', function (data) {
+        if (data.elem.checked) {
+            setVolume(50);
+        }else{
+            setVolume(0);
+        }
+    });
 });
 
 function calladdRecord(data) {

@@ -207,6 +207,21 @@ public class MainService extends BaseService {
                     result.setMessage("登录成功");
 
 
+                    //检测是否存在文件夹
+                    String encryptedtext="";
+                    Map<String,String> encryptedMap=new HashMap<>();
+                    encryptedMap.put("loginaccount",loginaccount);
+                    encryptedMap.put("registertime",String.valueOf(user.getRegistertime().getTime()));
+                    encryptedMap.put("ssid",user.getSsid());
+                    encryptedtext = gson.toJson(encryptedMap);
+                    if (StringUtils.isNotBlank(encryptedtext)){
+                        boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext);
+                        if (!forgotpasswordbool){
+                            result.setMessage("登录失败");
+                            LogUtil.intoLog(3,this.getClass(),"登录时创建key失败__loginaccount__"+loginaccount1);
+                            return;
+                        }
+                    }
 
 
 
