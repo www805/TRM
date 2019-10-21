@@ -10,7 +10,9 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.service.policeservice.EquipmentService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 import com.avst.trm.v1.web.cweb.vo.policevo.ExportWordVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,11 @@ import javax.servlet.http.HttpSession;
 public class RecordAction extends BaseAction {
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private RecordService2 recordService2;
+
+
 
 
     /**
@@ -82,20 +89,6 @@ public class RecordAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
             recordService.getRecordById(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    @RequestMapping(value = "/uploadRecord")
-    public RResult uploadRecord(@RequestBody ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            recordService.uploadRecord(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -326,7 +319,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.exportPdf(result,param);
+            recordService2.exportPdf(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -345,7 +338,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.exportWord(result,param);
+            recordService2.exportWord(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -508,7 +501,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getWordTemplateList(result,param);
+            recordService2.getWordTemplateList(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -522,7 +515,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.uploadWordTemplate(result,param,multipartfile);
+            recordService2.uploadWordTemplate(result,param,multipartfile);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -536,7 +529,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getWordTemplateByssid(result,param);
+            recordService2.getWordTemplateByssid(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -551,7 +544,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.changeboolWordTemplate(result,param);
+            recordService2.changeboolWordTemplate(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -621,7 +614,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getRecordrealByRecordssid(result,param);
+            recordService2.getRecordrealByRecordssid(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -640,7 +633,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            recordService.setRecordreal(result, param);
+            recordService2.setRecordreal(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -655,7 +648,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            recordService.getRecordreal_LastByRecordssid(result, param);
+            recordService2.getRecordreal_LastByRecordssid(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -674,234 +667,12 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            recordService.setRecordreal_Last(result, param);
+            recordService2.setRecordreal_Last(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
 
-
-    /**
-     * 获取设备状态信息
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getFDState")
-    public RResult getFDState(@RequestBody  ReqParam param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getFDState(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取当前配置片头字段
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getptdjconst")
-    public RResult getptdjconst(@RequestBody  ReqParam param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getptdjconst(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 光盘出仓/进仓
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getdvdOutOrIn")
-    public RResult getdvdOutOrIn(@RequestBody  ReqParam<DvdOutOrInParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getdvdOutOrIn(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 开始光盘刻录
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getstartRec_Rom")
-    public RResult getstartRec_Rom(@RequestBody  ReqParam<StartRec_RomParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getstartRec_Rom(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 结束光盘刻录
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getstopRec_Rom")
-    public RResult getstopRec_Rom(@RequestBody  ReqParam<StopRec_RomParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getstopRec_Rom(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 云台控制
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getyuntaiControl")
-    public RResult getyuntaiControl(@RequestBody  ReqParam<YuntaiControlParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getyuntaiControl(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 片头叠加
-     * @param param
-     * @return
-     */
-    @RequestMapping("/ptdj")
-    public RResult ptdj(@RequestBody  ReqParam<PtdjParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.ptdj(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获取刻录选时
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getBurnTime")
-    public RResult getBurnTime(@RequestBody  ReqParam<GetBurnTimeParam> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getBurnTime(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 修改刻录选时
-     * @param param
-     * @return
-     */
-    @RequestMapping("/updateBurnTime")
-    public RResult updateBurnTime(@RequestBody  ReqParam<GetBurnTimeParam> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.updateBurnTime(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 刻录模式选择
-     * @param param
-     * @return
-     */
-    @RequestMapping("/changeBurnMode")
-    public RResult changeBurnMode(@RequestBody  ReqParam<ChangeBurnModeParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.changeBurnMode(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 光盘序号
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getCDNumber")
-    public RResult getCDNumber(@RequestBody  ReqParam<GetCDNumberParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getCDNumber(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-    /**
-     * 获得 设备现场的音频振幅
-     * @param param
-     * @return
-     */
-    @RequestMapping("/getFDAudPowerMap")
-    public RResult getFDAudPowerMap(@RequestBody  ReqParam<GetFDAudPowerMapParam_out> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.getFDAudPowerMap(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-
-    /**
-     * 提供休庭心跳
-     * @param param
-     * @return
-     */
-    @RequestMapping("/putRecessStatus")
-    public RResult putRecessStatus(@RequestBody  ReqParam<RecordStatusCacheParam> param){
-        RResult result = this.createNewResultOfFail();
-        if (null == param) {
-            result.setMessage("参数为空");
-        } else {
-            recordService.putRecessStatus(result, param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
 
 
 
@@ -916,7 +687,7 @@ public class RecordAction extends BaseAction {
         if (null == param) {
             result.setMessage("参数为空");
         } else {
-            recordService.gZIPVod(result, param);
+            recordService2.gZIPVod(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -933,7 +704,7 @@ public class RecordAction extends BaseAction {
         if (null == param) {
             result.setMessage("参数为空");
         } else {
-            recordService.zIPVodProgress(result, param);
+            recordService2.zIPVodProgress(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -951,7 +722,7 @@ public class RecordAction extends BaseAction {
         if (null == param) {
             result.setMessage("参数为空");
         } else {
-            recordService.exportUdisk(result, param.getParam());
+            recordService2.exportUdisk(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -968,7 +739,7 @@ public class RecordAction extends BaseAction {
         if (null == param) {
             result.setMessage("参数为空");
         } else {
-            recordService.exportLightdisk(result, param.getParam(),session);
+            recordService2.exportLightdisk(result, param.getParam(),session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -986,7 +757,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getCaseStatistics(result,param,session);
+            recordService2.getCaseStatistics(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -1000,7 +771,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getWordTemplates(result,param);
+            recordService2.getWordTemplates(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

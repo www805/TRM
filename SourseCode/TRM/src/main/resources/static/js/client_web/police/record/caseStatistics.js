@@ -213,7 +213,7 @@ $(function () {
                     align: 'left',
                     normal:{
                         formatter(v) {
-                            let text = Math.round(v.percent)+'%' + '' + v.name
+                            let text = Math.round(v.percent)+'%' + '' + v.name;
                             if(text.length <= 8)
                             {
                                 return text;
@@ -228,7 +228,7 @@ $(function () {
                             }
                         },
                         textStyle : {
-                            fontSize : 8
+                            fontSize : 15
                         }
                     }
                 },

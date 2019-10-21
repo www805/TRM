@@ -306,7 +306,7 @@ function myChart_(){
                             }
                         },
                         textStyle : {
-                            fontSize : 8
+                            fontSize : 15
                         }
                     }
                 },

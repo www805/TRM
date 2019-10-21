@@ -42,6 +42,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckStartRecordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
+import com.avst.trm.v1.web.cweb.service.policeservice.EquipmentService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckStartRecordVO;
@@ -85,6 +86,9 @@ public class OutService  extends BaseService {
 
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private EquipmentService equipmentService;
 
     @Autowired
     private Police_arraignmentexpandMapper police_arraignmentexpandMapper;
@@ -179,7 +183,7 @@ public class OutService  extends BaseService {
                 RResult ptdj_rr=new RResult();
                 ReqParam ptdj_param=new ReqParam();
                 ptdj_param.setParam(ptdjParam_out);
-                recordService.ptdj(ptdj_rr,ptdj_param);
+                equipmentService.ptdj(ptdj_rr,ptdj_param);
                 if (null!=ptdj_rr&&ptdj_rr.getActioncode().equals(Code.SUCCESS.toString())){
                     LogUtil.intoLog(this.getClass(),"recordService.ptdj片头叠加成功__请求成功__");
                 }else {

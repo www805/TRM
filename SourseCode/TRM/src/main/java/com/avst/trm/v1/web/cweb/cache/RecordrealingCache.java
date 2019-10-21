@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProble
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 
 import java.util.HashMap;
 import java.util.List;
@@ -69,8 +70,8 @@ public class RecordrealingCache {
     }
 
     public static synchronized boolean initCache(){
-        RecordService recordService= SpringUtil.getBean(RecordService.class);
-        List<Record> records = recordService.initRecordrealingCache();
+        RecordService2 recordService2= SpringUtil.getBean(RecordService2.class);
+        List<Record> records = recordService2.initRecordrealingCache();
         initCache_bool=true;
         if (null!=records&&records.size()>0){
             recordrealMap=new HashMap<String,List<RecordToProblem>>();
