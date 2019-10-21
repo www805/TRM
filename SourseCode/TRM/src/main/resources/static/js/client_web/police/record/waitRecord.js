@@ -920,11 +920,12 @@ function calladdRecord(data) {
 
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
+                    var url=null;
                     if (gnlist_.indexOf("fy_t")!= -1){
                         //法院跳转
-                        var url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
+                         url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
                     }else {
-                        var url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
+                         url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
                     }
                     window.location.href=url;
 
