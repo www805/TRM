@@ -127,8 +127,8 @@
 
         //调整音量0-100
         function setVolume(volume) {
-            if (isNotEmpty(volume)&&isNotEmpty(myplayer)){
-                volume=parseInt(volume);
+            if (isNotEmpty(myplayer)){
+                volume=volume==null?0:parseInt(volume);
                 myplayer.setVolume(volume);
             }
         }
