@@ -2140,5 +2140,13 @@ layui.use('form', function(){
 
     });
 
+    form.on('switch(sceneVoice)', function (data) {
+        if (data.elem.checked) {
+            setVolume(50);
+        }else{
+            setVolume(0);
+        }
+    });
+
 });
 
