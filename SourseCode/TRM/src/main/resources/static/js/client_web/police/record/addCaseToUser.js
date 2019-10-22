@@ -252,7 +252,8 @@ function addCaseToArraignment() {
   ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
-    $("#startrecord_btn").attr({"lay-filter":"startrecord_btn","disabled":""});
+    $("#startrecord_btn").attr("lay-filter","startrecord_btn");
+    $("#startrecord_btn").removeAttr("disabled")
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
@@ -334,8 +335,22 @@ function callbackaddCaseToArraignment(data) {
                 //存在笔录正在进行中，跳转笔录列表，给出提示：建议他先结束制作中的
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
+                        var btn=['开始笔录',"查看审讯列表","取消"];
+                        btn2= function(index) {
+                            console.log("跳转笔录列表")
+                            toUrltype=2;
+                            skipCheckbool =1;
+                            addCaseToArraignment();
+                            parent.layer.close(index);
+                        };
+                        if (gnlist.indexOf("hk_o")!=-1){
+                            btn=['开始笔录',"取消"];
+                            btn2=function(index) {
+                                parent.layer.close(index);
+                            };
+                        }
                         parent.layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始笔录',"查看审讯列表","取消"], //按钮
+                            btn:btn, //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                              btn1:function(index) {
                                  console.log("跳转笔录制作中");
@@ -344,13 +359,7 @@ function callbackaddCaseToArraignment(data) {
                                  addCaseToArraignment();
                                  parent.layer.close(index);
                              },
-                            btn2: function(index) {
-                                console.log("跳转笔录列表")
-                                toUrltype=2;
-                                skipCheckbool =1;
-                                addCaseToArraignment();
-                                parent.layer.close(index);
-                            },
+                            btn2:btn2,
                              btn3: function(index) {
                                  parent.layer.close(index);
                              }

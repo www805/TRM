@@ -152,6 +152,10 @@ function callbackuserlogin(data) {
     }
 }
 
+function updatePassWord() {
+
+}
+
 function getNavList() {
     setpageAction(INIT_CLIENT,"client_web/base/main");
     var url=getActionURL(getactionid_manage().main_getNavList);

@@ -343,8 +343,24 @@ function callbackcontinueCase(data) {
                     var multifunctionbool=addcasetoarraignmentvo_data.multifunctionbool;
 
                     if (isNotEmpty(addcasetoarraignmentvo_data)&&isNotEmpty(recordssid)){
+
+                        var btn=['开始笔录',"查看审讯列表","取消"];
+                        btn2= function(index) {
+                            console.log("跳转笔录列表")
+                            var url = getActionURL(getactionid_manage().caseIndex_torecordIndex);
+                            window.location.href = url;
+                            layer.close(index);
+                        };
+                        if (gnlist.indexOf("hk_o")!=-1){
+                            btn=['开始笔录',"取消"];
+                            btn2=function(index) {
+                                layer.close(index);
+                            };
+                        }
+
+
                         layer.confirm("<span style='color:red'>新的笔录/审讯已生成</span>", {
-                            btn: ['开始笔录',"查看审讯列表","取消"], //按钮
+                            btn:btn, //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
                                 console.log("跳转笔录制作中");
@@ -362,12 +378,7 @@ function callbackcontinueCase(data) {
                                 });
                                 layer.close(index);
                             },
-                            btn2: function(index) {
-                                console.log("跳转笔录列表")
-                                var url = getActionURL(getactionid_manage().caseIndex_torecordIndex);
-                                window.location.href = url;
-                                layer.close(index);
-                            },
+                            btn2: btn2,
                             btn3: function(index) {
                                 layer.close(index);
                             }

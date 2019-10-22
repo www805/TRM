@@ -58,7 +58,7 @@
             <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" >添加案件</a>
 
 
-            <a onclick="window.location.href=caseStatisticsURL;"  class="layui-btn layui-btn-warm" th:if="${caseIndexModel.statisticsbool}==1"><i class="layui-icon layui-icon-chart"></i>统计</a>
+            <a onclick="window.location.href=caseStatisticsURL;"  class="layui-btn layui-btn-warm" th:if="${#strings.indexOf(session.AUTHORIZATIONALL_CLIENT.gnlist,'hk_o')}!=-1 "><i class="layui-icon layui-icon-chart"></i>统计</a>
         </div>
     </form>
     <div th:replace="page :: page">...</div>
@@ -112,15 +112,15 @@
             <td style="width: 30%;overflow: visible;">
                 <div>
                     <button onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}','{{value.creatorname}}')"   title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}"      class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs"  >查看</button>
+                    {{#    if (gnlist.indexOf("s_v")!= -1){   }}
                     <div class="btn-group">
                         <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" >
                             <li type="1"><a href="#" onclick="exportUdisk('{{value.ssid}}');" >导出U盘</a></li>
-                            {{#    if (gnlist.indexOf("s_v")!= -1){   }}
                             <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}');">导出光盘</a></li>
-                            {{#   }  }}
                         </ul>
                     </div>
+                    {{#   }  }}
                     <a href="#" {{casebool==2?'disabled':''}} onclick="toaddOupdateurl('{{value.ssid}}','{{casebool}}');" class="layui-btn {{casebool==2?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs" >修改</a>
                     <a href="#"  class="layui-btn layui-btn-danger layui-btn-xs" onclick="delcase('{{value.ssid}}','{{casebool}}')">删除</a>
                     {{#  if(value.record_pausebool==1){  }}

@@ -544,7 +544,7 @@ function showrecord(times,oldtime) {
             if (t1==times) {
                 $(this).addClass("highlight_right");
                 var top=$(this).position().top;
-                var div = document.getElementById('recorddetail_scrollhtml');
+                var div = document.getElementById('recorddetail');
                 div.scrollTop = top;
                 return false;
             }

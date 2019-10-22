@@ -9,6 +9,7 @@ import com.avst.trm.v1.feignclient.mc.req.OverMCParam_out;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.web.cweb.req.policereq.ExportPdfParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -23,13 +24,16 @@ public class AddRecord_Thread extends Thread {
 
     private OutService outService;
 
+    private RecordService2 recordService2;
 
 
-    public AddRecord_Thread(String recordssid, RecordService recordService, String mtssid, OutService outService){
+
+    public AddRecord_Thread(String recordssid, RecordService recordService,RecordService2 recordService2, String mtssid, OutService outService){
         this.recordssid=recordssid;
         this.recordService=recordService;
         this.mtssid=mtssid;
         this.outService=outService;
+        this.recordService2=recordService2;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class AddRecord_Thread extends Thread {
                     ReqParam reqParam=new ReqParam();
                     reqParam.setParam(exportPdfParam);
 
-                    exportPdf_rr=recordService.exportPdf(exportPdf_rr, reqParam);
+                    exportPdf_rr=recordService2.exportPdf(exportPdf_rr, reqParam);
                     if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
                         LogUtil.intoLog(this.getClass(),"recordService.exportPdf笔录结束时exportPdf__成功__保存问答");
                     }else{
