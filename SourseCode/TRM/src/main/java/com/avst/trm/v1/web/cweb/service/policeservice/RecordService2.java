@@ -701,8 +701,6 @@ public class RecordService2 extends BaseService {
         return;
     }
 
-
-
     public void setRecordreal(RResult result,ReqParam<SetRecordrealParam> param){
         SetRecordrealParam setRecordrealParam=param.getParam();
         if (null==setRecordrealParam){

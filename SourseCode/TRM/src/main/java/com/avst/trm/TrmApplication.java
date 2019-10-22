@@ -23,7 +23,16 @@ import java.util.Map;
 @SpringBootApplication
 @MapperScan(value = {"com.avst.trm.v1.common.datasourse.base.mapper","com.avst.trm.v1.common.datasourse.police.mapper"})
 @EnableScheduling
-public class TrmApplication  extends SpringBootServletInitializer {
+public class TrmApplication   {
+
+//    public class TrmApplication  extends SpringBootServletInitializer {//war打包使用
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+//
+//        application.application().addListeners(new PropertiesListener("application.properties","trm.properties"));
+//        application.application().setBeanNameGenerator(new CustomGenerator());
+//        return application.sources(TrmApplication.class);
+//    }
 
     /**
      *
@@ -38,10 +47,7 @@ public class TrmApplication  extends SpringBootServletInitializer {
         return map;
     }
 
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(TrmApplication.class);
-    }
+
 
     public static class CustomGenerator implements BeanNameGenerator {
 

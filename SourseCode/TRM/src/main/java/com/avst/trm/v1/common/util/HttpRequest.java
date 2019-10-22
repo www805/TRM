@@ -498,8 +498,7 @@ public class HttpRequest {
 							"HTTP Request is not success, Response code is " + httpURLConnection.getResponseCode());
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("httpURLConnection-----"+httpURLConnection!=null?JacksonUtil.objebtToString(httpURLConnection):null);
+
 			}
 
 			//不能要返回值，一定会出错
@@ -659,15 +658,15 @@ public static String uploadFile_HttpPost(String actionURL,String filepath,Map<St
 	public static void main(String[] args) {
 
 		String uuid=OpenUtil.getUUID_32();
-		String actionUrl="http://192.168.17.186:80/uploadService/httpFileUpload";
+		String actionUrl="http://192.168.17.183:80/uploadService/httpFileUpload";
 //		String actionUrl="http://192.168.17.175:8080/cweb/police/notification/uploadNotification";
-		String uploadFilePath="D:\\ftpdata\\sb3\\2019-10-17\\ced20137b6404df0a7f53735a66559a0_sxsba2\\iidplay.txt";
+		String uploadFilePath="D:\\ftpdata\\sb3\\2019-10-22\\8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233\\刘一《测试案件001》谈话办案_第7版.doc";
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("upload_task_id","892eddc0bd0647419a3246d7a9d4d580_sxsba2");
-		map.put("dstPath","/tmp/hd0/2019-10-17/ced20137b6404df0a7f53735a66559a0_sxsba2/");
-		map.put("fileName","iidplay.txt");
+		map.put("upload_task_id","8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233");
+		map.put("dstPath","/tmp/hd0/2019-10-22/8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233/");
+		map.put("fileName","刘一《测试案件001》谈话办案_第7版.doc");
 		map.put("linkaction","burn");
-		map.put("discFileName","iidplay.txt");
+		map.put("discFileName","刘一《测试案件001》谈话办案_第7版.doc");
 		map.put("action","upload_file");
 		boolean rr=uploadFile_fd(actionUrl,uploadFilePath,map);
 

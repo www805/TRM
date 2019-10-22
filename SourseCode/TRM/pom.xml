@@ -12,8 +12,8 @@
     <artifactId>trm</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>TRM</name>
-    <packaging>war</packaging>
-    <!--<packaging>jar</packaging>-->
+    <!--<packaging>war</packaging>-->
+    <packaging>jar</packaging>
     <description>Trial Record System</description>
 
     <properties>
@@ -38,11 +38,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!--eureka server -->
@@ -344,8 +339,38 @@
             <version>5.1.6</version>
         </dependency>-->
 
+        <!--jar 打包使用开始-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--jar 打包使用结束-->
+
+        <!--war 打包使用开始-->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            &lt;!&ndash; 排除内置容器，排除内置容器导出成war包可以让外部容器运行spring-boot项目&ndash;&gt;
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
+        <!--war 打包使用结束-->
+
 
     </dependencies>
+
+
+
 
     <!--springcloud 导入-->
     <dependencyManagement>
@@ -365,7 +390,7 @@
 
 
         <!--jar启动开始-->
-        <!--<plugins>
+        <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -403,27 +428,19 @@
                 </configuration>
             </plugin>
 
-        </plugins>-->
+        </plugins>
         <!--jar启动结束-->
 
         <!--war启动开始-->
 
-        <plugins>
-            <!-- 添加spring的插件， 就可以直接通过 mvn spring-boot:run 运行了 -->
+        <!--<plugins>
+            &lt;!&ndash; 添加spring的插件， 就可以直接通过 mvn spring-boot:run 运行了 &ndash;&gt;
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.avst.trm.TrmApplication</mainClass>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -441,12 +458,31 @@
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-        </plugins>
-
+        </plugins>-->
 
         <!--war启动结束-->
 
 
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>static/layuiadmin/layui/font/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/layuiadmin/layui/font/**</include>
+                </includes>
+            </resource>
+        </resources>
+
+
     </build>
+
+
 
 </project>

@@ -79,45 +79,67 @@ public class UploadFileThread<T> extends Thread{
         UploadFileCache.setUploadFile(uploadFileParam);
 
         //开始执行上传
-        for(FileParam fileParam:fileList){
-            String filepath=fileParam.getFilePath();
-            Map<String,String> map=new HashMap<String,String>();
-            try {
-                //转换成上传avst设备的参数
-                UploadParam_FD uploadParam_fd=gson.fromJson(gson.toJson(fileParam.getUploadparam()),UploadParam_FD.class);
+        try {
+            for(FileParam fileParam:fileList){
 
-                if(null==uploadParam_fd){
-                    LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
-                    continue;
-                }else{//给上传的map进行赋值
-                    map.put("upload_task_id",uploadParam_fd.getUpload_task_id());
-                    map.put("dstPath",uploadParam_fd.getDstPath());
-                    map.put("fileName",uploadParam_fd.getFileName());
-                    map.put("linkaction",uploadParam_fd.getLinkaction());
-                    map.put("discFileName",uploadParam_fd.getDiscFileName());
-                    map.put("action",uploadParam_fd.getAction());
-                }
+                uploadFile(fileParam);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-                LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
-                continue;
             }
-
-
-            String actionurl=fileParam.getActionURL();
-            if(null==map||StringUtils.isEmpty(filepath)||StringUtils.isEmpty(actionurl)){
-
-                LogUtil.intoLog(4,this.getClass(),"上传的文件的参数异常，fileParam：这个文件不上传，"+ JacksonUtil.objebtToString(fileParam) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
-                continue;
-            }
-            boolean bool=HttpRequest.uploadFile_fd(actionurl,filepath,map);
-            if(bool){//暂时不管上传失败的
-                UploadFileCache.checkBool(ssid,bool,filepath);
-            }
+            LogUtil.intoLog(1,this.getClass(),"所有文件上传完毕，ssid："+ ssid +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.intoLog(1,this.getClass(),"文件上传失败，ssid："+ ssid +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
         }
 
-        UploadFileCache.delUploadFile(ssid);
-        LogUtil.intoLog(1,this.getClass(),"所有文件上传完毕，ssid："+ ssid +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+        //检测是否上传完毕，是否需要再传
+
+
+
+        UploadFileCache.delUploadFile(ssid);//不管失败还是成功，都需要关闭这个缓存
+
+    }
+
+    /**
+     * 真正的文件上传方法
+     * @param fileParam
+     */
+    private void uploadFile(FileParam fileParam){
+        String filepath=fileParam.getFilePath();
+        Map<String,String> map=new HashMap<String,String>();
+        try {
+            //转换成上传avst设备的参数
+            UploadParam_FD uploadParam_fd=gson.fromJson(gson.toJson(fileParam.getUploadparam()),UploadParam_FD.class);
+
+            if(null==uploadParam_fd){
+                LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+                return;
+            }else{//给上传的map进行赋值
+                map.put("upload_task_id",uploadParam_fd.getUpload_task_id());
+                map.put("dstPath",uploadParam_fd.getDstPath());
+                map.put("fileName",uploadParam_fd.getFileName());
+                map.put("linkaction",uploadParam_fd.getLinkaction());
+                map.put("discFileName",uploadParam_fd.getDiscFileName());
+                map.put("action",uploadParam_fd.getAction());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtil.intoLog(4,this.getClass(),"设备上传的文件的参数转换异常，这个文件不上传，fileParam："+ JacksonUtil.objebtToString(fileParam.getUploadparam()) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+            return;
+        }
+
+        String actionurl=fileParam.getActionURL();
+        if(null==map||StringUtils.isEmpty(filepath)||StringUtils.isEmpty(actionurl)){
+
+            LogUtil.intoLog(4,this.getClass(),"上传的文件的参数异常，fileParam：这个文件不上传，"+ JacksonUtil.objebtToString(fileParam) +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+            return;
+        }
+        boolean bool=HttpRequest.uploadFile_fd(actionurl,filepath,map);
+        if(bool){//暂时不管上传失败的
+            UploadFileCache.checkBool(ssid,bool,filepath);
+        }else{
+            LogUtil.intoLog(4,this.getClass(),"上传的文件失败啦，fileParam：这个文件不上传，filepath："+ filepath +(uploadname!=null?(",上传任务的备注："+uploadname):""),username);
+
+        }
     }
 }
