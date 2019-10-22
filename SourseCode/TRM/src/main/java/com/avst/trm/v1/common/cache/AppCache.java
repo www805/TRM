@@ -230,7 +230,7 @@ public class AppCache {
                     for (Map<String, Object> itemlist : itemListMap) {
                         String itemName = (String) itemlist.get("name");
                         if (itemName.indexOf("后台") != -1) {
-                            itemlist.put("url", cacheParam.getGuidepageUrl());
+                            itemlist.put("url", cacheParam.getGuidepageUrl() + "?client=http://" + myIP + "/cweb/base/main/gotomain");
                             break;
                         }
                     }

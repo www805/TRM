@@ -233,12 +233,15 @@ function modelbanUpdateTemplate() {
     var templateType = {};
     for (var i = 0; i < list.length; i++) {
         templateType = list[i];
+        console.log(SQGnlist);
+
         if (i == 0) {
             updateTemplateType = templateType.id; //把第一个类型给他
         }
 
         if(isNotEmpty(typeId)){
             if (templateType.typename == "谈话") {
+                updateTemplateType = templateType.id; //把谈话类型给他
                 templateTypes += "<option value='" + templateType.id + "' >" + templateType.typename + "</option>";
                 break;
             }
@@ -279,7 +282,7 @@ function modelbanUpdateTemplate() {
     var uploadInst = upload.render({
         elem: '#uploadFile' //绑定元素
         ,url: url //上传接口
-        ,acceptMime: '.xls' //只允许上传图片文件
+        ,acceptMime: '.xls' //只允许上传xls
         ,exts: 'xls' //只允许上传压缩文件
         ,auto: false //选择文件后不自动上传
         ,bindAction: '#testListAction' //指向一个按钮触发上传
