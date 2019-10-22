@@ -83,11 +83,7 @@ function callbackgetRecordById(data) {
                             $("#mtbool_txt").text("谈话中");
                             getRecordrealing();
                         }else {
-                            layui.use(['layer','element','form'], function(){
-                                var layer=layui.layer;
-                                var layer=layui.layer;
-                                layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
-                            });
+
                         }
                         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else if (mcbool!=1&&!isNotEmpty(mtssid)) {
