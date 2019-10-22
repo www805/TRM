@@ -2757,7 +2757,8 @@ public class RecordService extends BaseService {
             }
 
             String gnlist=getSQEntity.getGnlist();
-            if (gnlist.indexOf(SQVersion.FY_T)!= -1&&gnlist.indexOf(SQVersion.S_E)!= -1){
+            //服务端版本可存在多个进行中
+            if (gnlist.indexOf(SQVersion.S_E)!= -1){
                 //法院的只需要检测模板
                 //开始检测会议模板是否已经被使用
                 if (null!=mtmodelssid){

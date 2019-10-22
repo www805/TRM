@@ -242,13 +242,6 @@ public class PolicePageAction {
     @GetMapping("tocaseIndex")
     public ModelAndView tocaseIndex(Model model){
         model.addAttribute("title","案件管理");
-        String gnlist=getSQEntity.getGnlist();
-        if (gnlist.indexOf(SQVersion.FY_T)!= -1){
-            //法院版本不显示统计
-            model.addAttribute("statisticsbool",-1);
-        }else {
-            model.addAttribute("statisticsbool",1);
-        }
         return new ModelAndView("client_web/police/record/caseIndex", "caseIndexModel", model);
     }
 
