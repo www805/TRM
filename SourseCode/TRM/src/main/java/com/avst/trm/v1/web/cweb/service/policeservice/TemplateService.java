@@ -1554,12 +1554,12 @@ public class TemplateService extends BaseService {
                         Integer insert = police_problemMapper.insert(police_problem);
                         addProblemParam = police_problem;
                         //添加问题类型
-//                        if (insert >= 1) {
-//                            Police_problemtotype problemtotype = new Police_problemtotype();
-//                            problemtotype.setProblemssid(police_problem.getSsid());
-//                            problemtotype.setProblemtypessid(problemtypessid);
-//                            police_problemtotypeMapper.insert(problemtotype);
-//                        }
+                        if (insert >= 1) {
+                            Police_problemtotype problemtotype = new Police_problemtotype();
+                            problemtotype.setProblemssid(police_problem.getSsid());
+                            problemtotype.setProblemtypessid(problemtypessid);
+                            police_problemtotypeMapper.insert(problemtotype);
+                        }
                     }else{
                         addProblemParam = problemList.get(0);
                     }

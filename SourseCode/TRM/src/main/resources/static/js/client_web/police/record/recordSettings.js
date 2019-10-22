@@ -126,7 +126,7 @@ function recordCaseInfo() {
 function yuntaikz() {
 
     //使用模块
-    var html=
+    var yuntaikzHtml=
         '<div class="layui-form layui-row" style="margin-left: 15px;margin-top: 8px;">\n' +
         '    <div style="margin-bottom: 20px;z-index: 88;">\n' +
         '        <div class="layui-inline">\n' +
@@ -183,7 +183,7 @@ function yuntaikz() {
         shade: 0,
         offset: ['310px', '490px'],
         area: ['420px', '300px'],
-        content: html,
+        content: yuntaikzHtml,
         success: function (layero, index) {
             // layer.min(index);
             layui.use('form', function() {
