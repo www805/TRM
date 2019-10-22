@@ -220,7 +220,10 @@ function tr_downn(obj) {
 //录音按钮显示隐藏 type:1开始录音
 var startMC_index;
 function img_bool(obj,type){
-    layer.closeAll('tips');
+    if (gnlist_.indexOf("hk_o")!= -1){
+        //海康的不需要tips
+        layer.closeAll('tips');
+    }
     $("#record_img img").css("display","none");
     if (type==1){
         if (mtssid==null){
@@ -256,7 +259,7 @@ function img_bool(obj,type){
             console.log("暂停会议")
             pauseOrContinueRercord(1);
         } else {
-            $("#startrecord").css("display","block");
+            $("#startrecord").css("display","inline-block");
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
                 layer.tips("笔录中~" ,'#startrecord',{time:0, tips: 1});
@@ -264,7 +267,7 @@ function img_bool(obj,type){
             layer.msg("笔录中~");
         }
     }else if(type==-1) {
-        $("#endrecord").css("display","block");
+        $("#endrecord").css("display","inline-block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
             layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:1});
@@ -422,7 +425,7 @@ function callbackgetRecordById(data) {
                     $("#record_img img").css("display","none");
                     if ((!isNotEmpty(mcbool)||!(mcbool==1||mcbool==3))&&isNotEmpty(mtssiddata)){
                         //存在会议但是状态为空或者不等于1
-                        $("#endrecord").css("display","block");
+                        $("#endrecord").css("display","inline-block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
                             layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 1});
@@ -436,7 +439,7 @@ function callbackgetRecordById(data) {
                         }
                         //存在会议状态正常
                         if (mcbool==1){
-                            $("#startrecord").css("display","block");
+                            $("#startrecord").css("display","inline-block");
                             var tips_msg="笔录中~";
                             if (record_pausebool==1) {
                                 tips_msg="点击我可以暂停~";
@@ -446,7 +449,7 @@ function callbackgetRecordById(data) {
                                 layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
                             });
                         } else if (mcbool==3&&record_pausebool==1) {
-                            $("#pauserecord").css("display","block");
+                            $("#pauserecord").css("display","inline-block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 1});
@@ -455,7 +458,7 @@ function callbackgetRecordById(data) {
 
                         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else {
-                        $("#pauserecord").css("display","block");
+                        $("#pauserecord").css("display","inline-block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
                             layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
@@ -551,7 +554,10 @@ function callbackgetRecordById(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
-    layer.closeAll('tips');//###
+    if (gnlist_.indexOf("hk_o")!= -1){
+        //海康的不需要tips
+        layer.closeAll('tips');
+    }
 }
 
 
@@ -636,9 +642,9 @@ function startMC() {
             getRecordById();
             $("#record_img img").css("display","none");
             if (multifunctionbool==2){
-                $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record5.png","onclick":"img_bool(this,1);"});
+                $("#pauserecord").css("display","inline-block").attr({"src":"/uimaker/images/record5.png","onclick":"img_bool(this,1);"});
             }else  if (multifunctionbool==3){
-                $("#pauserecord").css("display","block").attr({"src":"/uimaker/images/record.png","onclick":"img_bool(this,1);"});
+                $("#pauserecord").css("display","inline-block").attr({"src":"/uimaker/images/record.png","onclick":"img_bool(this,1);"});
             }
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
@@ -672,7 +678,7 @@ function callbackstartMC(data) {
                 $("#startrecord").attr("src","/uimaker/images/record9.png");
             }
         }
-        $("#startrecord").css("display","block");
+        $("#startrecord").css("display","inline-block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
             layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
@@ -727,13 +733,13 @@ function callbackstartMC(data) {
             var recordbool=data2.recordbool; //笔录开始状态
             $("#record_img img").css("display","none");
             if (null!=recordbool&&recordbool==true){
-                $("#endrecord").css("display","block");
+                $("#endrecord").css("display","inline-block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 1});
                 });
             }else {
-                $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+                $("#pauserecord").css("display","inline-block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:1});
@@ -757,7 +763,10 @@ function callbackstartMC(data) {
         $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
     }
 
-    layer.closeAll('tips');//###
+    if (gnlist_.indexOf("hk_o")!= -1){
+        //海康的不需要tips
+        layer.closeAll('tips');
+    }
 }
 
 
@@ -794,13 +803,13 @@ function callbackpauseOrContinueRercord(data) {
             var con=msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
             layer.msg(con, {time: 2000});
             if (pauseOrContinue==1){
-                $("#pauserecord").css("display","block");
+                $("#pauserecord").css("display","inline-block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
                 });
             } else {
-                $("#startrecord").css("display","block");
+                $("#startrecord").css("display","inline-block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
@@ -814,13 +823,13 @@ function callbackpauseOrContinueRercord(data) {
             var pauseOrContinue=data2.pauseOrContinue;
             $("#record_img img").css("display","none");
             if (pauseOrContinue==1){//请求暂停
-                $("#startrecord").css("display","block");
+                $("#startrecord").css("display","inline-block");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
                 });
             } else if (pauseOrContinue==2){//请求继续
-                $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+                $("#pauserecord").css("display","inline-block").attr("onclick","img_bool(this,1);");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
@@ -885,7 +894,7 @@ function getTDCacheParamByMTssid() {
 
 
 //保存按钮
-//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
+//recordbool 1进行中 2已结束
 function addRecord() {
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
@@ -917,7 +926,6 @@ function calladdRecord(data) {
             if (isNotEmpty(overRecord_loadindex)) {
                 layer.close(overRecord_loadindex);
             }
-
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
                     var url=null;
@@ -928,64 +936,7 @@ function calladdRecord(data) {
                          url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
                     }
                     window.location.href=url;
-
                 })
-            }else if (recordbool==-1){//导出word
-                var url=getActionURL(getactionid_manage().waitRecord_exportWord);
-                var paramdata={
-                    token:INIT_CLIENTKEY,
-                    param:{
-                        recordssid: recordssid,
-                    }
-                };
-                ajaxSubmitByJson(url, paramdata, function (data) {
-                    if (isNotEmpty(exportWord_index)) {
-                            layer.close(exportWord_index);
-                    }
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            var word_htmlpath=data.word_htmlpath;//预览html地址
-                            var word_path=data.word_path;//下载地址
-                            window.location.href = word_path;
-                            layer.msg("导出成功,等待下载中...",{icon: 6});
-                        }
-                    }else{
-                        layer.msg(data.message,{icon: 5});
-                    }
-                });
-            } else  if (recordbool==-2){//导出pdf
-                var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
-                var paramdata={
-                    token:INIT_CLIENTKEY,
-                    param:{
-                        recordssid: recordssid,
-                    }
-                };
-                ajaxSubmitByJson(url, paramdata, function (data) {
-                    if (isNotEmpty(exportPdf_index)) {
-                        layer.close(exportPdf_index);
-                    }
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            //window.location.href = data;
-                            layer.open({
-                                id:"pdfid",
-                                type: 1,
-                                title: '导出PDF',
-                                shadeClose: true,
-                                maxmin: true, //开启最大化最小化按钮
-                                area: ['893px', '600px'],
-                            });
-
-                            showPDF("pdfid",data);
-                            layer.msg("导出成功,等待下载中...",{icon: 6});
-                        }
-                    }else{
-                        layer.msg(data.message,{icon: 5});
-                    }
-                });
             } else {
                 layer.msg('保存成功',{icon:6});
             }
@@ -1032,7 +983,6 @@ var overRecord_loadindex =null;
         if (state==1){
             casebool=3;//需要暂停
         }
-
 
         addRecord();
         overRecord_loadindex = layer.msg("保存中，请稍等...", {
@@ -1744,6 +1694,67 @@ function contextMenu() {
 }
 
 
+function exportWord() {
+    var url=getActionURL(getactionid_manage().waitRecord_exportWord);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if (isNotEmpty(exportWord_index)) {
+            layer.close(exportWord_index);
+        }
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var word_htmlpath=data.word_htmlpath;//预览html地址
+                var word_path=data.word_path;//下载地址
+                window.location.href = word_path;
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+}
+
+function exportPdf() {
+    var url=getActionURL(getactionid_manage().waitRecord_exportPdf);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if (isNotEmpty(exportPdf_index)) {
+            layer.close(exportPdf_index);
+        }
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                //window.location.href = data;
+                layer.open({
+                    id:"pdfid",
+                    type: 1,
+                    title: '导出PDF',
+                    shadeClose: true,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                });
+
+                showPDF("pdfid",data);
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+}
+
+
 //自动甄别初始化
 var laststarttime_qq=-1;//上一个问时间
 var laststarttime_ww=-1;//上一个答时间
@@ -1788,21 +1799,19 @@ $(function () {
     $("#dc_li li").click(function () {
         var type=$(this).attr("type");
         if (type==1){
-                recordbool=-1; //不存在数据库
-                addRecord();
                 exportWord_index=layer.msg("导出中，请稍等...", {
                     icon: 16,
                     shade: [0.1, 'transparent'],
                     time:10000
                 });
+               exportWord()
         }else  if(type==2){
-                recordbool=-2; //不存在数据库
-                addRecord();
                 exportPdf_index=layer.msg("导出中，请稍等...", {
                     icon: 16,
                     shade: [0.1, 'transparent'],
                     time:10000
                 });
+               exportPdf();
         }
     });
     //常用问答点击

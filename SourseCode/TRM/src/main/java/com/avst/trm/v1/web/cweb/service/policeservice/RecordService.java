@@ -1245,7 +1245,7 @@ public class RecordService extends BaseService {
                LogUtil.intoLog(this.getClass(),"新增的人员ssid____"+userssid);
                usertotypessid=police_userinfototype.getSsid();
            }
-        }else{
+        }else if(checkuserinfos.size()==1){
             UserInfo userInfo=checkuserinfos.get(0);
             userssid=userInfo.getSsid();
           //修改用户信息

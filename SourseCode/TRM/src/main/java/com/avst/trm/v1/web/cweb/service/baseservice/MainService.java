@@ -342,7 +342,7 @@ public class MainService extends BaseService {
                 String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
                 LogUtil.intoLog(this.getClass(),"客户端logo真实地址："+realurl);
                 multipartfile.transferTo(new File(realurl));
-                String downurl =uploadpath+OpenUtil.strMinusBasePath(qg, realurl) ;
+                String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;//不需要带uploadpath 因为获取的时候回获取ip
                 LogUtil.intoLog(this.getClass(),"客户端logo下载地址："+downurl);
 
 

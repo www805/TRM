@@ -112,8 +112,26 @@ function callbackaddCaseToArraignment(data) {
                 if (isNotEmpty(checkStartRecordVO)){
                     var msg=checkStartRecordVO.msg;
                     if (isNotEmpty(msg)){
+
+                        var btn=['开始笔录',"查看审讯列表","取消"];
+                        btn2= function(index) {
+                            console.log("跳转审讯列表")
+                            toUrltype=2;
+                            skipCheckbool =1;
+                            to_waitconversationURL();
+                            layer.close(index);
+                        };
+                        if (gnlist.indexOf("hk_o")!=-1){
+                            btn=['开始笔录',"取消"];
+                            btn2=function(index) {
+                                layer.close(index);
+                            };
+                        }
+
+
+
                         layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                            btn: ['开始审讯',"查看审讯列表","取消"], //按钮
+                            btn:btn, //按钮
                             shade: [0.1,'#fff'], //不显示遮罩
                             btn1:function(index) {
                                 console.log("跳转审讯制作控制台");
@@ -122,13 +140,7 @@ function callbackaddCaseToArraignment(data) {
                                 to_waitconversationURL();
                                 layer.close(index);
                             },
-                            btn2: function(index) {
-                                console.log("跳转审讯列表")
-                                toUrltype=2;
-                                skipCheckbool =1;
-                                to_waitconversationURL();
-                                layer.close(index);
-                            },
+                            btn2: btn2,
                             btn3: function(index) {
                                 layer.close(index);
                             }

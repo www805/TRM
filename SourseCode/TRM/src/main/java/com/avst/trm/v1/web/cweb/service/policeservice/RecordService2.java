@@ -1064,11 +1064,6 @@ public class RecordService2 extends BaseService {
         if (null != record) {
             String talk="";
             if (!talkbool){
-                EntityWrapper ew = new EntityWrapper();
-                ew.eq("r.ssid", record.getSsid());
-                ew.orderBy("p.ordernum", true);
-                ew.orderBy("p.createtime", true);
-                /*  List<RecordToProblem> questionandanswer = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(ew);*/
                 List<RecordToProblem> questionandanswer=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
                 if (null != questionandanswer && questionandanswer.size() > 0) {
                     for (RecordToProblem problem : questionandanswer) {
@@ -1079,21 +1074,14 @@ public class RecordService2 extends BaseService {
                         }else {
                             //其他
                             talk+="问："+problem.getProblem()+"\r";
-                            String problemssid = problem.getSsid();
-                            if (StringUtils.isNotBlank(problemssid)) {
-                                EntityWrapper answerParam = new EntityWrapper();
-                                answerParam.eq("recordtoproblemssid", problemssid);
-                                answerParam.orderBy("ordernum", true);
-                                answerParam.orderBy("createtime", true);
-                                List<Police_answer> answers = police_answerMapper.selectList(answerParam);
-                                if (null != answers && answers.size() > 0) {
-                                    for (Police_answer answer : answers) {
-                                        talk+="答："+answer.getAnswer()+"\r";
-                                    }
-                                    problem.setAnswers(answers);
-                                } else {
-                                    talk+="答：\r";
+                            List<Police_answer> answers = problem.getAnswers();
+                            if (null != answers && answers.size() > 0) {
+                                for (Police_answer answer : answers) {
+                                    talk+="答："+answer.getAnswer()+"\r";
                                 }
+                                problem.setAnswers(answers);
+                            } else {
+                                talk+="答：\r";
                             }
                         }
                     }
