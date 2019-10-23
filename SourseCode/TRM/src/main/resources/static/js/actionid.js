@@ -361,6 +361,8 @@ function getactionid_manage() {
 
         caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",
 
+        softAndHardInfo_getSystemInfo:"softAndHardInfo_getSystemInfo",
+
         //以下为法庭的接口===============================start
 
         getCourtDetail_tocaseToUser:'getCourtDetail_tocaseToUser',
@@ -407,10 +409,6 @@ function getactionid_manage() {
 
         networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
         networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",
-
-        softAndHardInfo_getSQInfo:"softAndHardInfo_getSQInfo",
-
-
 
         //以上为法庭的接口===============================end
 

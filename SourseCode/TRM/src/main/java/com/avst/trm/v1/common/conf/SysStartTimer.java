@@ -1,5 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
+import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -41,6 +43,10 @@ public class SysStartTimer implements ApplicationRunner {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        //赋值服务器的开始时间
+        CommonCache.sysStartTime= DateUtil.getSeconds();
+
     }
 
     /**

@@ -112,20 +112,21 @@ public class BasicConfigureAction extends BaseAction {
 
 
     /**
-     * 获取授权信息
+     * 软硬件信息数据获取
+     * 硬件信息、软件信息、授权信息
      * @param param
      * @return
      */
-    @RequestMapping(value = "/getSQInfo")
+    @RequestMapping(value = "/getSystemInfo")
     @ResponseBody
-    public RResult getSQInfo(@RequestBody ReqParam param) {
+    public RResult getSystemInfo(@RequestBody ReqParam param) {
         RResult result=this.createNewResultOfFail();
         if(null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.getSQInfo(result);
+            basicConfigureService.getSystemInfo(result);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

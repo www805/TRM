@@ -88,6 +88,9 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
 
     private String runbook_filesavessid;
 
+    //软件系统版本号
+    private String sysVersion;
+
     private String ssid;
 
     private String string1;
@@ -250,6 +253,18 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         return this.id;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getSysVersion() {
+        return sysVersion;
+    }
+
+    public void setSysVersion(String sysVersion) {
+        this.sysVersion = sysVersion;
+    }
+
     @Override
     public String toString() {
         return "Base_serverconfig{" +
@@ -265,6 +280,7 @@ public class Base_serverconfig extends Model<Base_serverconfig> {
         ", workstarttime=" + workstarttime +
         ", workdays=" + workdays +
         ", authorizesortnum=" + authorizesortnum +
+        ", sysVersion=" + sysVersion +
         ", ssid=" + ssid +
         ", string1=" + string1 +
         ", string2=" + string2 +

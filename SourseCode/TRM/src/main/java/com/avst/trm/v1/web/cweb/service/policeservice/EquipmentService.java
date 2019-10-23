@@ -6,7 +6,9 @@ import com.avst.trm.v1.common.cache.RecordStatusCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
+import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
+import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
@@ -32,11 +34,15 @@ public class EquipmentService extends BaseService {
 
         try {
             RResult fdState = equipmentControl.getFDState(param);
-
-            result.setData(fdState.getData());
-            changeResultToSuccess(result);
+            if(null!=fdState&&fdState.getActioncode().equals(Code.SUCCESS.toString())){
+                result.setData(fdState.getData());
+                changeResultToSuccess(result);
+            }else{
+                LogUtil.intoLog(this.getClass(),"EquipmentService getFDState获取设备状态信息失败..,RResult:"+fdState==null?null: JacksonUtil.objebtToString(fdState));
+                result.setMessage("设备状态请求失败!");
+            }
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getFDState  获取设备状态信息失败...");
+            LogUtil.intoLog(this.getClass()," EquipmentService getFDState获取设备状态信息失败...");
             result.setMessage("设备状态请求失败!");
         }
 

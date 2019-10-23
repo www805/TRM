@@ -33,6 +33,8 @@ public class CommonCache {
 
     }
 
+    public static long sysStartTime;//服务器每次的启动时间
+
     /**
      * 本地授权信息授权
      */
@@ -45,6 +47,7 @@ public class CommonCache {
      * 分支版本：公安、纪委、监察委（ga_t、jw_t、jcw_t）
      * OEM版本：通用、HK（common_o、hk_o）
      * 客户端版/服务器端版（c_e,s_e）
+     * |cname=avst,cmsg:|
      * @return
      */
     public static List<String> gnlist(){
