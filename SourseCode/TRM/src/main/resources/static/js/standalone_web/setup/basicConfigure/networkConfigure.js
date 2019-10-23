@@ -57,8 +57,8 @@ function callgetFDNetWork(data){
 function callsetNetworkConfigure(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            location.replace(location.href);
             layer.msg(data.message,{icon: 6});
+            location.replace(location.href);
             // layer.msg("修改成功，因修改IP、子掩码、网关系统可能会有3-5秒的延迟",{icon: 6});
             // setTimeout(function(){
             //     location.replace(location.href);

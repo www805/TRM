@@ -1,10 +1,12 @@
 var fdType = "FD_AVST";
-
+var volumelist = [];
+var sliderAll = [];
+var volume0,volume1,volume2,volume3,volume4,volume5;
 
 //获得设备音频配置
 function getFDAudioConf() {
-    // var url=getActionURL(getactionid_manage().softAndHardInfo_getSQInfo);
-    var url="/cweb/setUp/basicConfigure/getFDAudioConf";
+    var url=getActionURL(getactionid_manage().audioConfigure_getSQInfo);
+    // var url="/cweb/setUp/basicConfigure/getFDAudioConf";
 
     var data = {
         token: INIT_CLIENTKEY,
@@ -19,8 +21,8 @@ function getFDAudioConf() {
 
 //设置设备某一个通道的通道音量
 function setFDAudioVolume(ch, volume) {
-    // var url=getActionURL(getactionid_manage().softAndHardInfo_getSQInfo);
-    var url = "/cweb/setUp/basicConfigure/setFDAudioVolume";
+    var url=getActionURL(getactionid_manage().audioConfigure_setFDAudioVolume);
+    // var url = "/cweb/setUp/basicConfigure/setFDAudioVolume";
 
     //save
 
@@ -30,7 +32,8 @@ function setFDAudioVolume(ch, volume) {
             fdType: fdType,
             flushbonadingetinfossid: "sxsba2",
             ch: ch,
-            volume: volume
+            volume: volume,
+            save:0 //不保存
         }
     };
 
@@ -44,11 +47,21 @@ function callgetFDAudioConf(data){
             console.log(data);
 
             if(isNotEmpty(data.data.audiolist)){
-                var audiolist = data.data.audiolist;
-                for(var i=0; i<audiolist.length; i++){
-                    var audio = audiolist[i];
 
-                }
+
+                    var audiolist = data.data.audiolist;
+                    for(var i=0; i<audiolist.length; i++){
+                        var audio = audiolist[i];
+
+                        var sliderV = sliderAll[i];
+
+                        if(isNotEmpty(sliderV)){
+                            sliderV.setValue(audio.volume);
+                        }
+
+                        $("#audio" + i).html(audio.volume);
+
+                    }
             }
         }
     }else{
@@ -62,7 +75,7 @@ function callsetFDAudioVolume(data){
 
             console.log(data);
 
-            layer.msg(data.message,{icon: 6});
+            // layer.msg(data.message,{icon: 6});
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -70,10 +83,10 @@ function callsetFDAudioVolume(data){
 }
 
 
+
 function muteVoice(ch) {
 
-
-
-
+    $("#slideP" + ch).css("color", "red");
+    setFDAudioVolume(ch, 0);
 
 }

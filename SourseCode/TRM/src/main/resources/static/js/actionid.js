@@ -410,6 +410,13 @@ function getactionid_manage() {
         networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
         networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",
 
+        audioConfigure_getSQInfo:"audioConfigure_getSQInfo",
+
+        audioConfigure_getFDAudioConf:"audioConfigure_getFDAudioConf",
+        audioConfigure_setFDAudioVolume:"audioConfigure_setFDAudioVolume",
+
+
+
         //以上为法庭的接口===============================end
 
         resetPassword_resetPassword:"resetPassword_resetPassword",

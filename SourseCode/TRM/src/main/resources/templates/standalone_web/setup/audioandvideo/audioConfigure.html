@@ -25,46 +25,46 @@
 
     <div style="float: left;padding-left: 10px;">
         <h1 style="margin:0 0 30px 20px;">总计6路音频</h1>
-        <div class="slideBoby" >
+        <div class="slideBoby" id="yinpin0">
             <p style="text-align: center;font-size: 18px;">音频一</p>
-            <div id="slideTest1" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="setFDAudioVolume(0, 0);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio1">38</span></p>
+            <div id="slideTest0" class="slideTest"></div>
+            <p class="layui-icon layui-icon-speaker slideP" id="slideP0" onclick="muteVoice(0);"></p>
+            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio0">38</span></p>
         </div>
 
         <div class="slideBoby">
             <p style="text-align: center;font-size: 18px;">音频二</p>
+            <div id="slideTest1" class="slideTest"></div>
+            <p class="layui-icon layui-icon-speaker slideP"></p>
+            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio1">38</span></p>
+        </div>
+
+        <div class="slideBoby">
+            <p style="text-align: center;font-size: 18px;">音频三</p>
             <div id="slideTest2" class="slideTest"></div>
             <p class="layui-icon layui-icon-speaker slideP"></p>
             <p style="text-align: center;margin-top: 10px;">音量 <span id="audio2">38</span></p>
         </div>
 
         <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频三</p>
+            <p style="text-align: center;font-size: 18px;">音频四</p>
             <div id="slideTest3" class="slideTest"></div>
             <p class="layui-icon layui-icon-speaker slideP"></p>
             <p style="text-align: center;margin-top: 10px;">音量 <span id="audio3">38</span></p>
         </div>
 
         <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频四</p>
+            <p style="text-align: center;font-size: 18px;">音频五</p>
             <div id="slideTest4" class="slideTest"></div>
             <p class="layui-icon layui-icon-speaker slideP"></p>
             <p style="text-align: center;margin-top: 10px;">音量 <span id="audio4">38</span></p>
         </div>
 
         <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频五</p>
+            <p style="text-align: center;font-size: 18px;">音频六</p>
             <div id="slideTest5" class="slideTest"></div>
             <p class="layui-icon layui-icon-speaker slideP"></p>
             <p style="text-align: center;margin-top: 10px;">音量 <span id="audio5">38</span></p>
-        </div>
-
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频六</p>
-            <div id="slideTest6" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio6">38</span></p>
         </div>
 
     </div>
@@ -95,8 +95,9 @@
             , layedit = layui.layedit
             , laydate = layui.laydate;
 
-        slider.render({
-            elem: '#slideTest1'
+
+        var slider0 = slider.render({
+            elem: '#slideTest0'
             ,value: 30
             ,theme: '#1E9FFF' //主题色
             ,type: 'vertical' //垂直滑块
@@ -104,101 +105,127 @@
 
                 //e.which 有三个值 1 左击 2 中间按钮 3 右击
 
-                console.log(value); //动态获取滑块数值
 
-                volumelist.push(value);
+                // volumelist.push(value);
 
                 //do something
-                $("#audio1").html(value);
+                $("#audio0").html(value);
 
-                console.log(volumelist);
+                // console.log(value); //动态获取滑块数值
+                // setFDAudioVolume(i, value);
+                // console.log(volumelist);
+
+                volume0 = value;
             }
         });
-        slider.render({
+        var slider1 = slider.render({
+            elem: '#slideTest1'
+            ,value: 30
+            ,theme: '#1E9FFF' //主题色
+            ,type: 'vertical' //垂直滑块
+            ,change: function(value){
+                $("#audio1").html(value);
+                volume0 = value;
+            }
+        });
+        var slider2 = slider.render({
             elem: '#slideTest2'
             ,value: 30
             ,theme: '#1E9FFF' //主题色
             ,type: 'vertical' //垂直滑块
             ,change: function(value){
-                console.log(value); //动态获取滑块数值
-                //do something
                 $("#audio2").html(value);
+                volume0 = value;
             }
         });
-        slider.render({
+        var slider3 = slider.render({
             elem: '#slideTest3'
             ,value: 30
             ,theme: '#1E9FFF' //主题色
             ,type: 'vertical' //垂直滑块
             ,change: function(value){
-                console.log(value); //动态获取滑块数值
-                //do something
                 $("#audio3").html(value);
+                volume0 = value;
             }
         });
-        slider.render({
+        var slider4 = slider.render({
             elem: '#slideTest4'
             ,value: 30
             ,theme: '#1E9FFF' //主题色
             ,type: 'vertical' //垂直滑块
             ,change: function(value){
-                console.log(value); //动态获取滑块数值
-                //do something
                 $("#audio4").html(value);
+                volume0 = value;
             }
         });
-        slider.render({
+        var slider5 = slider.render({
             elem: '#slideTest5'
             ,value: 30
             ,theme: '#1E9FFF' //主题色
             ,type: 'vertical' //垂直滑块
             ,change: function(value){
-                console.log(value); //动态获取滑块数值
-                //do something
                 $("#audio5").html(value);
-            }
-        });
-        slider.render({
-            elem: '#slideTest6'
-            ,value: 30
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                console.log(value); //动态获取滑块数值
-                //do something
-                $("#audio6").html(value);
+                volume0 = value;
             }
         });
 
+        sliderAll.push(slider0);
+        sliderAll.push(slider1);
+        sliderAll.push(slider2);
+        sliderAll.push(slider3);
+        sliderAll.push(slider4);
+        sliderAll.push(slider5);
+
         form.render();
     });
+
+
 
 </script>
 
 <script th:inline="javascript">
 
-
+    var slideTestKey;
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-        setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
+        setpageAction(INIT_CLIENT,"standalone_web/setup/basicConfigure/audioConfigure");
+
 
         getFDAudioConf();
 
+        $("body").mouseup(function (e) {
 
-        $("#slideTest1").mouseup(function(e){ //在哪个区域点击
+            console.log(slideTestKey, volume0);
 
-            if(1 == e.which){ //判断是否为左击
-                console.log("左键"); //实现效果
-            }else if(e.button == 2) {
-                console.log("中间按钮");
-            }else {
-                console.log("右击");
-            }
+            e.cancelBubble = true;
+        });
 
-
+        $("#slideTest0").mousedown(function (e) {
+            slideTestKey = 0;
+            e.cancelBubble = true;
+        });
+        $("#slideTest1").mousedown(function (e) {
+            slideTestKey = 1;
+            e.cancelBubble = true;
+        });
+        $("#slideTest2").mousedown(function (e) {
+            slideTestKey = 2;
+            e.cancelBubble = true;
+        });
+        $("#slideTest3").mousedown(function (e) {
+            slideTestKey = 3;
+            e.cancelBubble = true;
+        });
+        $("#slideTest4").mousedown(function (e) {
+            slideTestKey = 4;
+            e.cancelBubble = true;
+        });
+        $("#slideTest5").mousedown(function (e) {
+            slideTestKey = 5;
+            e.cancelBubble = true;
         });
 
     });
