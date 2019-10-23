@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-@FeignClient(value="ec")
+@FeignClient(value="ec", url = "localhost:8081")
 public interface EquipmentControl {
 
 
@@ -247,6 +247,15 @@ public interface EquipmentControl {
     @RequestMapping("/flushbonading/v1/setFDnetwork")
     @ResponseBody
     public RResult setFDnetwork(@RequestBody SetFDnetworkParam_out param);
+
+    /**
+     * 获得设备网络配置
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getFDNetWork")
+    @ResponseBody
+    public RResult getFDNetWork(@RequestBody GetFDNetWorkParam_out param);
 
     /**
      * 设置设备某一个通道的通道音量

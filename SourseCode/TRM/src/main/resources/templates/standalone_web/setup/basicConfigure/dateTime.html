@@ -27,7 +27,7 @@
             <div class="layui-inline" style="margin-bottom: 0;">
                 <label class="layui-form-label">系统时间</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入系统时间" class="layui-input">
+                    <input type="text" class="layui-input" lay-verify="required" id="dateTime" placeholder="yyyy-MM-dd HH:mm:ss">
                 </div>
             </div>
             <button type="button" class="layui-btn layui-btn-normal" >设置时间</button>
@@ -43,7 +43,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">NTP服务器IP</label>
                 <div class="layui-input-block">
-                    <input type="text" name="username" lay-verify="title" autocomplete="off" placeholder="请输入NTP服务器IP" class="layui-input">
+                    <input type="text" name="username" lay-verify="required" autocomplete="off" placeholder="请输入NTP服务器IP" class="layui-input">
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@
             <div class="layui-inline">
                 <label class="layui-form-label">NTP同步时间间隔</label>
                 <div class="layui-input-block">
-                    <input type="number" name="username" lay-verify="title" autocomplete="off" placeholder="请输入NTP同步时间间隔" class="layui-input" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))">
+                    <input type="number" name="username" lay-verify="required" autocomplete="off" placeholder="请输入NTP同步时间间隔" class="layui-input" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))">
                 </div>
             </div>
             <span>小时</span>
@@ -62,8 +62,6 @@
 
         <div class="layui-form-item">
             <div class="layui-input-block">
-                <!--<button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-setval">赋值</button>-->
-                <!--<button type="button" class="layui-btn layui-btn-normal" id="LAY-component-form-getval">取值</button>-->
                 <button type="submit" class="layui-btn layui-btn-normal" lay-submit="" lay-filter="demo1" style="margin-left: 120px;">保存</button>
             </div>
         </div>
@@ -86,17 +84,21 @@
             ,layedit = layui.layedit
             ,laydate = layui.laydate;
 
-        //表单赋值
-        layui.$('#LAY-component-form-setval').on('click', function(){
-            form.val('example', {
-                "username": "贤心" // "name": "value"
-                ,"password": "123456"
-                ,"interest": 1
-                ,"like[write]": true //复选框选中状态
-                ,"close": true //开关状态
-                ,"sex": "女"
-                ,"desc": "我爱 layui"
-            });
+        //常规用法
+        laydate.render({
+            elem: '#dateTime'
+            ,type: 'datetime'
+        });
+
+        form.verify({
+            setip: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(''==value){
+                    return "IP不能为空";
+                }
+                if(!(/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}/.test(value))){
+                    return '请输入一个正确的IP地址';
+                }
+            }
         });
 
         form.render();
@@ -112,7 +114,7 @@
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-        setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
+        setpageAction(INIT_CLIENT,"client_web/setUp/basicConfigure/dateTime");
 
     });
 

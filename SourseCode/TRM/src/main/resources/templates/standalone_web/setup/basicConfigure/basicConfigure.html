@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <iframe th:src="@{/cweb/setUp/basicConfigure/gotoSoftAndHardInfo}"  frameborder="0" class="layui-iframe"  id="optionZK" name="optionZK" style="height: 600px;width: 100%;padding-left: 200px;"></iframe>
+        <iframe th:src="@{/cweb/setUp/basicConfigure/gotoSoftAndHardInfo}"  frameborder="0" class="layui-iframe"  id="optionZK" name="optionZK" style="height: 850px;width: 100%;padding-left: 200px;"></iframe>
 
     </div>
 
@@ -59,21 +59,7 @@
 
 </script>
 
-<script th:inline="javascript">
 
-
-    var INIT_CLIENT;
-    var INIT_CLIENTKEY;
-    $(function(){
-        INIT_CLIENT=[[${session.INIT_CLIENT}]];
-        INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-        setpageAction(INIT_CLIENT,"standalone_web/setup/logShow");
-
-    });
-
-
-
-</script>
 </body>
 
 </html>

@@ -405,6 +405,12 @@ function getactionid_manage() {
         AddOrUpdateUserinfograde_updateUserinfograde:"AddOrUpdateUserinfograde_updateUserinfograde",
 
 
+        networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
+        networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",
+
+        softAndHardInfo_getSQInfo:"softAndHardInfo_getSQInfo",
+
+
 
         //以上为法庭的接口===============================end
 
