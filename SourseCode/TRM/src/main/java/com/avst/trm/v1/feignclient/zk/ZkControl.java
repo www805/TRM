@@ -3,15 +3,13 @@ package com.avst.trm.v1.feignclient.zk;
 
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.common.util.properties.PropertiesListener;
-import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@FeignClient(value="zk")
+@FeignClient(value="zk", url = "localhost:8079/")
 public interface ZkControl {
 
     //获取注册的服务器

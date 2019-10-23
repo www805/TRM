@@ -446,7 +446,7 @@ public class MainService extends BaseService {
         Calendar c = Calendar.getInstance();
 
         String years=getHomeParam.getYearstype();
-        System.out.println(years);
+        System.out.println(years+":getHomeParam.getYearstype()");
         if (!StringUtils.isNotBlank(years)){
             years=df.format(new Date());
         }

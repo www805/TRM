@@ -12,6 +12,7 @@
     <artifactId>trm</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>TRM</name>
+    <!--<packaging>war</packaging>-->
     <packaging>jar</packaging>
     <description>Trial Record System</description>
 
@@ -37,11 +38,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!--eureka server -->
@@ -343,8 +339,38 @@
             <version>5.1.6</version>
         </dependency>-->
 
+        <!--jar 打包使用开始-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!--jar 打包使用结束-->
+
+        <!--war 打包使用开始-->
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            &lt;!&ndash; 排除内置容器，排除内置容器导出成war包可以让外部容器运行spring-boot项目&ndash;&gt;
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>-->
+        <!--war 打包使用结束-->
+
 
     </dependencies>
+
+
+
 
     <!--springcloud 导入-->
     <dependencyManagement>
@@ -361,6 +387,9 @@
 
 
     <build>
+
+
+        <!--jar启动开始-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -399,98 +428,61 @@
                 </configuration>
             </plugin>
 
-            <!--<plugin>&lt;!&ndash;&lt;!&ndash;用混淆插件混淆代码&ndash;&gt;-->
-                <!--<groupId>com.github.wvengen</groupId>-->
-                <!--<artifactId>proguard-maven-plugin</artifactId>-->
-                <!--<version>2.1.0</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--&lt;!&ndash; 混淆时刻，这里是打包的时候混淆&ndash;&gt;-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--&lt;!&ndash; 使用插件的什么功能，当然是混淆&ndash;&gt;-->
-                            <!--<goal>proguard</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--&lt;!&ndash; 是否将生成的PG文件安装部署&ndash;&gt;-->
-                    <!--<attach>true</attach>-->
-                    <!--&lt;!&ndash; 是否混淆&ndash;&gt;-->
-                    <!--<obfuscate>true</obfuscate>-->
-                    <!--&lt;!&ndash; 指定生成文件分类 &ndash;&gt;-->
-                    <!--<attachArtifactClassifier>pg</attachArtifactClassifier>-->
-                    <!--<options>-->
-                        <!--&lt;!&ndash; JDK目标版本1.8&ndash;&gt;-->
-                        <!--<option>-target 1.8</option>-->
-                        <!--&lt;!&ndash; 不做收缩（删除注释、未被引用代码）&ndash;&gt;-->
-                        <!--<option>-dontshrink</option>-->
-                        <!--&lt;!&ndash; 不做优化（变更代码实现逻辑）&ndash;&gt;-->
-                        <!--<option>-dontoptimize</option>-->
-                        <!--&lt;!&ndash; 不路过非公用类文件及成员&ndash;&gt;-->
-                        <!--<option>-dontskipnonpubliclibraryclasses</option>-->
-                        <!--<option>-dontskipnonpubliclibraryclassmembers</option>-->
-                        <!--&lt;!&ndash; 优化时允许访问并修改有修饰符的类和类的成员 &ndash;&gt;-->
-                        <!--<option>-allowaccessmodification</option>-->
-                        <!--&lt;!&ndash; 确定统一的混淆类的成员名称来增加混淆,防止冲突&ndash;&gt;-->
-                        <!--<option>-useuniqueclassmembernames</option>-->
-                        <!--<option>-adaptclassstrings</option>-->
-
-                        <!--<option>-dontusemixedcaseclassnames</option>-->
-
-                        <!--&lt;!&ndash; 不混淆所有包名，Spring配置中有大量固定写法的包名&ndash;&gt;-->
-                        <!--<option>-keeppackagenames</option>-->
-                        <!--&lt;!&ndash; 不混淆所有特殊的类&ndash;&gt;-->
-                        <!--<option>-keepattributes Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod</option>-->
-                        <!--&lt;!&ndash; 不混淆所有的set/get方法，毕竟项目中使用的部分第三方框架（例如Shiro）会用到大量的set/get映射&ndash;&gt;-->
-                        <!--&lt;!&ndash;<option>-keepclassmembers public class * {void set*(***);*** get*();}</option>&ndash;&gt;-->
-
-                        <!--<option>-keep class * extends java.lang.annotation.Annotation {*;}</option>-->
-
-                        <!--<option>-keepnames interface **</option>-->
-                        <!--<option>-keep interface * extends * { *; }</option>-->
-
-
-                        <!--&lt;!&ndash; 不混淆的类的属性及方法，实体包  &ndash;&gt;-->
-                        <!--<option>-keep class com.avst.trm.TrmApplication</option>-->
-                        <!--<option>-keep class com.avst.trm.TrmApplication{ *; }</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.conf.socketio.NettySocketConfig {*; }</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.conf.shiro.ShiroConfig {*; }</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.conf.socketio.NettySocketConfig</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.conf.shiro.ShiroConfig</option>-->
-
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.police.entity.**</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.police.entity.**{*;}</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.police.mapper.**</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.police.mapper.**{*;}</option>-->
-
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.base.entity.**</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.base.entity.**{*;}</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.base.mapper.**</option>-->
-                        <!--<option>-keep class com.avst.trm.v1.common.datasourse.base.mapper.**{*;}</option>-->
-
-
-                        <!--&lt;!&ndash;忽略警告&ndash;&gt;-->
-                        <!--<option>-ignorewarnings</option>-->
-
-                    <!--</options>-->
-                    <!--<outjar>${project.build.finalName}-pg.jar</outjar>-->
-                    <!--&lt;!&ndash; 添加依赖，这里你可以按你的需要修改，这里测试只需要一个JRE的Runtime包就行了 &ndash;&gt;-->
-                    <!--<libs>-->
-                        <!--<lib>${java.home}/lib/rt.jar</lib>-->
-                        <!--<lib>${java.home}/lib/jce.jar</lib>-->
-                    <!--</libs>-->
-                    <!--&lt;!&ndash; 加载文件的过滤器，就是你的工程目录了&ndash;&gt;-->
-                    <!--<inFilter>com/avst/trm/**</inFilter>-->
-                    <!--&lt;!&ndash; 对什么东西进行加载，这里仅有classes成功，毕竟你也不可能对配置文件及JSP混淆吧&ndash;&gt;-->
-                    <!--<injar>classes</injar>-->
-                    <!--&lt;!&ndash; 输出目录&ndash;&gt;-->
-                    <!--<outputDirectory>${project.build.directory}</outputDirectory>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-
         </plugins>
+        <!--jar启动结束-->
+
+        <!--war启动开始-->
+
+        <!--<plugins>
+            &lt;!&ndash; 添加spring的插件， 就可以直接通过 mvn spring-boot:run 运行了 &ndash;&gt;
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.4.2</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+        </plugins>-->
+
+        <!--war启动结束-->
+
+
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>static/layuiadmin/layui/font/**</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>static/layuiadmin/layui/font/**</include>
+                </includes>
+            </resource>
+        </resources>
+
 
     </build>
+
+
 
 </project>

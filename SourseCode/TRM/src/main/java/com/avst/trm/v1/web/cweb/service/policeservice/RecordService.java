@@ -19,7 +19,6 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQVersion;
-import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
@@ -2667,7 +2666,6 @@ public class RecordService extends BaseService {
         return;
     }
 
-
     public void gnlist(RResult result,ReqParam param){
         GnlistVO vo=new GnlistVO();
         List<String> list= CommonCache.gnlist();
@@ -3006,6 +3004,5 @@ public class RecordService extends BaseService {
         changeResultToSuccess(result);
         return;
     }
-
 
 }

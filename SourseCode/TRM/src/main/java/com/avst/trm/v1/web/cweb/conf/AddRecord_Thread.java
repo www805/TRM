@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.cweb.conf;
 
+import com.avst.trm.v1.common.conf.CreateVodThread;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -40,21 +41,7 @@ public class AddRecord_Thread extends Thread {
     public void run() {
             LogUtil.intoLog("AddRecord_Thread__笔录结束时生成Pdf结束会议开始__recordssid__"+recordssid+"__mtssid__"+mtssid);
             try {
-                if (StringUtils.isNotBlank(recordssid)&&null!=recordService){
-                    //生成word 和pdf
-                    RResult exportPdf_rr=new RResult();
-                    ExportPdfParam exportPdfParam=new ExportPdfParam();
-                    exportPdfParam.setRecordssid(recordssid);
-                    ReqParam reqParam=new ReqParam();
-                    reqParam.setParam(exportPdfParam);
 
-                    exportPdf_rr=recordService2.exportPdf(exportPdf_rr, reqParam);
-                    if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                        LogUtil.intoLog(this.getClass(),"recordService.exportPdf笔录结束时exportPdf__成功__保存问答");
-                    }else{
-                        LogUtil.intoLog(this.getClass(),"recordService.exportPdf笔录结束时exportPdf__出错__"+exportPdf_rr.getMessage());
-                    }
-                }
 
 
                 if (StringUtils.isNotBlank(mtssid)&&null!=outService){
@@ -76,6 +63,22 @@ public class AddRecord_Thread extends Thread {
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
+                    }
+                }
+
+                if (StringUtils.isNotBlank(recordssid)&&null!=recordService){
+                    //生成word 和pdf
+                    RResult exportPdf_rr=new RResult();
+                    ExportPdfParam exportPdfParam=new ExportPdfParam();
+                    exportPdfParam.setRecordssid(recordssid);
+                    ReqParam reqParam=new ReqParam();
+                    reqParam.setParam(exportPdfParam);
+
+                    exportPdf_rr=recordService2.exportPdf(exportPdf_rr, reqParam);
+                    if (null != exportPdf_rr && exportPdf_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                        LogUtil.intoLog(this.getClass(),"recordService.exportPdf笔录结束时exportPdf__成功__保存问答");
+                    }else{
+                        LogUtil.intoLog(this.getClass(),"recordService.exportPdf笔录结束时exportPdf__出错__"+exportPdf_rr.getMessage());
                     }
                 }
 

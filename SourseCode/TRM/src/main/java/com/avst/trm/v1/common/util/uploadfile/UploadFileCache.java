@@ -54,18 +54,22 @@ public class UploadFileCache {
             uploadFileList=new ArrayList<UploadFileParam>();
         }
 
+        boolean add_bool=true;
         if(uploadFileList.size() > 0){
             for(int i=0;i<uploadFileList.size();i++){
                 UploadFileParam param=uploadFileList.get(i);
                 if(StringUtils.isNotEmpty(param.getSsid())
                         &&StringUtils.isNotEmpty(uploadFileParam.getSsid())
                         &&param.getSsid().equals(uploadFileParam.getSsid())){
-                    uploadFileList.remove(i);
+                    param=uploadFileParam;
+                    add_bool=false;
                     break;
                 }
             }
         }
-        uploadFileList.add(uploadFileParam);
+        if(add_bool){
+            uploadFileList.add(uploadFileParam);
+        }
     }
 
 
@@ -75,18 +79,23 @@ public class UploadFileCache {
         if(null==filelist){
             filelist=new ArrayList<FileParam>();
         }
+        boolean add_bool=true;
         if(filelist.size() > 0){
             for(int i=0;i<filelist.size();i++){
                 FileParam param=filelist.get(i);
                 if(StringUtils.isNotEmpty(param.getFilePath())
                         &&StringUtils.isNotEmpty(fileParam.getFilePath())
                         &&param.getFilePath().equals(fileParam.getFilePath())){
-                    filelist.remove(i);
+                    param=fileParam;
+                    add_bool=false;
                     break;
                 }
             }
         }
-        filelist.add(fileParam);
+        if(add_bool){
+            filelist.add(fileParam);
+        }
+
         setFileParamList(ssid,filelist);
     }
 

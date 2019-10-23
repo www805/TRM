@@ -32,12 +32,14 @@ function addCaseToArraignment() {
         return;
     }
 
-    var multifunctionbool;//功能类型:
+    var multifunctionbool=2;//功能类型:
     var multifunction_bool=$("#multifunctionbool",parent.document).prop("checked");
-    if (multifunction_bool){
-        multifunctionbool=2;
-    } else{
-        multifunctionbool=3;
+    if (isNotEmpty(multifunction_bool)){
+        if (multifunction_bool){
+            multifunctionbool=2;
+        }else{
+            multifunctionbool=3;
+        }
     }
 
     var cardnum=$("#cardnum").val();

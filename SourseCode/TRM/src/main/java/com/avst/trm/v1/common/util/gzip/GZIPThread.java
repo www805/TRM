@@ -15,6 +15,8 @@ public class GZIPThread extends Thread{
 
     private String notGZType="ts";//不需要打包的文件类型
 
+    private boolean mustgzip=false;//强制必须打包，有打包就删掉，重新打包
+
     /**
      * 单文件夹 带不需要打包的文件类型 的打包
      * @param folderPath
@@ -24,13 +26,14 @@ public class GZIPThread extends Thread{
      * @param gztype
      * @param notGZType
      */
-    public  GZIPThread(String folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,String notGZType){
+    public  GZIPThread(String folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,String notGZType,boolean mustgzip){
         this.folderPath=folderPath;
         this.targzipFilePath=targzipFilePath;
         this.targzipFileName=targzipFileName;
         this.gztype=gztype;
         this.ssid=ssid;
         this.notGZType=notGZType;
+        this.mustgzip=mustgzip;
     }
 
     /**
@@ -42,13 +45,14 @@ public class GZIPThread extends Thread{
      * @param gztype
      * @param notGZType
      */
-    public  GZIPThread(List<String> folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,String notGZType){
+    public  GZIPThread(List<String> folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,String notGZType,boolean mustgzip){
         this.folderPathList=folderPath;
         this.targzipFilePath=targzipFilePath;
         this.targzipFileName=targzipFileName;
         this.gztype=gztype;
         this.ssid=ssid;
         this.notGZType=notGZType;
+        this.mustgzip=mustgzip;
     }
 
     /**
@@ -59,12 +63,13 @@ public class GZIPThread extends Thread{
      * @param targzipFileName
      * @param gztype
      */
-    public  GZIPThread(String folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype){
+    public  GZIPThread(String folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,boolean mustgzip){
         this.folderPath=folderPath;
         this.targzipFilePath=targzipFilePath;
         this.targzipFileName=targzipFileName;
         this.gztype=gztype;
         this.ssid=ssid;
+        this.mustgzip=mustgzip;
     }
 
     /**
@@ -75,12 +80,13 @@ public class GZIPThread extends Thread{
      * @param targzipFileName
      * @param gztype
      */
-    public  GZIPThread(List<String> folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype){
+    public  GZIPThread(List<String> folderPath,String targzipFilePath,String ssid,String targzipFileName,String gztype,boolean mustgzip){
         this.folderPathList=folderPath;
         this.targzipFilePath=targzipFilePath;
         this.targzipFileName=targzipFileName;
         this.gztype=gztype;
         this.ssid=ssid;
+        this.mustgzip=mustgzip;
     }
 
 
@@ -93,10 +99,10 @@ public class GZIPThread extends Thread{
         try {
             if(null!=folderPathList&&folderPathList.size() > 0){
 
-                GZIPUtil.CompressedFiles_Gzip(folderPathList,targzipFilePath,ssid,targzipFileName,gztype,notGZType);
+                GZIPUtil.CompressedFiles_Gzip(folderPathList,targzipFilePath,ssid,targzipFileName,gztype,notGZType,mustgzip);
             }else{
 
-                GZIPUtil.CompressedFiles_Gzip(folderPath,targzipFilePath,ssid,targzipFileName,gztype,notGZType);
+                GZIPUtil.CompressedFiles_Gzip(folderPath,targzipFilePath,ssid,targzipFileName,gztype,notGZType,mustgzip);
             }
 
         } catch (Exception e) {
@@ -114,7 +120,7 @@ public class GZIPThread extends Thread{
         pathlist.add("D:\\ftpdata\\sb3\\2019-09-16\\88d0ef57a91e4450bdae8432329b7f82_sxsba2");
         pathlist.add("D:\\ftpdata\\sb3\\2019-09-16\\saKV8j12GikR");
 
-        GZIPThread thread=new GZIPThread("D:\\ftpdata\\sb3\\2019-09-16\\88d0ef57a91e4450bdae8432329b7f82_sxsba2","D:\\ftpdata\\sb3\\2019-09-16\\88d0ef57a91e4450bdae8432329b7f82_sxsba2","谈话案件","谈话案件",".zip","cs");
+        GZIPThread thread=new GZIPThread("D:\\ftpdata\\sb3\\2019-09-16\\88d0ef57a91e4450bdae8432329b7f82_sxsba2","D:\\ftpdata\\sb3\\2019-09-16\\88d0ef57a91e4450bdae8432329b7f82_sxsba2","谈话案件","谈话案件",".zip","cs",false);
         thread.start();
 
     }
