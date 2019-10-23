@@ -7,6 +7,8 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_record;
+import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -20,8 +22,10 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
+import com.avst.trm.v1.web.cweb.req.policereq.GetRecordByIdParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlEngine;
 import org.apache.commons.jexl3.JexlExpression;
@@ -54,6 +58,9 @@ public class Scheduler {
 
     @Autowired
     private RecordService recordService;
+
+    @Autowired
+    private Police_recordMapper police_recordMapper;
 
     private String url;
 
@@ -276,13 +283,28 @@ public class Scheduler {
     }
 
     /**
-     * 检测压缩文件过期
+     * 检测笔录完成但是没有生成可播放的下载文件
+     * 这个执行方法很危险，暂时不用
      */
-    public void checkZipTimeOut(){
+    public void checkgziid(){
 
         try {
+            EntityWrapper<Police_record> entityWrapper=new EntityWrapper<Police_record>();
 
-
+            List<Police_record> recordList=police_recordMapper.selectList(entityWrapper);
+            if(null!=recordList&&recordList.size() > 0){
+                for(Police_record police_record:recordList){
+                    String iid=police_record.getGz_iid();
+                    if(StringUtils.isEmpty(iid)){//说明还没有生成可用于离线播放的文件
+                        RResult result=new RResult();
+                        ReqParam<GetRecordByIdParam > param=new ReqParam<GetRecordByIdParam>();
+                        GetRecordByIdParam getRecordByIdParam=new GetRecordByIdParam();
+                        getRecordByIdParam.setRecordssid(police_record.getSsid());
+                        param.setParam(getRecordByIdParam);
+                        recordService.getRecordById(result,param);
+                    }
+                }
+            }
 
         } catch (Exception e) {
 

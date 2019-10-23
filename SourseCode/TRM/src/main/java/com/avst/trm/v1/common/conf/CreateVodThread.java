@@ -39,11 +39,37 @@ public class CreateVodThread extends Thread{
         police_record=police_record_;
     }
 
-boolean  bool=true;
+    private boolean uploadPdfAndWord=false;//修改PDF和Word才会用到的参数
+    private String wordrealurl;
+    private String pdfrealurl;
+    private String iid;
+
+    public CreateVodThread(String wordrealurl_,String pdfrealurl_,String iid_){
+        iid=iid_;
+        wordrealurl=wordrealurl_;
+        pdfrealurl=pdfrealurl_;
+        uploadPdfAndWord=true;
+    }
+
+   boolean  bool=true;
 
     @Override
     public void run() {
 
+
+        if(uploadPdfAndWord){//只是修改PDF和Word
+            uploadVod();
+        }else{
+            createVod();
+        }
+
+        LogUtil.intoLog(1,this.getClass(),"CreateVodThread 出来了---");
+
+    }
+
+
+
+    private void createVod(){
 
         try {
 
@@ -77,20 +103,14 @@ boolean  bool=true;
                 return ;
             }
 
-            EquipmentControl ec=SpringUtil.getBean(EquipmentControl.class);
             //1、生成所有的脱机回放可能需要的文件
             //读取文件保存地址，iid所在地
             String iidsavepath="";
             String iid=getPlayUrlVO.getIid();
-            GetSaveFilePath_localParam getSaveFilePath_localParam=new GetSaveFilePath_localParam();
-            getSaveFilePath_localParam.setIid(iid);
-            getSaveFilePath_localParam.setSsType(SSType.AVST);
-            RResult result_getsavepath=ec.getSaveFilePath_local(getSaveFilePath_localParam);
-            if(null!=result_getsavepath&&result_getsavepath.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_getsavepath.getData()){
-                iidsavepath=result_getsavepath.getData().toString();
-            }else{
-                LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不生成回放文件，直接跳出，iid："+iid);
-                return;
+            iidsavepath=getIidPath(iid);
+            if(StringUtils.isEmpty(iidsavepath)){
+                LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不生成回放文件(包含PDF和Word)，直接跳出，iid："+iid);
+                return ;
             }
 
             //新增一个视频文件的说明文件
@@ -122,41 +142,12 @@ boolean  bool=true;
                 return ;
             }
 
-
             //Word和PDF copy到iid存储位置
             Record record=getRecordByIdVO.getRecord();
             String wordrealurl= null;
-            boolean wordbool=false;
-            try {
-                wordrealurl = record.getWordrealurl();
-                if(StringUtils.isNotEmpty(wordrealurl)||OpenUtil.fileisexist(wordrealurl)){
-                    String iid_wordrealurl=iidsavepath+OpenUtil.getfilename(wordrealurl);
-                    FileUtils.copyFile(new File(wordrealurl),new File(iid_wordrealurl));
-                    wordbool=true;
-                }else{
-                    //需要生成Word文件
-                    //后期写入自动生成Word文件
-                    LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成Word文件");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            boolean pdfbool=false;
-            try {
-                String pdfrealurl=record.getPdfrealurl();
-                if(StringUtils.isNotEmpty(pdfrealurl)||OpenUtil.fileisexist(pdfrealurl)){
-                    String iid_pdfrealurl=iidsavepath+OpenUtil.getfilename(pdfrealurl);
-                    FileUtils.copyFile(new File(pdfrealurl),new File(iid_pdfrealurl));
-                    pdfbool=true;
-                }else{
-                    //需要生成pdf文件
-                    //后期写入自动生成pdf文件
-                    LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成pdf文件");
-                }
+            boolean wordandpdfbool=false;
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            wordandpdfbool=uploadPDFAndWord(record.getWordrealurl(),record.getPdfrealurl(),iidsavepath);
 
             //生成RResult返回对象的TXT文件,写入iid所在的文件中
             String str=JacksonUtil.objebtToString(result);
@@ -174,7 +165,7 @@ boolean  bool=true;
             String iid_resultfilepath=iidsavepath+resultfilename;
             boolean resultbool= ReadWriteFile.writeTxtFile(str,iid_resultfilepath,"utf8");
 
-            if(pdfbool&&resultbool&&wordbool&&filebool){//这四个文件都成功才填入iid
+            if(wordandpdfbool&&resultbool&&filebool){//这四个文件都成功才填入iid
                 //更新数据库的iid
                 police_record.setGz_iid(iid);
                 int updateById=police_recordMapper.updateById(police_record);
@@ -185,7 +176,7 @@ boolean  bool=true;
                     return ;
                 }
             }else{
-                LogUtil.intoLog(4,this.getClass(),"-----可能有文件没有新增或者copy成功，pdfbool："+pdfbool+",resultbool:"+resultbool+",wordbool:"+wordbool+",filebool:"+filebool);
+                LogUtil.intoLog(4,this.getClass(),"-----可能有文件没有新增或者copy成功，wordandpdfbool："+wordandpdfbool+",resultbool:"+resultbool+",filebool:"+filebool);
                 return ;
             }
 
@@ -195,7 +186,69 @@ boolean  bool=true;
 
         }
 
-        LogUtil.intoLog(1,this.getClass(),"CreateVodThread 出来了---");
+    }
+
+    private void uploadVod(){
+
+        String iidsavepath=getIidPath(iid);
+        if(StringUtils.isEmpty(iidsavepath)){
+            LogUtil.intoLog(4,this.getClass(),"iid对应存储地址没有找到，不生成回放文件(包含PDF和Word)，直接跳出，iid："+iid);
+            return ;
+        }
+        if(StringUtils.isEmpty(wordrealurl)||StringUtils.isEmpty(pdfrealurl)){
+            LogUtil.intoLog(4,this.getClass(),"修改PDF和Word文件的时候文件路径为空，直接跳出，iid："+iid);
+            LogUtil.intoLog(4,this.getClass(),wordrealurl+"：wordrealurl----修改PDF和Word文件失败，文件路径--pdfrealurl："+pdfrealurl);
+            return ;
+        }
+        uploadPDFAndWord(wordrealurl,pdfrealurl,iidsavepath);
+
+    }
+
+    private boolean uploadPDFAndWord(String wordrealurl,String pdfrealurl,String iidsavepath){
+        boolean wordbool=false;
+        try {
+            if(StringUtils.isNotEmpty(wordrealurl)||OpenUtil.fileisexist(wordrealurl)){
+                String iid_wordrealurl=iidsavepath+OpenUtil.getfilename(wordrealurl);
+                FileUtils.copyFile(new File(wordrealurl),new File(iid_wordrealurl));
+                wordbool=true;
+            }else{
+                //需要生成Word文件
+                //后期写入自动生成Word文件
+                LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成Word文件");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        boolean pdfbool=false;
+        try {
+            if(StringUtils.isNotEmpty(pdfrealurl)||OpenUtil.fileisexist(pdfrealurl)){
+                String iid_pdfrealurl=iidsavepath+OpenUtil.getfilename(pdfrealurl);
+                FileUtils.copyFile(new File(pdfrealurl),new File(iid_pdfrealurl));
+                pdfbool=true;
+            }else{
+                //需要生成pdf文件
+                //后期写入自动生成pdf文件
+                LogUtil.intoLog(3,this.getClass(),"-----CreateVodThread-需要生成pdf文件");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return (pdfbool&&wordbool);
+    }
+
+    private String getIidPath(String iid){
+        EquipmentControl ec=SpringUtil.getBean(EquipmentControl.class);
+        GetSaveFilePath_localParam getSaveFilePath_localParam=new GetSaveFilePath_localParam();
+        getSaveFilePath_localParam.setIid(iid);
+        getSaveFilePath_localParam.setSsType(SSType.AVST);
+        RResult result_getsavepath=ec.getSaveFilePath_local(getSaveFilePath_localParam);
+        if(null!=result_getsavepath&&result_getsavepath.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_getsavepath.getData()){
+            return result_getsavepath.getData().toString();
+        }else{
+            return null;
+        }
 
     }
 }

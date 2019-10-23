@@ -20,7 +20,7 @@ public class GZIPUtil {
 
         public static void main(String[] args) {
             System.out.println(new Date().getTime());
-            CompressedFiles_Gzip("D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","a08a1f4d944b489fa10dfc3eb5212b48_sxsba2","测试打包",".zip","ts");
+            CompressedFiles_Gzip("D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","D:\\ftpdata\\sb3\\2019-09-02\\a08a1f4d944b489fa10dfc3eb5212b48_sxsba2\\","a08a1f4d944b489fa10dfc3eb5212b48_sxsba2","测试打包",".zip","ts",false);
             System.out.println(new Date().getTime());
         }
 
@@ -35,7 +35,7 @@ public class GZIPUtil {
      * @param ssid 缓存中的唯一标识
      * @param notGZType 不打包的格式
      * */
-    public static boolean CompressedFiles_Gzip(String folderPath, String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType)
+    public static boolean CompressedFiles_Gzip(String folderPath, String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType,boolean mustgzip)
     {
 
         if(folderPath.endsWith("/")||folderPath.endsWith("\\")){
@@ -67,7 +67,7 @@ public class GZIPUtil {
         for(String newfile:filelist){
             map.put(newfile,targzipFileName+"\\1");//打包压缩的文件的相对路径
         }
-        return gzip(filelist,map,targzipFilePath,ssid,targzipFileName,gztype,notGZType);
+        return gzip(filelist,map,targzipFilePath,ssid,targzipFileName,gztype,notGZType,mustgzip);
     }
 
     /**
@@ -77,11 +77,11 @@ public class GZIPUtil {
      * @param targzipFilePath
      * @param ssid 缓存中的唯一标识
      * @param targzipFileName
-     * @param gztype
-     * @param notGZType
+     * @param gztype 压缩格式
+     * @param notGZType 不打包的格式
      * @return
      */
-    public static boolean gzip(List<String> filelist,Map<String,String> folderMap,String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType){
+    public static boolean gzip(List<String> filelist,Map<String,String> folderMap,String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType,boolean mustgzip){
 
         //打包逻辑
         final String zipfilename=targzipFilePath;
@@ -104,9 +104,20 @@ public class GZIPUtil {
             targzipFilePath+=gztype;
             File filezip=new File(targzipFilePath);
             if(filezip.exists()&&!filezip.isDirectory()){
-                LogUtil.intoLog(1,GZIPUtil.class,"压缩文件已存在，targzipFileName："+targzipFileName);
-                return true;
+
+                if(mustgzip){//需要强制删除，重新打包
+                    try {
+                        filezip.delete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }else{
+                    LogUtil.intoLog(1,GZIPUtil.class,"压缩文件已存在，targzipFileName："+targzipFileName);
+                    return true;
+                }
+
             }
+
 
             //写入缓存
             GZIPCacheParam gzipCacheParam=new GZIPCacheParam();
@@ -208,7 +219,7 @@ public class GZIPUtil {
      * @param notGZType 不打包的格式
      * @param ssid 缓存中的唯一标识
      * */
-    public static boolean CompressedFiles_Gzip(List<String> folderPathList, String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType)
+    public static boolean CompressedFiles_Gzip(List<String> folderPathList, String targzipFilePath,String ssid, String targzipFileName,String gztype,String notGZType,boolean mustgzip)
     {
         List<String> filelist=new ArrayList<String>();
         int foldernum=1;
@@ -248,7 +259,7 @@ public class GZIPUtil {
             LogUtil.intoLog(4,GZIPUtil.class,"打包的文件夹下一个文件都没有");
             return false;
         }
-        return gzip(filelist,map,targzipFilePath,ssid,targzipFileName,gztype,notGZType);
+        return gzip(filelist,map,targzipFilePath,ssid,targzipFileName,gztype,notGZType,mustgzip);
     }
 
 }

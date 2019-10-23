@@ -177,9 +177,8 @@ public class RecordService2 extends BaseService {
                         LogUtil.intoLog(this.getClass(),"案件打包地址真实文件夹地址__"+realurl);
 
 
-                        GZIPThread gzipThread=new GZIPThread(folderPath,realurl,ssid,exportfilename,gztype);
+                        GZIPThread gzipThread=new GZIPThread(folderPath,realurl,ssid,exportfilename,gztype,false);//需要根据数据库进行判断是否需要强制重新打包压缩
                         gzipThread.start();
-
 
                         //获取下载路径
                         String zipfilepath=realurl;
@@ -475,7 +474,7 @@ public class RecordService2 extends BaseService {
                     gztype=".zip";
                 }
                 LogUtil.intoLog(1,this.getClass(),zipfilename+":zipfilename,开始打包VOD，iid："+iid+"----打包的文件夹zippath:"+zippath);
-                GZIPThread gzipThread=new GZIPThread(zippath,zippath,iid,zipfilename,gztype);
+                GZIPThread gzipThread=new GZIPThread(zippath,zippath,iid,zipfilename,gztype,false);//需要根据数据库进行判断是否需要强制重新打包压缩
                 gzipThread.start();
 
                 String zipfilepath=zippath;
