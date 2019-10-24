@@ -20,8 +20,8 @@ import java.util.Map;
  */
 public class CheckPasswordKey {
 
-    private static String key_name="resetuser.ini";
-    public static String key_path=OpenUtil.getJDKorJREPath() +key_name;//检测文件夹地址
+    private static String key_name=".ini";
+    public static String key_path=OpenUtil.getJDKorJREPath();//检测文件地址
 
 
     /**
@@ -29,8 +29,11 @@ public class CheckPasswordKey {
      * @param encryptedtext 加密文本
      * @return
      */
-    public static boolean CreateKey(String encryptedtext){
-
+    public static boolean CreateKey(String encryptedtext,String filename){
+        if (StringUtils.isBlank(filename)){
+            return false;
+        }
+        key_path=key_path+filename+key_name;
         File file = new File(key_path);
         if (file.exists()&& !file.isDirectory()) {
             LogUtil.intoLog(1,CheckPasswordKey.class,"key存在不需要创建："+encryptedtext);
@@ -109,7 +112,7 @@ public class CheckPasswordKey {
         encryptedMap.put("registertime","1555995200000");
         Gson gson=new Gson();
         String encryptedtext = gson.toJson(encryptedMap);
-        CheckPasswordKey.CreateKey(encryptedtext);
+        CheckPasswordKey.CreateKey(encryptedtext,"1111");
 
 
         Map<String,String> encryptedMap2=new HashMap<>();

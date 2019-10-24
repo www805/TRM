@@ -53,10 +53,13 @@ public class FileUtil {
 	 */
 	public static List<String> getAllFilePath(String basepath,int isfilespath){
 		
-		File file = new File(basepath);  
-        List<String> filelist = new ArrayList<String>();  
-        List<String> list = getAllFiles(file, filelist,isfilespath );
-		return list;
+		File file = new File(basepath);
+		List<String> filelist = new ArrayList<String>();
+		if (file.exists()){
+			List<String> list = getAllFiles(file, filelist,isfilespath );
+			return list;
+		}
+		return null;
 	}
 
 	

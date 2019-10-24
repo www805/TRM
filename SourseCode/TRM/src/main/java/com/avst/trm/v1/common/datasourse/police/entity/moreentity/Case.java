@@ -19,6 +19,28 @@ public class Case extends Police_case {
 
     private String record_pausebool;//案件是否允许继续暂停，用于是否显示列表的继续按钮
 
+
+    //以下用于导出提示笔录数
+    private Integer finish_filenum;//已完成并且有iid的笔录数
+
+    private Integer total_filenum;//已完成总共笔录数
+
+    public Integer getFinish_filenum() {
+        return finish_filenum;
+    }
+
+    public void setFinish_filenum(Integer finish_filenum) {
+        this.finish_filenum = finish_filenum;
+    }
+
+    public Integer getTotal_filenum() {
+        return total_filenum;
+    }
+
+    public void setTotal_filenum(Integer total_filenum) {
+        this.total_filenum = total_filenum;
+    }
+
     public String getRecord_pausebool() {
         return record_pausebool;
     }

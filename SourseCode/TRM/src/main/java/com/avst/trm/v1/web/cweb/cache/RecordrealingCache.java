@@ -6,18 +6,20 @@ import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 笔录问答进行中ing实时记录
+ * 全部笔录问答ing实时记录
  */
 public class RecordrealingCache {
     private static Map<String, List<RecordToProblem>> recordrealMap=null;//String：recordssid 笔录ssid  List<RecordToProblem>：笔录问答集合
 
     private static boolean initCache_bool=false;
+
 
     /**
      * 根据笔录ssid获取全部问答
@@ -81,7 +83,7 @@ public class RecordrealingCache {
             }
             return true;
         }else {
-            LogUtil.intoLog(RecordrealingCache.class,"------RecordrealingCache-----initCache------没有找到进行中的笔录"+records.size());
+            LogUtil.intoLog(RecordrealingCache.class,"------RecordrealingCache-----initCache------没有找到笔录"+records.size());
         }
         return false;
     }

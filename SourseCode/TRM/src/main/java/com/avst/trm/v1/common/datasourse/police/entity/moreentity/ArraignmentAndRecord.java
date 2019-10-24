@@ -10,7 +10,7 @@ import java.util.List;
 public class ArraignmentAndRecord extends Police_arraignment {
         private String recordname;
 
-        private String recordbool;
+        private Integer recordbool;
 
         private  String recordadminname;
 
@@ -82,12 +82,11 @@ public class ArraignmentAndRecord extends Police_arraignment {
         this.recordname = recordname;
     }
 
-    public String getRecordbool() {
+    public Integer getRecordbool() {
         return recordbool;
     }
 
-    public void setRecordbool(String recordbool) {
+    public void setRecordbool(Integer recordbool) {
         this.recordbool = recordbool;
     }
-
 }

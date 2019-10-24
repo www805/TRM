@@ -1838,6 +1838,7 @@ function gZIPVod(){
         var data={
             token:INIT_CLIENTKEY,
             param:{
+                recordssid:recordssid,
                 iid:iid,
                 zipfilename:recordnameshow
             }

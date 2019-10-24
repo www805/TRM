@@ -55,9 +55,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -215,7 +213,7 @@ public class MainService extends BaseService {
                     encryptedMap.put("ssid",user.getSsid());
                     encryptedtext = gson.toJson(encryptedMap);
                     if (StringUtils.isNotBlank(encryptedtext)){
-                        boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext);
+                        boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext,loginaccount);
                         if (!forgotpasswordbool){
                             result.setMessage("登录失败");
                             LogUtil.intoLog(3,this.getClass(),"登录时创建key失败__loginaccount__"+loginaccount1);
@@ -773,7 +771,7 @@ public class MainService extends BaseService {
 
             //获取生成字符串
             if (StringUtils.isNotBlank(encryptedtext)){
-               boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext);
+               boolean forgotpasswordbool =CheckPasswordKey.CreateKey(encryptedtext,loginaccount);
                if (!forgotpasswordbool){
                    result.setMessage("重置密码异常");
                    return;
@@ -1124,5 +1122,31 @@ public class MainService extends BaseService {
             changeResultToSuccess(result);
         }
 
+    }
+
+
+    public void uploadkey(RResult result,ReqParam param,MultipartFile multipartfile){
+        UploadkeyVO vo=new UploadkeyVO();
+        if (null != multipartfile) {
+            String filename = multipartfile.getOriginalFilename();
+            if (!filename.endsWith(".ini")) {
+                result.setMessage("请上传后缀为ini的文件");
+                return;
+            }
+            String uuid=OpenUtil.getUUID_32();
+            filename=uuid+".ini";
+            try {
+                String savePath=PropertiesListenerConfig.getProperty("file.key");
+                String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
+                LogUtil.intoLog(this.getClass(),"uploadkey真实地址："+realurl);
+                multipartfile.transferTo(new File(realurl));
+                vo.setFilename(uuid);
+                result.setData(vo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        changeResultToSuccess(result);
+        return;
     }
 }

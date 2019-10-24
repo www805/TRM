@@ -284,6 +284,7 @@ function getactionid_manage() {
         caseIndex_togetCourtDetail:"caseIndex_togetCourtDetail",
         caseIndex_exportUdisk:"caseIndex_exportUdisk",
         caseIndex_exportLightdisk:"caseIndex_exportLightdisk",
+        caseIndex_exportUdiskProgress:"caseIndex_exportUdiskProgress",
 
         addOrUpdateCase_getCaseBySsid:"addOrUpdateCase_getCaseBySsid",
         addOrUpdateCase_updateCase:"addOrUpdateCase_updateCase",
@@ -420,6 +421,7 @@ function getactionid_manage() {
         //以上为法庭的接口===============================end
 
         resetPassword_resetPassword:"resetPassword_resetPassword",
+        forgotpassword_uploadkey:"forgotpassword_uploadkey",
 
     };
 }

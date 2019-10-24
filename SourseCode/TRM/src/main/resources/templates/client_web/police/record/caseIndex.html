@@ -116,8 +116,8 @@
                     <div class="btn-group">
                         <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" >
-                            <li type="1"><a href="#" onclick="exportUdisk('{{value.ssid}}');" >导出U盘</a></li>
-                            <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}');">导出光盘</a></li>
+                            <li type="1"><a href="#" onclick="exportUdisk('{{value.ssid}}','{{value.total_filenum}}','{{value.finish_filenum}}');" >导出U盘</a></li>
+                            <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}','{{value.total_filenum}}','{{value.finish_filenum}}');">导出光盘</a></li>
                         </ul>
                     </div>
                     {{#   }  }}

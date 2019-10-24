@@ -87,6 +87,11 @@ public class Police_case extends Model<Police_case> {
 
     private String department;//办案部门
 
+    /**
+     * 是否需要重新打包：1需要-1不需要
+     */
+    private Integer repackbool;
+
     private String ssid;
 
     private String string1;
@@ -96,6 +101,14 @@ public class Police_case extends Model<Police_case> {
     private Integer integer1;
 
     private Integer integer2;
+
+    public Integer getRepackbool() {
+        return repackbool;
+    }
+
+    public void setRepackbool(Integer repackbool) {
+        this.repackbool = repackbool;
+    }
 
     public String getDepartment() {
         return department;

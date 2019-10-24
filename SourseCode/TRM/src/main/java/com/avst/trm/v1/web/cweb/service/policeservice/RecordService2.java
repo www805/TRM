@@ -3,7 +3,9 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.conf.CreateVodThread;
 import com.avst.trm.v1.common.conf.type.FDType;
+import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
@@ -39,8 +41,13 @@ import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
+import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
+import com.avst.trm.v1.web.cweb.cache.RecordProtectCache;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
+import com.avst.trm.v1.web.cweb.cache.param.RecordProtectParam;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -104,6 +111,9 @@ public class RecordService2 extends BaseService {
 
     @Autowired
     private EquipmentControl equipmentControl;
+
+    @Autowired
+    private OutService outService;
 
 
 
@@ -176,9 +186,25 @@ public class RecordService2 extends BaseService {
                         String realurl = OpenUtil.createpath_fileByBasepath(savePath);
                         LogUtil.intoLog(this.getClass(),"案件打包地址真实文件夹地址__"+realurl);
 
-
-                        GZIPThread gzipThread=new GZIPThread(folderPath,realurl,ssid,exportfilename,gztype,false);//需要根据数据库进行判断是否需要强制重新打包压缩
+                        boolean repackbool_=false;
+                        Integer repackbool=police_case.getRepackbool();
+                        if (repackbool==1&&null!=repackbool){
+                            repackbool_=true;
+                        }
+                        GZIPThread gzipThread=new GZIPThread(folderPath,realurl,ssid,exportfilename,gztype,repackbool_);//需要根据数据库进行判断是否需要强制重新打包压缩
                         gzipThread.start();
+                        LogUtil.intoLog(1,this.getClass(),"本次导出是否需要重复【案件】______________________________________________"+repackbool_);
+
+
+                        /*//案件重复打包：这里只需要修改案件重复打包状态
+                        EntityWrapper c=new EntityWrapper();
+                        police_case.setRepackbool(-1);
+                        EntityWrapper updateew=new EntityWrapper();
+                        updateew.eq("ssid",ssid);
+                        int police_caseMapper_updatebool=police_caseMapper.update(police_case,updateew);
+                        LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);*/
+
+
 
                         //获取下载路径
                         String zipfilepath=realurl;
@@ -221,6 +247,50 @@ public class RecordService2 extends BaseService {
             LogUtil.intoLog(1,this.getClass(),"案件导出到U盘————案件信息未找到 case isn null"+ssid);
             return;
         }
+        return;
+    }
+
+    //导出U盘文件打包进度
+    public void exportUdiskProgress(RResult result,ExportUdiskProgressParam param){
+        ExportUdiskProgressVO vo=new ExportUdiskProgressVO();
+        String ssid=param.getSsid();
+        if(StringUtils.isEmpty(ssid)){
+            result.setMessage("未找到该案件");
+            return;
+        }
+
+        vo.setSsid(ssid);
+
+        //根据案件查找全部的文件
+        GZIPCacheParam gzipCacheParam=new GZIPCacheParam();
+         int totalzipnum=0;//总共有多少个需要打包的文件
+         int overzipnum=0;//已经完成了多少个文件
+        EntityWrapper ewarraignment=new EntityWrapper();
+        ewarraignment.eq("cr.casessid",ssid);
+        ewarraignment.eq("recordbool",2).or().eq("recordbool",3);
+        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+        if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0) {
+            for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                String iid = arraignmentAndRecord.getIid();
+                if (StringUtils.isNotBlank(iid)) {
+                    GZIPCacheParam gzipCacheParam_= GZIPCache.getGzipCacheParam(iid);
+                    if(null!=gzipCacheParam_){
+                        totalzipnum+=gzipCacheParam_.getTotalzipnum();
+                        overzipnum+=gzipCacheParam_.getOverzipnum();
+                    }
+                }
+            }
+        }
+
+        vo.setGzipCacheParam(gzipCacheParam);
+        result.setData(vo);
+        if (totalzipnum<1){
+            result.setActioncode(Code.SUCCESS_NOTHINGTODO.toString());
+            result.setMessage("未找到该打包进度，可能已经打包完成");
+        }else{
+            changeResultToSuccess(result);
+        }
+
         return;
     }
 
@@ -455,6 +525,23 @@ public class RecordService2 extends BaseService {
             zipfilename=iid;
         }
 
+        //判断是否需要重新打包
+        String recordssid=param.getRecordssid();
+        if(StringUtils.isEmpty(recordssid)){
+            result.setMessage("系统异常");
+            LogUtil.intoLog(1,this.getClass(),"打包回放__gZIPVod_recordssid is null");
+            return result;
+        }
+        Police_record record=new Police_record();
+        record.setSsid(recordssid);
+        record=police_recordMapper.selectOne(record);
+        boolean repackbool_=false;
+        Integer repackbool=record.getRepackbool();
+        if (repackbool==1&&null!=repackbool){
+            repackbool_=true;
+        }
+
+
         //根据iid找到需要上传的所有文件
         GetSaveFilesPathByiidParam getSaveFilesPathByiidParam=new GetSaveFilesPathByiidParam();
         getSaveFilesPathByiidParam.setIid(iid);
@@ -474,8 +561,33 @@ public class RecordService2 extends BaseService {
                     gztype=".zip";
                 }
                 LogUtil.intoLog(1,this.getClass(),zipfilename+":zipfilename,开始打包VOD，iid："+iid+"----打包的文件夹zippath:"+zippath);
-                GZIPThread gzipThread=new GZIPThread(zippath,zippath,iid,zipfilename,gztype,false);//需要根据数据库进行判断是否需要强制重新打包压缩
+
+
+                GZIPThread gzipThread=new GZIPThread(zippath,zippath,iid,zipfilename,gztype,repackbool_);//需要根据数据库进行判断是否需要强制重新打包压缩
                 gzipThread.start();
+                LogUtil.intoLog(1,this.getClass(),"本次导出是否需要重复【笔录】______________________________________________"+repackbool_);
+
+                /*EntityWrapper e=new EntityWrapper();
+                e.eq("ssid",recordssid);
+                record.setRepackbool(-1);//笔录重复打包
+                int police_recordMapper_updatebool=police_recordMapper.update(record,e);
+                LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                if (police_recordMapper_updatebool>0){
+                    //案件重复打包
+                    EntityWrapper getcasebyrecordssidew=new EntityWrapper();
+                    getcasebyrecordssidew.eq("r.ssid",recordssid);
+                    Case case_ =  police_caseMapper.getCaseByRecordSsid(getcasebyrecordssidew);
+                    if (null!=case_){
+                        EntityWrapper c=new EntityWrapper();
+                        case_.setRepackbool(-1);
+                        EntityWrapper updateew=new EntityWrapper();
+                        updateew.eq("ssid",case_.getSsid());
+                        int police_caseMapper_updatebool=police_caseMapper.update(case_,updateew);
+                        LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
+                    }
+                }*/
+
+
 
                 String zipfilepath=zippath;
                 if(zipfilepath.endsWith("\\")||zipfilepath.endsWith("/")){
@@ -785,6 +897,40 @@ public class RecordService2 extends BaseService {
     }
 
 
+    public void setRecordProtect(RResult result,ReqParam<SetRecordProtectParam> param){
+        RecordProtectParam recordProtectParam=new RecordProtectParam();
+
+        SetRecordProtectParam setRecordProtectParam=param.getParam();
+        if (null==setRecordProtectParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=setRecordProtectParam.getRecordssid();
+        String mtssid=setRecordProtectParam.getMtssid();
+        String iid=setRecordProtectParam.getIid();
+        List<RecordToProblem> recordToProblems=setRecordProtectParam.getRecordToProblems();
+
+        if (StringUtils.isNotBlank(recordssid)){
+            recordProtectParam.setRecordToProblems(recordToProblems);
+            recordProtectParam.setRecordssid(recordssid);
+            recordProtectParam.setMtssid(mtssid);
+            recordProtectParam.setIid(iid);
+
+          boolean  setRecordecordProtectbool = RecordProtectCache.setRecordecordProtect(recordProtectParam);
+            if (setRecordecordProtectbool){
+                changeResultToSuccess(result);
+                result.setData(1);
+            }
+            //开始保存(缓存到本地)
+        }
+        return;
+    }
+
+
+
+
+
     /***************************笔录问答实时缓存****end***************************/
 
     public RResult exportPdf(RResult result, ReqParam<ExportPdfParam> param){
@@ -914,8 +1060,61 @@ public class RecordService2 extends BaseService {
                     e.eq("ssid",recordssid);
                     record.setWord_filesavessid(word_filesavessid);
                     record.setPdf_filesavessid(pdf_filesavessid);
+                    record.setRepackbool(1);//笔录重复打包
                     int police_recordMapper_updatebool=police_recordMapper.update(record,e);
                     LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                    if (police_recordMapper_updatebool>0){
+                        //案件重复打包
+                        EntityWrapper getcasebyrecordssidew=new EntityWrapper();
+                        getcasebyrecordssidew.eq("r.ssid",recordssid);
+                        Case case_ =  police_caseMapper.getCaseByRecordSsid(getcasebyrecordssidew);
+                        if (null!=case_){
+                            EntityWrapper c=new EntityWrapper();
+                            case_.setRepackbool(1);
+                            EntityWrapper updateew=new EntityWrapper();
+                            updateew.eq("ssid",case_.getSsid());
+                            int police_caseMapper_updatebool=police_caseMapper.update(case_,updateew);
+                            LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
+                        }
+                    }
+
+                    if (null!=record.getRecordbool()&&(record.getRecordbool()==2||record.getRecordbool()==3)){
+                        //获取iid
+                        String mtssid=null;
+                        String iid=record.getGz_iid();
+                        if (StringUtils.isBlank(iid)){
+                            Police_arraignment police_arraignment=new Police_arraignment();
+                            police_arraignment.setRecordssid(recordssid);
+                            police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+                            if (null!=police_arraignment) {
+                                mtssid = police_arraignment.getMtssid();
+                            }
+                            GetMCVO getMCVO=new GetMCVO();
+                            ReqParam getrecord_param=new ReqParam<>();
+                            GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                            getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                            getPhssidByMTssidParam_out.setMtssid(mtssid);
+                            getrecord_param.setParam(getPhssidByMTssidParam_out);
+                            RResult getrecord_rr=new RResult();
+                            getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                            if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                getMCVO = gson.fromJson(gson.toJson(getrecord_rr.getData()), GetMCVO.class);
+                                if (null != getMCVO) {
+                                    iid = getMCVO.getIid();
+                                }
+                            }
+                        }
+
+                        //
+                        if (StringUtils.isNotBlank(iid)){
+                            CreateVodThread createVodThread=new CreateVodThread(wordrealurl,pdfrealurl,iid);
+                            createVodThread.start();
+                        }
+                    }
+
+
+
+
                     result.setData(pdfdownurl);
                     changeResultToSuccess(result);
                 }
@@ -1032,9 +1231,24 @@ public class RecordService2 extends BaseService {
                     record.setWordhead_filesavessid(word_filesavessid);
                 }else {
                     record.setWord_filesavessid(word_filesavessid);
+                    record.setRepackbool(1);//笔录重复打包
                 }
                 int police_recordMapper_updatebool=police_recordMapper.update(record,e);
                 LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
+                if (police_recordMapper_updatebool>0&&record.getRecordbool()==1){
+                    //案件重复打包
+                    EntityWrapper getcasebyrecordssidew=new EntityWrapper();
+                    getcasebyrecordssidew.eq("r.ssid",recordssid);
+                    Case case_ =  police_caseMapper.getCaseByRecordSsid(getcasebyrecordssidew);
+                    if (null!=case_){
+                        EntityWrapper c=new EntityWrapper();
+                        case_.setRepackbool(1);
+                        EntityWrapper updateew=new EntityWrapper();
+                        updateew.eq("ssid",case_.getSsid());
+                        int police_caseMapper_updatebool=police_caseMapper.update(case_,updateew);
+                        LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
+                    }
+                }
 
                 exportWordVO.setWord_path(worddownurl);
                 result.setData(exportWordVO);

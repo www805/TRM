@@ -34,13 +34,11 @@ function addCaseToArraignment() {
 
     var multifunctionbool=2;//功能类型:
     var multifunction_bool=$("#multifunctionbool",parent.document).prop("checked");
-    if (isNotEmpty(multifunction_bool)){
-        if (multifunction_bool){
+        if (multifunction_bool==true){
             multifunctionbool=2;
-        }else{
+        }else if (multifunction_bool==false){
             multifunctionbool=3;
         }
-    }
 
     var cardnum=$("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();

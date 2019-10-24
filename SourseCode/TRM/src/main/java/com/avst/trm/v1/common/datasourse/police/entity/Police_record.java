@@ -87,6 +87,19 @@ public class Police_record extends Model<Police_record> {
 
     private String wordhead_filesavessid;//word文件头
 
+    /**
+     * 是否需要重新打包：1需要-1不需要
+     */
+    private Integer repackbool;
+
+    public Integer getRepackbool() {
+        return repackbool;
+    }
+
+    public void setRepackbool(Integer repackbool) {
+        this.repackbool = repackbool;
+    }
+
     public String getWordhead_filesavessid() {
         return wordhead_filesavessid;
     }

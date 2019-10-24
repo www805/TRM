@@ -673,6 +673,39 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /*@RequestMapping("/getRecordrealByRecordssid")
+    public  RResult getRecordrealByRecordssid(@RequestBody ReqParam<GetRecordrealByRecordssidParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService2.getRecordrealByRecordssid(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }*/
+
+    /**
+     * 实时保存本地
+     * @param param
+     * @return
+     */
+    @RequestMapping("/setRecordProtect")
+    public  RResult setRecordProtect(@RequestBody ReqParam<SetRecordProtectParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            recordService2.setRecordProtect(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 
@@ -727,6 +760,25 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+    /**
+     * 导出U盘进度
+     * @param param
+     * @return
+     */
+    @RequestMapping("/exportUdiskProgress")
+    public RResult exportUdiskProgress(@RequestBody ReqParam<ExportUdiskProgressParam> param ){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            recordService2.exportUdiskProgress(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
     /**
      * 导出到光盘
@@ -790,6 +842,8 @@ public class RecordAction extends BaseAction {
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }
+
+
 
 
 

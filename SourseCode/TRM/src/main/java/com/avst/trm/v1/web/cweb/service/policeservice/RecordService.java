@@ -32,6 +32,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.req.GetPH
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPlayUrlVO;
+import com.avst.trm.v1.web.cweb.cache.RecordProtectCache;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.conf.AddRecord_Thread;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
@@ -763,6 +764,10 @@ public class RecordService extends BaseService {
                         Police_record police_record=record;
                         CreateVodThread thread=new CreateVodThread(result,police_recordMapper,police_record);
                         thread.start();
+
+
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1963,6 +1968,9 @@ public class RecordService extends BaseService {
 
         if (null!=list&&list.size()>0){
             for (Case case_: list) {
+                 Integer finish_file=0;//已完成并且有iid的笔录数
+                 Integer total_file=0;//已完成总共笔录数
+
                 //1、绑定多次提讯数据
                 EntityWrapper ewarraignment=new EntityWrapper();
                 ewarraignment.eq("cr.casessid",case_.getSsid());
@@ -1970,8 +1978,19 @@ public class RecordService extends BaseService {
                 ewarraignment.orderBy("a.createtime",false);
                 List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
                 if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
+                        if (null!=arraignmentAndRecord.getRecordbool()&&(arraignmentAndRecord.getRecordbool()==2||arraignmentAndRecord.getRecordbool()==3)){
+                            total_file++;
+                            if (StringUtils.isNotBlank(arraignmentAndRecord.getIid())){
+                                finish_file++;
+                            }
+                        }
+                    }
                     case_.setArraignments(arraignmentAndRecords);
                 }
+                case_.setFinish_filenum(finish_file);
+                case_.setTotal_filenum(total_file);
+
 
                 //2、多个案件人
                 EntityWrapper ewuserinfo=new EntityWrapper<>();

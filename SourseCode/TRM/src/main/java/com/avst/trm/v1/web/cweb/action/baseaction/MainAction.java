@@ -458,6 +458,24 @@ public class MainAction extends BaseAction {
         return  result;
     }
 
+    //上传key到服务端
+    @RequestMapping("/uploadkey")
+    @ResponseBody
+    public  RResult uploadkey(ReqParam  param,@RequestParam(value="file",required=false) MultipartFile multipartfile){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else {
+            mainService.uploadkey(result, param,multipartfile);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+
+
     /**
      * 跳转==》修改个人信息页面
      * @param model
