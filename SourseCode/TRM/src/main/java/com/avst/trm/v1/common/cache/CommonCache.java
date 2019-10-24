@@ -69,8 +69,8 @@ public class CommonCache {
                     String[] arr=gns.split("\\|");
                     for(String s:arr){
                         if(s.indexOf("{comp") != -1){
-                            s.replace("{", "");
-                            s.replace("}", "");
+                            s = s.replace("{", "");
+                            s = s.replace("}", "");
                             String[] split = s.split(",");
                             for (String sp : split) {
                                 String[] sps = sp.split(":");
