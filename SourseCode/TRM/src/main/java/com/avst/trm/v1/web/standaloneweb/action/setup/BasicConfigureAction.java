@@ -4,10 +4,8 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.feignclient.ec.req.GetFDAudioConfParam_out;
 import com.avst.trm.v1.feignclient.ec.req.GetFDNetWorkParam_out;
-import com.avst.trm.v1.feignclient.ec.req.SetFDAudioVolumeParam_out;
-import com.avst.trm.v1.web.standaloneweb.req.GetNetworkConfigureParam;
+import com.avst.trm.v1.web.standaloneweb.req.*;
 import com.avst.trm.v1.web.standaloneweb.service.BasicConfigureService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +25,85 @@ public class BasicConfigureAction extends BaseAction {
     @Autowired
     private BasicConfigureService basicConfigureService;
 
+    /**
+     * 获取默认设备的ssid
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getFDssid")
+    @ResponseBody
+    public RResult getFDssid (@RequestBody ReqParam param) {
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            basicConfigureService.getFDssid(result);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 设置NTP同步
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/setNTP")
+    @ResponseBody
+    public RResult setNTP (@RequestBody ReqParam<SetNTPParam> param) {
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            basicConfigureService.setNTP(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 同步本机时间
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/setEcSystemTimeSync")
+    @ResponseBody
+    public RResult setEcSystemTimeSync (@RequestBody ReqParam<SetEcSystemTimeSyncParam> param) {
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            basicConfigureService.setEcSystemTimeSync(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 设置x85系统时间
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/setEcSystemTime")
+    @ResponseBody
+    public RResult setEcSystemTime (@RequestBody ReqParam<SetEcSystemTimeParam> param) {
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            basicConfigureService.setEcSystemTime(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
 
     /**
      * 获取网络配置
@@ -69,46 +146,6 @@ public class BasicConfigureAction extends BaseAction {
     }
 
 
-    /**
-     * 获得设备音频配置
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/getFDAudioConf")
-    @ResponseBody
-    public RResult getFDAudioConf(@RequestBody ReqParam<GetFDAudioConfParam_out> param) {
-        RResult result=this.createNewResultOfFail();
-        if(null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            basicConfigureService.getFDAudioConf(result,param.getParam());
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
-
-
-    /**
-     * 设置设备某一个通道的通道音量
-     * @param param
-     * @return
-     */
-    @RequestMapping(value = "/setFDAudioVolume")
-    @ResponseBody
-    public RResult setFDAudioVolume(@RequestBody ReqParam<SetFDAudioVolumeParam_out> param) {
-        RResult result=this.createNewResultOfFail();
-        if(null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            basicConfigureService.setFDAudioVolume(result,param.getParam());
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
 
 
     /**

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.standaloneweb.service;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.FdSSidCache;
 import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
@@ -19,7 +20,7 @@ import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.ec.vo.fd.GetFDStatevo;
-import com.avst.trm.v1.web.standaloneweb.req.GetNetworkConfigureParam;
+import com.avst.trm.v1.web.standaloneweb.req.*;
 import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import com.avst.trm.v1.web.standaloneweb.vo.GetSQInfoVO;
 import com.avst.trm.v1.web.standaloneweb.vo.GetSystemInfoVO;
@@ -103,51 +104,6 @@ public class BasicConfigureService extends BaseService {
 //        SystemIpUtil.setIP(ip, subnetMask, gateway);
 
 //        this.changeResultToSuccess(result);
-    }
-
-
-
-
-    public void getFDAudioConf(RResult result, GetFDAudioConfParam_out param) {
-        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())){
-            result.setMessage("设备ssid不能为空");
-            return;
-        }
-        if (StringUtils.isBlank(param.getFdType())){
-            result.setMessage("设备类型不能为空");
-            return;
-        }
-
-        RResult fdAudioConf = equipmentControl.getFDAudioConf(param);
-
-        result.setActioncode(fdAudioConf.getActioncode());
-        result.setNextpageid(fdAudioConf.getNextpageid());
-        result.setData(fdAudioConf.getData());
-        result.setMessage(fdAudioConf.getMessage());
-        result.setEndtime(fdAudioConf.getEndtime());
-        result.setVersion(fdAudioConf.getVersion());
-
-    }
-
-    public void setFDAudioVolume(RResult result, SetFDAudioVolumeParam_out param) {
-
-        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())){
-            result.setMessage("设备ssid不能为空");
-            return;
-        }
-        if (StringUtils.isBlank(param.getFdType())){
-            result.setMessage("设备类型不能为空");
-            return;
-        }
-
-        RResult fdAudioConf = equipmentControl.setFDAudioVolume(param);
-
-        result.setActioncode(fdAudioConf.getActioncode());
-        result.setNextpageid(fdAudioConf.getNextpageid());
-        result.setData(fdAudioConf.getData());
-        result.setMessage(fdAudioConf.getMessage());
-        result.setEndtime(fdAudioConf.getEndtime());
-        result.setVersion(fdAudioConf.getVersion());
     }
 
 
@@ -301,5 +257,79 @@ public class BasicConfigureService extends BaseService {
             sqParam.setGnlist(gnArrayList);
         }
         return sqParam;
+    }
+
+
+    public void setEcSystemTime(RResult result, SetEcSystemTimeParam param) {
+
+        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
+            result.setMessage("设备ssid不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(param.getFdType())) {
+            result.setMessage("设备类型不能为空");
+            return;
+        }
+        if(StringUtils.isBlank(param.getSystemTime())){
+            result.setMessage("系统时间不能为空");
+            return;
+        }
+
+        //执行逻辑
+
+    }
+
+    public void setEcSystemTimeSync(RResult result, SetEcSystemTimeSyncParam param) {
+
+        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
+            result.setMessage("设备ssid不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(param.getFdType())) {
+            result.setMessage("设备类型不能为空");
+            return;
+        }
+
+        //获取本机时间
+        String dateAndMinute = DateUtil.getDateAndMinute();
+
+
+    }
+
+    public void setNTP(RResult result, SetNTPParam param) {
+
+        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
+            result.setMessage("设备ssid不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(param.getFdType())) {
+            result.setMessage("设备类型不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(param.getNtpip())) {
+            result.setMessage("NTP服务器IP不能为空");
+            return;
+        }
+        if (StringUtils.isBlank(param.getTimeInterval())) {
+            result.setMessage("NTP同步时间间隔不能为空");
+            return;
+        }
+
+        //远程请求
+
+
+    }
+
+    public void getFDssid(RResult result) {
+
+        String fdssid = FdSSidCache.getFdSSidCache();//获取默认设备的ssid
+        if (StringUtils.isBlank(fdssid)) {
+            result.setMessage("默认设备ssid获取失败");
+            return;
+        }
+
+        //从缓存里获取
+        result.setData(fdssid);
+        changeResultToSuccess(result);
     }
 }

@@ -1,13 +1,19 @@
 var fdType = "FD_AVST";
+var flushbonadingetinfossid;
 
 function getFDNetWork() {
     var url=getActionURL(getactionid_manage().networkConfigure_getFDNetWork);
     // var url = "/cweb/setUp/basicConfigure/getNetworkConfigure";
 
+    if(!isNotEmpty(flushbonadingetinfossid)){
+        layer.msg("获取默认设备ssid为空，操作失败",{icon: 5});
+        return;
+    }
+
     var data = {
             token: INIT_CLIENTKEY,
             param: {
-                flushbonadingetinfossid:"sxsba2",
+                flushbonadingetinfossid:flushbonadingetinfossid,
                 fdType:fdType
             }
         };
@@ -15,6 +21,18 @@ function getFDNetWork() {
     ajaxSubmitByJson(url, data, callgetFDNetWork);
 }
 
+//获取默认设备的ssid
+function getFDssid() {
+    var url=getActionURL(getactionid_manage().networkConfigure_getFDssid);
+    // var url = "/cweb/setUp/basicConfigure/getNetworkConfigure";
+
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {}
+    };
+
+    ajaxSubmitByJson(url, data, callgetFDssid);
+}
 
 function setNetworkConfigure() {
     var url=getActionURL(getactionid_manage().networkConfigure_setNetworkConfigure);
@@ -63,6 +81,17 @@ function callsetNetworkConfigure(data){
             // setTimeout(function(){
             //     location.replace(location.href);
             // },5000);
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+function callgetFDssid(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            flushbonadingetinfossid = data.data;
+            getFDNetWork();
         }
     }else{
         layer.msg(data.message,{icon: 5});

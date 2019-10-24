@@ -408,20 +408,33 @@ function getactionid_manage() {
         AddOrUpdateUserinfograde_updateUserinfograde:"AddOrUpdateUserinfograde_updateUserinfograde",
 
 
-        networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
-        networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",
-
-        audioConfigure_getSQInfo:"audioConfigure_getSQInfo",
-
-        audioConfigure_getFDAudioConf:"audioConfigure_getFDAudioConf",
-        audioConfigure_setFDAudioVolume:"audioConfigure_setFDAudioVolume",
-
-
 
         //以上为法庭的接口===============================end
 
         resetPassword_resetPassword:"resetPassword_resetPassword",
         forgotpassword_uploadkey:"forgotpassword_uploadkey",
+
+
+
+        resetPassword_resetPassword:"resetPassword_resetPassword",
+
+        networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
+        networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",
+        networkConfigure_getFDssid:"networkConfigure_getFDssid",
+
+        audioConfigure_getSQInfo:"audioConfigure_getSQInfo",
+        audioConfigure_getFDssid:"audioConfigure_getFDssid",
+
+        audioConfigure_getFDAudioConf:"audioConfigure_getFDAudioConf",
+        audioConfigure_setFDAudioVolume:"audioConfigure_setFDAudioVolume",
+        audioConfigure_saveFDAudioVolume:"audioConfigure_saveFDAudioVolume",
+
+
+        dateTime_setEcSystemTime:"dateTime_setEcSystemTime",
+        dateTime_setEcSystemTimeSync:"dateTime_setEcSystemTimeSync",
+        dateTime_setNTP:"dateTime_setNTP",
+        dateTime_getFDssid:"dateTime_getFDssid",
+
 
     };
 }
