@@ -1024,7 +1024,7 @@ function showrecord(times,oldtime) {
             if (t1==times) {//需要减去差值
                 $(this).addClass("highlight_right");
                 var top=$(this).position().top;
-                var div = document.getElementById('recorddetail_scrollhtml');
+                var div = document.getElementById('recorddetail');
                 div.scrollTop = top;
                 return false;
             }

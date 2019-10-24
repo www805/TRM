@@ -16,7 +16,7 @@ function callbackgetAbout(data) {
             runbookdownurl=data.runbookdownurl;
            $("#runbookdownurl_html").attr("src",data.runbookdownurl_html);
             $("#sysmsg").html(data.sysmsg==null?"无":data.sysmsg);
-            $("#companymsg").html(data.companymsg==null?"无":data.companymsg);
+            /*$("#companymsg").html(data.companymsg==null?"无":data.companymsg);*/
         }
     }else{
         layer.msg(data.message,{icon: 5});

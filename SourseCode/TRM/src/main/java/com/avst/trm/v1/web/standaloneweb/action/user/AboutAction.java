@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.standaloneweb.action.user;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -50,6 +51,9 @@ public class AboutAction extends BaseAction {
      */
     @GetMapping("toabout")
     public ModelAndView toabout(Model model){
+        String companyname=CommonCache.getCompanyname()==null?"":CommonCache.getCompanyname();
+        String companymsg=CommonCache.getCompanymsg()==null?"":CommonCache.getCompanymsg();
+        model.addAttribute("companymsg",companyname+"："+companymsg);
         model.addAttribute("title","关于");
         return new ModelAndView("standalone_web/user/about", "Model", model);
     }

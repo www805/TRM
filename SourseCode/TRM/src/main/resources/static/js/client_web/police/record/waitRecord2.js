@@ -1016,7 +1016,7 @@ function previewgetNotifications(ssid) {
                                 return;
                             }
 
-                            if (!isNotEmpty(gnlist)||!gnlist.includes("tts")){
+                            if (!isNotEmpty(gnlist)||!gnlist.includes("tts_f")){
                                 layer.msg("请先获取语音播报授权")
                                 return;
                             }

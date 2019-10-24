@@ -1972,8 +1972,8 @@ $(function () {
     },3000)
 
     setInterval( function() {
-        setRecordProtect();//10秒缓存一次
-    },10000);
+        setRecordProtect();//5秒缓存一次
+    },5000);
 
 
 //自动甄别初始化
