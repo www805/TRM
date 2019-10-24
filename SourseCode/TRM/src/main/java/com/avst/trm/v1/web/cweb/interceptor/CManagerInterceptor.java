@@ -92,6 +92,8 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
                     firstinterface= ( interfaceurl.startsWith("/") ? interfaceurl : ("/"+interfaceurl) );
                 }
             }
+
+
 //        disbool = true;  //暂时让他成功
             if (disbool&&!url.equals("/cweb/")) {
                 return true;  //通过拦截器，继续执行请求

@@ -41,9 +41,17 @@ import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
+import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
+import com.avst.trm.v1.feignclient.mc.MeetingControl;
+import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetPHDataParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
+import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.PhDataParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetRecordrealingVO;
 import com.avst.trm.v1.web.cweb.cache.RecordProtectCache;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.Recordrealing_LastCache;
@@ -52,7 +60,9 @@ import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -111,6 +121,9 @@ public class RecordService2 extends BaseService {
 
     @Autowired
     private EquipmentControl equipmentControl;
+
+    @Autowired
+    private MeetingControl meetingControl;
 
     @Autowired
     private OutService outService;
@@ -267,7 +280,7 @@ public class RecordService2 extends BaseService {
          int overzipnum=0;//已经完成了多少个文件
         EntityWrapper ewarraignment=new EntityWrapper();
         ewarraignment.eq("cr.casessid",ssid);
-        ewarraignment.eq("recordbool",2).or().eq("recordbool",3);
+        ewarraignment.eq("r.recordbool",2).or().eq("r.recordbool",3);
         List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
         if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0) {
             for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
@@ -282,6 +295,7 @@ public class RecordService2 extends BaseService {
             }
         }
 
+        LogUtil.intoLog(1,this.getClass(),"导出U盘导出文件进度______________________________totalzipnum__"+totalzipnum+"__overzipnum__"+overzipnum);
         vo.setGzipCacheParam(gzipCacheParam);
         result.setData(vo);
         if (totalzipnum<1){
@@ -908,15 +922,41 @@ public class RecordService2 extends BaseService {
 
         String recordssid=setRecordProtectParam.getRecordssid();
         String mtssid=setRecordProtectParam.getMtssid();
-        String iid=setRecordProtectParam.getIid();
-        List<RecordToProblem> recordToProblems=setRecordProtectParam.getRecordToProblems();
+        List<RecordToProblem> recordToProblems=RecordrealingCache.getRecordrealByRecordssid(recordssid);
+        List<AsrTxtParam_toout> asrTxtParamToouts=new ArrayList<>();//语音识别实时数据
+        List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();//身心监测数据
+
+
+        if (StringUtils.isNotBlank(mtssid)){
+            //会议不为空，开始获取语音实时数据以及身心监测实时数据
+            //语音识别实时数据
+            RResult asr_result = this.createNewResultOfFail();
+            ReqParam reqParam=new ReqParam<>();
+            GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out=new GetMCaLLUserAsrTxtListParam_out();
+            getMCaLLUserAsrTxtListParam_out.setMcType(MCType.AVST);
+            getMCaLLUserAsrTxtListParam_out.setMtssid(mtssid);
+            reqParam.setParam(getMCaLLUserAsrTxtListParam_out);
+            asr_result =meetingControl.getMCaLLUserAsrTxtList(reqParam);
+            if (null != asr_result && asr_result.getActioncode().equals(Code.SUCCESS.toString())) {
+                asrTxtParamToouts=gson.fromJson(gson.toJson(asr_result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
+            }
+
+            //身心监测实时数据:暂时没有接口获取
+
+
+
+
+        }
+
+
+
 
         if (StringUtils.isNotBlank(recordssid)){
             recordProtectParam.setRecordToProblems(recordToProblems);
             recordProtectParam.setRecordssid(recordssid);
             recordProtectParam.setMtssid(mtssid);
-            recordProtectParam.setIid(iid);
-
+            recordProtectParam.setAsrTxtParamToouts(asrTxtParamToouts);
+            recordProtectParam.setPhDataBackVoParams(phDataBackVoParams);
           boolean  setRecordecordProtectbool = RecordProtectCache.setRecordecordProtect(recordProtectParam);
             if (setRecordecordProtectbool){
                 changeResultToSuccess(result);
