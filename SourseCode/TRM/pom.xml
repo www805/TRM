@@ -463,22 +463,36 @@
         <!--war启动结束-->
 
 
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-                <excludes>
-                    <exclude>static/layuiadmin/layui/font/**</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>false</filtering>
-                <includes>
-                    <include>static/layuiadmin/layui/font/**</include>
-                </includes>
-            </resource>
-        </resources>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>${project.basedir}/src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<excludes>-->
+                    <!--<exclude>static/layui/iconz/**</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>${project.basedir}/src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<excludes>-->
+                    <!--<exclude>static/layui/iconhome/**</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>${project.basedir}/src/main/resources</directory>-->
+                <!--<filtering>true</filtering>-->
+                <!--<excludes>-->
+                    <!--<exclude>static/layui/font/**</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>${project.basedir}/src/main/resources</directory>-->
+                <!--<filtering>false</filtering>-->
+                <!--<includes>-->
+                    <!--<include>static/layui/font/**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
 
 
     </build>

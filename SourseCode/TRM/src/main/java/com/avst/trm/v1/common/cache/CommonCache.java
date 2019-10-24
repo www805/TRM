@@ -19,6 +19,7 @@ import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
+import sun.swing.StringUIClientPropertyKey;
 
 import java.util.*;
 
@@ -34,6 +35,12 @@ public class CommonCache {
     }
 
     public static long sysStartTime;//服务器每次的启动时间
+
+    private static String companyname;//公司名称
+
+    private static String companymsg;//公司简介
+
+
 
     /**
      * 本地授权信息授权
@@ -61,17 +68,58 @@ public class CommonCache {
                 if(gns.indexOf("|") > -1){
                     String[] arr=gns.split("\\|");
                     for(String s:arr){
-                        list.add(s.trim());
+                        if(s.indexOf("{comp") != -1){
+                            s.replace("{", "");
+                            s.replace("}", "");
+                            String[] split = s.split(",");
+                            for (String sp : split) {
+                                String[] sps = sp.split(":");
+                                if (sps.length > 0) {
+                                    if("companyname".equals(sps[0])){
+                                        companyname = sps[1];
+                                    }else if("companymsg".equals(sps[0])){
+                                        companymsg = sps[1];
+                                    }
+                                }
+                            }
+
+                        }else{
+                            list.add(s.trim());
+                        }
                     }
                 }else {
                     list.add(gns);
                 }
+
+                String gnlists = String.join("|", list);
+                getSQEntity.setGnlist(gnlists);
                 return list;
             }
         }
         return null;
     }
 
+    public static String getCompanyname() {
+        if(StringUtils.isBlank(companyname)){
+            gnlist();
+        }
+        return companyname;
+    }
+
+    public static void setCompanyname(String companyname) {
+        CommonCache.companyname = companyname;
+    }
+
+    public static String getCompanymsg() {
+        if(StringUtils.isBlank(companymsg)){
+            gnlist();
+        }
+        return companymsg;
+    }
+
+    public static void setCompanymsg(String companymsg) {
+        CommonCache.companymsg = companymsg;
+    }
 
     /**
      * 客户端访问时使用的key
