@@ -127,7 +127,6 @@ public class CheckRecordProtect  implements ApplicationRunner {
                     }
                     if (recordbool!=1&&recordbool!=0){
                         //笔录状态不为进行中和未开始的删除
-                        //该笔录不存在了删除
                         RecordProtectCache.delRecordecordProtect(recordssid);
                     }
                 }else {

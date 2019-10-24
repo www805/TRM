@@ -27,8 +27,6 @@ public class RecordProtectCache {
 
     private static  String recordcachepath= OpenUtil.getXMSoursePath()+"\\recordcache\\";//文件夹位置
 
-    private static  String suffix=".txt";//文件夹位置
-
     private static Gson gson=new Gson();
 
     /**

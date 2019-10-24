@@ -9,24 +9,12 @@ public class SetRecordProtectParam {
 
     private String mtssid;//会议ssid
 
-    private String iid;//视频iid
-
-    private List<RecordToProblem> recordToProblems;
-
-    public List<RecordToProblem> getRecordToProblems() {
-        return recordToProblems;
+    public String getRecordssid() {
+        return recordssid;
     }
 
-    public void setRecordToProblems(List<RecordToProblem> recordToProblems) {
-        this.recordToProblems = recordToProblems;
-    }
-
-    public String getIid() {
-        return iid;
-    }
-
-    public void setIid(String iid) {
-        this.iid = iid;
+    public void setRecordssid(String recordssid) {
+        this.recordssid = recordssid;
     }
 
     public String getMtssid() {
@@ -35,13 +23,5 @@ public class SetRecordProtectParam {
 
     public void setMtssid(String mtssid) {
         this.mtssid = mtssid;
-    }
-
-    public String getRecordssid() {
-        return recordssid;
-    }
-
-    public void setRecordssid(String recordssid) {
-        this.recordssid = recordssid;
     }
 }
