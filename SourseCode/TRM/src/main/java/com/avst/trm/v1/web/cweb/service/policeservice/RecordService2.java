@@ -274,37 +274,15 @@ public class RecordService2 extends BaseService {
 
         vo.setSsid(ssid);
 
-        //根据案件查找全部的文件
-        GZIPCacheParam gzipCacheParam=new GZIPCacheParam();
-         int totalzipnum=0;//总共有多少个需要打包的文件
-         int overzipnum=0;//已经完成了多少个文件
-        EntityWrapper ewarraignment=new EntityWrapper();
-        ewarraignment.eq("cr.casessid",ssid);
-        ewarraignment.eq("r.recordbool",2).or().eq("r.recordbool",3);
-        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
-        if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0) {
-            for (ArraignmentAndRecord arraignmentAndRecord : arraignmentAndRecords) {
-                String iid = arraignmentAndRecord.getIid();
-                if (StringUtils.isNotBlank(iid)) {
-                    GZIPCacheParam gzipCacheParam_= GZIPCache.getGzipCacheParam(iid);
-                    if(null!=gzipCacheParam_){
-                        totalzipnum+=gzipCacheParam_.getTotalzipnum();
-                        overzipnum+=gzipCacheParam_.getOverzipnum();
-                    }
-                }
-            }
-        }
-
-        LogUtil.intoLog(1,this.getClass(),"导出U盘导出文件进度______________________________totalzipnum__"+totalzipnum+"__overzipnum__"+overzipnum);
+        GZIPCacheParam gzipCacheParam= GZIPCache.getGzipCacheParam(ssid);
         vo.setGzipCacheParam(gzipCacheParam);
         result.setData(vo);
-        if (totalzipnum<1){
+        if(null==gzipCacheParam){
             result.setActioncode(Code.SUCCESS_NOTHINGTODO.toString());
             result.setMessage("未找到该打包进度，可能已经打包完成");
         }else{
-            changeResultToSuccess(result);
+            this.changeResultToSuccess(result);
         }
-
         return;
     }
 

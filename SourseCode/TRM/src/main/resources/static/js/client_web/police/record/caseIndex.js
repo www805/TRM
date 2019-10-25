@@ -484,10 +484,8 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
  * @param casename
  */
 //导出U盘
-var exportUdisk_index=null;
-var timer_exportUdisk=null;
-var exportUdisk_URL=null;
 function exportUdisk(ssid,total_filenum,finish_filenum){
+    var timer_exportUdisk=null;
     if (isNotEmpty(ssid)){
         total_filenum=total_filenum==null?0:parseInt(total_filenum);
         finish_filenum=finish_filenum==null?0:parseInt(finish_filenum);
@@ -500,7 +498,7 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
             btn: ['立即导出','取消'], //按钮
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
-            exportUdisk_index=layer.msg("导出中，请稍等...", {
+            layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent']
             });
@@ -538,12 +536,10 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
                         var data=data.data;
                         if (isNotEmpty(data)){
                             var downurl=data.downurl;
-                            exportUdisk_URL=downurl;
                             layer.msg("导出成功,等待下载中...",{icon: 6,time:800},function () {
-                              /*  window.location.href=downurl;*/
                                 //开始请求获取进度
-                                timer_exportUdisk=setInterval(function () {
-                                    exportUdiskProgress(ssid);
+                               timer_exportUdisk=setInterval(function () {
+                                    exportUdiskProgress(ssid,downurl,timer_exportUdisk);
                                 },1000)
                             });
 
@@ -563,48 +559,52 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
     }
 }
 
-function exportUdiskProgress(ssid){
+function exportUdiskProgress(ssid,downurl,timer_exportUdisk){
     var url=getActionURL(getactionid_manage().caseIndex_exportUdiskProgress);
-    var data={
+    var data_={
         token:INIT_CLIENTKEY,
         param:{
-            ssid:ssid
+            ssid:ssid,
         }
     };
-    ajaxSubmitByJson(url,data,callbackexportUdiskProgress);
-}
+    ajaxSubmitByJson(url,data_,function callbackexportUdiskProgress(data) {
+        var data2=data.data;
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            //开始显示进度
+            if (isNotEmpty(data2)){
+                var gzipCacheParam=data2.gzipCacheParam;
+                if (isNotEmpty(gzipCacheParam)){
+                    var totalzipnum=gzipCacheParam.totalzipnum==null?0:gzipCacheParam.totalzipnum;//总共有多少个需要打包的文件
+                    var overzipnum=gzipCacheParam.overzipnum==null?0:gzipCacheParam.overzipnum;//已经完成了多少个文件
+                    var shu=(overzipnum/totalzipnum)*100;
+                    shu=parseInt(shu)+ "%";
+                    var ssid=data2.ssid;
+                    $("#progress_"+ssid+"").css("visibility","visible");
+                    $("#progress_"+ssid+" .layui-progress-text").text(shu);
+                    $("#progress_"+ssid+" .layui-progress-bar").width(shu);
 
-function callbackexportUdiskProgress(data) {
-    var data2=data.data;
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        //开始显示进度
-        if (isNotEmpty(data2)){
-            var totalzipnum=data2.totalzipnum==null?0:data2.totalzipnum;//总共有多少个需要打包的文件
-            var overzipnum=data2.overzipnum==null?0:data2.overzipnum;//已经完成了多少个文件
-            var shu=(overzipnum/totalzipnum)*100;
+                    layui.use(['layer','element','slider','form'], function(){
+                        var element = layui.element;
+                        element.render('progress');
+                        //使用模块
+                    });
+                }
+            }
+        }else if(null!=data&&data.actioncode=='SUCCESS_NOTHINGTODO'){
             var ssid=data2.ssid;
-            shu=parseInt(shu)+ "%";
-            $("#progress_"+ssid+"").css("visibility","visible");
-            $("#progress_"+ssid+" .layui-progress-text").text(shu);
-            $("#progress_"+ssid+" .layui-progress-bar").width(shu);
-
-            layui.use(['layer','element','slider','form'], function(){
-                var element = layui.element;
-                element.render('progress');
-                //使用模块
-            });
+            $("#progress_"+ssid+"").css("visibility","hidden");
+            clearInterval(timer_exportUdisk);
+            if (isNotEmpty(downurl)){
+                var $a = $("<a></a>").attr("href", downurl).attr("download", "打包文件");
+                $a[0].click();
+            }
+        }else {
+            console.log(data.message);
         }
-    }else if(null!=data&&data.actioncode=='SUCCESS_NOTHINGTODO'){
-        console.log(data.message)
-        clearInterval(timer_exportUdisk);
-        if (isNotEmpty(exportUdisk_URL)){
-            var $a = $("<a></a>").attr("href", exportUdisk_URL).attr("download", "打包文件");
-            $a[0].click();
-        }
-    }else {
-        console.log(data.message);
-    }
+    });
 }
+
+
 
 
 
