@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.CreateVodThread;
@@ -1297,7 +1298,7 @@ public class RecordService2 extends BaseService {
                 List<RecordToProblem> questionandanswer=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
                 if (null != questionandanswer && questionandanswer.size() > 0) {
                     for (RecordToProblem problem : questionandanswer) {
-                        String gnlist=getSQEntity.getGnlist();
+                        List<String>  gnlist= CommonCache.gnlist();
                         if (gnlist.indexOf(SQVersion.FY_T)!= -1){
                             //法院的
                             talk+= problem.getProblem()+"\r";

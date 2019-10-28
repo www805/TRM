@@ -134,6 +134,8 @@ public class CheckRecordProtect  implements ApplicationRunner {
                                 if (null != mt_rr && mt_rr.getActioncode().equals(Code.SUCCESS.toString())) {
                                     LogUtil.intoLog(1,this.getClass(),"检测异常笔录 meetingControl.overAccidentMT____成功");
                                 }
+                                //结束后删除
+                                RecordProtectCache.delRecordecordProtect(recordssid);
                             }
                         }
                     }
