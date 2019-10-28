@@ -1080,19 +1080,21 @@ public class RecordService extends BaseService {
         addCaseToArraignmentVO.setMultifunctionbool(multifunctionbool);
 
         //整理模板
-            if (multifunctionbool==1||multifunctionbool==2){
-                mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
-            }else {
-                if (StringUtils.isBlank(mtmodelssid)){
-                    //会议模板为空，直接取默认的
-                    Base_type base_type=new Base_type();
-                    base_type.setType(CommonCache.getCurrentServerType());
-                    base_type=base_typeMapper.selectOne(base_type);
-                    if (null!=base_type){
-                        mtmodelssid=base_type.getMtmodelssid();
-                    }
-                }
+
+        if (multifunctionbool==1){//||multifunctionbool==2 单组件时候
+            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+        }else {
+        if (StringUtils.isBlank(mtmodelssid)) {
+            //会议模板为空，直接取默认的
+            Base_type base_type=new Base_type();
+            base_type.setType(CommonCache.getCurrentServerType());
+            base_type=base_typeMapper.selectOne(base_type);
+            if (null!=base_type){
+                mtmodelssid=base_type.getMtmodelssid();
             }
+        }
+        }
+
 
 
         LogUtil.intoLog(this.getClass(),"添加笔录使用的会议模板ssid_"+mtmodelssid);
