@@ -24,6 +24,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.Contro
 import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.GetRecordByIdParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.avst.trm.v1.web.standaloneweb.service.BasicConfigureService;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.jexl3.JexlBuilder;
@@ -313,4 +314,8 @@ public class Scheduler {
 
     }
 
+    @Scheduled(cron = "0/1 * * * * ? ")
+    public void updateTimeNum(){
+        BasicConfigureService.subtime++;
+    }
 }

@@ -132,9 +132,6 @@ public class AppCache {
         SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
         String gnlist = getSQEntity.getGnlist();
 
-        String companyname = CommonCache.getCompanyname();
-        String companymsg = CommonCache.getCompanymsg();
-
         String cwebFile=PropertiesListenerConfig.getProperty("nav.file.client");
 
         String application_name=PropertiesListenerConfig.getProperty("spring.application.name");

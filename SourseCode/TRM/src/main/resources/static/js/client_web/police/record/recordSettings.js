@@ -645,7 +645,7 @@ function callFDAudPowerMap(data){
                     }
                     $("#bars").html(audpowHTML);
                     $("#bars2").html(audpowHTML2);
-
+                    // layui.form.render();
                 }
             }
 
@@ -654,10 +654,10 @@ function callFDAudPowerMap(data){
     }else{
         layer.msg(data.message,{icon: 5});
     }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
+    // layui.use('form', function(){
+    //     var form = layui.form;
+    //     form.render();
+    // });
 }
 
 function callputRecessStatus(data) {

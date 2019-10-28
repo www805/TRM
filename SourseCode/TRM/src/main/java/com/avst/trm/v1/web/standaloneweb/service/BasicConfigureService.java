@@ -7,7 +7,6 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
-import com.avst.trm.v1.common.util.SystemIpUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -21,8 +20,6 @@ import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.ec.vo.fd.GetFDStatevo;
 import com.avst.trm.v1.web.standaloneweb.req.*;
-import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
-import com.avst.trm.v1.web.standaloneweb.vo.GetSQInfoVO;
 import com.avst.trm.v1.web.standaloneweb.vo.GetSystemInfoVO;
 import com.avst.trm.v1.web.standaloneweb.vo.param.HardwareParam;
 import com.avst.trm.v1.web.standaloneweb.vo.param.SQParam;
@@ -49,42 +46,38 @@ public class BasicConfigureService extends BaseService {
 
     private Gson gson=new Gson();
 
-    public void getFDNetWork(RResult result, GetFDNetWorkParam_out param) {
+    public static Integer subtime = 0;
+
+    public RResult getFDNetWork(RResult result, GetFDNetWorkParam_out param) {
 
         if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
             result.setMessage("设备ssid不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getFdType())) {
             result.setMessage("设备类型不能为空");
-            return;
+            return result;
         }
 
         RResult fdAudioConf = equipmentControl.getFDNetWork(param);
 
-        result.setActioncode(fdAudioConf.getActioncode());
-        result.setNextpageid(fdAudioConf.getNextpageid());
-        result.setData(fdAudioConf.getData());
-        result.setMessage(fdAudioConf.getMessage());
-        result.setEndtime(fdAudioConf.getEndtime());
-        result.setVersion(fdAudioConf.getVersion());
-
+        return fdAudioConf;
     }
 
 
-    public void setNetworkConfigure(RResult result, GetNetworkConfigureParam param) {
+    public RResult setNetworkConfigure(RResult result, GetNetworkConfigureParam param) {
 
         if (StringUtils.isBlank(param.getIp())) {
             result.setMessage("ip不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getNetmask())) {
             result.setMessage("子网掩码不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getGateway())) {
             result.setMessage("网关不能为空");
-            return;
+            return result;
         }
 
         SetFDnetworkParam_out setFDnetworkParam_out = new SetFDnetworkParam_out();
@@ -94,12 +87,7 @@ public class BasicConfigureService extends BaseService {
 
         RResult resultFD = equipmentControl.setFDnetwork(setFDnetworkParam_out);
 
-        result.setActioncode(resultFD.getActioncode());
-        result.setNextpageid(resultFD.getNextpageid());
-        result.setData(resultFD.getData());
-        result.setMessage(resultFD.getMessage());
-        result.setEndtime(resultFD.getEndtime());
-        result.setVersion(resultFD.getVersion());
+        return resultFD;
 
 //        SystemIpUtil.setIP(ip, subnetMask, gateway);
 
@@ -260,64 +248,90 @@ public class BasicConfigureService extends BaseService {
     }
 
 
-    public void setEcSystemTime(RResult result, SetEcSystemTimeParam param) {
+    public RResult setEcSystemTime(RResult result, SetEcSystemTimeParam param) {
 
         if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
             result.setMessage("设备ssid不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getFdType())) {
             result.setMessage("设备类型不能为空");
-            return;
+            return result;
         }
         if(StringUtils.isBlank(param.getSystemTime())){
             result.setMessage("系统时间不能为空");
-            return;
+            return result;
+        }
+
+
+        if (subtime <= 8) {
+            result.setMessage("设置时间不能太频繁，每次不能少于5-10秒");
+            return result;
+        }else{
+            subtime = 0;
         }
 
         //执行逻辑
+        SetFDTimeParam_out setFDTimeParam_out = new SetFDTimeParam_out();
+        setFDTimeParam_out.setFlushbonadingetinfossid(param.getFlushbonadingetinfossid());
+        setFDTimeParam_out.setFdType(param.getFdType());
+        setFDTimeParam_out.setDateTime(param.getSystemTime());
+        RResult fdTimeResult = equipmentControl.setFDTime(setFDTimeParam_out);
 
+        return fdTimeResult;
     }
 
-    public void setEcSystemTimeSync(RResult result, SetEcSystemTimeSyncParam param) {
+    public RResult setEcSystemTimeSync(RResult result, SetEcSystemTimeSyncParam param) {
 
         if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
             result.setMessage("设备ssid不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getFdType())) {
             result.setMessage("设备类型不能为空");
-            return;
+            return result;
         }
 
-        //获取本机时间
+        SetFDTimeParam_out setFDTimeParam_out = new SetFDTimeParam_out();
+        setFDTimeParam_out.setFlushbonadingetinfossid(param.getFlushbonadingetinfossid());
+        setFDTimeParam_out.setFdType(param.getFdType());
         String dateAndMinute = DateUtil.getDateAndMinute();
+        setFDTimeParam_out.setDateTime(dateAndMinute);
 
+        RResult fdTimeResult = equipmentControl.setFDTime(setFDTimeParam_out);
 
+        return fdTimeResult;
     }
 
-    public void setNTP(RResult result, SetNTPParam param) {
+    public RResult setNTP(RResult result, SetNTPParam param) {
 
         if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
             result.setMessage("设备ssid不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getFdType())) {
             result.setMessage("设备类型不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getNtpip())) {
             result.setMessage("NTP服务器IP不能为空");
-            return;
+            return result;
         }
         if (StringUtils.isBlank(param.getTimeInterval())) {
             result.setMessage("NTP同步时间间隔不能为空");
-            return;
+            return result;
         }
 
-        //远程请求
+        SetFDNTPParam_out setFDNTPParam_out = new SetFDNTPParam_out();
+        setFDNTPParam_out.setFlushbonadingetinfossid(param.getFlushbonadingetinfossid());
+        setFDNTPParam_out.setFdType(param.getFdType());
+        setFDNTPParam_out.setNtp_host(param.getNtpip());
+        setFDNTPParam_out.setNtp_port(param.getNtpprot());
+        setFDNTPParam_out.setNtp_intervaltime(param.getTimeInterval());
 
+        RResult fdTimeResult = equipmentControl.setFDNTP(setFDNTPParam_out);
 
+        return fdTimeResult;
     }
 
     public void getFDssid(RResult result) {
@@ -331,5 +345,26 @@ public class BasicConfigureService extends BaseService {
         //从缓存里获取
         result.setData(fdssid);
         changeResultToSuccess(result);
+    }
+
+
+    public RResult getFDNTP(RResult result, GetFDNTPParam param) {
+
+        if (StringUtils.isBlank(param.getFlushbonadingetinfossid())) {
+            result.setMessage("设备ssid不能为空");
+            return result;
+        }
+        if (StringUtils.isBlank(param.getFdType())) {
+            result.setMessage("设备类型不能为空");
+            return result;
+        }
+
+        GetFDNTPParam_out getFDNTPParam_out = new GetFDNTPParam_out();
+        getFDNTPParam_out.setFlushbonadingetinfossid(param.getFlushbonadingetinfossid());
+        getFDNTPParam_out.setFdType(param.getFdType());
+
+        RResult fdntpResult = equipmentControl.getFDNTP(getFDNTPParam_out);
+
+        return fdntpResult;
     }
 }

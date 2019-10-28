@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.web.standaloneweb.req.GetFDNTPParam;
 import com.avst.trm.v1.feignclient.ec.req.GetFDNetWorkParam_out;
 import com.avst.trm.v1.web.standaloneweb.req.*;
 import com.avst.trm.v1.web.standaloneweb.service.BasicConfigureService;
@@ -59,7 +60,7 @@ public class BasicConfigureAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.setNTP(result, param.getParam());
+            result = basicConfigureService.setNTP(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -79,7 +80,7 @@ public class BasicConfigureAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.setEcSystemTimeSync(result, param.getParam());
+            result = basicConfigureService.setEcSystemTimeSync(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -99,7 +100,27 @@ public class BasicConfigureAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.setEcSystemTime(result, param.getParam());
+            result = basicConfigureService.setEcSystemTime(result, param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+    /**
+     * 获取设备NTP同步设置
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getFDNTP")
+    @ResponseBody
+    public RResult getFDNTP (@RequestBody ReqParam<GetFDNTPParam> param) {
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            result = basicConfigureService.getFDNTP(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -119,7 +140,7 @@ public class BasicConfigureAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.getFDNetWork(result, param.getParam());
+            result = basicConfigureService.getFDNetWork(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -139,7 +160,7 @@ public class BasicConfigureAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            basicConfigureService.setNetworkConfigure(result,param.getParam());
+            result = basicConfigureService.setNetworkConfigure(result, param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

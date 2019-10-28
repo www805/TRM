@@ -436,6 +436,7 @@ function getactionid_manage() {
         dateTime_setEcSystemTimeSync:"dateTime_setEcSystemTimeSync",
         dateTime_setNTP:"dateTime_setNTP",
         dateTime_getFDssid:"dateTime_getFDssid",
+        dateTime_getFDNTP:"dateTime_getFDNTP",
 
 
     };

@@ -276,4 +276,34 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getFDAudioConf(@RequestBody GetFDAudioConfParam_out param);
 
+
+    /**
+     * 设置设备当前时间
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/setFDTime")
+    @ResponseBody
+    public RResult setFDTime(@RequestBody SetFDTimeParam_out param);
+
+
+    /**
+     * 设置设备NTP同步
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/setFDNTP")
+    @ResponseBody
+    public RResult setFDNTP(@RequestBody SetFDNTPParam_out param);
+
+
+    /**
+     * 获取设备NTP同步设置
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getFDNTP")
+    @ResponseBody
+    public RResult getFDNTP(@RequestBody GetFDNTPParam_out param);
+
 }

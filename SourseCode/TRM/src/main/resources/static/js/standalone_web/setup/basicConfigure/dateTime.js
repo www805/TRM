@@ -14,6 +14,22 @@ function getFDssid() {
     ajaxSubmitByJson(url, data, callgetFDssid);
 }
 
+//获取设备NTP同步设置
+function getFDNTP() {
+    var url=getActionURL(getactionid_manage().dateTime_getFDNTP);
+    // var url = "/cweb/setUp/basicConfigure/getNetworkConfigure";
+
+    var data = {
+        token: INIT_CLIENTKEY,
+        param: {
+            flushbonadingetinfossid:flushbonadingetinfossid,
+            fdType:fdType
+        }
+    };
+
+    ajaxSubmitByJson(url, data, callgetFDNTP);
+}
+
 //设置x85系统时间
 function setEcSystemTime() {
     var url=getActionURL(getactionid_manage().dateTime_setEcSystemTime);
@@ -97,6 +113,28 @@ function callSystemTime(data){
             },2000);
         }
     }else{
+        layer.msg(data.message,{icon: 5, time: 3000});
+    }
+}
+
+function callgetFDNTP(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        if (isNotEmpty(data)){
+            var fdDNTP = data.data;
+            // console.log(fdDNTP);
+
+            var ntp_host = fdDNTP.ntp_host;
+            var ntp_intervaltime = fdDNTP.ntp_intervaltime;
+            var ntp_port = fdDNTP.ntp_port;
+
+            $("input[name='ntpip']").val(ntp_host);
+            $("input[name='ntpprot']").val(ntp_port);
+            $("#timeInterval").val(ntp_intervaltime);
+
+            layui.form.render();
+
+        }
+    }else{
         layer.msg(data.message,{icon: 5});
     }
 }
@@ -105,6 +143,7 @@ function callgetFDssid(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
             flushbonadingetinfossid = data.data;
+            getFDNTP();
         }
     }else{
         layer.msg(data.message,{icon: 5});
