@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
+import com.avst.trm.v1.feignclient.mc.req.OverAccidentMTParam_out;
 import com.avst.trm.v1.web.cweb.cache.RecordProtectCache;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.param.RecordProtectParam;
@@ -122,6 +123,17 @@ public class CheckRecordProtect  implements ApplicationRunner {
                             recordService.addRecord(result, reqParam);
                             if (null != result && result.getActioncode().equals(Code.SUCCESS.toString())) {
                                 LogUtil.intoLog(1,this.getClass(),"检测异常笔录ssid_"+recordssid+"_改为已结束__成功");
+                                //开始关闭录像：对接设备录像接口
+                                ReqParam<OverAccidentMTParam_out> mt_param=new ReqParam<>();//会议参数
+                                OverAccidentMTParam_out overAccidentMTParam_out=new OverAccidentMTParam_out();
+                                overAccidentMTParam_out.setMcType(MCType.AVST);
+                                overAccidentMTParam_out.setMtssid(mtssid);
+                                mt_param.setParam(overAccidentMTParam_out);
+                                RResult mt_rr=new RResult();//会议返回
+                                mt_rr=  meetingControl.overAccidentMT(mt_param);
+                                if (null != mt_rr && mt_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                    LogUtil.intoLog(1,this.getClass(),"检测异常笔录 meetingControl.overAccidentMT____成功");
+                                }
                             }
                         }
                     }

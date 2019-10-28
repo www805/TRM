@@ -281,6 +281,7 @@ public class RecordService2 extends BaseService {
             result.setActioncode(Code.SUCCESS_NOTHINGTODO.toString());
             result.setMessage("未找到该打包进度，可能已经打包完成");
         }else{
+            //测试:LogUtil.intoLog(1,this.getClass(),"导出U盘导出文件进度______________________________totalzipnum__"+gzipCacheParam.getTotalzipnum()+"__overzipnum__"+gzipCacheParam.getOverzipnum());
             this.changeResultToSuccess(result);
         }
         return;

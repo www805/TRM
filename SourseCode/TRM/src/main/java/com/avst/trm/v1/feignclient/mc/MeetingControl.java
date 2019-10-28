@@ -121,4 +121,10 @@ public interface MeetingControl {
     @ResponseBody
     public RResult getTDByMTList(@RequestBody ReqParam<GetTDCacheParamByMTssidParam_out> param);
 
+
+    @RequestMapping("/mt/v1/overAccidentMT")
+    @ResponseBody
+    public RResult overAccidentMT(@RequestBody ReqParam<OverAccidentMTParam_out> param);
+
+
 }

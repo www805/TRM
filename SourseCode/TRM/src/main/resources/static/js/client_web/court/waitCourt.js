@@ -1512,6 +1512,10 @@ $(function () {
         setRecordreal();//5秒实时保存
     },3000)
 
+    setInterval( function() {
+        setRecordProtect();//5秒缓存一次
+    },5000);
+
 
 //自动甄别初始化
 
@@ -2197,6 +2201,36 @@ function callbackgetEquipmentsState(data) {
     }
 }
 //*******************************************************************获取各个状态end****************************************************************//
+
+
+function setRecordProtect() {
+    var url=getActionURL(getactionid_manage().waitCourt_setRecordProtect);
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+            mtssid:mtssid,
+        }
+    };
+    ajaxSubmitByJson(url, data, callbacksetRecordProtect);
+}
+function callbacksetRecordProtect(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log("笔录实时本地保存成功__"+data);
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+
+
+
+
+
 
 //语音识别颜色
 var asrcolor=["#AA66CC","#0099CC","#ef8201","#99CC00","#CC0000"," #ff80bf","#00b8e6","#00802b","#b30000","#3333ff","#e64d00","#739900","#b35900","#5c8a8a","#999966","#b3b3b3","##3366cc"];

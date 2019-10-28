@@ -193,6 +193,7 @@ function getactionid_manage() {
         waitRecord_checkKeyword:"waitRecord_checkKeyword",
         waitRecord_updateCaseToUser:"waitRecord_updateCaseToUser",
         waitRecord_getFDAudPowerMap:"waitRecord_getFDAudPowerMap",
+        waitRecord_setRecordProtect:"waitRecord_setRecordProtect",
 
         waitRecord_getFDState:"waitRecord_getFDState",
         waitRecord_getptdjconst:"waitRecord_getptdjconst",
@@ -388,6 +389,7 @@ function getactionid_manage() {
         waitCourt_downloadNotification:"waitCourt_downloadNotification",
         waitCourt_gnlist:"waitCourt_gnlist",
         waitCourt_torecordIndex:"waitCourt_torecordIndex",
+        waitCourt_setRecordProtect:"waitCourt_setRecordProtect",
 
         beforeCourt_getRecordtypes:"beforeCourt_getRecordtypes",
         beforeCourt_getNationals:"beforeCourt_getNationals",

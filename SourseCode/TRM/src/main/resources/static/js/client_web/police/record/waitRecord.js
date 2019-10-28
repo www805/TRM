@@ -1529,7 +1529,8 @@ function callbackgetRecordrealByRecordssid(data) {
 }
 
 function setRecordProtect() {
-    var url="/cweb/police/record/setRecordProtect";
+    var url=getActionURL(getactionid_manage().waitRecord_setRecordProtect);
+
     var data={
         token:INIT_CLIENTKEY,
         param:{

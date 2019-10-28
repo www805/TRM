@@ -135,7 +135,7 @@ public class GZIPUtil {
             gzipCacheParam.setZipfilename(zipfilename);
             GZIPCache.setGzipCacheParam(gzipCacheParam,ssid);
 
-            //建立压缩文件输出流
+            //建立压缩文件输出流:会出现拒绝访问
             FileOutputStream fout=new FileOutputStream(targzipFilePath);
             //建立tar压缩输出流
             TarArchiveOutputStream tout=new TarArchiveOutputStream(fout);
