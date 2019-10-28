@@ -213,26 +213,26 @@ public class AppCache {
             List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
             for (LinkedHashMap<String, Object> hashMap : data) {
                 if("zk".equals(hashMap.get("servername"))){
-                    cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url"));//进入总控
+                    cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url") + "?client=http://" + myIP + ":8080/cweb/base/main/gotomain");//进入总控
                 }
             }
         }
 
         //海康的就进去
-        if (gnlist.indexOf("hk_o") != -1) {
-            //把获取到的总控地址，放到菜单栏里面
-            List<Map<String, Object>> navList  = (List<Map<String, Object>>) fileYml.get("nav");
+//        if (gnlist.indexOf("hk_o") != -1) {}
 
-            for (Map<String, Object> stringObjectMap : navList) {
-                String name = (String) stringObjectMap.get("name");
-                if (name.indexOf("系统配置") != -1) {
-                    List<Map<String, Object>> itemListMap = (List<Map<String, Object>>) stringObjectMap.get("list");
-                    for (Map<String, Object> itemlist : itemListMap) {
-                        String itemName = (String) itemlist.get("name");
-                        if (itemName.indexOf("后台") != -1) {
-                            itemlist.put("url", cacheParam.getGuidepageUrl() + "?client=http://" + myIP + ":8080/cweb/base/main/gotomain");
-                            break;
-                        }
+        //把获取到的总控地址，放到菜单栏里面
+        List<Map<String, Object>> navList  = (List<Map<String, Object>>) fileYml.get("nav");
+
+        for (Map<String, Object> stringObjectMap : navList) {
+            String name = (String) stringObjectMap.get("name");
+            if (name.indexOf("系统配置") != -1) {
+                List<Map<String, Object>> itemListMap = (List<Map<String, Object>>) stringObjectMap.get("list");
+                for (Map<String, Object> itemlist : itemListMap) {
+                    String itemName = (String) itemlist.get("name");
+                    if (itemName.indexOf("后台") != -1) {
+                        itemlist.put("url", cacheParam.getGuidepageUrl() );
+                        break;
                     }
                 }
             }

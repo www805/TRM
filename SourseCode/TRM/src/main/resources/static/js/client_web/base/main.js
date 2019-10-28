@@ -85,7 +85,11 @@ function callgetNavList(data) {
                             if (isNotEmpty(dd.target) && dd.target != "/") {
                                 target = dd.target;
                             }
-                            dd_HTML += "<dd><a target=\"" + target + "\" href=\"" + dd.url + "\">" + dd.name + "</a></dd>";
+                            if(dd.name == "进入后台"){
+                                dd_HTML += "<dd><a target=\"" + target + "\" onclick=\"zkload();\" href=\"" + dd.url + "\">" + dd.name + "</a></dd>";
+                            }else{
+                                dd_HTML += "<dd><a target=\"" + target + "\" href=\"" + dd.url + "\">" + dd.name + "</a></dd>";
+                            }
                         }
 
                         dd_HTML = "<dl class=\"layui-nav-child\">" + dd_HTML + "</dl>";
@@ -247,6 +251,15 @@ function callbackgetUserBySsid(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
+
+function zkload() {
+    layer.msg("加载中，请稍后...", {
+        icon: 16,
+        time:15000,
+        shade: [0.1,"#fff"],
+    });
+}
+
 
 $(function () {
     /*  var _t;
