@@ -25,9 +25,19 @@ import java.util.Map;
 public class RecordProtectCache {
     private static List<RecordProtectParam> recordProtectList=null;// recordProtectList：笔录全部数据
 
-    private static  String recordcachepath= OpenUtil.getXMSoursePath()+"\\recordcache\\";//文件夹位置
+    private static  String recordcachepath="\\cache\\";//文件夹位置
 
     private static Gson gson=new Gson();
+
+    //获取当前目录的上一级目录
+    public synchronized static String getrecordcachepath() {
+        String xmsoursepath= OpenUtil.getXMSoursePath();
+        if (StringUtils.isNotBlank(xmsoursepath)){
+            File file = new File(xmsoursepath);
+            xmsoursepath=file.getParent();
+        }
+        return  xmsoursepath+recordcachepath;
+    }
 
     /**
      * 获取缓存全部
@@ -37,7 +47,7 @@ public class RecordProtectCache {
         if (null==recordProtectList){
             recordProtectList=new ArrayList<>();
         }
-        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
+        List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
         if(null!=filelist&&filelist.size() > 0) {
             for (String path_ : filelist) {
                 File file=new File(path_);
@@ -63,7 +73,7 @@ public class RecordProtectCache {
         if(null==recordssid){
             return null;
         }
-        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
+        List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
         if(null!=filelist&&filelist.size() > 0) {
             for (String path_ : filelist) {
                 File file=new File(path_);
@@ -95,7 +105,7 @@ public class RecordProtectCache {
         try {
             String recordProtectParam_string = gson.toJson(recordProtectParam);
             if (null!=recordProtectParam_string){
-                ReadWriteFile.writeTxtFile(recordProtectParam_string,recordcachepath+recordProtectParam.getRecordssid(),"utf8");
+                ReadWriteFile.writeTxtFile(recordProtectParam_string,getrecordcachepath()+recordProtectParam.getRecordssid(),"utf8");
             }
             return true;
         } catch (Exception e) {
@@ -117,7 +127,7 @@ public class RecordProtectCache {
             return false;
         }
         try {
-            List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
+            List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
             if(null!=filelist&&filelist.size() > 0) {
                 for (String path_ : filelist) {
                     File file=new File(path_);
@@ -134,5 +144,6 @@ public class RecordProtectCache {
         }
         return false;
     }
+
 
 }

@@ -69,7 +69,7 @@ function showpagetohtml(){
 
 function changeboolPackdown(ssid) {
     if (isNotEmpty(ssid)){
-        layer.confirm('确定要删除该插件吗', function(index){
+        layer.confirm('确定要删除该离线播放器吗', function(index){
             var url=getActionURL(getactionid_manage().packdownList_changeboolPackdown);
             var data={
                 token:INIT_CLIENTKEY,

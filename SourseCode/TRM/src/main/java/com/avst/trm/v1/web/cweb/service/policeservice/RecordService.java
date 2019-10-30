@@ -388,6 +388,9 @@ public class RecordService extends BaseService {
                 //导出笔录pdf和word并且关闭会议
                 AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,recordService2,mtssid,outService);
                 addRecord_thread.start();
+
+                //结束后删除
+                RecordProtectCache.delRecordecordProtect(recordssid);
             }
         }
 

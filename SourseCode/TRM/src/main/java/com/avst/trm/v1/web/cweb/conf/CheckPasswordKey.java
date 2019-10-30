@@ -23,6 +23,15 @@ public class CheckPasswordKey {
     private static String key_name=".ini";
     public static String key_path=OpenUtil.getJDKorJREPath();//检测文件地址
 
+    //获取当前目录的上一级目录
+    public synchronized static String getkey_path() {
+         key_path= OpenUtil.getXMSoursePath();
+        if (StringUtils.isNotBlank(key_path)){
+            File file = new File(key_path);
+            key_path=file.getParent();
+        }
+        return  key_path+"\\";
+    }
 
     /**
      * 创建key
@@ -33,7 +42,7 @@ public class CheckPasswordKey {
         if (StringUtils.isBlank(filename)){
             return false;
         }
-        key_path=key_path+filename+key_name;
+        key_path=getkey_path()+filename+key_name;
         File file = new File(key_path);
         if (file.exists()&& !file.isDirectory()) {
             LogUtil.intoLog(1,CheckPasswordKey.class,"key存在不需要创建："+encryptedtext);

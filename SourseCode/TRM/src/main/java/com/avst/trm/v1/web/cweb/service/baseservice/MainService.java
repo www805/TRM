@@ -956,7 +956,7 @@ public class MainService extends BaseService {
 
     public void uploadPackdown(RResult result,ReqParam param, MultipartFile multipartfile){
         if (null==multipartfile){
-            result.setMessage("请先选择插件(exe)进行上传");
+            result.setMessage("请先选择离线播放器(exe)进行上传");
             return;
         }
         try {
@@ -966,7 +966,7 @@ public class MainService extends BaseService {
             String originalfilename=multipartfile.getOriginalFilename();
 
             if(!originalfilename.endsWith(".exe")){
-                result.setMessage("请先选择插件(exe)进行上传");
+                result.setMessage("请先选择离线播放器(exe)进行上传");
                 return;
             }
 

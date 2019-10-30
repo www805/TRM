@@ -580,7 +580,7 @@ public class MainAction extends BaseAction {
      */
     @GetMapping("gotopackdownList")
     public ModelAndView gotopackdownList(Model model,String parentbool){
-        model.addAttribute("title","插件下载");
+        model.addAttribute("title","离线播放器");
         model.addAttribute("parentbool",parentbool);//用于控制页面跳转
         return new ModelAndView("client_web/base/packdownList", "packdownListModel", model);
     }

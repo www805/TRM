@@ -15,12 +15,12 @@
 
     <form class="layui-form" >
         <div class="layui-form-item">
-            <label class="layui-form-label" style="text-align: left;padding: 9px;">插件名称</label>
+            <label class="layui-form-label" style="text-align: left;padding: 9px;">播放器名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="filename" id="filename" lay-verify="required" placeholder="请输入插件名称" autocomplete="off" class="layui-input" oninput="getpackdownListByParam();">
+                <input type="text" name="filename" id="filename" lay-verify="required" placeholder="请输入播放器名称" autocomplete="off" class="layui-input" oninput="getpackdownListByParam();">
             </div>
             <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getpackdownListByParam();" >
-            <input type="button" class="layui-btn layui-btn-normal" value="上传新插件"  onclick="uploadFile_click()" >
+            <input type="button" class="layui-btn layui-btn-normal" value="上传新播放器"  onclick="uploadFile_click()" >
             <input id="uploadFile" type="file" style="display: none;" onchange="uploadPackdown();">
         </div>
         <div class="layui-form-item">
@@ -46,7 +46,7 @@
         <thead>
         <tr>
             <th>序号</th>
-            <th>插件名</th>
+            <th>插名</th>
             <th>操作</th>
         </tr>
         </thead>
