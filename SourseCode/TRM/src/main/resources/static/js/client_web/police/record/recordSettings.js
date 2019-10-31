@@ -995,13 +995,24 @@ function callFDState(data){
                 $("#cp_isburn").html("未开始");
             }
 
+
+
+
             //fdStateInfo.burn_mode
             if(fdStateInfo.burn_mode == 0){
-                $("#burn_mode_b").prop("checked",false);
-                $("#burn_mode_a").attr("checked",'checked');
+                // $("#burn_mode_b").prop("checked",false);
+                // $("#burn_mode_a").prop("checked",true);
+                $("#burn_mode_b").removeAttr("checked");
+                if(!$("#burn_mode_a").attr("checked")){
+                    $("#burn_mode_a").attr("checked",'checked');
+                }
             }else{
-                $("#burn_mode_a").prop("checked",false);
-                $("#burn_mode_b").attr("checked",'checked');
+                // $("#burn_mode_a").prop("checked",false);
+                // $("#burn_mode_b").prop("checked",true);
+                $("#burn_mode_a").removeAttr("checked");
+                if(!$("#burn_mode_b").attr("checked")){
+                    $("#burn_mode_b").attr("checked",'checked');
+                }
             }
 
         }

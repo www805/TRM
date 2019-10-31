@@ -100,6 +100,7 @@ function getactionid_manage() {
         main_tostartConversation:"main_tostartConversation",
         main_toconversationIndex:"main_toconversationIndex",
         main_getServerStatus:"main_getServerStatus",
+        main_getCDPlayback:"main_getCDPlayback",
 
 
 

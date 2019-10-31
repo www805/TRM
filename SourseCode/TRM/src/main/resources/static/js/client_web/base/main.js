@@ -42,8 +42,8 @@ function getPant() {
 
 //调用光盘回放exe
 function getCDPlayback() {
-    // var url=getActionURL(getactionid_manage().main_getNavList);
-    var url = "/cweb/base/main/getCDPlayback";
+    var url=getActionURL(getactionid_manage().main_getCDPlayback);
+    // var url = "/cweb/base/main/getCDPlayback";
     var CDPlayback = $("#CDPlayback").val();
 
     var data={
@@ -132,10 +132,10 @@ function callgetNavList(data) {
                 }
 
                 //只有法院版才显示进入总控端
-                if (isNotEmpty(gnlist) && gnlist.indexOf("fy_t") == -1) {
-                    $("#guidepage").hide();
-                    $("#nav_list").css("right", 250);
-                }
+                // if (isNotEmpty(gnlist) && gnlist.indexOf("fy_t") == -1) {
+                //     $("#guidepage").hide();
+                //     $("#nav_list").css("right", 250);
+                // }
 
 
 

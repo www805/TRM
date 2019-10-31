@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-@FeignClient(name = "ec", url = "localhost:8081/")
+@FeignClient(name = "ec", url = "localhost:8081")
 public interface EquipmentControl {
 
 
