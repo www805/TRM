@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_problem;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
@@ -16,6 +17,7 @@ import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,7 +74,12 @@ public class HomeService extends BaseService {
 
         Integer policeTemplateCount = policeTemplateMapper.selectCount(null);
         Integer policeProblemCount = policeProblemMapper.selectCount(null);
-        Integer policeAnswerCount = policeAnswerMapper.selectCount(null);
+//        Integer policeAnswerCount = policeAnswerMapper.selectCount(null);
+
+        EntityWrapper<Police_problem> ew = new EntityWrapper<>();
+        ew.ne("referanswer", "");
+        Integer referanswerCount = policeProblemMapper.selectCount(ew);
+
         Integer policeArraignmentCount = policeArraignmentMapper.selectCount(null);
         Integer policeCaseCount = policeCaseMapper.selectCount(null);
         Integer policeRecordtypeCount = policeRecordtypeMapper.selectCount(null);
@@ -114,7 +121,7 @@ public class HomeService extends BaseService {
 
         model.addAttribute("policeTemplateCount", policeTemplateCount);
         model.addAttribute("policeProblemCount", policeProblemCount);
-        model.addAttribute("policeAnswerCount", policeAnswerCount);
+        model.addAttribute("referanswerCount", referanswerCount);
         model.addAttribute("policeArraignmentCount", policeArraignmentCount);
         model.addAttribute("policeCaseCount", policeCaseCount);
         model.addAttribute("policeRecordtypeCount", policeRecordtypeCount);
