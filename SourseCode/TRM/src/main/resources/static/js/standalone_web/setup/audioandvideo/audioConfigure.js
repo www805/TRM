@@ -105,17 +105,20 @@ function callgetFDAudioConf(data){
             // console.log(data);
 
             if(isNotEmpty(data.data.audiolist)){
-                    var audiolist = data.data.audiolist;
-                    for(var i=0; i<audiolist.length; i++){
-                        var audio = audiolist[i];
+                var audiolist = data.data.audiolist;
+                $("#audioCount").html("总计" + audiolist.length + "路音频");
+                for(var i=0; i<audiolist.length; i++){
+                    var audio = audiolist[i];
 
-                        var sliderV = sliderAll[i];
+                    var sliderV = sliderAll[i];
 
-                        if(isNotEmpty(sliderV)){
-                            sliderV.setValue(audio.volume);
-                        }
-                        $("#audio" + i).html(audio.volume);
+                    if(isNotEmpty(sliderV)){
+                        sliderV.setValue(audio.volume);
+
+
                     }
+                    $("#audio" + i).html(audio.volume);
+                }
 
                 layui.form.render();
             }

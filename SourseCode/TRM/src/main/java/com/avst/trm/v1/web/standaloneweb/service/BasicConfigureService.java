@@ -65,33 +65,32 @@ public class BasicConfigureService extends BaseService {
     }
 
 
-    public RResult setNetworkConfigure(RResult result, GetNetworkConfigureParam param) {
+    public RResult setNetworkConfigure(RResult result, List<GetNetworkConfigureParam> paramList) {
 
-        if (StringUtils.isBlank(param.getIp())) {
-            result.setMessage("ip不能为空");
-            return result;
-        }
-        if (StringUtils.isBlank(param.getNetmask())) {
-            result.setMessage("子网掩码不能为空");
-            return result;
-        }
-        if (StringUtils.isBlank(param.getGateway())) {
-            result.setMessage("网关不能为空");
-            return result;
-        }
+        RResult resultFD = result;
 
-        SetFDnetworkParam_out setFDnetworkParam_out = new SetFDnetworkParam_out();
-        setFDnetworkParam_out.setIp_new(param.getIp());
-        setFDnetworkParam_out.setNetmask(param.getNetmask());
-        setFDnetworkParam_out.setGateway(param.getGateway());
+        for (GetNetworkConfigureParam param : paramList) {
 
-        RResult resultFD = equipmentControl.setFDnetwork(setFDnetworkParam_out);
+            if (StringUtils.isBlank(param.getIp_new())) {
+                result.setMessage("ip不能为空");
+                return result;
+            }
+            if (StringUtils.isBlank(param.getNetmask())) {
+                result.setMessage("子网掩码不能为空");
+                return result;
+            }
+            if (StringUtils.isBlank(param.getGateway())) {
+                result.setMessage("网关不能为空");
+                return result;
+            }
+
+            SetFDnetworkParam_out setFDnetworkParam_out=gson.fromJson(gson.toJson(param), SetFDnetworkParam_out.class);
+
+            resultFD = equipmentControl.setFDnetwork(setFDnetworkParam_out);
+
+        }
 
         return resultFD;
-
-//        SystemIpUtil.setIP(ip, subnetMask, gateway);
-
-//        this.changeResultToSuccess(result);
     }
 
 

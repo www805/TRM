@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 /**
  * 系统设置action
  */
@@ -153,7 +155,7 @@ public class BasicConfigureAction extends BaseAction {
      */
     @RequestMapping(value = "/setNetworkConfigure")
     @ResponseBody
-    public RResult setNetworkConfigure(@RequestBody ReqParam<GetNetworkConfigureParam> param) {
+    public RResult setNetworkConfigure(@RequestBody ReqParam<List<GetNetworkConfigureParam>> param) {
         RResult result=this.createNewResultOfFail();
         if(null==param){
             result.setMessage("参数为空");

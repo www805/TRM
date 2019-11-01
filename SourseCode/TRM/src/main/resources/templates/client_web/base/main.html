@@ -182,6 +182,7 @@
 
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
             $(".layui-footer, #guidepage").remove();
+            setTimeout('$("#nav_list").css("right", 250);',200);
         }
 
     });
