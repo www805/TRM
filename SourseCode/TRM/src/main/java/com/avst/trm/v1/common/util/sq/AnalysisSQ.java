@@ -175,7 +175,7 @@ public class AnalysisSQ {
 
         File file=new File(inipath);
         if(!file.exists()){
-            LogUtil.intoLog(AnalysisSQ.class,"未找到使用的授权文件---");
+            LogUtil.intoLog(4,AnalysisSQ.class,"未找到使用的授权文件---");
             updateServiceConfig(null,-1);
             return -100001;
         }
@@ -192,7 +192,7 @@ public class AnalysisSQ {
             String localcpuCode=NetTool.getSQCode_win();//使用CPU序列号
             if(!localcpuCode.equals(cpuCode)){
 //                LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
-                LogUtil.intoLog(AnalysisSQ.class,"授权机器码不一致");
+                LogUtil.intoLog(4,AnalysisSQ.class,"授权机器码不一致");
 
                 updateServiceConfig(null,-1);
                 return -1;

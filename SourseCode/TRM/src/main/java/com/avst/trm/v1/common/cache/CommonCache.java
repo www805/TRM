@@ -288,7 +288,7 @@ public class CommonCache {
     public static synchronized InitVO getinit_WEB(){
 
         if(null==init_WEB){
-
+            System.out.println("init_WEB is null");
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }
@@ -297,6 +297,7 @@ public class CommonCache {
             init_web.setCode(checkSQParam.getCode());
             init_web.setMsg(checkSQParam.getMsg());
             if(!checkSQParam.isCheckbool()){
+                System.out.println("checkSQParam.isCheckbool() is false,"+checkSQParam.getMsg());
                 return null;
             }
             init_web.setBaseUrl(getWebBaseurl());
@@ -434,11 +435,12 @@ public class CommonCache {
         Base_serverconfig serverconfig=base_serverconfigMapper.selectById(1);
         String serverip=serverconfig.getServerip();
         String serverport=serverconfig.getServerport();
-        if(StringUtils.isEmpty(serverip)||StringUtils.isEmpty(serverport)){
-            checkSQParam.setCode(CodeForSQ.ERROR100002);
-            checkSQParam.setMsg("服务器配置访问IP/端口异常");
-            return checkSQParam;
-        }
+//        if(StringUtils.isEmpty(serverip)||StringUtils.isEmpty(serverport)){
+//            checkSQParam.setCode(CodeForSQ.ERROR100002);
+//            checkSQParam.setMsg("服务器配置访问IP/端口异常");
+//            System.out.println("服务器配置访问IP/端口异常 checkSQ");
+//            return checkSQParam;
+//        }
         Integer authorizebool=serverconfig.getAuthorizebool();
         if(null==authorizebool||authorizebool!=1){//还没有生成隐性授权文件
             boolean bool=AnalysisSQ.createClientini(serverconfig);
@@ -447,7 +449,7 @@ public class CommonCache {
                 checkSQParam.setMsg("服务器授权异常");
                 return checkSQParam;
             }
-            LogUtil.intoLog(CommonCache.class,"initClient authorizebool:"+bool);
+            LogUtil.intoLog(1,CommonCache.class,"initClient authorizebool:"+bool);
         }
 
         int bool=AnalysisSQ.checkUseTime();
