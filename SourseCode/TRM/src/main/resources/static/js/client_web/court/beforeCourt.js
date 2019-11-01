@@ -14,8 +14,12 @@ var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 //当前用户类型 1原告 2被告  3被代理人 8原代理人
 var dq_usertype=2;//默认为被告
 
+
+//可多个
 var userinfograde1=null;//原告信息
 var userinfograde2=null;//被告信息
+
+
 var userinfograde3=null;//被代理人
 var userinfograde8=null;//原代理人
 
@@ -126,10 +130,13 @@ function addCaseToArraignment() {
     //收集当前显示人员的人员信息
     var userinfogradessid="userinfograde"+dq_usertype;
     var oldcardnum=$("#cardnum").val();
-    var oldusername=$("input[name="+userinfogradessid+"]").val();
+    var oldusernamelist=$("input[name="+userinfogradessid+"]").val();
     var olduserinfo=null;
     //只有身份证号码和姓名不为空时保存
-    if (isNotEmpty(oldusername)){
+    if (isNotEmpty(oldusernamelist)){
+       var oldusername=oldusernamelist.split("；");
+        oldusername = oldusername.filter(function (x) { return x && x.trim() });
+        if (oldusername.length>0) { oldusername=oldusername[0];}
         var olduserinfo={
             cardnum:oldcardnum,
             username:oldusername,
@@ -162,10 +169,15 @@ function addCaseToArraignment() {
             return;
         }
         arraignmentexpand.push(userinfograde2);
+        var otherusers=setusers("userinfograde2");
+        if (isNotEmpty(otherusers)) {
+            arraignmentexpand=arraignmentexpand.concat(otherusers);
+        }
     }else {
         layer.msg("被告个人信息不能为空",{icon: 5});
         return;
     }
+
 
     if (isNotEmpty(userinfograde1)){
         //原告
@@ -174,6 +186,10 @@ function addCaseToArraignment() {
             return;
         }
         arraignmentexpand.push(userinfograde1);
+        var otherusers=setusers("userinfograde1");
+        if (isNotEmpty(otherusers)) {
+            arraignmentexpand=arraignmentexpand.concat(otherusers);
+        }
     }
 
     if (isNotEmpty(userinfograde3)){
@@ -183,6 +199,10 @@ function addCaseToArraignment() {
             return;
         }
         arraignmentexpand.push(userinfograde3);
+        var otherusers=setusers("userinfograde3");
+        if (isNotEmpty(otherusers)) {
+            arraignmentexpand=arraignmentexpand.concat(otherusers);
+        }
     }
 
     if (isNotEmpty(userinfograde8)){
@@ -192,6 +212,10 @@ function addCaseToArraignment() {
             return;
         }
         arraignmentexpand.push(userinfograde8);
+        var otherusers=setusers("userinfograde8");
+        if (isNotEmpty(otherusers)) {
+            arraignmentexpand=arraignmentexpand.concat(otherusers);
+        }
     }
 
     //检测是否重复
@@ -253,7 +277,12 @@ function addCaseToArraignment() {
             userssid:presidingjudge,
             userinfogradessid:"userinfograde4",
         });
+    }else {
+        layer.msg("审判长不能为空",{icon: 5});
+        return;
     }
+
+
 
 
 
@@ -459,10 +488,13 @@ function getUserByCard(obj,usertype){
         //收集切换前的用户信息
         var userinfogradessid="userinfograde"+dq_usertype;
         var oldcardnum=$("#cardnum").val();
-        var oldusername=$("input[name="+userinfogradessid+"]").val();
+        var oldusernamelist=$("input[name="+userinfogradessid+"]").val();
         var olduserinfo=null;
         //只有身份证号码和姓名不为空时保存
-        if (isNotEmpty(oldusername)){
+        if (isNotEmpty(oldusernamelist)){
+            var oldusername=oldusernamelist.split("；");
+            oldusername = oldusername.filter(function (x) { return x && x.trim() });
+            if (oldusername.length>0) { oldusername=oldusername[0];}
             var olduserinfo={
                 cardnum:oldcardnum,
                 username:oldusername,
@@ -485,7 +517,7 @@ function getUserByCard(obj,usertype){
 
         //新的
         dq_usertype=usertype;
-        if (dq_usertype==1){
+       if (dq_usertype==1){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告</span>个人信息")
         } else if (dq_usertype==2){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告</span>个人信息");
@@ -547,8 +579,24 @@ function callbackgetUserByCard(data){
             if (isNotEmpty(userinfo)){
 
 
+
+                //用户名称
                 var inputname="userinfograde"+dq_usertype;
-                $("input[name="+inputname+"]").val(userinfo.username);
+                var usernamelist=$("input[name="+inputname+"]").val();
+                if (isNotEmpty(usernamelist)){
+                    usernamelist=usernamelist.split("；");
+                    usernamelist = usernamelist.filter(function (x) {
+                        return x && x.trim()
+                    });
+                    if (usernamelist.length>0) {
+                        usernamelist[0] = userinfo.username;
+                    }
+                    usernamelist=usernamelist.join("；");
+                    $("input[name="+inputname+"]").val(usernamelist);
+                } else {
+                    $("input[name="+inputname+"]").val(userinfo.username);
+                }
+
 
                 if (dq_usertype==2){//被告时候才需要更换
                     dquserssid=userinfo.ssid;
@@ -1111,6 +1159,27 @@ function setuserval(virtualuser,type) {
     }
 }
 
+//多人用户：多被告多原告等
+function setusers(userinfogradessid) {
+    var arr=[];
+    //判断是否多人除开
+    var userinfogradeinput=$("input[name='"+userinfogradessid+"']").val();
+    userinfogradeinput=userinfogradeinput.split("；");
+    userinfogradeinput = userinfogradeinput.filter(function (x) { return x && x.trim() });
+    if (userinfogradeinput.length>1) {
+        userinfogradeinput=userinfogradeinput.slice(1);//去除第一个
+        for (let i = 0; i < userinfogradeinput.length; i++) {
+            const username = userinfogradeinput[i];
+            var userinfo={
+                username:username,
+                userinfogradessid:userinfogradessid,
+            }
+            arr.push(userinfo);
+        }
+    }
+    return arr;
+}
+
 /**
  * 会议模板选择
  */
@@ -1314,6 +1383,22 @@ function callbackgetWordTemplates(data){
     }else {
         console.log("获取会议默认模板ssid"+data.message)
     }
+}
+
+//追加“；”
+function adduser(obj,type) {
+    var inputname="userinfograde"+type;
+    var inputval=$("input[name="+inputname+"]").val();
+    if (isNotEmpty(inputval)){
+        var last=inputval.substr(inputval.length-1,1);
+        if (last!="；"){
+            $("input[name="+inputname+"]").val(inputval+"；");
+        }
+    }
+
+
+
+
 }
 
 

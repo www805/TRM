@@ -87,36 +87,40 @@
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">原告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)">
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,1)" title="重置原告个人信息"></i>
+                                    <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)" >
+                                    <!-- ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,1)" title="重置原告个人信息"></i>-->
+                                    <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,1)" title="追加"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">被告：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="userinfograde2"  id="username"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,2)">
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,2)" title="重置被告个人信息"></i>
+                                    <input type="text" name="userinfograde2"  id="username"  lay-verify="username" placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,2)" >
+                                    <!-- ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,2)" title="重置被告个人信息"></i>-->
+                                    <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,2)" title="追加"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">原告诉讼代理人：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,8)"  >
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"    onclick="resetuser(this,8)" title="重置原告诉讼代理人"></i>
+                                    <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,8)">
+                                    <!--  ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"    onclick="resetuser(this,8)" title="重置原告诉讼代理人"></i>-->
+                                    <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,8)" title="追加"></i>
                                 </div>
                             </div>
 
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">被告诉讼代理人：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="userinfograde3" id="defendant_agent"  placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,3)" >
-                                    <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"  onclick="resetuser(this,3)"  title="重置被告诉讼代理人"></i>
+                                    <input type="text" name="userinfograde3" id="defendant_agent"  placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,3)">
+                                   <!--  ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"  onclick="resetuser(this,3)"  title="重置被告诉讼代理人"></i>-->
+                                    <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,3)" title="追加"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label">审判长：</label>
                                 <div class="layui-input-block">
-                                    <select name="presidingjudge"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" >
+                                    <select name="presidingjudge"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" lay-verify="presidingjudge" >
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -159,7 +163,7 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">案件名称</label>
+                                <label class="layui-form-label">案件名称：</label>
                                 <div class="layui-input-block">
                                     <div class="layui-col-lg12">
                                         <div class="layui-form-select">
@@ -198,13 +202,13 @@
                             </div>
 
                             <div class="layui-col-lg6" id="multifunctionbool_showorhide" >
-                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">选择场景</label>
+                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">选择场景：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
                                 </div>
                             </div>
                             <div class="layui-col-lg6" >
-                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板</label>
+                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model2()">
                                 </div>
@@ -310,7 +314,7 @@
                                  </div>
 
                                  <div class="layui-col-lg12">
-                                     <label class="layui-form-label">现住址</label>
+                                     <label class="layui-form-label">现住址：</label>
                                      <div class="layui-input-block">
                                          <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
                                      </div>
@@ -449,6 +453,7 @@
             username:[ /\S/,"请输入被告人"],
             recotdtypes:[ /\S/,"请选择案件类型"],
             casename:[ /\S/,"请输入案件名称"],
+            presidingjudge:[ /\S/,"审判长不能为空"],
             casenum:function (value) {
                 if (isNotEmpty(value)) {
                     if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/).test(value)||!(/^[^ ]+$/).test(value)){

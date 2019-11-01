@@ -279,6 +279,7 @@ function callbackgetRecordById(data) {
                                    username:other.username
                                    ,userssid:other.userssid
                                    ,grade:other.grade
+                                   ,gradename:other.gradename
                                };
                                recorduser.push(user);
                            }
@@ -331,14 +332,28 @@ function callbackgetRecordById(data) {
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
                                   <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>";
+                    $("#caseAndUserInfo_html").html(init_casehtml);
                     var usergrades=recordUserInfosdata.usergrades;
                     if (isNotEmpty(usergrades)) {
-                        for (let i = 0; i < usergrades.length; i++) {
-                            const other = usergrades[i];
-                            init_casehtml+="<tr><td>"+other.gradename+"</td><td>"+other.username+"</td> </tr>";
+                        var newarr = [];//新数组
+                        for(var i=0;i<usergrades.length;i++){
+                            var bool=true;
+                            for(var j=0;j<newarr.length;j++){
+                                if((isNotEmpty(usergrades[i].grade)&&isNotEmpty(newarr[j].grade)&& usergrades[i].grade==newarr[j].grade)){
+                                    newarr[j].username=newarr[j].username+"、"+ usergrades[i].username;
+                                    bool=false;
+                                }
+                            };
+                            if (bool){
+                                newarr.push(usergrades[i]);
+                            }
+                        };
+
+                        for (let i = 0; i < newarr.length; i++) {
+                            const  other= newarr[i];
+                            $("#caseAndUserInfo_html").append("<tr type='"+other.grade+"'><td>"+other.gradename+"</td><td>"+other.username+"</td> </tr>");
                         }
                     }
-                    $("#caseAndUserInfo_html").html(init_casehtml);
                 }
                 getMCCacheParamByMTssid();//获取缓存
                 getTDCacheParamByMTssid();
@@ -891,6 +906,16 @@ function callbackgetgetRecordrealing(data) {
                                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
                                                       </div >';
                             }else{
+                                //一下情况正对于法院
+                                var gradenum=0;
+                                for(var j =0 ; j < recorduser.length ; j++){
+                                    if(recorduser[j].grade==usertype){
+                                        gradenum ++;
+                                    }
+                                }
+                                if (gradenum>1){
+                                    username=user.gradename==null?username:user.gradename;
+                                }
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>'+asrstartime+' 【'+username+'】 </p>\
@@ -1557,10 +1582,6 @@ $(function () {
                             var recordrealshtml="";
                             var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
-                            /* translatext=checkKeyword(translatext);
-                             console.log(translatext)*/
-
-
                             var p_span_HTML="";
                             //实时会议数据
                             if (usertype==1){
@@ -1569,6 +1590,17 @@ $(function () {
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
 
                             }else{
+                                //一下情况正对于法院
+                                var gradenum=0;
+                                for(var j =0 ; j < recorduser.length ; j++){
+                                    if(recorduser[j].grade==usertype){
+                                        gradenum ++;
+                                    }
+                                }
+                                if (gradenum>1){
+                                    username=user.gradename==null?username:user.gradename;
+                                }
+
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                                 p_span_HTML= '<p>'+asrstartime+' 【'+username+'】 </p>\
                                              <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> ';

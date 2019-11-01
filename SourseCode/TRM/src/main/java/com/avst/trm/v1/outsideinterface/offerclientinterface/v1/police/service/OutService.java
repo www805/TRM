@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.avst.trm.v1.common.cache.CommonCache.getSQEntity;
 
@@ -330,9 +331,11 @@ public class OutService  extends BaseService {
             }
 
 
-
             if (null!=tdList&&tdList.size()>0){
-                LogUtil.intoLog(1,this.getClass(),"会议人员应该为__________________________________________"+tdList.size());
+                //此处需要筛选：将相同通道的只保留一个
+                LogUtil.intoLog(1,this.getClass(),"会议人员（主要针对法院多角色）应该为__________________________________________去重前"+tdList.size());
+                tdList=tdList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(()->new TreeSet<>(Comparator.comparing(TdAndUserAndOtherParam::getGrade))),ArrayList::new));
+                LogUtil.intoLog(1,this.getClass(),"会议人员（主要针对法院多角色）应该为__________________________________________去重后"+tdList.size());
                 for (TdAndUserAndOtherParam tdAndUserAndOtherParam : tdList) {
                     tdAndUserAndOtherParam.setAsrtype(ASRType.AVST);
                     tdAndUserAndOtherParam.setFdtype(FDType.FD_AVST);
