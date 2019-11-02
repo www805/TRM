@@ -43,11 +43,11 @@ public class EquipmentService extends BaseService {
                 result.setData(fdState.getData());
                 changeResultToSuccess(result);
             }else{
-                LogUtil.intoLog(this.getClass(),"EquipmentService getFDState获取设备状态信息失败..,RResult:"+fdState==null?null: JacksonUtil.objebtToString(fdState));
+                LogUtil.intoLog(4,this.getClass(),"EquipmentService getFDState获取设备状态信息失败..,RResult:"+fdState==null?null: JacksonUtil.objebtToString(fdState));
                 result.setMessage("设备状态请求失败!");
             }
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass()," EquipmentService getFDState获取设备状态信息失败...");
+            LogUtil.intoLog(4,this.getClass()," EquipmentService getFDState获取设备状态信息失败...");
             result.setMessage("设备状态请求失败!");
         }
 
@@ -65,7 +65,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  光盘出仓/进仓 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  光盘出仓/进仓 请求错误...");
         }
 
 
@@ -83,7 +83,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getstartRec_Rom  开始光盘刻录 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getstartRec_Rom  开始光盘刻录 请求错误...");
         }
 
     }
@@ -100,7 +100,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  结束光盘刻录 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getdvdOutOrIn  结束光盘刻录 请求错误...");
         }
 
     }
@@ -117,7 +117,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getyuntaiControl  云台控制 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getyuntaiControl  云台控制 请求错误...");
         }
 
     }
@@ -146,7 +146,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getptdjconst  获取当前配置片头字段 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getptdjconst  获取当前配置片头字段 请求错误...");
         }
 
     }
@@ -163,7 +163,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(fdState.getNextpageid());
             result.setVersion(fdState.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.addptdj  片头叠加 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.addptdj  片头叠加 请求错误...");
         }
 
     }
@@ -196,7 +196,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(resultBurn.getNextpageid());
             result.setVersion(resultBurn.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getBurnTime  获取刻录选时 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getBurnTime  获取刻录选时 请求错误...");
         }
     }
 
@@ -212,7 +212,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(resultBurn.getNextpageid());
             result.setVersion(resultBurn.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.updateBurnTime  修改刻录选时 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.updateBurnTime  修改刻录选时 请求错误...");
         }
     }
 
@@ -228,7 +228,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(resultBurn.getNextpageid());
             result.setVersion(resultBurn.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.changeBurnMode  刻录模式选择 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.changeBurnMode  刻录模式选择 请求错误...");
         }
 
     }
@@ -245,7 +245,7 @@ public class EquipmentService extends BaseService {
             result.setNextpageid(resultBurn.getNextpageid());
             result.setVersion(resultBurn.getVersion());
         } catch (Exception e) {
-            LogUtil.intoLog(this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getCDNumber  光盘序号 请求错误...");
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getCDNumber  光盘序号 请求错误...");
         }
     }
 
@@ -253,13 +253,17 @@ public class EquipmentService extends BaseService {
 
         GetFDAudPowerMapParam_out paramParam = param.getParam();
 
-        RResult rResult = equipmentControl.getFDAudPowerMap(paramParam);
+        try {
+            RResult rResult = equipmentControl.getFDAudPowerMap(paramParam);
 
-        result.setData(rResult.getData());
-        result.setMessage(rResult.getMessage());
-        result.setVersion(rResult.getVersion());
-        result.setNextpageid(rResult.getNextpageid());
-        result.setActioncode(rResult.getActioncode());
+            result.setData(rResult.getData());
+            result.setMessage(rResult.getMessage());
+            result.setVersion(rResult.getVersion());
+            result.setNextpageid(rResult.getNextpageid());
+            result.setActioncode(rResult.getActioncode());
+        } catch (Exception e) {
+            LogUtil.intoLog(4,this.getClass(),"com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getFDAudPowerMap  获得设备现场的音频振幅 请求错误...");
+        }
 
     }
 
@@ -285,10 +289,18 @@ public class EquipmentService extends BaseService {
             return result;
         }
 
-        String currentTime10 = DateUtil.getcCurrentTime_10();
-        paramParam.setKeyText(currentTime10);
+        RResult vkmResult = result;
 
-        RResult vkmResult = equipmentControl.viewKeyMark(paramParam);
+        try {
+            String currentTime10 = DateUtil.getcCurrentTime_10();
+            paramParam.setKeyText(currentTime10);
+
+            vkmResult = equipmentControl.viewKeyMark(paramParam);
+
+
+        } catch (Exception e) {
+            LogUtil.intoLog(4, this.getClass(), "com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.action.getFDAudPowerMap  设备录像重点标记 错误");
+        }
 
         return vkmResult;
     }

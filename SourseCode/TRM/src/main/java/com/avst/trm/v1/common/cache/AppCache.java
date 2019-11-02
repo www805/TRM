@@ -202,7 +202,13 @@ public class AppCache {
             logoYml = (Map<String, Object>) branchYml.get(SQVersion.FY_T);
         }
 
-        fileYml.put("logotitle", logoYml.get("logo"));
+        //把客户端名放进去
+        Map<String, Object> logotitle = (Map<String, Object>) logoYml.get("logo");
+        if(StringUtils.isNotBlank(getSQEntity.getClientName())){
+            logotitle.put("title", getSQEntity.getClientName());
+        }
+
+        fileYml.put("logotitle", logotitle);
 
         cacheParam.setGuidepageUrl("");//先给个空字符串
 

@@ -130,11 +130,11 @@ function callgetServerStatus(data) {
                     serverInfoState++;
                 }else if ("trm" == server.servername && server.status == 1) {
                     // $("#trm").html("已启动").removeClass("error").addClass("success");
-                    serverInfoState++;
+                    // serverInfoState++;
                 }
             }
 
-            if (serverInfoState >= 3) {
+            if (serverInfoState >= 2) {
                 $("#serverInfoState").addClass("layui-bg-green").html("正常");
             }else{
                 $("#serverInfoState").removeClass("layui-bg-green").html("异常");
