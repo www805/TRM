@@ -317,6 +317,31 @@ function updateBurnTime() {
     ajaxSubmitByJson(url,data,callBase);
 }
 
+
+//设备录像重点标记
+function viewKeyMark() {
+    var strtitle = "笔录";
+    var url=getActionURL(getactionid_manage().waitRecord_viewKeyMark);
+    if(!isNotEmpty(url)){
+        strtitle = "审讯";
+        url=getActionURL(getactionid_manage().waitconversation_viewKeyMark);
+    }
+
+    if(!isNotEmpty(getRecordById_data)){
+        layer.msg(strtitle + "尚未开始，无法设置录像重点标记", {icon: 5});
+        return;
+    }
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            fdType: fdtype,
+            flushbonadingetinfossid:getRecordById_data.modeltds[0].fdssid
+        }
+    };
+    ajaxSubmitByJson(url,data,callgetdvdOutOrIn);
+}
+
 //刻录模式选择
 function changeBurnMode(num) {
     var strtitle = "笔录";

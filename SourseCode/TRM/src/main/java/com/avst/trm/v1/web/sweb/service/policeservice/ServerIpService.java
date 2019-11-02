@@ -79,37 +79,21 @@ public class ServerIpService extends BaseService {
         String asrEtip = getServerIpParam.getAsrip().getEtip();
         String fluEtip = getServerIpParam.getFlushbonadingip().getEtip();
         String polyEtip = getServerIpParam.getPolygraphip().getEtip();
-        String stoEtip = getServerIpParam.getStorageip().getEtip();
-        String tteEtip = getServerIpParam.getTtsetinfoip().getEtip();
 
-        boolean isip = OpenUtil.isIp(getServerIpParam.getTrmip());
-        if(isip == false){
+        if(OpenUtil.isIp(getServerIpParam.getTrmip()) == false){
             rResult.setMessage("笔录系统ip，不是一个正确的IP");
             return;
         }
-        boolean asrEtipisip = OpenUtil.isIp(asrEtip);
-        if(asrEtipisip == false){
+        if(OpenUtil.isIp(asrEtip) == false){
             rResult.setMessage("请输入测谎仪ip，不是一个正确的IP");
             return;
         }
-        boolean fluEtipisip = OpenUtil.isIp(fluEtip);
-        if(fluEtipisip == false){
+        if(OpenUtil.isIp(fluEtip) == false){
             rResult.setMessage("请输入审讯设备ip，不是一个正确的IP");
             return;
         }
-        boolean polyEtipisip = OpenUtil.isIp(polyEtip);
-        if(polyEtipisip == false){
+        if(OpenUtil.isIp(polyEtip) == false){
             rResult.setMessage("请输入语音识别服务ip，不是一个正确的IP");
-            return;
-        }
-        boolean stoEtipisip = OpenUtil.isIp(stoEtip);
-        if(stoEtipisip == false){
-            rResult.setMessage("请输入存储设备ip，不是一个正确的IP");
-            return;
-        }
-        boolean tteEtipisip = OpenUtil.isIp(tteEtip);
-        if(tteEtipisip == false){
-            rResult.setMessage("请输入文字转语音服务ip，不是一个正确的IP");
             return;
         }
 
@@ -151,10 +135,8 @@ public class ServerIpService extends BaseService {
         if(StringUtils.isBlank(getServerIpParam.getTrmip())
                 || StringUtils.isBlank(getServerIpParam.getAsrip().getEtip())
                 || StringUtils.isBlank(getServerIpParam.getFlushbonadingip().getEtip())
-                || StringUtils.isBlank(getServerIpParam.getPolygraphip().getEtip())
-                || StringUtils.isBlank(getServerIpParam.getStorageip().getEtip())
-                || StringUtils.isBlank(getServerIpParam.getTtsetinfoip().getEtip())){
-            rResult.setMessage("笔录系统ip、审讯设备ip、测谎仪ip、语音识别服务ip、存储设备ip、文字转语音服务ip不能为空");
+                || StringUtils.isBlank(getServerIpParam.getPolygraphip().getEtip())){
+            rResult.setMessage("笔录系统ip、审讯设备ip、测谎仪ip、语音识别服务ip不能为空");
             return false;
         }
         return true;

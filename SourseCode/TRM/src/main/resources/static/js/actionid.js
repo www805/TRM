@@ -211,6 +211,7 @@ function getactionid_manage() {
         waitRecord_tocaseToUser:"waitRecord_tocaseToUser",
         waitRecord_torecordIndex:"waitRecord_torecordIndex",
         waitRecord_tocaseIndex:"waitRecord_tocaseIndex",
+        waitRecord_viewKeyMark:"waitRecord_viewKeyMark",
 
         moreTemplate_getTemplateTypes:"moreTemplate_getTemplateTypes",
         moreTemplate_getTemplates:"moreTemplate_getTemplates",
@@ -228,6 +229,7 @@ function getactionid_manage() {
         waitconversation_getBurnTime:"waitconversation_getBurnTime",
         waitconversation_putRecessStatus:"waitconversation_putRecessStatus",
         waitconversation_getFDAudPowerMap:"waitconversation_getFDAudPowerMap",
+        waitconversation_viewKeyMark:"waitconversation_viewKeyMark",
 
         templateTypeList_getTemplateTypes: "templateTypeList_getTemplateTypes",
         templateTypeList_getTemplateTypeById: "templateTypeList_getTemplateTypeById",

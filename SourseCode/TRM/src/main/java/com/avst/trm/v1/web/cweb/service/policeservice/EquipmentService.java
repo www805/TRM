@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.cache.RecordStatusCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.Code;
@@ -16,6 +17,8 @@ import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.req.policereq.GetRecordrealByRecordssidParam;
+import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,8 @@ import java.util.Map;
 
 @Service("equipmentService")
 public class EquipmentService extends BaseService {
+
+    private Gson gson = new Gson();
 
     @Autowired
     private EquipmentControl equipmentControl;
@@ -267,4 +272,24 @@ public class EquipmentService extends BaseService {
         changeResultToSuccess(result);
     }
 
+    public RResult viewKeyMark(RResult result, ReqParam<ViewKeyMarkParam_out> param) {
+
+        ViewKeyMarkParam_out paramParam = param.getParam();
+        if (StringUtils.isBlank(paramParam.getFdType())) {
+            result.setMessage("设备标记不能为空");
+            return result;
+        }
+
+        if (StringUtils.isBlank(paramParam.getFlushbonadingetinfossid())) {
+            result.setMessage("设备ssid不能为空");
+            return result;
+        }
+
+        String currentTime10 = DateUtil.getcCurrentTime_10();
+        paramParam.setKeyText(currentTime10);
+
+        RResult vkmResult = equipmentControl.viewKeyMark(paramParam);
+
+        return vkmResult;
+    }
 }

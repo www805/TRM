@@ -21,58 +21,56 @@
     </style>
 </head>
 <body>
-<div class=" layadmin-message-fluid" style="margin: 40px 20px 20px 20px;">
+<div class=" layadmin-message-fluid" style="margin: 40px 20px 20px 20px;" >
 
     <div style="float: left;padding-left: 10px;" id="zongyinpin">
         <h1 style="margin:0 0 30px 20px;" id="audioCount">总计6路音频</h1>
-        <div class="slideBoby" id="yinpin0">
-            <p style="text-align: center;font-size: 18px;">音频一</p>
-            <div id="slideTest0" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(0);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio0">38</span></p>
-        </div>
+        <!--<div class="slideBoby" id="yinpin0">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频一</p>-->
+            <!--<div id="slideTest0" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(0);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio0">38</span></p>-->
+        <!--</div>-->
 
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频二</p>
-            <div id="slideTest1" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(1);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio1">38</span></p>
-        </div>
+        <!--<div class="slideBoby">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频二</p>-->
+            <!--<div id="slideTest1" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(1);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio1">38</span></p>-->
+        <!--</div>-->
 
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频三</p>
-            <div id="slideTest2" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(2);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio2">38</span></p>
-        </div>
+        <!--<div class="slideBoby">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频三</p>-->
+            <!--<div id="slideTest2" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(2);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio2">38</span></p>-->
+        <!--</div>-->
 
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频四</p>
-            <div id="slideTest3" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(3);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio3">38</span></p>
-        </div>
+        <!--<div class="slideBoby">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频四</p>-->
+            <!--<div id="slideTest3" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(3);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio3">38</span></p>-->
+        <!--</div>-->
 
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频五</p>
-            <div id="slideTest4" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(4);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio4">38</span></p>
-        </div>
+        <!--<div class="slideBoby">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频五</p>-->
+            <!--<div id="slideTest4" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(4);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio4">38</span></p>-->
+        <!--</div>-->
 
-        <div class="slideBoby">
-            <p style="text-align: center;font-size: 18px;">音频六</p>
-            <div id="slideTest5" class="slideTest"></div>
-            <p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(5);"></p>
-            <p style="text-align: center;margin-top: 10px;">音量 <span id="audio5">38</span></p>
-        </div>
+        <!--<div class="slideBoby">-->
+            <!--<p style="text-align: center;font-size: 18px;">音频六</p>-->
+            <!--<div id="slideTest5" class="slideTest"></div>-->
+            <!--<p class="layui-icon layui-icon-speaker slideP" onclick="muteVoice(5);"></p>-->
+            <!--<p style="text-align: center;margin-top: 10px;">音量 <span id="audio5">38</span></p>-->
+        <!--</div>-->
 
     </div>
     <div style="float: left;margin-top: 420px;">
         <button class="layui-btn layui-btn-normal" onclick="saveVoice();">保存</button>
     </div>
-
-
 
 </div>
 
@@ -86,85 +84,84 @@
 
 <script>
 
-
     layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'slider'], function () {
-        var form = layui.form
-            , layer = layui.layer
-            , slider = layui.slider
-            , layedit = layui.layedit
-            , laydate = layui.laydate;
-
-
-        var slider0 = slider.render({
-            elem: '#slideTest0'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                //e.which 有三个值 1 左击 2 中间按钮 3 右击
-                $("#audio0").html(value);
-                volume0 = value;
-            }
-        });
-        var slider1 = slider.render({
-            elem: '#slideTest1'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                $("#audio1").html(value);
-                volume0 = value;
-            }
-        });
-        var slider2 = slider.render({
-            elem: '#slideTest2'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                $("#audio2").html(value);
-                volume0 = value;
-            }
-        });
-        var slider3 = slider.render({
-            elem: '#slideTest3'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                $("#audio3").html(value);
-                volume0 = value;
-            }
-        });
-        var slider4 = slider.render({
-            elem: '#slideTest4'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                $("#audio4").html(value);
-                volume0 = value;
-            }
-        });
-        var slider5 = slider.render({
-            elem: '#slideTest5'
-            ,value: 0
-            ,theme: '#1E9FFF' //主题色
-            ,type: 'vertical' //垂直滑块
-            ,change: function(value){
-                $("#audio5").html(value);
-                volume0 = value;
-            }
-        });
-
-        sliderAll.push(slider0);
-        sliderAll.push(slider1);
-        sliderAll.push(slider2);
-        sliderAll.push(slider3);
-        sliderAll.push(slider4);
-        sliderAll.push(slider5);
-
-        form.render();
+    //     var form = layui.form
+    //         , layer = layui.layer
+    //         , slider = layui.slider
+    //         , layedit = layui.layedit
+    //         , laydate = layui.laydate;
+    //
+    //
+    //     var slider0 = slider.render({
+    //         elem: '#slideTest0'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             //e.which 有三个值 1 左击 2 中间按钮 3 右击
+    //             $("#audio0").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //     var slider1 = slider.render({
+    //         elem: '#slideTest1'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             $("#audio1").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //     var slider2 = slider.render({
+    //         elem: '#slideTest2'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             $("#audio2").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //     var slider3 = slider.render({
+    //         elem: '#slideTest3'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             $("#audio3").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //     var slider4 = slider.render({
+    //         elem: '#slideTest4'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             $("#audio4").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //     var slider5 = slider.render({
+    //         elem: '#slideTest5'
+    //         ,value: 0
+    //         ,theme: '#1E9FFF' //主题色
+    //         ,type: 'vertical' //垂直滑块
+    //         ,change: function(value){
+    //             $("#audio5").html(value);
+    //             volume0 = value;
+    //         }
+    //     });
+    //
+    //     sliderAll.push(slider0);
+    //     sliderAll.push(slider1);
+    //     sliderAll.push(slider2);
+    //     sliderAll.push(slider3);
+    //     sliderAll.push(slider4);
+    //     sliderAll.push(slider5);
+    //
+    //     form.render();
     });
 
 
@@ -182,43 +179,43 @@
 
         getFDssid();
 
-        $("body").mouseup(function (e) {
-
-            setTimeout(function () {
-                // console.log(slideTestKey, volume0);
-                if (slideTestKey >= 0 && volume0 >= 0) {
-                    $("#slideP" + slideTestKey).css("color", "");
-                    setFDAudioVolume(slideTestKey, volume0, 0);
-                }
-            },300);
-
-            // e.cancelBubble = true;
-        });
-
-        $("#slideTest0").mousedown(function (e) {
-            slideTestKey = 0;
-            e.cancelBubble = true;
-        });
-        $("#slideTest1").mousedown(function (e) {
-            slideTestKey = 1;
-            e.cancelBubble = true;
-        });
-        $("#slideTest2").mousedown(function (e) {
-            slideTestKey = 2;
-            e.cancelBubble = true;
-        });
-        $("#slideTest3").mousedown(function (e) {
-            slideTestKey = 3;
-            e.cancelBubble = true;
-        });
-        $("#slideTest4").mousedown(function (e) {
-            slideTestKey = 4;
-            e.cancelBubble = true;
-        });
-        $("#slideTest5").mousedown(function (e) {
-            slideTestKey = 5;
-            e.cancelBubble = true;
-        });
+        // $("body").mouseup(function (e) {
+        //
+        //     setTimeout(function () {
+        //         // console.log(slideTestKey, volume0);
+        //         if (slideTestKey >= 0 && volume0 >= 0) {
+        //             $("#slideP" + slideTestKey).css("color", "");
+        //             setFDAudioVolume(slideTestKey, volume0, 0);
+        //         }
+        //     },300);
+        //
+        //     // e.cancelBubble = true;
+        // });
+        //
+        // $("#slideTest0").mousedown(function (e) {
+        //     slideTestKey = 0;
+        //     e.cancelBubble = true;
+        // });
+        // $("#slideTest1").mousedown(function (e) {
+        //     slideTestKey = 1;
+        //     e.cancelBubble = true;
+        // });
+        // $("#slideTest2").mousedown(function (e) {
+        //     slideTestKey = 2;
+        //     e.cancelBubble = true;
+        // });
+        // $("#slideTest3").mousedown(function (e) {
+        //     slideTestKey = 3;
+        //     e.cancelBubble = true;
+        // });
+        // $("#slideTest4").mousedown(function (e) {
+        //     slideTestKey = 4;
+        //     e.cancelBubble = true;
+        // });
+        // $("#slideTest5").mousedown(function (e) {
+        //     slideTestKey = 5;
+        //     e.cancelBubble = true;
+        // });
 
     });
 
