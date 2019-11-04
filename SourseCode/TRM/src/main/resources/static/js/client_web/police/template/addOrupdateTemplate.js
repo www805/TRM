@@ -331,10 +331,7 @@ function callAddTmplate(data){
             layer.msg("操作成功！",{icon: 6});
 
             setTimeout(function () {
-                setpageAction(INIT_CLIENT, "client_web/base/main");
-                var url=getActionURL(getactionid_manage().main_toTemplateIndex);
-                setpageAction(INIT_CLIENT, "client_web/police/template/addOrupdateTemplate");
-
+                var url=getActionURL(getactionid_manage().addOrupdateTemplate_toTemplateIndex);
                 window.location.href = url;
 
             },1500);

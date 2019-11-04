@@ -256,12 +256,26 @@
             <version>2.1.0</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/com.corundumstudio.socketio/netty-socketio -->
+        <!-- netty-socketio-->
         <dependency>
             <groupId>com.corundumstudio.socketio</groupId>
             <artifactId>netty-socketio</artifactId>
-            <version>1.7.12</version>
+            <version>1.7.13</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-resolver</artifactId>
+            <version>4.1.15.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+            <version>4.1.15.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>socket.io-client</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
@@ -270,7 +284,7 @@
             <version>1.0</version>
             <classifier>license</classifier>
         </dependency>
-
+        <!-- netty-socketio-->
 
         <dependency>
             <groupId>com.wb</groupId>

@@ -259,6 +259,7 @@ function getactionid_manage() {
         addOrupdateTemplate_getTemplateById: "addOrupdateTemplate_getTemplateById",
         addOrupdateTemplate_addTemplate: "addOrupdateTemplate_addTemplate",
         addOrupdateTemplate_getSQGnlist: "addOrupdateTemplate_getSQGnlist",
+        addOrupdateTemplate_toTemplateIndex: "addOrupdateTemplate_toTemplateIndex",
 
 
         notification_getNotifications: "notification_getNotifications",
