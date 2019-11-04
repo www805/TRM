@@ -131,8 +131,8 @@ $(function () {
                 if (!(/\S/).test(value)) {
                     return "请输入登录账号";
                 }
-                if (!(/^(?!.*\s).{5,12}$/.test(value))) {
-                    return "请输入5-12个字符不含空格的登录账号";
+                if (!(/^(?!.*\s).{2,}$/.test(value))) {
+                    return "请输入2个以上字符不含空格的登录账号";
                 }
             },
             password:function (value) {
