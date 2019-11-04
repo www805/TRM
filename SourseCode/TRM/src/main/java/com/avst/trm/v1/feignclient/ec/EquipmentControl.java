@@ -306,4 +306,14 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getFDNTP(@RequestBody GetFDNTPParam_out param);
 
+
+    /**
+     * 设备录像重点标记
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/viewKeyMark")
+    @ResponseBody
+    public RResult viewKeyMark(@RequestBody ViewKeyMarkParam_out param);
+
 }

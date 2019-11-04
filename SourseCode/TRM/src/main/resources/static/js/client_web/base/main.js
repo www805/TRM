@@ -131,21 +131,24 @@ function callgetNavList(data) {
                     $("#nav_list").css("right", 350);
                 }
 
+
+
+
                 //只有法院版才显示进入总控端
                 // if (isNotEmpty(gnlist) && gnlist.indexOf("fy_t") == -1) {
                 //     $("#guidepage").hide();
                 //     $("#nav_list").css("right", 250);
                 // }
-
-
-
-
                 //设置logo和标题
                 var logo_title = appCache.data.logotitle;
                 if(isNotEmpty(logo_title)){
                     $("#logoimg").attr("src", logo_title.img);
-                    if (logo_title.imgtitle != '' && logo_title.imgtitle != '/') {
-                        $("#logotitle").html("").css("background", "url(" + logo_title.imgtitle + ") no-repeat").css("background-size", "100% 100%");
+                    var imgtitle = "";
+                    if(isNotEmpty(appCache.data.logo.imgtitle)){
+                        imgtitle = appCache.data.logo.imgtitle;
+                    }
+                    if (imgtitle != '' && imgtitle != '/') {
+                        $("#logotitle").html("").css("background", "url(" + imgtitle + ") no-repeat").css("background-size", "100% 100%");
                     } else {
                         $("#logotitle").html(logo_title.title);
                     }

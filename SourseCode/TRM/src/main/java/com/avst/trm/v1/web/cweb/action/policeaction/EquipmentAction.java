@@ -229,6 +229,24 @@ public class EquipmentAction extends BaseAction {
 
 
     /**
+     * 设备录像重点标记
+     * @param param
+     * @return
+     */
+    @RequestMapping("/viewKeyMark")
+    public RResult viewKeyMark(@RequestBody  ReqParam<ViewKeyMarkParam_out> param){
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        } else {
+            result = equipmentService.viewKeyMark(result, param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
      * 提供休庭心跳
      * @param param
      * @return
