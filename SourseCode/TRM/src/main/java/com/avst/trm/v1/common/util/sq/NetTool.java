@@ -309,7 +309,6 @@ public static String getLocalMac() {
 				}
 			}
 			printMessage(in2);
-
 			int exitvalue=process.waitFor();
 			if(exitvalue!=0){
 				throw new Exception(exitvalue+"exitvalue is not 0, 说明代码有错");

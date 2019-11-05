@@ -642,6 +642,7 @@ public class RecordService extends BaseService {
                                     }
                                 }
                             }
+                            LogUtil.intoLog(1,this.getClass()," outService.getTdByModelSsid__modeltds__"+getRecordByIdVO.getModeltds().size());
                         }
 
                         //获取嫌疑人详情
@@ -1084,7 +1085,7 @@ public class RecordService extends BaseService {
 
         //整理模板
 
-        if (multifunctionbool==1){//||multifunctionbool==2 单组件时候
+        if (multifunctionbool==1||multifunctionbool==2 ){//||单组件时候
             mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
         }else {
         if (StringUtils.isBlank(mtmodelssid)) {
@@ -1160,7 +1161,7 @@ public class RecordService extends BaseService {
             checkStartRecordParam.setUserinfo_ssid(userssid);
             checkStartRecordParam.setAdmininfos_ssid(adminssids);
             RResult checkrecordforuser_rr=new RResult();
-            Integer[] recordbools=new Integer[]{1,0};
+            Integer[] recordbools=new Integer[]{1};//检测状态可填两个
             boolean bool = checkRecordForUser(checkrecordforuser_rr,checkStartRecordParam,user.getSsid(),recordbools);
             if (!bool){
                 CheckStartRecordVO vo=gson.fromJson(gson.toJson(checkrecordforuser_rr.getData()),CheckStartRecordVO.class);

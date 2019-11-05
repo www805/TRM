@@ -11,6 +11,8 @@
         <result column="recorddownurl" property="recorddownurl" />
         <result column="recordrealurl" property="recordrealurl" />
         <result column="filebool" property="filebool" />
+        <result column="filetype" property="filetype" />
+        <result column="createtime" property="createtime" />
         <result column="ssid" property="ssid" />
         <result column="string1" property="string1" />
         <result column="string2" property="string2" />

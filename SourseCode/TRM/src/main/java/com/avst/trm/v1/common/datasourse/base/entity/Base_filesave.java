@@ -50,6 +50,10 @@ public class Base_filesave extends Model<Base_filesave> {
 
     private Integer filebool;//文件状态
 
+    private String filetype;//文件类型
+
+    private String createtime;
+
     private String ssid;
 
     private String string1;
@@ -60,6 +64,22 @@ public class Base_filesave extends Model<Base_filesave> {
 
     private Integer integer2;
 
+    public String getCreatetime() {
+
+        return createtime;
+    }
+
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
+    }
+
+    public String getFiletype() {
+        return filetype;
+    }
+
+    public void setFiletype(String filetype) {
+        this.filetype = filetype;
+    }
 
     public Integer getFilebool() {
         return filebool;

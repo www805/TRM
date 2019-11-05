@@ -65,7 +65,7 @@
                     <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body  layui-row layui-col-space10" >
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">案件类型：</label>
+                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件类型：</label>
                                 <div class="layui-input-block">
                                     <select name="recotdtypes"  id="recotdtypes"  lay-search="" lay-verify="recotdtypes" >
                                         <option value=""></option>
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">被告：</label>
+                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>被告：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde2"  id="username"  lay-verify="username" placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,2)" >
                                     <!-- ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,2)" title="重置被告个人信息"></i>-->
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">审判长：</label>
+                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>审判长：</label>
                                 <div class="layui-input-block">
                                     <select name="presidingjudge"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" lay-verify="presidingjudge" >
                                         <option value=""></option>
@@ -141,12 +141,10 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-col-lg12">
-                                <label class="layui-form-label">承办庭：</label>
+                            <div class="layui-col-lg12" id="multifunctionbool_showorhide" >
+                                <label class="layui-form-label "  style="font-weight: bold" >承办庭：</label>
                                 <div class="layui-input-block">
-                                    <select name="recordplace"  id="recordplace" lay-verify=""  >
-                                        <option value=""th:value="${session.MANAGE_CLIENT.workname}"  selected = "selected">[[${session.MANAGE_CLIENT.workname}]]</option>
-                                    </select>
+                                    <input  style="font-weight: bold"  type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly   onclick="open_model()">
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
@@ -163,7 +161,7 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">案件名称：</label>
+                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称：</label>
                                 <div class="layui-input-block">
                                     <div class="layui-col-lg12">
                                         <div class="layui-form-select">
@@ -194,23 +192,16 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-col-lg6" style="margin-right: 50%">
+                            <div class="layui-col-lg6" ><!--style="margin-right: 50%"-->
                                     <label class="layui-form-label">询问次数：</label>
                                     <div class="layui-input-block">
                                         <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
                                     </div>
                             </div>
-
-                            <div class="layui-col-lg6" id="multifunctionbool_showorhide" >
-                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">选择场景：</label>
-                                <div class="layui-input-block">
-                                    <input type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model()">
-                                </div>
-                            </div>
                             <div class="layui-col-lg6" >
-                                <label class="layui-form-label " style="font-weight: bold;color:#FFB800;">笔录模板：</label>
+                                <label class="layui-form-label " style="font-weight: bold" >笔录模板：</label>
                                 <div class="layui-input-block">
-                                    <input type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;color:#FFB800;" onclick="open_model2()">
+                                    <input  style="font-weight: bold"  type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly onclick="open_model2()">
                                 </div>
                             </div>
                         </div>

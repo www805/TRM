@@ -38,7 +38,7 @@ function img_bool(obj,type){
             $("#pauserecord").attr("onclick","");
             startMC_index = layer.msg("开启中，请稍等...", {
                 icon: 16,
-                time:-1,
+                time:10000,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
             console.log("开始会议")
@@ -48,7 +48,7 @@ function img_bool(obj,type){
 
             startMC_index = layer.msg("再次启动中，请稍等...", {
                 icon: 16,
-                time:-1,
+                time:10000,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
             console.log("继续会议");
@@ -60,7 +60,7 @@ function img_bool(obj,type){
 
             startMC_index = layer.msg("暂停中，请稍等...", {
                 icon: 16,
-                time:-1,
+                time:10000,
                 shade: [0.1,'#fff'], //不显示遮罩
             });
             console.log("暂停会议")
@@ -557,9 +557,12 @@ function callbackstartMC(data) {
         }
         layer.msg("开启失败");
         $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
+        $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+        layui.use(['layer','element','form'], function(){
+            var layer=layui.layer;
+            layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:2});
+        });
     }
-
-    layer.closeAll('tips');//###
 }
 
 

@@ -166,6 +166,10 @@ function getactionid_manage() {
         getRecordById_setRecordreal:"getRecordById_setRecordreal",
         getRecordById_addRecord:"getRecordById_addRecord",
         getRecordById_tocaseToUser:"getRecordById_tocaseToUser",
+        getRecordById_uploadPhreport:"getRecordById_uploadPhreport",
+        getRecordById_getPhreports:"getRecordById_getPhreports",
+        getRecordById_delPhreport:"getRecordById_delPhreport",
+
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",
         moreRecord_getRecords:"moreRecord_getRecords",
@@ -412,6 +416,7 @@ function getactionid_manage() {
         AddOrUpdateUserinfograde_getUserinfogradeByssid:"AddOrUpdateUserinfograde_getUserinfogradeByssid",
         AddOrUpdateUserinfograde_addUserinfograde:"AddOrUpdateUserinfograde_addUserinfograde",
         AddOrUpdateUserinfograde_updateUserinfograde:"AddOrUpdateUserinfograde_updateUserinfograde",
+
 
 
 
