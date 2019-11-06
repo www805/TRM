@@ -1385,3 +1385,20 @@ function checkIDCard(idcode){
     return last === last_no && format ? true : false;
 }
 
+
+
+
+//js通用常量
+const S_V = "s_v";//单机版
+const O_V = "o_v";//联机版
+const C_E = "c_e";//客户端
+const S_E = "s_e";//服务器
+const GA_T = "ga_t";//公安版
+const JW_T = "jw_t";//纪委版
+const JCW_T = "jcw_t";//监察委版
+const FY_T = "fy_t";//法院版
+const AVST_T = "avst_t";//顺泰伟诚
+const COMMON_O = "common_o";//通用版
+const HK_O = "hk_o";//海康
+const NX_O = "nx_o";//宁夏
+

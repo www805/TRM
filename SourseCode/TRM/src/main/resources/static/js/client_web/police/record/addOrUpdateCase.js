@@ -618,7 +618,7 @@ function getCardreader_btn() {
         dataType: "JSONP",
         type: "get",
         url: "http://localhost:8989/api/ReadMsg",
-        timeout:5000,
+        timeout:3000,
         success: function (data) {
                 if (isNotEmpty(data)){
                     reset();
