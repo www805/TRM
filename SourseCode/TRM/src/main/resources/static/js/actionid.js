@@ -169,6 +169,7 @@ function getactionid_manage() {
         getRecordById_uploadPhreport:"getRecordById_uploadPhreport",
         getRecordById_getPhreports:"getRecordById_getPhreports",
         getRecordById_delPhreport:"getRecordById_delPhreport",
+        getRecordById_updateRecord:"getRecordById_updateRecord",
 
 
         moreRecord_getRecordtypes:"moreRecord_getRecordtypes",
@@ -382,6 +383,7 @@ function getactionid_manage() {
         getCourtDetail_setRecordreal:'getCourtDetail_setRecordreal',
         getCourtDetail_getRecordrealByRecordssid:'getCourtDetail_getRecordrealByRecordssid',
         getCourtDetail_addRecord:'getCourtDetail_addRecord',
+        getCourtDetail_updateRecord:'getCourtDetail_updateRecord',
 
         waitCourt_tocaseToUser:"waitCourt_tocaseToUser",
         waitCourt_getRecordById:"waitCourt_getRecordById",

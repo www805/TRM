@@ -22,6 +22,7 @@
         <result column="string2" property="string2" />
         <result column="integer1" property="integer1" />
         <result column="integer2" property="integer2" />
+        <result column="repackbool" property="repackbool" />
     </resultMap>
 
 </mapper>

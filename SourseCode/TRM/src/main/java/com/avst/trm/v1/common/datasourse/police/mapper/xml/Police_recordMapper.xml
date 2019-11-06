@@ -19,6 +19,8 @@
         <result column="gz_iid" property="gz_iid" />
         <result column="wordtemplatessid" property="wordtemplatessid" />
         <result column="wordhead_filesavessid" property="wordhead_filesavessid" />
+        <result column="positiontime" property="positiontime" />
+        <result column="repackbool" property="repackbool" />
     </resultMap>
 
 </mapper>

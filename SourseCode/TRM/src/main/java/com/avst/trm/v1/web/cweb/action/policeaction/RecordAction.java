@@ -76,6 +76,28 @@ public class RecordAction extends BaseAction {
     }
 
     /**
+     * 修改笔录
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/updateRecord")
+    public RResult updateRecord(@RequestBody ReqParam<UpdateRecordParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            recordService.updateRecord(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
+
+    /**
      * 查看单个笔录
      * @param param
      * @return

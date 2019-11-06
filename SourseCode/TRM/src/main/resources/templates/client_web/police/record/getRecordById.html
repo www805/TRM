@@ -210,7 +210,7 @@
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
                             <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
-                            <li>情绪报告</li>
+                            <li id="ph_html" style="display: none">情绪报告</li>
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show" id="casehtml">
@@ -316,6 +316,13 @@
                         <button class="layui-btn layui-btn-normal" onclick="gZIPVod();" title="打包下载">
                             <i class="layui-icon" >&#xe601;</i>打包下载
                         </button>
+                    <div class="layui-inline" style="float: right">
+                        <label class="layui-form-label">定位差值</label>
+                        <div class="layui-input-inline" style="width: 100px;">
+                            <input type="number" name="positiontime"  id="positiontime" placeholder="毫秒差值" autocomplete="off" class="layui-input">
+                        </div>
+                        <input type="button" class="layui-btn layui-btn-normal" value="保存差值" onclick="updateRecord()"/>
+                    </div>
                     <div class="layui-card">
                         <div class="layui-card-header">笔录回放 <span style="color: red">（提示:<span class="highlight_left">黄色</span>高亮跟随视频定位，<span class="highlight_right">绿色</span>高亮跟随双击定位）</span>
                         </div>
@@ -323,7 +330,7 @@
                             <!--视频点播区域-->
                             <div class="layui-row" style="">
                                 <div class="layui-col-md5" id="fd_ph_HTML"  >
-                                    <div style="height: 675px; overflow-x: hidden; overflow-y: scroll;">
+                                    <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                                         <div class="layui-col-md12" id="fd_HTML">
                                             <div class="layui-col-md12">
                                               <div th:replace="video :: video"   >...</div>
@@ -392,7 +399,7 @@
                                                     <div class="layui-col-md12  layui-show" style="height: 300px">
                                                         <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
                                                     </div>
-                                                    <table class="layui-table"  lay-skin="nob" style="table-layout: fixed;margin-bottom: 30px; ">
+                                                    <table class="layui-table"  lay-skin="nob" style="table-layout: fixed;margin-bottom: 10px; ">
                                                         <tbody id="recorddetail">
 
                                                         </tbody>
@@ -510,7 +517,7 @@
                 $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
                 $("#uploadPhreport").css("visibility","visible");
                 $("#recordreals .layui-badge").css("visibility", "visible");
-                $("#recordreals #dqphdate").css("visibility", "visible");
+                $("#recordreals #dqphdate").css("display", "block");
                 $("#recordreals div").each(function () {
                     var talkclass=$(this).attr("class");
                     if (talkclass=="atalk"){
@@ -525,7 +532,7 @@
                 $("#phreportshowhidemsg").text("（提示:开启可勾选生成情绪报告)");
                 $("#uploadPhreport").css("visibility","hidden");
                 $("#recordreals .layui-badge").css("visibility", "hidden");
-                $("#recordreals #dqphdate").css("visibility", "hidden");
+                $("#recordreals #dqphdate").css("display", "none");
                 $("#recordreals input[type=checkbox]").remove();
                 $("#recordreals .layui-form-checkbox").remove();
             }

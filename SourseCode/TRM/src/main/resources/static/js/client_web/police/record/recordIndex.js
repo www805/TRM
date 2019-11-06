@@ -257,11 +257,11 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
             layer.msg(creatorname+"正在制作笔录...")
         }
     } else  if (recordbool==2||recordbool==3){
-        //进入回放界面
-        if (multifunctionbool==1||multifunctionbool==2){
+        //进入回放界面：后期决定去掉快速回放界面
+       /* if (multifunctionbool==1||multifunctionbool==2){
             var url=getActionURL(getactionid_manage().recordIndex_toconversationById);
             window.location.href=url+"?ssid="+recordssid;
-        }else if(multifunctionbool==3){
+        }else if(multifunctionbool==3){*/
             if (gnlist.indexOf("fy_t")!= -1)
             {
                 //法庭跳转
@@ -272,7 +272,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
                 var url=getActionURL(getactionid_manage().recordIndex_togetRecordById);
                 window.location.href=url+"?ssid="+recordssid;
             }
-        }
+        /*}*/
     }
 }
 

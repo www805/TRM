@@ -396,7 +396,36 @@ public class RecordService extends BaseService {
 
         result.setData(recordssid);
         changeResultToSuccess(result);
+        return;
+    }
 
+    public void updateRecord(RResult result,ReqParam<UpdateRecordParam> reqParam){
+        UpdateRecordVO vo=new UpdateRecordVO();
+
+        //请求参数转换
+        UpdateRecordParam updateRecordParam = reqParam.getParam();
+        if (null==updateRecordParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=updateRecordParam.getSsid();//笔录ssid
+        LogUtil.intoLog(1,this.getClass(),"修改笔录参数__recordssid is null____"+recordssid);
+        if (StringUtils.isEmpty(recordssid)){
+            result.setMessage("未找到该笔录");
+            return;
+        }
+        Police_record record=gson.fromJson(gson.toJson(updateRecordParam),Police_record.class);
+        EntityWrapper recordew=new EntityWrapper();
+        recordew.eq("ssid",recordssid);
+        int police_recordMapper_update_bool=police_recordMapper.update(record,recordew);
+        LogUtil.intoLog(this.getClass(),"police_recordMapper_update_bool__"+police_recordMapper_update_bool);
+        if (police_recordMapper_update_bool>0){
+            vo.setParam(updateRecordParam);
+            result.setData(vo);
+            changeResultToSuccess(result);
+        }else {
+            LogUtil.intoLog(this.getClass(),"修改笔录参数__失败"+police_recordMapper_update_bool);
+        }
         return;
     }
 

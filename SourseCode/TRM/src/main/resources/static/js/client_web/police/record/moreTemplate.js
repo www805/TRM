@@ -23,7 +23,14 @@ function callTmplateTypes(data){
                 if (isNotEmpty(list)) {
                     for (var i = 0; i < list.length; i++) {
                         var templateType = list[i];
-                        $("#templatetypessid").append("<option value='" + templateType.id + "' >" + templateType.typename + "</option>");
+                        var typename=templateType.typename;
+                        if (gnlist.indexOf("hk_o") != -1) {
+                            if (typename == "谈话") {//此处写死不妥
+                                $("#templatetypessid").html("<option value='" + templateType.id + "' >" + typename + "</option>");
+                            }
+                        }else {
+                            $("#templatetypessid").append("<option value='" + templateType.id + "' >" + typename + "</option>");
+                        }
                     }
                 }
             }
@@ -35,11 +42,13 @@ function callTmplateTypes(data){
         var form = layui.form;
         form.render();
     });
+    getTmplateTypesParam();
 }
 
 /*
 笔录数据
  */
+
 function getTmplates_init(currPage,pageSize) {
     var url=getActionURL(getactionid_manage().moreTemplate_getTemplates);
     var keyword =$("#templatename").val();
@@ -82,6 +91,9 @@ function callTmplates2(data){
         if (isNotEmpty(data)){
             pageshow(data);
             getTemplateById(0);
+        }
+        if (!isNotEmpty(data.data.pagelist)) {
+            layer.msg("未找到模板数据",{icon: 5});
         }
     }else{
         layer.msg(data.message,{icon: 5});

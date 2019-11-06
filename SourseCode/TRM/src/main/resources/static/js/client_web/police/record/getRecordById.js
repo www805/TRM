@@ -24,6 +24,10 @@ var iid=null;//打包iid
 var getRecordById_data=null;
 var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
 
+var positiontime=0;
+
+
+
 
 /**
  * 局部刷新
@@ -143,6 +147,9 @@ function callbackgetRecordById(data) {
             recordnameshow=record.recordname;//当前笔录名称
 
             if (isNotEmpty(record)){
+                positiontime=record.positiontime==null?0:record.positiontime;
+                $("#positiontime").val(positiontime);
+
                 var wordheaddownurl_html=record.wordheaddownurl_html;
                 if (isNotEmpty(wordheaddownurl_html)){
                     $("#wordheaddownurl").attr("src",wordheaddownurl_html);
@@ -207,6 +214,7 @@ function callbackgetRecordById(data) {
 
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){
+                $("#ph_html").show();
                 phdatabackList=phDataBackVoParams;
                 phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
                 $("#fd_ph_HTML").attr("class","layui-col-md5").show();
@@ -214,6 +222,8 @@ function callbackgetRecordById(data) {
                 $("#ph_HTML").show();
                 main1();//身心统计回放
             }
+
+
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
@@ -234,6 +244,7 @@ function callbackgetRecordById(data) {
                 getRecordrealByRecordssid();
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
+
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
@@ -368,13 +379,13 @@ function set_getRecord(data){
                         //实时会议数据
                         if (usertype==1){
                             recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
-                                                            <a style="display: block;visibility:hidden;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
+                                                            <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
                                                             <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="visibility:hidden; '+phbadge+' " title="紧张值">'+ph_stress+'</a></p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
                         }else if (usertype==2){
                             recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
-                                                            <a style="display: block;visibility:hidden;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
+                                                            <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
                                                             <p><a class="layui-badge " style="visibility:hidden;  '+phbadge+'" title="紧张值">'+ph_stress+'</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
@@ -1068,6 +1079,9 @@ function showrecord(times,oldtime) {
     $("#recorddetail label").removeClass("highlight_right");
     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
     times=parseFloat(times);
+
+    console.log("双击:"+positiontime)
+
     if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
         var isnvideo=0;//是否有视频定位点
         //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
@@ -1078,6 +1092,7 @@ function showrecord(times,oldtime) {
             if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
                 if (dq_play.filenum==recordPlayParam.filenum){
                     var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime+=positiontime;
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     changeProgrss(parseFloat(locationtime));
                 } else {
@@ -1085,6 +1100,7 @@ function showrecord(times,oldtime) {
                     dq_play=recordPlayParam;
                     videourl=dq_play.playUrl;
                    var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
+                    locationtime+=positiontime;
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     initplayer(parseFloat(locationtime));
 
@@ -1103,30 +1119,30 @@ function showrecord(times,oldtime) {
             layer.msg("没有找到视频定位点",{time:500})
         }
 
+        /* 视频播放会自动定位变色 此处可以不处理
+                var recorddetailtrlen= $("#recorddetail label").length;
+                $("#recorddetail label").each(function (i,e) {
+                    var t1=$(this).attr("times");
+                    var name=$(this).attr("name");
+                    if (t1==times) {//需要减去差值
+                        $(this).addClass("highlight_right");
+                        var top=$(this).position().top;
+                        var div = document.getElementById('recorddetail');
+                        div.scrollTop = top;
+                        return false;
+                    }
+                });
 
-        var recorddetailtrlen= $("#recorddetail label").length;
-        $("#recorddetail label").each(function (i,e) {
-            var t1=$(this).attr("times");
-            var name=$(this).attr("name");
-            if (t1==times) {//需要减去差值
-                $(this).addClass("highlight_right");
-                var top=$(this).position().top;
-                var div = document.getElementById('recorddetail');
-                div.scrollTop = top;
-                return false;
-            }
-        });
-
-        $("#recordreals div").each(function (i,e) {
-            var t2=$(this).attr("times");
-            if (t2==times) {
-                $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                var top=$(this).position().top;
-                var div = document.getElementById('recordreals_scrollhtml');
-                div.scrollTop = top;
-                return false;
-            }
-        });
+                $("#recordreals div").each(function (i,e) {
+                    var t2=$(this).attr("times");
+                    if (t2==times) {
+                        $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
+                        var top=$(this).position().top;
+                        var div = document.getElementById('recordreals_scrollhtml');
+                        div.scrollTop = top;
+                        return false;
+                    }
+                });*/
     }
 }
 var dqindex_realtxt=0;//当前显示的下标
@@ -1254,8 +1270,11 @@ $(function () {
 
         /!*此处开始定位*!/
         if (isNotEmpty(time)&&time>0){
+            console.log("自动:"+positiontime)
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
             locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
+            locationtime+=positiontime;//时间戳加上毫秒差值
+
 
             //左侧
             var recordrealsdivlen=$("#recordreals div").length;//识别长度
@@ -2439,3 +2458,40 @@ function callbackuploadPhreport(data) {
     }
 }
 //*******************************************************************情绪报告的生成end****************************************************************//
+
+
+//*******************************************************************修改定位时间start****************************************************************//
+function updateRecord(){
+    var positiontime=$("#positiontime").val();
+    if (!isNotEmpty(positiontime)){
+        layer.msg("请输入定位毫秒差值",{icon:5});
+        return;
+    }
+    var url=getActionURL(getactionid_manage().getRecordById_updateRecord);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            ssid: recordssid,
+            positiontime:positiontime
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackupdateRecord);
+}
+function callbackupdateRecord(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var param=data.param;
+            if (isNotEmpty(param)){
+                 positiontime=param.positiontime;//更新值
+                layer.msg("保存成功",{icon:6,time:1000},function () {
+                    $("#positiontime").val(positiontime)
+                });
+            }
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+//*******************************************************************修改定位时间start****************************************************************//

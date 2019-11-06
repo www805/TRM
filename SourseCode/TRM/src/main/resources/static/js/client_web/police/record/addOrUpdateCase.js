@@ -618,6 +618,7 @@ function getCardreader_btn() {
         dataType: "JSONP",
         type: "get",
         url: "http://localhost:8989/api/ReadMsg",
+        timeout:5000,
         success: function (data) {
                 if (isNotEmpty(data)){
                     reset();
@@ -670,6 +671,7 @@ function getCardreader_btn() {
                 }
         },
         error: function (e) {
+            layer.msg("请先确认身份证识别设备是否插上",{icon:5})
         }
     });
 }

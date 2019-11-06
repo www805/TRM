@@ -16,6 +16,8 @@ var first_playstarttime=0;//第一个视频的开始时间
 var dq_play=null;//当前视频数据
 var recordPlayParams=[];//全部视频数据集合
 
+var positiontime=0;
+
 
 //获取案件信息
 function getRecordById() {
@@ -68,6 +70,9 @@ function callbackgetRecordById(data) {
             recordnameshow=record.recordname;//当前笔录名称
 
             if (isNotEmpty(record)){
+                positiontime=record.positiontime==null?0:record.positiontime;
+                $("#positiontime").val(positiontime);
+
                 var wordheaddownurl_html=record.wordheaddownurl_html;
                 if (isNotEmpty(wordheaddownurl_html)){
                     $("#wordheaddownurl").attr("src",wordheaddownurl_html);
@@ -82,7 +87,7 @@ function callbackgetRecordById(data) {
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recorduser=[];
-                    if (gnlist.indexOf("fy_t")!= -1){
+                   /* if (gnlist.indexOf("fy_t")!= -1){
                         //法院：人员从拓展表获取
                         var usergrades=recordUserInfosdata.usergrades;
                         if (isNotEmpty(usergrades)) {
@@ -111,7 +116,20 @@ function callbackgetRecordById(data) {
 
                         recorduser.push(user1);
                         recorduser.push(user2);
-                    }
+                    }*/
+                    var user1={
+                        username:recordUserInfosdata.username
+                        ,userssid:recordUserInfosdata.userssid
+                        ,grade:2
+                    };
+                    var user2={
+                        username:recordUserInfosdata.adminname
+                        ,userssid:recordUserInfosdata.adminssid
+                        ,grade:1
+                    };
+
+                    recorduser.push(user1);
+                    recorduser.push(user2);
                 }
 
                 //案件信息
@@ -473,7 +491,7 @@ $(function () {
         if (isNotEmpty(time)&&time>0){
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
             locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
-
+            locationtime+=positiontime;//时间戳加上毫秒差值
             //左侧
             var recordrealsdivlen=$("#recordreals div").length;//识别长度
             $("#recordreals div").each(function (i,e) {
@@ -906,6 +924,7 @@ function showrecord(times,oldtime) {
             if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
                 if (dq_play.filenum==recordPlayParam.filenum){
                     var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime+=positiontime;
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     changeProgrss(parseFloat(locationtime));
                 } else {
@@ -913,6 +932,7 @@ function showrecord(times,oldtime) {
                     dq_play=recordPlayParam;
                     videourl=dq_play.playUrl;
                     var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
+                    locationtime+=positiontime;
                     locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
                     initplayer(parseFloat(locationtime));
 
@@ -932,6 +952,7 @@ function showrecord(times,oldtime) {
         }
 
 
+        /* 视频会处理此处可不处理
         var recorddetailtrlen= $("#recorddetail label").length;
         $("#recorddetail label").each(function (i,e) {
             var t1=$(this).attr("times");
@@ -954,9 +975,45 @@ function showrecord(times,oldtime) {
                 div.scrollTop = top;
                 return false;
             }
-        });
+        });*/
     }
 }
+
+//*******************************************************************修改定位时间start****************************************************************//
+function updateRecord(){
+    var positiontime=$("#positiontime").val();
+    if (!isNotEmpty(positiontime)){
+        layer.msg("请输入定位毫秒差值",{icon:5});
+        return;
+    }
+    var url=getActionURL(getactionid_manage().getCourtDetail_updateRecord);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            ssid: recordssid,
+            positiontime:positiontime
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackupdateRecord);
+}
+function callbackupdateRecord(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var param=data.param;
+            if (isNotEmpty(param)){
+                positiontime=param.positiontime;//更新值
+                layer.msg("保存成功",{icon:6,time:1000},function () {
+                    $("#positiontime").val(positiontime)
+                });
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+//*******************************************************************修改定位时间start****************************************************************//
+
 
 
 //默认问答

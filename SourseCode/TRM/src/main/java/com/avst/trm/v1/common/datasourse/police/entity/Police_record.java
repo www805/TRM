@@ -92,6 +92,20 @@ public class Police_record extends Model<Police_record> {
      */
     private Integer repackbool;
 
+
+    /**
+     * 用于控制视频语音定位，时间提前(正数)或者者后退（负数）。毫秒值 默认0
+     */
+    private long positiontime;
+
+    public long getPositiontime() {
+        return positiontime;
+    }
+
+    public void setPositiontime(long positiontime) {
+        this.positiontime = positiontime;
+    }
+
     public Integer getRepackbool() {
         return repackbool;
     }
