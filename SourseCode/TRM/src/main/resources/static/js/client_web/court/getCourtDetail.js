@@ -87,7 +87,7 @@ function callbackgetRecordById(data) {
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recorduser=[];
-                   /* if (gnlist.indexOf("fy_t")!= -1){
+                   if (gnlist.indexOf("fy_t")!= -1){
                         //法院：人员从拓展表获取
                         var usergrades=recordUserInfosdata.usergrades;
                         if (isNotEmpty(usergrades)) {
@@ -116,21 +116,8 @@ function callbackgetRecordById(data) {
 
                         recorduser.push(user1);
                         recorduser.push(user2);
-                    }*/
-                    var user1={
-                        username:recordUserInfosdata.username
-                        ,userssid:recordUserInfosdata.userssid
-                        ,grade:2
-                    };
-                    var user2={
-                        username:recordUserInfosdata.adminname
-                        ,userssid:recordUserInfosdata.adminssid
-                        ,grade:1
-                    };
+                    }
 
-                    recorduser.push(user1);
-                    recorduser.push(user2);
-                }
 
                 //案件信息
                 var case_=record.case_;

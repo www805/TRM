@@ -409,7 +409,7 @@ public class RecordService extends BaseService {
             return;
         }
         String recordssid=updateRecordParam.getSsid();//笔录ssid
-        LogUtil.intoLog(1,this.getClass(),"修改笔录参数__recordssid is null____"+recordssid);
+        LogUtil.intoLog(1,this.getClass(),"修改笔录参数__recordssid______"+recordssid);
         if (StringUtils.isEmpty(recordssid)){
             result.setMessage("未找到该笔录");
             return;
