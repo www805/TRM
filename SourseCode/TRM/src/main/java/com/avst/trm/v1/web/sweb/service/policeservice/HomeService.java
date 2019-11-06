@@ -66,9 +66,6 @@ public class HomeService extends BaseService {
     @Autowired
     private Base_serverconfigMapper base_serverconfigMapper;    //服务器系统配置
 
-    @Autowired
-    private Base_serverconfigMapper serverconfigMapper;
-
 
     public void getAllCount(RResult rResult, Model model) {
 
@@ -136,76 +133,8 @@ public class HomeService extends BaseService {
     }
 
     public void getNavList(RResult result) {
-
         AppCacheParam cacheParam = AppServiceCache.getAppServiceCache();
-        String nav_file_name=PropertiesListenerConfig.getProperty("nav.file.name");
-        String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
-        if(null == cacheParam.getData()){
-            FileInputStream fis = null;
-            String myIP = NetTool.getMyIP();
-            try {
 
-                Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
-
-                if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
-                    Base_filesave filesaveSyslogo = new Base_filesave();
-                    filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
-                    Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
-                    if (null!=syslogo){
-                        cacheParam.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
-                    }
-                }
-
-                if (StringUtils.isNotEmpty(serverconfig.getClient_filesavessid())) {
-                    Base_filesave filesaveClientlogo = new Base_filesave();
-                    filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
-                    Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
-                    if (null!=clientlogo){
-                        cacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
-                    }
-                }
-
-                fis = new FileInputStream(path);
-
-                Yaml yaml = new Yaml();
-                Map<String,Object> map = yaml.load(fis);
-
-                String application_name= PropertiesListenerConfig.getProperty("spring.application.name");
-                String client_name= PropertiesListenerConfig.getProperty("nav.file.client");
-                String swebFile=PropertiesListenerConfig.getProperty("nav.file.service");
-
-                //获取授权信息
-                CommonCache.gnlist();
-                SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
-                String gnlist = getSQEntity.getGnlist();
-
-                Map<String,Object> avstYml = (Map<String, Object>) map.get(application_name);
-                Map<String, Object> oemYml = (Map<String, Object>) avstYml.get("oem");//oem
-                Map<String, Object> commonYml = (Map<String, Object>) oemYml.get("common_o");//取出通用版
-                Map<String,Object> fileYml = (Map<String, Object>) commonYml.get(swebFile);
-
-                Map<String,Object> clientYml = (Map<String, Object>) commonYml.get(client_name);//取出客户端
-                String guidepageUrl = (String) clientYml.get("home-url");//获取客户端的首页
-                fileYml.put("bottom", commonYml.get("bottom"));
-                fileYml.put("gnlist", gnlist);
-                String hostAddress = NetTool.getMyIP();
-
-                cacheParam.setData(fileYml);
-
-                cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
-
-            } catch (IOException e) {
-                LogUtil.intoLog(4, this.getClass(), "没找到外部配置文件：" + path);
-            }finally {
-                if(null != fis){
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
         result.setData(cacheParam);
         changeResultToSuccess(result);
     }

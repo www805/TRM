@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -556,12 +557,14 @@ public class TemplateService extends BaseService {
         LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
         if (insert_bool<0){
             result.setMessage("系统异常");
+            LogUtil.intoLog(4, this.getClass(), "新增模板失败...");
             return;
         }
 
         addTemplateTypeVO.setBool(insert_bool);
         result.setData(addTemplateTypeVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "新增模板成功！");
         return;
     }
 
@@ -631,12 +634,14 @@ public class TemplateService extends BaseService {
         LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
+            LogUtil.intoLog(4, this.getClass(), "修改模板失败...");
             return;
         }
 
         defaultTemplateVO.setBool(update_bool);
         result.setData(defaultTemplateVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(4, this.getClass(), "修改模板成功！");
         return;
     }
 
@@ -667,15 +672,18 @@ public class TemplateService extends BaseService {
         LogUtil.intoLog(this.getClass(),"update_bool__"+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
+            LogUtil.intoLog(4, this.getClass(), "设置默认模板，异常...");
             return;
         }else if(update_bool==0){
             result.setMessage("没有找到该模板");
+            LogUtil.intoLog(4, this.getClass(), "没有找到该模板...");
             return;
         }
 
         defaultTemplateVO.setBool(update_bool);
         result.setData(defaultTemplateVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "设置默认模板成功！");
         return;
     }
 
@@ -797,12 +805,14 @@ public class TemplateService extends BaseService {
         LogUtil.intoLog(this.getClass(),"update_bool "+update_bool);
         if (update_bool<0){
             result.setMessage("系统异常");
+            LogUtil.intoLog(1, this.getClass(), "问题修改，出现异常...");
             return;
         }
 
         updateProblemVO.setBool(update_bool);
         result.setData(updateProblemVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "问题修改成功！");
         return;
     }
 
@@ -894,6 +904,7 @@ public class TemplateService extends BaseService {
         addProblemVO.setBool(insert_bool);
         result.setData(addProblemVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "新增问题'" + addProblemParam.getProblem() + "'成功！");
         return;
     }
 
@@ -986,6 +997,7 @@ public class TemplateService extends BaseService {
         addProblemTypeVO.setBool(insert_bool);
         result.setData(addProblemTypeVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "新增问题类型'" + addProblemtypeParam.getTypename() + "'成功！");
         return;
     }
 
@@ -1064,6 +1076,7 @@ public class TemplateService extends BaseService {
         updateProblemTypeVO.setBool(update_bool);
         result.setData(updateProblemTypeVO);
         changeResultToSuccess(result);
+        LogUtil.intoLog(1, this.getClass(), "修改问题类型'" + updateProblemtypeParam.getTypename() + "'成功！");
         return;
     }
 
@@ -1198,6 +1211,7 @@ public class TemplateService extends BaseService {
             result.setData("http://" + uploadbasepath + uploadpath);
 
             changeResultToSuccess(result);
+            LogUtil.intoLog(1, this.getClass(), "问答模板生成word文件成功！");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (TemplateException e) {
@@ -1304,6 +1318,7 @@ public class TemplateService extends BaseService {
 
             this.changeResultToSuccess(result);
             result.setMessage("Excel导出成功，请稍后...");
+            LogUtil.intoLog(1, this.getClass(), "问答模板Excel导出成功！");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1581,6 +1596,7 @@ public class TemplateService extends BaseService {
             //请求成功，展示出来
             this.changeResultToSuccess(result);
             result.setMessage("模板导入成功，请稍后...");
+            LogUtil.intoLog(1, this.getClass(), "问答模板导入成功！");
         }
     }
 
