@@ -113,9 +113,9 @@
                 <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
                 <button class="layui-btn layui-btn-primary" onclick="getRecordreal_LastByRecordssid();" id="getRecordreal_LastByRecordssid" style="display: none">获取重置</button>
                 <button class="layui-btn layui-btn-warm " onclick="focuslable(null,2,'q');">添加一行</button>
-                <div style="float: right;">
-                        <button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>
-                 </div>
+                <!--<div style="float: right;">-->
+                        <!--<button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>-->
+                 <!--</div>-->
             </div>
             <div class="layui-col-md12 " >
                 <div class="layui-card-body layui-row " style="padding: 0">
@@ -247,15 +247,15 @@
                         </table>';
 
         recordstate_index = layer.open({
-            type:1,
-            title: '状态栏',
-            closeBtn: 0,
-            skin: 'layui-layer-lan',
-            shade: 0,
-            offset: 'lb',
-            area: ['250px', '130px'],
-            maxmin: true,
-            resize:false,
+                type:1,
+                title: '状态栏',
+                closeBtn: 0,
+                skin: 'layui-layer-lan',
+                shade: 0,
+                offset: 'lb',
+                area: ['250px', '130px'],
+                maxmin: true,
+                resize:false,
             content: html,
             success: function(layero,index){
                 layer.min(index);
