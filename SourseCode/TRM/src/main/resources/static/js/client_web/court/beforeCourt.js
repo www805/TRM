@@ -18,78 +18,10 @@ var dq_usertype=2;//默认为被告
 //可多个
 var userinfograde1=null;//原告信息
 var userinfograde2=null;//被告信息
-
-
 var userinfograde3=null;//被代理人
 var userinfograde8=null;//原代理人
 
-// 获取基础信息===================================================================start
-function getRecordtypes() {
-    var url=getActionURL(getactionid_manage().beforeCourt_getRecordtypes);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{}
-    };
-    ajaxSubmitByJson(url,data,callbackgetRecordtypes);
-}
-function callbackgetRecordtypes(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var list=data.getRecordtypesVOParamList;
-            $('#recotdtypes option').not(":lt(1)").remove();
-            gets(list);
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-var len="-";
-function gets(data) {
-    if (isNotEmpty(data)){
-        for (var i = 0; i < data.length; i++) {
-            var l = data[i];
-            if (l.pid!=0){
-                $("#recotdtypes").append("<option value='"+l.ssid+"' > |"+len+" "+l.typename+"</option>");
-            }
-            if (l.police_recordtypes.length>0){
-                len+=len;
-                gets(l.police_recordtypes);
-                len="-";
-            }
-        }
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
-function getNationals(){
-    var url=getActionURL(getactionid_manage().beforeCourt_getNationals);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetNationals);
-}
-function callbackgetNationals(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        $('#national option').not(":lt(1)").remove();
-        if (isNotEmpty(data)) {
-            for (var i = 0; i < data.length; i++) {
-                var l = data[i];
-                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
-// 获取基础信息===================================================================end
+
 
 
 //开始笔录按钮===================================================================start
@@ -132,11 +64,14 @@ function addCaseToArraignment() {
     var oldcardnum=$("#cardnum").val();
     var oldusernamelist=$("input[name="+userinfogradessid+"]").val();
     var olduserinfo=null;
-    //只有身份证号码和姓名不为空时保存
-    if (isNotEmpty(oldusernamelist)){
-       var oldusername=oldusernamelist.split("；");
-        oldusername = oldusername.filter(function (x) { return x && x.trim() });
-        if (oldusername.length>0) { oldusername=oldusername[0];}
+    //只有身份证号码|\姓名不为空时保存
+    if (isNotEmpty(oldusernamelist)||isNotEmpty(oldcardnum)){
+        var oldusername=null;
+        if (isNotEmpty(oldusernamelist)) {
+            var oldusername=oldusernamelist.split("；");
+            oldusername = oldusername.filter(function (x) { return x && x.trim() });
+            if (oldusername.length>0) { oldusername=oldusername[0];}
+        }
         var olduserinfo={
             cardnum:oldcardnum,
             username:oldusername,
@@ -207,7 +142,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfograde8)){
         //原告代理人
-        var bool=checkuserinfograde(userinfograde8,3);
+        var bool=checkuserinfograde(userinfograde8,8);
         if (!bool){
             return;
         }
@@ -218,6 +153,13 @@ function addCaseToArraignment() {
         }
     }
 
+    if(!isNotEmpty(oldcardnum)){
+        //去掉回显身份证验证
+         $("#age").val("");
+        $("#sex").prop('selectedIndex', 0);
+         $("#both").val("");
+    }
+
     //检测是否重复
     if (isNotEmpty(arraignmentexpand)){
         var newarraignmentexpand = [];//新数组
@@ -226,13 +168,13 @@ function addCaseToArraignment() {
             for(var j=0;j<newarraignmentexpand.length;j++){
                 if((isNotEmpty(arraignmentexpand[i].cardnum)&&isNotEmpty(newarraignmentexpand[j].cardnum)&& arraignmentexpand[i].cardnum==newarraignmentexpand[j].cardnum)){
                     bool=false;
-                    layer.msg("用户不能重复使用",{icon: 5});
+                    layer.msg("用户身份证号码不能重复使用",{icon: 5});
                     return;
-                }else if (arraignmentexpand[i].username==newarraignmentexpand[j].username){//先只判断名称不能重复  &&(!isNotEmpty(arraignmentexpand[i].cardnum)&&!isNotEmpty(newarraignmentexpand[j].cardnum))
+                }/*else if (isNotEmpty(arraignmentexpand[i].username)&&isNotEmpty(newarraignmentexpand[j].username)&&arraignmentexpand[i].username==newarraignmentexpand[j].username){//先只判断名称不能重复  &&(!isNotEmpty(arraignmentexpand[i].cardnum)&&!isNotEmpty(newarraignmentexpand[j].cardnum))
                     bool=false;
-                    layer.msg("用户不能重复使用",{icon: 5});
+                    layer.msg("用户名称不能重复使用",{icon: 5});
                     return;
-                }
+                }*/
             };
             if (bool){
                 newarraignmentexpand.push(arraignmentexpand[i]);
@@ -474,6 +416,12 @@ function select_cardnum(obj) {
 function select_cardnumblur() {
     $("#cardnum_ssid").css("display","none");
     getUserByCard();
+    var cardnum=$("#cardnum").val();
+    var bool=checkout_cardnum(cardnum);
+    if (!bool){
+        layer.msg("请输入有效的18位居民身份证号码",{icon: 5});
+        return false;
+    }
 }
 
 
@@ -484,44 +432,49 @@ function getUserByCard(obj,usertype){
     var cardnum =null;
     if (isNotEmpty(usertype)) {
 
-
         //收集切换前的用户信息
         var userinfogradessid="userinfograde"+dq_usertype;
         var oldcardnum=$("#cardnum").val();
         var oldusernamelist=$("input[name="+userinfogradessid+"]").val();
         var olduserinfo=null;
-        //只有身份证号码和姓名不为空时保存
-        if (isNotEmpty(oldusernamelist)){
-            var oldusername=oldusernamelist.split("；");
-            oldusername = oldusername.filter(function (x) { return x && x.trim() });
-            if (oldusername.length>0) { oldusername=oldusername[0];}
-            var olduserinfo={
-                cardnum:oldcardnum,
-                username:oldusername,
-                age:$("#age").val(),
-                sex:$("#sex").val(),
-                both:$("#both").val(),
-                nationalssid:$("#national").val(),
-                educationlevel:$("#educationlevel").val(),
-                phone:$("#phone").val(),
-                domicile:$("#domicile").val(),
-                residence:$("#residence").val(),
-                workunits:$("#workunits").val(),
-                issuingauthority:$("#issuingauthority").val(),
-                validity:$("#validity").val(),
-                userinfogradessid:userinfogradessid,
+        //只有身份证号码或者姓名不为空时保存
+        if (isNotEmpty(oldusernamelist)||isNotEmpty(oldcardnum)) {
+            var oldusername = null;
+            if (isNotEmpty(oldusernamelist)) {
+                var oldusername = oldusernamelist.split("；");
+                oldusername = oldusername.filter(function (x) {
+                    return x && x.trim()
+                });
+                if (oldusername.length > 0) {
+                    oldusername = oldusername[0];
+                }
+            }
+            var olduserinfo = {
+                cardnum: oldcardnum,
+                username: oldusername,
+                age: $("#age").val(),
+                sex: $("#sex").val(),
+                both: $("#both").val(),
+                nationalssid: $("#national").val(),
+                educationlevel: $("#educationlevel").val(),
+                phone: $("#phone").val(),
+                domicile: $("#domicile").val(),
+                residence: $("#residence").val(),
+                workunits: $("#workunits").val(),
+                issuingauthority: $("#issuingauthority").val(),
+                validity: $("#validity").val(),
+                userinfogradessid: userinfogradessid,
             }
         }
         if (dq_usertype==1){userinfograde1=olduserinfo;} else if (dq_usertype==2){ userinfograde2=olduserinfo;}else if (dq_usertype==3){userinfograde3=olduserinfo;}else if (dq_usertype==8){userinfograde8=olduserinfo;}
 
 
-        //新的
         dq_usertype=usertype;
-       if (dq_usertype==1){
+        if (dq_usertype==1){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告</span>个人信息")
         } else if (dq_usertype==2){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告</span>个人信息");
-            dquserssid=null;//当前用户的ssid
+            dquserssid==null;
             dqcasessid=null;//当前案件ssid
             cases=null;
             othercases=null;
@@ -531,8 +484,6 @@ function getUserByCard(obj,usertype){
         }else if (dq_usertype==8){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告诉讼代理人</span>个人信息")
         }
-
-
         //判断是否存在回显
         var virtualuser=null;
         if (isNotEmpty(userinfograde1)&&dq_usertype==1) {
@@ -558,8 +509,11 @@ function getUserByCard(obj,usertype){
     if (!isNotEmpty(cardnum)){
         $("#user input").val("");
         $('#user  select').prop('selectedIndex', 0);
+        console.log("未输入身份证号码")
         return;
     }
+
+
 
     var url=getActionURL(getactionid_manage().beforeCourt_getUserByCard);
     //默认卡类型使用身份证
@@ -577,9 +531,6 @@ function callbackgetUserByCard(data){
         if (isNotEmpty(data)){
             var userinfo=data.userinfo;
             if (isNotEmpty(userinfo)){
-
-
-
                 //用户名称
                 var inputname="userinfograde"+dq_usertype;
                 var usernamelist=$("input[name="+inputname+"]").val();
@@ -598,41 +549,33 @@ function callbackgetUserByCard(data){
                 }
 
 
-                if (dq_usertype==2){//被告时候才需要更换
-                    dquserssid=userinfo.ssid;
-                }
                 /*人员信息*/
                 $("#cardnum").val(userinfo.cardnum);
                 $("#beforename").val(userinfo.beforename);
                 $("#nickname").val(userinfo.nickname);
-                $("#both").val(userinfo.both);
                 $("#professional").val(userinfo.professional);
                 $("#phone").val(userinfo.phone);
                 $("#domicile").val(userinfo.domicile);
                 $("#residence").val(userinfo.residence);
                 $("#workunits").val(userinfo.workunits);
-                $("#age").val(userinfo.age);
-                $("#sex").val(userinfo.sex);
                 $("#national").val(userinfo.nationalssid);
                 $("#nationality").val(userinfo.nationalityssid);
                 $("#educationlevel").val(userinfo.educationlevel);
                 $("#politicsstatus").val(userinfo.politicsstatus);
                 $("#issuingauthority").val(userinfo.issuingauthority);
                 $("#validity").val(userinfo.validity);
-                layui.use('form', function(){
-                    var $ = layui.$;
-                    var form = layui.form;
-                    form.render();
-                });
 
-
+                if (dq_usertype==2){//被告时候才需要更换
+                    dquserssid=userinfo.ssid;
+                }
                 if (isNotEmpty(dquserssid)&&dq_usertype==2){
                     getCaseById();
                 }
+
             }
         }
     }else{
-        layer.msg(data.message,{icon: 5});
+        console.log(data.message)
     }
     layui.use('form', function(){
         var $ = layui.$;
@@ -640,6 +583,8 @@ function callbackgetUserByCard(data){
         form.render();
     });
 }
+
+
 //获取全部管理员
 function getAdminList() {
     var url=getActionURL(getactionid_manage().beforeCourt_getAdminList);
@@ -840,8 +785,7 @@ function select_caseblur() {
     }
 }
 function open_othercases() {
-    var dqcardnum=$("#cardnum").val();
-    if (!isNotEmpty(dqcardnum)){
+    if (!isNotEmpty(dquserssid)){
         layer.msg("请先获取被告人信息",{icon:5});
         return;
     }
@@ -921,14 +865,16 @@ function open_othercases() {
 }
 //获取案件
 function getCaseById() {
-    var url=getActionURL(getactionid_manage().beforeCourt_getCaseById);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            userssid:dquserssid,
-        }
-    };
-    ajaxSubmitByJson(url,data,callbakegetCaseById) ;
+    if (isNotEmpty(dquserssid)){
+        var url=getActionURL(getactionid_manage().beforeCourt_getCaseById);
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                userssid:dquserssid,
+            }
+        };
+        ajaxSubmitByJson(url,data,callbakegetCaseById) ;
+    }
 }
 function callbakegetCaseById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -939,98 +885,65 @@ function callbakegetCaseById(data) {
                 var othercasesdata=data.othercases;
                 cases=casesdata;
                 othercases=othercasesdata;
+                $("#casename_ssid").html("");
                 if (isNotEmpty(cases)){
-                    setcases(cases);
+                        for (var i = 0; i < cases.length; i++) {
+                            var c= cases[i];
+                            if (c.casebool!=2){
+                                $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
+                            }
+                        }
+
+                        if (isNotEmpty(dqcasessid)){
+                            $("#casename").val(dqcasessid);
+                            $("#cause").val("");
+                            $("#casenum").val("");
+                            $("#asknum").val("0");
+                            if (isNotEmpty(cases)){
+                                for (var i = 0; i < cases.length; i++) {
+                                    var c = cases[i];
+                                    if (dqcasessid==c.ssid){
+                                        var casename=$("#casename").find("option:selected").text();
+                                        var recordtypename=$("td[recordtypebool='true']",document).text();
+                                        var username=$("#username").val();
+                                        var asknum=c.arraignments==null?0:c.arraignments.length;
+                                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+
+                                        $("#cause").val(c.cause);
+                                        $("#casenum").val(c.casenum);
+                                        if (isNotEmpty(c.starttime)){
+                                            $("#starttime").val(c.starttime);
+                                        }
+                                        if (isNotEmpty(c.endtime)){
+                                            $("#endtime").val(c.endtime);
+                                        }
+                                        if (isNotEmpty(c.occurrencetime)){
+                                            $("#occurrencetime").val(c.occurrencetime);
+                                        }
+                                        $("#caseway").val(c.caseway);
+                                        $("#asknum").val(asknum);
+                                        $("#recordname").val(recordname);
+                                    }
+                                }
+                            }
+                        }
                 }
             }
         }
     }else{
         layer.msg(data.message,{icon: 5});
     }
-}
-function setcases(cases){
-    $("#casename_ssid").html("");
-    if (isNotEmpty(cases)){
-        for (var i = 0; i < cases.length; i++) {
-            var c= cases[i];
-            if (c.casebool!=2){
-                $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
-            }
-        }
-
-        if (isNotEmpty(dqcasessid)){
-            $("#casename").val(dqcasessid);
-            $("#cause").val("");
-            $("#casenum").val("");
-            $("#caseway").val("");
-            $("#asknum").val("0");
-            $("#recordname").val("");
-            if (isNotEmpty(cases)){
-                for (var i = 0; i < cases.length; i++) {
-                    var c = cases[i];
-                    if (dqcasessid==c.ssid){
-                        var casename=$("#casename").find("option:selected").text();
-                        var recordtypename=$("td[recordtypebool='true']",document).text();
-                        var username=$("#username").val();
-                        var asknum=c.arraignments==null?0:c.arraignments.length;
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
-
-                        $("#cause").val(c.cause);
-                        $("#casenum").val(c.casenum);
-                        if (isNotEmpty(c.starttime)){
-                            $("#starttime").val(c.starttime);
-                        }
-                        if (isNotEmpty(c.endtime)){
-                            $("#endtime").val(c.endtime);
-                        }
-                        if (isNotEmpty(c.occurrencetime)){
-                            $("#occurrencetime").val(c.occurrencetime);
-                        }
-                        $("#caseway").val(c.caseway);
-                        $("#asknum").val(asknum);
-                        $("#recordname").val(recordname);
-                    }
-                }
-            }
-        }
-    }
     layui.use('form', function(){
         var form = layui.form;
         form.render();
     });
 }
+
 //案件===================================================================end
 
-function resetuser(obj,type) {
-    obj=$(obj).prev();
-    getUserByCard(obj,type);
-
-    var con="";
-    if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="被告诉讼代理人";}else if (type==8){con="原告诉讼代理人";}
-
-    layer.open({
-        content:"确定要重置【"+con+"】的个人信息吗？"
-        ,btn: ['确定', '取消']
-        ,yes: function(index, layero){
-            var inputname="userinfograde"+type;
-            var oldusername=$("input[name="+inputname+"]").val();
-            $("input[name="+inputname+"]").val("");
-            $("#user input").val("");
-            $('#user  select').prop('selectedIndex', 0);
-            $(obj).attr("userinfograde","");
-            if (type==1){userinfograde1=null;} else if (type==2){ userinfograde2=null;}else if (type==3){userinfograde3=null;}else if (type==8){userinfograde8=null;}
-            layer.msg(con+"个人信息已重置",{icon:6});
-            layer.close(index);
-        }
-        ,btn2: function(index, layero){
-            layer.close(index);
-        }
-        ,cancel: function(){
-        }
-    });
-}
 
 
+//**************************************检测****************************start
 //检验主身份证号码
 function checkout_cardnum(cardnum) {
     cardnum = $.trim(cardnum);
@@ -1088,12 +1001,6 @@ function checkuserinfograde(userinfograde,type) {
             setuserval(userinfograde,type);
             return false;
         }
-       /* if (!isNotEmpty(cardnum)){
-            layer.msg(con+"身份证号码不能为空",{icon: 5});
-            $("#cardnum").focus();
-            setuserval(userinfograde,type);
-            return false;
-        }*/
         if (isNotEmpty(cardnum)){
             var bool=checkout_cardnum(cardnum);
             if (!bool){
@@ -1117,6 +1024,8 @@ function checkuserinfograde(userinfograde,type) {
 //检测回填个人信息
 function setuserval(virtualuser,type) {
     if (isNotEmpty(virtualuser)){
+        dq_usertype=type;
+
         /*人员信息*/
         $("#cardnum").val(virtualuser.cardnum);
         $("#beforename").val(virtualuser.beforename);
@@ -1136,16 +1045,10 @@ function setuserval(virtualuser,type) {
         $("#issuingauthority").val(virtualuser.issuingauthority);
         $("#validity").val(virtualuser.validity);
 
-        dq_usertype=type;
         if (dq_usertype==1){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告</span>个人信息")
         } else if (dq_usertype==2){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告</span>个人信息");
-            dquserssid=null;//当前用户的ssid
-            dqcasessid=null;//当前案件ssid
-            cases=null;
-            othercases=null;
-            $("#asknum").val(0);
         }else if (dq_usertype==3){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告诉讼代理人</span>个人信息")
         }else if (dq_usertype==8){
@@ -1159,7 +1062,7 @@ function setuserval(virtualuser,type) {
     }
 }
 
-//多人用户：多被告多原告等
+//收集人员数据
 function setusers(userinfogradessid) {
     var arr=[];
     //判断是否多人除开
@@ -1179,12 +1082,96 @@ function setusers(userinfogradessid) {
     }
     return arr;
 }
+//**************************************检测****************************end
 
-/**
- * 会议模板选择
- */
 
-//获取会议模板
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// **************************************获取基础信息**************************************start
+function getRecordtypes() {
+    var url=getActionURL(getactionid_manage().beforeCourt_getRecordtypes);
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{}
+    };
+    ajaxSubmitByJson(url,data,callbackgetRecordtypes);
+}
+function callbackgetRecordtypes(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var list=data.getRecordtypesVOParamList;
+            $('#recotdtypes option').not(":lt(1)").remove();
+            gets(list);
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+var len="-";
+function gets(data) {
+    if (isNotEmpty(data)){
+        for (var i = 0; i < data.length; i++) {
+            var l = data[i];
+            if (l.pid!=0){
+                $("#recotdtypes").append("<option value='"+l.ssid+"' > |"+len+" "+l.typename+"</option>");
+            }
+            if (l.police_recordtypes.length>0){
+                len+=len;
+                gets(l.police_recordtypes);
+                len="-";
+            }
+        }
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+function getNationals(){
+    var url=getActionURL(getactionid_manage().beforeCourt_getNationals);
+    var data={
+        token:INIT_CLIENTKEY,
+    };
+    ajaxSubmitByJson(url,data,callbackgetNationals);
+}
+function callbackgetNationals(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        $('#national option').not(":lt(1)").remove();
+        if (isNotEmpty(data)) {
+            for (var i = 0; i < data.length; i++) {
+                var l = data[i];
+                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+// **************************************获取基础信息**************************************end
+
+
+//**********************************************获取会议模板******************************start
 function getMc_model(){
     var url=getUrl_manage().getMc_model;
     var data={
@@ -1268,7 +1255,10 @@ function open_model(){
         }
     });
 }
+//**********************************************获取会议模板*******************************end
 
+
+//******************************************获取全部笔录模板以及默认笔录模板****************************start
 //获取默认模板
 function getDefaultMtModelssid(){
     var url=getActionURL(getactionid_manage().beforeCourt_getDefaultMtModelssid);
@@ -1289,11 +1279,6 @@ function callbackgetDefaultMtModelssid(data){
         console.log("获取会议默认模板ssid"+data.message)
     }
 }
-
-/**
- * word模板
- */
-//获取全部笔录模板以及默认笔录模板
 function select_Model2(ssid,wordname){
     if (isNotEmpty(ssid)){
         dqwordssid=ssid;
@@ -1384,8 +1369,10 @@ function callbackgetWordTemplates(data){
         console.log("获取会议默认模板ssid"+data.message)
     }
 }
+//******************************************获取全部笔录模板以及默认笔录模板****************************end
 
-//追加“；”
+
+//********************************************追加“；”*****************************************start
 function adduser(obj,type) {
     var inputname="userinfograde"+type;
     var inputval=$("input[name="+inputname+"]").val();
@@ -1393,12 +1380,13 @@ function adduser(obj,type) {
         var last=inputval.substr(inputval.length-1,1);
         if (last!="；"){
             $("input[name="+inputname+"]").val(inputval+"；");
+            layer.msg("追加“；”字符后面可输入人员名称");
+        }else {
+            layer.msg("可输入人员名称");
         }
+    }else {
+           layer.msg("可直接填写人员名称或者通过身份证号码查询");
     }
-
-
-
-
 }
-
+//********************************************追加“；”*****************************************end
 

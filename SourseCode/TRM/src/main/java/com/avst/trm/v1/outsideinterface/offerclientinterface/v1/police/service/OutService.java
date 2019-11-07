@@ -906,6 +906,9 @@ public class OutService  extends BaseService {
                 }
             }
         } catch (Exception e) {
+            MtState= -1;
+            LiveState=-1;
+            AsrState=-1;
             e.printStackTrace();
         }
 
@@ -933,6 +936,7 @@ public class OutService  extends BaseService {
                 }else{
                 }
             } catch (Exception e) {
+                PolygraphState=-1;
                 e.printStackTrace();
             }
             if (null==polygraphssid){
@@ -955,6 +959,7 @@ public class OutService  extends BaseService {
                         PolygraphState=-1;
                     }
                 } catch (Exception e) {
+                    PolygraphState=-1;
                     e.printStackTrace();
                 }
             }

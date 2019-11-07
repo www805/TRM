@@ -767,7 +767,7 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">联系电话</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="tab_phone"   placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="number" name="tab_phone"   placeholder="" autocomplete="off" class="layui-input">\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg12">\
@@ -1538,7 +1538,7 @@ function init_form() {
         layui.use(['form','laydate'], function(){
             var form=layui.form;
             var laydate=layui.laydate;
-            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#cardnum'):not('#modelssid')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):*/
+            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#modelssid')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#cardnum')*/
             $("#asknum").val(0);
             $('select').not("#cards").prop('selectedIndex', 0);
             $("#casename_ssid").html("");

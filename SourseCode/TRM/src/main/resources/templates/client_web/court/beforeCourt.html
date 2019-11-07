@@ -61,7 +61,7 @@
          <form class="layui-form layui-row" >
             <div class="layui-col-md6" id="case">
                 <div class="layui-card" >
-                    <div class="layui-card-header">案件基本信息</div>
+                    <div class="layui-card-header">案件基本信息<span style="color: red">(提示：排列第一人员可绑定个人信息)</span></div>
                     <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body  layui-row layui-col-space10" >
                             <div class="layui-col-lg6">
@@ -88,7 +88,6 @@
                                 <label class="layui-form-label">原告：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,1)" >
-                                    <!-- ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,1)" title="重置原告个人信息"></i>-->
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,1)" title="追加"></i>
                                 </div>
                             </div>
@@ -96,7 +95,6 @@
                                 <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>被告：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde2"  id="username"  lay-verify="username" placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard(this,2)" >
-                                    <!-- ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="resetuser(this,2)" title="重置被告个人信息"></i>-->
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,2)" title="追加"></i>
                                 </div>
                             </div>
@@ -104,7 +102,6 @@
                                 <label class="layui-form-label">原告诉讼代理人：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,8)">
-                                    <!--  ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"    onclick="resetuser(this,8)" title="重置原告诉讼代理人"></i>-->
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,8)" title="追加"></i>
                                 </div>
                             </div>
@@ -113,7 +110,6 @@
                                 <label class="layui-form-label">被告诉讼代理人：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde3" id="defendant_agent"  placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard(this,3)">
-                                   <!--  ### <i class="layui-icon layui-icon-refresh-3" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc"  onclick="resetuser(this,3)"  title="重置被告诉讼代理人"></i>-->
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,3)" title="追加"></i>
                                 </div>
                             </div>
@@ -271,7 +267,7 @@
                                      <div class="layui-input-block">
                                          <div class="layui-form-select">
                                              <div class="layui-select-title">
-                                                 <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()">
+                                                 <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()" onkeyup="value=value.replace(/[\W]/g,'')">
                                                  <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="getUserByCard();"></i>
                                              </div>
                                              <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >
@@ -434,10 +430,6 @@
                 form.render();
             }
         });
-
-
-
-
 
 
         form.verify({

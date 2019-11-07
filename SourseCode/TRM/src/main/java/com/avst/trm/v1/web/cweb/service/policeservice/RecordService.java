@@ -1042,22 +1042,25 @@ public class RecordService extends BaseService {
 
 
 
-        //参数==============================================================start==============================================================
+        //参数**************************************************************************************************************************************start
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);//session用户
         List<Userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
+        Integer multifunctionbool=addCaseToArraignmentParam.getMultifunctionbool();//功能类型
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
         String wordtemplatessid=addCaseToArraignmentParam.getWordtemplatessid();//笔录模板ssid
         //笔录信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
         String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录名称
        //讯问信息
-        String adminssid=addCaseToArraignmentParam.getAdminssid()==null?user.getSsid():addCaseToArraignmentParam.getAdminssid();//询问人一
+        String adminssid=addCaseToArraignmentParam.getAdminssid();//询问人一
         Integer asknum=addCaseToArraignmentParam.getAsknum()==null?0:addCaseToArraignmentParam.getAsknum();
         String askobj=addCaseToArraignmentParam.getAskobj();//询问对象
         String recordadminssid=addCaseToArraignmentParam.getRecordadminssid();//记录人sssid
         String recordplace=addCaseToArraignmentParam.getRecordplace();//问话地点
+
+
         //需要判断是否新增或者修改的参数******************************start
         String casessid=addCaseToArraignmentParam.getCasessid();//案件ssid
         String userssid=addCaseToArraignmentParam.getUserssid();//人员ssid
@@ -1068,15 +1071,12 @@ public class RecordService extends BaseService {
         String otherworkname=addCaseToArraignmentParam.getOtherworkname();//新增询问人二的对应的工作单位
         String otheradminssid=addCaseToArraignmentParam.getOtheradminssid();//询问人二的ssid
         String otherworkssid=addCaseToArraignmentParam.getOtherworkssid();//询问人二对应的工作单位ssid
+        //需要判断是否新增或者修改的参数******************************end
 
-        Integer multifunctionbool=addCaseToArraignmentParam.getMultifunctionbool();
-
+        //用于法院拓展表数据
         List<UserInfo> arraignmentexpand=addCaseToArraignmentParam.getArraignmentexpand();
         List<ArrUserExpandParam> arrUserExpandParams=addCaseToArraignmentParam.getArrUserExpandParams();
-
-
-        //需要判断是否新增或者修改的参数******************************end
-        //参数==============================================================end==============================================================
+        //参数**************************************************************************************************************************************end
 
         Integer conversationbool=addCaseToArraignmentParam.getConversationbool();//笔录类型判断是审讯还是普通笔录
         if (conversationbool==-1){
@@ -1086,7 +1086,7 @@ public class RecordService extends BaseService {
         }if (conversationbool==2){
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
-            String time=new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date());
+            String time=new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
             String conversationmsg="快速谈话_"+time;
 
 
@@ -1096,7 +1096,6 @@ public class RecordService extends BaseService {
             addUserInfo.setCardnum("未知");
             addUserInfo.setCardtypessid(cardtypessid);
 
-            recordadminssid=adminssid;//记录人默认自己
 
             //案件信息默认
             addPolice_case=new Police_case();
@@ -1127,8 +1126,6 @@ public class RecordService extends BaseService {
             }
         }
         }
-
-
 
         LogUtil.intoLog(this.getClass(),"添加笔录使用的会议模板ssid_"+mtmodelssid);
 
@@ -1303,6 +1300,7 @@ public class RecordService extends BaseService {
                 usertotypessid=userInfo_.getUsertotypessid();
             }
         }
+        LogUtil.intoLog(4,this.getClass(),"添加人员案件基本信息数据__usertotypessid__"+usertotypessid);
 
             //需要新增案件信息
          String casenum=addPolice_case.getCasenum();//案件号码
@@ -1346,7 +1344,7 @@ public class RecordService extends BaseService {
                 addPolice_case.setCreatetime(new Date());
                 addPolice_case.setOrdernum(0);
                 addPolice_case.setCasebool(0);
-                addPolice_case.setCreator(adminssid);
+                addPolice_case.setCreator(user.getSsid());
 
 
                 int insertcase_bool =  police_caseMapper.insert(addPolice_case);
@@ -1401,33 +1399,34 @@ public class RecordService extends BaseService {
              Police_case police_case_=new Police_case();
              police_case_.setSsid(casessid);
              police_case_=police_caseMapper.selectOne(police_case_);
-             if (null!=police_case_&&police_case_.getCasebool()==3&&skipCheckCasebool==1){
-                 updatecaseParam.eq("casebool",1);//改为进行中
-             }
-
-
-              updatecaseParam.eq("ssid",casessid);
-              int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
-              LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
-
-             if (updatecase_bool>0){
-                 //案件人员表修改，1根据用户ssid以及案件ssid判断该用户是否在该案件中，在不用管；不在新增案件人员表
-                 EntityWrapper casetouserinfoParam=new EntityWrapper();
-                 casetouserinfoParam.eq("casessid",casessid);
-                 casetouserinfoParam.eq("userssid",userssid);
-                 List<Police_casetouserinfo> police_casetouserinfos_=police_casetouserinfoMapper.selectList(casetouserinfoParam);
-                 if (null==police_casetouserinfos_||police_casetouserinfos_.size()<1){
-                     //新增关联案件人员表
-                     Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
-                     police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
-                     police_casetouserinfo_.setCreatetime(new Date());
-                     police_casetouserinfo_.setCasessid(casessid);
-                     police_casetouserinfo_.setUserssid(userssid);
-                     police_casetouserinfo_.setUsertotypessid(usertotypessid);
-                     int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
-                     LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+             if (null!=police_case_){
+                 if (police_case_.getCasebool()==3&&skipCheckCasebool==1){
+                     updatecaseParam.eq("casebool",1);//改为进行中
+                 }
+                 updatecaseParam.eq("ssid",casessid);
+                 int updatecase_bool = police_caseMapper.update(addPolice_case,updatecaseParam);
+                 LogUtil.intoLog(this.getClass(),"updatecase_bool__"+updatecase_bool);
+                 if (updatecase_bool>0){
+                     //案件人员表修改，1根据用户ssid以及案件ssid判断该用户是否在该案件中，在不用管；不在新增案件人员表
+                     EntityWrapper casetouserinfoParam=new EntityWrapper();
+                     casetouserinfoParam.eq("casessid",casessid);
+                     casetouserinfoParam.eq("userssid",userssid);
+                     List<Police_casetouserinfo> police_casetouserinfos_=police_casetouserinfoMapper.selectList(casetouserinfoParam);
+                     if (null==police_casetouserinfos_||police_casetouserinfos_.size()<1){
+                         //新增关联案件人员表
+                         Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
+                         police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
+                         police_casetouserinfo_.setCreatetime(new Date());
+                         police_casetouserinfo_.setCasessid(casessid);
+                         police_casetouserinfo_.setUserssid(userssid);
+                         police_casetouserinfo_.setUsertotypessid(usertotypessid);
+                         int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
+                         LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                     }
                  }
              }
+
+
          }
 
 
@@ -2834,8 +2833,13 @@ public class RecordService extends BaseService {
                         LogUtil.intoLog(this.getClass(),"userssidList__"+userssidList.toString());
                         for (String s : userssidList) {
                             if(s.equals(userinfo)){
+                                //获取该人员姓名
+                                Police_userinfo police_userinfo=new Police_userinfo();
+                                police_userinfo.setSsid(userinfo);
+                                police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
                                 vo.setUserinfo_ssid(userinfo);
-                                vo.setMsg("*该被询问人正在被讯问中");
+                                String username=police_userinfo.getUsername()==null?"":police_userinfo.getUsername();
+                                vo.setMsg("*"+username+"正在被讯问中");
                                 result.setData(vo);
                                 LogUtil.intoLog(this.getClass(),"该被询问人已在笔录中__"+userinfo);
                                 return false;
@@ -2855,7 +2859,11 @@ public class RecordService extends BaseService {
                                     if (session_adminssid.equals(admininfo)){
                                         vo.setMsg("*您有一份笔录/审讯正在制作中");
                                     }else {
-                                        vo.setMsg("*询问人二已被选用");
+                                        Base_admininfo base_admininfo=new Base_admininfo();
+                                        base_admininfo.setSsid(admininfo);
+                                        base_admininfo = base_admininfoMapper.selectOne(base_admininfo);
+                                        String username=base_admininfo.getUsername()==null?"":base_admininfo.getUsername();
+                                        vo.setMsg("*"+username+"已被选用");
                                     }
                                     admininfos_ssid.add(admininfo);
                                     vo.setAdmininfos_ssid(admininfos_ssid);
