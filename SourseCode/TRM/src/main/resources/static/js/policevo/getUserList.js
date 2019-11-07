@@ -159,7 +159,7 @@ function callbackdeleteUser(data) {
                          var url=getActionURL(getactionid_manage().main_getUser);
                          window.location.href=url;
                      }*/
-                    getUserList_init(1,3);
+                    getUserListByParam();
                 });
             }
         }
@@ -174,7 +174,7 @@ function callbackchangeUser(data){
         if (isNotEmpty(data)){
             if (isNotEmpty(data.data)){
                 layer.msg("操作成功",{icon: 6,time:500},function () {
-                    getUserList_init(1,3);
+                    getUserListByParam();
                 });
             }
         }

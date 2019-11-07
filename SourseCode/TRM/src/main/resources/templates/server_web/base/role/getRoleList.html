@@ -28,13 +28,13 @@
         <div class="layui-form-item">
             <label class="layui-form-label" style="width: auto;">角色名称</label>
             <div class="layui-input-inline">
-                <input type="text" name="rolename"  id="rolename" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input">
+                <input type="text" name="rolename"  id="rolename" required lay-verify="required" placeholder="请输入角色名称" autocomplete="off" class="layui-input" oninput="getRoleListByParam();">
             </div>
 
 
             <label class="layui-form-label" style="width: auto;">是否启用</label>
             <div class="layui-input-inline">
-                <select name="rolebool" id="rolebool">
+                <select name="rolebool" id="rolebool" lay-filter="rolebool">
                     <option value="">全部</option>
                     <option value="1">启用</option>
                     <option value="2">禁用</option>
@@ -42,7 +42,7 @@
             </div>
 
 
-            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRoleList_init(1,10) ">
+            <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRoleListByParam(); ">
             <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" shiro:hasPermission='addRole'>添加角色</a>
         </div>
     </form>
@@ -103,6 +103,14 @@
         addOupdateurl=getActionURL(getactionid_manage().getRoleList_getAddOrUpdateRole);
         getRoleListByParam();
     });
+
+    layui.use('form', function(){
+        var form =  layui.form;
+        form.on('select(rolebool)', function (data) {
+            getRoleListByParam();
+        });
+    });
+
 
 </script>
 

@@ -401,8 +401,12 @@ public class MainService extends BaseService {
             if (list.size()==1){
                 String myIP = NetTool.getMyIP();
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
-                serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
-                serverconfig.setClient_downurl("http://" + myIP + serverconfig.getClient_downurl());
+                if (StringUtils.isNotEmpty(serverconfig.getSyslogo_downurl())){
+                    serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
+                }
+                if (StringUtils.isNotEmpty(serverconfig.getClient_downurl())){
+                    serverconfig.setClient_downurl("http://" + myIP + serverconfig.getClient_downurl());
+                }
                 getServerconfigVO.setServerconfigAndFilesave(serverconfig);
                 result.setData(getServerconfigVO);
                 changeResultToSuccess(result);

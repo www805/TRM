@@ -34,12 +34,12 @@
 
             <label class="layui-form-label" style="width: auto;">案件名</label>
             <div class="layui-input-inline">
-                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名" autocomplete="off" class="layui-input">
+                <input type="text" name="casename" id="casename" lay-verify="required" placeholder="请输入案件名" autocomplete="off" class="layui-input" oninput="getArraignmentListByParam">
             </div>
 
             <label class="layui-form-label" style="width: auto;">涉案人</label>
             <div class="layui-input-inline">
-                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入涉案人" autocomplete="off" class="layui-input">
+                <input type="text" name="username" id="username" lay-verify="required" placeholder="请输入涉案人" autocomplete="off" class="layui-input" oninput="getArraignmentListByParam">
             </div>
 
             <label class="layui-form-label" style="width: auto;">案发时间</label>

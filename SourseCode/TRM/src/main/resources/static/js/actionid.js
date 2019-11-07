@@ -79,6 +79,10 @@ function getactionid_manage() {
         startDownServer_closeddownServer:"startDownServer_closeddownServer",
         startDownServer_getdataInfos:"startDownServer_getdataInfos",
 
+        workunit_getworkunitList:"workunit_getworkunitList",
+        workunit_addWorkunit:"workunit_addWorkunit",
+        workunit_updateWorkunit:"workunit_updateWorkunit",
+
         /*police*/
         login_userlogin:"login_userlogin",
         login_gotomain:"login_gotomain",
