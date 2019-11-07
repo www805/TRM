@@ -139,20 +139,31 @@ function callgetNavList(data) {
                 //     $("#guidepage").hide();
                 //     $("#nav_list").css("right", 250);
                 // }
+
                 //设置logo和标题
                 var logo_title = appCache.data.logotitle;
                 if(isNotEmpty(logo_title)){
+                    //分支logo
                     $("#logoimg").attr("src", logo_title.img);
                     var imgtitle = "";
+                    var logotitle = "";
                     if(isNotEmpty(appCache.data.logo.imgtitle)){
                         imgtitle = appCache.data.logo.imgtitle;
+                        logotitle = appCache.title;
                     }
+
+                    //如果oem没有标题图片，就用oem的文字，没有oem文字就用分支里的标题文字
                     if (imgtitle != '' && imgtitle != '/') {
                         $("#logotitle").html("").css("background", "url(" + imgtitle + ") no-repeat").css("background-size", "100% 100%");
                     } else {
-                        $("#logotitle").html(logo_title.title);
+                        if(isNotEmpty(logotitle)){
+                            $("#logotitle").html(logotitle);
+                        }else{
+                            $("#logotitle").html(logo_title.title);
+                        }
                     }
                 }
+
             }
 
             if (isNotEmpty(appCache.data.bottom) && isNotEmpty(appCache.data.bottom.name) && isNotEmpty(appCache.data.bottom.declaration) ) {

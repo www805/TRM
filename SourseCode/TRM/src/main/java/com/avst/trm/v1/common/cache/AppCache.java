@@ -204,9 +204,9 @@ public class AppCache {
 
         //把客户端名放进去
         Map<String, Object> logotitle = (Map<String, Object>) logoYml.get("logo");
-        if(StringUtils.isNotBlank(getSQEntity.getClientName())){
-            logotitle.put("title", getSQEntity.getClientName());
-        }
+//        if(StringUtils.isNotBlank(getSQEntity.getClientName())){
+//            logotitle.put("title", getSQEntity.getClientName());
+//        }
 
         fileYml.put("logotitle", logotitle);
 
