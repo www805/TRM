@@ -1016,7 +1016,7 @@ function previewgetNotifications(ssid) {
                                 return;
                             }
 
-                            if (!isNotEmpty(gnlist)||!gnlist.includes("tts_f")){
+                            if (!isNotEmpty(gnlist)||!gnlist.includes(TTS_F)){
                                 layer.msg("请先获取语音播报授权")
                                 return;
                             }
@@ -1204,7 +1204,7 @@ function callbackgnlist(data) {
             var lists=data.lists;
             if (isNotEmpty(lists)){
                 gnlist=lists;
-                if (!isNotEmpty(gnlist)||!gnlist.includes("record_f")){
+                if (!isNotEmpty(gnlist)||!gnlist.includes(RECORD_F)){
                     layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
                         window.history.go(-1);
                         return false;

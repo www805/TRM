@@ -15,4 +15,15 @@ public class SQGN {
     public static String fd="设备控制";
 
     public static String ph="测谎仪";
+
+
+    public static String RECORD_F="record_f";
+
+    public static String ASR_F="asr_f";
+
+    public static String TTS_F="tts_f";
+
+    public static String FD_F="fd_f";
+
+    public static String PH_F="ph_f";
 }

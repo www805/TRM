@@ -289,13 +289,12 @@
                                 </dl>
                             </div>
                         </div>
-                    <div class="layui-inline" style="float: right">
-                        <label class="layui-form-label">定位差值</label>
-                        <div class="layui-input-inline" style="width: 100px;">
-                            <input type="number" name="positiontime"  id="positiontime" placeholder="毫秒差值" autocomplete="off" class="layui-input">
-                        </div>
-                        <input type="button" class="layui-btn layui-btn-normal" value="保存差值" onclick="updateRecord()"/>
+                <div class="layui-inline" style="float: right">
+                    <label class="layui-form-label" style="width: 100px">当前定位差值：</label>
+                    <div class="layui-input-inline" style="width: 80px;">
+                        <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input" onclick="open_positiontime()">
                     </div>
+                </div>
                     <div class="layui-card">
                         <div class="layui-card-header">笔录回放
                         </div>

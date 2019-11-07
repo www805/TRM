@@ -1218,7 +1218,7 @@ public class RecordService extends BaseService {
             Police_recordtype police_recordtype = new Police_recordtype();
             police_recordtype.setSsid(recordtypessid);
             police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
-             recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"版";
+             recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
         }
 
 
@@ -2614,10 +2614,10 @@ public class RecordService extends BaseService {
                             addCaseToArraignmentParam.setRecordplace(arraignmentAndRecord.getRecordplace());
                             addCaseToArraignmentParam.setMultifunctionbool(arraignmentAndRecord.getMultifunctionbool());
 
-                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"版";
+                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"次";
                             recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");//笔录名称
                             if (null!=arraignmentAndRecord.getMultifunctionbool()&&arraignmentAndRecord.getMultifunctionbool()==1){
-                                recordname=arraignmentAndRecord.getRecordname()+"_第"+(Integer.valueOf(asknum)+1)+"版";
+                                recordname=arraignmentAndRecord.getRecordname()+"_第"+(Integer.valueOf(asknum)+1)+"次";
                             }
                             addCaseToArraignmentParam.setRecordname(recordname);
                             addCaseToArraignmentParam.setAskobj(arraignmentAndRecord.getAskobj());

@@ -198,7 +198,7 @@ function callbackaddCaseToArraignment(data) {
                             addCaseToArraignment();
                             parent.layer.close(index);
                         };
-                        if (gnlist.indexOf("hk_o")!=-1){
+                        if (gnlist.indexOf(HK_O)!=-1){
                             btn=['开始笔录',"取消"];
                             btn2=function(index) {
                                 layer.close(index);

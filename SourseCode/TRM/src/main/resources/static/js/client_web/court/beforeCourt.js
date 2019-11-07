@@ -291,7 +291,7 @@ function addCaseToArraignment() {
         param:{
             userssid:dquserssid,
             casessid:dqcasessid,
-            adminssid:sessionadminssid,
+            adminssid:presidingjudge,//审判长作为主要询问人
             otheradminssid:otheradminssid,
             recordplace:recordplace,
             recordadminssid:recordadminssid,
@@ -753,7 +753,7 @@ function select_case(obj) {
                     var casename=$("#casename").val();
                     var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",document).text();
-                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
@@ -789,7 +789,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -817,7 +817,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -884,7 +884,7 @@ function open_othercases() {
                         var casename=c.casename;
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordtypename=$("td[recordtypebool='true']",document).text();
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);
@@ -973,7 +973,7 @@ function setcases(cases){
                         var recordtypename=$("td[recordtypebool='true']",document).text();
                         var username=$("#username").val();
                         var asknum=c.arraignments==null?0:c.arraignments.length;
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);

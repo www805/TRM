@@ -269,7 +269,7 @@ function callbackgetRecordById(data) {
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recorduser=[];
-                   if (gnlist.indexOf("fy_t")!= -1){
+                   if (gnlist.indexOf(FY_T)!= -1){
                        //法院：人员从拓展表获取
                        var usergrades=recordUserInfosdata.usergrades;
                        if (isNotEmpty(usergrades)) {
@@ -990,14 +990,14 @@ function setFocus(el) {
         var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
         if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
             //回车加锚点：先判断语音识别是否开启
-            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)) {
+            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)&&isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0) {
                 var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
                 var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
-                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr)
-                if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr+"__语音识别数__"+asrnum)
+               /* if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))){   后期改为不需要判断是否开启了语音识别：回车都加时间*/
                     var dqtime=new Date().getTime();
                     var qw_type=el.getAttribute("name");
-                    if (isNotEmpty(qw_type)&&(isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0)){
+                    if (isNotEmpty(qw_type)){
                         console.log("开始使用直播时间~")
                         if (qw_type=="w"){
                             var w_starttime=el.getAttribute("w_starttime");
@@ -1015,9 +1015,11 @@ function setFocus(el) {
                             }
                         }
                     }
-                }else {
+                /*}else {
                     console.log("使用语音识别时间~")
-                }
+                }*/
+            }else{
+                console.log("TDCache___"+TDCache+"___MCCache___"+MCCache+"___fdrecordstarttime___"+fdrecordstarttime);
             }
         }else {
             console.log("这是模板里面的题目~")
@@ -1610,10 +1612,24 @@ $(function () {
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
+                                if (record_switch_bool==1){
+                                    $("#recorddetail label[q_starttime="+starttime+"]:last").html(translatext);
+                                }
                             }else {
                                 $("#recordreals").append(recordrealshtml);
+                                if (record_switch_bool==1){
+                                    var trtd_html='<tr>\
+                                     <td style="padding: 0;width: 95%;" class="onetd">\
+                                    <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+starttime+'">'+translatext+'</label></div>\
+                                       <div  id="btnadd"></div>\
+                                        </td>\
+                                        <td></td>\
+                                        </tr>';
+                                    focuslable(trtd_html,2,null);//自动追加不设置光标
+                                }
                             }
 
 
@@ -1630,6 +1646,9 @@ $(function () {
                                 div.scrollTop = div.scrollHeight;
                             }
                             $("#recordreals_selecthtml").show();
+
+
+
 
                         }
                     }
@@ -1886,7 +1905,7 @@ function previewgetNotifications(ssid) {
                                 return;
                             }
 
-                            if (!isNotEmpty(gnlist)||!gnlist.includes("tts_f")){
+                            if (!isNotEmpty(gnlist)||!gnlist.includes(TTS_F)){
                                 layer.msg("请先获取语音播报授权")
                                 return;
                             }
@@ -2074,7 +2093,7 @@ function callbackgnlist(data) {
             var lists=data.lists;
             if (isNotEmpty(lists)){
                 gnlist=lists;
-                if (!isNotEmpty(gnlist)||!gnlist.includes("record_f")){
+                if (!isNotEmpty(gnlist)||!gnlist.includes(RECORD_F)){
                     layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
                         window.history.go(-1);
                         return false;

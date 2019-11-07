@@ -594,7 +594,10 @@ public class MainAction extends BaseAction {
         return new ModelAndView("client_web/base/forgotpassword", "forgotpasswordModel", model);
     }
 
-
+    @RequestMapping(value = "/unauth")
+    public ModelAndView getounauth(Model model) {
+        return new ModelAndView("error/unauth", "unauth", model);
+    }
 
 
 

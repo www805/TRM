@@ -125,7 +125,7 @@ function callgetNavList(data) {
                 $("#nav_list").html(nav_list_HTML);
 
                 var gnlist = appCache.data.gnlist;
-                if (isNotEmpty(gnlist) && gnlist.indexOf("s_v") != -1) {
+                if (isNotEmpty(gnlist) && gnlist.indexOf(S_V) != -1) {
                     // $("#guidepage").hide();
                     $("#pagehome").hide();
                     $("#nav_list").css("right", 350);

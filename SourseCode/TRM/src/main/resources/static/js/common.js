@@ -1388,7 +1388,7 @@ function checkIDCard(idcode){
 
 
 
-//js通用常量
+//js通用常量:需要和java文件的同步
 const S_V = "s_v";//单机版
 const O_V = "o_v";//联机版
 const C_E = "c_e";//客户端
@@ -1401,4 +1401,12 @@ const AVST_T = "avst_t";//顺泰伟诚
 const COMMON_O = "common_o";//通用版
 const HK_O = "hk_o";//海康
 const NX_O = "nx_o";//宁夏
+
+const RECORD_F="record_f";
+const ASR_F="asr_f";
+const TTS_F="tts_f";
+const FD_F="fd_f";
+const PH_F="ph_f";
+
+
 

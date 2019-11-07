@@ -72,7 +72,7 @@ function callgetNavList(data) {
             // }
 
             //如果是单机版就修改名称
-            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf("s_v") != -1) {
+            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf(S_V) != -1) {
                 $("#guidepage a").html("返回客户端");
             }
 

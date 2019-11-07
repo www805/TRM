@@ -24,7 +24,7 @@ function callTmplateTypes(data){
                     for (var i = 0; i < list.length; i++) {
                         var templateType = list[i];
                         var typename=templateType.typename;
-                        if (gnlist.indexOf("hk_o") != -1) {
+                        if (gnlist.indexOf(HK_O) != -1) {
                             if (typename == "谈话") {//此处写死不妥
                                 $("#templatetypessid").html("<option value='" + templateType.id + "' >" + typename + "</option>");
                             }

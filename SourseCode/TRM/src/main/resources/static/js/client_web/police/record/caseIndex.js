@@ -351,7 +351,7 @@ function callbackcontinueCase(data) {
                             window.location.href = url;
                             layer.close(index);
                         };
-                        if (gnlist.indexOf("hk_o")!=-1){
+                        if (gnlist.indexOf(HK_O)!=-1){
                             btn=['开始笔录',"取消"];
                             btn2=function(index) {
                                 layer.close(index);
@@ -443,7 +443,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
                 var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
                 window.location.href=url+"?ssid="+recordssid;
             } else if (multifunctionbool==2||multifunctionbool==3){
-                if (gnlist.indexOf("fy_t")!=-1)
+                if (gnlist.indexOf(FY_T)!=-1)
                 {
                     //法庭跳转
                     var url=getActionURL(getactionid_manage().caseIndex_towaitCourt);
@@ -463,7 +463,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
             var url=getActionURL(getactionid_manage().caseIndex_toconversationById);
             window.location.href=url+"?ssid="+recordssid;
         }else if(multifunctionbool==3){*/
-            if (gnlist.indexOf("fy_t")!= -1)
+            if (gnlist.indexOf(FY_T)!= -1)
             {
                 //法庭跳转
                 var url=getActionURL(getactionid_manage().caseIndex_togetCourtDetail);

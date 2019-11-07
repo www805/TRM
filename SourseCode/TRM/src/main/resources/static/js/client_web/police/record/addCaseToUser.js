@@ -343,7 +343,7 @@ function callbackaddCaseToArraignment(data) {
                             addCaseToArraignment();
                             parent.layer.close(index);
                         };
-                        if (gnlist.indexOf("hk_o")!=-1){
+                        if (gnlist.indexOf(HK_O)!=-1){
                             btn=['开始笔录',"取消"];
                             btn2=function(index) {
                                 parent.layer.close(index);
@@ -700,7 +700,7 @@ function setcases(cases){
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
                         var username=$("#username").val();
                         var asknum=c.arraignments==null?0:c.arraignments.length;
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
@@ -1075,7 +1075,7 @@ function select_case(obj) {
                     var casename=$("#casename").val();
                     var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum);
@@ -1116,7 +1116,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -1144,7 +1144,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum);
@@ -1167,7 +1167,7 @@ function select_caseblur() {
     }
     if (isNotEmpty(casename)&&!isNotEmpty(dqcasessid)){
         var asknum=$("#asknum").val();
-        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
         $("#recordname").val(recordname);
         layui.use(['form','laydate'], function(){
             var form=layui.form;
@@ -1431,7 +1431,7 @@ function open_othercases() {
                         var casename=c.casename;
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"版";
+                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);

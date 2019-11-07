@@ -101,7 +101,7 @@ function callSQGnlist(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
 
         var gnlist = data.data.data.gnlist;
-        if (gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf(HK_O) != -1) {
             if(isNotEmpty(list)){
 
                 var type = null;

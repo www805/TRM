@@ -12,9 +12,14 @@ public class SQVersion {
     public static String JW_T = "jw_t";//纪委版
     public static String JCW_T = "jcw_t";//监察委版
     public static String FY_T = "fy_t";//法院版
+
     public static String AVST_T = "avst_t";//顺泰伟诚
+
     public static String COMMON_O = "common_o";//通用版
+
     public static String HK_O = "hk_o";//海康
     public static String NX_O = "nx_o";//宁夏
+
+
 
 }

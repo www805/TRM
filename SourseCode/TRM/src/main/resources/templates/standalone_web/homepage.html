@@ -164,9 +164,9 @@
 <script th:inline="javascript">
     var INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     var waitconversationURL;
     var addCaseToUserURL;
-    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     layui.use(['layer','element','laydate'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;

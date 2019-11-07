@@ -20,7 +20,7 @@ function callgetNavList(data) {
             var nav_list_HTML = "";
 
             //如果是单机版就隐藏返回引导页按钮
-            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf("s_v") != -1) {
+            if (isNotEmpty(appCache.data.gnlist) && appCache.data.gnlist.indexOf(S_V) != -1) {
                 $("#guidepage a").attr("href",appCache.guidepageUrl);
                 $("#guidepage a i").remove();
                 $("#guidepage a span").html("返回客户端");

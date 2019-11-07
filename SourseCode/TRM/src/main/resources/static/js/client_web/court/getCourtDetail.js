@@ -87,7 +87,7 @@ function callbackgetRecordById(data) {
                 var recordUserInfosdata=record.recordUserInfos;
                 if (isNotEmpty(recordUserInfosdata)){
                     recorduser=[];
-                    if (gnlist.indexOf("fy_t")!= -1){
+                    if (gnlist.indexOf(FY_T)!= -1){
                         //法院：人员从拓展表获取
                         var usergrades=recordUserInfosdata.usergrades;
                         if (isNotEmpty(usergrades)) {
@@ -622,6 +622,17 @@ function focuslable(html,type,qw) {
     }
     addbtn();
 
+    $("#recorddetail .table_td_tt").dblclick(function () {
+        var contenteditable=$("label",this).attr("contenteditable");
+        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
+            //开始定位视频位置
+            var times=$("label",this).attr("times");
+            if (times!="-1"&&isNotEmpty(times)){
+                showrecord(times,null);
+            }
+        }
+    })
+
 
     $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
         qw_keydown(this,event);
@@ -967,10 +978,57 @@ function showrecord(times,oldtime) {
 }
 
 //*******************************************************************修改定位时间start****************************************************************//
+var open_positiontime_index=null;
+function open_positiontime() {
+    var html='  <form class="layui-form site-inline" style="margin-top: 20px;padding-right: 35px;">\
+               <div class="layui-form-item">\
+                   <label class="layui-form-label"><span style="color: red;">*</span>定位差值</label>\
+                    <div class="layui-input-block">\
+                    <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值" value="' + positiontime + '"  class="layui-input">\
+                    </div>\
+                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-100000到-100或者100到10000区间的值以及0</div>\
+                </div>\
+            </form>';
+    layui.use(['layer','element','form','laydate'], function() {
+        var form = layui.form;
+        open_positiontime_index=layer.open({
+            type:1,
+            title:'编辑定位差值',
+            content:html,
+            area: ['25%', '30%'],
+            btn: ['确定','取消'],
+            success:function(layero, index){
+                layero.addClass('layui-form');//添加form标识
+                layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
+                form.render();
+            },
+            yes:function(index, layero){
+                //自定义验证规则
+                form.verify({
+                    positiontimem:function (value) {
+                        if (!(/\S/).test(value)) {
+                            return "请输入定位差值";
+                        }
+                        if (!((value<=-100&&value>=-100000)||(value<=100000&&value>=100)||value==0)) {
+                            return "请输入差值在-100000到-100或者100到10000区间的值以及0";
+                        }
+                    }
+                });
+                //监听提交
+                form.on('submit(fromContent)', function(data){
+                    updateRecord();
+                });
+            },
+            btn2:function(index, layero){
+                layer.close(index);
+            }
+        });
+    });
+}
 function updateRecord(){
-    var positiontime=$("#positiontime").val();
+    var positiontime=$("#positiontimem").val();
     if (!isNotEmpty(positiontime)){
-        layer.msg("请输入定位毫秒差值",{icon:5});
+        layer.msg("请输入定位差值",{icon:5});
         return;
     }
     var url=getActionURL(getactionid_manage().getCourtDetail_updateRecord);
@@ -989,9 +1047,10 @@ function callbackupdateRecord(data){
         if (isNotEmpty(data)){
             var param=data.param;
             if (isNotEmpty(param)){
+                layer.close(open_positiontime_index);
                 positiontime=param.positiontime;//更新值
-                layer.msg("保存成功",{icon:6,time:1000},function () {
-                    $("#positiontime").val(positiontime)
+                layer.msg("保存成功",{icon:6,time:500},function () {
+                    $("#positiontime").val(positiontime);
                 });
             }
         }

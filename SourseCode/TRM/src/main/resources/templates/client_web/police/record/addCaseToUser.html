@@ -62,14 +62,14 @@
             <h3 th:text="${addCaseToUserModel.title}">智能提讯系统</h3>
         </div>
         <div class="layui-col-md8 ">
-           <div style=" float: right;"  th:if="${#strings.indexOf(session.AUTHORIZATIONALL_CLIENT.gnlist,'s_v')}==-1 " >
+           <div style=" float: right;display:none"   >
                 <input  type="checkbox" name="switch" lay-skin="switch" id="multifunctionbool" lay-text="单组件|多组件"  checked="checked"  lay-filter="multifunctionbool_filter"   title="审讯功能类型" >
             </div>
         </div>
     </div>
 
     <div class="layui-form layui-row" >
-                <div class="layui-col-md2" style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;">
+                <div class="layui-col-md2" style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: none" id="left_html">
                     <div class="layui-card" >
                         <div class="layui-card-header">
                             选择审讯类型
@@ -81,7 +81,7 @@
                             </div>
                     </div>
                 </div>
-                <iframe name="ifranmehtml" id="ifranmehtml" class="layui-col-md10" style="height: 830px;border:1px  solid #F2F2F2" frameborder="0" src="/cweb/police/policePage/toaddCaseToUserDetail"></iframe>
+                <iframe name="ifranmehtml" id="ifranmehtml" class="layui-col-md12" style="height: 830px;border:1px  solid #F2F2F2" frameborder="0" src="/cweb/police/policePage/toaddCaseToUserDetail"></iframe>
     </div>
 
 
@@ -101,12 +101,14 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
-
+    var gnlist = [[${session.AUTHORIZATIONALL_CLIENT.gnlist}]]; //全局授权
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/addCaseToUser");
         getRecordtypes();
+
+
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块
@@ -114,6 +116,29 @@
         var form = layui.form;
         var laydate = layui.laydate;
         //使用模块shade
+        if (isNotEmpty(gnlist)) {
+            //非HK
+            if(gnlist.indexOf(HK_O)<0){
+                //需要显示笔录类型选择
+                $("#ifranmehtml").attr("class","layui-col-md10");
+                $("#left_html").css("display","block");
+            }
+
+            //组件模式选择
+            if(gnlist.indexOf(ASR_F)>0&&gnlist.indexOf(PH_F)>0){
+                //授权存在asr和ph默认打开多组件，并且显示组件选择
+                $("#multifunctionbool").closest("div").css("display","block");
+                $("#multifunctionbool").attr("checked",false);
+                setTimeout(function () {
+                    $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
+                },1000)
+            }else  if(gnlist.indexOf(S_V)<0){
+                //再去判断非单机版显示组件不需要自动默认多组件
+                $("#multifunctionbool").closest("div").css("display","block");
+            }
+            
+        }
+        form.render();
     });
 
 

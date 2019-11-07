@@ -104,7 +104,7 @@ function callbackgetRecords(data) {
                     if (isNotEmpty(problems)) {
                         var q="问：";
                         var w="答：";
-                        if (gnlist.indexOf("fy_t") != -1){
+                        if (gnlist.indexOf(FY_T) != -1){
                             q="";
                             w="";
                         }
@@ -112,7 +112,7 @@ function callbackgetRecords(data) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
                             var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
-                            if (gnlist.indexOf("fy_t")<0) {//法院版本不需要答
+                            if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
                                 var answers=problem.answers;
                                 if (isNotEmpty(answers)){
                                     for (var j = 0; j < answers.length; j++) {
@@ -164,7 +164,7 @@ function setproblems(recordssid,obj) {
                 if (isNotEmpty(problems)) {
                     var q="问：";
                     var w="答：";
-                    if (gnlist.indexOf("fy_t") != -1){
+                    if (gnlist.indexOf(FY_T) != -1){
                         q="";
                         w="";
                     }
@@ -172,7 +172,7 @@ function setproblems(recordssid,obj) {
                         var problem = problems[z];
                         var problemtext=problem.problem==null?"未知":problem.problem;
                         var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
-                        if (gnlist.indexOf("fy_t")<0) {//法院版本不需要答
+                        if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){
                                 for (var j = 0; j < answers.length; j++) {
@@ -242,7 +242,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
                 var url=getActionURL(getactionid_manage().recordIndex_towaitconversation);
                 window.location.href=url+"?ssid="+recordssid;
             } else if (multifunctionbool==2||multifunctionbool==3){
-                if (gnlist.indexOf("fy_t")!=-1)
+                if (gnlist.indexOf(FY_T)!=-1)
                 {
                     //法庭跳转
                     var url=getActionURL(getactionid_manage().recordIndex_towaitCourt);
@@ -262,7 +262,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
             var url=getActionURL(getactionid_manage().recordIndex_toconversationById);
             window.location.href=url+"?ssid="+recordssid;
         }else if(multifunctionbool==3){*/
-            if (gnlist.indexOf("fy_t")!= -1)
+            if (gnlist.indexOf(FY_T)!= -1)
             {
                 //法庭跳转
                 var url=getActionURL(getactionid_manage().recordIndex_togetCourtDetail);

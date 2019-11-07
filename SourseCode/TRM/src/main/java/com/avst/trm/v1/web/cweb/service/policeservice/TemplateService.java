@@ -16,6 +16,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
+import com.avst.trm.v1.common.util.sq.SQGN;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
@@ -177,7 +179,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf(SQVersion.HK_O) != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
@@ -391,7 +393,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf(SQVersion.HK_O) != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
@@ -1432,7 +1434,7 @@ public class TemplateService extends BaseService {
         String problemtypessid = "1";//获取数据库问题类型ssid为1的类型
         SysYmlParam ymlParam = SysYmlCache.getSysYmlParam();
         String gnlist = ymlParam.getGnlist();
-        if (gnlist.indexOf("hk_o") != -1) {
+        if (gnlist.indexOf(SQVersion.HK_O) != -1) {
             Police_problemtype problemtype = new Police_problemtype();
             problemtype.setTypename("谈话");
             Police_problemtype selectOne = police_problemtypeMapper.selectOne(problemtype);
