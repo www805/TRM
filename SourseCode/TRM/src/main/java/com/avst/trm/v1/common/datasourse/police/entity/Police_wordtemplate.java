@@ -56,6 +56,15 @@ public class Police_wordtemplate extends Model<Police_wordtemplate> {
 
     private Integer wordtype;//word笔录模板类型1笔录模板2笔录制作说明只允许一个笔录模板制作说明存在
 
+    private Integer wordtemplatebool;//模板状态默认1正常 -1删除
+
+    public Integer getWordtemplatebool() {
+        return wordtemplatebool;
+    }
+
+    public void setWordtemplatebool(Integer wordtemplatebool) {
+        this.wordtemplatebool = wordtemplatebool;
+    }
 
     public Integer getWordtype() {
         return wordtype;

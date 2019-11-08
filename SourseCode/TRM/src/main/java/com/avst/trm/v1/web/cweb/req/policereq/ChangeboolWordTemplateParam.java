@@ -3,7 +3,17 @@ package com.avst.trm.v1.web.cweb.req.policereq;
 public class ChangeboolWordTemplateParam {
     private String ssid;//word模板dessid
 
-    private Integer defaultbool;//1默认 2非默认
+    private Integer defaultbool;//1默认 -1非默认
+
+    private Integer wordtemplatebool;//1正常 -1已删除
+
+    public Integer getWordtemplatebool() {
+        return wordtemplatebool;
+    }
+
+    public void setWordtemplatebool(Integer wordtemplatebool) {
+        this.wordtemplatebool = wordtemplatebool;
+    }
 
     public String getSsid() {
         return ssid;

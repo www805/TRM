@@ -419,3 +419,33 @@ function uploadWordexplain() {
     };
     uploadWordTemplate(data,file);
 }
+
+/*************************删除**********************/
+function changeboolWordTemplate(ssid) {
+    layer.confirm('确定要删除该笔录模板吗', function(index){
+        var url=getActionURL(getactionid_manage().wordTemplateList_changeboolWordTemplate);
+        var data=
+            {
+                token:INIT_CLIENTKEY,
+                param:{
+                    ssid:ssid,
+                    wordtemplatebool:-1,//删除状态
+                }
+            };
+        ajaxSubmitByJson(url,data,callbackchangeboolWordTemplate);
+        layer.close(index);
+    });
+}
+
+function callbackchangeboolWordTemplate(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            layer.msg("删除成功",{time:500,icon:6},function () {
+                getWordTemplateListByParam();
+            });
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}

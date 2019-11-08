@@ -1489,7 +1489,7 @@ public class RecordService2 extends BaseService {
             ew.eq("w.recordtypessid",recordtypessid);
         }
 
-
+        ew.eq("w.wordtemplatebool",1);//模板状态为正常的
         ew.eq("w.wordtype",1);//查询word模板为1
         int count=police_wordtemplateMapper.countgetWordTemplateList(ew);
         getWordTemplateListParam.setRecordCount(count);
@@ -1599,6 +1599,7 @@ public class RecordService2 extends BaseService {
         police_wordtemplate.setDefaultbool(defaultbool);
         police_wordtemplate.setWordtemplatename(wordtemplatename);
         police_wordtemplate.setWordtype(wordtype);
+        police_wordtemplate.setWordtemplatebool(1);//状态为正常
 
         String wordtemplate_filesavessid=null;
         if(StringUtils.isNotBlank(ssid)){
@@ -1875,14 +1876,14 @@ public class RecordService2 extends BaseService {
         }
 
         String ssid=changeboolWordTemplateParam.getSsid();
-        Integer defaultbool=changeboolWordTemplateParam.getDefaultbool();
-
+        Integer defaultbool = changeboolWordTemplateParam.getDefaultbool();
+        Integer wordtemplatebool = changeboolWordTemplateParam.getWordtemplatebool();
 
         Police_wordtemplate police_wordtemplate=new Police_wordtemplate();
         police_wordtemplate.setSsid(ssid);
         police_wordtemplate=police_wordtemplateMapper.selectOne(police_wordtemplate);
         if (null!=police_wordtemplate){
-            if (defaultbool==1){
+            if (null!=defaultbool&&defaultbool==1){
                 //获取该模板的类型，并将该类型的都改为默认
                 EntityWrapper updateew=new EntityWrapper();
                 List<Police_wordtemplate> police_wordtemplates=police_wordtemplateMapper.selectList(updateew);
@@ -1893,13 +1894,28 @@ public class RecordService2 extends BaseService {
                     }
                 }
             }
+            if (null!=wordtemplatebool&&wordtemplatebool==-1){
+                //判断是否为默认的笔录模板，如果是不允许删除
+                String default_wordssid = PropertiesListenerConfig.getProperty("wordtemplate_default");
+                if (StringUtils.isNotEmpty(default_wordssid)&&default_wordssid.equals(ssid)){
+                    result.setMessage("该默认模板不允许被删除");
+                    return;
+                }
+                defaultbool=-1;//状态改为已删除 并且默认状态为-1
+            }
             EntityWrapper update=new EntityWrapper();
             update.eq("ssid",ssid);
             police_wordtemplate.setDefaultbool(defaultbool);
-            int updatebool2 =  police_wordtemplateMapper.update(police_wordtemplate,update);
-
-            result.setData(1);
-            changeResultToSuccess(result);
+            police_wordtemplate.setWordtemplatebool(wordtemplatebool);
+            int police_wordtemplateMapper_update_bool =  police_wordtemplateMapper.update(police_wordtemplate,update);
+            LogUtil.intoLog(1,this.getClass(),"修改笔录word模板状态__police_wordtemplateMapper_update_bool__"+police_wordtemplateMapper_update_bool);
+            if (police_wordtemplateMapper_update_bool>0){
+                result.setData(police_wordtemplateMapper_update_bool);
+                changeResultToSuccess(result);
+            }
+        }else {
+            result.setMessage("未找到该笔录模板");
+            LogUtil.intoLog(1,this.getClass(),"修改笔录word模板状态__未找到该笔录模板 is null__ssid__"+ssid);
         }
         return;
     }
@@ -1908,6 +1924,7 @@ public class RecordService2 extends BaseService {
         GetWordTemplatesVO vo=new GetWordTemplatesVO();
         EntityWrapper word_ew=new EntityWrapper();
         word_ew.ne("wordtype",2);
+        word_ew.eq("wordtemplatebool",1);//状态为正常的
         List<WordTemplate> wordTemplates=police_wordtemplateMapper.getWordTemplate(word_ew);
         if (null!=wordTemplates&&wordTemplates.size()>0){
             vo.setWordTemplates(wordTemplates);

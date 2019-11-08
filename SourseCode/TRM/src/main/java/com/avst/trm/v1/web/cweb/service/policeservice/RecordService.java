@@ -1082,6 +1082,7 @@ public class RecordService extends BaseService {
         if (conversationbool==-1){
             //笔录制作流程
         }else  if (conversationbool==1){
+            //开始谈话笔录
             multifunctionbool=2;
         }if (conversationbool==2){
             //一键谈话：默认使用会议的谈话模板ssid
@@ -1114,7 +1115,7 @@ public class RecordService extends BaseService {
         //整理模板
 
         if (multifunctionbool==1||multifunctionbool==2 ){//||单组件时候
-            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");
+            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");//使用指定谈话模板
         }else {
         if (StringUtils.isBlank(mtmodelssid)) {
             //会议模板为空，直接取默认的
@@ -1129,7 +1130,7 @@ public class RecordService extends BaseService {
 
         LogUtil.intoLog(this.getClass(),"添加笔录使用的会议模板ssid_"+mtmodelssid);
 
-        //检测
+        //---------------------------------------------------------------------------------------------------------------检测开始
         if (skipCheckCasebool==-1&&StringUtils.isNotBlank(casessid)&&StringUtils.isNotBlank(userssid)){
             EntityWrapper caseparam=new EntityWrapper();
             caseparam.eq("c.ssid",casessid);
@@ -1199,7 +1200,7 @@ public class RecordService extends BaseService {
         }
 
 
-        //-----检测结束
+        //---------------------------------------------------------------------------------------------------------------检测结束
 
         if (StringUtils.isNotBlank(recordname)){
             EntityWrapper recordname_ew=new EntityWrapper();
@@ -1255,13 +1256,13 @@ public class RecordService extends BaseService {
         //需要新增人员信息
         String usertotypessid=null;
         if (StringUtils.isBlank(addUserInfo.getCardtypessid())){
-            addUserInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
+            addUserInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));//使用默认身份证类型
         }
         EntityWrapper checkuserparam=new EntityWrapper();
         checkuserparam.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
         checkuserparam.eq("ut.cardnum",addUserInfo.getCardnum());
         List<UserInfo> checkuserinfos=police_userinfoMapper.getUserByCard(checkuserparam);
-        if ((null==checkuserinfos||checkuserinfos.size()<1)&&StringUtils.isBlank(userssid)){
+        if ((null==checkuserinfos||checkuserinfos.size()<1)&&StringUtils.isBlank(userssid)||StringUtils.isBlank(addUserInfo.getCardnum())){
 
             LogUtil.intoLog(this.getClass(),"需要新增人员____");
             addUserInfo.setSsid(OpenUtil.getUUID_32());

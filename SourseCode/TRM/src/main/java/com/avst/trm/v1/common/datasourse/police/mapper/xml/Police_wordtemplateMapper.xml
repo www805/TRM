@@ -15,7 +15,7 @@
         <result column="integer2" property="integer2" />
         <result column="defaultbool" property="defaultbool" />
         <result column="wordtype" property="wordtype" />
-
+        <result column="wordtemplatebool" property="wordtemplatebool" />
     </resultMap>
 
 </mapper>
