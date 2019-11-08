@@ -280,6 +280,8 @@ function callbackgetRecordById(data) {
                                    ,userssid:other.userssid
                                    ,grade:other.grade
                                    ,gradename:other.gradename
+                                   ,gradeintroduce:other.gradeintroduce
+
                                };
                                recorduser.push(user);
                            }
@@ -917,7 +919,7 @@ function callbackgetgetRecordrealing(data) {
                                     }
                                 }
                                 if (gradenum>1){
-                                    username=user.gradename==null?username:user.gradename;
+                                    username=user.gradeintroduce==null?username:user.gradeintroduce;
                                 }
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                                 recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
@@ -1587,6 +1589,8 @@ $(function () {
                             var recordrealshtml="";
                             var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
+                            var gradeintroduce = user.gradeintroduce==null?"未知":user.gradeintroduce;
+
                             var p_span_HTML="";
                             //实时会议数据
                             if (usertype==1){
@@ -1603,7 +1607,7 @@ $(function () {
                                     }
                                 }
                                 if (gradenum>1){
-                                    username=user.gradename==null?username:user.gradename;
+                                    username=gradeintroduce==null?username:gradeintroduce;
                                 }
 
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
@@ -1616,14 +1620,14 @@ $(function () {
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
                                 if (record_switch_bool==1){
-                                    $("#recorddetail label[q_starttime="+starttime+"]:last").html(translatext);
+                                    $("#recorddetail label[q_starttime="+starttime+"]:last").html(gradeintroduce+"："+translatext);
                                 }
                             }else {
                                 $("#recordreals").append(recordrealshtml);
                                 if (record_switch_bool==1){
                                     var trtd_html='<tr>\
                                      <td style="padding: 0;width: 95%;" class="onetd">\
-                                    <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+starttime+'">'+translatext+'</label></div>\
+                                    <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+starttime+'">'+gradeintroduce+'：'+translatext+'</label></div>\
                                        <div  id="btnadd"></div>\
                                         </td>\
                                         <td></td>\

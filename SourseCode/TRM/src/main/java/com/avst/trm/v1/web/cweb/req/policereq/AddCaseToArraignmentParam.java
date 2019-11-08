@@ -37,8 +37,6 @@ public class AddCaseToArraignmentParam {
     private Integer skipCheckbool=-1;//是否跳过检测1跳过-1不跳过
     private Integer skipCheckCasebool=-1;//是否跳过检测案件状态 1跳过-1不跳过
 
-    private Integer conversationbool=-1;//是否为谈话 默认-1 非谈话类型(信息全需) 1开始谈话(填写基本信息即可) 2一键谈话（默认基本信息）
-
     private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
 
     private List<UserInfo> arraignmentexpand;//拓展表数据：针对未存在用户，主要用于外来人员
@@ -84,14 +82,6 @@ public class AddCaseToArraignmentParam {
 
     public void setSkipCheckCasebool(Integer skipCheckCasebool) {
         this.skipCheckCasebool = skipCheckCasebool;
-    }
-
-    public Integer getConversationbool() {
-        return conversationbool;
-    }
-
-    public void setConversationbool(Integer conversationbool) {
-        this.conversationbool = conversationbool;
     }
 
     public Integer getSkipCheckbool() {
