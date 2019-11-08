@@ -105,6 +105,7 @@ public class SocketIOConfig implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        LogUtil.intoLog(1,this.getClass(),"socketiode 开始启动_____");
         StartSocketio();
     }
 }

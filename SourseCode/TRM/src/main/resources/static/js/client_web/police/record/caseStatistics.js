@@ -213,19 +213,7 @@ $(function () {
                     align: 'left',
                     normal:{
                         formatter(v) {
-                            let text = Math.round(v.percent)+'%' + '' + v.name;
-                            if(text.length <= 8)
-                            {
-                                return text;
-                            }else if(text.length > 8 && text.length <= 16){
-                                return text = `${text.slice(0,8)}\n${text.slice(8)}`
-                            }else if(text.length > 16 && text.length <= 24){
-                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16)}`
-                            }else if(text.length > 24 && text.length <= 30){
-                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16,24)}\n${text.slice(24)}`
-                            }else if(text.length > 30){
-                                return text = `${text.slice(0,8)}\n${text.slice(8,16)}\n${text.slice(16,24)}\n${text.slice(24,30)}\n${text.slice(30)}`
-                            }
+                            return Math.round(v.percent)+'%' + '' + v.name;
                         },
                         textStyle : {
                             fontSize : 15
