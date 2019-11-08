@@ -947,12 +947,17 @@ function htmlopen(htmldata, width, height, skin) {
 		skin = 'layui-layer-molv';
 	}
 	// 页面层
-	parent.layer.open({
-		type : 1,
-		skin : skin, // 加上边框
-		area : [ width, height ], // 宽高
-		content : htmldata
+
+	layui.use("layer",function() {
+		var layer = layui.layer;  //layer初始化
+		layer.open({
+			type : 1,
+			skin : skin, // 加上边框
+			area : [ width, height ], // 宽高
+			content : htmldata
+		});
 	});
+
 }
 
 // -----------------------------
@@ -1243,7 +1248,6 @@ function gotobackpage(getdatafun, arrparam, arrcount, currPage, pageSize) {
  * pagelistview 把数据写入的view 的id
  */
 function detail() {
-
 	layui.use('laytpl', function () {
 		var laytpl = layui.laytpl;
 		var getTpl = document.getElementById("pagelisttemplates").innerHTML;
@@ -1258,12 +1262,13 @@ function detail() {
 			});
 
 		}
-        layui.use('form', function(){
-            var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
-            form.render();
-        });
+		layui.use('form', function(){
+			var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+			form.render();
+		});
 
-    });
+	});
+
 }
 
 /**
@@ -1389,24 +1394,24 @@ function checkIDCard(idcode){
 
 
 //js通用常量:需要和java文件的同步
-const S_V = "s_v";//单机版
-const O_V = "o_v";//联机版
-const C_E = "c_e";//客户端
-const S_E = "s_e";//服务器
-const GA_T = "ga_t";//公安版
-const JW_T = "jw_t";//纪委版
-const JCW_T = "jcw_t";//监察委版
-const FY_T = "fy_t";//法院版
-const AVST_T = "avst_t";//顺泰伟诚
-const COMMON_O = "common_o";//通用版
-const HK_O = "hk_o";//海康
-const NX_O = "nx_o";//宁夏
+var S_V = "s_v";//单机版
+var O_V = "o_v";//联机版
+var C_E = "c_e";//客户端
+var S_E = "s_e";//服务器
+var GA_T = "ga_t";//公安版
+var JW_T = "jw_t";//纪委版
+var JCW_T = "jcw_t";//监察委版
+var FY_T = "fy_t";//法院版
+var AVST_T = "avst_t";//顺泰伟诚
+var COMMON_O = "common_o";//通用版
+var HK_O = "hk_o";//海康
+var NX_O = "nx_o";//宁夏
 
-const RECORD_F="record_f";
-const ASR_F="asr_f";
-const TTS_F="tts_f";
-const FD_F="fd_f";
-const PH_F="ph_f";
+var RECORD_F="record_f";
+var ASR_F="asr_f";
+var TTS_F="tts_f";
+var FD_F="fd_f";
+var PH_F="ph_f";
 
 
 
