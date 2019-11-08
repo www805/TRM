@@ -103,7 +103,6 @@ function addCaseToArraignment() {
             asknum:asknum,
             skipCheckbool:skipCheckbool,
             skipCheckCasebool:skipCheckCasebool,
-            conversationbool:1,//开始谈话
             multifunctionbool:2,//双组件
         }
     };

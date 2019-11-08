@@ -474,7 +474,7 @@ function getUserByCard(obj,usertype){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告</span>个人信息")
         } else if (dq_usertype==2){
             $("#usertype").html("<span style='color: red;font-weight: bold'>被告</span>个人信息");
-            dquserssid==null;
+            dquserssid=null;
             dqcasessid=null;//当前案件ssid
             cases=null;
             othercases=null;
@@ -506,10 +506,17 @@ function getUserByCard(obj,usertype){
         cardnum =  $("#cardnum").val();
     }
 
+    if (dq_usertype==2){
+        dquserssid=null;
+        dqcasessid=null;//当前案件ssid
+        cases=null;
+        othercases=null;
+        $("#asknum").val(0);
+    }
     if (!isNotEmpty(cardnum)){
         $("#user input").val("");
         $('#user  select').prop('selectedIndex', 0);
-        console.log("未输入身份证号码")
+        console.log("未输入身份证号码");
         return;
     }
 
