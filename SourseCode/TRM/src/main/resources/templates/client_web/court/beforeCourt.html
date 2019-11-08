@@ -436,14 +436,7 @@
             username:[ /\S/,"请输入被告人"],
             recotdtypes:[ /\S/,"请选择案件类型"],
             casename:[ /\S/,"请输入案件名称"],
-            presidingjudge:[ /\S/,"审判长不能为空"],
-            casenum:function (value) {
-                if (isNotEmpty(value)) {
-                    if (!(/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{5,}$/).test(value)||!(/^[^ ]+$/).test(value)){
-                        return "请输入英文和数字组成5位以上不含空格的案件编号"
-                    }
-                }
-            }
+            presidingjudge:[ /\S/,"审判长不能为空"]
         });
 
         form.on('submit(startrecord_btn)', function (data) {

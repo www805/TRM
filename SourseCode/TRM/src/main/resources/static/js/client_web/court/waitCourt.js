@@ -1226,7 +1226,7 @@ function callbacksetRecordreal(data) {
         if (isNotEmpty(data)){
         }
     }else{
-        layer.msg(data.message,{icon: 5});
+        //layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -2280,7 +2280,7 @@ function callbacksetRecordProtect(data) {
             console.log("笔录实时本地保存成功__"+data);
         }
     }else{
-        layer.msg(data.message,{icon: 5});
+        //layer.msg(data.message,{icon: 5});
     }
 }
 

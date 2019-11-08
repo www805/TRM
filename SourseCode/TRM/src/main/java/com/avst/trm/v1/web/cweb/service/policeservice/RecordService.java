@@ -1440,35 +1440,35 @@ public class RecordService extends BaseService {
 
 
         //修改案件编号
-        if (StringUtils.isBlank(addPolice_case.getCasenum())){
-            Police_case police_case_=new Police_case();
-            police_case_.setSsid(casessid);
-            police_case_=police_caseMapper.selectOne(police_case_);
-            if (null!=police_case_){
-                //截取类型的前一个字母
-                String type=CommonCache.getCurrentServerType();
-                int index=type.indexOf("_");
-                String q="";
-                if (index>-1&&index<type.length()-1){
-                    String test3before=type.substring(0,index);
-                    String test3after=type.substring(index+1);
-                    q=test3before.substring(0,1)+test3after.substring(0,1);
-                }
-
-                //拼接案件编号
-                String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
-                String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?0:police_case_.getId()-1));
-                addPolice_case.setCasenum(numberNo);
-
-                //修改编号
-                EntityWrapper updateparam=new EntityWrapper();
-                updateparam.eq("ssid",addPolice_case.getSsid());
-                int caseupdate_bool = police_caseMapper.update(addPolice_case,updateparam);
-                if (caseupdate_bool>0){
-                    LogUtil.intoLog(this.getClass(),"案件编号修改成功__"+numberNo);
-                }
-            }
-        }
+//        if (StringUtils.isBlank(addPolice_case.getCasenum())){
+//            Police_case police_case_=new Police_case();
+//            police_case_.setSsid(casessid);
+//            police_case_=police_caseMapper.selectOne(police_case_);
+//            if (null!=police_case_){
+//                //截取类型的前一个字母
+//                String type=CommonCache.getCurrentServerType();
+//                int index=type.indexOf("_");
+//                String q="";
+//                if (index>-1&&index<type.length()-1){
+//                    String test3before=type.substring(0,index);
+//                    String test3after=type.substring(index+1);
+//                    q=test3before.substring(0,1)+test3after.substring(0,1);
+//                }
+//
+//                //拼接案件编号
+//                String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
+//                String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?0:police_case_.getId()-1));
+//                addPolice_case.setCasenum(numberNo);
+//
+//                //修改编号
+//                EntityWrapper updateparam=new EntityWrapper();
+//                updateparam.eq("ssid",addPolice_case.getSsid());
+//                int caseupdate_bool = police_caseMapper.update(addPolice_case,updateparam);
+//                if (caseupdate_bool>0){
+//                    LogUtil.intoLog(this.getClass(),"案件编号修改成功__"+numberNo);
+//                }
+//            }
+//        }
 
 
         LogUtil.intoLog(this.getClass(),"userssid__"+userssid+"__casessid__"+casessid);
@@ -2145,30 +2145,30 @@ public class RecordService extends BaseService {
 
 
             //自动生成编号回填
-            if (StringUtils.isBlank(casenum)){
-                //截取类型的前一个字母
-                String type=CommonCache.getCurrentServerType();
-                int index=type.indexOf("_");
-                String q="";
-                if (index>-1&&index<type.length()-1){
-                    String test3before=type.substring(0,index);
-                    String test3after=type.substring(index+1);
-                    q=test3before.substring(0,1)+test3after.substring(0,1);
-                }
-
-                //拼接案件编号
-                String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
-                String numberNo = getNumberNo(numbertType, String.valueOf(addCaseParam.getId()-1<1?0:addCaseParam.getId()-1));
-                addCaseParam.setCasenum(numberNo);
-
-                //修改编号
-                EntityWrapper updateparam=new EntityWrapper();
-                updateparam.eq("ssid",addCaseParam.getSsid());
-                int caseupdate_bool = police_caseMapper.update(addCaseParam,updateparam);
-                if (caseupdate_bool>0){
-                        LogUtil.intoLog(this.getClass(),"案件编号修改成功__"+numberNo);
-                }
-            }
+//            if (StringUtils.isBlank(casenum)){
+//                //截取类型的前一个字母
+//                String type=CommonCache.getCurrentServerType();
+//                int index=type.indexOf("_");
+//                String q="";
+//                if (index>-1&&index<type.length()-1){
+//                    String test3before=type.substring(0,index);
+//                    String test3after=type.substring(index+1);
+//                    q=test3before.substring(0,1)+test3after.substring(0,1);
+//                }
+//
+//                //拼接案件编号
+//                String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
+//                String numberNo = getNumberNo(numbertType, String.valueOf(addCaseParam.getId()-1<1?0:addCaseParam.getId()-1));
+//                addCaseParam.setCasenum(numberNo);
+//
+//                //修改编号
+//                EntityWrapper updateparam=new EntityWrapper();
+//                updateparam.eq("ssid",addCaseParam.getSsid());
+//                int caseupdate_bool = police_caseMapper.update(addCaseParam,updateparam);
+//                if (caseupdate_bool>0){
+//                        LogUtil.intoLog(this.getClass(),"案件编号修改成功__"+numberNo);
+//                }
+//            }
 
 
             //案件多用户
@@ -2284,25 +2284,26 @@ public class RecordService extends BaseService {
                 result.setMessage("案件编号不能重复");
                 return;
             }
-        }else {
-            Police_case police_case_=new Police_case();
-            police_case_.setSsid(casessid);
-            police_case_=police_caseMapper.selectOne(police_case_);
-            //截取类型的前一个字母
-            String type=CommonCache.getCurrentServerType();
-            int index=type.indexOf("_");
-            String q="";
-            if (index>-1&&index<type.length()-1){
-                String test3before=type.substring(0,index);
-                String test3after=type.substring(index+1);
-                q=test3before.substring(0,1)+test3after.substring(0,1);
-            }
-
-            //拼接案件编号
-            String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
-            String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?0:police_case_.getId()-1));
-            updateCaseParam.setCasenum(numberNo);
         }
+//        else {
+//            Police_case police_case_=new Police_case();
+//            police_case_.setSsid(casessid);
+//            police_case_=police_caseMapper.selectOne(police_case_);
+//            //截取类型的前一个字母
+//            String type=CommonCache.getCurrentServerType();
+//            int index=type.indexOf("_");
+//            String q="";
+//            if (index>-1&&index<type.length()-1){
+//                String test3before=type.substring(0,index);
+//                String test3after=type.substring(index+1);
+//                q=test3before.substring(0,1)+test3after.substring(0,1);
+//            }
+//
+//            //拼接案件编号
+//            String numbertType =q+ new SimpleDateFormat("yyMMdd").format(new Date());
+//            String numberNo = getNumberNo(numbertType, String.valueOf(police_case_.getId()-1<1?0:police_case_.getId()-1));
+//            updateCaseParam.setCasenum(numberNo);
+//        }
 
 
 

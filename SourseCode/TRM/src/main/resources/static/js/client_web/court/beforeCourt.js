@@ -708,7 +708,7 @@ function select_case(obj) {
                     var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                     $("#cause").val(c.cause);
-                    $("#casenum").val(c.casenum);
+                    $("#casenum").val(c.casenum==null?"":c.casenum);
                     $("#caseway").val(c.caseway);
                     $("#asknum").val(asknum);
                     $("#recordname").val(recordname);
@@ -744,7 +744,7 @@ function select_caseblur() {
                 var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
-                $("#casenum").val(c.casenum);
+                $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
                 $("#asknum").val(asknum);
                 $("#recordname").val(recordname);
@@ -772,7 +772,7 @@ function select_caseblur() {
                 var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                 $("#cause").val(c.cause);
-                $("#casenum").val(c.casenum);
+                $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
                 $("#asknum").val(asknum);
                 $("#recordname").val(recordname);
@@ -839,7 +839,7 @@ function open_othercases() {
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);
-                        $("#casenum").val(c.casenum);
+                        $("#casenum").val(c.casenum==null?"":c.casenum);
                         $("#caseway").val(c.caseway);
                         $("#asknum").val(asknum);
                         $("#recordname").val(recordname);
@@ -917,7 +917,7 @@ function callbakegetCaseById(data) {
                                         var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                                         $("#cause").val(c.cause);
-                                        $("#casenum").val(c.casenum);
+                                        $("#casenum").val(c.casenum==null?"":c.casenum);
                                         if (isNotEmpty(c.starttime)){
                                             $("#starttime").val(c.starttime);
                                         }
