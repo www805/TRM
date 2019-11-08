@@ -6,6 +6,7 @@ package com.avst.trm.v1.common.util.poiwork;
 import com.aspose.words.Document;
 import com.aspose.words.ReadLicense;
 import com.aspose.words.SaveFormat;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -69,15 +70,14 @@ public class WordToPDF {
 
         boolean bool=false;
         long starttime=(new Date()).getTime();
-        System.out.println("start time:"+starttime);
         FileOutputStream os=null;
         try {
             if(!getLicense()){// 验证License 若不验证则转化出的PDP文档会有水印产生
-                System.out.println("验证License 失败");
+                LogUtil.intoLog(4,WordToPDF.class,"word2pdf 验证License 失败");
             }
 
             os = new FileOutputStream(file2);
-            System.out.println("wordpath------------------------------"+wordpath);
+            LogUtil.intoLog(1,WordToPDF.class,"wordpath------------------------------"+wordpath);
             Document doc = new Document(wordpath);                    //Address是将要被转化的word文档
 
             doc.save(os, SaveFormat.PDF);                            //全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
@@ -95,7 +95,7 @@ public class WordToPDF {
             }
         }
         long endtime=(new Date()).getTime();
-        System.out.println("worktopdf time:"+(endtime-starttime));
+        LogUtil.intoLog(1,WordToPDF.class,wordpath+":wordpath----word2pdf time:"+(endtime-starttime));
         return bool;
     }
 
@@ -103,8 +103,8 @@ public class WordToPDF {
     public static void main(String[] args) {
 
         long starttime=(new Date()).getTime();
-        String PDFpath="C:\\Users\\Administrator\\Desktop\\ceshi.pdf";
-        String docpath="C:\\Users\\Administrator\\Desktop\\ceshi2.docx";
+        String PDFpath="C:\\Users\\Administrator\\Desktop\\测试情绪报告001.pdf";
+        String docpath="C:\\Users\\Administrator\\Desktop\\测试情绪报告001.doc";
         System.out.println(word2pdf(PDFpath,docpath)+"----wordTopdf(docpath,PDFpath)");
 
         System.out.println((new Date()).getTime()-starttime);

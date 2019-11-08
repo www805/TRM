@@ -645,8 +645,8 @@ public class RecordService2 extends BaseService {
         Calendar c = Calendar.getInstance();
 
         String years=param.getYearstype();
-        System.out.println(years);
-        if (!StringUtils.isNotBlank(years)){
+        System.out.println(years+"---getCaseStatistics");
+        if (StringUtils.isBlank(years)){
             years=df.format(new Date());
         }
 
@@ -1006,9 +1006,9 @@ public class RecordService2 extends BaseService {
                 LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word下载地址__"+worddownurl);
 
 
-                System.out.println((new Date()).getTime());
+                LogUtil.intoLog(this.getClass(),"替换笔录模板中的标识数据，开始时间："+(new Date()).getTime());
                 XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,null);
-                System.out.println((new Date()).getTime());
+                LogUtil.intoLog(this.getClass(),"替换笔录模板中的标识数据，结束时间："+(new Date()).getTime());
 
                 String oldfilepath=record.getWordrealurl();
                 String word_filesavessid=record.getWord_filesavessid();
@@ -1205,9 +1205,7 @@ public class RecordService2 extends BaseService {
                 String worddownurl =uploadpath+OpenUtil.strMinusBasePath(qg, wordrealurl) ;
                 LogUtil.intoLog(this.getClass(),"笔录类型对应的word笔录模板生成的word下载地址__"+worddownurl);
 
-                System.out.println((new Date()).getTime());
                 XwpfTUtil.replaceAndGenerateWord(wordtemplate_realurl,wordrealurl,dataMap,null);
-                System.out.println((new Date()).getTime());
 
                 String oldfilepath=record.getWordrealurl();
 
@@ -1318,7 +1316,7 @@ public class RecordService2 extends BaseService {
                     }
                 }
             }
-            System.out.println(talk);
+            System.out.println("exportData 笔录问答集合："+talk);
 
 
             //根据笔录ssid获取案件信息

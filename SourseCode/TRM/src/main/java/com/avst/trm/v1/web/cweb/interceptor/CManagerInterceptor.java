@@ -140,9 +140,6 @@ public class CManagerInterceptor extends HandlerInterceptorAdapter {
         //session最新链接时间
         long lastAccessedTime = session.getLastAccessedTime();
 
-        System.out.println("-----> maxInactiveInterval: "+maxInactiveInterval);
-        System.out.println("-----> creationTime: "+creationTime);
-        System.out.println("-----> lastAccessedTime: "+lastAccessedTime);
 
         //从session获取上次链接时间
         Long operateTime = (Long)session.getAttribute("operateTime");

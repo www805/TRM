@@ -288,7 +288,7 @@ public class CommonCache {
     public static synchronized InitVO getinit_WEB(){
 
         if(null==init_WEB){
-            System.out.println("init_WEB is null");
+            System.out.println("InitVO init_WEB is null");
             if(null==pageListMap||null==actionListMap){
                 initActionListMap();
             }

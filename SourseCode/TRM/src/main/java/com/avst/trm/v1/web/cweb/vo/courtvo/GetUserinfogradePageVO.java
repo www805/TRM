@@ -6,7 +6,7 @@ import com.avst.trm.v1.web.cweb.req.courtreq.GetUserinfogradePageParam;
 import java.util.List;
 
 public class GetUserinfogradePageVO {
-    private List<Userinfograde> pagelist;//全部笔录
+    private List<Userinfograde> pagelist;
 
     private GetUserinfogradePageParam pageparam;
 

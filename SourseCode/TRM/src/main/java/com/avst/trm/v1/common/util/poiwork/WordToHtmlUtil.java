@@ -43,7 +43,7 @@ public class WordToHtmlUtil {
         try {
             File f = new File(docxpath);
             if (!f.exists()) {
-                LogUtil.intoLog(4,WordToHtmlUtil.class,"Sorry File does not Exists!docxpath:"+docxpath);
+                LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2007ToHtml Sorry File does not Exists!docxpath:"+docxpath);
             } else {
                 if (f.getName().endsWith(".docx") || f.getName().endsWith(".DOCX")) {
 
@@ -69,7 +69,7 @@ public class WordToHtmlUtil {
                     LogUtil.intoLog(1,WordToHtmlUtil.class,"docx转HTML成功"+htmlpath);
                     return true;
                 } else {
-                    LogUtil.intoLog(4,WordToHtmlUtil.class,"Enter only MS Office 2007+ files,docxpath:"+docxpath);
+                    LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2007ToHtml Enter only MS Office 2007+ files,docxpath:"+docxpath);
                 }
             }
         } catch (IOException e) {
@@ -101,7 +101,7 @@ public class WordToHtmlUtil {
                 e.printStackTrace();
             }
         }
-        LogUtil.intoLog(4,WordToHtmlUtil.class,"docx转HTML失败"+docxpath);
+        LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2007ToHtml docx转HTML失败"+docxpath);
         return false;
     }
 
@@ -145,7 +145,7 @@ public class WordToHtmlUtil {
 
                     } catch (Exception e) {
                         e.printStackTrace();
-                        LogUtil.intoLog(4,WordToHtmlUtil.class,"doc转HTML时图片异常"+imgpath_ + suggestedName);
+                        LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2003ToHtml doc转HTML时图片异常"+imgpath_ + suggestedName);
                     }finally {
                         try {
                             if(null!=os){
@@ -216,7 +216,7 @@ public class WordToHtmlUtil {
                 e.printStackTrace();
             }
         }
-        LogUtil.intoLog(4,WordToHtmlUtil.class,"doc转HTML失败"+docpath);
+        LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2003ToHtml doc转HTML失败"+docpath);
         return false;
     }
 

@@ -8,7 +8,7 @@ function getUserinfogradeByssid() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            ssid:ssid,
+            ssid:ssid
         }
     };
     ajaxSubmitByJson(url,data,callbackgetUserinfogradeByssid);
@@ -23,7 +23,7 @@ function callbackgetUserinfogradeByssid(data) {
                     $("#gradename").val(userinfograde.gradename);
                     $("#gradetype").val(userinfograde.gradetype);
                     $("#grade").val(userinfograde.grade);
-
+                    $("#gradeintroduce").val(userinfograde.gradeintroduce);
                 }
             }
         }
@@ -46,6 +46,7 @@ function addOrUpdateUserinfograde() {
     }
     var gradename=$("#gradename").val();
     var gradetype=$("#gradetype").val();
+    var gradeintroduce=$("#gradeintroduce").val();
     var grade=$("#grade").val();
     gradename = gradename.replace(/\s/g, "");
 
@@ -64,6 +65,10 @@ function addOrUpdateUserinfograde() {
         $("#grade").focus();
         return;
     }
+    if (!isNotEmpty(gradeintroduce)){
+        gradeintroduce=gradename;
+    }
+
 
     var data={
         token:INIT_CLIENTKEY,
@@ -72,6 +77,7 @@ function addOrUpdateUserinfograde() {
             gradename:gradename,
             gradetype:gradetype,
             grade:grade,
+            gradeintroduce:gradeintroduce,
         }
     };
     ajaxSubmitByJson(url,data,callbackaddOrUpdateUserinfograde);

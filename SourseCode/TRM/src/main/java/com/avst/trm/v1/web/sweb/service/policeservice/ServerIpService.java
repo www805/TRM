@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RRParam;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
@@ -61,7 +62,7 @@ public class ServerIpService extends BaseService {
         } catch (Exception ex) {
             result.setData(getServerIpVO);
             result.setMessage("远程请求设备、会议ip失败");
-            System.out.println("远程请求设备、会议ip失败");
+            LogUtil.intoLog(4,this.getClass(),"远程请求设备、会议ip失败，抛错了");
         }
 
     }

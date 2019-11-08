@@ -49,6 +49,11 @@ public class Police_userinfograde extends Model<Police_userinfograde> {
      */
     private Date createtime;
 
+    /**
+     * 用于标记这个人物角色在系统中的简介
+     */
+    private String gradeintroduce;
+
     private String ssid;
 
     private String string1;
@@ -61,6 +66,18 @@ public class Police_userinfograde extends Model<Police_userinfograde> {
 
     public Integer getId() {
         return id;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getGradeintroduce() {
+        return gradeintroduce;
+    }
+
+    public void setGradeintroduce(String gradeintroduce) {
+        this.gradeintroduce = gradeintroduce;
     }
 
     public void setId(Integer id) {

@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  * @author Admin
  * @since 2019-04-22
  */
+
 public interface Police_recordtypeMapper extends BaseMapper<Police_recordtype> {
 
 }

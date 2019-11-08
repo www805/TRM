@@ -217,20 +217,22 @@ public class XwpfTUtil {
                 document = new XWPFDocument(POIXMLDocument.openPackage(tmpPath));
                 // 替换段落中的指定文字
                 Iterator<XWPFParagraph> itPara = document.getParagraphsIterator();
-                while (itPara.hasNext()) {
-                    XWPFParagraph paragraph = itPara.next();
-                    List<XWPFRun> runs = paragraph.getRuns();
-                    for (XWPFRun run : runs) {
-                        String oneparaString = run.getText(run.getTextPosition());
-                        if (StringUtils.isBlank(oneparaString)){
-                            continue;
+                if(null!=itPara){
+                    while (itPara.hasNext()) {
+                        XWPFParagraph paragraph = itPara.next();
+                        List<XWPFRun> runs = paragraph.getRuns();
+                        for (XWPFRun run : runs) {
+                            String oneparaString = run.getText(run.getTextPosition());
+                            if (StringUtils.isBlank(oneparaString)){
+                                continue;
+                            }
+                            for (Map.Entry<String, String> entry : map.entrySet()) {
+                                oneparaString = oneparaString.replace(entry.getKey(), entry.getValue());
+                            }
+                            run.setText(oneparaString, 0);
                         }
-                        for (Map.Entry<String, String> entry : map.entrySet()) {
-                            oneparaString = oneparaString.replace(entry.getKey(), entry.getValue());
-                        }
-                        run.setText(oneparaString, 0);
-                    }
 
+                    }
                 }
 
                 //组合谈话
@@ -356,9 +358,6 @@ public class XwpfTUtil {
 
     }
 
-
-    //word 转PDF
-    //检测Word模板是否正确
 
     /**
      * 检查Word模板文档是否正确
