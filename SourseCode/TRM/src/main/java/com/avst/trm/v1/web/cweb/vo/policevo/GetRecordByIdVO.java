@@ -23,6 +23,9 @@ public class GetRecordByIdVO {
 
     private List<Avstmt_modeltd> modeltds;//会议模板通道list
 
+    private String iid;//
+
+
     private String record_pausebool;//笔录是否允许暂停1允许 -1 不允许 默认不允许
 
     private String record_adjournbool;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
@@ -35,6 +38,13 @@ public class GetRecordByIdVO {
     private  List<Base_nationality> nationalityList;//全部国籍
     private  List<Base_national> nationalList;//全部民族
 
+    public String getIid() {
+        return iid;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+    }
 
     public List<AdminAndWorkunit> getAdminList() {
         return adminList;

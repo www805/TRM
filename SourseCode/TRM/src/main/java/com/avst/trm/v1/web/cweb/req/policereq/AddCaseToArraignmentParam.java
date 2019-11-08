@@ -25,6 +25,7 @@ public class AddCaseToArraignmentParam {
 
     private String mtmodelssid;//会议模板ssid
     private String wordtemplatessid;//笔录模板ssid
+    private String mtmodelssidname;//会议模板名称
 
     private List<Userto> usertos;//其他在场人员信息
 
@@ -43,6 +44,14 @@ public class AddCaseToArraignmentParam {
 
     private List<ArrUserExpandParam> arrUserExpandParams;//拓展表数据;针对已存在用户：主要用于内部管理员
 
+
+    public String getMtmodelssidname() {
+        return mtmodelssidname;
+    }
+
+    public void setMtmodelssidname(String mtmodelssidname) {
+        this.mtmodelssidname = mtmodelssidname;
+    }
 
     public List<ArrUserExpandParam> getArrUserExpandParams() {
         return arrUserExpandParams;
@@ -83,6 +92,7 @@ public class AddCaseToArraignmentParam {
     public void setSkipCheckCasebool(Integer skipCheckCasebool) {
         this.skipCheckCasebool = skipCheckCasebool;
     }
+
 
     public Integer getSkipCheckbool() {
         return skipCheckbool;

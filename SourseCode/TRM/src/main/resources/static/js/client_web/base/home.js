@@ -255,38 +255,38 @@ function myChart_(){
                 name:'详情来源',
                 type:'pie',
                 radius: ['40%', '55%'],
-               /* label: {
-                    normal: {
-                        formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
-                        backgroundColor: '#eee',
-                        borderColor: '#aaa',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        rich: {
-                            a: {
-                                color: '#999',
-                                lineHeight: 22,
-                                align: 'center'
-                            },
-                            hr: {
-                                borderColor: '#aaa',
-                                width: '100%',
-                                borderWidth: 0.5,
-                                height: 0
-                            },
-                            b: {
-                                fontSize: 16,
-                                lineHeight: 33
-                            },
-                            per: {
-                                color: '#eee',
-                                backgroundColor: '#334455',
-                                padding: [2, 4],
-                                borderRadius: 2
-                            }
-                        }
-                    }
-                },*/
+                /* label: {
+                     normal: {
+                         formatter: '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+                         backgroundColor: '#eee',
+                         borderColor: '#aaa',
+                         borderWidth: 1,
+                         borderRadius: 4,
+                         rich: {
+                             a: {
+                                 color: '#999',
+                                 lineHeight: 22,
+                                 align: 'center'
+                             },
+                             hr: {
+                                 borderColor: '#aaa',
+                                 width: '100%',
+                                 borderWidth: 0.5,
+                                 height: 0
+                             },
+                             b: {
+                                 fontSize: 16,
+                                 lineHeight: 33
+                             },
+                             per: {
+                                 color: '#eee',
+                                 backgroundColor: '#334455',
+                                 padding: [2, 4],
+                                 borderRadius: 2
+                             }
+                         }
+                     }
+                 },*/
                 label:{
                     align: 'left',
                     normal:{
@@ -317,7 +317,7 @@ function myChart_(){
     myChart2.setOption(option2);
 }
 $(function () {
-   myChart_();
+    myChart_();
 });
 
 //打开开始审讯弹出框

@@ -188,7 +188,7 @@
             <h3 th:text="${getRecordByIdModel.title}">智能提讯系统</h3>
         </div>
         <div class="layui-col-md4" style="display: none" id="gZIPVod_html">
-            <div class="layui-col-md3" style="text-align: right">打包进度：</div>
+            <div class="layui-col-md3" style="text-align: right">进度：</div>
             <div class="layui-col-md9">
                 <div class="layui-progress  " lay-showPercent="true" style="margin:8px" >
                     <div class="layui-progress-bar" lay-percent="0%"></div>
@@ -208,7 +208,7 @@
                 <div >
                     <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
-                            <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
+                            <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_casetouser" onclick="open_casetouser()"></i></li>
                             <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
                             <li id="ph_html" style="display: none">情绪报告</li>
                         </ul>

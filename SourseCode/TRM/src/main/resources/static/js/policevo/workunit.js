@@ -78,7 +78,7 @@ function open_workunit(ssid,oldworkname) {
         var form=layui.form;
         var index = layer.open({
             type:1,
-            title:'笔录类型编辑',
+            title:'工作单位编辑',
             content: html,
             area: ['25%', '30%'],
             btn: ['确定', '取消'],

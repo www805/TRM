@@ -1632,6 +1632,15 @@ $(function () {
                                         </td>\
                                         <td></td>\
                                         </tr>';
+                                    //第一行去掉-----------------------------start
+                                    var textlen=null;
+                                    $("#first_originaltr label").each(function(){
+                                        textlen+=$(this).text();
+                                    });
+                                    if (!isNotEmpty(textlen)){
+                                        $("#first_originaltr").remove();
+                                    }
+                                    //第一行去掉-----------------------------end
                                     focuslable(trtd_html,2,null);//自动追加不设置光标
                                 }
                             }

@@ -227,7 +227,7 @@ function addCaseToArraignment() {
 
 
 
-
+    var mtmodelssidname=$("#modelssid").val();
     var data={
         token:INIT_CLIENTKEY,
         param:{
@@ -240,6 +240,7 @@ function addCaseToArraignment() {
             asknum:asknum,
             recordtypessid:recordtypessid,
             mtmodelssid:dqmodelssid,
+            mtmodelssidname:mtmodelssidname,//模板名称
             wordtemplatessid:dqwordssid,
             addPolice_case:addPolice_case,
             addUserInfo:userinfograde2,//被询问人信息：被告
@@ -705,7 +706,8 @@ function select_case(obj) {
                     var casename=$("#casename").val();
                     var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",document).text();
-                    var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                    var modelssidname=$("#modelssid").val();
+                    var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum==null?"":c.casenum);
@@ -733,6 +735,7 @@ function select_caseblur() {
     var casename=$("#casename").val();
     var recordtypename=$("td[recordtypebool='true']",document).text();
     var username=$("#username").val();
+    var modelssidname=$("#modelssid").val();
     //需要验证案件ssid
     dqcasessid=null;
     if (isNotEmpty(cases)){
@@ -741,8 +744,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
-
+                var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
@@ -769,8 +771,7 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
-
+                var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
@@ -835,7 +836,8 @@ function open_othercases() {
                         var casename=c.casename;
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordtypename=$("td[recordtypebool='true']",document).text();
-                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                        var modelssidname=$("#modelssid").val();
+                        var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);
@@ -914,7 +916,8 @@ function callbakegetCaseById(data) {
                                         var recordtypename=$("td[recordtypebool='true']",document).text();
                                         var username=$("#username").val();
                                         var asknum=c.arraignments==null?0:c.arraignments.length;
-                                        var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                                        var modelssidname=$("#modelssid").val();
+                                        var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
 
                                         $("#cause").val(c.cause);
                                         $("#casenum").val(c.casenum==null?"":c.casenum);

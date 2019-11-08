@@ -66,7 +66,7 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             getRecordById_data=data;
             var record=data.record;
-
+            iid=data.iid;
             recordnameshow=record.recordname;//当前笔录名称
 
             if (isNotEmpty(record)){
@@ -81,7 +81,7 @@ function callbackgetRecordById(data) {
                 }
 
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
-                $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_recordqw()"></i>');
+                $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()"></i>');
 
                 //会议人员
                 var recordUserInfosdata=record.recordUserInfos;
@@ -123,6 +123,12 @@ function callbackgetRecordById(data) {
                 var case_=record.case_;
                 $("#caseAndUserInfo_html").html("");
                 if (isNotEmpty(case_)){
+                    //显示编辑按钮
+                    var casebool=case_.casebool;
+                    if (isNotEmpty(casebool)&&(casebool==0||casebool==1)){
+                        $("#open_recordqw").css("visibility","visible");
+                    }
+
                     var casename=case_.casename==null?"":case_.casename;
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
@@ -180,6 +186,13 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(getPlayUrlVO)) {
                 set_getPlayUrl(getPlayUrlVO);
             }else {
+                //此处加入定时器
+                if (isNotEmpty(iid)){
+                    getplayurl_setinterval= setInterval(function () {
+                        getPlayUrl();
+                    },5000)
+                }
+
                 $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
             }
 
@@ -1059,7 +1072,33 @@ function callbackupdateRecord(data){
     }
 }
 //*******************************************************************修改定位时间start****************************************************************//
-
+//*******************************************************************定时请求视频地址start****************************************************************//
+var getplayurl_setinterval=null;
+function getPlayUrl() {
+    if (isNotEmpty(iid)) {
+        var url=getUrl_manage().getPlayUrl;
+        var data={
+            iid: iid
+        };
+        ajaxSubmitByJson(url, data, callbackgetPlayUrl);
+    }else{
+        console.log("直播信息未找到__"+iid);
+    }
+}
+function callbackgetPlayUrl(data) {
+    $("#gZIPVod_html").css("display","block");
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        $("#gZIPVod_html").css("display","none");
+        var data=data.data;
+        if (isNotEmpty(data)){
+            clearInterval(getplayurl_setinterval);
+            set_getPlayUrl(data);
+        }
+    }else{
+        $("#gZIPVod_html .layui-col-md9").html(data.message);
+    }
+}
+//*******************************************************************定时请求视频地址start****************************************************************//
 
 
 //默认问答

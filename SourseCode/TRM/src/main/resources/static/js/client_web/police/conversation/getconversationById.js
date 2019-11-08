@@ -1,3 +1,7 @@
+/**
+ * 不再维护统一使用普通笔录回放
+ * @type {null}
+ */
 var pdfdownurl=null;
 var worddownurl=null;
 

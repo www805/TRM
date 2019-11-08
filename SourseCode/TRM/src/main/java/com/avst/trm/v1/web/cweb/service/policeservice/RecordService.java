@@ -22,9 +22,11 @@ import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetTdByModelSsidParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.Avstmt_modelAll;
 import com.avst.trm.v1.feignclient.mc.vo.GetTdByModelSsidVO;
 import com.avst.trm.v1.feignclient.mc.vo.param.Avstmt_modeltd;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
@@ -185,7 +187,7 @@ public class RecordService extends BaseService {
             for (Record record : records) {
                 String  recordssid=record.getSsid();
                 Integer recordbool_=record.getRecordbool();//笔录状态1进行中2已完成
-                if (null!=recordbool_&&(recordbool_==1||recordbool_==0)){
+                /*if (null!=recordbool_&&(recordbool_==1||recordbool_==0)){
                     List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
                     record.setProblems(recordToProblems);
                 }else  if (null!=recordbool_&&(recordbool_==2||recordbool_==3)){
@@ -212,7 +214,9 @@ public class RecordService extends BaseService {
                         }
                         record.setProblems(problems);
                     }
-                }
+                }*/
+                List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
+                record.setProblems(recordToProblems);
 
                 //根据笔录ssid获取案件信息
                 try {
@@ -478,9 +482,9 @@ public class RecordService extends BaseService {
                 Integer recordbool=record.getRecordbool();
                 try {
                     /**
-                     *  获取题目答案
+                     *  获取题目答案：未用到
                      */
-                    EntityWrapper ew=new EntityWrapper();
+                   /* EntityWrapper ew=new EntityWrapper();
                     ew.eq("r.ssid",record.getSsid());
                     ew.orderBy("p.ordernum",true);
                     ew.orderBy("p.createtime",true);
@@ -501,7 +505,7 @@ public class RecordService extends BaseService {
                             }
                         }
                         record.setProblems(problems);
-                    }
+                    }*/
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -700,6 +704,7 @@ public class RecordService extends BaseService {
                         getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
                         if (null!=getMCVO){
                             iid=getMCVO.getIid();
+                            getRecordByIdVO.setIid(iid);
                             List<AsrTxtParam_toout> asrTxtParam_toouts=getMCVO.getList();
                             if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
                                 for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
@@ -1050,6 +1055,7 @@ public class RecordService extends BaseService {
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
         Integer multifunctionbool=addCaseToArraignmentParam.getMultifunctionbool();//功能类型
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
+        String mtmodelssidname=addCaseToArraignmentParam.getMtmodelssidname();//会议模板名称
         String wordtemplatessid=addCaseToArraignmentParam.getWordtemplatessid();//笔录模板ssid
         //笔录信息
         String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
@@ -1200,6 +1206,31 @@ public class RecordService extends BaseService {
         //---------------------------------------------------------------------------------------------------------------检测结束
 
 
+        if (StringUtils.isBlank(mtmodelssidname)){
+            List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+            GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+            getMc_modelParam_out.setMcType(MCType.AVST);
+            getMc_modelParam_out.setModelssid(mtmodelssid);
+            ReqParam reqParam=new ReqParam();
+            reqParam.setParam(getMc_modelParam_out);
+            try {
+                RResult rr = meetingControl.getMc_model(reqParam);
+                if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                    if (null!=modelAlls&&modelAlls.size()==1){
+                        mtmodelssidname=modelAlls.get(0).getExplain();
+                    }
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                }else{
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
 
         //正式开始laaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         if (StringUtils.isNotBlank(recordname)){
@@ -1216,7 +1247,7 @@ public class RecordService extends BaseService {
             Police_recordtype police_recordtype = new Police_recordtype();
             police_recordtype.setSsid(recordtypessid);
             police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
-            recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
+            recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
         }
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】recordname__"+recordname);
 
@@ -2634,13 +2665,6 @@ public class RecordService extends BaseService {
                             addCaseToArraignmentParam.setRecordtypessid(arraignmentAndRecord.getRecordtypessid());
                             addCaseToArraignmentParam.setRecordplace(arraignmentAndRecord.getRecordplace());
                             addCaseToArraignmentParam.setMultifunctionbool(arraignmentAndRecord.getMultifunctionbool());
-
-                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"次";
-                            recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");//笔录名称
-                            if (null!=arraignmentAndRecord.getMultifunctionbool()&&arraignmentAndRecord.getMultifunctionbool()==1){
-                                recordname=arraignmentAndRecord.getRecordname()+"_第"+(Integer.valueOf(asknum)+1)+"次";
-                            }
-                            addCaseToArraignmentParam.setRecordname(recordname);
                             addCaseToArraignmentParam.setAskobj(arraignmentAndRecord.getAskobj());
                             addCaseToArraignmentParam.setAsknum(asknum);
                             addCaseToArraignmentParam.setMtmodelssid(arraignmentAndRecord.getMtmodelssid());
@@ -2648,6 +2672,35 @@ public class RecordService extends BaseService {
                             addCaseToArraignmentParam.setSkipCheckCasebool(1);//默认跳过检测
                             addCaseToArraignment_param.setParam(addCaseToArraignmentParam);
 
+                            String mtmodelssidname="";
+                            if (StringUtils.isNotEmpty(arraignmentAndRecord.getMtmodelssid())){
+                                List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+                                GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+                                getMc_modelParam_out.setMcType(MCType.AVST);
+                                getMc_modelParam_out.setModelssid(arraignmentAndRecord.getMtmodelssid());
+                                ReqParam reqParam=new ReqParam();
+                                reqParam.setParam(getMc_modelParam_out);
+                                try {
+                                    RResult rr = meetingControl.getMc_model(reqParam);
+                                    if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                        modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                                        if (null!=modelAlls&&modelAlls.size()==1){
+                                            mtmodelssidname=modelAlls.get(0).getExplain();
+                                        }
+                                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                                    }else{
+                                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+mtmodelssidname+"_"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                            recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");//笔录名称
+                            if (null!=arraignmentAndRecord.getMultifunctionbool()&&arraignmentAndRecord.getMultifunctionbool()==1){
+                                recordname=arraignmentAndRecord.getRecordname()+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                            }
+                            addCaseToArraignmentParam.setRecordname(recordname);
 
                             addCaseToArraignmentParam.setAddUserInfo(userinfo_);
                             addCaseToArraignmentParam.setAddPolice_case(police_case);
