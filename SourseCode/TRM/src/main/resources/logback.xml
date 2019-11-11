@@ -78,8 +78,8 @@
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- 最大保存时间：180天-->
-            <maxHistory>180</maxHistory>
+            <!-- 最大保存时间：90天-->
+            <maxHistory>90</maxHistory>
         </rollingPolicy>
         <append>true</append>
         <!-- 日志格式 -->
@@ -121,12 +121,14 @@
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
+        <appender-ref ref="WARN_FILE"/>
     </logger>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="INFO_FILE" />
         <appender-ref ref="ERROR_FILE" />
+        <appender-ref ref="WARN_FILE" />
     </root>
 
 </configuration>

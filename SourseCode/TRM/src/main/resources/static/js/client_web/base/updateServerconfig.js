@@ -153,3 +153,35 @@ function callbackupdateServerconfig(str) {
         layer.msg(data.message,{icon: 5});
     }
 }
+
+/**
+ * 重置socket连接，一般情况下不用
+ */
+function rebootsocket(){
+
+    layer.confirm('确认重置SOCKET?', {
+        btn: ['确定','取消'] //按钮
+    }, function(index){
+        $("#socketbtn").hide();
+        layer.close(index);
+        //请求后台重启socket
+        var url=getActionURL(getactionid_manage().updateServerconfig_rebootsocket);
+        var data={
+            token:INIT_CLIENTKEY
+        };
+        ajaxSubmitByJson(url,data,callbackrebootsocket);
+
+    }, function(){
+
+    });
+
+}
+
+
+function callbackrebootsocket(data) {
+    if(null!=data){
+        layer.msg(data.message,{icon: 1});
+    }else{
+        layer.msg("网络连接异常，请重试",{icon: 5});
+    }
+}

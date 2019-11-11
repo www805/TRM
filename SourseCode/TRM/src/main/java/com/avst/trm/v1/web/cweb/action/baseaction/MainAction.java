@@ -192,6 +192,26 @@ public class MainAction extends BaseAction {
     }
 
     /**
+     * 重启socket
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/rebootsocket")
+    @ResponseBody
+    public RResult rebootsocket(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.rebootsocket(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
      * 获取全部国籍
      * @param param
      * @return

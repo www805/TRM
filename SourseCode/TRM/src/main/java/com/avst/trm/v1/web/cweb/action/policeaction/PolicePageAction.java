@@ -117,11 +117,15 @@ public class PolicePageAction {
     @GetMapping("torecordIndex")
     public ModelAndView torecordIndex(Model model){
         String gnlist=getSQEntity.getGnlist();
-        if (gnlist.indexOf(SQVersion.FY_T)!= -1){
-            //法院的
-            model.addAttribute("title","庭审查看");
-        }else {
-            model.addAttribute("title","审讯查看");
+        try {
+            if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+                //法院的
+                model.addAttribute("title","庭审查看");
+            }else {
+                model.addAttribute("title","审讯查看");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return new ModelAndView("client_web/police/record/recordIndex", "recordIndexModel", model);
     }

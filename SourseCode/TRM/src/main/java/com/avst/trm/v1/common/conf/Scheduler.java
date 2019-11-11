@@ -70,10 +70,10 @@ public class Scheduler {
     //每个小时的第五分钟执行
 
     /**
-     * 需要验证
+     * 授权检测
      */
     @Scheduled(cron = "1 58 1/1 * * ?")
-    public void testTasks2() {
+    public void checkSQTasks2() {
 
         LogUtil.intoLog(1,this.getClass(),"定时任务执行时间testTasks2：" + dateFormat.format(new Date()),"循环定时器");
 

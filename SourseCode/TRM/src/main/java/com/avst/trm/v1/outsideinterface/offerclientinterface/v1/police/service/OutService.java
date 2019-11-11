@@ -507,7 +507,11 @@ public class OutService  extends BaseService {
                 LogUtil.intoLog(this.getClass(),"SocketIOClient__"+clients);
                 if (null!=clients&&clients.size()>0){
                     for (SocketIOClient client : clients) {
-                        client.sendEvent("getback", setMCAsrTxtBackVO);
+                        try {
+                            client.sendEvent("getback", setMCAsrTxtBackVO);
+                        } catch (Exception e) {
+                            LogUtil.intoLog(4,this.getClass(),"client.sendEvent数据填充到socket失败");
+                        }
                     }
                 }
                 return true;
@@ -522,7 +526,7 @@ public class OutService  extends BaseService {
         //请求参数转换
         GetPhssidByMTssidParam_out getMCParam_out = param.getParam();
         if (null==getMCParam_out){
-            LogUtil.intoLog(this.getClass(),"参数为空");
+            LogUtil.intoLog(4,this.getClass(),"参数为空");
             result.setMessage("参数为空");
             return  result;
         }

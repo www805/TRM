@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.SysYmlParam;
+import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
@@ -421,6 +422,21 @@ public class MainService extends BaseService {
         }
         return;
     }
+
+
+    public void rebootsocket(RResult result,ReqParam param){
+
+        boolean bool=SocketIOConfig.StartSocketio();//重启
+        if(bool){
+            result.setData(bool);
+            changeResultToSuccess(result);
+            result.setMessage("重启SOCKET成功");
+        }else{
+            result.setMessage("重启SOCKET失败");
+        }
+        return;
+    }
+
 
     public void getNationalitys(RResult result, ReqParam param){
         List<Base_nationality> list=base_nationalityMapper.selectList(null);

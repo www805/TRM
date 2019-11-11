@@ -18,6 +18,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.avst.trm.v1.web.sweb.vo.InitVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.corundumstudio.socketio.SocketIOServer;
 import org.apache.commons.lang.StringUtils;
 import sun.swing.StringUIClientPropertyKey;
 
@@ -673,5 +674,10 @@ public class CommonCache {
      * 点播打包线程是否有人占用
      */
     public static int gzvodthreadnum=0;
+
+    /**
+     * 保存socketio,方便以后操作
+     */
+    public static SocketIOServer socketIOServer;
 
 }

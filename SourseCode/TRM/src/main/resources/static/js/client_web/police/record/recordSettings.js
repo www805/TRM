@@ -677,7 +677,7 @@ function callFDAudPowerMap(data){
         }
 
     }else{
-        layer.msg(data.message,{icon: 5});
+        // layer.msg(data.message,{icon: 5});
     }
     // layui.use('form', function(){
     //     var form = layui.form;
@@ -689,7 +689,7 @@ function callputRecessStatus(data) {
     if(null!=data&&data.actioncode=='SUCCESS') {
 
     }else{
-        layer.msg(data.message);
+        //layer.msg(data.message);
     }
 }
 

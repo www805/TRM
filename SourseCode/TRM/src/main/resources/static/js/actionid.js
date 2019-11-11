@@ -108,9 +108,10 @@ function getactionid_manage() {
 
 
 
-
+        //服务器配置
         updateServerconfig_getServerconfig:"updateServerconfig_getServerconfig",
         updateServerconfig_updateServerconfig:"updateServerconfig_updateServerconfig",
+        updateServerconfig_rebootsocket:"updateServerconfig_rebootsocket",
 
         recordTypeList_getRecordtypes:"recordTypeList_getRecordtypes",
         recordTypeList_getPidRecordtypes:"recordTypeList_getPidRecordtypes",

@@ -1499,7 +1499,7 @@ function callbacksetRecordreal(data) {
            /* console.log("笔录实时保存成功__"+data);*/
         }
     }else{
-        layer.msg(data.message,{icon: 5});
+       // layer.msg(data.message,{icon: 5});
     }
 }
 

@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
@@ -31,8 +32,10 @@ public class SysStartTimer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        scheduler.testTasks2();
+        //开机的时候检测一遍授权
+        scheduler.checkSQTasks2();
 
+        //清理以往的打包缓存
         try {
             new Thread(new Runnable() {
                 @Override
@@ -46,6 +49,9 @@ public class SysStartTimer implements ApplicationRunner {
 
         //赋值服务器的开始时间
         CommonCache.sysStartTime= DateUtil.getSeconds();
+
+        //开启socketio
+        SocketIOConfig.StartSocketio();
 
     }
 

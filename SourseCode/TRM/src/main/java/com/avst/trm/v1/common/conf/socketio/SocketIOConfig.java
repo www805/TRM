@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.conf.socketio;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.corundumstudio.socketio.*;
@@ -15,11 +16,26 @@ import java.util.List;
  * NettySocketConfig配置
  */
 @org.springframework.context.annotation.Configuration
-public class SocketIOConfig implements ApplicationRunner {
+public class SocketIOConfig  {
     public static List<SocketIOClient> clients = new ArrayList<SocketIOClient>();//用于保存所有客户端
 
-    public void StartSocketio(){
+    public static boolean StartSocketio(){
         try {
+            LogUtil.intoLog(1,SocketIOConfig.class,"socketiode 开始启动_____");
+            //检测SocketIOServer是否为空，不为空就关闭掉，重新开启
+            SocketIOServer socketIOServer=CommonCache.socketIOServer;
+            if(null!=socketIOServer){
+                try {
+                    socketIOServer.stop();
+                    clients= new ArrayList<SocketIOClient>();
+                    CommonCache.socketIOServer=null;
+                    LogUtil.intoLog(3,SocketIOConfig.class,"关闭原有的SocketIOServer成功，有待验证" );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    LogUtil.intoLog(4,SocketIOConfig.class,"关闭原有的SocketIOServer失败," +e.getMessage());
+                }
+            }
+
             String SOCKETIO_HOST= PropertiesListenerConfig.getProperty("socketio.server.host");
             String SOCKETIO_PORT= PropertiesListenerConfig.getProperty("socketio.server.port");
             if (null!=SOCKETIO_HOST&&null!=SOCKETIO_PORT){
@@ -80,6 +96,7 @@ public class SocketIOConfig implements ApplicationRunner {
                                 if(clients.size() > 0){
                                     for(int i=0;i<clients.size();i++){
                                         SocketIOClient c=clients.get(i);
+                                        System.out.println(socketIOClient.getSessionId().toString()+"断开连接的来了哈---c，"+c.getSessionId().toString());
                                         if(c.getSessionId().toString().equals(socketIOClient.getSessionId().toString())){
                                             LogUtil.intoLog(3,this.getClass(),"客户端_____" + socketIOClient.getSessionId().toString() + "_____断开连接__"+clients.size());
                                             clients.remove(i);
@@ -94,18 +111,17 @@ public class SocketIOConfig implements ApplicationRunner {
                     }
                 });
                 socketIoServer.start();
+                CommonCache.socketIOServer=socketIoServer;//存入缓存
+                return true;
             }else {
-                LogUtil.intoLog(4,this.getClass(),"socketiode IP和端口为空_____");
+                LogUtil.intoLog(4,SocketIOConfig.class,"socketiode IP和端口为空_____");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LogUtil.intoLog(4,this.getClass(),"socketio连接异常___，"+e.getMessage());
+            LogUtil.intoLog(4,SocketIOConfig.class,"socketio连接异常___，"+e.getMessage());
         }
+        return false;
     }
 
-    @Override
-    public void run(ApplicationArguments args) {
-        LogUtil.intoLog(1,this.getClass(),"socketiode 开始启动_____");
-        StartSocketio();
-    }
+
 }
