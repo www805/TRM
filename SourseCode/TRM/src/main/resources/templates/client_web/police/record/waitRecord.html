@@ -32,7 +32,7 @@
                 呼吸次数：<span id="xt8"> 0.0  </span>
                 放松值：<span id="xt2">  0.0  </span>
                <span class="layui-badge layui-bg-black" id="snrtext3">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span>
-                <span class="layui-badge" id="mtbool_txt">加载中</span>
+               <span class="layui-badge" id="mtbool_txt">加载中</span>
             </div>
         </div>
         <div class="layui-col-md3 clock " >
@@ -304,17 +304,23 @@
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
 
     var recordstate_index=null;//笔录状态栏的下标
-    var gnlist_=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/waitRecord");
 
         recordssid=[[${waitRecordModel.recordssid}]];
-        getgnlist();
         getRecordById();
         getRecordrealByRecordssid();
         getTime();
+
+        if (!isNotEmpty(gnlist)||gnlist.indexOf(RECORD_F)<0){
+            layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
+                window.history.go(-1);
+                return false;
+            })
+        }
 
 
 

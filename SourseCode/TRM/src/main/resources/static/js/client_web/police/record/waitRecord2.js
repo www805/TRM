@@ -1185,58 +1185,9 @@ function recordreals_select() {
 }
 //*******************************************************************左侧搜索块end****************************************************************//
 
-//*******************************************************************左侧授权模块显示start****************************************************************//
-function getgnlist() {
-    var url=getActionURL(getactionid_manage().waitRecord_gnlist);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgnlist);
-}
-var gnlist=null;
-function callbackgnlist(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var lists=data.lists;
-            if (isNotEmpty(lists)){
-                gnlist=lists;
-                if (!isNotEmpty(gnlist)||!gnlist.includes(RECORD_F)){
-                    layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
-                        window.history.go(-1);
-                        return false;
-                    })
-                }
-                //控制显示
-                for (var i = 0; i < gnlist.length; i++) {
-                    var list = gnlist[i];
-                    if (list=="asr_f") {
-                        /*  $("#asr").show();
-                          $("#initec ul li").removeClass("layui-this");
-                          $("#initec .layui-tab-item").removeClass("layui-show");
-                          $("#asr").addClass("layui-this");
-                          $("#asritem").addClass("layui-show");*/
-                    }else if (list=="fd_f") {
-                        /*$("#fd").show();*/
-                    }else if (list=="ph_f") {
-                        /* $("#ph").show();*/
-                       /* $("#xthtml").css("visibility","visible");*/
-                    }
-                }
-            }
-        }
-    }else {
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//*******************************************************************左侧授权模块显示endt****************************************************************//
-
 
 //*******************************************************************关键字start****************************************************************//
-//未使用==后台执行了 此处使用同步因为不能及时接受到它关键字检测的值:不在前端使用太慢耗内存
+//已经废弃
 function checkKeyword(txt) {
     var url=getActionURL(getactionid_manage().waitRecord_checkKeyword);
     var data={

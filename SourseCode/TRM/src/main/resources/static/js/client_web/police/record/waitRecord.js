@@ -256,7 +256,7 @@ function img_bool(obj,type){
             pauseOrContinueRercord(1);
         } else {
             $("#startrecord").css("display","inline-block");
-            if (gnlist_.indexOf(HK_O)== -1){
+            if (gnlist.indexOf(HK_O)== -1){
                 //非海康
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
@@ -267,7 +267,7 @@ function img_bool(obj,type){
         }
     }else if(type==-1) {
         $("#endrecord").css("display","inline-block");
-        if (gnlist_.indexOf(HK_O)== -1){
+        if (gnlist.indexOf(HK_O)== -1){
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
                 layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips:1});
@@ -427,7 +427,7 @@ function callbackgetRecordById(data) {
                     if ((!isNotEmpty(mcbool)||!(mcbool==1||mcbool==3))&&isNotEmpty(mtssiddata)){
                         //存在会议但是状态为空或者不等于1
                         $("#endrecord").css("display","inline-block");
-                        if (gnlist_.indexOf(HK_O)== -1){
+                        if (gnlist.indexOf(HK_O)== -1){
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips('该笔录已经制作过啦~' ,'#endrecord',{time:0, tips: 1});
@@ -447,7 +447,7 @@ function callbackgetRecordById(data) {
                             if (record_pausebool==1) {
                                 tips_msg="点击我可以暂停~";
                             }
-                            if (gnlist_.indexOf(HK_O)== -1){
+                            if (gnlist.indexOf(HK_O)== -1){
                                 layui.use(['layer','element','form'], function(){
                                     var layer=layui.layer;
                                     layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
@@ -455,7 +455,7 @@ function callbackgetRecordById(data) {
                             }
                         } else if (mcbool==3&&record_pausebool==1) {
                             $("#pauserecord").css("display","inline-block");
-                            if (gnlist_.indexOf(HK_O)== -1){
+                            if (gnlist.indexOf(HK_O)== -1){
                                 layui.use(['layer','element','form'], function(){
                                     var layer=layui.layer;
                                     layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 1});
@@ -466,7 +466,7 @@ function callbackgetRecordById(data) {
                         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else {
                         $("#pauserecord").css("display","inline-block");
-                        if (gnlist_.indexOf(HK_O)== -1){
+                        if (gnlist.indexOf(HK_O)== -1){
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
@@ -651,7 +651,7 @@ function startMC() {
             }else  if (multifunctionbool==3){
                 $("#pauserecord").css("display","inline-block").attr({"src":"/uimaker/images/record.png","onclick":"img_bool(this,1);"});
             }
-            if (gnlist_.indexOf(HK_O)== -1){
+            if (gnlist.indexOf(HK_O)== -1){
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 1});
@@ -686,7 +686,7 @@ function callbackstartMC(data) {
             }
         }
         $("#startrecord").css("display","inline-block");
-        if (gnlist_.indexOf(HK_O)== -1){
+        if (gnlist.indexOf(HK_O)== -1){
             layui.use(['layer','element','form'], function(){
                 var layer=layui.layer;
                 layer.tips(tips_msg ,'#startrecord',{time:0, tips: 1});
@@ -744,7 +744,7 @@ function callbackstartMC(data) {
             $("#record_img img").css("display","none");
             if (null!=recordbool&&recordbool==true){
                 $("#endrecord").css("display","inline-block");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips("该笔录已经制作过啦~" ,'#endrecord',{time:0, tips: 1});
@@ -752,7 +752,7 @@ function callbackstartMC(data) {
                 }
             }else {
                 $("#pauserecord").css("display","inline-block").attr("onclick","img_bool(this,1);");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:1});
@@ -813,7 +813,7 @@ function callbackpauseOrContinueRercord(data) {
             layer.msg(con, {time: 2000});
             if (pauseOrContinue==1){
                 $("#pauserecord").css("display","inline-block");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
@@ -821,7 +821,7 @@ function callbackpauseOrContinueRercord(data) {
                 }
             } else {
                 $("#startrecord").css("display","inline-block");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
@@ -837,7 +837,7 @@ function callbackpauseOrContinueRercord(data) {
             $("#record_img img").css("display","none");
             if (pauseOrContinue==1){//请求暂停
                 $("#startrecord").css("display","inline-block");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 1});
@@ -845,7 +845,7 @@ function callbackpauseOrContinueRercord(data) {
                 }
             } else if (pauseOrContinue==2){//请求继续
                 $("#pauserecord").css("display","inline-block").attr("onclick","img_bool(this,1);");
-                if (gnlist_.indexOf(HK_O)== -1){
+                if (gnlist.indexOf(HK_O)== -1){
                     layui.use(['layer','element','form'], function(){
                         var layer=layui.layer;
                         layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 1});
@@ -946,7 +946,7 @@ function calladdRecord(data) {
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
                     var url=null;
-                    if (gnlist_.indexOf(FY_T)!= -1){
+                    if (gnlist.indexOf(FY_T)!= -1){
                         //法院跳转
                          url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
                     }else {
