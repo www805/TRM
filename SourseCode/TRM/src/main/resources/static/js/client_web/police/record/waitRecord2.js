@@ -1263,16 +1263,16 @@ function callbackgetEquipmentsState(data) {
             var AsrText = "加载中";
             var LiveText = "加载中";
             var PolygraphText = "加载中";
-            var MtClass = "ayui-badge layui-bg-gray";
-            var AsrClass = "ayui-badge layui-bg-gray";
-            var LiveClass = "ayui-badge layui-bg-gray";
-            var PolygraphClass = "ayui-badge layui-bg-gray";
+            var MtClass = "layui-badge layui-bg-gray";
+            var AsrClass = "layui-badge layui-bg-gray";
+            var LiveClass = "layui-badge layui-bg-gray";
+            var PolygraphClass = "layui-badge layui-bg-gray";
 
             var MtState = data.mtState;
             $("#mtbool_txt").html("正常检测");
             if (MtState == 0) {
                 MtText = "未启动";
-                MtClass = "ayui-badge layui-bg-gray";
+                MtClass = "layui-badge layui-bg-gray";
             } else if (MtState == 1) {
                 MtText = "正常";
                 MtClass = "layui-badge layui-bg-green";
@@ -1282,14 +1282,14 @@ function callbackgetEquipmentsState(data) {
             }else if (MtState == 3) {
                 //==3 是真实的
                 MtText = "暂停中";
-                MtClass = "ayui-badge layui-bg-gray";
+                MtClass = "layui-badge layui-bg-gray";
                 mcbool=MtState;
                 $("#mtbool_txt").html(MtText)
             }
             var AsrState = data.asrState;
             if (AsrState == 0) {
                 AsrText = "未启动";
-                AsrClass = "ayui-badge layui-bg-gray";
+                AsrClass = "layui-badge layui-bg-gray";
             } else if (AsrState == 1) {
                 AsrText = "正常";
                 AsrClass = "layui-badge layui-bg-green";
@@ -1300,7 +1300,7 @@ function callbackgetEquipmentsState(data) {
             var LiveState = data.liveState;
             if (LiveState == 0) {
                 LiveText = "未启动";
-                LiveClass = "ayui-badge layui-bg-gray";
+                LiveClass = "layui-badge layui-bg-gray";
             } else if (LiveState == 1) {
                 LiveText = "正常";
                 LiveClass = "layui-badge layui-bg-green";
@@ -1311,7 +1311,7 @@ function callbackgetEquipmentsState(data) {
             var PolygraphState = data.polygraphState;
             if (PolygraphState == 0) {
                 PolygraphText = "未启动";
-                PolygraphClass = "ayui-badge layui-bg-gray";
+                PolygraphClass = "layui-badge layui-bg-gray";
             } else if (PolygraphState == 1) {
                 PolygraphText = "正常";
                 PolygraphClass = "layui-badge layui-bg-green";
@@ -1333,13 +1333,13 @@ function callbackgetEquipmentsState(data) {
         }
     }else {
         $("#MtState").text("加载中");
-        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#MtState").attr({"MtState": "", "class": "layui-badge layui-bg-gray"});
         $("#AsrState").text("加载中");
-        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").attr({"AsrState": "", "class": "layui-badge layui-bg-gray"});
         $("#LiveState").text("加载中");
-        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").attr({"LiveState": "", "class": "layui-badge layui-bg-gray"});
         $("#PolygraphState").text("加载中");
-        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "layui-badge layui-bg-gray"});
     }
 }
 //*******************************************************************获取各个状态end****************************************************************//

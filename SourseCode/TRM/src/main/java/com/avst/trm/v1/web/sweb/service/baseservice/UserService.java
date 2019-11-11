@@ -375,7 +375,7 @@ public class UserService extends BaseService {
         List<Base_admininfo> base_admininfos_=base_admininfoMapper.selectList(base_admininfos_param);
         if (null!=base_admininfos_&&base_admininfos_.size()==1){
             Base_admininfo base_admininfo = base_admininfos_.get(0);
-            base_admininfo.setLastlogintime(null);
+           /* base_admininfo.setLastlogintime(null);*///重置后用户登录不需要再修改了
             base_admininfo.setPassword(init_password);
             int update_bool = base_admininfoMapper.update(base_admininfo,ew);
             LogUtil.intoLog(this.getClass(),"重置密码验证用户__update_bool__" + update_bool);

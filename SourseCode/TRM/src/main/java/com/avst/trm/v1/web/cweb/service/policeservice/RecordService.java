@@ -657,8 +657,8 @@ public class RecordService extends BaseService {
                                 record.setMcbool(mtstate);
                             }
                         }
-                        //获取模板通道：笔录制作过程中获取
-                        if (StringUtils.isNotBlank(modelssid)&&null!=recordbool&&recordbool.intValue()!=2&&recordbool.intValue()!=3){
+                        //获取模板通道：笔录制作过程中获取：
+                        if (StringUtils.isNotBlank(modelssid)){//&&null!=recordbool&&recordbool.intValue()!=2&&recordbool.intValue()!=3
                             RResult getTdByModelSsid__rr=new RResult();
                             GetTdByModelSsidParam_out getTdByModelSsidParam_out=new GetTdByModelSsidParam_out();
                             getTdByModelSsidParam_out.setModelssid(modelssid);
@@ -1110,6 +1110,10 @@ public class RecordService extends BaseService {
             //笔录名称
             recordname="审讯笔录【快速谈话】_"+time;
             askobj="询问对象_"+conversationmsg;
+
+            if (StringUtils.isBlank(adminssid)){
+                adminssid=user.getSsid();
+            }
         }
         addCaseToArraignmentVO.setMultifunctionbool(multifunctionbool);
 

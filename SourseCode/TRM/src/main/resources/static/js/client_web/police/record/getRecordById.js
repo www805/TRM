@@ -143,9 +143,30 @@ function callbackgetRecordById(data) {
             worddownurl=record.worddownurl;//word下载地址
             iid=data.iid;
 
-
-
             recordnameshow=record.recordname;//当前笔录名称
+
+            var modeltds=data.modeltds;
+            if (isNotEmpty(modeltds)&&isNotEmpty(gnlist)){
+                var asrbool=0;//使用语音识别的个数
+                var phbool=0;//使用身心检测的个数
+
+                for (let i = 0; i < modeltds.length; i++) {
+                    const modeltd = modeltds[i];
+                    var usepolygraph=modeltd.usepolygraph;
+                    var useasr=modeltd.useasr;
+                    if (isNotEmpty(usepolygraph)&&usepolygraph==1) {phbool++;}
+                    if (isNotEmpty(useasr)&&useasr==1) {asrbool++;}
+                }
+                console.log("asrbool__"+asrbool+"__phbool__"+phbool)
+                //存在语音识别授权并且模板中使用语音识别的个数大于0
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                    $("#asr_html").show();
+                }
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+                    $("#mood_html").show();
+                    $("#generatePhreport").show();
+                }
+            }
 
             if (isNotEmpty(record)){
                 positiontime=record.positiontime==null?0:record.positiontime;
@@ -219,10 +240,8 @@ function callbackgetRecordById(data) {
             }
 
 
-
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){
-                $("#ph_html").show();
                 phdatabackList=phDataBackVoParams;
                 phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
                 $("#fd_ph_HTML").attr("class","layui-col-md5").show();
@@ -246,7 +265,6 @@ function callbackgetRecordById(data) {
                         getPlayUrl();
                     },5000)
                 }
-
                 $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
             }
 
@@ -254,7 +272,6 @@ function callbackgetRecordById(data) {
             var getMCVO=data.getMCVO;
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
                 set_getRecord(getMCVO);
-                $("#asr_html").show();
             }else  {
                 getRecordrealByRecordssid();
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
@@ -272,7 +289,6 @@ function callbackgetRecordById(data) {
 
             //情绪报告列表
             getPhreportsByParam();
-
         }
     }else{
         layer.msg(data.message,{icon: 5});

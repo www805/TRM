@@ -355,6 +355,31 @@ function callbackgetRecordById(data) {
             record_adjournbool=data.record_adjournbool;//休庭是否（案件暂停）
             if ((record_adjournbool==1||record_adjournbool=="1")&&record_pausebool==1){ $("#adjourn_btn").show(); } else {$("#adjourn_btn").hide();}
 
+            var modeltds=data.modeltds;
+            if (isNotEmpty(modeltds)&&isNotEmpty(gnlist)){
+                var asrbool=0;//使用语音识别的个数
+                var phbool=0;//使用身心检测的个数
+
+                for (let i = 0; i < modeltds.length; i++) {
+                    const modeltd = modeltds[i];
+                    var usepolygraph=modeltd.usepolygraph;
+                    var useasr=modeltd.useasr;
+                    if (isNotEmpty(usepolygraph)&&usepolygraph==1) {phbool++;}
+                    if (isNotEmpty(useasr)&&useasr==1) {asrbool++;}
+                }
+                console.log("asrbool__"+asrbool+"__phbool__"+phbool)
+               //存在语音识别授权并且模板中使用语音识别的个数大于0
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                    $("#asr").show();
+                    $("#record_switch_HTML").css("visibility","visible");
+                }
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+                    $("#ph").show();
+                    $("#xthtml").css("visibility","visible");
+                }
+            }
+
+
             var record=data.record;
             if (isNotEmpty(record)){
                 var wordheaddownurl_html=record.wordheaddownurl_html;
@@ -374,15 +399,9 @@ function callbackgetRecordById(data) {
                      multifunctionbool=police_arraignment.multifunctionbool;//按钮显示控制
                     if (multifunctionbool==2){
                         console.log("我是谈话笔录隐藏")
-                        $("#fd").show();
-                        $("#initec ul li").removeClass("layui-this");
-                        $("#initec .layui-tab-item").removeClass("layui-show");
-                        $("#case").addClass("layui-this");
-                        $("#caseitem").addClass("layui-show");
 
                         $("#overRecord_btn").attr("src","/uimaker/images/record_stop_2.png");
                         $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
-
                         if (record_pausebool==1){
                             $("#startrecord").attr("src","/uimaker/images/record6.png");
                         }else {
@@ -392,20 +411,9 @@ function callbackgetRecordById(data) {
                         $("#endrecord").attr("src","/uimaker/images/record8.png");
                     } else if (multifunctionbool==3) {
                         console.log("我不是谈话笔录")
-                        $("#asr").show();
-                        $("#fd").show();
-                        $("#ph").show();
-                        $("#xthtml").css("visibility","visible");
 
-                        $("#initec ul li").removeClass("layui-this");
-                        $("#initec .layui-tab-item").removeClass("layui-show");
-                        $("#case").addClass("layui-this");
-                        $("#caseitem").addClass("layui-show");
-
-                        $("#record_switch_HTML").css("visibility","visible");
                         $("#overRecord_btn").attr("src","/uimaker/images/record_stop_1.png");
                         $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
-
                         if (record_pausebool==1){
                             $("#startrecord").attr("src","/uimaker/images/record2.png");
                         }else {
@@ -573,13 +581,13 @@ function startMC() {
     $("#start_over_btn").text("谈话开启中").attr("onclick","");
     if (isNotEmpty(getRecordById_data)){
         $("#MtState").text("加载中");
-        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#MtState").attr({"MtState": "", "class": "layui-badge layui-bg-gray"});
         $("#AsrState").text("加载中");
-        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").attr({"AsrState": "", "class": "layui-badge layui-bg-gray"});
         $("#LiveState").text("加载中");
-        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").attr({"LiveState": "", "class": "layui-badge layui-bg-gray"});
         $("#PolygraphState").text("加载中");
-        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "layui-badge layui-bg-gray"});
 
 
         var casenum=null;
@@ -728,13 +736,13 @@ function callbackstartMC(data) {
         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
     }else{
         $("#MtState").text("未启动");
-        $("#MtState").attr({"MtState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#MtState").attr({"MtState": "", "class": "layui-badge layui-bg-gray"});
         $("#AsrState").text("未启动");
-        $("#AsrState").attr({"AsrState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#AsrState").attr({"AsrState": "", "class": "layui-badge layui-bg-gray"});
         $("#LiveState").text("未启动");
-        $("#LiveState").attr({"LiveState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#LiveState").attr({"LiveState": "", "class": "layui-badge layui-bg-gray"});
         $("#PolygraphState").text("未启动");
-        $("#PolygraphState").attr({"PolygraphState": "", "class": "ayui-badge layui-bg-gray"});
+        $("#PolygraphState").attr({"PolygraphState": "", "class": "layui-badge layui-bg-gray"});
 
 
         var data2=data.data;
@@ -946,8 +954,8 @@ function calladdRecord(data) {
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
                     var url=null;
-                    if (gnlist.indexOf(FY_T)!= -1){
-                        //法院跳转
+                    if (gnlist.indexOf(HK_O)<0){
+                        //hk跳转
                          url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
                     }else {
                          url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
