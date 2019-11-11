@@ -152,12 +152,14 @@ function callgetNavList(data) {
                         logotitle = appCache.title;
                     }
 
-                    //如果oem没有标题图片，就用oem的文字，没有oem文字就用分支里的标题文字
+                    //如果oem没有标题图片，就用数据库名字，没有就用oem的文字，没有oem文字就用分支里的标题文字
                     if (imgtitle != '' && imgtitle != '/') {
                         $("#logotitle").html("").css("background", "url(" + imgtitle + ") no-repeat").css("background-size", "100% 100%");
                     } else {
                         if(isNotEmpty(logotitle)){
                             $("#logotitle").html(logotitle);
+                        }else if(isNotEmpty(appCache.data.logo.title)){
+                            $("#logotitle").html(appCache.data.logo.title);
                         }else{
                             $("#logotitle").html(logo_title.title);
                         }

@@ -2208,8 +2208,10 @@ layui.use('form', function(){
                 getFDAudPowerMap();
             }, 500);
             $("#voice").show();
+            $("#voice2").show();
         }else{
             $("#voice").hide();
+            $("#voice2").hide();
             clearInterval(FDAudPowerMapTimer);
         }
 
