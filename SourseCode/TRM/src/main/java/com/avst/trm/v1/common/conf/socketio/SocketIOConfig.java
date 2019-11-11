@@ -96,7 +96,7 @@ public class SocketIOConfig  {
                                 if(clients.size() > 0){
                                     for(int i=0;i<clients.size();i++){
                                         SocketIOClient c=clients.get(i);
-                                        System.out.println(socketIOClient.getSessionId().toString()+"断开连接的来了哈---c，"+c.getSessionId().toString());
+                                        LogUtil.intoLog(1,this.getClass(),socketIOClient.getSessionId().toString()+"断开连接的来了哈---c，"+c.getSessionId().toString());
                                         if(c.getSessionId().toString().equals(socketIOClient.getSessionId().toString())){
                                             LogUtil.intoLog(3,this.getClass(),"客户端_____" + socketIOClient.getSessionId().toString() + "_____断开连接__"+clients.size());
                                             clients.remove(i);

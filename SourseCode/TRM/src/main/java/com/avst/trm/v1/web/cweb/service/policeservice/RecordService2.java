@@ -645,7 +645,6 @@ public class RecordService2 extends BaseService {
         Calendar c = Calendar.getInstance();
 
         String years=param.getYearstype();
-        System.out.println(years+"---getCaseStatistics");
         if (StringUtils.isBlank(years)){
             years=df.format(new Date());
         }
@@ -1316,7 +1315,7 @@ public class RecordService2 extends BaseService {
                     }
                 }
             }
-            System.out.println("exportData 笔录问答集合："+talk);
+            LogUtil.intoLog(1,this.getClass(),"exportData 笔录问答集合："+talk);
 
 
             //根据笔录ssid获取案件信息
