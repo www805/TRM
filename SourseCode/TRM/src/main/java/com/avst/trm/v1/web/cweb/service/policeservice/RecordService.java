@@ -11,6 +11,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -1089,7 +1090,7 @@ public class RecordService extends BaseService {
       if (multifunctionbool==1){
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
-            String time=new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
             String conversationmsg="快速谈话_"+time;
 
 
@@ -1719,7 +1720,6 @@ public class RecordService extends BaseService {
                     String userinfogradessid=userInfo.getUserinfogradessid();
                     String userInfossid=null;
                     String usertotypessid_=null;
-                    String time=new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
                     if (userinfogradessid.equals("userinfograde2")&&StringUtils.isNotEmpty(userInfo.getUsername())&&username.equals(userInfo.getUsername())){//默认参数//对应被告==被询问人==>可能多个哎哎哎判断是否跟被询问人一样一样不用新增
                         userInfossid=userssid;//被询问人的，以免重复增加
                         usertotypessid_=usertotypessid;
@@ -1730,10 +1730,6 @@ public class RecordService extends BaseService {
 
                         String userInfocardnum = userInfo.getCardnum();//人员证件号码
                         String userInfousername = userInfo.getUsername();//人员名称
-                        if (StringUtils.isBlank(userInfocardnum)){
-                            userInfocardnum="未知_"+time;
-                            userInfo.setCardnum(userInfocardnum);//默认身份证号码
-                        }
                         List<UserInfo> checkuserInfoinfos=new ArrayList<>();
                         EntityWrapper checkuserInfoparam=new EntityWrapper();
                         checkuserInfoparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
@@ -1743,6 +1739,12 @@ public class RecordService extends BaseService {
                             }else */if (StringUtils.isNotEmpty(userInfocardnum)){
                             checkuserInfoparam.eq("ut.cardnum",userInfocardnum);
                             checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
+                        }
+
+                        String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                        if (StringUtils.isBlank(userInfocardnum)){
+                            userInfocardnum="未知_"+time;
+                            userInfo.setCardnum(userInfocardnum);//默认身份证号码
                         }
 
                         if (null==checkuserInfoinfos||checkuserInfoinfos.size()<1){
