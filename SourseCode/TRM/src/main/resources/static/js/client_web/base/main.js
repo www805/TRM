@@ -144,7 +144,12 @@ function callgetNavList(data) {
                 var logo_title = appCache.data.logotitle;
                 if(isNotEmpty(logo_title)){
                     //分支logo
-                    $("#logoimg").attr("src", logo_title.img);
+                    if (isNotEmpty(appCache.data.logo) && appCache.data.logo.imgbool == 0 || !isNotEmpty(logo_title.img)) {
+                        $("#logoimg").remove();
+                        $("#logotitle").css("left", "0.8%");
+                    }else{
+                        $("#logoimg").attr("src", logo_title.img);
+                    }
                     var imgtitle = "";
                     var logotitle = "";
                     if(isNotEmpty(appCache.data.logo.imgtitle)){
