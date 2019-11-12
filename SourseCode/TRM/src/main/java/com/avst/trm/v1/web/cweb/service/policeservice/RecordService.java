@@ -1536,9 +1536,8 @@ public class RecordService extends BaseService {
             if (StringUtils.isBlank(wordtemplatessid)){
                 record.setWordtemplatessid(PropertiesListenerConfig.getProperty("wordtemplate_default"));
             }
-        }else {
-            record.setWordtemplatessid(wordtemplatessid);
         }
+        record.setWordtemplatessid(wordtemplatessid);
         int insertrecord_bool=police_recordMapper.insert(record);
         LogUtil.intoLog(this.getClass(),"insertrecord_bool__"+insertrecord_bool);
         if (insertrecord_bool<0){
@@ -1688,24 +1687,28 @@ public class RecordService extends BaseService {
         }
 
 
-        //生成初始化word头文件
-        try {
-            RResult exportwordhead_rr=new RResult();
-            ExportWordParam exportwordheadParam=new ExportWordParam();
-            exportwordheadParam.setRecordssid(record.getSsid());
-            exportwordheadParam.setWordheadbool(true);
-            ReqParam reqParam=new ReqParam();
-            reqParam.setParam(exportwordheadParam);
-            recordService2.exportWord(exportwordhead_rr, reqParam);
-            if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
-            }else{
-                LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
+        LogUtil.intoLog(1,this.getClass(),"【开始笔录】笔录头文件wordtemplatessid__"+wordtemplatessid);
+        if (StringUtils.isNotEmpty(wordtemplatessid)){
+            //生成初始化word头文件
+            try {
+                RResult exportwordhead_rr=new RResult();
+                ExportWordParam exportwordheadParam=new ExportWordParam();
+                exportwordheadParam.setRecordssid(record.getSsid());
+                exportwordheadParam.setWordheadbool(true);
+                ReqParam reqParam=new ReqParam();
+                reqParam.setParam(exportwordheadParam);
+                recordService2.exportWord(exportwordhead_rr, reqParam);
+                if (null != exportwordhead_rr && exportwordhead_rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                    LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__成功__保存问答");
+                }else{
+                    LogUtil.intoLog(this.getClass(),"recordService.exportWord笔录结束时exportWord__出错__"+exportwordhead_rr.getMessage());
+                }
+            } catch (Exception e) {
+                LogUtil.intoLog(1,this.getClass(),"【开始笔录】生成头文件有误__");
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            LogUtil.intoLog(1,this.getClass(),"【开始笔录】生成头文件有误__");
-            e.printStackTrace();
         }
+
 
 
         //添加提讯表拓展数据
