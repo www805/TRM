@@ -8,6 +8,7 @@ import com.avst.trm.v1.common.conf.CreateVodThread;
 import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
@@ -45,9 +46,11 @@ import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
 import com.avst.trm.v1.feignclient.ec.vo.ph.GetPolygraphAnalysisVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCaLLUserAsrTxtListParam_out;
+import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPHDataParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.feignclient.mc.vo.Avstmt_modelAll;
 import com.avst.trm.v1.feignclient.mc.vo.PhDataParam_toout;
 import com.avst.trm.v1.feignclient.mc.vo.param.PHDataBackVoParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
@@ -128,6 +131,15 @@ public class RecordService2 extends BaseService {
 
     @Autowired
     private OutService outService;
+
+    @Autowired
+    private Police_arraignmentexpandMapper police_arraignmentexpandMapper;
+
+    @Autowired
+    private Base_admininfoMapper base_admininfoMapper;
+
+    @Autowired
+    private Police_userinfogradeMapper police_userinfogradeMapper;
 
 
 
@@ -1284,182 +1296,278 @@ public class RecordService2 extends BaseService {
      * @return talkbool 是否为头文件
      */
     public  Map<String,String> exportData(String recordssid,boolean talkbool) {
-        //根据笔录ssid获取录音数据
-        EntityWrapper recordParam = new EntityWrapper();
-        recordParam.eq("r.ssid", recordssid);
-        Record record = police_recordMapper.getRecordBySsid(recordParam);
         Map<String, String> dataMap = new HashMap<String, String>();
-        if (null != record) {
-            String talk="";
-            if (!talkbool){
-                List<RecordToProblem> questionandanswer=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
-                if (null != questionandanswer && questionandanswer.size() > 0) {
-                    for (RecordToProblem problem : questionandanswer) {
-                        List<String>  gnlist= CommonCache.gnlist();
-                        if (gnlist.indexOf(SQVersion.FY_T)!= -1){
-                            //法院的
-                            talk+= problem.getProblem()+"\r";
-                        }else {
-                            //其他
-                            talk+="问："+problem.getProblem()+"\r";
-                            List<Police_answer> answers = problem.getAnswers();
-                            if (null != answers && answers.size() > 0) {
-                                for (Police_answer answer : answers) {
-                                    talk+="答："+answer.getAnswer()+"\r";
+        List<String>  gnlist= CommonCache.gnlist();
+        LogUtil.intoLog(1,this.getClass(),"导出word的笔录ssid__recordssid__"+recordssid);
+        if (StringUtils.isNotEmpty(recordssid)){
+            //根据笔录ssid获取录音数据
+            EntityWrapper recordParam = new EntityWrapper();
+            recordParam.eq("r.ssid", recordssid);
+            Record record = police_recordMapper.getRecordBySsid(recordParam);
+            if (null != record) {
+                String talk="";
+                if (!talkbool){
+                    List<RecordToProblem> questionandanswer=RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
+                    if (null != questionandanswer && questionandanswer.size() > 0) {
+                        for (RecordToProblem problem : questionandanswer) {
+                            if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+                                //法院的
+                                talk+= problem.getProblem()+"\r";
+                            }else {
+                                //其他
+                                talk+="问："+problem.getProblem()+"\r";
+                                List<Police_answer> answers = problem.getAnswers();
+                                if (null != answers && answers.size() > 0) {
+                                    for (Police_answer answer : answers) {
+                                        talk+="答："+answer.getAnswer()+"\r";
+                                    }
+                                    problem.setAnswers(answers);
+                                } else {
+                                    talk+="答：\r";
                                 }
-                                problem.setAnswers(answers);
-                            } else {
-                                talk+="答：\r";
+                            }
+                        }
+                    }
+                }
+                LogUtil.intoLog(1,this.getClass(),"exportData 笔录问答集合："+talk);
+
+
+                //根据笔录ssid获取案件信息
+                Case case_ =new Case();
+                try {
+                    EntityWrapper caseParam=new EntityWrapper();
+                    caseParam.eq("r.ssid",recordssid);
+                    case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
+                    if (null!=case_){
+                        case_.setOccurrencetime_format(case_.getOccurrencetime());
+                        record.setCase_(case_);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                String casename=case_.getCasename();
+                String cause=case_.getCause();
+                String casenum=case_.getCasenum();
+                String occurrencetime=case_.getOccurrencetime_format()==null?null:case_.getOccurrencetime_format().toString();
+                String starttime=case_.getStarttime()==null?null:case_.getStarttime().toString();
+                String endtime=case_.getEndtime()==null?null:case_.getEndtime().toString();
+                String caseway=case_.getCaseway();
+
+
+                /**
+                 *   获取提讯人和被询问人
+                 */
+                EntityWrapper recorduserinfosParam = new EntityWrapper();
+                recorduserinfosParam.eq("a.recordssid", recordssid);
+                RecordUserInfos recordUserInfos = police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+
+                String userssid = recordUserInfos.getUserssid();
+                Police_userinfo police_userinfo = new Police_userinfo();
+                police_userinfo.setSsid(userssid);
+                police_userinfo = police_userinfoMapper.selectOne(police_userinfo);
+
+
+                Police_arraignment police_arraignment = new Police_arraignment();
+                police_arraignment.setRecordssid(recordssid);
+                police_arraignment = police_arraignmentMapper.selectOne(police_arraignment);
+
+
+                Police_recordtype police_recordtype = new Police_recordtype();
+                police_recordtype.setSsid(record.getRecordtypessid());
+                police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
+
+                String recordtypename= recordtypename= police_recordtype.getTypename();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
+                String recordstarttime = sdf.format(record.getCreatetime());
+                String recordendtime = sdf.format(new Date());
+                String recordplace = police_arraignment.getRecordplace();
+
+                //工作单位
+                Police_workunit police_workunit1 = new Police_workunit();
+                police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
+                if (null!=recordUserInfos.getWorkunitssid1()){
+                    police_workunit1 = police_workunitMapper.selectOne(police_workunit1);
+                }
+                Police_workunit police_workunit2 = new Police_workunit();
+                police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
+                if (null!=recordUserInfos.getWorkunitssid2()){
+                    police_workunit2 = police_workunitMapper.selectOne(police_workunit2);
+                }
+
+                Police_workunit police_workunit3 = new Police_workunit();
+                police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
+                if (null!=recordUserInfos.getWorkunitssid3()){
+                    police_workunit3 = police_workunitMapper.selectOne(police_workunit3);
+                }
+
+
+                String workname1 = police_workunit1.getWorkname();
+                String workname2 = police_workunit2.getWorkname();
+                String workname3 = police_workunit3.getWorkname();
+                String username = police_userinfo.getUsername();
+                String sex = police_userinfo.getSex() ==null?"未知":(police_userinfo.getSex()==1 ? "男" : "女");
+                String age = police_userinfo.getAge()==null?"未知": police_userinfo.getAge().toString();
+                String politicsstatus = police_userinfo.getPoliticsstatus();
+                String workunits = police_userinfo.getWorkunits();
+                String residence = police_userinfo.getResidence();
+                String phone = police_userinfo.getPhone();
+                String domicile = police_userinfo.getDomicile();
+                String both ="未知";
+                if (null!=police_userinfo.getBoth()){
+                    both =  new SimpleDateFormat("yyyy年MM月dd日").format(police_userinfo.getBoth());
+                }
+                String issuingauthority=police_userinfo.getIssuingauthority();
+                String validity=police_userinfo.getValidity();
+
+                EntityWrapper userinfoparam = new EntityWrapper();
+                userinfoparam.eq("u.ssid", userssid);
+                List<UserInfo> userInfos = police_userinfoMapper.getUserByCard(userinfoparam);
+                String cardnum = null;
+                String nationality=null;
+                if (null != userInfos && userInfos.size() > 0) {
+                    UserInfo userInfo=userInfos.get(0);
+                    cardnum =userInfo.getCardtypename() + userInfo.getCardnum();
+                    String nationalityssid=userInfo.getNationalityssid();
+                    if (StringUtils.isNotBlank(nationalityssid)){
+                        Base_nationality base_nationality=new Base_nationality();
+                        base_nationality.setSsid(nationalityssid);
+                        base_nationality=base_nationalityMapper.selectOne(base_nationality);
+                        if (null!=base_nationality){
+                            nationality=base_nationality.getZhname();
+                        }
+                    }
+                }
+
+                //talk 问答
+                talk = talk.replaceAll("\\<.*?>", "").replaceAll("\\&[a-zA-Z]{1,10};", "");
+
+            //获取法院相关的
+            if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+                dataMap.put("${庭审时间}", occurrencetime == null ? "" : occurrencetime);
+                String mtmodelssidname="";
+                if (StringUtils.isNotEmpty(police_arraignment.getMtmodelssid())){
+                    List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+                    GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+                    getMc_modelParam_out.setMcType(MCType.AVST);
+                    getMc_modelParam_out.setModelssid(police_arraignment.getMtmodelssid());
+                    ReqParam reqParam=new ReqParam();
+                    reqParam.setParam(getMc_modelParam_out);
+                    try {
+                        RResult rr = meetingControl.getMc_model(reqParam);
+                        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                            modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                            if (null!=modelAlls&&modelAlls.size()==1){
+                                mtmodelssidname=modelAlls.get(0).getExplain();
+                            }
+                            LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                        }else{
+                            LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                dataMap.put("${庭审地点}", mtmodelssidname == null ? "" : mtmodelssidname);
+                if (StringUtils.isNotEmpty(police_arraignment.getSsid())){
+                    List<Usergrade> usergrades=new ArrayList<>();
+                    EntityWrapper arre=new EntityWrapper();
+                    arre.eq("arraignmentssid",police_arraignment.getSsid());
+                    List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                    if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                        for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
+                            String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
+                            String userssid_=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
+                            if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid_)){
+                                //查找等级
+                                Police_userinfograde police_userinfograde=new Police_userinfograde();
+                                police_userinfograde.setSsid(gradessid);
+                                police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+
+
+                                //查找用户:人员表
+                                Police_userinfo police_userinfo_=new Police_userinfo();
+                                police_userinfo_.setSsid(userssid_);
+                                police_userinfo_=police_userinfoMapper.selectOne(police_userinfo_);
+
+                                //查找用户：管理员表
+                                Base_admininfo admininfo=new Base_admininfo();
+                                admininfo.setSsid(userssid_);
+                                admininfo=base_admininfoMapper.selectOne(admininfo);
+
+                                if (null!=police_userinfograde){
+                                    Usergrade usergrade=new Usergrade();
+                                    usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
+                                    usergrade.setGrade(police_userinfograde.getGrade());
+                                    usergrade.setGradename(police_userinfograde.getGradename());
+                                    usergrade.setUserssid(userssid_);
+                                    if (null!=police_userinfo_){
+                                        usergrade.setUsername(police_userinfo_.getUsername());
+                                        usergrades.add(usergrade);
+                                    }else if (null!=admininfo){
+                                        usergrade.setUsername(admininfo.getUsername());
+                                        usergrades.add(usergrade);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (null!=usergrades&&usergrades.size()>0){
+                        List<Usergrade> newarr=new ArrayList<>();
+                        for (int i = 0; i < usergrades.size(); i++) {
+                             boolean bool=true;
+                            System.out.println("-------------------------------usergrades.get(i).getUsername()=="+usergrades.get(i).getUsername());
+                            for (int j = 0; j < newarr.size(); j++) {
+                                System.out.println("-------------------------------newarr.get(j).getUsername()=="+newarr.get(j).getUsername());
+                                if((null!=usergrades.get(i).getGrade()&&null!=newarr.get(j).getGrade()&& usergrades.get(i).getGrade()==newarr.get(j).getGrade())){
+                                    newarr.get(j).setUsername(newarr.get(j).getUsername()+"、"+usergrades.get(i).getUsername());
+                                    bool=false;
+                                }
+                            }
+                            if (bool){
+                                newarr.add(usergrades.get(i));
+                            }
+                        }
+                        for (Usergrade usergrade : newarr) {
+                            if (StringUtils.isNotEmpty(usergrade.getGradename())){
+                                dataMap.put("${"+usergrade.getGradename()+"}", usergrade.getUsername() == null ? "" : usergrade.getUsername());
                             }
                         }
                     }
                 }
             }
-            LogUtil.intoLog(1,this.getClass(),"exportData 笔录问答集合："+talk);
 
-
-            //根据笔录ssid获取案件信息
-            Case case_ =new Case();
-            try {
-                EntityWrapper caseParam=new EntityWrapper();
-                caseParam.eq("r.ssid",recordssid);
-                case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
-                if (null!=case_){
-                    case_.setOccurrencetime_format(case_.getOccurrencetime());
-                    record.setCase_(case_);
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
+                dataMap.put("${结束时间}", recordendtime == null ? "" : recordendtime);
+                dataMap.put("${地点}", recordplace == null ? "" : recordplace);
+                dataMap.put("${工作单位1}", workname1 == null ? "" : workname1);
+                dataMap.put("${工作单位2}", workname2 == null ? "" : workname2);
+                dataMap.put("${工作单位3}", workname3 == null ? "" : workname3);
+                dataMap.put("${被询问人}", username == null ? "" : username);
+                dataMap.put("${性别}", sex == null ? "" : sex);
+                dataMap.put("${年龄}", age == null ? "" : age);
+                dataMap.put("${身份证件及号码}", cardnum == null ? "" : cardnum);
+                dataMap.put("${政治面貌}", politicsstatus == null ? "" : politicsstatus);
+                dataMap.put("${工作单位}", workunits == null ? "" : workunits);
+                dataMap.put("${现住址}", residence == null ? "" : residence);
+                dataMap.put("${联系方式}", phone == null ? "" : phone);
+                dataMap.put("${户籍所在地}", domicile == null ? "" : domicile);
+                dataMap.put("${出生日期}", both == null ? "" : both);
+                dataMap.put("${问答}", talk == null ? "" : talk);
+                dataMap.put("${国籍}", nationality == null ? "" : nationality);
+                dataMap.put("${案件名称}", casename == null ? "" : casename);
+                dataMap.put("${案由}", cause == null ? "" : cause);
+                dataMap.put("${案件编号}", casenum == null ? "" : casenum);
+                dataMap.put("${案发时间}", occurrencetime == null ? "" : occurrencetime);
+                dataMap.put("${案件开始时间}", starttime == null ? "" : starttime);
+                dataMap.put("${案发结束时间}", endtime == null ? "" : endtime);
+                dataMap.put("${到案方式}", caseway == null ? "" : caseway);
+                dataMap.put("${签发机关}", issuingauthority == null ? "" : issuingauthority);
+                dataMap.put("${身份证有效期}", validity == null ? "" : validity);
             }
-
-
-            String casename=case_.getCasename();
-            String cause=case_.getCause();
-            String casenum=case_.getCasenum();
-            String occurrencetime=case_.getOccurrencetime_format()==null?null:case_.getOccurrencetime_format().toString();
-            String starttime=case_.getStarttime()==null?null:case_.getStarttime().toString();
-            String endtime=case_.getEndtime()==null?null:case_.getEndtime().toString();
-            String caseway=case_.getCaseway();
-
-
-            /**
-             *   获取提讯人和被询问人
-             */
-            EntityWrapper recorduserinfosParam = new EntityWrapper();
-            recorduserinfosParam.eq("a.recordssid", record.getSsid());
-            RecordUserInfos recordUserInfos = police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
-
-            String userssid = recordUserInfos.getUserssid();
-            Police_userinfo police_userinfo = new Police_userinfo();
-            police_userinfo.setSsid(userssid);
-            police_userinfo = police_userinfoMapper.selectOne(police_userinfo);
-
-
-            Police_arraignment police_arraignment = new Police_arraignment();
-            police_arraignment.setRecordssid(recordssid);
-            police_arraignment = police_arraignmentMapper.selectOne(police_arraignment);
-
-
-            Police_recordtype police_recordtype = new Police_recordtype();
-            police_recordtype.setSsid(record.getRecordtypessid());
-            police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
-
-            String recordtypename= recordtypename= police_recordtype.getTypename();
-
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日HH时mm分");
-            String recordstarttime = sdf.format(record.getCreatetime());
-            String recordendtime = sdf.format(new Date());
-            String recordplace = police_arraignment.getRecordplace();
-
-            //工作单位
-            Police_workunit police_workunit1 = new Police_workunit();
-            police_workunit1.setSsid(recordUserInfos.getWorkunitssid1());
-            if (null!=recordUserInfos.getWorkunitssid1()){
-                police_workunit1 = police_workunitMapper.selectOne(police_workunit1);
-            }
-            Police_workunit police_workunit2 = new Police_workunit();
-            police_workunit2.setSsid(recordUserInfos.getWorkunitssid2());
-            if (null!=recordUserInfos.getWorkunitssid2()){
-                police_workunit2 = police_workunitMapper.selectOne(police_workunit2);
-            }
-
-            Police_workunit police_workunit3 = new Police_workunit();
-            police_workunit3.setSsid(recordUserInfos.getWorkunitssid3());
-            if (null!=recordUserInfos.getWorkunitssid3()){
-                police_workunit3 = police_workunitMapper.selectOne(police_workunit3);
-            }
-
-
-            String workname1 = police_workunit1.getWorkname();
-            String workname2 = police_workunit2.getWorkname();
-            String workname3 = police_workunit3.getWorkname();
-            String username = police_userinfo.getUsername();
-            String sex = police_userinfo.getSex() ==null?"未知":(police_userinfo.getSex()==1 ? "男" : "女");
-            String age = police_userinfo.getAge()==null?"未知": police_userinfo.getAge().toString();
-            String politicsstatus = police_userinfo.getPoliticsstatus();
-            String workunits = police_userinfo.getWorkunits();
-            String residence = police_userinfo.getResidence();
-            String phone = police_userinfo.getPhone();
-            String domicile = police_userinfo.getDomicile();
-            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy年MM月dd日");
-            String both ="未知";
-            if (null!=police_userinfo.getBoth()){
-                both = sdf2.format(police_userinfo.getBoth());
-            }
-
-
-            EntityWrapper userinfoparam = new EntityWrapper();
-            userinfoparam.eq("u.ssid", userssid);
-            List<UserInfo> userInfos = police_userinfoMapper.getUserByCard(userinfoparam);
-            String cardnum = null;
-            String nationality=null;
-            if (null != userInfos && userInfos.size() > 0) {
-                UserInfo userInfo=userInfos.get(0);
-                cardnum =userInfo.getCardtypename() + userInfo.getCardnum();
-                String nationalityssid=userInfo.getNationalityssid();
-                if (StringUtils.isNotBlank(nationalityssid)){
-                    Base_nationality base_nationality=new Base_nationality();
-                    base_nationality.setSsid(nationalityssid);
-                    base_nationality=base_nationalityMapper.selectOne(base_nationality);
-                    if (null!=base_nationality){
-                        nationality=base_nationality.getZhname();
-                    }
-                }
-            }
-
-            //talk 问答
-            talk = talk.replaceAll("\\<.*?>", "").replaceAll("\\&[a-zA-Z]{1,10};", "");
-
-
-
-            dataMap.put("${笔录标题}", recordtypename == null ? "" : recordtypename);
-            dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
-            dataMap.put("${结束时间}", recordendtime == null ? "" : recordendtime);
-            dataMap.put("${地点}", recordplace == null ? "" : recordplace);
-            dataMap.put("${工作单位1}", workname1 == null ? "" : workname1);
-            dataMap.put("${工作单位2}", workname2 == null ? "" : workname2);
-            dataMap.put("${工作单位3}", workname3 == null ? "" : workname3);
-            dataMap.put("${被询问人}", username == null ? "" : username);
-            dataMap.put("${性别}", sex == null ? "" : sex);
-            dataMap.put("${年龄}", age == null ? "" : age);
-            dataMap.put("${身份证件及号码}", cardnum == null ? "" : cardnum);
-            dataMap.put("${政治面貌}", politicsstatus == null ? "" : politicsstatus);
-            dataMap.put("${工作单位}", workunits == null ? "" : workunits);
-            dataMap.put("${现住址}", residence == null ? "" : residence);
-            dataMap.put("${联系方式}", phone == null ? "" : phone);
-            dataMap.put("${户籍所在地}", domicile == null ? "" : domicile);
-            dataMap.put("${出生日期}", both == null ? "" : both);
-            dataMap.put("${问答}", talk == null ? "" : talk);
-            dataMap.put("${国籍}", nationality == null ? "" : nationality);
-            dataMap.put("${案件名称}", casename == null ? "" : casename);
-            dataMap.put("${案由}", cause == null ? "" : cause);
-            dataMap.put("${案件编号}", casenum == null ? "" : casenum);
-            dataMap.put("${案发时间}", occurrencetime == null ? "" : occurrencetime);
-            dataMap.put("${案件开始时间}", starttime == null ? "" : starttime);
-            dataMap.put("${案发结束时间}", endtime == null ? "" : endtime);
-            dataMap.put("${到案方式}", caseway == null ? "" : caseway);
-
         }
         return dataMap;
     }
@@ -1603,6 +1711,8 @@ public class RecordService2 extends BaseService {
             EntityWrapper wordtemplate_param=new EntityWrapper();
             wordtemplate_param.eq("wordtemplatename",wordtemplatename);
             wordtemplate_param.ne("ssid",ssid);
+            wordtemplate_param.ne("wordtype",2);
+            wordtemplate_param.ne("wordtemplatebool",-1);
             List<Police_case> police_cases_=police_wordtemplateMapper.selectList(wordtemplate_param);
             if (null!=police_cases_&&police_cases_.size()>0){
                 result.setMessage("笔录模板名称不能重复");
@@ -1717,6 +1827,8 @@ public class RecordService2 extends BaseService {
         }else {
             EntityWrapper wordtemplate_param=new EntityWrapper();
             wordtemplate_param.eq("wordtemplatename",wordtemplatename);
+            wordtemplate_param.ne("wordtype",2);
+            wordtemplate_param.ne("wordtemplatebool",-1);
             List<Police_case> police_cases_=police_wordtemplateMapper.selectList(wordtemplate_param);
             if (null!=police_cases_&&police_cases_.size()>0){
                 result.setMessage("笔录模板名称不能重复");

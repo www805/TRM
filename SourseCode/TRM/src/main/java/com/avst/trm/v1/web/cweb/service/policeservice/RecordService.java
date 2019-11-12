@@ -1095,8 +1095,8 @@ public class RecordService extends BaseService {
 
             //用户信息使用默认
             addUserInfo=new UserInfo();
-            addUserInfo.setUsername("未知");
-            addUserInfo.setCardnum("未知");
+            addUserInfo.setUsername("未知_"+time);
+            addUserInfo.setCardnum("未知_"+time);
             addUserInfo.setCardtypessid(cardtypessid);
 
 
@@ -1687,7 +1687,7 @@ public class RecordService extends BaseService {
         }
 
 
-        LogUtil.intoLog(1,this.getClass(),"【开始笔录】笔录头文件wordtemplatessid__"+wordtemplatessid);
+        LogUtil.intoLog(1,this.getClass(),"【开始笔录】wordtemplatessid__"+wordtemplatessid);
         if (StringUtils.isNotEmpty(wordtemplatessid)){
             //生成初始化word头文件
             try {
@@ -1718,8 +1718,11 @@ public class RecordService extends BaseService {
                 if (null!=userInfo){
                     String userinfogradessid=userInfo.getUserinfogradessid();
                     String userInfossid=null;
-                    if (userinfogradessid.equals("userinfograde2")){//默认参数//对应被告==被询问人
+                    String usertotypessid_=null;
+                    String time=new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+                    if (userinfogradessid.equals("userinfograde2")&&StringUtils.isNotEmpty(userInfo.getUsername())&&username.equals(userInfo.getUsername())){//默认参数//对应被告==被询问人==>可能多个哎哎哎判断是否跟被询问人一样一样不用新增
                         userInfossid=userssid;//被询问人的，以免重复增加
+                        usertotypessid_=usertotypessid;
                     }else {
                         if (StringUtils.isBlank(userInfo.getCardtypessid())){
                             userInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
@@ -1727,6 +1730,10 @@ public class RecordService extends BaseService {
 
                         String userInfocardnum = userInfo.getCardnum();//人员证件号码
                         String userInfousername = userInfo.getUsername();//人员名称
+                        if (StringUtils.isBlank(userInfocardnum)){
+                            userInfocardnum="未知_"+time;
+                            userInfo.setCardnum(userInfocardnum);//默认身份证号码
+                        }
                         List<UserInfo> checkuserInfoinfos=new ArrayList<>();
                         EntityWrapper checkuserInfoparam=new EntityWrapper();
                         checkuserInfoparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
@@ -1755,6 +1762,7 @@ public class RecordService extends BaseService {
                                 police_userinfototype.setUserssid(userInfo.getSsid());
                                 int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
                                 LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
+                                usertotypessid_=police_userinfototype.getSsid();
                             }
                         }else if (checkuserInfoinfos.size()==1){
                             UserInfo userinfo_=checkuserInfoinfos.get(0);
@@ -1765,8 +1773,20 @@ public class RecordService extends BaseService {
                             int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
                             LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
                             userInfossid=userinfo_.getSsid();
+                            usertotypessid_=userinfo_.getUsertotypessid();
                         }
-                    }
+                        if (userinfogradessid.equals("userinfograde2")&&StringUtils.isNotEmpty(usertotypessid_)){
+                            //添加案件人员表
+                            Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
+                            police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
+                            police_casetouserinfo_.setCreatetime(new Date());
+                            police_casetouserinfo_.setCasessid(casessid);
+                            police_casetouserinfo_.setUserssid(userInfossid);
+                            police_casetouserinfo_.setUsertotypessid(usertotypessid_);
+                            int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
+                            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                        }
+                   }
 
                     LogUtil.intoLog(1,this.getClass(),"【开始笔录】添加拓展表数据外部人员__userInfossid："+userInfossid+"__userinfogradessid："+userinfogradessid);
                     if (StringUtils.isNotEmpty(userInfossid)&&StringUtils.isNotEmpty(userinfogradessid)){
