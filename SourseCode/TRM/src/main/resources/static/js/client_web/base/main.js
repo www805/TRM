@@ -146,7 +146,7 @@ function callgetNavList(data) {
                     //分支logo
                     if (isNotEmpty(appCache.data.logo) && appCache.data.logo.imgbool == 0 || !isNotEmpty(logo_title.img)) {
                         $("#logoimg").remove();
-                        $("#logotitle").css("left", "0.8%");
+                        $("#logotitle").css("left", "0.5%");
                     }else{
                         $("#logoimg").attr("src", logo_title.img);
                     }
