@@ -171,23 +171,46 @@ function getTime() {
 	return currentdate;
 }
 
-// 上下文路径
+/**
+ * 模拟操作按键
+ *  keydown：点击事件
+ * @param el
+ * @param evtType
+ * @param keyCode
+ */
+function fireKeyEvent(el, evtType, keyCode) {
+	var evtObj;
+	if (document.createEvent) {
+		if (window.KeyEvent) {//firefox 浏览器下模拟事件
+			evtObj = document.createEvent('KeyEvents');
+			evtObj.initKeyEvent(evtType, true, true, window, true, false, false, false, keyCode, 0);
+		} else {//chrome 浏览器下模拟事件
+			evtObj = document.createEvent('UIEvents');
+			evtObj.initUIEvent(evtType, true, true, window, 1);
 
-//上下文路径
+			delete evtObj.keyCode;
+			if (typeof evtObj.keyCode === "undefined") {//为了模拟keycode
+				Object.defineProperty(evtObj, "keyCode", { value: keyCode });
+			} else {
+				evtObj.key = String.fromCharCode(keyCode);
+			}
 
+			if (typeof evtObj.ctrlKey === 'undefined') {//为了模拟ctrl键
+				Object.defineProperty(evtObj, "ctrlKey", { value: true });
+			} else {
+				evtObj.ctrlKey = true;
+			}
+		}
+		el.dispatchEvent(evtObj);
 
-
-if (typeof String.prototype.startsWith != 'function') {
-	 String.prototype.startsWith = function (prefix){
-	  return this.slice(0, prefix.length) === prefix;
-	 };
+	} else if (document.createEventObject) {//IE 浏览器下模拟事件
+		evtObj = document.createEventObject();
+		evtObj.keyCode = keyCode
+		el.fireEvent('on' + evtType, evtObj);
 	}
+	document.body.onkeypress(keyCode); // 主动触发esc
+}
 
-if (typeof String.prototype.endsWith != 'function') {
-	 String.prototype.endsWith = function(suffix) {
-	  return this.indexOf(suffix, this.length - suffix.length) !== -1;
-	 };
-	}
 
 //上下文路径
 

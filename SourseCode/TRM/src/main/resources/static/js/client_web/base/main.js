@@ -324,3 +324,15 @@ $(function () {
         getuserinfo();
     });
 })
+
+/**
+ * 退出系统
+ */
+function exitsystem(obj){
+
+    fireKeyEvent(obj,"keydown",27);
+
+}
+
+
+

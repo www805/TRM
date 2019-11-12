@@ -184,8 +184,11 @@ function callgetNavList(data) {
 
             if (isNotEmpty(appCache.data)) {
 
-                if (isNotEmpty(appCache.data.login.img) && appCache.data.login.img != '/') {
-                    $("#login_img").attr("src", appCache.data.login.img).css("width", "90px").css("height", "90px");
+                try {
+                    if (isNotEmpty(appCache.data.login.img) && appCache.data.login.img != '/') {
+                        $("#login_img").attr("src", appCache.data.login.img).css("width", "90px").css("height", "90px");
+                    }
+                } catch (e) {
                 }
 
                 if (!isNotEmpty(appCache.data.bottom) || !isNotEmpty(appCache.data.bottom.name) || !isNotEmpty(appCache.data.bottom.declaration) ) {
