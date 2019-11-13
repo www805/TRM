@@ -722,7 +722,7 @@ $(function () {
             layer.msg("请先选择身份证类型",{icon:5});
             return;
         }
-
+        layer.msg("开始读卡，请稍等",{icon:6});
         $.ajax({
             dataType: "JSONP",
             type: "get",
@@ -782,7 +782,7 @@ $(function () {
                     }
             },
             error: function (e) {
-                layer.msg("请先确认身份证识别设备是否插上",{icon:5})
+                layer.msg("请先确认身份证读卡设备是否插上",{icon:5})
             }
         });
     });

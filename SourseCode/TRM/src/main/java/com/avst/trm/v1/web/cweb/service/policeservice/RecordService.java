@@ -562,7 +562,7 @@ public class RecordService extends BaseService {
                         ewuserinfo.eq("ctu.casessid",casessid);
                         ewuserinfo.eq("u.ssid",recordUserInfos.getUserssid());
                         List<UserInfo> userInfos=police_userinfoMapper.getUserByCase(ewuserinfo);
-                        if (null!=userInfos&&userInfos.size()==1){
+                        if (null!=userInfos&&userInfos.size()>0){
                             UserInfo userInfo=userInfos.get(0);
                             //获取该案件人当前案件所使用的的证件
                             String usertotypessid=userInfo.getUsertotypessid();
@@ -1341,7 +1341,7 @@ public class RecordService extends BaseService {
             LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
             EntityWrapper userparam=new EntityWrapper();
             userparam.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
-            userparam.like("ut.cardnum",addUserInfo.getCardnum());
+            userparam.eq("ut.cardnum",addUserInfo.getCardnum());
             List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
             if (null!=userInfos_&&userInfos_.size()==1){
                 UserInfo userInfo_=userInfos_.get(0);
@@ -1458,6 +1458,7 @@ public class RecordService extends BaseService {
                      EntityWrapper casetouserinfoParam=new EntityWrapper();
                      casetouserinfoParam.eq("casessid",casessid);
                      casetouserinfoParam.eq("userssid",userssid);
+                     casetouserinfoParam.eq("usertotypessid",usertotypessid);
                      List<Police_casetouserinfo> police_casetouserinfos_=police_casetouserinfoMapper.selectList(casetouserinfoParam);
                      if (null==police_casetouserinfos_||police_casetouserinfos_.size()<1){
                          //新增关联案件人员表
@@ -2243,7 +2244,7 @@ public class RecordService extends BaseService {
                     //根据证件类型和证件号码，检测证件是否存在存在修改；不存在新增
                     EntityWrapper userparam=new EntityWrapper();
                     userparam.eq("ut.cardtypessid",cardtypessid);
-                    userparam.like("ut.cardnum",cardnum);
+                    userparam.eq("ut.cardnum",cardnum);
                     List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
                     if (null!=userInfos_&&userInfos_.size()==1){
                         UserInfo userInfo_=userInfos_.get(0);
@@ -2375,17 +2376,61 @@ public class RecordService extends BaseService {
         if (caseupdate_bool>0){
             result.setData(caseupdate_bool);
 
-            //删除案件的全部的关联
+           /* //删除案件的全部的关联
             EntityWrapper delew=new EntityWrapper();
             delew.eq("casessid",casessid);
             int police_casetouserinfoMapper_delete_bool=police_casetouserinfoMapper.delete(delew);
-            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_delete_bool__"+police_casetouserinfoMapper_delete_bool);
+            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_delete_bool__"+police_casetouserinfoMapper_delete_bool);*/
+
+
+
 
             //案件多用户
             List<UserInfo> userInfos=updateCaseParam.getUserInfos();
-
-
             if (null!=userInfos&&userInfos.size()>0){
+
+                //对于存在的判断该人在改案件中是否已经存在提讯，存在不可删除
+                EntityWrapper casetouserinfoParam1=new EntityWrapper();
+                casetouserinfoParam1.eq("casessid",casessid);
+                List<Police_casetouserinfo> police_casetouserinfos=police_casetouserinfoMapper.selectList(casetouserinfoParam1);
+                if (null!=police_casetouserinfos&&police_casetouserinfos.size()>0) {
+                    for (Police_casetouserinfo police_casetouserinfo : police_casetouserinfos) {
+                        String userssid=police_casetouserinfo.getUserssid();
+                        EntityWrapper ewarraignment=new EntityWrapper();
+                        ewarraignment.eq("cr.casessid",casessid);
+                        ewarraignment.eq("a.userssid",userssid);
+                        ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                        if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                            //判断本次传过来是否有这个人的
+                            int usernum=0;
+                            for (UserInfo userInfo : userInfos) {
+                                String ussid=userInfo.getSsid();
+                                if (StringUtils.isNotEmpty(ussid)&&StringUtils.isNotEmpty(userssid)&&ussid.equals(userssid)){
+                                    //本次带的也有
+                                    usernum++;
+                                }
+                            }
+                            if (usernum<1){
+                                LogUtil.intoLog(this.getClass(),"案件修改存在用户已有提讯不允许删除__userssid_"+userssid);
+                                result.setMessage("存在用户已被提讯不允许删除");
+                                return;
+                            }
+                        }else {
+                            EntityWrapper delew=new EntityWrapper();
+                            delew.eq("casessid",casessid);
+                            delew.eq("userssid",userssid);
+                            delew.eq("usertotypessid",police_casetouserinfo.getUsertotypessid());
+                            int police_casetouserinfoMapper_delete_bool=police_casetouserinfoMapper.delete(delew);
+                            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_delete_bool__"+police_casetouserinfoMapper_delete_bool);
+                        }
+                    }
+                }
+
+
+
+
+
                 for (UserInfo userInfo : userInfos) {
                     String cardtypessid=userInfo.getCardtypessid();
                     String cardnum=userInfo.getCardnum();
@@ -2395,14 +2440,13 @@ public class RecordService extends BaseService {
                     //根据证件类型和证件号码，检测证件是否存在存在修改；不存在新增
                     EntityWrapper userparam=new EntityWrapper();
                     userparam.eq("ut.cardtypessid",cardtypessid);
-                    userparam.like("ut.cardnum",cardnum);
+                    userparam.eq("ut.cardnum",cardnum);
                     List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
                     if (null!=userInfos_&&userInfos_.size()==1){
                         UserInfo userInfo_=userInfos_.get(0);
                         //修改
                         userssid=userInfo_.getSsid();
                         usertotypessid=userInfo_.getUsertotypessid();
-
 
 
 
@@ -2436,17 +2480,46 @@ public class RecordService extends BaseService {
                         return;
                     }
 
-
-
-                    //添加用户与案件的关联
-                    Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
-                    police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
-                    police_casetouserinfo_.setCreatetime(new Date());
-                    police_casetouserinfo_.setCasessid(casessid);
-                    police_casetouserinfo_.setUserssid(userssid);
-                    police_casetouserinfo_.setUsertotypessid(usertotypessid);
-                    int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
-                    LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                    LogUtil.intoLog(this.getClass(),"案件人员数据__casessid_"+casessid+"__userssid_"+userssid+"___usertotypessid__"+usertotypessid);
+                    if (StringUtils.isNotEmpty(casessid)&&StringUtils.isNotEmpty(userssid)&&StringUtils.isNotEmpty(usertotypessid)){
+                        //判断是否需要新增删除关联
+                        EntityWrapper casetouserinfoParam=new EntityWrapper();
+                        casetouserinfoParam.eq("casessid",casessid);
+                        casetouserinfoParam.eq("userssid",userssid);
+                        casetouserinfoParam.eq("usertotypessid",usertotypessid);
+                        List<Police_casetouserinfo> police_casetouserinfos_=police_casetouserinfoMapper.selectList(casetouserinfoParam);
+                        if (null==police_casetouserinfos_||police_casetouserinfos_.size()<1){
+                            //不存在关系需要新增
+                            //添加用户与案件的关联
+                            Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
+                            police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
+                            police_casetouserinfo_.setCreatetime(new Date());
+                            police_casetouserinfo_.setCasessid(casessid);
+                            police_casetouserinfo_.setUserssid(userssid);
+                            police_casetouserinfo_.setUsertotypessid(usertotypessid);
+                            int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
+                            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                        }/*else {
+                            //对于存在的判断该人在改案件中是否已经存在提讯，存在不可删除
+                            EntityWrapper ewarraignment=new EntityWrapper();
+                            ewarraignment.eq("cr.casessid",casessid);
+                            ewarraignment.eq("a.userssid",userssid);
+                            ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                            List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                            if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                                LogUtil.intoLog(this.getClass(),"案件修改存在用户已有提讯不允许删除__userssid_"+userssid);
+                                result.setMessage("部分用户已被提讯不允许删除");
+                                return;
+                            }else {
+                                EntityWrapper delew=new EntityWrapper();
+                                delew.eq("casessid",casessid);
+                                delew.eq("userssid",userssid);
+                                delew.eq("usertotypessid",usertotypessid);
+                                int police_casetouserinfoMapper_delete_bool=police_casetouserinfoMapper.delete(delew);
+                                LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_delete_bool__"+police_casetouserinfoMapper_delete_bool);
+                            }
+                        }*/
+                    }
                 }
             }
             changeResultToSuccess(result);
@@ -2491,6 +2564,15 @@ public class RecordService extends BaseService {
                             userInfo.setCardtypessid(userInfo_.getCardtypessid());
                             userInfo.setCardnum(userInfo_.getCardnum());
                             userInfo.setCardtypename(userInfo_.getCardtypename());
+                        }
+
+                        EntityWrapper ewarraignment=new EntityWrapper();
+                        ewarraignment.eq("cr.casessid",casessid);
+                        ewarraignment.eq("a.userssid",userInfo.getSsid());
+                        ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                        List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                        if (null!=arraignmentAndRecords){
+                            userInfo.setArraignment_num(arraignmentAndRecords.size());
                         }
 
                         ////获取该用户全部的证件
@@ -3039,6 +3121,19 @@ public class RecordService extends BaseService {
             return;
         }
 
+        if (StringUtils.isBlank(userInfo.getCardnum())){
+            result.setMessage("请输入居民身份证号码");
+            LogUtil.intoLog(3,this.getClass(),"updateCaseToUser_userInfo.getCardnum() is null");
+            return;
+        }
+
+        String cardtypesssid=userInfo.getCardtypessid();
+        if (StringUtils.isBlank(cardtypesssid)){
+            PropertiesListenerConfig.getProperty("cardtype_default");//支持居民身份证
+        }
+
+
+
 
          if (StringUtils.isNotBlank(recordname)){
              EntityWrapper recordname_ew=new EntityWrapper();
@@ -3101,6 +3196,28 @@ public class RecordService extends BaseService {
                 police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
                 int police_userinfoMapper_update_bool=police_userinfoMapper.update(police_userinfo,userinfoupdate_ew);
                 LogUtil.intoLog(1,this.getClass(),"police_userinfoMapper_update_bool___"+police_userinfoMapper_update_bool);
+                if (police_userinfoMapper_update_bool>0&&null!=cardtypesssid&&null!=userInfo.getCardnum()){
+                    //先判断重复
+                    EntityWrapper ew1=new EntityWrapper();
+                    ew1.eq("cardnum",userInfo.getCardnum());
+                    ew1.eq("cardtypessid",cardtypesssid);
+                    ew1.ne("userssid",userssid);
+                    List<Police_userinfototype> police_userinfototypes=police_userinfototypeMapper.selectList(ew1);
+                    if (null!=police_userinfototypes&&police_userinfototypes.size()>0){
+                       result.setMessage("证件号码不能重复");
+                       LogUtil.intoLog(1,this.getClass(),"身份证号码不能重复__"+userInfo.getCardnum());
+                       return;
+                    }
+
+
+                    Police_userinfototype police_userinfototype=new Police_userinfototype();
+                    police_userinfototype.setCardnum(userInfo.getCardnum());
+                    EntityWrapper ew2=new EntityWrapper();
+                    ew2.eq("cardtypessid",cardtypesssid);
+                    ew2.eq("userssid",userssid);
+                    int police_userinfototypeMapper_update_bool=police_userinfototypeMapper.update(police_userinfototype,ew2);
+                    LogUtil.intoLog(1,this.getClass(),"police_userinfototypeMapper_update_bool__"+police_userinfototypeMapper_update_bool);
+                }
             }
 
             //修改案件信息

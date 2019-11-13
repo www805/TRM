@@ -2,6 +2,7 @@
 
 
 var recordssid;
+var cardtypessid=null;
 function setcaseToUser(getRecordById_data) {
     layui.use(['layer','laydate','form'], function() {
         var form = layui.form;
@@ -66,6 +67,7 @@ function setcaseToUser(getRecordById_data) {
             if (isNotEmpty(recordUserInfos)) {
                 var userinfo=recordUserInfos.userInfo;
                 if (isNotEmpty(userinfo)) {
+                    cardtypessid=userinfo.cardtypessid;
                     $("#cards").val(userinfo.cardtypename);
                     $("#cardnum").val(userinfo.cardnum);
                     $("#username").val(userinfo.username);
@@ -116,6 +118,19 @@ function setcaseToUser(getRecordById_data) {
 
         //开始收集数据
         form.verify({
+            cardnum:function (value) {
+                var nationality = $("#nationality option:selected").text();//国籍
+                var cardtypetext = $("#cardtypetext").val();//
+                if (!(/\S/).test(value)) {
+                    return "请输入居民身份证号码"
+                }
+                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                    var checkidcard_bool=checkIDCard(value);
+                    if (!checkidcard_bool) {
+                        return "请输入有效的居民身份证号码";
+                    }
+                }
+            },
             username:[ /\S/,"请输入姓名"],
             phone:function (value) {
                 if (isNotEmpty(value)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(value))){
@@ -143,6 +158,7 @@ function setcaseToUser(getRecordById_data) {
 
 
             //收集人员信息
+            var cardnum=$("#cardnum").val();
             var  username=$("#username").val();
             var  beforename=$("#beforename").val();
             var  nickname= $("#nickname").val();
@@ -159,6 +175,8 @@ function setcaseToUser(getRecordById_data) {
             var  residence=$("#residence").val();
             var  workunits=$("#workunits").val();
             userInfo={
+                cardtypessid:cardtypessid,
+                cardnum:cardnum,
                 username:username,
                 beforename:beforename,
                 nickname:nickname,

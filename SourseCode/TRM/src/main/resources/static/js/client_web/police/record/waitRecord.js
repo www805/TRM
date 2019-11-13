@@ -372,10 +372,12 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
                     $("#asr").show();
                     $("#record_switch_HTML").css("visibility","visible");
+                    $("#AsrState_tr").show();
                 }
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
                     $("#ph").show();
                     $("#xthtml").css("visibility","visible");
+                    $("#PolygraphState_tr").show();
                 }
             }
 

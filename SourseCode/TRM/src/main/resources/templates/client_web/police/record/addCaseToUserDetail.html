@@ -61,7 +61,7 @@
                             <div class="layui-input-block">
                                 <div class="layui-form-select">
                                     <div class="layui-select-title">
-                                        <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()">
+                                        <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()" onkeyup="value=value.replace(/[\W]/g,'')">
                                         <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="getUserByCard();"></i>
                                     </div>
                                     <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >
@@ -230,7 +230,7 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input" onkeyup="value=value.replace(/[\W]/g,'')">
                                                              <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;"  onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
@@ -292,7 +292,7 @@
                                                     <div class="layui-col-lg6">
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
-                                                            <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">
+                                                            <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input" onkeyup="value=value.replace(/[\W]/g,'')">
                                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;" onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
@@ -527,7 +527,7 @@
                         <div class="layui-col-lg6 layui-col-lg-offset6 ">
                             <div class="layui-input-block" >
                                 <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="init_form(); return false;">重置信息</button>
-                                <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn" >开始笔录</button>
+                                <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn" >加载中</button>
                             </div>
                         </div>
                     </div>
@@ -570,6 +570,12 @@
         getCards();
         getMc_model();//获取全部的会议模板
         getWordTemplates();
+
+        if (isNotEmpty(gnlist)&&gnlist.indexOf(HK_O)!=-1){
+           $("#startrecord_btn").html("开始谈话")
+        }else {
+            $("#startrecord_btn").html("开始笔录")
+        }
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块
@@ -611,9 +617,9 @@
                     return "请输入证件号码"
                 }
                 if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
-                    var checkidcard_bool=checkIDCard(value);
+                    var checkidcard_bool=checkByIDCard(value);
                     if (!checkidcard_bool) {
-                        return "请输入有效的18位居民身份证号码";
+                        return "请输入有效的居民身份证号码";
                     }
                 }
             },

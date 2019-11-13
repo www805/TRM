@@ -1364,6 +1364,8 @@ function getActionURL(actionid){
 
 }
 
+//*****************************************************关于身份证**********************************************//
+
 /**
  * 二代身份证检测：
  * @param idcode
@@ -1405,13 +1407,152 @@ function checkIDCard(idcode){
     十八位可能是数字0-9，也可能是X
     */
     var idcard_patter = /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/;
-
     // 判断格式是否正确
     var format = idcard_patter.test(idcode);
 
     // 返回验证结果，校验码和格式同时正确才算是合法的身份证号码
     return last === last_no && format ? true : false;
 }
+
+
+/**
+ * 检测15位和18位身份证号码
+ * @param idcode
+ * @returns {boolean}
+ */
+function checkByIDCard(idcode) {
+	if (isNotEmpty(idcode)){
+		if (idcode.length==15) {
+            var idcard_patter = /^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$/;
+            return idcard_patter.test(idcode);
+		}else if (idcode.length==18){
+            return  checkIDCard(idcode);
+		}
+	}
+	return false;
+}
+
+
+/**
+ * 身份证解析：前提身份证号码为正确的
+ * @param idcode：身份证号码
+ * @param type：1出生日期 2性别 3年龄
+ * @returns {*}
+ */
+function getAnalysisIdCard(idcode, type) {
+    if (idcode.length==15){
+        if (type == 1) {
+            //获取出生日期
+            let birth = "19"+idcode.substring(6,8)+"-"+idcode.substring(8,10)+"-"+idcode.substring(10,12);
+            return birth;
+        }
+        if (type == 2) {
+            //获取性别
+            if (parseInt(idcode.substr(14, 1)) % 2 == 1) { return 1; } else {return 2;}
+        }
+        if (type == 3) {
+            //获取年龄
+            var myDate = new Date();
+            var month = myDate.getMonth() + 1;
+            var day = myDate.getDate();
+            var age = myDate.getFullYear() - parseInt("19"+idcode.substring(6, 8)) - 1;
+            if (idcode.substring(8, 10) < month || idcode.substring(8, 12) == 10 && idcode.substring(10, 12) <= day) { age++;}
+            return age;
+        }
+    }else  if (idcode.length==18){
+        if (type == 1) {
+            //获取出生日期
+            let birth = idcode.substring(6, 10) + "-" + idcode.substring(10, 12) + "-" + idcode.substring(12, 14);
+            return birth;
+        }
+        if (type == 2) {
+            //获取性别
+            if (parseInt(idcode.substr(16, 1)) % 2 == 1) { return 1; } else {return 2;}
+        }
+        if (type == 3) {
+            //获取年龄
+            var myDate = new Date();
+            var month = myDate.getMonth() + 1;
+            var day = myDate.getDate();
+            var age = myDate.getFullYear() - idcode.substring(6, 10) - 1;
+            if (idcode.substring(10, 12) < month || idcode.substring(10, 12) == month && idcode.substring(12, 14) <= day) { age++;}
+            return age;
+        }
+    }
+    return "";
+}
+
+/**
+ * 身份证读卡
+ */
+function getIDCardreader() {
+    var cardtypetext=$("#cards option:selected").text();
+    if ($.trim(cardtypetext)!="居民身份证"){
+        layer.msg("请先选择居民身份证",{icon:5});
+        return;
+    }
+    layer.msg("开始读卡，请稍等",{icon:6});
+    $.ajax({
+        dataType: "JSONP",
+        type: "get",
+        url: "http://localhost:8989/api/ReadMsg",
+        timeout: 3000,
+        success: function (data) {
+            if (isNotEmpty(data)){
+                reset();
+                var retmsg=data.retmsg==null?"未知错误":data.retmsg;
+                var CardType=data.CardType;//0身份证 1其他国家身份证 2港澳居住证
+                var username="";
+                if (CardType==0||CardType==2){
+                    var bool=checkByIDCard(data.cardno);
+                    if (!bool){
+                        return;
+                    }
+                    username=data.name==null?"":data.name;
+
+                    var nation=data.nation;
+                    $("#national option").each(function () {
+                        var txt=$(this).text();
+                        var value=$(this).attr("value");
+                        if (txt.indexOf(nation)>-1){
+                            $("#national").val(value);
+                            return;
+                        }
+                    })
+                    var nationality_value=$("#nationality option[title='China']").attr("value");
+                    $("#nationality").val(nationality_value);
+                } else if (CardType==1){
+                    var nation=data.nation;
+                    $("#nationality option").each(function () {
+                        var txt=$(this).text();
+                        var value=$(this).attr("value");
+                        if (txt.indexOf(nation)>-1){
+                            $("#nationality").val(value);
+                            return;
+                        }
+                    })
+                    username=data.EngName==null?"":data.EngName
+                }
+                $("#username").val(username);
+                $("#cardnum").val(data.cardno);
+                $("#domicile").val(data.address);
+                $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
+                layui.use('form', function(){
+                    var form =  layui.form;
+                    form.render();
+                });
+                layer.msg(retmsg,{icon:6,time:1000},function () {
+                    getUserByCard();
+                });
+            }
+        },
+        error: function (e) {
+            layer.msg("请先确认身份证读卡设备是否插上",{icon:5})
+        }
+    });
+}
+
+//*****************************************************关于身份证**********************************************//
 
 
 

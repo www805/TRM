@@ -87,68 +87,95 @@ function addCaseToArraignment() {
         var tab_cardnum=$(this).find("input[name='tab_cardnum']").val();
         var index=$(this).index();
         if (isNotEmpty(tab_cardnum)){
-            var otheruserssid=$(this).find("input[name='tab_otheruserssid']").val();
-            var relation=$(this).find("select[name='tab_relation']").val();
-            var language=$(this).find("select[name='tab_language']").val();
-            var usertype=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
-            var usertitle=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("lay-id");
+            var otheruserssid_=$(this).find("input[name='tab_otheruserssid']").val();
+            var relation_=$(this).find("select[name='tab_relation']").val();
+            var language_=$(this).find("select[name='tab_language']").val();
+            var usertype_=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("usertype");
+            var usertitle_=$(this).parent().parent().find(".layui-tab-title li").eq(index).attr("lay-id");
 
-            var cardtypessid=$(this).find("select[name='tab_card']").val();
-            var cardtypetext=$(this).find("select[name='tab_card'] option:selected").text();
+            var cardtypessid_=$(this).find("select[name='tab_card']").val();
+            var cardtypetext_=$(this).find("select[name='tab_card'] option:selected").text();
 
-            var cardnum=$(this).find("input[name='tab_cardnum']").val();
-            var username=$(this).find("input[name='tab_username']").val();
-            var sex=$(this).find("select[name='tab_sex']").val();
-            var phone=$(this).find("input[name='tab_phone']").val();
+            var cardnum_=$(this).find("input[name='tab_cardnum']").val();
+            var username_=$(this).find("input[name='tab_username']").val();
+            var sex_=$(this).find("select[name='tab_sex']").val();
+            var phone_=$(this).find("input[name='tab_phone']").val();
 
 
             //开始验证
-            var bool=  checkIDCard(cardnum);
+            var bool=  checkByIDCard(cardnum_);
             if (!bool){
                 $(this).find("input[name='tab_cardnum']").focus();
                 ck_msg="其他在场人员身份证号码无效";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;
-                    element.tabChange("tabAdd_filter", usertitle);
+                    element.tabChange("tabAdd_filter", usertitle_);
                 });
                 return false;
             }
 
-            if (!isNotEmpty(username)){
+            if (cardnum==cardnum_){
+                $(this).find("input[name='tab_cardnum']").focus();
+                ck_msg="被询问人不能作为其他在场人员";
+                ck=false;
+                layui.use(['element'], function(){
+                    var element = layui.element;
+                    element.tabChange("tabAdd_filter", usertitle_);
+                });
+                return false;
+            }
+
+            for (let i = 0; i < usertos.length; i++) {
+                const userto = usertos[i];
+                if (userto.cardnum==cardnum_) {
+                    ck_msg="其他在场人员不能重复";
+                    ck=false;
+                    layui.use(['element'], function(){
+                        var element = layui.element;
+                        element.tabChange("tabAdd_filter", usertitle_);
+                    });
+                    return false;
+                }
+            }
+
+
+            if (!isNotEmpty(username_)){
                 $(this).find("input[name='tab_username']").focus();
                 ck_msg="其他在场人员姓名不能为空";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;
-                    element.tabChange("tabAdd_filter", usertitle);
+                    element.tabChange("tabAdd_filter", usertitle_);
                 });
                 return false;
             }
 
-            if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
+            if (isNotEmpty(phone_)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone_))){
                 $(this).find("input[name='tab_phone']").focus();
                 ck_msg="其他在场人员联系电话无效";
                 ck=false;
                 layui.use(['element'], function(){
                     var element = layui.element;
-                    element.tabChange("tabAdd_filter", usertitle);
+                    element.tabChange("tabAdd_filter", usertitle_);
                 });
                 return false;
             }
 
 
+
+
             var usertos_={
-                otheruserssid:otheruserssid,
-                relation:relation,
-                language:language,
-                usertype:usertype==null?3:usertype,
-                usertitle:usertitle,
-                cardtypessid:cardtypessid,//当前证件类型ssid
-                cardnum:cardnum,//当前证件号码
-                username:username,//姓名
-                sex:sex,//性别
-                phone:phone //联系电话
+                otheruserssid:otheruserssid_,
+                relation:relation_,
+                language:language_,
+                usertype:usertype_==null?3:usertype_,
+                usertitle:usertitle_,
+                cardtypessid:cardtypessid_,//当前证件类型ssid
+                cardnum:cardnum_,//当前证件号码
+                username:username_,//姓名
+                sex:sex_,//性别
+                phone:phone_ //联系电话
             }
             usertos.push(usertos_);
         }
@@ -222,6 +249,7 @@ function addCaseToArraignment() {
     //收集询问人二和对应工作单位等信息
     var otheruserinfoname=$("#otheruserinfos").val();
     var otherworkname=$("#otherworkname").val();
+
 
     var data={
         token:INIT_CLIENTKEY,
@@ -344,7 +372,7 @@ function callbackaddCaseToArraignment(data) {
                             parent.layer.close(index);
                         };
                         if (gnlist.indexOf(HK_O)!=-1){
-                            btn=['开始笔录',"取消"];
+                            btn=['开始谈话',"取消"];
                             btn2=function(index) {
                                 parent.layer.close(index);
                             };
@@ -593,7 +621,7 @@ function getUserByCard(){
     var cardnum =  $("#cardnum").val();
     var cardtypetext=$("#cards option:selected").text();
     var cardtypesssid=$("#cards option:selected").val();
-
+    var nationality = $("#nationality option:selected").text();//国籍
 
 
     dquserssid=null;//当前用户的ssid
@@ -611,10 +639,14 @@ function getUserByCard(){
     if (!isNotEmpty(cardnum)){
         return;
     }
-    var bool=checkout_cardnum(cardnum,cardtypetext);
-    if (!bool){
-        return;
+
+    if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+        var bool=checkByIDCard(cardnum);
+        if (!bool){
+            return;
+        }
     }
+
 
 
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
@@ -641,14 +673,14 @@ function callbackgetUserByCard(data){
                 $("#beforename").val(userinfo.beforename);
                 $("#nickname").val(userinfo.nickname);
                 $("#both").val(userinfo.both);
+                $("#age").val(userinfo.age);
+                $("#sex").val(userinfo.sex);
                 $("#professional").val(userinfo.professional);
                 $("#phone").val(userinfo.phone);
                 $("#domicile").val(userinfo.domicile);
                 $("#residence").val(userinfo.residence);
                 $("#workunits").val(userinfo.workunits);
-                $("#age").val(userinfo.age);
 
-                $("#sex").val(userinfo.sex);
                 $("#national").val(userinfo.nationalssid);
                 $("#nationality").val(userinfo.nationalityssid);
                 $("#educationlevel").val(userinfo.educationlevel);
@@ -661,9 +693,12 @@ function callbackgetUserByCard(data){
 
             var cardnum =  $("#cardnum").val();
             var cardtypetext=$("#cards option:selected").text();
-            var bool=checkout_cardnum(cardnum,cardtypetext);
-            if (!bool){
-                return;
+            var nationality = $("#nationality option:selected").text();//国籍
+            if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                //回填身份证分析数据
+                $("#both").val(getAnalysisIdCard(cardnum,1));
+                $("#sex").val(getAnalysisIdCard(cardnum,2));
+                $("#age").val(getAnalysisIdCard(cardnum,3));
             }
         }
     }else{
@@ -743,7 +778,7 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">证件号码</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input" onkeyup="value=value.replace(/[\\W]/g,\'\')">\
                                                                       <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;" onclick="getUserByCard_other(this);"></i>\
                                                                 </div>\
                                                             </div>\
@@ -844,8 +879,8 @@ function getUserByCard_other(obj){
         var num=0;
         $("#tab_content select[name='tab_card']").each(function(){
             var card_val=$(this).val();
-            var card_num=$(this).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
-            if (card_val==cards&&card_num==cardnum){
+            var card_num_=$(this).closest(".layui-tab-item").find("input[name='tab_cardnum']").val();
+            if (card_val==cards&&card_num==card_num_){
                 num++;
             }
         });
@@ -1468,56 +1503,6 @@ function open_othercases() {
 }
 
 
-
-
-
-
-
-
-//检验主身份证号码
-function checkout_cardnum(cardnum,cardtypetext) {
-    var nationality = $("#nationality option:selected").text();//国籍
-    cardnum = $.trim(cardnum);
-    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){ //只检测中国国籍的
-        return true;
-    }
-    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
-        var checkidcard_bool=  checkIDCard(cardnum);
-        if(!checkidcard_bool) {
-            return false;
-        }
-
-        //开始计算生日啥的
-        if (cardnum.length==15){
-            return true;
-        }else  if (cardnum.length==18){
-            var birth = cardnum.substring(6, 10) + "-" + cardnum.substring(10, 12) + "-" + cardnum.substring(12, 14);
-            $("#both").val(birth);
-            var sex = parseInt(cardnum.substr(16, 1)) % 2;
-            if (sex==1){
-                sex=1;
-            }else {
-                sex=2;
-            }
-            $("#sex").val(sex);
-            var myDate = new Date();
-            var month = myDate.getMonth() + 1;
-            var day = myDate.getDate();
-            var age = myDate.getFullYear() - cardnum.substring(6, 10) - 1;
-            if (cardnum.substring(10, 12) < month || cardnum.substring(10, 12) == month && cardnum.substring(12, 14) <= day) {
-                age++;
-            }
-            $("#age").val(age);
-            return true;
-        }
-        layui.use('form', function(){
-            var $ = layui.$;
-            var form = layui.form;
-            form.render();
-        });
-    }
-    return true;
-}
 
 
 

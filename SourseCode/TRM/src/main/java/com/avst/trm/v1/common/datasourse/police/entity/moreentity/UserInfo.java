@@ -19,6 +19,16 @@ public class UserInfo extends Police_userinfo {
     private Integer grade;//人员级别
     private String gradename;//级别名称
 
+    //提讯次数:用于案件编辑用时的显示，存在提讯的用户不可删
+    private Integer arraignment_num;
+
+    public Integer getArraignment_num() {
+        return arraignment_num;
+    }
+
+    public void setArraignment_num(Integer arraignment_num) {
+        this.arraignment_num = arraignment_num;
+    }
 
     public String getGradename() {
         return gradename;

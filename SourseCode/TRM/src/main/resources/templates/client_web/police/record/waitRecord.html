@@ -390,12 +390,12 @@
                        </colgroup> \
                                 <tbody>\
                                     <tr>\
-                                         <td>会议状态</td>\
+                                         <td>状态</td>\
                                         <td>\
                                         <span class="layui-badge layui-bg-gray" id="MtState" MtState="0" >未开启</span>\
                                         </td>\
                                     </tr>\
-                                    <tr>\
+                                    <tr style="display: none" id="AsrState_tr">\
                                         <td>语音识别</td>\
                                         <td>\
                                               <span class="layui-badge layui-bg-gray" id="AsrState" AsrState="0" >未开启</span>\
@@ -407,7 +407,7 @@
                                         <span class="layui-badge layui-bg-gray" id="LiveState" LiveState="0">未开启</span>\
                                         </td>\
                                     </tr>\
-                                     <tr>\
+                                     <tr style="display: none" id="PolygraphState_tr">\
                                         <td>身心监控</td>\
                                         <td>\
                                         <span class="layui-badge layui-bg-gray" id="PolygraphState" PolygraphState="0">未开启</span>\
@@ -415,6 +415,14 @@
                                     </tr>\
                                 </tbody>\
                         </table>';
+
+        var area=['250px', '125px'];
+        if (gnlist.indexOf(ASR_F)>0||gnlist.indexOf(PH_F)>0){
+            area=['250px', '165px'];
+        }
+        if (gnlist.indexOf(ASR_F)>0&&gnlist.indexOf(PH_F)>0){
+            area=['250px', '185px'];
+        }
 
         recordstate_index = layer.open({
             type:1,

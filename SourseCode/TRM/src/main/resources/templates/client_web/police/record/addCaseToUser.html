@@ -130,8 +130,11 @@
                 $("#multifunctionbool").closest("div").css("display","block");
                 $("#multifunctionbool").attr("checked",false);
                 setTimeout(function () {
-                    $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
-                },1000)
+                    var multifunction_bool=$("#multifunctionbool").prop("checked");
+                    if (!multifunction_bool) {
+                        $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
+                    }
+                },500)
             }else  if(gnlist.indexOf(S_V)<0){
                 //再去判断非单机版显示组件不需要自动默认多组件
                 $("#multifunctionbool").closest("div").css("display","block");

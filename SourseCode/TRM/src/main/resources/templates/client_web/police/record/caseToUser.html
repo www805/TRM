@@ -33,13 +33,13 @@
                     <div class="layui-col-lg6">
                         <label class="layui-form-label">证件类型</label>
                         <div class="layui-input-block">
-                            <input type="text" name="cards" id="cards" lay-verify="username" placeholder="" autocomplete="off" class="layui-input" disabled>
+                            <input type="text" name="cards" id="cards" lay-verify="cards" placeholder="" autocomplete="off" class="layui-input" disabled>
                         </div>
                     </div>
                     <div class="layui-col-lg6">
                         <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>证件号码</label>
                         <div class="layui-input-block">
-                            <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" disabled>
+                            <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" onkeyup="value=value.replace(/[\W]/g,'')">
                         </div>
                     </div>
                     <div class="layui-col-lg6">

@@ -416,12 +416,17 @@ function select_cardnum(obj) {
 }
 function select_cardnumblur() {
     $("#cardnum_ssid").css("display","none");
-    getUserByCard();
     var cardnum=$("#cardnum").val();
-    var bool=checkout_cardnum(cardnum);
+    var bool=checkByIDCard(cardnum);
     if (!bool){
-        layer.msg("请输入有效的18位居民身份证号码",{icon: 5});
+        layer.msg("请输入有效的居民身份证号码",{icon: 5});
         return false;
+    }
+    getUserByCard();
+    if (bool){
+        $("#both").val(getAnalysisIdCard(cardnum,1));
+        $("#sex").val(getAnalysisIdCard(cardnum,2));
+        $("#age").val(getAnalysisIdCard(cardnum,3));
     }
 }
 
@@ -954,47 +959,7 @@ function callbakegetCaseById(data) {
 
 
 //**************************************检测****************************start
-//检验主身份证号码
-function checkout_cardnum(cardnum) {
-    cardnum = $.trim(cardnum);
-    if (isNotEmpty(cardnum)){
-        var checkidcard_bool=  checkIDCard(cardnum);
-        if(!checkidcard_bool) {
-            return false;
-        }
-        //开始计算生日啥的
-        if (cardnum.length==15){
-            return true;
-        }else  if (cardnum.length==18){
-            var birth = cardnum.substring(6, 10) + "-" + cardnum.substring(10, 12) + "-" + cardnum.substring(12, 14);
-            $("#both").val(birth);
-            var sex = parseInt(cardnum.substr(16, 1)) % 2;
-            if (sex==1){
-                sex=1;
-            }else {
-                sex=2;
-            }
-            $("#sex").val(sex);
-            var myDate = new Date();
-            var month = myDate.getMonth() + 1;
-            var day = myDate.getDate();
-            var age = myDate.getFullYear() - cardnum.substring(6, 10) - 1;
-            if (cardnum.substring(10, 12) < month || cardnum.substring(10, 12) == month && cardnum.substring(12, 14) <= day) {
-                age++;
-            }
-            $("#age").val(age);
 
-
-            return true;
-        }
-        layui.use('form', function(){
-            var $ = layui.$;
-            var form = layui.form;
-            form.render();
-        });
-    }
-    return true;
-}
 
 /*
 检测人员不分验证
@@ -1012,9 +977,9 @@ function checkuserinfograde(userinfograde,type) {
             return false;
         }
         if (isNotEmpty(cardnum)){
-            var bool=checkout_cardnum(cardnum);
+            var bool=checkByIDCard(cardnum);
             if (!bool){
-                layer.msg("请输入有效的18位"+con+"居民身份证号码",{icon: 5});
+                layer.msg("请输入有效的"+con+"居民身份证号码",{icon: 5});
                 $("#cardnum").focus();
                 setuserval(userinfograde,type);
                 return false;

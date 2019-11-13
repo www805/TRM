@@ -69,7 +69,7 @@ function set_userinfo(userInfos) {
             var cardnum=userInfo.cardnum==null?"":userInfo.cardnum;
             var both=userInfo.both==null?"":userInfo.both;
             var domicile=userInfo.domicile==null?"":userInfo.domicile;
-
+            var arraignment_num=userInfo.arraignment_num==null?0:userInfo.arraignment_num;
             TBODY_HTML+='<tr>\
                                         <td>'+(i+1)+'</td>\
                                         <td>'+username+'</td>\
@@ -79,7 +79,7 @@ function set_userinfo(userInfos) {
                                         <td>'+domicile+'</td>\
                                         <td>\
                                             <input  class="layui-btn layui-btn-normal layui-btn-xs" type="button" value="修改" onclick=tr_addOrUpdate(this,2)>\
-                                            <input  class="layui-btn layui-btn-danger layui-btn-xs"  type="button" value="删除" onclick=tr_remove(this);>\
+                                            <input  class="layui-btn layui-btn-danger layui-btn-xs"  type="button" value="删除" onclick=tr_remove(this,'+arraignment_num+');>\
                                          </td>\
                                         </tr>';
             userInfo["xh"]=i+1;
@@ -89,7 +89,11 @@ function set_userinfo(userInfos) {
 }
 
 //删除某个案件人
-function tr_remove(obj) {
+function tr_remove(obj,arraignment_num) {
+    if (isNotEmpty(arraignment_num)&&arraignment_num>0){
+        layer.msg("该用户已被提讯"+arraignment_num+"次不允许删除",{icon:5});
+        return false;
+    }
     var user_xh= $(obj).parents("tr").find("td:eq(0)").text().trim();
     if (isNotEmpty(user_xh)&&isNotEmpty(userinfos_)){
         var new_userinfos_=[];
@@ -153,9 +157,9 @@ function tr_addOrUpdate(obj,type) {
                               return "请输入证件号码"
                           }
                           if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
-                              var checkidcard_bool=checkIDCard(value);
+                              var checkidcard_bool=checkByIDCard(value);
                               if (!checkidcard_bool) {
-                                  return "请输入有效的18位居民身份证号码";
+                                  return "请输入有效的居民身份证号码";
                               }
                           }
                       },
@@ -180,6 +184,12 @@ function tr_addOrUpdate(obj,type) {
                           return;
                       }
 
+                      if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                          //回填身份证分析数据
+                          $("#both").val(getAnalysisIdCard(cardnum,1));
+                          $("#sex").val(getAnalysisIdCard(cardnum,2));
+                          $("#age").val(getAnalysisIdCard(cardnum,3));
+                      }
 
                       var  cardtypessid=$("#cards option:selected").val();
                       var  beforename=$("#beforename").val();
@@ -483,12 +493,22 @@ function callbackgetUserByCard(data){
                 $("#nationality").val(userinfo.nationalityssid);
                 $("#educationlevel").val(userinfo.educationlevel);
                 $("#politicsstatus").val(userinfo.politicsstatus);
+
+                //回填身份证分析数据
+                var cardnum =  $("#cardnum").val();
+                var cardtypetext=$("#cards option:selected").text();
+                var nationality = $("#nationality option:selected").text();//国籍
+                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                    //回填身份证分析数据
+                    $("#both").val(getAnalysisIdCard(cardnum,1));
+                    $("#sex").val(getAnalysisIdCard(cardnum,2));
+                    $("#age").val(getAnalysisIdCard(cardnum,3));
+                }
             }
 
 
 
-            var cardnum =  $("#cardnum").val();
-            var cardtypetext=$("#cards option:selected").text();
+
 
         }
     }else{
@@ -608,117 +628,9 @@ $(function () {
 
 });
 
-function getCardreader_btn() {
-    var cardtypetext=$("#cards option:selected").text();
-    if ($.trim(cardtypetext)!="居民身份证"){
-        layer.msg("请先选择身份证类型",{icon:5});
-        return;
-    }
-    $.ajax({
-        dataType: "JSONP",
-        type: "get",
-        url: "http://localhost:8989/api/ReadMsg",
-        timeout:3000,
-        success: function (data) {
-                if (isNotEmpty(data)){
-                    reset();
-                    var retmsg=data.retmsg==null?"未知错误":data.retmsg;
 
-                    var CardType=data.CardType;//0身份证 1其他国家身份证 2港澳居住证
-                    var username="";
-                    if (CardType==0||CardType==2){
-                        var bool=checkout_cardnum(data.cardno,"居民身份证");
-                        if (!bool){
-                            return;
-                        }
-                        username=data.name==null?"":data.name;
 
-                        var nation=data.nation;
-                        $("#national option").each(function () {
-                            var txt=$(this).text();
-                            var value=$(this).attr("value");
-                            if (txt.indexOf(nation)>-1){
-                                $("#national").val(value);
-                                return;
-                            }
-                        })
-                       var nationality_value=$("#nationality option[title='China']").attr("value");
-                        $("#nationality").val(nationality_value);
-                    } else if (CardType==1){
-                        var nation=data.nation;
-                        $("#nationality option").each(function () {
-                            var txt=$(this).text();
-                            var value=$(this).attr("value");
-                            if (txt.indexOf(nation)>-1){
-                                $("#nationality").val(value);
-                                return;
-                            }
-                        })
-                        username=data.EngName==null?"":data.EngName
-                    }
-                    $("#username").val(username);
-                    $("#cardnum").val(data.cardno);
-                    $("#domicile").val(data.address);
-                    $("#sex").val(data.sex=="女"?2:(data.sex=="男"?1:-1));
 
-                    layui.use('form', function(){
-                        var form =  layui.form;
-                        form.render();
-                    });
-                    parent.layer.msg(retmsg,{icon:6,time:1000},function () {
-                        getUserByCard();
-                    });
-                }
-        },
-        error: function (e) {
-            layer.msg("请先确认身份证识别设备是否插上",{icon:5})
-        }
-    });
-}
-
-//检验主身份证号码
-function checkout_cardnum(cardnum,cardtypetext) {
-    var nationality = $("#nationality option:selected").text();//国籍
-    cardnum = $.trim(cardnum);
-    if (!($.trim(nationality)=="中国"||!isNotEmpty(nationality))){
-        return true;
-    }
-
-    if ($.trim(cardtypetext)=="居民身份证"&&isNotEmpty(cardnum)){
-        var checkidcard_bool=  checkIDCard(cardnum);
-        if(!checkidcard_bool) {
-            return false;
-        }
-        if (cardnum.length==15){
-            return true;
-        }else  if (cardnum.length==18){
-            var birth = cardnum.substring(6, 10) + "-" + cardnum.substring(10, 12) + "-" + cardnum.substring(12, 14);
-            $("#both").val(birth);
-            var sex = parseInt(cardnum.substr(16, 1)) % 2;
-            if (sex==1){
-                sex=1;
-            }else {
-                sex=2;
-            }
-            $("#sex").val(sex);
-            var myDate = new Date();
-            var month = myDate.getMonth() + 1;
-            var day = myDate.getDate();
-            var age = myDate.getFullYear() - cardnum.substring(6, 10) - 1;
-            if (cardnum.substring(10, 12) < month || cardnum.substring(10, 12) == month && cardnum.substring(12, 14) <= day) {
-                age++;
-            }
-            $("#age").val(age);
-            return true;
-        }
-        layui.use('form', function(){
-            var $ = layui.$;
-            var form = layui.form;
-            form.render();
-        });
-    }
-    return true;
-}
 function reset() {
     dquserssid=null;//当前用户的ssid
     layui.use(['form','laydate'], function(){
@@ -735,7 +647,7 @@ function reset() {
     <div class="layui-col-md12" >\
         <div class="layui-card" >\
             <div class="layui-card-header">人员基本信息\
-            <i class="layui-icon layui-icon-template " id="getCardreader_btn" onclick="getCardreader_btn();" title="点击开始读卡" style="position: absolute;right: 15px;color: #1E9FFF;cursor: pointer"></i>\
+            <i class="layui-icon layui-icon-template " id="getCardreader_btn" onclick="getIDCardreader();" title="点击开始读卡" style="position: absolute;right: 15px;color: #1E9FFF;cursor: pointer"></i>\
             </div>\
         <div class="layui-card-body  layui-row layui-col-space10"  >\
         <div class="layui-col-lg6">\
@@ -751,7 +663,7 @@ function reset() {
     <div class="layui-input-block">\
         <div class="layui-form-select">\
         <div class="layui-select-title">\
-        <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()">\
+        <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()" onkeyup="value=value.replace(/[\\W]/g,\'\')"> \
          <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;" onclick="getUserByCard();"></i>\
         </div>\
         <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >\
