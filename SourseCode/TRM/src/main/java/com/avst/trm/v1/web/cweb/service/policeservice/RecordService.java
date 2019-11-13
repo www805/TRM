@@ -2413,7 +2413,7 @@ public class RecordService extends BaseService {
                             }
                             if (usernum<1){
                                 LogUtil.intoLog(this.getClass(),"案件修改存在用户已有提讯不允许删除__userssid_"+userssid);
-                                result.setMessage("存在用户已被提讯不允许删除");
+                                result.setMessage("存在用户已被提讯不允许更改");
                                 return;
                             }
                         }else {
@@ -2429,18 +2429,20 @@ public class RecordService extends BaseService {
 
 
 
-
-
                 for (UserInfo userInfo : userInfos) {
                     String cardtypessid=userInfo.getCardtypessid();
                     String cardnum=userInfo.getCardnum();
-                    String userssid=null;
+                    String userssid=userInfo.getSsid();
                     String usertotypessid=null;
 
                     //根据证件类型和证件号码，检测证件是否存在存在修改；不存在新增
                     EntityWrapper userparam=new EntityWrapper();
                     userparam.eq("ut.cardtypessid",cardtypessid);
-                    userparam.eq("ut.cardnum",cardnum);
+                    if (StringUtils.isNotEmpty(userssid)){
+                        userparam.eq("u.ssid",userssid);//userssid存在
+                    }else {
+                        userparam.eq("ut.cardnum",cardnum);
+                    }
                     List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
                     if (null!=userInfos_&&userInfos_.size()==1){
                         UserInfo userInfo_=userInfos_.get(0);
@@ -2448,13 +2450,20 @@ public class RecordService extends BaseService {
                         userssid=userInfo_.getSsid();
                         usertotypessid=userInfo_.getUsertotypessid();
 
-
-
                         EntityWrapper updateuserinfoParam=new EntityWrapper();
                         updateuserinfoParam.eq("ssid",userssid);
                         Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
                         int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
                         LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                        if (updateuserinfo_bool>0){
+                            Police_userinfototype police_userinfototype=new Police_userinfototype();
+                            police_userinfototype.setCardnum(userInfo.getCardnum());
+                            EntityWrapper ew2=new EntityWrapper();
+                            ew2.eq("cardtypessid",cardtypessid);
+                            ew2.eq("userssid",userssid);
+                            int police_userinfototypeMapper_update_bool=police_userinfototypeMapper.update(police_userinfototype,ew2);
+                            LogUtil.intoLog(1,this.getClass(),"police_userinfototypeMapper_update_bool__"+police_userinfototypeMapper_update_bool);
+                        }
                     }else  if(null==userInfos_||userInfos_.size()<1){
                         //新增用户
                         userInfo.setSsid(OpenUtil.getUUID_32());
