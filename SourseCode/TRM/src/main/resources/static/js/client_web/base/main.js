@@ -132,13 +132,11 @@ function callgetNavList(data) {
                 }
 
 
-
-
-                //只有法院版才显示进入总控端
-                // if (isNotEmpty(gnlist) && gnlist.indexOf("fy_t") == -1) {
-                //     $("#guidepage").hide();
-                //     $("#nav_list").css("right", 250);
-                // }
+                //海康版不需要显示进入总控端
+                if (isNotEmpty(gnlist) && gnlist.indexOf(HK_O) != -1) {
+                    $("#guidepage").hide();
+                    $("#nav_list").css("right", 250);
+                }
 
                 //设置logo和标题
                 var logo_title = appCache.data.logotitle;
@@ -146,7 +144,7 @@ function callgetNavList(data) {
                     //分支logo
                     if (isNotEmpty(appCache.data.logo) && appCache.data.logo.imgbool == 0 || !isNotEmpty(logo_title.img)) {
                         $("#logoimg").remove();
-                        $("#logotitle").css("left", "0.5%");
+                        $("#logotitle").css("left", "0.8%");
                     }else{
                         $("#logoimg").attr("src", logo_title.img);
                     }

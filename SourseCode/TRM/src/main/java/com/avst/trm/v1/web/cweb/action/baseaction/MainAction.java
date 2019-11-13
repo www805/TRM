@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.cweb.action.baseaction;
 
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.FdSSidCache;
 import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.SysYmlParam;
@@ -64,6 +65,7 @@ public class MainAction extends BaseAction {
         }else{
             mainService.userlogin(result,param,request);
             AppCache.delAppCacheParam();
+            FdSSidCache.setFdSSidCache(null);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -84,6 +86,7 @@ public class MainAction extends BaseAction {
         }else{
             mainService.userloginout(result,param,httpSession);
             AppCache.delAppCacheParam();
+            FdSSidCache.setFdSSidCache(null);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

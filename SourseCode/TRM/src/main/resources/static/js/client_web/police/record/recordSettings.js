@@ -992,7 +992,7 @@ function callFDState(data){
 
 
             var romb_Num = 0;
-            if (fdStateInfo.roma_discCapUsed > 0 && fdStateInfo.roma_discCap > 0) {
+            if (fdStateInfo.romb_discCapUsed > 0 && fdStateInfo.romb_discCap > 0) {
                 romb_Num = 100 - baifnebi(fdStateInfo.romb_discCapUsed, fdStateInfo.romb_discCap);
             }
 
