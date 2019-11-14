@@ -1519,9 +1519,7 @@ public class RecordService2 extends BaseService {
                         List<Usergrade> newarr=new ArrayList<>();
                         for (int i = 0; i < usergrades.size(); i++) {
                              boolean bool=true;
-                            System.out.println("-------------------------------usergrades.get(i).getUsername()=="+usergrades.get(i).getUsername());
                             for (int j = 0; j < newarr.size(); j++) {
-                                System.out.println("-------------------------------newarr.get(j).getUsername()=="+newarr.get(j).getUsername());
                                 if((null!=usergrades.get(i).getGrade()&&null!=newarr.get(j).getGrade()&& usergrades.get(i).getGrade()==newarr.get(j).getGrade())){
                                     newarr.get(j).setUsername(newarr.get(j).getUsername()+"、"+usergrades.get(i).getUsername());
                                     bool=false;
@@ -1540,6 +1538,7 @@ public class RecordService2 extends BaseService {
                 }
             }
 
+                dataMap.put("${笔录标题}", recordtypename == null ? "" : recordtypename);
                 dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
                 dataMap.put("${结束时间}", recordendtime == null ? "" : recordendtime);
                 dataMap.put("${地点}", recordplace == null ? "" : recordplace);

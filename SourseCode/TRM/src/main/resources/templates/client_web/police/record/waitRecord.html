@@ -172,8 +172,8 @@
                 <div class="layui-card-body layui-row " style="padding: 0">
                     <div class="layui-card" style="border-width: 0;box-shadow:none" >
                         <div class="layui-card-header">
-                            <div class="layui-input-inline layui-col-md6" >
-                            <span th:text="${waitRecordModel.title}">加载中</span><span style="color: red;font-weight: normal">（提示:光标移至指定"答" 回车添加自定义问答）</span>
+                            <div class="layui-input-inline layui-col-md6" style="white-space: nowrap;text-overflow: ellipsis; overflow: hidden;">
+                                当前笔录：<span id="recordtitle">笔录标题</span>
                             </div>
                             <div class="layui-input-inline layui-col-md6">
                                 <div  style="float: right;visibility: hidden" id="record_switch_HTML">

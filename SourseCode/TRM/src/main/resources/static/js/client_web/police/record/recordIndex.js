@@ -98,20 +98,23 @@ function callbackgetRecords(data) {
                 var l = records[0];
                 $("#recordtitle").text(l.recordname==null?"笔录标题":l.recordname);
                 $("#recordtitle").attr("recordtitle_first","true");
+                $("#recordtitle").attr("title",l.recordname==null?"笔录标题":l.recordname);
                 recordssid_go=l.ssid;
                 if (isNotEmpty(l)) {
                     var problems=l.problems;
                     if (isNotEmpty(problems)) {
                         var q="问：";
                         var w="答：";
+                        var q_class="font_red_color";
                         if (gnlist.indexOf(FY_T) != -1){
                             q="";
                             w="";
+                            q_class="";
                         }
                         for (var z = 0; z< problems.length;z++) {
                             var problem = problems[z];
                             var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
+                            var problemhtml=' <tr><td class="'+q_class+'">'+q+''+problemtext+' </td></tr>';
                             if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
                                 var answers=problem.answers;
                                 if (isNotEmpty(answers)){
@@ -159,19 +162,22 @@ function setproblems(recordssid,obj) {
             if (l.ssid==recordssid){
                 $(obj).css({"background-color":" #f2f2f2"});
                 $("#recordtitle").text(l.recordname==null?"笔录标题":l.recordname);
+                $("#recordtitle").attr("title",l.recordname==null?"笔录标题":l.recordname);
                 recordssid_go=l.ssid;
                 var problems=l.problems;
                 if (isNotEmpty(problems)) {
                     var q="问：";
                     var w="答：";
+                    var q_class="font_red_color";
                     if (gnlist.indexOf(FY_T) != -1){
                         q="";
                         w="";
+                        q_class="";
                     }
                     for (var z = 0; z< problems.length;z++) {
                         var problem = problems[z];
                         var problemtext=problem.problem==null?"未知":problem.problem;
-                        var problemhtml=' <tr><td class="font_red_color">'+q+''+problemtext+' </td></tr>';
+                        var problemhtml=' <tr><td class="'+q_class+'">'+q+''+problemtext+' </td></tr>';
                         if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){

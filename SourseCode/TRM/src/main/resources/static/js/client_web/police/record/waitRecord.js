@@ -391,7 +391,7 @@ function callbackgetRecordById(data) {
                     layer.msg("未找到模板头文件",{icon:5});
                 }
 
-
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 mcbool=record.mcbool;
 
                 //获取提讯会议ssid
@@ -1267,7 +1267,7 @@ function setrecord_html() {
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 85%;" class="onetd" >\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  ></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" ></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime="" ></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td\>\
@@ -1384,7 +1384,7 @@ function initliving() {
 var trtd_html='<tr>\
         <td style="padding: 0;width: 85%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td>\
@@ -1720,16 +1720,16 @@ function setqw(problems){
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 85%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="\'+problemtext+\' " q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
                     var answer = answers[j];
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="\'+answertext+\'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"    w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
                 }
             }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
+                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>';
             }
             problemhtml+=' <div  id="btnadd"></div></td>\
                         <td>\

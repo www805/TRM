@@ -8,7 +8,7 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.log.LogUtil;
-import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
+import com.avst.trm.v1.common.util.poiwork.HtmlToWord;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.web.cweb.req.policereq.DelPhreportParam;
 import com.avst.trm.v1.web.cweb.req.policereq.GetPhreportsParam;
@@ -21,13 +21,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service("phreportService")
@@ -158,56 +156,38 @@ public class PhreportService extends BaseService {
                 }
             }
         }
-        content = "<html><meta charset='UTF-8'><head></head><body>"+content+"</body></html>";
-        if (StringUtils.isEmpty(content)){
-            LogUtil.intoLog(1,this.getClass(),"情绪报表的数据为空__："+content);
-            result.setMessage("未找到可生成的数据，请确认是否勾选");
-            return;
-        }
-        byte b[] = content.getBytes();
         try {
-            InputStream is = new ByteArrayInputStream(b);
-            OutputStream os = new FileOutputStream(realurl);
-            POIFSFileSystem fs = new POIFSFileSystem();
-            fs.createDocument(is, "WordDocument");
-            fs.writeFilesystem(os);
-            os.close();
-            is.close();
+            boolean  htmltowordbool = HtmlToWord.HtmlToWord(realurl,content);
+            if (htmltowordbool){
+                String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;
+                LogUtil.intoLog(1,this.getClass(),"情绪报表的下载地址__："+downurl);
 
-         /*  wen格式word不支持转
-            String replace = realurl.replace(".doc", ".html");
-            WordToHtmlUtil.wordToHtml(realurl, replace);*/
+                if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                    //添加数据库
+                    Base_filesave base_filesave=new Base_filesave();
+                    base_filesave.setDatassid(recordssid);
+                    base_filesave.setUploadfilename(param.getPhreportname());
+                    base_filesave.setRealfilename(param.getPhreportname());
+                    base_filesave.setRecordrealurl(realurl);
+                    base_filesave.setRecorddownurl(downurl);
+                    base_filesave.setSsid(OpenUtil.getUUID_32());
+                    base_filesave.setFilebool(1);
+                    base_filesave.setFiletype("phreport");//固定类型
+                    base_filesave.setCreatetime(DateUtil.getDateAndMinute());
+                    int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
+                    LogUtil.intoLog(1,this.getClass(),"uploadPhreport__filesaveinsert_bool__"+filesaveinsert_bool);
+                    if (filesaveinsert_bool>0){
+                        vo.setDownurl(uploadbasepath+downurl);
+                        result.setData(vo);
+                        changeResultToSuccess(result);
+                    }
+                }else {
+                    LogUtil.intoLog(1,this.getClass(),"情绪报表地址有误__realurl__"+realurl+"__downurl__"+downurl);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        String downurl =OpenUtil.strMinusBasePath(qg, realurl) ;
-        LogUtil.intoLog(1,this.getClass(),"情绪报表的下载地址__："+downurl);
-
-        if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
-            //添加数据库
-            Base_filesave base_filesave=new Base_filesave();
-            base_filesave.setDatassid(recordssid);
-            base_filesave.setUploadfilename(param.getPhreportname());
-            base_filesave.setRealfilename(param.getPhreportname());
-            base_filesave.setRecordrealurl(realurl);
-            base_filesave.setRecorddownurl(downurl);
-            base_filesave.setSsid(OpenUtil.getUUID_32());
-            base_filesave.setFilebool(1);
-            base_filesave.setFiletype("phreport");//固定类型
-            base_filesave.setCreatetime(DateUtil.getDateAndMinute());
-            int  filesaveinsert_bool= base_filesaveMapper.insert(base_filesave);
-            LogUtil.intoLog(1,this.getClass(),"uploadPhreport__filesaveinsert_bool__"+filesaveinsert_bool);
-            if (filesaveinsert_bool>0){
-                vo.setDownurl(uploadbasepath+downurl);
-                result.setData(vo);
-                changeResultToSuccess(result);
-            }
-        }else {
-            LogUtil.intoLog(1,this.getClass(),"情绪报表地址有误__realurl__"+realurl+"__downurl__"+downurl);
-        }
-
         return;
     }
 
