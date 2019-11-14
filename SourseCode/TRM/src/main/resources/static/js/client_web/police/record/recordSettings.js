@@ -1024,21 +1024,30 @@ function callFDState(data){
 
 
             //fdStateInfo.burn_mode
-            if(fdStateInfo.burn_mode == 0){
-                // $("#burn_mode_b").prop("checked",false);
-                // $("#burn_mode_a").prop("checked",true);
-                $("#burn_mode_b").removeAttr("checked");
-                if(!$("#burn_mode_a").attr("checked")){
-                    $("#burn_mode_a").attr("checked",'checked');
-                }
-            }else{
-                // $("#burn_mode_a").prop("checked",false);
-                // $("#burn_mode_b").prop("checked",true);
+            if (isNotEmpty(fdStateInfo.burn_mode) && fdStateInfo.burn_mode == 2) {
+                // $("#burn_mode_a").prop("checked", false);
+                // $("#burn_mode_b").prop("checked", true);
                 $("#burn_mode_a").removeAttr("checked");
-                if(!$("#burn_mode_b").attr("checked")){
-                    $("#burn_mode_b").attr("checked",'checked');
+                if (!$("#burn_mode_b").attr("checked") || !$("#burn_mode_b").prop("checked")) {
+                    // $("#burn_mode_b").attr("checked", 'checked');
+
+                    $("#burn_mode_b").prop("checked", true);
+                }
+            } else {
+                // $("#burn_mode_b").prop("checked", false);
+                // $("#burn_mode_a").prop("checked", true);
+                $("#burn_mode_b").removeAttr("checked");
+                if (!$("#burn_mode_a").attr("checked") || !$("#burn_mode_a").prop("checked")) {
+                    // $("#burn_mode_a").attr("checked", 'checked');
+
+                    $("#burn_mode_a").prop("checked", true);
                 }
             }
+
+            layui.use('form', function(){
+                var form = layui.form;
+                form.render('radio');
+            });
 
         }
     }else{
