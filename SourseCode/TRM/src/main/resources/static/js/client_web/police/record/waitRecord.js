@@ -30,6 +30,10 @@ var occurrencetime_format;//案发时间
 var multifunctionbool;
 var FDAudPowerMapTimer; //音频定时器
 
+
+var asrbool=0;//使用语音识别的个数
+var phbool=0;//使用身心检测的个数
+
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -357,9 +361,8 @@ function callbackgetRecordById(data) {
 
             var modeltds=data.modeltds;
             if (isNotEmpty(modeltds)&&isNotEmpty(gnlist)){
-                var asrbool=0;//使用语音识别的个数
-                var phbool=0;//使用身心检测的个数
-
+                asrbool=0;
+                phbool=0;
                 for (let i = 0; i < modeltds.length; i++) {
                     const modeltd = modeltds[i];
                     var usepolygraph=modeltd.usepolygraph;
@@ -732,7 +735,13 @@ function callbackstartMC(data) {
             getMCCacheParamByMTssid();//获取缓存
             getTDCacheParamByMTssid();
 
-            var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录像数："+recordnum;
+            var con="已开启：<br>设备录像数："+recordnum;
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                con+="<br>语音识别开启数："+asrnum;
+            }
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+               con+="<br>身心监测开启数："+polygraphnum;
+            }
             layer.msg(con, {time: 2000});
         }
         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
@@ -819,7 +828,14 @@ function callbackpauseOrContinueRercord(data) {
             var recordnum=data.recordnum;//录音设备暂停/停止个数
             var asrnum=data.asrnum;//语音识别服务暂停/停止个数
             var polygraphnum=data.polygraphnum;//测谎仪服务暂停/停止个数
-            var con=msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
+
+            var con=msg+"：<br>设备"+msg+"数："+recordnum;
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                con+="<br>语音识别"+msg+"数："+asrnum;
+            }
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+                con+="<br>身心监测开"+msg+"数："+polygraphnum;
+            }
             layer.msg(con, {time: 2000});
             if (pauseOrContinue==1){
                 $("#pauserecord").css("display","inline-block");
