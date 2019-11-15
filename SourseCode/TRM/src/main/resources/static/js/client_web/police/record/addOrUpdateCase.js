@@ -3,6 +3,7 @@ var userinfos_=[];//案件人
 var dquserssid=null;
 var dq_arraignment_num=0;//提讯此处
 var dq_cardtypesssid;//当前选择类型
+var dq_cardnum;//当前身份证号码
 
 
 
@@ -296,6 +297,7 @@ function tr_addOrUpdate(obj,type,arraignment_num) {
                       var userinfo=dq_userinfo;
                       $("#cards").val(userinfo.cardtypessid);
                       dq_cardtypesssid=userinfo.cardtypessid;
+                      dq_cardnum=userinfo.cardnum;
                       $("#cardnum").val(userinfo.cardnum);
                       $("#username").val(userinfo.username);
                       $("#beforename").val(userinfo.beforename);
@@ -482,35 +484,40 @@ function callbackgetUserByCard(data){
         if (isNotEmpty(data)){
             var userinfo=data.userinfo;
             if (isNotEmpty(userinfo)){
-                dquserssid=userinfo.ssid;
+                if (dq_arraignment_num<1){
+                    dquserssid=userinfo.ssid;
 
-                /*人员信息*/
-                $("#username").val(userinfo.username);
-                $("#beforename").val(userinfo.beforename);
-                $("#nickname").val(userinfo.nickname);
-                $("#both").val(userinfo.both);
-                $("#professional").val(userinfo.professional);
-                $("#phone").val(userinfo.phone);
-                $("#domicile").val(userinfo.domicile);
-                $("#residence").val(userinfo.residence);
-                $("#workunits").val(userinfo.workunits);
-                $("#age").val(userinfo.age);
+                    /*人员信息*/
+                    $("#username").val(userinfo.username);
+                    $("#beforename").val(userinfo.beforename);
+                    $("#nickname").val(userinfo.nickname);
+                    $("#both").val(userinfo.both);
+                    $("#professional").val(userinfo.professional);
+                    $("#phone").val(userinfo.phone);
+                    $("#domicile").val(userinfo.domicile);
+                    $("#residence").val(userinfo.residence);
+                    $("#workunits").val(userinfo.workunits);
+                    $("#age").val(userinfo.age);
+                    $("#sex").val(userinfo.sex);
+                    $("#national").val(userinfo.nationalssid);
+                    $("#nationality").val(userinfo.nationalityssid);
+                    $("#educationlevel").val(userinfo.educationlevel);
+                    $("#politicsstatus").val(userinfo.politicsstatus);
 
-                $("#sex").val(userinfo.sex);
-                $("#national").val(userinfo.nationalssid);
-                $("#nationality").val(userinfo.nationalityssid);
-                $("#educationlevel").val(userinfo.educationlevel);
-                $("#politicsstatus").val(userinfo.politicsstatus);
-
-                //回填身份证分析数据
-                var cardnum =  $("#cardnum").val();
-                var cardtypetext=$("#cards option:selected").text();
-                var nationality = $("#nationality option:selected").text();//国籍
-                if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
                     //回填身份证分析数据
-                    $("#both").val(getAnalysisIdCard(cardnum,1));
-                    $("#sex").val(getAnalysisIdCard(cardnum,2));
-                    $("#age").val(getAnalysisIdCard(cardnum,3));
+                    var cardnum =  $("#cardnum").val();
+                    var cardtypetext=$("#cards option:selected").text();
+                    var nationality = $("#nationality option:selected").text();//国籍
+                    if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                        //回填身份证分析数据
+                        $("#both").val(getAnalysisIdCard(cardnum,1));
+                        $("#sex").val(getAnalysisIdCard(cardnum,2));
+                        $("#age").val(getAnalysisIdCard(cardnum,3));
+                    }
+                }else {
+                        layer.msg("该用户已被提讯"+dq_arraignment_num+"次不允许更换",{icon:5});
+                        $("#cardnum").val(dq_cardnum);
+                        /*getUserByCard();*/
                 }
             }
         }
@@ -644,6 +651,7 @@ $(function () {
 function reset() {
     dquserssid=null;//当前用户的ssid
     dq_cardtypesssid=null;
+    dq_cardnum=null;
     layui.use(['form','laydate'], function(){
         var form=layui.form;
         var laydate=layui.laydate;

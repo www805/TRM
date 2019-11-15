@@ -1328,8 +1328,21 @@ function switchbtn(type,obj) {
         $(".phitem2").attr("id","");
         $(".phitem1").attr("id","phitem");
     } else {
+        //判断笔录制作界面的显示
+        var shrink_bool=$("#shrink_bool").attr("shrink_bool");
+        if (shrink_bool==1){
+            $("#shrink_html").show();
+            $("#notshrink_html1").attr("class","layui-col-md6");
+            $("#layui-layer"+recordstate_index).show();
+        }else{
+            $("#shrink_html").hide();
+            $("#notshrink_html1").attr("class","layui-col-md9");
+            $("#layui-layer"+recordstate_index).hide();
+        }
+
+
         $(".phitem1").css("display","none");
-        $("#shrink_html").css("display","block");
+        /*$("#shrink_html").css("display","block");*/
         $("#notshrink_html1").css("display","block");
 
         var html=$("#living3_1").html();
