@@ -411,7 +411,7 @@ public class RecordService2 extends BaseService {
                                             if(null!=filelist&&filelist.size() > 0){
                                                 for(String path_:filelist){
                                                     //去除视频类的文件
-                                                    if (!path_.endsWith("mp4")&&!path_.endsWith("st")){
+                                                    if (!path_.endsWith("mp4")&&!path_.endsWith("st")&&!path_.endsWith("ts")){
                                                         File file=new File(path_);
                                                         UploadParam_FD fd=new UploadParam_FD();
                                                         fd.setDiscFileName(file.getName());

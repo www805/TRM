@@ -109,7 +109,7 @@
                     <div class="layui-progress-bar" style="width: 0%"><span class="layui-progress-text">0%</span></div>
                 </div>
             </td>
-            <td style="width: 30%;overflow: visible;">
+            <td style="width: 30%;overflow: visible;text-align: left">
                 <div>
                     <button onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}','{{value.creatorname}}')"   title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}"      class="layui-btn {{value.arraignments==null?'layui-btn-disabled':'layui-btn-normal'}} layui-btn-xs"  >查看</button>
                     {{#    if (gnlist.indexOf(S_V)!= -1){   }}
@@ -117,7 +117,7 @@
                         <button class="layui-btn layui-btn-normal layui-btn-xs" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" >
                             <li type="1"><a href="#" onclick="exportUdisk('{{value.ssid}}','{{value.total_filenum}}','{{value.finish_filenum}}');" >导出U盘</a></li>
-                            <!--暂时屏蔽 <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}','{{value.total_filenum}}','{{value.finish_filenum}}');">导出光盘</a></li>-->
+                            <li type="2"><a href="#" onclick="exportLightdisk('{{value.ssid}}','{{value.total_filenum}}','{{value.finish_filenum}}');">导出光盘</a></li>
                         </ul>
                     </div>
                     {{#   }  }}

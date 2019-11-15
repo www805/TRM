@@ -494,10 +494,16 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
             return;
         }
 
-        layer.confirm('已完成笔录：'+total_filenum+'；即将导出你已确认的笔录：'+finish_filenum+'', {
+        layer.confirm('已完成笔录：'+total_filenum+'；即将导出您已确认的笔录：'+finish_filenum+'', {
             btn: ['立即导出','取消'], //按钮
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
+            if (finish_filenum<1){
+                layer.msg("未找到您已确认的笔录",{icon:5});
+                layer.close(index);
+                return;
+            }
+
             layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent']
@@ -626,6 +632,12 @@ function exportLightdisk(ssid,total_filenum,finish_filenum){
             btn: ['立即导出','取消'], //按钮
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
+            if (finish_filenum<1){
+                layer.msg("未找到您已确认的笔录",{icon:5});
+                layer.close(index);
+                return;
+            }
+
             exportLightdisk_index=layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent']
