@@ -179,7 +179,7 @@ function callbackgetRecordById(data) {
                     layer.msg("未找到模板头文件",{icon:5});
                 }
 
-                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()"></i>');
 
                 //会议人员
@@ -416,15 +416,16 @@ function set_getRecord(data){
 
                         //实时会议数据
                         if (usertype==1){
-                            /*recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
-                                                           /!* <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\*!/
-                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="visibility:hidden; '+phbadge+' " title="紧张值">'+ph_stress+'</a></p>\
+                            //询问人没有情绪报告
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
+                                                            <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
+                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none; '+phbadge+' " title="紧张值">'+ph_stress+'</a></p>\
                                                             <span id="translatext">'+translatext+'</span> \
-                                                      </div >';*/
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
+                                                      </div >';
+                            /*recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                             <p>【'+username+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
-                                                      </div >';
+                                                      </div >';*/
                         }else if (usertype==2){
                             recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
                                                             <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
@@ -2451,10 +2452,10 @@ function uploadPhreport() {
             var dqphdate=$(html).attr("dqphdate");
             if (isNotEmpty(username_time)&&isNotEmpty(translatext)) {
                 var content=null;
-                /*if (usertype==1){
-                    content = "<div style='text-align: left'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999;'>"+username_time+"  "+ph_stress+"</p><span style='color: #fff; background: #0181cc;'>"+translatext+"</span></div>";
-                }else  */if (usertype==2) {
-                    content = "<div style='text-align: left'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999'>"+ph_stress+"  "+username_time+" </p> <span  style='color: #fff; background: #ef8201;'>"+translatext+"</span></div>";
+                if (usertype==1){
+                    content = "<div style='text-align: left'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999;'>"+username_time+"  </p><span style='color: #fff; background: #0181cc;'>"+translatext+"</span></div>";
+                }else  if (usertype==2) {
+                    content = "<div style='text-align: right'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999'>"+ph_stress+"  "+username_time+" </p> <span  style='color: #fff; background: #ef8201;'>"+translatext+"</span></div>";
                 }
                 if (isNotEmpty(content)){
                     dataList.push(content);

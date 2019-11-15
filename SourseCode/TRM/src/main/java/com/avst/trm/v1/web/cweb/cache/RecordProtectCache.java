@@ -11,6 +11,9 @@ import com.avst.trm.v1.web.cweb.cache.param.RecordProtectParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 import com.avst.trm.v1.web.cweb.vo.policevo.GetRecordByIdVO;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.wb.deencode.DeCodeUtil;
+import com.wb.deencode.EncodeUtil;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
@@ -25,7 +28,7 @@ import java.util.Map;
 public class RecordProtectCache {
     private static List<RecordProtectParam> recordProtectList=null;// recordProtectList：笔录全部数据
 
-    private static  String recordcachepath="\\cache\\";//文件夹位置
+    private static  String recordcachepath=getrecordcachepath()+"\\cache\\";//文件夹位置
 
     private static Gson gson=new Gson();
 
@@ -36,7 +39,7 @@ public class RecordProtectCache {
             File file = new File(xmsoursepath);
             xmsoursepath=file.getParent();
         }
-        return  xmsoursepath+recordcachepath;
+        return  xmsoursepath;
     }
 
     /**
@@ -47,17 +50,24 @@ public class RecordProtectCache {
         if (null==recordProtectList){
             recordProtectList=new ArrayList<>();
         }
-        List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
+        LogUtil.intoLog(1,RecordProtectCache.class,"获取全部异常笔录地址__recordcachepath："+recordcachepath);
+        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
         if(null!=filelist&&filelist.size() > 0) {
             for (String path_ : filelist) {
-                File file=new File(path_);
-                String filename=file.getName();
-               /* filename= filename.substring(0, filename.lastIndexOf("."));*/
+                try {
+                    File file=new File(path_);
+                    String filename=file.getName();
                     String recordProtectParam_string =    ReadWriteFile.readTxtFileToStr(path_);
-                    RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
-                    if(null!=recordProtectParam){
-                        recordProtectList.add(recordProtectParam);
+                    if (null!=recordProtectParam_string){
+                        recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
+                        if(null!=recordProtectParam){
+                            recordProtectList.add(recordProtectParam);
+                        }
                     }
+                } catch (JsonSyntaxException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return recordProtectList;
@@ -73,17 +83,19 @@ public class RecordProtectCache {
         if(null==recordssid){
             return null;
         }
-        List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
+        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
         if(null!=filelist&&filelist.size() > 0) {
             for (String path_ : filelist) {
                 File file=new File(path_);
                 String filename=file.getName();
-             /*   filename= filename.substring(0, filename.lastIndexOf("."));*/
                 if (StringUtils.isNotBlank(filename)&&filename.equals(recordssid)){
                     String recordProtectParam_string =    ReadWriteFile.readTxtFileToStr(path_);
-                    RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
-                    if(null!=recordProtectParam){
-                        return recordProtectParam;
+                    if (null!=recordProtectParam_string){
+                        recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
+                        if(null!=recordProtectParam){
+                            return recordProtectParam;
+                        }
                     }
                 }
             }
@@ -105,7 +117,8 @@ public class RecordProtectCache {
         try {
             String recordProtectParam_string = gson.toJson(recordProtectParam);
             if (null!=recordProtectParam_string){
-                ReadWriteFile.writeTxtFile(recordProtectParam_string,getrecordcachepath()+recordProtectParam.getRecordssid(),"utf8");
+                recordProtectParam_string= EncodeUtil.encoderByDES(recordProtectParam_string);
+                ReadWriteFile.writeTxtFile(recordProtectParam_string,recordcachepath+recordProtectParam.getRecordssid(),"utf8");
             }
             return true;
         } catch (Exception e) {
@@ -127,12 +140,11 @@ public class RecordProtectCache {
             return false;
         }
         try {
-            List<String> filelist= FileUtil.getAllFilePath(getrecordcachepath(),2);
+            List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
             if(null!=filelist&&filelist.size() > 0) {
                 for (String path_ : filelist) {
                     File file=new File(path_);
                     String filename=file.getName();
-                    /*filename= filename.substring(0, filename.lastIndexOf("."));*/
                     if (StringUtils.isNotBlank(filename)&&filename.equals(recordssid)){
                         file.delete();
                     }

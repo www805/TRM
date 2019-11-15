@@ -98,6 +98,7 @@ function callbackgetRecordById(data) {
                                     ,userssid:other.userssid
                                     ,grade:other.grade
                                     ,gradename:other.gradename
+                                    ,gradeintroduce:other.gradeintroduce
                                 };
                                 recorduser.push(user);
                             }
@@ -237,6 +238,7 @@ function set_getRecord(data){
                         //实时会议数据
                         var recordrealshtml="";
                         var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
+                        var gradename=user.gradename==null?"未知":user.gradename;
 
 
                         //实时会议数据
@@ -244,12 +246,12 @@ function set_getRecord(data){
                             subtractime_q=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_q);
                             recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+'</p>\
+                                                            <p>【'+gradename+'】 '+asrstartime+'</p>\
                                                             <span>'+translatext+'</span> \
                                                       </div >';
                         }else{
                             //一下情况正对于法院
-                            var gradenum=0;
+                           /* var gradenum=0;
                             for(var j =0 ; j < recorduser.length ; j++){
                                 if(recorduser[j].grade==usertype){
                                     gradenum ++;
@@ -258,12 +260,12 @@ function set_getRecord(data){
                             if (gradenum>1){
                                 username=user.gradename==null?username:user.gradename;
                             }
-
+*/
                             var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
                             subtractime_w=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)"  times='+starttime+'>\
-                                                           <p>'+asrstartime+' 【'+username+'】 </p>\
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)"  times='+starttime+'>\
+                                                           <p>【'+gradename+'】 '+asrstartime+'  </p>\
                                                             <span style="background-color: '+color+'">'+translatext+'</span> \
                                                       </div >';
                         }

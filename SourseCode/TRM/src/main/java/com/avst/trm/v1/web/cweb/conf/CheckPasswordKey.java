@@ -21,7 +21,7 @@ import java.util.Map;
 public class CheckPasswordKey {
 
     private static String key_name=".ini";
-    public static String key_path=OpenUtil.getJDKorJREPath();//检测文件地址
+    private static  String key_path=getkey_path()+"\\user\\";//文件夹位置
 
     //获取当前目录的上一级目录
     public synchronized static String getkey_path() {
@@ -30,7 +30,7 @@ public class CheckPasswordKey {
             File file = new File(key_path);
             key_path=file.getParent();
         }
-        return  key_path+"\\";
+        return  key_path;
     }
 
     /**
@@ -42,8 +42,8 @@ public class CheckPasswordKey {
         if (StringUtils.isBlank(filename)){
             return false;
         }
-        key_path=getkey_path()+filename+key_name;
-        File file = new File(key_path);
+        String newkey_path=key_path+filename+key_name;
+        File file = new File(newkey_path);
         if (file.exists()&& !file.isDirectory()) {
             LogUtil.intoLog(1,CheckPasswordKey.class,"key存在不需要创建："+encryptedtext);
             return true;
@@ -54,7 +54,7 @@ public class CheckPasswordKey {
              encryptedtext= EncodeUtil.encoderByDES(encryptedtext);
              if (null!=encryptedtext){
                  LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__后："+encryptedtext);
-                 ReadWriteFile.writeTxtFile(encryptedtext,key_path,"utf8");
+                 ReadWriteFile.writeTxtFile(encryptedtext,newkey_path,"utf8");
                  return true;
              }
         }

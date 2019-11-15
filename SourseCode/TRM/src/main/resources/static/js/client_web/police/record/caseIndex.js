@@ -494,10 +494,16 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
             return;
         }
 
-        layer.confirm('已完成笔录：'+total_filenum+'；即将导出你已确认的笔录：'+finish_filenum+'', {
+        layer.confirm('已完成笔录：'+total_filenum+'；即将导出您已确认的笔录：'+finish_filenum+'', {
             btn: ['立即导出','取消'], //按钮
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
+            if (finish_filenum<1){
+                layer.msg("未找到您已确认的笔录",{icon:5});
+                layer.close(index);
+                return;
+            }
+
             layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent']
@@ -614,7 +620,7 @@ function exportUdiskProgress(ssid,downurl,timer_exportUdisk){
 //导出光盘
 var exportLightdisk_index=null;
 function exportLightdisk(ssid,total_filenum,finish_filenum){
-    if (isNotEmpty(ssid)){
+    /*暂时屏蔽 if (isNotEmpty(ssid)){
         total_filenum=total_filenum==null?0:parseInt(total_filenum);
         finish_filenum=finish_filenum==null?0:parseInt(finish_filenum);
         if (total_filenum<1){
@@ -626,6 +632,12 @@ function exportLightdisk(ssid,total_filenum,finish_filenum){
             btn: ['立即导出','取消'], //按钮
             shade: [0.1,'#fff'], //不显示遮罩
         }, function(index){
+            if (finish_filenum<1){
+                layer.msg("未找到您已确认的笔录",{icon:5});
+                layer.close(index);
+                return;
+            }
+
             exportLightdisk_index=layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent']
@@ -664,11 +676,11 @@ function exportLightdisk(ssid,total_filenum,finish_filenum){
                     if(null!=data&&data.actioncode=='SUCCESS'){
                         var data=data.data;
                         layer.msg("导出成功...",{icon: 6});
-                        /* if (isNotEmpty(data)){
+                        /!* if (isNotEmpty(data)){
                              layer.msg("导出成功",{icon: 6});
                              var downurl=data.downurl;
                              window.location.href=downurl;
-                         }*/
+                         }*!/
                     }else {
                         layer.msg(data.message,{icon: 5});
                     }
@@ -680,7 +692,7 @@ function exportLightdisk(ssid,total_filenum,finish_filenum){
             layer.close(index);
         });
 
-    }
+    }*/
 }
 
 

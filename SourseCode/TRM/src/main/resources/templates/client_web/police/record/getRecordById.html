@@ -198,9 +198,9 @@
     </div>
 
     <div class="layui-row layui-form " >
-            <div class="layui-col-md3 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <div class="layui-col-md3 " style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                 <div class="layui-card">
-                    <div class="layui-card-header" >
+                    <div class="layui-card-header" style="white-space: nowrap;text-overflow: ellipsis; overflow: hidden;"  >
                         当前笔录：<span id="recordtitle">笔录标题</span>
                        <!-- <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>-->
                     </div>
@@ -300,7 +300,7 @@
 
                 </div>
             </div>
-            <div class="layui-col-md9"  style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                         <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
                         <div class="layui-inline" style="margin-bottom:0">
                             <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
@@ -516,13 +516,13 @@
                 //显示checkbox
                 $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
                 $("#uploadPhreport").css("visibility","visible");
-                $("#recordreals .layui-badge").css("visibility", "visible");
                 $("#recordreals #dqphdate").css("display", "block");
                 $("#recordreals div").each(function () {
                     var talkclass=$(this).attr("class");
-                   /* if (talkclass=="atalk"){
+                  if (talkclass=="atalk"){
                         $("p",this).prepend('<input type="checkbox" name="" lay-skin="primary" >');
-                    }else */if (talkclass=="btalk"){
+                    }else if (talkclass=="btalk"){
+                      $("#recordreals .layui-badge").css("visibility", "visible");
                         $("p",this).append('<input type="checkbox" name="" lay-skin="primary" >');
                      }
                 });

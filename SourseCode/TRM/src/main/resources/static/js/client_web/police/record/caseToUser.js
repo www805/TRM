@@ -120,7 +120,7 @@ function setcaseToUser(getRecordById_data) {
         form.verify({
             cardnum:function (value) {
                 var nationality = $("#nationality option:selected").text();//国籍
-                var cardtypetext = $("#cardtypetext").val();//
+                var cardtypetext = $("#cards").val();//
                 if (!(/\S/).test(value)) {
                     return "请输入居民身份证号码"
                 }

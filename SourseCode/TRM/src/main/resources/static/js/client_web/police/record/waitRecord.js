@@ -30,6 +30,10 @@ var occurrencetime_format;//案发时间
 var multifunctionbool;
 var FDAudPowerMapTimer; //音频定时器
 
+
+var asrbool=0;//使用语音识别的个数
+var phbool=0;//使用身心检测的个数
+
 //跳转变更模板页面//变更模板题目
 function opneModal_1() {
     var url=getActionURL(getactionid_manage().waitRecord_tomoreTemplate);
@@ -357,9 +361,8 @@ function callbackgetRecordById(data) {
 
             var modeltds=data.modeltds;
             if (isNotEmpty(modeltds)&&isNotEmpty(gnlist)){
-                var asrbool=0;//使用语音识别的个数
-                var phbool=0;//使用身心检测的个数
-
+                asrbool=0;
+                phbool=0;
                 for (let i = 0; i < modeltds.length; i++) {
                     const modeltd = modeltds[i];
                     var usepolygraph=modeltd.usepolygraph;
@@ -391,7 +394,7 @@ function callbackgetRecordById(data) {
                     layer.msg("未找到模板头文件",{icon:5});
                 }
 
-
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 mcbool=record.mcbool;
 
                 //获取提讯会议ssid
@@ -732,7 +735,13 @@ function callbackstartMC(data) {
             getMCCacheParamByMTssid();//获取缓存
             getTDCacheParamByMTssid();
 
-            var con="已开启：<br>语音识别开启数："+asrnum+"<br>测谎仪开启数："+polygraphnum+"<br>设备录像数："+recordnum;
+            var con="已开启：<br>设备录像数："+recordnum;
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                con+="<br>语音识别开启数："+asrnum;
+            }
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+               con+="<br>身心监测开启数："+polygraphnum;
+            }
             layer.msg(con, {time: 2000});
         }
         $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
@@ -819,7 +828,14 @@ function callbackpauseOrContinueRercord(data) {
             var recordnum=data.recordnum;//录音设备暂停/停止个数
             var asrnum=data.asrnum;//语音识别服务暂停/停止个数
             var polygraphnum=data.polygraphnum;//测谎仪服务暂停/停止个数
-            var con=msg+"：<br>语音识别"+msg+"数："+asrnum+"<br>测谎仪"+msg+"数："+polygraphnum+"<br>设备"+msg+"数："+recordnum;
+
+            var con=msg+"：<br>设备"+msg+"数："+recordnum;
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
+                con+="<br>语音识别"+msg+"数："+asrnum;
+            }
+            if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
+                con+="<br>身心监测开"+msg+"数："+polygraphnum;
+            }
             layer.msg(con, {time: 2000});
             if (pauseOrContinue==1){
                 $("#pauserecord").css("display","inline-block");
@@ -1267,7 +1283,7 @@ function setrecord_html() {
     var trtd_html='<tr automaticbool="1">\
         <td style="padding: 0;width: 85%;" class="onetd" >\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  ></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="" w_starttime="" ></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime="" ></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td\>\
@@ -1328,8 +1344,21 @@ function switchbtn(type,obj) {
         $(".phitem2").attr("id","");
         $(".phitem1").attr("id","phitem");
     } else {
+        //判断笔录制作界面的显示
+        var shrink_bool=$("#shrink_bool").attr("shrink_bool");
+        if (shrink_bool==1){
+            $("#shrink_html").show();
+            $("#notshrink_html1").attr("class","layui-col-md6");
+            $("#layui-layer"+recordstate_index).show();
+        }else{
+            $("#shrink_html").hide();
+            $("#notshrink_html1").attr("class","layui-col-md9");
+            $("#layui-layer"+recordstate_index).hide();
+        }
+
+
         $(".phitem1").css("display","none");
-        $("#shrink_html").css("display","block");
+        /*$("#shrink_html").css("display","block");*/
         $("#notshrink_html1").css("display","block");
 
         var html=$("#living3_1").html();
@@ -1384,7 +1413,7 @@ function initliving() {
 var trtd_html='<tr>\
         <td style="padding: 0;width: 85%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""placeholder=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td>\
@@ -1720,16 +1749,16 @@ function setqw(problems){
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 85%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" placeholder="\'+problemtext+\' " q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
                     var answer = answers[j];
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder="\'+answertext+\'"   w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"    w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
                 }
             }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" placeholder=""  w_starttime=""></label></div>';
+                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>';
             }
             problemhtml+=' <div  id="btnadd"></div></td>\
                         <td>\
