@@ -49,7 +49,7 @@ public class ArraignmentCountAction extends BaseAction{
         //ceshiService.getadminlist3(rResult);
 
         model.addAttribute("RResult", rResult);
-        model.addAttribute("title", "笔录使用情况统计表");
+        model.addAttribute("title", "笔录统计");
         return new ModelAndView("server_web/police/arraignment/getArraignment_count", "arraignment_countModel", model);
     }
 

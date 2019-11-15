@@ -97,25 +97,25 @@ function callgetFDNetWork(data){
 
                     lanHTML += '<div class="layui-form-item">\n' +
                         '                <div class="layui-inline">\n' +
-                        '                    <label class="layui-form-label">IP' + lanNum + '</label>\n' +
+                        '                    <label class="layui-form-label"><span style="color: red;">*</span>IP' + lanNum + '</label>\n' +
                         '                    <div class="layui-input-block">\n' +
-                        '                        <input type="text" name="ip' + lanNum + '" lay-verify="setip" autocomplete="off" placeholder="请输入IP' + lanNum + '" class="layui-input" value="' + dataInfo.ip + '">\n' +
+                        '                        <input type="text" name="ip' + lanNum + '" lay-verify="setip" autocomplete="off" placeholder="请输入IP' + lanNum + '" onKeypress="return (/[\\d]|\\./.test(String.fromCharCode(event.keyCode)))" class="layui-input" value="' + dataInfo.ip + '">\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
                         '            </div>\n' +
                         '            <div class="layui-form-item">\n' +
                         '                <div class="layui-inline">\n' +
-                        '                    <label class="layui-form-label">子网掩码' + lanNum + '</label>\n' +
+                        '                    <label class="layui-form-label"><span style="color: red;">*</span>子网掩码' + lanNum + '</label>\n' +
                         '                    <div class="layui-input-block">\n' +
-                        '                        <input type="text" name="netmask' + lanNum + '" lay-verify="required" autocomplete="off" placeholder="请输入子网掩码' + lanNum + '" class="layui-input" value="' + dataInfo.netmask + '">\n' +
+                        '                        <input type="text" name="netmask' + lanNum + '" lay-verify="required" autocomplete="off" placeholder="请输入子网掩码' + lanNum + '" onKeypress="return (/[\\d]|\\./.test(String.fromCharCode(event.keyCode)))" class="layui-input" value="' + dataInfo.netmask + '">\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
                         '            </div>\n' +
                         '            <div class="layui-form-item">\n' +
                         '                <div class="layui-inline">\n' +
-                        '                    <label class="layui-form-label">网关' + lanNum + '</label>\n' +
+                        '                    <label class="layui-form-label"><span style="color: red;">*</span>网关' + lanNum + '</label>\n' +
                         '                    <div class="layui-input-block">\n' +
-                        '                        <input type="text" name="gateway' + lanNum + '" lay-verify="gatewayip" autocomplete="off" placeholder="请输入网关地址' + lanNum + '" class="layui-input" value="' + dataInfo.gateway + '">\n' +
+                        '                        <input type="text" name="gateway' + lanNum + '" lay-verify="gatewayip" autocomplete="off" placeholder="请输入网关地址' + lanNum + '" onKeypress="return (/[\\d]|\\./.test(String.fromCharCode(event.keyCode)))" class="layui-input" value="' + dataInfo.gateway + '">\n' +
                         '                    </div>\n' +
                         '                </div>\n' +
                         '            </div>';

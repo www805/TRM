@@ -34,7 +34,7 @@ public class PolicePageAction {
 
     @GetMapping("totemplateIndex")
     public ModelAndView totemplateIndex(Model model){
-        model.addAttribute("title","模板管理");
+        model.addAttribute("title","问题模板");
         return new ModelAndView("client_web/police/template/templateIndex", "templateIndex", model);
     }
 

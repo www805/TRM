@@ -43,15 +43,15 @@
 
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">NTP服务器IP</label>
+                <label class="layui-form-label"><span style="color: red;">*</span>NTP服务器IP</label>
                 <div class="layui-input-block">
-                    <input type="text" name="ntpip" lay-verify="required" autocomplete="off" placeholder="请输入NTP服务器IP" class="layui-input">
+                    <input type="text" name="ntpip" lay-verify="setip" autocomplete="off" placeholder="请输入NTP服务器IP" onKeypress="return (/[\d]|\./.test(String.fromCharCode(event.keyCode)))" class="layui-input">
                 </div>
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">NTP端口</label>
+                <label class="layui-form-label"><span style="color: red;">*</span>NTP端口</label>
                 <div class="layui-input-block">
                     <input type="number" name="ntpprot" lay-verify="required|number" autocomplete="off" placeholder="请输入NTP端口" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))" class="layui-input">
                 </div>
@@ -61,7 +61,7 @@
         <div class="layui-form-item">
 
             <div class="layui-inline">
-                <label class="layui-form-label">NTP同步时间间隔</label>
+                <label class="layui-form-label"><span style="color: red;">*</span>NTP同步时间间隔</label>
                 <div class="layui-input-block" style="width: 180px;">
                     <select name="timeInterval" lay-filter="aihao" id="timeInterval">
                         <option value="1">1</option>
@@ -111,7 +111,7 @@
                 if(''==value){
                     return "IP不能为空";
                 }
-                if(!(/([1-9]|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])(\.(\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])){3}/.test(value))){
+                if(!(/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(value))){
                     return '请输入一个正确的IP地址';
                 }
             }
