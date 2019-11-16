@@ -113,8 +113,7 @@ function pageshow(data){
             }else{
                 trhtml+="<td></td>";
             }
-
-            trhtml+="<td>"+logobj.time+"</td><td>"+logobj.msg+"</td>";
+            trhtml+="<td>"+logobj.time+"</td><td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis' title='"+logobj.msg+"'>"+logobj.msg+"</td>";
 
             trhtml+="</tr>";
             tablehtml+=trhtml;
