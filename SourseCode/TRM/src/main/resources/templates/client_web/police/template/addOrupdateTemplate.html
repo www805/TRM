@@ -98,6 +98,9 @@
         }
         .text:empty:before{content: attr(placeholder);color:#bbb;}
         .text:focus{content:none;}
+        .layui-bg-green {
+            background-color: #1970b1!important;
+        }
     </style>
 </head>
 <body>
@@ -202,10 +205,9 @@
         <tbody id="pagelisttemplates_tbody">
         {{#  layui.each(pagelist, function(index, value){ }}
         <tr ondblclick="addTemplateProblem(this,{{index}});">
-            <td style="white-space: normal;">问：{{value.problem==null?"":value.problem}}</td>
+            <td style="white-space: normal;padding-left: 10px;"><span class="layui-badge layui-bg-green" style="margin-right: 10px;">{{value.typename==null?"":value.typename}}类型</span><span class="wentide">问：{{value.problem==null?"":value.problem}} </span><span style="color: #ccc">{{value.referanswer==null?"":value.referanswer}}</span></td>
             <td>
                 <div class="layui-table-cell laytable-cell-13-0-5">
-
                     <a class="layui-btn layui-btn-normal layui-btn-sm" onclick="addUpdateinfo('{{value.ssid}}','{{value.problemtypessid}}');" lay-event="edit">
                         <i class="layui-icon layui-icon-edit"></i>修改
                     </a>

@@ -201,7 +201,7 @@ function callAddOrUpdate(data){
             // window.location.reload();
             // console.log(data);
             layer.msg("操作成功",{icon: 6});
-            setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);
+            setTimeout("window.location.reload();layer.close(modelban_index);",1500);//getProblems_init(1,10);
         }
     }else{
         if (data.message.search("存在")) {
@@ -570,11 +570,11 @@ function addUpdateinfo(ssid, problemtypessid, type) {
 }
 
 function addTemplateProblem(obj, id) {
-    var text = $(obj).find("td").eq(0).text();
+    var text = $(obj).find("td").eq(0).find(".wentide").text();
     if (text == "") {
-        text = $(obj).parents('tr').find("td").eq(0).text();
+        text = $(obj).parents('tr').find("td").eq(0).find(".wentide").text();
     }
-    text = text.replace('问：','');
+    text = text.replace('问：', '');
 
     var onetd = $("#dataTable").find("td.onetd");
     if (onetd.length == 1) {

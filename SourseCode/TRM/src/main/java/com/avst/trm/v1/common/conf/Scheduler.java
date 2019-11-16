@@ -232,7 +232,7 @@ public class Scheduler {
 
                 for (int i = 0; i < paramList.size(); i++) {
                     RecordStatusCacheParam param = paramList.get(i);
-                    //判断时间如果3分钟没心跳就设为休庭
+                    //判断时间如果30分钟没心跳就设为休庭
                     long countTime = nowtime-param.getLasttime();
 
 //                    long maxTime = 3*60*1000;//测试3分钟，实际半小时

@@ -360,7 +360,7 @@
 
         form.on('radio(kl_filter)', function(data){
 
-            if (data.value == "直刻模式") {
+            if (data.value.indexOf("直刻") != -1) {
                 changeBurnMode(0);
             }else{
                 changeBurnMode(2);

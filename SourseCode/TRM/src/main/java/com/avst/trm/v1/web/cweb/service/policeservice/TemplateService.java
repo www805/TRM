@@ -207,11 +207,15 @@ public class TemplateService extends BaseService {
 
                     EntityWrapper<Police_problem> eww = new EntityWrapper<>();
                     eww.eq("problem", problem.getProblem());
-
-//                    Problem selectOne = police_problemMapper.getProblemByEw(eww);
+                    if(StringUtils.isNotBlank(problem.getReferanswer())){
+                        eww.eq("referanswer", problem.getReferanswer());
+                    }
                     List<Police_problem> problems = police_problemMapper.selectList(eww);
-
-                    if(null == problem.getId() && problems.size() == 0) {
+                    //问题答案，如果存在问题列表就不管
+                    if(problems.size() > 0) {
+                        Police_problem police_problem = problems.get(0);
+                        problem.setId(police_problem.getId());
+                    }else{
                         //看自定义类型是否存在，如果不存在就新增自定义问题类型 && !problem.getProblem().equals(selectOne.getProblem())
 //                        Police_problemtype problemtype = new Police_problemtype();
 //                        problemtype.setTypename("自定义");
@@ -246,29 +250,12 @@ public class TemplateService extends BaseService {
                             police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
                         }
 
-                    }else{
-                        //如果查到本来就有的问题，就拿第一个出来放到修改里面
-                        if (null != problems) {
-                            Police_problem police_problem = problems.get(0);
-                            //如果没有参考答案，就拿以前的
-                            if(StringUtils.isEmpty(problem.getReferanswer())){
-                                problem.setReferanswer(police_problem.getReferanswer());
-                            }
-                            if(null == problem.getId()){
-                                problem.setId(police_problem.getId());
-                            }
-                            problem.setOrdernum(police_problem.getOrdernum());
-                        }
-                        EntityWrapper ewProblem=new EntityWrapper();
-                        ewProblem.eq("id",problem.getId());
-
-                        Integer update = police_problemMapper.update(problem, ewProblem);//新增问题
-                        templatetoproblem.setProblemssid(problem.getId() + "");
                     }
 
+                    templatetoproblem.setProblemssid(problem.getId() + "");
                     templatetoproblem.setSsid(OpenUtil.getUUID_32());
                     int insert_bool = police_templatetoproblemMapper.insert(templatetoproblem);
-                    LogUtil.intoLog(this.getClass(),"insert_bool__"+insert_bool);
+                    LogUtil.intoLog(this.getClass(), "问题id_" + problem.getId() + "'" + problem.getProblem() + "'" + " 关联问答模板__" + (insert_bool == 1 ? "成功" : "失败"));
 
                 }
 
@@ -427,62 +414,51 @@ public class TemplateService extends BaseService {
                 //修改问题与参考答案，循环修改，如果存在的就修改，不存在的问题就新增
                 if(StringUtils.isNotEmpty(problem.getProblem())){
 
-                    String referanswer = problem.getReferanswer();
-                    Integer ordernum = problem.getOrdernum();
-                    problem.setOrdernum(null);
-                    problem.setReferanswer(null);
-
-                    EntityWrapper<Police_problem> wrapper = new EntityWrapper<>();
-                    wrapper.eq("problem", problem.getProblem());
-
-//                    Police_problem selectOne = police_problemMapper.selectOne(problem);
-                    List<Police_problem> problems = police_problemMapper.selectList(wrapper);
-                    problem.setOrdernum(ordernum);
-
-                    if (null == problem.getId() && problems.size() == 0) {
+                    EntityWrapper<Police_problem> eww = new EntityWrapper<>();
+                    eww.eq("problem", problem.getProblem());
+                    if(StringUtils.isNotBlank(problem.getReferanswer())){
+                        eww.eq("referanswer", problem.getReferanswer());
+                    }
+                    List<Police_problem> problems = police_problemMapper.selectList(eww);
+                    //问题答案，如果存在问题列表就不管
+                    if(problems.size() > 0) {
+                        Police_problem police_problem = problems.get(0);
+                        problem.setId(police_problem.getId());
+                    }else{
+                        //看自定义类型是否存在，如果不存在就新增自定义问题类型 && !problem.getProblem().equals(selectOne.getProblem())
+//                        Police_problemtype problemtype = new Police_problemtype();
+//                        problemtype.setTypename("自定义");
+//                        Police_problemtype police_problemtype = police_problemtypeMapper.selectOne(problemtype);
+//                        if(null == police_problemtype){
+//                            problemtype.setOrdernum(0);
+//                            problemtype.setUpdatetime(new Date());
+//                            problemtype.setSsid(OpenUtil.getUUID_32());
+//                            int insert_bool2 = police_problemtypeMapper.insert(problemtype);
+//                            //新增完自定义问题类型，获取问题类型id
+//                            police_problemtype = police_problemtypeMapper.selectOne(problemtype);
+//                        }
                         problem.setSsid(OpenUtil.getUUID_32());
                         problem.setCreatetime(new Date());
-                        problem.setOrdernum(0);
                         problem.setId(null);
-                        problem.setReferanswer(referanswer);
-                        if (StringUtils.isBlank(problem.getReferanswer())) {
-                            problem.setReferanswer("");
-                        }
 
                         Integer insert = police_problemMapper.insert(problem);
 
-                        templatetoproblem.setProblemssid(problem.getId() + "");
+//                        Police_problem one = police_problemMapper.selectOne(problem);
+                        if (insert > 0 && null != problem.getId()) {
 
-                        problem.setId(problem.getId());
+                            templatetoproblem.setProblemssid(problem.getId() + "");
 
-                        Police_problemtotype problemtotype = new Police_problemtotype();
-                        problemtotype.setProblemssid(problem.getSsid());
-                        problemtotype.setProblemtypessid(problemtypessid);
-                        problemtotype.setSsid(OpenUtil.getUUID_32());
-                        problemtotype.setCreatetime(new Date());
-                        police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
+                            problem.setId(problem.getId());
 
-                    } else {
-                        problem.setReferanswer(referanswer);
-
-                        //如果查到本来就有的问题，就拿第一个出来放到修改里面
-                        if (null != problems) {
-                            Police_problem police_problem = problems.get(0);
-                            //如果没有参考答案，就拿以前的
-                            if (StringUtils.isEmpty(problem.getReferanswer())) {
-                                problem.setReferanswer(police_problem.getReferanswer());
-                            }
-                            if (null == problem.getId()) {
-                                problem.setId(police_problem.getId());
-                            }
-
-                            problem.setOrdernum(police_problem.getOrdernum());
+                            Police_problemtotype problemtotype = new Police_problemtotype();
+                            problemtotype.setProblemssid(problem.getSsid());
+//                        problemtotype.setProblemtypessid(police_problemtype.getId()+"");
+                            problemtotype.setProblemtypessid(problemtypessid);
+                            problemtotype.setSsid(OpenUtil.getUUID_32());
+                            problemtotype.setCreatetime(new Date());
+                            police_problemtotypeMapper.insert(problemtotype);//问题类型中间表
                         }
 
-                        EntityWrapper ewProblem = new EntityWrapper();
-                        ewProblem.eq("id", problem.getId());
-
-                        Integer update = police_problemMapper.update(problem, ewProblem);//修改问题
                     }
 
                     templatetoproblem.setProblemssid(problem.getId() + "");//题目id
@@ -742,7 +718,7 @@ public class TemplateService extends BaseService {
         ew.orderBy("p.createtime",false);
         ew.orderBy("p.ordernum",false);
         Page<Problem> page=new Page<>(getProblemsParam.getCurrPage(),getProblemsParam.getPageSize());
-        List<Problem> problems=police_problemMapper.getProblemList(page,ew);
+        List<Problem> problems=police_problemMapper.getProblemAndTypeList(page,ew);
 
         getProblemsVO.setPagelist(problems);
         getProblemsVO.setPageparam(getProblemsParam);
@@ -775,6 +751,7 @@ public class TemplateService extends BaseService {
 
         EntityWrapper<Police_problem> wrapper = new EntityWrapper<Police_problem>();
         wrapper.eq("problem", updateProblemParam.getProblem());
+        wrapper.eq("referanswer", updateProblemParam.getReferanswer());
         wrapper.ne("ssid", updateProblemParam.getSsid());
         List<Police_problem> police_problems = police_problemMapper.selectList(wrapper);
 

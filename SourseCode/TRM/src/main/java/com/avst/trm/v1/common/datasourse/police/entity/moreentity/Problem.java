@@ -28,6 +28,15 @@ public class Problem {
 
     private String problemtypessid;
 
+    private String typename;
+
+    public String getTypename() {
+        return typename;
+    }
+
+    public void setTypename(String typename) {
+        this.typename = typename;
+    }
 
     public String getProblemtypessid() {
         return problemtypessid;
