@@ -10,7 +10,7 @@
 <div class=" layadmin-message-fluid" style="margin: 20px;">
     <div th:replace="header :: header">...</div>
 
-    <div class="layui-elem-quote" style=" padding: 10px;">
+    <div class="layui-elem-quote" style=" padding: 10px;visibility:hidden " id="quote_html">
         <h3 th:text="${updateServerconfigModel.title}">智能提讯系统</h3>
     </div>
     <form class="layui-form layui-form-pane layui-main site-inline" style="margin-top: 20px">
@@ -25,6 +25,7 @@
                 <input type="text" name="clientname" id="clientname" lay-verify="title" autocomplete="off" placeholder="请输入系统名称" class="layui-input">
             </div>
         </div>
+        <div id="oem_hk" style="display: none">
         <div class="layui-form-item">
             <label class="layui-form-label">LOGO</label>
             <div class="layui-input-block">
@@ -41,40 +42,38 @@
             </div>
 
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>服务器IP</label>
-            <div class="layui-input-block">
-                <input type="text" name="serverip" id="serverip" lay-verify="title" autocomplete="off" placeholder="请输入服务器IP" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red;">*</span>服务器IP</label>
+                <div class="layui-input-block">
+                    <input type="text" name="serverip" id="serverip" lay-verify="title" autocomplete="off" placeholder="请输入服务器IP" class="layui-input">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>服务器端口</label>
-            <div class="layui-input-block">
-                <input type="number" name="serverport" id="serverport" lay-verify="title" autocomplete="off" placeholder="请输入服务器端口" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red;">*</span>服务器端口</label>
+                <div class="layui-input-block">
+                    <input type="number" name="serverport" id="serverport" lay-verify="title" autocomplete="off" placeholder="请输入服务器端口" class="layui-input">
+                </div>
             </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label"><span style="color: red;">*</span>同步时间</label>
-            <div class="layui-input-block">
-                <input type="number" name="workdays" id="workdays" lay-verify="title" autocomplete="off" placeholder="请输入同步时间(天)" class="layui-input">
+            <div class="layui-form-item">
+                <label class="layui-form-label"><span style="color: red;">*</span>同步时间</label>
+                <div class="layui-input-block">
+                    <input type="number" name="workdays" id="workdays" lay-verify="title" autocomplete="off" placeholder="请输入同步时间(天)" class="layui-input">
+                </div>
             </div>
-        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">授权状态</label>
             <div class="layui-input-block">
                 <button class="layui-btn  layui-btn-sm layui-btn-radius " name="authorizebool" id="authorizebool" style="margin-left: 10px;" onclick="return false;"></button>
             </div>
         </div>
+        </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class=" layui-btn layui-btn-normal" onclick="updateServerconfig();" id="saveapkbtn" type="button">保存设置</button>
-                <button class=" layui-btn layui-btn-normal" onclick="rebootsocket();" id="socketbtn" type="button">重置SOCKET</button>
+                <button class=" layui-btn layui-btn-normal" onclick="rebootsocket();" id="socketbtn" type="button" style="display: none;">重置SOCKET</button>
             </div>
         </div>
     </form>
-
-
-
 
     <div th:replace="footer :: footer">...</div>
 </div>
@@ -90,11 +89,19 @@
 <script th:inline="javascript">
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
+    var gnlist = [[${session.AUTHORIZATIONALL_CLIENT.gnlist}]]; //全局授权
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/updateServerconfig");
         getServerconfig();
+
+        if (gnlist.indexOf(HK_O)<0){
+           $("#quote_html").css("visibility","visible");
+           $("#oem_hk").css("display","block");
+           $("#socketbtn").css("display","block");
+
+        }
     });
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块

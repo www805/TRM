@@ -1975,27 +1975,46 @@ function phdata(datad,dqdata) {
 //导出下载
 var gZIPVod_index;
 var gZIPVod_Url;
+var gZIPVodtime=0;//打包请求秒数间隔
 function gZIPVod(){
-    if (isNotEmpty(iid)){
-        $("#gZIPVod_html").css("display","none");
-        gZIPVod_index=layer.msg("打包中，请稍等...", {
-            icon: 16,
-            shade: [0.1, 'transparent'],
-            time: 100000
-        });
-        var url=getActionURL(getactionid_manage().getRecordById_gZIPVod);
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid:recordssid,
-                iid:iid,
-                zipfilename:recordnameshow
-            }
-        };
-        ajaxSubmitByJson(url,data,callbackgZIPVod);
-    } else {
-        layer.msg("请先确认视频文件是否生成...",{icon: 5});
+    if (gZIPVodtime>0){
+        layer.msg("打包太频繁，请"+gZIPVodtime+"秒后再试",{icon:5});
+        return;
     }
+
+
+
+    var gZIPVodsetInterval=setInterval(function () {
+        gZIPVodtime--;
+        if (gZIPVodtime<1){
+            clearInterval(gZIPVodsetInterval);
+        }
+    },1000)
+
+    if (gZIPVodtime<1){
+        if (isNotEmpty(iid)){
+            $("#gZIPVod_html").css("display","none");
+            gZIPVod_index=layer.msg("打包中，请稍等...", {
+                icon: 16,
+                shade: [0.1, 'transparent'],
+                time: 100000
+            });
+            var url=getActionURL(getactionid_manage().getRecordById_gZIPVod);
+            var data={
+                token:INIT_CLIENTKEY,
+                param:{
+                    recordssid:recordssid,
+                    iid:iid,
+                    zipfilename:recordnameshow
+                }
+            };
+            gZIPVodtime=15;//15秒
+            ajaxSubmitByJson(url,data,callbackgZIPVod);
+        } else {
+            layer.msg("请先确认视频文件是否生成...",{icon: 5});
+        }
+    }
+
 
 }
 var timer_zIPVodProgress;
@@ -2030,7 +2049,6 @@ function callbackzIPVodProgress(data) {
     $("#gZIPVod_html").css("display","block");
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
-        console.log(data)
         //开始显示进度
         if (isNotEmpty(data)){
             $("#gZIPVod_html .layui-col-md9").empty();

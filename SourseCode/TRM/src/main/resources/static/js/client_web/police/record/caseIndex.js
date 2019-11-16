@@ -484,6 +484,7 @@ function towaitRecord(recordssid,recordbool,creator,creatorname,multifunctionboo
  * @param casename
  */
 //导出U盘
+var exportUdisktime=0;//打包请求秒数间隔
 function exportUdisk(ssid,total_filenum,finish_filenum){
     var timer_exportUdisk=null;
     if (isNotEmpty(ssid)){
@@ -504,57 +505,73 @@ function exportUdisk(ssid,total_filenum,finish_filenum){
                 return;
             }
 
-            layer.msg("导出中，请稍等...", {
-                icon: 16,
-                shade: [0.1, 'transparent']
-            });
-            var url=getActionURL(getactionid_manage().caseIndex_exportUdisk);
-            var data={
-                param:{
-                    ssid:ssid
-                }
-            };
-            $("#progress_"+ssid+"").css("visibility","visible");
-            $("#progress_"+ssid+" .layui-progress-text").text("0%");
-            $("#progress_"+ssid+" .layui-progress-bar").width("0%");
 
-            $.ajax({
-                url : url,
-                type : "POST",
-                async : true,
-                dataType : "json",
-                contentType: "application/json",
-                data : JSON.stringify(data),
-                timeout : 60000,
-                xhr: function() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.upload.addEventListener('progress', function (e) {
-                        var completePercent = Math.round(e.loaded / e.total * 100)+ "%";
-                        $("#progress_"+ssid+"").css("visibility","visible");
-                        $("#progress_"+ssid+" .layui-progress-text").text(completePercent);
-                        $("#progress_"+ssid+" .layui-progress-bar").width(completePercent);
-                    },false);
-                    return xhr;
-                },
-                success : function callbackexportUdisk(data) {
-                    $("#progress_"+ssid+"").css("visibility","hidden");
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            var downurl=data.downurl;
-                            layer.msg("导出成功,等待下载中...",{icon: 6,time:800},function () {
-                                //开始请求获取进度
-                               timer_exportUdisk=setInterval(function () {
-                                    exportUdiskProgress(ssid,downurl,timer_exportUdisk);
-                                },1000)
-                            });
+            if (exportUdisktime>0){
+                layer.msg("导出太频繁，请"+exportUdisktime+"秒后再试",{icon:5});
+                return;
+            }
 
-                        }
-                    }else {
-                        layer.msg(data.message,{icon: 5});
+           var exportUdisksetInterval= setInterval(function () {
+                exportUdisktime--;
+               if (exportUdisktime<1){
+                   clearInterval(exportUdisksetInterval);
+               }
+            },1000)
+
+            if (exportUdisktime<1){
+                layer.msg("导出中，请稍等...", {
+                    icon: 16,
+                    shade: [0.1, 'transparent']
+                });
+                var url=getActionURL(getactionid_manage().caseIndex_exportUdisk);
+                var data={
+                    param:{
+                        ssid:ssid
                     }
-                }
-            });
+                };
+                $("#progress_"+ssid+"").css("visibility","visible");
+                $("#progress_"+ssid+" .layui-progress-text").text("0%");
+                $("#progress_"+ssid+" .layui-progress-bar").width("0%");
+
+                exportUdisktime=15;
+                $.ajax({
+                    url : url,
+                    type : "POST",
+                    async : true,
+                    dataType : "json",
+                    contentType: "application/json",
+                    data : JSON.stringify(data),
+                    timeout : 60000,
+                    xhr: function() {
+                        var xhr = new XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function (e) {
+                            var completePercent = Math.round(e.loaded / e.total * 100)+ "%";
+                            $("#progress_"+ssid+"").css("visibility","visible");
+                            $("#progress_"+ssid+" .layui-progress-text").text(completePercent);
+                            $("#progress_"+ssid+" .layui-progress-bar").width(completePercent);
+                        },false);
+                        return xhr;
+                    },
+                    success : function callbackexportUdisk(data) {
+                        $("#progress_"+ssid+"").css("visibility","hidden");
+                        if(null!=data&&data.actioncode=='SUCCESS'){
+                            var data=data.data;
+                            if (isNotEmpty(data)){
+                                var downurl=data.downurl;
+                                layer.msg("导出成功,等待下载中...",{icon: 6,time:800},function () {
+                                    //开始请求获取进度
+                                    timer_exportUdisk=setInterval(function () {
+                                        exportUdiskProgress(ssid,downurl,timer_exportUdisk);
+                                    },1000)
+                                });
+
+                            }
+                        }else {
+                            layer.msg(data.message,{icon: 5});
+                        }
+                    }
+                });
+            }
             layer.close(index);
         }, function(index){
             layer.close(index);
@@ -619,8 +636,9 @@ function exportUdiskProgress(ssid,downurl,timer_exportUdisk){
 
 //导出光盘
 var exportLightdisk_index=null;
+var exportLightdisktime=0;//打包请求秒数间隔
 function exportLightdisk(ssid,total_filenum,finish_filenum){
-    /*暂时屏蔽 if (isNotEmpty(ssid)){
+    /* if (isNotEmpty(ssid)){
         total_filenum=total_filenum==null?0:parseInt(total_filenum);
         finish_filenum=finish_filenum==null?0:parseInt(finish_filenum);
         if (total_filenum<1){
@@ -638,55 +656,64 @@ function exportLightdisk(ssid,total_filenum,finish_filenum){
                 return;
             }
 
-            exportLightdisk_index=layer.msg("导出中，请稍等...", {
-                icon: 16,
-                shade: [0.1, 'transparent']
-            });
-            var url=getActionURL(getactionid_manage().caseIndex_exportLightdisk);
-            var data={
-                token:INIT_CLIENTKEY,
-                param:{
-                    ssid:ssid
-                }
-            };
-            $("#progress_"+ssid+"").css("visibility","visible");
-            $("#progress_"+ssid+" .layui-progress-text").text("0%");
-            $("#progress_"+ssid+" .layui-progress-bar").width("0%");
+            if (exportLightdisktime>0){
+                layer.msg("导出太频繁，请"+exportLightdisktime+"秒后再试",{icon:5});
+                return;
+            }
 
-            $.ajax({
-                url : url,
-                type : "POST",
-                async : true,
-                dataType : "json",
-                contentType: "application/json",
-                data : JSON.stringify(data),
-                timeout : 60000,
-                xhr: function() {
-                    var xhr = new XMLHttpRequest();
-                    xhr.upload.addEventListener('progress', function (e) {
-                        var completePercent = Math.round(e.loaded / e.total * 100)+ "%";
-                        $("#progress_"+ssid+"").css("visibility","visible");
-                        $("#progress_"+ssid+" .layui-progress-text").text(completePercent);
-                        $("#progress_"+ssid+" .layui-progress-bar").width(completePercent);
-                    },false);
-                    return xhr;
-                },
-                success : function callbackexportLightdisk(data) {
-                    $("#progress_"+ssid+"").css("visibility","hidden");
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        layer.msg("导出成功...",{icon: 6});
-                        /!* if (isNotEmpty(data)){
-                             layer.msg("导出成功",{icon: 6});
-                             var downurl=data.downurl;
-                             window.location.href=downurl;
-                         }*!/
-                    }else {
-                        layer.msg(data.message,{icon: 5});
+            var exportLightdisksetInterval=setInterval(function () {
+                exportLightdisktime--;
+                if (exportLightdisktime<1){
+                    clearInterval(exportLightdisksetInterval);
+                }
+            },1000)
+
+            if (exportLightdisktime<1){
+                exportLightdisk_index=layer.msg("导出中，请稍等...", {
+                    icon: 16,
+                    shade: [0.1, 'transparent']
+                });
+                var url=getActionURL(getactionid_manage().caseIndex_exportLightdisk);
+                var data={
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        ssid:ssid
                     }
-                }
+                };
+                $("#progress_"+ssid+"").css("visibility","visible");
+                $("#progress_"+ssid+" .layui-progress-text").text("0%");
+                $("#progress_"+ssid+" .layui-progress-bar").width("0%");
+                exportLightdisktime=15;
+                $.ajax({
+                    url : url,
+                    type : "POST",
+                    async : true,
+                    dataType : "json",
+                    contentType: "application/json",
+                    data : JSON.stringify(data),
+                    timeout : 60000,
+                    xhr: function() {
+                        var xhr = new XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', function (e) {
+                            var completePercent = Math.round(e.loaded / e.total * 100)+ "%";
+                            $("#progress_"+ssid+"").css("visibility","visible");
+                            $("#progress_"+ssid+" .layui-progress-text").text(completePercent);
+                            $("#progress_"+ssid+" .layui-progress-bar").width(completePercent);
+                        },false);
+                        return xhr;
+                    },
+                    success : function callbackexportLightdisk(data) {
+                        $("#progress_"+ssid+"").css("visibility","hidden");
+                        if(null!=data&&data.actioncode=='SUCCESS'){
+                            var data=data.data;
+                            layer.msg("导出成功...",{icon: 6});
+                        }else {
+                            layer.msg(data.message,{icon: 5});
+                        }
+                    }
 
-            });
+                });
+            }
             layer.close(index);
         }, function(index){
             layer.close(index);

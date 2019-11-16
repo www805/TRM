@@ -147,6 +147,9 @@ function callbackupdateServerconfig(str) {
         if (isNotEmpty(data)){
             layer.msg("保存成功",{icon: 6,time:500},function () {
                 getServerconfig();
+
+                //刷新左上角标题
+                top.location.reload();
             });
         }
     }else{

@@ -222,13 +222,13 @@ public class RecordService2 extends BaseService {
                         LogUtil.intoLog(1,this.getClass(),"本次导出是否需要重复【案件】______________________________________________"+repackbool_);
 
 
-                        /*//案件重复打包：这里只需要修改案件重复打包状态
+                        //案件重复打包：这里只需要修改案件重复打包状态
                         EntityWrapper c=new EntityWrapper();
                         police_case.setRepackbool(-1);
                         EntityWrapper updateew=new EntityWrapper();
                         updateew.eq("ssid",ssid);
                         int police_caseMapper_updatebool=police_caseMapper.update(police_case,updateew);
-                        LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);*/
+                        LogUtil.intoLog(this.getClass(),"police_caseMapper_updatebool__"+police_caseMapper_updatebool);
 
 
 
@@ -573,12 +573,13 @@ public class RecordService2 extends BaseService {
                 gzipThread.start();
                 LogUtil.intoLog(1,this.getClass(),"本次导出是否需要重复【笔录】______________________________________________"+repackbool_);
 
-                /*EntityWrapper e=new EntityWrapper();
+                //本次打包后改为不需要重新打包
+                EntityWrapper e=new EntityWrapper();
                 e.eq("ssid",recordssid);
                 record.setRepackbool(-1);//笔录重复打包
                 int police_recordMapper_updatebool=police_recordMapper.update(record,e);
                 LogUtil.intoLog(this.getClass(),"police_recordMapper_updatebool__"+police_recordMapper_updatebool);
-                if (police_recordMapper_updatebool>0){
+                /*if (police_recordMapper_updatebool>0){
                     //案件重复打包
                     EntityWrapper getcasebyrecordssidew=new EntityWrapper();
                     getcasebyrecordssidew.eq("r.ssid",recordssid);
