@@ -385,6 +385,13 @@ function callbackgetRecordById(data) {
             }
 
 
+            var default_fhurl=data.default_fhurl;
+            if (isNotEmpty(default_fhurl)){
+                liveurl=default_fhurl;
+                initplayer();
+            }
+
+
             var record=data.record;
             if (isNotEmpty(record)){
                 var wordheaddownurl_html=record.wordheaddownurl_html;

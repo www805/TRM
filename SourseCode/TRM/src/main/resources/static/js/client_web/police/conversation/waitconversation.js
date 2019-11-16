@@ -57,6 +57,12 @@ function callbackgetRecordById(data) {
 
                 //获取刻录选时
                 getBurnTime();
+
+                var default_fhurl=data.default_fhurl;
+                if (isNotEmpty(default_fhurl)){
+                    liveurl=default_fhurl;
+                    initplayer();
+                }
             }
 
             var record=data.record;

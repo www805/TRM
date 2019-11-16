@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.cweb.service.policeservice;
 import com.alibaba.fastjson.JSON;
 import com.avst.trm.v1.common.cache.*;
 import com.avst.trm.v1.common.conf.CreateVodThread;
+import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
@@ -20,7 +21,9 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQVersion;
+import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
+import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
@@ -139,6 +142,9 @@ public class RecordService extends BaseService {
 
     @Autowired
     private Police_userinfogradeMapper police_userinfogradeMapper;
+
+    @Autowired
+    private EquipmentControl  equipmentControl;
 
     public void getRecords(RResult result, ReqParam<GetRecordsParam> param,HttpSession session){
         GetRecordsVO getRecordsVO=new GetRecordsVO();
@@ -687,6 +693,31 @@ public class RecordService extends BaseService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+
+
+            //未开始的笔录开始获取设备的默认地址作为预览视
+            if (null!=recordbool&&recordbool.intValue()==0){
+                  ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
+                  GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
+                  listParam.setFdType(FDType.FD_AVST);
+                  param_.setParam(listParam);
+                  RResult result_ = equipmentControl.getToOutDefault(param_);
+                  if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_.getData()) {
+                      Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
+                      if (null!=flushbonadinginfo&&null!=flushbonadinginfo.getLivingurl()){
+                          getRecordByIdVO.setDefault_fhurl(flushbonadinginfo.getLivingurl());
+                      }
+                  }else {
+                      LogUtil.intoLog(this.getClass(), "请求equipmentControl.getToOutDefault__出错");
+                  }
+            }
+
+
+
+
+
+
 
                 if (null!=mtssid&&null!=recordbool&&(recordbool.intValue()==2||recordbool.intValue()==3)){
                     //回放数据，笔录制作中的时候不需要检测

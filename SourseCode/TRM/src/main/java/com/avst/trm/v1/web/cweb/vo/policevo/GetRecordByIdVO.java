@@ -38,6 +38,16 @@ public class GetRecordByIdVO {
     private  List<Base_nationality> nationalityList;//全部国籍
     private  List<Base_national> nationalList;//全部民族
 
+    private String default_fhurl;//默认设备地址
+
+    public String getDefault_fhurl() {
+        return default_fhurl;
+    }
+
+    public void setDefault_fhurl(String default_fhurl) {
+        this.default_fhurl = default_fhurl;
+    }
+
     public String getIid() {
         return iid;
     }

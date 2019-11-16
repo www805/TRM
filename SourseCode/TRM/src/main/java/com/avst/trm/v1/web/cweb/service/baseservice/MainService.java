@@ -638,30 +638,36 @@ public class MainService extends BaseService {
         }
         vo.setStateSQ(stateSQ);
 
-        //获取首页视频地址
-        String liveurl=null;
-        String flushbonadingetinfossid=null;
-        ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
-        GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
-        listParam.setFdType(FDType.FD_AVST);
-        param_.setParam(listParam);
-        RResult result_ = equipmentControl.getToOutDefault(param_);
-        if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_.getData()) {
-            Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
-            if (null!=flushbonadinginfo&&null!=flushbonadinginfo.getLivingurl()){
-                liveurl= flushbonadinginfo.getLivingurl();
-                flushbonadingetinfossid= flushbonadinginfo.getSsid();
+        if (gnlist.indexOf(SQVersion.HK_O)>0){
+            //oem首页大视频显示
+            //获取首页视频地址
+            String liveurl=null;
+            String flushbonadingetinfossid=null;
+            ReqParam<GetToOutFlushbonadingListParam> param_ = new ReqParam<>();
+            GetToOutFlushbonadingListParam listParam = new GetToOutFlushbonadingListParam();
+            listParam.setFdType(FDType.FD_AVST);
+            param_.setParam(listParam);
+            RResult result_ = equipmentControl.getToOutDefault(param_);
+            if (null != result_ && result_.getActioncode().equals(Code.SUCCESS.toString())&&null!=result_.getData()) {
+                Flushbonadinginfo flushbonadinginfo=gson.fromJson(gson.toJson(result_.getData()), Flushbonadinginfo.class);
+                if (null!=flushbonadinginfo&&null!=flushbonadinginfo.getLivingurl()){
+                    liveurl= flushbonadinginfo.getLivingurl();
+                    flushbonadingetinfossid= flushbonadinginfo.getSsid();
+                }
+            }else{
+                LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefault__出错");
             }
-        }else{
-            LogUtil.intoLog(this.getClass(),"请求equipmentControl.getToOutDefault__出错");
+            vo.setLiveurl(liveurl);
+            vo.setFlushbonadingetinfossid(flushbonadingetinfossid);
         }
-        vo.setLiveurl(liveurl);
-        vo.setFlushbonadingetinfossid(flushbonadingetinfossid);
+
 
         result.setData(vo);
         changeResultToSuccess(result);
         return;
     }
+
+
 
 
 
