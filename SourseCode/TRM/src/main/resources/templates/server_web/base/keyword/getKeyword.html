@@ -95,7 +95,7 @@
             <td ><input type="checkbox" name="switch" lay-skin="switch" lay-filter="switchTest" lay-text="正常|屏蔽" {{value.shieldbool==-1?'':'checked'}} value="{{value.ssid}}"></td>
             <td>
                 <a href="{{updateurl}}/{{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm"shiro:hasPermission='getAddOrUpdateKeyword' >修改</a>
-                <a href="javascript:;"  onclick="deleteKeyword({{value.ssid}});" class="layui-btn layui-btn-danger layui-btn-sm"shiro:hasPermission='deleteKeyword' >删除</a>
+                <a href="javascript:;"  onclick="deleteKeyword('{{value.ssid}}');" class="layui-btn layui-btn-danger layui-btn-sm"shiro:hasPermission='deleteKeyword' >删除</a>
             </td>
 
         </tr>

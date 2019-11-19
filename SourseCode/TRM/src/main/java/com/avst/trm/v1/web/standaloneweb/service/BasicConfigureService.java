@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -45,6 +46,8 @@ public class BasicConfigureService extends BaseService {
     private Base_serverconfigMapper base_serverconfigMapper;
 
     private Gson gson=new Gson();
+
+    private String pattern = ".*[\\u4E00-\\u9FA5].*";
 
     public static Integer subtime = 0;
 
@@ -81,6 +84,14 @@ public class BasicConfigureService extends BaseService {
             }
             if (StringUtils.isBlank(param.getGateway())) {
                 result.setMessage("网关不能为空");
+                return result;
+            }
+            if(Pattern.matches(pattern, param.getNetmask())){
+                result.setMessage("子网掩码不能为中文");
+                return result;
+            }
+            if(Pattern.matches(pattern, param.getGateway())){
+                result.setMessage("网关不能为中文");
                 return result;
             }
 
