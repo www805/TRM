@@ -179,9 +179,9 @@ function callbackgetRecordById(data) {
                 set_getRecord(getMCVO);
                 $("#asr_html").show();
             }else  {
-                getRecordrealByRecordssid();
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
+            getRecordrealByRecordssid();
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {

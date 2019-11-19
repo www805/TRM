@@ -273,10 +273,10 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
                 set_getRecord(getMCVO);
             }else  {
-                getRecordrealByRecordssid();
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
 
+            getRecordrealByRecordssid();右侧数据
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
