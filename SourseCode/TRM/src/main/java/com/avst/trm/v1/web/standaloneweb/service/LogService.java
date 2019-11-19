@@ -113,10 +113,10 @@ public class LogService extends BaseService {
                     logPageParam.setCurrentpage(Currentpage);
                     logVO.setLogPageParam(logPageParam);
                 }else{
-                    LogUtil.intoLog(4,this.getClass(),"设备日志查询返回成功，Json解析失败");
+                    LogUtil.intoLog(4,this.getClass(),"设备日志查看返回成功，Json解析失败");
                 }
             }else{
-                LogUtil.intoLog(4,this.getClass(),"设备日志查询失败，ec返回为空");
+                LogUtil.intoLog(4,this.getClass(),"设备日志查看失败，ec返回为空");
             }
 
         }else {
@@ -125,9 +125,9 @@ public class LogService extends BaseService {
 
 
         if(null==logVO){
-            result.setMessage("日志查询结果异常");
+            result.setMessage("日志查看结果异常");
         }else if (null==logVO.getLogList()||logVO.getLogList().size()==0){
-            result.setMessage("日志查询数据为空");
+            result.setMessage("日志查看数据为空");
         }else{
             result.setData(logVO);
             changeResultToSuccess(result);

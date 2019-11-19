@@ -72,7 +72,7 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>服务器IP   (暂无用)</label>
             <div class="layui-input-block">
-                <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="setip" placeholder="请输入服务器IP" autocomplete="off" class="layui-input">
+                <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="setip" placeholder="请输入服务器IP" autocomplete="off" class="layui-input"  onkeyup="value=value.replace(/[^0-9.]/g,'')">
             </div>
         </div>
 

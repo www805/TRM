@@ -261,7 +261,8 @@ function tr_addOrUpdate(obj,type,arraignment_num) {
                           residence:residence,
                           workunits:workunits,
                           cardtypename:cardtypetext,
-                          ssid:dquserssid
+                          ssid:dquserssid,
+                          arraignment_num:arraignment_num==null?0:arraignment_num,
                       }
 
 
@@ -461,7 +462,7 @@ function getUserByCard(){
 
 
 
-  /*  dquserssid=null;//当前用户的ssid*/
+   dquserssid=null;//当前用户的ssid
 
     var form=layui.form;
 

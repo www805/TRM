@@ -1556,6 +1556,12 @@ function getIDCardreader() {
 
 
 
+//存储在cookie的记住密码
+var CLIENT_LOGINACCOUNT="CLIENT_LOGINACCOUNT";
+var CLIENT_REMEMBERME="CLIENT_REMEMBERME";
+var SERVER_LOGINACCOUNT="SERVER_LOGINACCOUNT";
+var SERVER_REMEMBERME="SERVER_REMEMBERME";
+
 
 //js通用常量:需要和java文件的同步
 var S_V = "s_v";//单机版

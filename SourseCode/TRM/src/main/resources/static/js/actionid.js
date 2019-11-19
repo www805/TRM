@@ -14,6 +14,7 @@ function getactionid_manage() {
 
         login_login:"login_login",
         login_main:"login_main",
+        login_getLoginCookie2:"login_getLoginCookie2",
 
         getRoleList_getRoleList:"getRoleList_getRoleList",
         getRoleList_getAddOrUpdateRole:"getRoleList_getAddOrUpdateRole",
@@ -89,6 +90,7 @@ function getactionid_manage() {
         login_gotologin:"login_gotologin",
         login_updatePassWord:"login_updatePassWord",
         login_gotoforgotpassword:"login_gotoforgotpassword",
+        login_getLoginCookie:"login_getLoginCookie",
 
         main_userloginout:"main_userloginout",
         main_toaddCaseToUser:"main_toaddCaseToUser",

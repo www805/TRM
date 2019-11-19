@@ -87,7 +87,7 @@ public class LogAction extends BaseAction {
      */
     @RequestMapping(value = "/gotoLogShow")
     public ModelAndView gotoLogShow(Model model){
-        model.addAttribute("title","日志查询");
+        model.addAttribute("title","日志查看");
         return  new ModelAndView("standalone_web/setup/logShow","logModel", model);
     }
 

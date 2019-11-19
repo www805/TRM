@@ -25,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,14 +58,14 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping(value = "/userlogin")
     @ResponseBody
-    public RResult userlogin(@RequestBody ReqParam<UserloginParam> param,HttpServletRequest request) {
+    public RResult userlogin(@RequestBody ReqParam<UserloginParam> param, HttpServletRequest request, HttpServletResponse response) {
         RResult result=this.createNewResultOfFail();
         if(null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            mainService.userlogin(result,param,request);
+            mainService.userlogin(result,param,request,response);
             AppCache.delAppCacheParam();
             FdSSidCache.setFdSSidCache(null);
         }
@@ -495,6 +497,20 @@ public class MainAction extends BaseAction {
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return  result;
+    }
+
+    //获取登录用户的Cookie：后台也用这个
+    @RequestMapping("/getLoginCookie")
+    @ResponseBody
+    public  RResult getLoginCookie(GetLoginCookieParam  param,HttpServletRequest request) {
+        RResult result = this.createNewResultOfFail();
+        if (null == param) {
+            result.setMessage("参数为空");
+        }else {
+            mainService.getLoginCookie(result, param,request);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
     }
 
 

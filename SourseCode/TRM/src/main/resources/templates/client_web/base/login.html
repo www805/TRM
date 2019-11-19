@@ -33,6 +33,15 @@
             color: #296cff;
             text-decoration:underline;
         }
+    .layui-form-checked[lay-skin=primary] i{
+        border-color:#597FC0 !important;
+        background-color:#FFF !important;
+        color:#597FC0 !important;
+        font-weight: bold;
+    }
+    .layui-form-checkbox[lay-skin=primary]:hover i{
+        border-color:#597FC0 !important;
+    }
     </style>
     <script>
         layui.use(['layer','element','form'], function(){
@@ -66,15 +75,15 @@
                         <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="" lay-verify="loginaccount">
                         <input name="password" id="password" type="password" placeholder="密码" value="" lay-verify="password">
                         <button  type="button" id="loginbtn"  lay-filter="loginbtn" lay-submit="">登录</button>
-                        <div class="layui-col-md12 ">
-                            <div class="layui-col-md6">&nbsp;</div>
+                        <div class="layui-col-md12 " style="margin-top: 5px">
+                            <div class="layui-col-md6">
+                                <span style="float: left"><input name="" type="checkbox" title="记住密码"  lay-skin="primary"  id="rememberpassword"/></span></div>
                             <div class="layui-col-md6" ><a style="float: right" id="forgotpassword" title="忘记密码" >忘记密码</a></div>
                         </div>
                     </div>
                 </div>
             </div>
         </form>
-
 
 
     <div class="layui-footer"  style="left: 0; height: 30px; line-height: 30px;font-size: 12px">
@@ -97,6 +106,8 @@
         setpageAction(INIT_CLIENT,"client_web/base/login");
          forgotpasswordURL=getActionURL(getactionid_manage().login_gotoforgotpassword);
         getNavList();
+
+      getrememberpassword();
 
         document.onkeydown = function (event) {
             var e = event || window.event;

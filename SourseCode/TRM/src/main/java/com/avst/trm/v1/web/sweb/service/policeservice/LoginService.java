@@ -3,13 +3,12 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
-import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -21,11 +20,10 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.util.HashMap;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class LoginService extends BaseService {
@@ -40,10 +38,9 @@ public class LoginService extends BaseService {
      * @param result
      * @param loginParam
      */
-    public void gotologin(RResult<AdminManage_session> result, HttpServletRequest request, LoginParam loginParam){
+    public void gotologin(RResult<AdminManage_session> result, HttpServletRequest request, HttpServletResponse response, LoginParam loginParam){
         String loginaccount=loginParam.getLoginaccount();
         String password=loginParam.getPassword();
-
 
 
         if(!StringUtils.isNotBlank(loginaccount) || !StringUtils.isNotBlank(password)){
@@ -85,8 +82,9 @@ public class LoginService extends BaseService {
                             return;
                         }
 
-
-                        subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
+                        boolean rememberpassword=loginParam.isRememberpassword();
+                        LogUtil.intoLog(1,this.getClass(),"后台登录账号："+loginaccount+"__是否需要记住密码__"+rememberpassword);
+                        subject.login( new UsernamePasswordToken(loginaccount, password,rememberpassword));   //完成登录
                         LogUtil.intoLog(1,this.getClass(),"用户是否登录："+subject.isAuthenticated(),base_admininfo.getUsername());
                       if(!subject.isPermitted("checklogin")&&subject.isAuthenticated()) {
                             result.setMessage("不好意思~您没有权限登录，请联系管理员");
@@ -100,6 +98,30 @@ public class LoginService extends BaseService {
                         }
 
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
+
+                        if (rememberpassword){
+                            Cookie server_loginaccount=new Cookie(LoginConstant.SERVER_LOGINACCOUNT,loginaccount);
+                            server_loginaccount.setMaxAge(60*60*24*7);
+                            server_loginaccount.setPath("/");
+                            Cookie server_rememberme=new Cookie(LoginConstant.SERVER_REMEMBERME,"YES");
+                            server_rememberme.setMaxAge(60*60*24*7);
+                            server_rememberme.setPath("/");
+                            response.addCookie(server_loginaccount);
+                            response.addCookie(server_rememberme);
+                        }else {
+                            Cookie server_loginaccount=new Cookie(LoginConstant.SERVER_LOGINACCOUNT,null);
+                            server_loginaccount.setMaxAge(0);
+                            server_loginaccount.setPath("/");
+                            Cookie server_rememberme=new Cookie(LoginConstant.SERVER_REMEMBERME,null);
+                            server_rememberme.setMaxAge(0);
+                            server_rememberme.setPath("/");
+                            response.addCookie(server_loginaccount);
+                            response.addCookie(server_rememberme);
+                        }
+
+
+
+
 
                         //修改用户最后一次登录：服务器端是否需要判断第一次登录重置密码？
                        /* base_admininfo.setLastlogintime(new Date());*/

@@ -79,13 +79,12 @@ function getArraignment_count_Excel(){
 function callCountExcelList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data)){
-            var host = "http://localhost";
-            host = "";
-            layer.msg(data.message,{icon: 6});
-            // window.location.href = "file://" + data.data;
-            window.location.href = host + data.data;
-            // window.open("file:///" + data.data);
-            // window.open(host + data.data);
+            var downurl=data.data;
+            if (isNotEmpty(downurl)) {
+                layer.msg(data.message,{icon: 6});
+                window.location.href = downurl;
+            }
+
             layui.use('form', function(){
                 var form =  layui.form;
                 form.render();

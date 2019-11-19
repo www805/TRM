@@ -107,7 +107,7 @@ function pageshow(data){
             }else if(logobj.type=="warn"){
                 trhtml+="<td>警告</td>";
             }else if(logobj.type=="error"){
-                trhtml+="<td>错误</td>";
+                trhtml+="<td>异常</td>";
             }else if(isNotEmpty(logobj.type)){
                 trhtml+="<td>设备日志</td>";
             }else{

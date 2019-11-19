@@ -6,7 +6,7 @@ function userlogin() {
     var url=getActionURL(getactionid_manage().login_userlogin);
     var loginaccount =$("#loginaccount").val().trim();
     var password =$("#password").val().trim();
-
+    var rememberpassword = $("#rememberpassword").is(":checked");//获取是否选中
     $("#loginaccount").attr("readonly","readonly");
     $("#password").attr("readonly","readonly");
     $("#loginbtn").attr('disabled','disabled');
@@ -16,7 +16,8 @@ function userlogin() {
         token:INIT_CLIENTKEY,
         param:{
             loginaccount:loginaccount,
-            password:password
+            password:password,
+            rememberpassword:rememberpassword,
         }
     };
     ajaxSubmitByJson(url,data,callbackuserlogin);
@@ -228,6 +229,35 @@ function GetQueryString(name) {
     var r = window.location.search.substr(1).match(reg);//search,查询？后面的参数，并匹配正则
     if(r!=null)return  unescape(r[2]); return null;
 }
+
+//记住密码----------------------------------------start
+function getrememberpassword(){
+    var url=getActionURL(getactionid_manage().login_getLoginCookie);
+    var data={
+            loginaccount_mark:CLIENT_LOGINACCOUNT,
+        rememberme_mark:CLIENT_REMEMBERME,
+    };
+    ajaxSubmit(url,data,function (d) {
+        if(null!=d&&d.actioncode=='SUCCESS')
+            var data=d.data;
+        if (isNotEmpty(data)){
+            var loginaccount=data.loginaccount==null?"":data.loginaccount;
+            var password=data.password==null?"":data.password;
+            $('#loginaccount').val(loginaccount);
+            $('#password').val(password);
+            if (isNotEmpty(loginaccount)&&isNotEmpty(password)){
+                $("#rememberpassword").attr("checked","true");
+            }
+        }else{
+            layer.msg(d.message,{icon: 5});
+        }
+        layui.use(['form'], function(){
+            var form=layui.form;
+            form.render()
+        });
+    });
+}
+//记住密码----------------------------------------end
 
 
 $(function () {

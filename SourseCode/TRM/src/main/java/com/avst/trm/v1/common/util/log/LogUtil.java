@@ -211,7 +211,7 @@ public class LogUtil {
 
         if(null==loglist||loglist.size()==0){
 
-            intoLog(4,LogUtil.class,"没有日志可供查询,日志类型："+type+",日志查询的日期："+time );
+            intoLog(4,LogUtil.class,"没有日志可供查询,日志类型："+type+",日志查看的日期："+time );
             return null;
         }
         //开始计算返回的数量
@@ -219,7 +219,7 @@ public class LogUtil {
         int totallogpage=logsize/Pagesize+(logsize%Pagesize==0?0:1);//整除不了就要加1页
         if(Currentpag >totallogpage){
 
-            intoLog(4,LogUtil.class,"日志查询已经超出了实际页数，要查询的页数："+Currentpag+",实际的总页数："+totallogpage );
+            intoLog(4,LogUtil.class,"日志查看已经超出了实际页数，要查询的页数："+Currentpag+",实际的总页数："+totallogpage );
             return null;
         }
         logPageParam.setTotalpage(totallogpage);

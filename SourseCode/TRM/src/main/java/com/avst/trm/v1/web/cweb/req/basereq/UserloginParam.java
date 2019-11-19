@@ -5,6 +5,16 @@ public class UserloginParam {
 
     private  String password;//密码
 
+    private boolean rememberpassword;//记住密码
+
+    public boolean isRememberpassword() {
+        return rememberpassword;
+    }
+
+    public void setRememberpassword(boolean rememberpassword) {
+        this.rememberpassword = rememberpassword;
+    }
+
     public String getLoginaccount() {
         return loginaccount;
     }

@@ -404,6 +404,7 @@ public class Arraignment_countService extends BaseService {
         cell = row.createCell((short) 5);
         cell.setCellValue("笔录总数");
         cell.setCellStyle(style);
+
 //        cell = row.createCell((short) 6);
 //        cell.setCellValue("录音时长");
 //        cell.setCellStyle(style);
@@ -417,21 +418,34 @@ public class Arraignment_countService extends BaseService {
             GetArraignmentCountParam getArraignmentCountParam = list.get(i - 1);
 
             row = sheet.createRow((int) i + 1);
-            row.createCell((short) 0).setCellValue((double) (i)); // 序号
+            cell= row.createCell((short) 0); // 序号
+            cell.setCellValue((double) (i));
+            cell.setCellStyle(style);
             if (null != getArraignmentCountParam) {
                 /*Integer timeCount = base_arraignmentCount.getTimeCount();
                 Integer translatextCount = base_arraignmentCount.getTranslatextCount();*/
-
-                row.createCell((short) 1).setCellValue(getArraignmentCountParam.getUsername()); // 人员名称
-                row.createCell((short) 2).setCellValue(getArraignmentCountParam.getWorkname());// 工作单位
-                row.createCell((short) 3).setCellValue(getArraignmentCountParam.getArraignmentcount());// 询问总次数
-                row.createCell((short) 4).setCellValue(getArraignmentCountParam.getRecordadmincount());// 记录总次数
-                row.createCell((short) 5).setCellValue(getArraignmentCountParam.getRecordcount());// 笔录总数
+                cell=row.createCell((short) 1);
+                cell.setCellValue(getArraignmentCountParam.getUsername()); // 人员名称
+                cell.setCellStyle(style);
+                cell=row.createCell((short) 2);
+                cell.setCellValue(getArraignmentCountParam.getWorkname());// 工作单位
+                cell.setCellStyle(style);
+                cell=row.createCell((short) 3);
+                cell.setCellValue(getArraignmentCountParam.getArraignmentcount());// 询问总次数
+                cell.setCellStyle(style);
+                cell=row.createCell((short) 4);
+                cell.setCellValue(getArraignmentCountParam.getRecordadmincount());// 记录总次数
+                cell.setCellStyle(style);
+                cell= row.createCell((short) 5);
+                cell.setCellValue(getArraignmentCountParam.getRecordcount());// 笔录总数
+                cell.setCellStyle(style);
                 /*row.createCell((short) 6).setCellValue(timeCount == null ? 0 : timeCount);// 录音时长
                 row.createCell((short) 7).setCellValue(translatextCount == null ? 0 : translatextCount);// 笔录字数*/
             }
 
         }
+
+
 
 
         try {

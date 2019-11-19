@@ -3,11 +3,10 @@ package com.avst.trm.v1.web.cweb.service.baseservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
-import com.avst.trm.v1.common.cache.param.SysYmlParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
+import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
@@ -32,12 +31,10 @@ import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
-import com.avst.trm.v1.web.cweb.cache.KeywordCache;
 import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.vo.basevo.*;
-import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -52,15 +49,14 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.yaml.snakeyaml.Yaml;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service("mainService")
 public class MainService extends BaseService {
@@ -116,7 +112,7 @@ public class MainService extends BaseService {
         return  CommonCache.getinit_CLIENT();
     }
 
-    public void  userlogin(RResult result, ReqParam<UserloginParam> param, HttpServletRequest request){
+    public void  userlogin(RResult result, ReqParam<UserloginParam> param, HttpServletRequest request, HttpServletResponse response){
         UserloginVO userloginVO=new UserloginVO();
         String type= CommonCache.getCurrentServerType();
 
@@ -167,10 +163,9 @@ public class MainService extends BaseService {
                         result.setMessage("用户状态异常");
                         return;
                     }
-
-
-
-                    subject.login( new UsernamePasswordToken(loginaccount, password,false));   //完成登录
+                    boolean rememberpassword=userloginParam.isRememberpassword();
+                    LogUtil.intoLog(1,this.getClass(),"客户端登录账号："+loginaccount+"__是否需要记住密码__"+rememberpassword);
+                    subject.login( new UsernamePasswordToken(loginaccount, password,rememberpassword));   //完成登录
                     LogUtil.intoLog(this.getClass(),"用户是否登录："+subject.isAuthenticated());
                     if(!subject.isPermitted("userlogin")&&subject.isAuthenticated()) {
                         result.setMessage("不好意思~您没有权限登录，请联系管理员");
@@ -199,6 +194,25 @@ public class MainService extends BaseService {
 
                     //session存储
                     request.getSession().setAttribute(Constant.MANAGE_CLIENT,user);
+                    if (rememberpassword){
+                        Cookie client_loginaccount=new Cookie(LoginConstant.CLIENT_LOGINACCOUNT,loginaccount);
+                        client_loginaccount.setMaxAge(60*60*24*7);
+                        client_loginaccount.setPath("/");
+                        Cookie client_rememberme=new Cookie(LoginConstant.CLIENT_REMEMBERME,"YES");
+                        client_rememberme.setMaxAge(60*60*24*7);
+                        client_rememberme.setPath("/");
+                        response.addCookie(client_loginaccount);
+                        response.addCookie(client_rememberme);
+                    }else {
+                        Cookie client_loginaccount=new Cookie(LoginConstant.CLIENT_LOGINACCOUNT,null);
+                        client_loginaccount.setMaxAge(0);
+                        client_loginaccount.setPath("/");
+                        Cookie client_rememberme=new Cookie(LoginConstant.CLIENT_REMEMBERME,null);
+                        client_rememberme.setMaxAge(0);
+                        client_rememberme.setPath("/");
+                        response.addCookie(client_loginaccount);
+                        response.addCookie(client_rememberme);
+                    }
 
 
                     //登录成功
@@ -1171,6 +1185,52 @@ public class MainService extends BaseService {
                 e.printStackTrace();
             }
         }
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getLoginCookie(RResult result,GetLoginCookieParam param,HttpServletRequest request){
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+         String  loginaccount_mark=param.getLoginaccount_mark();//登录标识
+         String  rememberme_mark=param.getRememberme_mark();//登录标识
+        if (StringUtils.isEmpty(loginaccount_mark)||StringUtils.isEmpty(rememberme_mark)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        GetLoginCookieVO vo=new GetLoginCookieVO();
+        String loginaccount = "";
+        String password = "";
+
+        //获取当前站点的所有Cookie
+        String rememberme=null;
+        Cookie[] cookies = request.getCookies();
+        if (null != cookies && cookies.length > 0) {
+            for (int i = 0; i < cookies.length; i++) {//对cookies中的数据进行遍历，找到用户名、密码的数据
+                if (loginaccount_mark.equals(cookies[i].getName())) {
+                    loginaccount = cookies[i].getValue();
+                } else if (rememberme_mark.equals(cookies[i].getName())) {
+                    rememberme = cookies[i].getValue();
+                }
+            }
+        }
+
+        if (StringUtils.isNotEmpty(rememberme)&&rememberme.equals("YES")&&StringUtils.isNotEmpty(loginaccount)){
+            Base_admininfo base_admininfo=new Base_admininfo();
+            base_admininfo.setLoginaccount(loginaccount);
+            base_admininfo=base_admininfoMapper.selectOne(base_admininfo);
+            if (null!=base_admininfo){
+                password=base_admininfo.getPassword();
+            }
+        }
+
+
+        vo.setLoginaccount(loginaccount);
+        vo.setPassword(password);
+        result.setData(vo);
         changeResultToSuccess(result);
         return;
     }

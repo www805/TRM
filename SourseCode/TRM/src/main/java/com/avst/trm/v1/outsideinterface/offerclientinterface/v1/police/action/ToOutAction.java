@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,9 +53,9 @@ public class ToOutAction  extends BaseAction {
      * @return
      */
     @RequestMapping("/getLoginUser")
-    public RResult getLoginUser(@RequestBody ReqParam<UserloginParam> param,HttpServletRequest request){
+    public RResult getLoginUser(@RequestBody ReqParam<UserloginParam> param, HttpServletRequest request,HttpServletResponse response){
         RResult rresult=createNewResultOfFail();
-        mainService.userlogin(rresult, param, request);
+        mainService.userlogin(rresult, param, request,response);
         return rresult;
     }
 
