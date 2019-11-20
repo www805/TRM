@@ -165,6 +165,10 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
                     $("#mood_html").show();
                     $("#generatePhreport").show();
+
+                    $("#fd_ph_HTML").attr("class","layui-col-md5").show();
+                    $("#record_qw_HTML").attr("class","layui-col-md7").show();
+                    $("#ph_HTML").show();
                 }
             }
 
@@ -244,9 +248,6 @@ function callbackgetRecordById(data) {
             if (isNotEmpty(phDataBackVoParams)){
                 phdatabackList=phDataBackVoParams;
                 phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
-                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
-                $("#record_qw_HTML").attr("class","layui-col-md7").show();
-                $("#ph_HTML").show();
                 main1();//身心统计回放
             }
 
@@ -276,7 +277,7 @@ function callbackgetRecordById(data) {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
 
-            getRecordrealByRecordssid();右侧数据
+            getRecordrealByRecordssid();//右侧数据
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
