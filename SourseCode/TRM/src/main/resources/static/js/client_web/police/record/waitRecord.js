@@ -1997,7 +1997,7 @@ $(function () {
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-            if (usepolygraph==1&&isNotEmpty(myChart)){//使用测谎仪开启获取
+            if (usepolygraph==1){//使用测谎仪开启获取&&isNotEmpty(myChart)
                 getPolygraphdata();
             }
             if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){
