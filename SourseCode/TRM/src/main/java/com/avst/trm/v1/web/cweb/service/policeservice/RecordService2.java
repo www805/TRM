@@ -142,7 +142,7 @@ public class RecordService2 extends BaseService {
     private Police_userinfogradeMapper police_userinfogradeMapper;
 
 
-
+    //=================================================关于导出==================================================================start
     public void exportUdisk(RResult result, ExportUdiskParam param){
         ExportUdiskVO vo=new ExportUdiskVO();
         if (null==param){
@@ -276,7 +276,6 @@ public class RecordService2 extends BaseService {
         return;
     }
 
-    //导出U盘文件打包进度
     public void exportUdiskProgress(RResult result,ExportUdiskProgressParam param){
         ExportUdiskProgressVO vo=new ExportUdiskProgressVO();
         String ssid=param.getSsid();
@@ -300,12 +299,6 @@ public class RecordService2 extends BaseService {
         return;
     }
 
-    /**
-     * ==上传第三方先拼接默认模板里面的设备  后期需要更改
-     * @param result
-     * @param param
-     * @param session
-     */
     public void exportLightdisk(RResult result, ExportLightdiskParam param, HttpSession session){
         ExportLightdiskVO vo=new ExportLightdiskVO();
         if (null==param){
@@ -478,11 +471,6 @@ public class RecordService2 extends BaseService {
         return;
     }
 
-
-    /**
-     * 上传笔录相关信息并刻盘
-     * @return
-     */
     public RResult uploadRecordMessageToETAndTimeRecord(RResult result, UploadRecordMessageToETAndTimeRecordParam param){
 
         String iid="";
@@ -513,11 +501,6 @@ public class RecordService2 extends BaseService {
         return result;
     }
 
-
-    /**
-     * 打包回放（其实打包回放应该存储组件完成）
-     * @return
-     */
     public RResult gZIPVod(RResult result,ReqParam<GZIPVodParam> paramReqParam){
         GZIPVodParam param=paramReqParam.getParam();
         String iid=param.getIid();
@@ -619,13 +602,6 @@ public class RecordService2 extends BaseService {
         return result;
     }
 
-
-    /**
-     * 获取线程打包的进度
-     * @param result
-     * @param
-     * @return
-     */
     public RResult zIPVodProgress(RResult result, ReqParam<GZIPVodParam> paramReqParam){
         GZIPVodParam param=paramReqParam.getParam();
         String iid=param.getIid();
@@ -644,326 +620,6 @@ public class RecordService2 extends BaseService {
         }
         return result;
     }
-
-
-    public void getCaseStatistics(RResult result, ReqParam<GetCaseStatisticsParam> paramReqParam, HttpSession session){
-        GetCaseStatisticsVO vo=new GetCaseStatisticsVO();
-
-        GetCaseStatisticsParam param=paramReqParam.getParam();
-        if (null==param){
-            result.setMessage("参数为空");
-            return;
-        }
-        SimpleDateFormat df = new SimpleDateFormat("yyyy");//设置日期格式
-        Calendar c = Calendar.getInstance();
-
-        String years=param.getYearstype();
-        if (StringUtils.isBlank(years)){
-            years=df.format(new Date());
-        }
-
-        //仅仅看自己的案件
-        AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
-
-
-        EntityWrapper record_num_ew=new EntityWrapper();
-        record_num_ew.eq("c.creator",user.getSsid());
-        record_num_ew.ne("c.casebool",-1);
-        record_num_ew.ne("r.recordbool",-1);
-
-        EntityWrapper case_num_ew=new EntityWrapper();
-        case_num_ew.ne("casebool",-1);
-        case_num_ew.eq("creator",user.getSsid());
-
-        Integer record_num=police_arraignmentMapper.getArraignmentCount(record_num_ew);//审讯数量
-        Integer case_num= police_caseMapper.selectCount(case_num_ew);//案件数量
-
-
-        //================================================1
-        Integer case_startnum=police_caseMapper.getCase_startnum(case_num_ew);//案件开始提讯数量
-        Integer case_endnum=police_caseMapper.Getcase_endnum(case_num_ew);//案件未开始提讯数量
-
-        EntityWrapper record_num_ew2=new EntityWrapper();
-        record_num_ew2.eq("c.creator",user.getSsid());
-        record_num_ew2.ne("c.casebool",-1);
-        List<Integer> recordbools=new ArrayList<>();
-        recordbools.add(2);
-        recordbools.add(3);
-        record_num_ew2.in("r.recordbool",recordbools);
-        Integer record_finishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew2);//已完成笔录数量
-        EntityWrapper record_num_ew3=new EntityWrapper();
-        record_num_ew3.eq("c.creator",user.getSsid());
-        record_num_ew3.ne("c.casebool",-1);
-        record_num_ew3.eq("r.recordbool",1);
-        Integer record_unfinishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew3);//进行中的笔录数量
-        EntityWrapper record_num_ew4=new EntityWrapper();
-        record_num_ew4.eq("c.creator",user.getSsid());
-        record_num_ew4.ne("c.casebool",-1);
-        record_num_ew4.eq("r.recordbool",0);
-        Integer record_waitnum=police_arraignmentMapper.getArraignmentCount(record_num_ew4);///未开始笔录数量
-
-        vo.setCase_num(case_num==null?0:case_num);
-        vo.setRecord_num(record_num==null?0:record_num);
-        vo.setCase_startnum(case_startnum==null?0:case_startnum);
-        vo.setCase_endnum(case_endnum==null?0:case_endnum);
-        vo.setRecord_finishnum(record_finishnum==null?0:record_finishnum);
-        vo.setRecord_unfinishnum(record_unfinishnum==null?0:record_unfinishnum);
-        vo.setRecord_waitnum(record_waitnum==null?0:record_waitnum);
-        //================================================1
-
-        //-----------------------------------------------------------------------------------------------------2
-
-        List<Integer> case_monthnum_y=new ArrayList<>();//12月案件
-        List<Integer> record_monthnum_y=new ArrayList<>();//12月审讯
-        for (int i = 1; i < 13; i++) {
-            EntityWrapper case_monthnum_y_ew=new EntityWrapper();
-            case_monthnum_y_ew.ne("casebool",-1);
-            case_monthnum_y_ew.eq("creator",user.getSsid());
-            case_monthnum_y_ew.where("date_format(createtime,'%m')={0} and  date_format(createtime,'%Y')={1}",String.format("%02d",i),years);
-            Integer now_case=police_caseMapper.selectCount(case_monthnum_y_ew);
-            case_monthnum_y.add(now_case==null?0:now_case);
-
-            EntityWrapper record_monthnum_y_ew=new EntityWrapper();
-            record_monthnum_y_ew.eq("c.creator",user.getSsid());
-            record_monthnum_y_ew.ne("c.casebool",-1);
-            record_monthnum_y_ew.ne("r.recordbool",-1);
-            record_monthnum_y_ew.where("date_format(r.createtime,'%m')={0} and  date_format(r.createtime,'%Y')={1}",String.format("%02d",i),years);
-            Integer now_record=police_arraignmentMapper.getArraignmentCount(record_monthnum_y_ew);
-            record_monthnum_y.add(now_record==null?0:now_record);
-        }
-        vo.setRecord_monthnum_y(record_monthnum_y);
-        vo.setCase_monthnum_y(case_monthnum_y);
-        //-----------------------------------------------------------------------------------------------------2
-
-
-
-        //-----------------------------------------------------------------------------------------------------3
-        case_num_ew.where(" date_format(createtime,'%Y')={0}",years);
-        Integer case_num_y=police_caseMapper.selectCount(case_num_ew);//案件总数
-        Integer case_startnum_y=police_caseMapper.getCase_startnum(case_num_ew);//案件开始提讯数量
-        Integer case_endnum_y=police_caseMapper.Getcase_endnum(case_num_ew);//案件未开始提讯数量
-
-
-
-        //总
-        EntityWrapper recordparam3=new EntityWrapper();
-        recordparam3.eq("c.creator",user.getSsid());
-        recordparam3.ne("c.casebool",-1);
-        recordparam3.ne("r.recordbool",-1);
-        recordparam3.where(" date_format(r.createtime,'%Y')={0}",years);
-        Integer record_num_y=police_arraignmentMapper.getArraignmentCount(recordparam3);//笔录总数
-        //进行中
-        EntityWrapper recordparam1=new EntityWrapper();
-        recordparam1.eq("c.creator",user.getSsid());
-        recordparam1.ne("c.casebool",-1);
-        recordparam1.eq("r.recordbool",1);
-        recordparam1.where(" date_format(r.createtime,'%Y')={0}",years);
-        Integer record_unfinishnum_y= police_arraignmentMapper.getArraignmentCount(recordparam1);
-        //已完成
-        EntityWrapper recordparam2=new EntityWrapper();
-        recordparam2.eq("c.creator",user.getSsid());
-        recordparam2.ne("c.casebool",-1);
-        List<Integer> recordbools2=new ArrayList<>();
-        recordbools2.add(2);
-        recordbools2.add(3);
-        recordparam2.in("r.recordbool",recordbools2);
-        recordparam2.where(" date_format(r.createtime,'%Y')={0}",years);
-        Integer record_finishnum_y =police_arraignmentMapper.getArraignmentCount(recordparam2);
-        //未开始
-        EntityWrapper recordparam4=new EntityWrapper();
-        recordparam4.eq("c.creator",user.getSsid());
-        recordparam4.ne("c.casebool",-1);
-        recordparam4.eq("r.recordbool",0);
-        recordparam4.where(" date_format(r.createtime,'%Y')={0}",years);
-        Integer record_waitnum_y= police_arraignmentMapper.getArraignmentCount(recordparam4);
-        //-----------------------------------------------------------------------------------------------------3
-
-
-        vo.setCase_num_y(case_num_y==null?0:case_num_y);
-        vo.setRecord_num_y(record_num_y==null?0:record_num_y);
-        vo.setRecord_finishnum_y(record_finishnum_y==null?0:record_finishnum_y);
-        vo.setRecord_unfinishnum_y(record_unfinishnum_y==null?0:record_unfinishnum_y);
-        vo.setRecord_waitnum_y(record_waitnum_y==null?0:record_waitnum_y);
-        vo.setCase_startnum_y(case_startnum_y==null?0:case_startnum_y);
-        vo.setCase_endnum_y(case_endnum_y==null?0:case_endnum_y);
-
-
-        AppCacheParam appCacheParam = AppCache.getAppCacheParam();
-        vo.setClientname(appCacheParam.getTitle());
-
-
-
-
-        vo.setDq_y(years);
-        result.setData(vo);
-        changeResultToSuccess(result);
-        return;
-    }
-
-    /***************************笔录问答实时缓存****start***************************/
-    public void getRecordrealByRecordssid(RResult result,ReqParam<GetRecordrealByRecordssidParam> param){
-        GetRecordrealByRecordssidParam getRecordrealByRecordssidParam=param.getParam();
-        if (null==getRecordrealByRecordssidParam){
-            result.setMessage("参数为空");
-            return;
-        }
-        String recordssid=getRecordrealByRecordssidParam.getRecordssid();
-        if (null==recordssid){
-            result.setMessage("参数为空");
-            return;
-        }
-        List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
-        changeResultToSuccess(result);
-        result.setData(recordToProblems);
-        return;
-    }
-
-    public void setRecordreal(RResult result,ReqParam<SetRecordrealParam> param){
-        SetRecordrealParam setRecordrealParam=param.getParam();
-        if (null==setRecordrealParam){
-            result.setMessage("参数为空");
-            return;
-        }
-        String recordssid=setRecordrealParam.getRecordssid();
-        List<RecordToProblem> recordToProblems=setRecordrealParam.getRecordToProblems();
-        boolean bool=RecordrealingCache.setRecordreal(recordssid,recordToProblems);
-        if (bool){
-            changeResultToSuccess(result);
-            result.setData(1);
-        }
-        return;
-    }
-
-    public void getRecordreal_LastByRecordssid(RResult result, ReqParam<GetRecordreal_LastByRecordssidParam>param){
-        GetRecordreal_LastByRecordssidParam getRecordreal_lastByRecordssidParam=param.getParam();
-        if (null==getRecordreal_lastByRecordssidParam){
-            result.setMessage("参数为空");
-            return;
-        }
-        String recordssid=getRecordreal_lastByRecordssidParam.getRecordssid();
-        if (null==recordssid){
-            result.setMessage("参数为空");
-            return;
-        }
-        List<RecordToProblem> recordToProblems = Recordrealing_LastCache.getRecordreal_LastByRecordssid(recordssid);
-        changeResultToSuccess(result);
-        result.setData(recordToProblems);
-        return;
-    }
-
-    public void setRecordreal_Last(RResult result, ReqParam<SetRecordreal_LastParam>param){
-        SetRecordreal_LastParam setRecordreal_lastParam=param.getParam();
-        if (null==setRecordreal_lastParam){
-            result.setMessage("参数为空");
-            return;
-        }
-        String recordssid=setRecordreal_lastParam.getRecordssid();
-        List<RecordToProblem> recordToProblems=setRecordreal_lastParam.getRecordToProblems();
-        boolean bool= Recordrealing_LastCache.setRecordreal_Last(recordssid,recordToProblems);
-        if (bool){
-            changeResultToSuccess(result);
-            result.setData(1);
-        }
-        return;
-    }
-    //提供给笔录问答实时记录初始化使用
-    public  List<Record> initRecordrealingCache(){
-        EntityWrapper recordparam=new EntityWrapper();
-        List<Integer> recordbools=new ArrayList<>();
-        recordparam.ne("recordbool",-1);//笔录
-        List<Police_record> list=police_recordMapper.selectList(recordparam);
-        List<Record> records=new ArrayList<>();
-        if (null!=list&&list.size()>0){
-            for (Police_record police_record : list) {
-                Record record=new Record();
-                String  recordssid=police_record.getSsid();
-                EntityWrapper probleparam=new EntityWrapper();
-                probleparam.eq("r.ssid",recordssid);
-                probleparam.orderBy("p.ordernum",true);
-                probleparam.orderBy("p.createtime",true);
-                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
-                if (null!=problems&&problems.size()>0){
-                    for (RecordToProblem problem : problems) {
-                        EntityWrapper answerParam=new EntityWrapper();
-                        answerParam.eq("recordtoproblemssid",problem.getSsid());
-                        answerParam.orderBy("ordernum",true);
-                        answerParam.orderBy("createtime",true);
-                        List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                        if (null!=answers&&answers.size()>0){
-                            problem.setAnswers(answers);
-                        }
-                    }
-                    record.setSsid(recordssid);
-                    record.setProblems(problems);
-                    records.add(record);
-                }
-            }
-        }
-        return  records;
-    }
-
-
-    public void setRecordProtect(RResult result,ReqParam<SetRecordProtectParam> param){
-        RecordProtectParam recordProtectParam=new RecordProtectParam();
-
-        SetRecordProtectParam setRecordProtectParam=param.getParam();
-        if (null==setRecordProtectParam){
-            result.setMessage("参数为空");
-            return;
-        }
-
-        String recordssid=setRecordProtectParam.getRecordssid();
-        String mtssid=setRecordProtectParam.getMtssid();
-        List<RecordToProblem> recordToProblems=RecordrealingCache.getRecordrealByRecordssid(recordssid);
-        List<AsrTxtParam_toout> asrTxtParamToouts=new ArrayList<>();//语音识别实时数据
-        List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();//身心监测数据
-
-
-        if (StringUtils.isNotBlank(mtssid)){
-            //会议不为空，开始获取语音实时数据以及身心监测实时数据
-            //语音识别实时数据
-            RResult asr_result = this.createNewResultOfFail();
-            ReqParam reqParam=new ReqParam<>();
-            GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out=new GetMCaLLUserAsrTxtListParam_out();
-            getMCaLLUserAsrTxtListParam_out.setMcType(MCType.AVST);
-            getMCaLLUserAsrTxtListParam_out.setMtssid(mtssid);
-            reqParam.setParam(getMCaLLUserAsrTxtListParam_out);
-            asr_result =meetingControl.getMCaLLUserAsrTxtList(reqParam);
-            if (null != asr_result && asr_result.getActioncode().equals(Code.SUCCESS.toString())) {
-                asrTxtParamToouts=gson.fromJson(gson.toJson(asr_result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
-            }
-
-            //身心监测实时数据:暂时没有接口获取
-
-
-
-
-        }
-
-
-
-
-        if (StringUtils.isNotBlank(recordssid)){
-            recordProtectParam.setRecordToProblems(recordToProblems);
-            recordProtectParam.setRecordssid(recordssid);
-            recordProtectParam.setMtssid(mtssid);
-            recordProtectParam.setAsrTxtParamToouts(asrTxtParamToouts);
-            recordProtectParam.setPhDataBackVoParams(phDataBackVoParams);
-          boolean  setRecordecordProtectbool = RecordProtectCache.setRecordecordProtect(recordProtectParam);
-            if (setRecordecordProtectbool){
-                changeResultToSuccess(result);
-                result.setData(1);
-            }
-            //开始保存(缓存到本地)
-        }
-        return;
-    }
-
-
-
-
-
-    /***************************笔录问答实时缓存****end***************************/
 
     public RResult exportPdf(RResult result, ReqParam<ExportPdfParam> param){
         ExportPdfParam exportPdfParam=param.getParam();
@@ -1290,12 +946,6 @@ public class RecordService2 extends BaseService {
         return;
     }
 
-
-    /**
-     * 收集导出数据
-     * @param recordssid
-     * @return talkbool 是否为头文件
-     */
     public  Map<String,String> exportData(String recordssid,boolean talkbool) {
         Map<String, String> dataMap = new HashMap<String, String>();
         List<String>  gnlist= CommonCache.gnlist();
@@ -1445,99 +1095,99 @@ public class RecordService2 extends BaseService {
                 //talk 问答
                 talk = talk.replaceAll("\\<.*?>", "").replaceAll("\\&[a-zA-Z]{1,10};", "");
 
-            //获取法院相关的
-            if (gnlist.indexOf(SQVersion.FY_T)!= -1){
-                dataMap.put("${庭审时间}", occurrencetime == null ? "" : occurrencetime);
-                String mtmodelssidname="";
-                if (StringUtils.isNotEmpty(police_arraignment.getMtmodelssid())){
-                    List<Avstmt_modelAll> modelAlls=new ArrayList<>();
-                    GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
-                    getMc_modelParam_out.setMcType(MCType.AVST);
-                    getMc_modelParam_out.setModelssid(police_arraignment.getMtmodelssid());
-                    ReqParam reqParam=new ReqParam();
-                    reqParam.setParam(getMc_modelParam_out);
-                    try {
-                        RResult rr = meetingControl.getMc_model(reqParam);
-                        if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
-                            modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
-                            if (null!=modelAlls&&modelAlls.size()==1){
-                                mtmodelssidname=modelAlls.get(0).getExplain();
+                //获取法院相关的
+                if (gnlist.indexOf(SQVersion.FY_T)!= -1){
+                    dataMap.put("${庭审时间}", occurrencetime == null ? "" : occurrencetime);
+                    String mtmodelssidname="";
+                    if (StringUtils.isNotEmpty(police_arraignment.getMtmodelssid())){
+                        List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+                        GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+                        getMc_modelParam_out.setMcType(MCType.AVST);
+                        getMc_modelParam_out.setModelssid(police_arraignment.getMtmodelssid());
+                        ReqParam reqParam=new ReqParam();
+                        reqParam.setParam(getMc_modelParam_out);
+                        try {
+                            RResult rr = meetingControl.getMc_model(reqParam);
+                            if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                                if (null!=modelAlls&&modelAlls.size()==1){
+                                    mtmodelssidname=modelAlls.get(0).getExplain();
+                                }
+                                LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                            }else{
+                                LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
                             }
-                            LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
-                        }else{
-                            LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
-                }
-                dataMap.put("${庭审地点}", mtmodelssidname == null ? "" : mtmodelssidname);
-                if (StringUtils.isNotEmpty(police_arraignment.getSsid())){
-                    List<Usergrade> usergrades=new ArrayList<>();
-                    EntityWrapper arre=new EntityWrapper();
-                    arre.eq("arraignmentssid",police_arraignment.getSsid());
-                    List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
-                    if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
-                        for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
-                            String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
-                            String userssid_=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
-                            if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid_)){
-                                //查找等级
-                                Police_userinfograde police_userinfograde=new Police_userinfograde();
-                                police_userinfograde.setSsid(gradessid);
-                                police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+                    dataMap.put("${庭审地点}", mtmodelssidname == null ? "" : mtmodelssidname);
+                    if (StringUtils.isNotEmpty(police_arraignment.getSsid())){
+                        List<Usergrade> usergrades=new ArrayList<>();
+                        EntityWrapper arre=new EntityWrapper();
+                        arre.eq("arraignmentssid",police_arraignment.getSsid());
+                        List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                        if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                            for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
+                                String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
+                                String userssid_=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
+                                if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid_)){
+                                    //查找等级
+                                    Police_userinfograde police_userinfograde=new Police_userinfograde();
+                                    police_userinfograde.setSsid(gradessid);
+                                    police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
 
 
-                                //查找用户:人员表
-                                Police_userinfo police_userinfo_=new Police_userinfo();
-                                police_userinfo_.setSsid(userssid_);
-                                police_userinfo_=police_userinfoMapper.selectOne(police_userinfo_);
+                                    //查找用户:人员表
+                                    Police_userinfo police_userinfo_=new Police_userinfo();
+                                    police_userinfo_.setSsid(userssid_);
+                                    police_userinfo_=police_userinfoMapper.selectOne(police_userinfo_);
 
-                                //查找用户：管理员表
-                                Base_admininfo admininfo=new Base_admininfo();
-                                admininfo.setSsid(userssid_);
-                                admininfo=base_admininfoMapper.selectOne(admininfo);
+                                    //查找用户：管理员表
+                                    Base_admininfo admininfo=new Base_admininfo();
+                                    admininfo.setSsid(userssid_);
+                                    admininfo=base_admininfoMapper.selectOne(admininfo);
 
-                                if (null!=police_userinfograde){
-                                    Usergrade usergrade=new Usergrade();
-                                    usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
-                                    usergrade.setGrade(police_userinfograde.getGrade());
-                                    usergrade.setGradename(police_userinfograde.getGradename());
-                                    usergrade.setUserssid(userssid_);
-                                    if (null!=police_userinfo_){
-                                        usergrade.setUsername(police_userinfo_.getUsername());
-                                        usergrades.add(usergrade);
-                                    }else if (null!=admininfo){
-                                        usergrade.setUsername(admininfo.getUsername());
-                                        usergrades.add(usergrade);
+                                    if (null!=police_userinfograde){
+                                        Usergrade usergrade=new Usergrade();
+                                        usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
+                                        usergrade.setGrade(police_userinfograde.getGrade());
+                                        usergrade.setGradename(police_userinfograde.getGradename());
+                                        usergrade.setUserssid(userssid_);
+                                        if (null!=police_userinfo_){
+                                            usergrade.setUsername(police_userinfo_.getUsername());
+                                            usergrades.add(usergrade);
+                                        }else if (null!=admininfo){
+                                            usergrade.setUsername(admininfo.getUsername());
+                                            usergrades.add(usergrade);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
 
-                    if (null!=usergrades&&usergrades.size()>0){
-                        List<Usergrade> newarr=new ArrayList<>();
-                        for (int i = 0; i < usergrades.size(); i++) {
-                             boolean bool=true;
-                            for (int j = 0; j < newarr.size(); j++) {
-                                if((null!=usergrades.get(i).getGrade()&&null!=newarr.get(j).getGrade()&& usergrades.get(i).getGrade()==newarr.get(j).getGrade())){
-                                    newarr.get(j).setUsername(newarr.get(j).getUsername()+"、"+usergrades.get(i).getUsername());
-                                    bool=false;
+                        if (null!=usergrades&&usergrades.size()>0){
+                            List<Usergrade> newarr=new ArrayList<>();
+                            for (int i = 0; i < usergrades.size(); i++) {
+                                boolean bool=true;
+                                for (int j = 0; j < newarr.size(); j++) {
+                                    if((null!=usergrades.get(i).getGrade()&&null!=newarr.get(j).getGrade()&& usergrades.get(i).getGrade()==newarr.get(j).getGrade())){
+                                        newarr.get(j).setUsername(newarr.get(j).getUsername()+"、"+usergrades.get(i).getUsername());
+                                        bool=false;
+                                    }
+                                }
+                                if (bool){
+                                    newarr.add(usergrades.get(i));
                                 }
                             }
-                            if (bool){
-                                newarr.add(usergrades.get(i));
-                            }
-                        }
-                        for (Usergrade usergrade : newarr) {
-                            if (StringUtils.isNotEmpty(usergrade.getGradename())){
-                                dataMap.put("${"+usergrade.getGradename()+"}", usergrade.getUsername() == null ? "" : usergrade.getUsername());
+                            for (Usergrade usergrade : newarr) {
+                                if (StringUtils.isNotEmpty(usergrade.getGradename())){
+                                    dataMap.put("${"+usergrade.getGradename()+"}", usergrade.getUsername() == null ? "" : usergrade.getUsername());
+                                }
                             }
                         }
                     }
                 }
-            }
 
                 dataMap.put("${笔录标题}", recordtypename == null ? "" : recordtypename);
                 dataMap.put("${开始时间}", recordstarttime == null ? "" : recordstarttime);
@@ -1571,9 +1221,169 @@ public class RecordService2 extends BaseService {
         }
         return dataMap;
     }
+    //=================================================关于导出=======================================================================end
 
 
-    /******************************笔录word模板******start*********************/
+    //================================================笔录问答实时缓存=============================================================start
+    public void getRecordrealByRecordssid(RResult result,ReqParam<GetRecordrealByRecordssidParam> param){
+        GetRecordrealByRecordssidParam getRecordrealByRecordssidParam=param.getParam();
+        if (null==getRecordrealByRecordssidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=getRecordrealByRecordssidParam.getRecordssid();
+        if (null==recordssid){
+            result.setMessage("参数为空");
+            return;
+        }
+        List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
+        changeResultToSuccess(result);
+        result.setData(recordToProblems);
+        return;
+    }
+
+    public void setRecordreal(RResult result,ReqParam<SetRecordrealParam> param){
+        SetRecordrealParam setRecordrealParam=param.getParam();
+        if (null==setRecordrealParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=setRecordrealParam.getRecordssid();
+        List<RecordToProblem> recordToProblems=setRecordrealParam.getRecordToProblems();
+        boolean bool=RecordrealingCache.setRecordreal(recordssid,recordToProblems);
+        if (bool){
+            changeResultToSuccess(result);
+            result.setData(1);
+        }
+        return;
+    }
+
+    public void getRecordreal_LastByRecordssid(RResult result, ReqParam<GetRecordreal_LastByRecordssidParam>param){
+        GetRecordreal_LastByRecordssidParam getRecordreal_lastByRecordssidParam=param.getParam();
+        if (null==getRecordreal_lastByRecordssidParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=getRecordreal_lastByRecordssidParam.getRecordssid();
+        if (null==recordssid){
+            result.setMessage("参数为空");
+            return;
+        }
+        List<RecordToProblem> recordToProblems = Recordrealing_LastCache.getRecordreal_LastByRecordssid(recordssid);
+        changeResultToSuccess(result);
+        result.setData(recordToProblems);
+        return;
+    }
+
+    public void setRecordreal_Last(RResult result, ReqParam<SetRecordreal_LastParam>param){
+        SetRecordreal_LastParam setRecordreal_lastParam=param.getParam();
+        if (null==setRecordreal_lastParam){
+            result.setMessage("参数为空");
+            return;
+        }
+        String recordssid=setRecordreal_lastParam.getRecordssid();
+        List<RecordToProblem> recordToProblems=setRecordreal_lastParam.getRecordToProblems();
+        boolean bool= Recordrealing_LastCache.setRecordreal_Last(recordssid,recordToProblems);
+        if (bool){
+            changeResultToSuccess(result);
+            result.setData(1);
+        }
+        return;
+    }
+    //提供给笔录问答实时记录初始化使用
+    public  List<Record> initRecordrealingCache(){
+        EntityWrapper recordparam=new EntityWrapper();
+        List<Integer> recordbools=new ArrayList<>();
+        recordparam.ne("recordbool",-1);//笔录
+        List<Police_record> list=police_recordMapper.selectList(recordparam);
+        List<Record> records=new ArrayList<>();
+        if (null!=list&&list.size()>0){
+            for (Police_record police_record : list) {
+                Record record=new Record();
+                String  recordssid=police_record.getSsid();
+                EntityWrapper probleparam=new EntityWrapper();
+                probleparam.eq("r.ssid",recordssid);
+                probleparam.orderBy("p.ordernum",true);
+                probleparam.orderBy("p.createtime",true);
+                List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
+                if (null!=problems&&problems.size()>0){
+                    for (RecordToProblem problem : problems) {
+                        EntityWrapper answerParam=new EntityWrapper();
+                        answerParam.eq("recordtoproblemssid",problem.getSsid());
+                        answerParam.orderBy("ordernum",true);
+                        answerParam.orderBy("createtime",true);
+                        List<Police_answer> answers=police_answerMapper.selectList(answerParam);
+                        if (null!=answers&&answers.size()>0){
+                            problem.setAnswers(answers);
+                        }
+                    }
+                    record.setSsid(recordssid);
+                    record.setProblems(problems);
+                    records.add(record);
+                }
+            }
+        }
+        return  records;
+    }
+
+    public void setRecordProtect(RResult result,ReqParam<SetRecordProtectParam> param){
+        RecordProtectParam recordProtectParam=new RecordProtectParam();
+
+        SetRecordProtectParam setRecordProtectParam=param.getParam();
+        if (null==setRecordProtectParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=setRecordProtectParam.getRecordssid();
+        String mtssid=setRecordProtectParam.getMtssid();
+        List<RecordToProblem> recordToProblems=RecordrealingCache.getRecordrealByRecordssid(recordssid);
+        List<AsrTxtParam_toout> asrTxtParamToouts=new ArrayList<>();//语音识别实时数据
+        List<PHDataBackVoParam> phDataBackVoParams=new ArrayList<>();//身心监测数据
+
+
+        if (StringUtils.isNotBlank(mtssid)){
+            //会议不为空，开始获取语音实时数据以及身心监测实时数据
+            //语音识别实时数据
+            RResult asr_result = this.createNewResultOfFail();
+            ReqParam reqParam=new ReqParam<>();
+            GetMCaLLUserAsrTxtListParam_out getMCaLLUserAsrTxtListParam_out=new GetMCaLLUserAsrTxtListParam_out();
+            getMCaLLUserAsrTxtListParam_out.setMcType(MCType.AVST);
+            getMCaLLUserAsrTxtListParam_out.setMtssid(mtssid);
+            reqParam.setParam(getMCaLLUserAsrTxtListParam_out);
+            asr_result =meetingControl.getMCaLLUserAsrTxtList(reqParam);
+            if (null != asr_result && asr_result.getActioncode().equals(Code.SUCCESS.toString())) {
+                asrTxtParamToouts=gson.fromJson(gson.toJson(asr_result.getData()), new TypeToken<List<AsrTxtParam_toout>>(){}.getType());
+            }
+
+            //身心监测实时数据:暂时没有接口获取
+
+
+
+
+        }
+
+
+
+
+        if (StringUtils.isNotBlank(recordssid)){
+            recordProtectParam.setRecordToProblems(recordToProblems);
+            recordProtectParam.setRecordssid(recordssid);
+            recordProtectParam.setMtssid(mtssid);
+            recordProtectParam.setAsrTxtParamToouts(asrTxtParamToouts);
+            recordProtectParam.setPhDataBackVoParams(phDataBackVoParams);
+          boolean  setRecordecordProtectbool = RecordProtectCache.setRecordecordProtect(recordProtectParam);
+            if (setRecordecordProtectbool){
+                changeResultToSuccess(result);
+                result.setData(1);
+            }
+            //开始保存(缓存到本地)
+        }
+        return;
+    }
+    //================================================笔录问答实时缓存============================================================end
+
+    //================================================笔录word模板=================================================================start
     public void getWordTemplateList(RResult result,ReqParam<GetWordTemplateListParam> param){
         GetWordTemplateListParam getWordTemplateListParam=param.getParam();
         if (null==getWordTemplateListParam){
@@ -2043,5 +1853,5 @@ public class RecordService2 extends BaseService {
         changeResultToSuccess(result);
         return;
     }
-/******************************笔录word模板*****end**********************/
+    //================================================笔录word模板=================================================================end
 }

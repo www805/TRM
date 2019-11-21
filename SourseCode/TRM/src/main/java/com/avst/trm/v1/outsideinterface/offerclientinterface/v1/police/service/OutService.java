@@ -42,6 +42,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckStartRecordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
+import com.avst.trm.v1.web.cweb.service.policeservice.ArraignmentService;
 import com.avst.trm.v1.web.cweb.service.policeservice.EquipmentService;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
 import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
@@ -86,7 +87,7 @@ public class OutService  extends BaseService {
     private MainService mainService;
 
     @Autowired
-    private RecordService recordService;
+    private ArraignmentService arraignmentService;
 
     @Autowired
     private EquipmentService equipmentService;
@@ -168,7 +169,7 @@ public class OutService  extends BaseService {
             checkStartRecordParam.setAdmininfos_ssid(adminssids);
             RResult checkrecordforuser_rr=new RResult();
             Integer[] recordbools=new Integer[]{1};
-            boolean bool = recordService.checkRecordForUser(checkrecordforuser_rr,checkStartRecordParam,user.getSsid(),recordbools);
+            boolean bool = arraignmentService.checkRecordForUser(checkrecordforuser_rr,checkStartRecordParam,user.getSsid(),recordbools);
             if (!bool){
                 CheckStartRecordVO checkStartRecordVO=gson.fromJson(gson.toJson(checkrecordforuser_rr.getData()),CheckStartRecordVO.class);
                 vo.setCheckStartRecordVO(checkStartRecordVO);

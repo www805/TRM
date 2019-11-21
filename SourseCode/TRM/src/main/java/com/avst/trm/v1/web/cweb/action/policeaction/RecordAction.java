@@ -10,9 +10,7 @@ import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.feignclient.ec.req.*;
 import com.avst.trm.v1.feignclient.mc.req.GetMCAsrTxtBackParam_out;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
-import com.avst.trm.v1.web.cweb.service.policeservice.EquipmentService;
-import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
-import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
+import com.avst.trm.v1.web.cweb.service.policeservice.*;
 import com.avst.trm.v1.web.cweb.vo.policevo.ExportWordVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +26,18 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/cweb/police/record")
 public class RecordAction extends BaseAction {
+
     @Autowired
     private RecordService recordService;
 
     @Autowired
     private RecordService2 recordService2;
 
+    @Autowired
+    private CaseService caseService;
+
+    @Autowired
+    private ArraignmentService arraignmentService;
 
 
 
@@ -203,19 +207,6 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
-    @RequestMapping(value = "/addRecordTemplate")
-    public RResult addRecordTemplate(@RequestBody ReqParam param){
-        RResult result=this.createNewResultOfFail();
-        if (null==param){
-            result.setMessage("参数为空");
-        }else if (!checkToken(param.getToken())){
-            result.setMessage("授权异常");
-        }else{
-            recordService.addRecordTemplate(result,param);
-        }
-        result.setEndtime(DateUtil.getDateAndMinute());
-        return result;
-    }
 
     @RequestMapping(value = "/addCaseToArraignment")
     public RResult addCaseToArraignment(@RequestBody ReqParam<AddCaseToArraignmentParam> param, HttpSession session){
@@ -226,7 +217,7 @@ public class RecordAction extends BaseAction {
             result.setMessage("授权异常");
         }else{
 
-            recordService.addCaseToArraignment(result,param,session);
+            arraignmentService.addCaseToArraignment(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -246,7 +237,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getUserByCard(result,param,httpSession);
+            arraignmentService.getUserByCard(result,param,httpSession);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -266,7 +257,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-           recordService.getCaseById(result,param,session);
+            caseService.getCaseById(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -285,7 +276,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getCards(result,param);
+            arraignmentService.getCards(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -322,7 +313,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getTime(result,param);
+            arraignmentService.getTime(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -379,7 +370,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.updateArraignment(result,param);
+            arraignmentService.updateArraignment(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -396,7 +387,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getCases(result,param,session);
+            caseService.getCases(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -413,7 +404,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.addCase(result,param,session);
+            caseService.addCase(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -430,7 +421,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.updateCase(result,param);
+            caseService.updateCase(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -447,7 +438,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getCaseBySsid(result,param);
+            caseService.getCaseBySsid(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -464,7 +455,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.getUserinfoList(result,param);
+            arraignmentService.getUserinfoList(result,param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -483,7 +474,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.addUser(result,param,session);
+            arraignmentService.addUser(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -581,7 +572,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.changeboolCase(result,param,session);
+            caseService.changeboolCase(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -616,7 +607,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else {
-            recordService.gnlist(result, param);
+            arraignmentService.gnlist(result, param);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -817,7 +808,7 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService2.getCaseStatistics(result,param,session);
+            caseService.getCaseStatistics(result,param,session);
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
@@ -845,7 +836,27 @@ public class RecordAction extends BaseAction {
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            recordService.updateCaseToUser(result,param);
+            arraignmentService.updateCaseToUser(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+    /**
+     * 根据案件编号获取案件相关信息
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getCasesByCasenum")
+    public RResult getCasesByCasenum(@RequestBody ReqParam<GetCasesByCasenumParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            caseService.getCasesByCasenum(result,param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
