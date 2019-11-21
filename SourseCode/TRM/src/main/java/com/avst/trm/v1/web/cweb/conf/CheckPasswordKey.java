@@ -50,13 +50,17 @@ public class CheckPasswordKey {
         }
         if (StringUtils.isNotBlank(encryptedtext)){
             //检测是否存在key
-            LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__前："+encryptedtext);
-             encryptedtext= EncodeUtil.encoderByDES(encryptedtext);
-             if (null!=encryptedtext){
-                 LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__后："+encryptedtext);
-                 ReadWriteFile.writeTxtFile(encryptedtext,newkey_path,"utf8");
-                 return true;
-             }
+            try {
+                LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__前："+encryptedtext);
+                encryptedtext= EncodeUtil.encoderByDES(encryptedtext);
+                if (null!=encryptedtext){
+                    LogUtil.intoLog(1,CheckPasswordKey.class,"密码加密___加密文本__后："+encryptedtext);
+                    ReadWriteFile.writeTxtFile(encryptedtext,newkey_path,"utf8");
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
@@ -80,7 +84,11 @@ public class CheckPasswordKey {
         }
 
         LogUtil.intoLog(1,CheckPasswordKey.class,"密码解密___解密文本__前："+decryptiontext);
-        decryptiontext= DeCodeUtil.decoderByDES(decryptiontext);
+        try {
+            decryptiontext= DeCodeUtil.decoderByDES(decryptiontext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         LogUtil.intoLog(1,CheckPasswordKey.class,"密码解密___解密文本__后："+decryptiontext);
         Gson gson=new Gson();
         Map<String,String> decryptionMap = null;

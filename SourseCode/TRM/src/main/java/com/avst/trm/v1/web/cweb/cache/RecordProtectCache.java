@@ -59,7 +59,11 @@ public class RecordProtectCache {
                     String filename=file.getName();
                     String recordProtectParam_string =    ReadWriteFile.readTxtFileToStr(path_);
                     if (null!=recordProtectParam_string){
-                        recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        try {
+                            recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
                         if(null!=recordProtectParam){
                             recordProtectList.add(recordProtectParam);
@@ -91,7 +95,11 @@ public class RecordProtectCache {
                 if (StringUtils.isNotBlank(filename)&&filename.equals(recordssid)){
                     String recordProtectParam_string =    ReadWriteFile.readTxtFileToStr(path_);
                     if (null!=recordProtectParam_string){
-                        recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        try {
+                            recordProtectParam_string= DeCodeUtil.decoderByDES(recordProtectParam_string);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         RecordProtectParam recordProtectParam = gson.fromJson(recordProtectParam_string, RecordProtectParam.class);//把JSON字符串转为对象
                         if(null!=recordProtectParam){
                             return recordProtectParam;
@@ -117,7 +125,11 @@ public class RecordProtectCache {
         try {
             String recordProtectParam_string = gson.toJson(recordProtectParam);
             if (null!=recordProtectParam_string){
-                recordProtectParam_string= EncodeUtil.encoderByDES(recordProtectParam_string);
+                try {
+                    recordProtectParam_string= EncodeUtil.encoderByDES(recordProtectParam_string);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 ReadWriteFile.writeTxtFile(recordProtectParam_string,recordcachepath+recordProtectParam.getRecordssid(),"utf8");
             }
             return true;
