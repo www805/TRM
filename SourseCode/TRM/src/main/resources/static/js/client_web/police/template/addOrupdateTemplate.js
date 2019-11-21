@@ -201,7 +201,7 @@ function callAddOrUpdate(data){
             // window.location.reload();
             // console.log(data);
             layer.msg("操作成功",{icon: 6});
-            setTimeout("window.location.reload();layer.close(modelban_index);",1500);//getProblems_init(1,10);
+            setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);//getProblems_init(1,10);window.location.reload();
         }
     }else{
         if (data.message.search("存在")) {
