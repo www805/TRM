@@ -721,7 +721,7 @@ function setcases(cases){
         }
         
         if (isNotEmpty(dqcasessid)){
-            $("#casename").val(dqcasessid);
+            $("#casename").val("");
             $("#cause").val("");
             $("#casenum").val("");
             $("#caseway").val("");
@@ -731,12 +731,12 @@ function setcases(cases){
                 for (var i = 0; i < cases.length; i++) {
                     var c = cases[i];
                     if (dqcasessid==c.ssid){
+                        $("#casename").val(c.casename);
                         var casename=$("#casename").find("option:selected").text();
                         var recordtypename=$("td[recordtypebool='true']",parent.document).text();
                         var username=$("#username").val();
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
-
                         $("#cause").val(c.cause);
                         $("#casenum").val(c.casenum);
                         if (isNotEmpty(c.starttime)){

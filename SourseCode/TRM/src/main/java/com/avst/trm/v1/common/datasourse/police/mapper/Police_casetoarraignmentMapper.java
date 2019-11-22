@@ -20,7 +20,7 @@ import java.util.List;
  */
 public interface Police_casetoarraignmentMapper extends BaseMapper<Police_casetoarraignment> {
 
-    @Select("select a.*,r.recordname,r.recordbool,r.recordtypessid,au1.username as adminname ,au2.username as recordadminname,r.ssid as recordssid,rt.typename as recordtypename,r.gz_iid as iid" +
+    @Select("select a.*,r.wordtemplatessid as wordtemplatessid,r.recordname,r.recordbool,r.recordtypessid,au1.username as adminname ,au2.username as recordadminname,r.ssid as recordssid,rt.typename as recordtypename,r.gz_iid as iid" +
             " from police_arraignment a " +
             " left join police_casetoarraignment cr on cr.arraignmentssid=a.ssid " +
             " left join base_admininfo au1 on au1.ssid=a.adminssid " +

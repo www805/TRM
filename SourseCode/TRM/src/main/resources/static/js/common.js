@@ -1554,16 +1554,23 @@ function getIDCardreader() {
 
 //*****************************************************关于身份证**********************************************//
 
-
-
+//========================================js通用常量:需要和java文件的同步========================start
 //存储在cookie的记住密码
 var CLIENT_LOGINACCOUNT="CLIENT_LOGINACCOUNT";
 var CLIENT_REMEMBERME="CLIENT_REMEMBERME";
 var SERVER_LOGINACCOUNT="SERVER_LOGINACCOUNT";
 var SERVER_REMEMBERME="SERVER_REMEMBERME";
 
+//多角色默认ssid
+var USERINFOGRADE1="userinfograde1";//原告
+var USERINFOGRADE2="userinfograde2";//被告
+var USERINFOGRADE3="userinfograde3";//被告诉讼代理人
+var USERINFOGRADE4="userinfograde4";//审判长
+var USERINFOGRADE5="userinfograde5";//书记员
+var USERINFOGRADE6="userinfograde6";//陪审员
+var USERINFOGRADE7="userinfograde7";//审判员
+var USERINFOGRADE8="userinfograde8";//原告诉讼代理人
 
-//js通用常量:需要和java文件的同步
 var S_V = "s_v";//单机版
 var O_V = "o_v";//联机版
 var C_E = "c_e";//客户端
@@ -1576,12 +1583,12 @@ var AVST_T = "avst_t";//顺泰伟诚
 var COMMON_O = "common_o";//通用版
 var HK_O = "hk_o";//海康
 var NX_O = "nx_o";//宁夏
-
+//授权功能
 var RECORD_F="record_f";
 var ASR_F="asr_f";
 var TTS_F="tts_f";
 var FD_F="fd_f";
 var PH_F="ph_f";
-
+//========================================js通用常量:需要和java文件的同步========================end
 
 

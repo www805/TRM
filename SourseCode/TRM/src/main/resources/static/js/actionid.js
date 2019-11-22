@@ -419,6 +419,7 @@ function getactionid_manage() {
         beforeCourt_torecordIndex:"beforeCourt_torecordIndex",
         beforeCourt_getDefaultMtModelssid:"beforeCourt_getDefaultMtModelssid",
         beforeCourt_getWordTemplates:"beforeCourt_getWordTemplates",
+        beforeCourt_getCasesByCasenum:"beforeCourt_getCasesByCasenum",
 
         userinfogradeIndex_getUserinfogradePage:"userinfogradeIndex_getUserinfogradePage",
         userinfogradeIndex_toAddOrUpdateUserinfograde:"userinfogradeIndex_toAddOrUpdateUserinfograde",

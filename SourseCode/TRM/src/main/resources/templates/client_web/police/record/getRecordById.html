@@ -501,43 +501,6 @@
                 getPhreportsByParam();
             }
         });
-
-        form.on('switch(phreportshowhide)', function(data){
-            if (!isNotEmpty(dq_play)){
-                layer.msg("暂未找到视频，未能出现情绪报告");
-                return;
-            }
-           if (!isNotEmpty(phdatabackList)){
-                    layer.msg("暂未找到身心监测数据，未能出现情绪报告");
-                    return;
-            }
-            var bool=data.elem.checked;
-            if (bool) {
-                //显示checkbox
-                $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
-                $("#uploadPhreport").css("visibility","visible");
-                $("#recordreals #dqphdate").css("display", "block");
-                $("#recordreals div").each(function () {
-                    var talkclass=$(this).attr("class");
-                  if (talkclass=="atalk"){
-                        $("p",this).prepend('<input type="checkbox" name="" lay-skin="primary" >');
-                    }else if (talkclass=="btalk"){
-                      $("#recordreals .layui-badge").css("visibility", "visible");
-                        $("p",this).append('<input type="checkbox" name="" lay-skin="primary" >');
-                     }
-                });
-                form.render();
-            }else {
-                //隐藏并且checkbox
-                $("#phreportshowhidemsg").text("（提示:开启可勾选生成情绪报告)");
-                $("#uploadPhreport").css("visibility","hidden");
-                $("#recordreals .layui-badge").css("visibility", "hidden");
-                $("#recordreals #dqphdate").css("display", "none");
-                $("#recordreals input[type=checkbox]").remove();
-                $("#recordreals .layui-form-checkbox").remove();
-            }
-
-        });
     });
 
 

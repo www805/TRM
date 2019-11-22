@@ -1150,9 +1150,7 @@ public class RecordService2 extends BaseService {
 
                                     if (null!=police_userinfograde){
                                         Usergrade usergrade=new Usergrade();
-                                        usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
-                                        usergrade.setGrade(police_userinfograde.getGrade());
-                                        usergrade.setGradename(police_userinfograde.getGradename());
+                                        usergrade=gson.fromJson(gson.toJson(police_userinfograde), Usergrade.class);
                                         usergrade.setUserssid(userssid_);
                                         if (null!=police_userinfo_){
                                             usergrade.setUsername(police_userinfo_.getUsername());

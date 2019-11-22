@@ -165,10 +165,6 @@ function callbackgetRecordById(data) {
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
                     $("#mood_html").show();
                     $("#generatePhreport").show();
-
-                    $("#fd_ph_HTML").attr("class","layui-col-md5").show();
-                    $("#record_qw_HTML").attr("class","layui-col-md7").show();
-                    $("#ph_HTML").show();
                 }
             }
 
@@ -243,15 +239,20 @@ function callbackgetRecordById(data) {
                 }
             }
 
+            getRecordrealByRecordssid();//右侧数据
+            setInterval( function() {
+                setRecordreal();//5秒实时保存
+            },3000);
 
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){
                 phdatabackList=phDataBackVoParams;
                 phSubtracSeconds=phdatabackList[0].phSubtracSeconds==null?0:phdatabackList[0].phSubtracSeconds;
+                $("#fd_ph_HTML").attr("class","layui-col-md5").show();
+                $("#record_qw_HTML").attr("class","layui-col-md7").show();
+                $("#ph_HTML").show();
                 main1();//身心统计回放
             }
-
-
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
@@ -260,7 +261,6 @@ function callbackgetRecordById(data) {
                 $("#fd_HTML").show();
                 set_getPlayUrl(getPlayUrlVO);
             }else {
-                //此处加入定时器
                 if (isNotEmpty(iid)){
                     getplayurl_setinterval= setInterval(function () {
                         getPlayUrl();
@@ -276,8 +276,6 @@ function callbackgetRecordById(data) {
             }else  {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
-
-            getRecordrealByRecordssid();//右侧数据
 
             //提讯数据
             var police_arraignment=record.police_arraignment;
@@ -324,88 +322,11 @@ function set_getRecord(data){
 
 
                         //情绪报告找到紧张值最高点=======================================================================start:只需要正对答：摄像头对着被问人的
-                        //身心监测数据时间点已在后台计算好差值，首先先获取asr差值后的数据
                         var ph_stress=-1;//最高点 -1为不正常数据
                         var dqphdate="";//找出来最大值的全部data
-                        if (usertype==1){
-                            subtractime_q=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                        }else if (usertype==2){
-                            subtractime_w=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-
-                            if (isNotEmpty(phdatabackList)&&isNotEmpty(starttime)&&isNotEmpty(dq_play)){
-                                var  locationtime=(first_playstarttime+starttime)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
-                                locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-                                //获取该时间的前五秒和后五秒
-                                var arrph=[];//找出来的集合
-
-                                for (var j = 0; j < phdatabackList.length; j++) {
-                                    var phdataback = phdatabackList[j];
-                                    var num=phdataback.num;
-                                    var phBataBackJson=phdataback.phBataBackJson;
-                                    var obj=eval("(" + phBataBackJson + ")");
-                                    var startph=num;
-                                    var endph=0;
-                                    if (j>= phdatabackList.length-1) {
-                                        endph= num;//下一个区间
-                                    }else {
-                                        endph=phdatabackList[j+1].num;
-                                    }
-                                    if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
-                                        var start_i=(j-4)<0?0:(j-4);
-                                        var end_i=(j+6)>=phdatabackList.length?phdatabackList.length:(j+6);
-                                        arrph= phdatabackList.slice(start_i,end_i);
-                                    }
-                                }
-
-
-                                if (isNotEmpty(arrph)){
-                                    var max_stress = 0;
-                                    var max_stress_i = 0;
-                                    for (var z = 0; z < arrph.length; z++) {
-                                        var data = arrph[z];
-                                        if(isNotEmpty(data)){
-                                            var phBataBackJson=data.phBataBackJson;
-                                            var obj=eval("(" + phBataBackJson + ")");
-                                            if (isNotEmpty(obj)) {//&&obj.hr_snr>=0.1
-                                                var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
-                                                var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);
-                                                if (stress > max_stress) {
-                                                    max_stress =stress;
-                                                    max_stress_i = z;
-                                                }
-                                            }
-                                        }
-                                    }
-
-
-                                    ph_stress=max_stress==null?0:max_stress;
-                                    dqphdate=arrph[max_stress_i]==null?"":arrph[max_stress_i];
-                                    if (isNotEmpty(dqphdate)){
-                                        var phBataBackJson=dqphdate.phBataBackJson;
-                                        var obj=eval("(" + phBataBackJson + ")");
-                                        var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
-                                        var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
-                                        var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
-                                        var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
-                                        var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
-                                        var spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
-                                        var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
-                                        dqphdate="(紧张值:"+stress+";呼吸次数:"+br+";心率:"+hr+";血氧:"+spo2+";血压变化:"+bp+")";
-                                    }
-                                }
-                            }
-
-                        }
-
-
-
-
-
-                        //情绪报告找到紧张值最高点=======================================================================start
-                        var phbadge="background-color: #00CD68 !important";
-                      if (ph_stress>=0&&ph_stress<=30){
+                       var phbadge="background-color: #00CD68 !important";
+                       var phtitle="最高紧张值";
+                       if (ph_stress>=0&&ph_stress<=30){
                           phbadge="background-color: #00CD68 !important";
                         }else if (ph_stress>30&&ph_stress<=50){
                           phbadge="background-color: #e4e920 !important";
@@ -413,14 +334,19 @@ function set_getRecord(data){
                           phbadge="background-color: #ff840f !important";
                         }else if (ph_stress>70&&ph_stress<=100){
                           phbadge="background-color: #e90717 !important";
+                        }else {
+                          phtitle="未找到最高值";
                         }
+                        //情绪报告找到紧张值最高点=======================================================================start
 
                         //实时会议数据
                         if (usertype==1){
                             //询问人没有情绪报告
+                            subtractime_q=subtractime==null?0:subtractime;
+                            starttime=parseFloat(starttime)+parseFloat(subtractime_q);
                             recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
                                                             <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
-                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none; '+phbadge+' " title="紧张值">'+ph_stress+'</a></p>\
+                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none; '+phbadge+' " title='+phtitle+'>'+ph_stress+'</a></p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
                             /*recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
@@ -428,9 +354,11 @@ function set_getRecord(data){
                                                             <span>'+translatext+'</span> \
                                                       </div >';*/
                         }else if (usertype==2){
+                            subtractime_w=subtractime==null?0:subtractime;
+                            starttime=parseFloat(starttime)+parseFloat(subtractime_w);
                             recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate='+dqphdate+'>\
                                                             <a style="display: none;color: #ccc" id="dqphdate">'+dqphdate+'</a>\
-                                                            <p><a class="layui-badge " style="visibility:hidden;  '+phbadge+'" title="紧张值">'+ph_stress+'</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
+                                                            <p><a class="layui-badge " style="visibility:hidden;  '+phbadge+'" title='+phtitle+'>'+ph_stress+'</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
                         }
@@ -1237,7 +1165,7 @@ function recordreals_select() {
     var recordrealshtml= $("#recordreals").html();
     recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
     $("#recordreals").html(recordrealshtml);
-    $("#recordreals div").each(function (i,e) {
+    $("#recordreals").children('div').each(function (i,e) {
         var spantxt=$(this).find("span").text();
         if (isNotEmpty(likerealtxt)){
             if (spantxt.indexOf(likerealtxt) >= 0) {
@@ -1256,8 +1184,139 @@ function recordreals_select() {
     }
 }
 
-
+var phreportfirst=-1;//是否为第一次打开情绪报告
 $(function () {
+    layui.use(['layer','element','slider','form','laydate'], function(){
+        var form = layui.form;
+        form.on('switch(phreportshowhide)', function(data){
+            if (!isNotEmpty(dq_play)){
+                layer.msg("暂未找到视频，未能出现情绪报告");
+                return;
+            }
+            if (!isNotEmpty(phdatabackList)){
+                layer.msg("暂未找到身心监测数据，未能出现情绪报告");
+                return;
+            }
+
+            var bool=data.elem.checked;
+            if (bool) {
+                //显示checkbox
+                $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
+                $("#uploadPhreport").css("visibility","visible");
+                $("#recordreals #dqphdate").css("display", "block");
+                $("#recordreals").children('div').each(function () {
+                    var talkclass=$(this).attr("class");
+                    if (talkclass=="atalk"){
+                        $("p",this).prepend('<input type="checkbox" name="" lay-skin="primary" >');
+                    }else if (talkclass=="btalk"){
+                        $("#recordreals .layui-badge").css("visibility", "visible");
+                        $("p",this).append('<input type="checkbox" name="" lay-skin="primary" >');
+                    }
+                });
+                console.log("phreportfirst__"+phreportfirst)
+                if (isNotEmpty(phdatabackList)&&isNotEmpty(dq_play)&&phreportfirst==-1){
+                    //身心监测数据时间点已在后台计算好差值，首先先获取asr差值后的数据
+                    layer.msg("情绪加载中，请稍等",{icon:16})
+                    var ph_stress=-1;//最高点 -1为不正常数据
+                    var dqphdate="";//找出来最大值的全部data
+                    $("#recordreals").children('div').each(function (i,e) {
+                        var starttime=$(this).attr("times");
+                        var usertype=$(this).attr("usertype");
+                        if (usertype==2) {
+                            var  locationtime=(parseFloat(first_playstarttime)+parseFloat(starttime))-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                            locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                            //获取该时间的前五秒和后五秒
+                            console.log(locationtime)
+                            var arrph=[];//找出来的集合
+                            for (var j = 0; j < phdatabackList.length; j++) {
+                                var phdataback = phdatabackList[j];
+                                var num=phdataback.num;
+                                var phBataBackJson=phdataback.phBataBackJson;
+                                var obj=eval("(" + phBataBackJson + ")");
+                                var startph=num;
+                                var endph=0;
+                                if (j>= phdatabackList.length-1) {
+                                    endph= num;//下一个区间
+                                }else {
+                                    endph=phdatabackList[j+1].num;
+                                }
+                                if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
+                                    var start_i=(j-4)<0?0:(j-4);
+                                    var end_i=(j+6)>=phdatabackList.length?phdatabackList.length:(j+6);
+                                    arrph= phdatabackList.slice(start_i,end_i);
+                                }
+                            }
+
+                            if (isNotEmpty(arrph)){
+                                var max_stress = 0;
+                                var max_stress_i = 0;
+                                for (var z = 0; z < arrph.length; z++) {
+                                    var data = arrph[z];
+                                    if(isNotEmpty(data)){
+                                        var phBataBackJson=data.phBataBackJson;
+                                        var obj=eval("(" + phBataBackJson + ")");
+                                        if (isNotEmpty(obj)) {//&&obj.hr_snr>=0.1
+                                            var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                                            var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);
+                                            if (stress > max_stress) {
+                                                max_stress =stress;
+                                                max_stress_i = z;
+                                            }
+                                        }
+                                    }
+                                }
+                                ph_stress=max_stress==null?0:max_stress;
+                                dqphdate=arrph[max_stress_i]==null?"":arrph[max_stress_i];
+                                if (isNotEmpty(dqphdate)){
+                                    var phBataBackJson=dqphdate.phBataBackJson;
+                                    var obj=eval("(" + phBataBackJson + ")");
+                                    var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
+                                    var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
+                                    var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
+                                    var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                                    var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
+                                    var spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
+                                    var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
+                                    dqphdate="(紧张值:"+stress+";呼吸次数:"+br+";心率:"+hr+";血氧:"+spo2+";血压变化:"+bp+")";
+                                }
+                            }
+
+
+                            var phbadge="#00CD68 !important";
+                            var phtitle="最高紧张值";
+                            if (ph_stress>=0&&ph_stress<=30){
+                                phbadge="#00CD68 !important";
+                            }else if (ph_stress>30&&ph_stress<=50){
+                                phbadge="#e4e920 !important";
+                            }else if (ph_stress>50&&ph_stress<=70){
+                                phbadge="#ff840f !important";
+                            }else if (ph_stress>70&&ph_stress<=100){
+                                phbadge="#e90717 !important";
+                            }else {
+                                phtitle="未找到最高值";
+                            }
+                            $(this).attr("dqphdate",dqphdate);
+                            $(this).find("#dqphdate").html(dqphdate);
+                            $(this).find(".layui-badge").css("background-color",phbadge);
+                            $(this).find(".layui-badge").attr("title",phtitle).html(ph_stress);
+                        }
+                    });
+                    phreportfirst=1;
+                }
+                form.render();
+            }else {
+                //隐藏并且checkbox
+                $("#phreportshowhidemsg").text("（提示:开启可勾选生成情绪报告)");
+                $("#uploadPhreport").css("visibility","hidden");
+                $("#recordreals .layui-badge").css("visibility", "hidden");
+                $("#recordreals #dqphdate").css("display", "none");
+                $("#recordreals input[type=checkbox]").remove();
+                $("#recordreals .layui-form-checkbox").remove();
+            }
+
+        });
+    });
+
     $("#baocun").click(function () {
       addRecord();
     });
@@ -1287,11 +1346,11 @@ $(function () {
 
     },1000);
 
-    setInterval( function() {
-        setRecordreal();//5秒实时保存
-    },3000)
 
-   //检测视频是否播完，播完自动进入下一个视频
+
+
+
+   //检测视频是否播完，播完自动进入下一个视频===================================
     SewisePlayer.onPlayTime(function(time, id){
         var totaltime=SewisePlayer.duration()==null?0:SewisePlayer.duration();
         if (parseFloat(time)==parseFloat(totaltime)&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)) {
@@ -1321,20 +1380,21 @@ $(function () {
 
 
             //左侧
-            var recordrealsdivlen=$("#recordreals div").length;//识别长度
-            $("#recordreals div").each(function (i,e) {
+            var recordrealsdivlen=$("#recordreals").children('div').length;;//识别长度
+            console.log(recordrealsdivlen)
+            $("#recordreals").children('div').each(function (i,e) {
                 var t=$(this).attr("times");
-                var start=t;
+                var start=parseFloat(t);
                 var end=0;
                 if (i>=recordrealsdivlen-1) {
                     end= t;//下一个区间
                 }else {
-                    end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
+                    var end_=$("#recordreals").children("div:eq("+(i+1)+")").attr("times");
+                    end=parseFloat(end_);//下一个区间
                 }
                 if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
                     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
                     $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-
                     $("#record_hoverhtml").hover(
                         function(){
                             mouseoverbool=1

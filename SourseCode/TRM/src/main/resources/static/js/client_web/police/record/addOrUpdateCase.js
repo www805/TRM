@@ -462,7 +462,7 @@ function getUserByCard(){
 
 
 
-   dquserssid=null;//当前用户的ssid
+ /*  dquserssid=null;//当前用户的ssid*/
 
     var form=layui.form;
 

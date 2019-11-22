@@ -8,54 +8,38 @@ import java.util.List;
  * 提讯数据
  */
 public class ArraignmentAndRecord extends Police_arraignment {
-        private String recordname;
+    private String recordname;
 
-        private Integer recordbool;
+    private Integer recordbool;
 
-        private  String recordadminname;
+    private  String recordadminname;
 
-        private String adminname;
+    private String adminname;
 
-        private String recordssid;//笔录ssid
+    private String recordssid;//笔录ssid
 
-        private String recordtypessid;
+    private String recordtypessid;
 
-        private String recordtypename;
+    private String recordtypename;
 
-        private String iid;//打包文件iid
+    private String iid;//打包文件iid
 
-    public String getIid() {
-        return iid;
+    private String wordtemplatessid;//模板ssid
+
+    public String getRecordname() {
+        return recordname;
     }
 
-    public void setIid(String iid) {
-        this.iid = iid;
+    public void setRecordname(String recordname) {
+        this.recordname = recordname;
     }
 
-    public String getRecordtypessid() {
-            return recordtypessid;
-        }
-
-        public void setRecordtypessid(String recordtypessid) {
-            this.recordtypessid = recordtypessid;
-        }
-
-    public String getRecordtypename() {
-        return recordtypename;
+    public Integer getRecordbool() {
+        return recordbool;
     }
 
-    public void setRecordtypename(String recordtypename) {
-        this.recordtypename = recordtypename;
-    }
-
-    @Override
-    public String getRecordssid() {
-        return recordssid;
-    }
-
-    @Override
-    public void setRecordssid(String recordssid) {
-        this.recordssid = recordssid;
+    public void setRecordbool(Integer recordbool) {
+        this.recordbool = recordbool;
     }
 
     public String getRecordadminname() {
@@ -74,19 +58,45 @@ public class ArraignmentAndRecord extends Police_arraignment {
         this.adminname = adminname;
     }
 
-    public String getRecordname() {
-        return recordname;
+    @Override
+    public String getRecordssid() {
+        return recordssid;
     }
 
-    public void setRecordname(String recordname) {
-        this.recordname = recordname;
+    @Override
+    public void setRecordssid(String recordssid) {
+        this.recordssid = recordssid;
     }
 
-    public Integer getRecordbool() {
-        return recordbool;
+    public String getRecordtypessid() {
+        return recordtypessid;
     }
 
-    public void setRecordbool(Integer recordbool) {
-        this.recordbool = recordbool;
+    public void setRecordtypessid(String recordtypessid) {
+        this.recordtypessid = recordtypessid;
+    }
+
+    public String getRecordtypename() {
+        return recordtypename;
+    }
+
+    public void setRecordtypename(String recordtypename) {
+        this.recordtypename = recordtypename;
+    }
+
+    public String getIid() {
+        return iid;
+    }
+
+    public void setIid(String iid) {
+        this.iid = iid;
+    }
+
+    public String getWordtemplatessid() {
+        return wordtemplatessid;
+    }
+
+    public void setWordtemplatessid(String wordtemplatessid) {
+        this.wordtemplatessid = wordtemplatessid;
     }
 }

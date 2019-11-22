@@ -1080,82 +1080,91 @@ public class CaseService extends BaseService {
         List<Case> cases=police_caseMapper.getCase(ew);
         if (null!=cases&&cases.size()>0){
             case_=cases.get(0);
-            vo.setCase_(case_);
-        }
 
-        //根据案件ssid获取最后一次提讯的相关信息==2
-        String casessid=case_.getSsid();
-        ArraignmentAndRecord arraignmentAndRecord=new ArraignmentAndRecord();
-        if (StringUtils.isNotEmpty(casessid)){
-            EntityWrapper ewarraignment=new EntityWrapper();
-            ewarraignment.eq("cr.casessid",casessid);
-            ewarraignment.ne("r.recordbool",-1);
-            ewarraignment.orderBy("a.createtime",false);//时间排序获取最近时间的
-            List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
-            if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
-                arraignmentAndRecord=arraignmentAndRecords.get(0);
-                vo.setArraignmentAndRecord(arraignmentAndRecord);
-            }
-        }
+            //根据案件ssid获取最后一次提讯的相关信息==2
+            String casessid=case_.getSsid();
+            ArraignmentAndRecord arraignmentAndRecord=new ArraignmentAndRecord();
+            if (StringUtils.isNotEmpty(casessid)){
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",casessid);
+                ewarraignment.ne("r.recordbool",-1);
+                ewarraignment.orderBy("a.createtime",false);//时间排序获取最近时间的
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    arraignmentAndRecord=arraignmentAndRecords.get(0);
+                    case_.setArraignments(arraignmentAndRecords);
+                    vo.setArraignmentAndRecord(arraignmentAndRecord);
 
-        //获取相关人员信息
-        String  arraignmentssid=arraignmentAndRecord.getSsid();
-        if (StringUtils.isNotEmpty(arraignmentssid)){
-            EntityWrapper recorduserinfosParam=new EntityWrapper();
-            recorduserinfosParam.eq("a.ssid",arraignmentssid);
-            RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
-            if (null!=recordUserInfos){
-                vo.setRecordUserInfos(recordUserInfos);
-            }
-
-            //获取相关人员：暂时只针对法院===
-            List<Usergrade> usergrades=new ArrayList<>();
-            EntityWrapper arre=new EntityWrapper();
-            arre.eq("arraignmentssid",arraignmentssid);
-            List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
-            if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
-                for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
-                    String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
-                    String userssid=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
-                    if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid)){
-                        //查找等级
-                        Police_userinfograde police_userinfograde=new Police_userinfograde();
-                        police_userinfograde.setSsid(gradessid);
-                        police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+                    //获取相关人员信息
+                    String  arraignmentssid=arraignmentAndRecord.getSsid();
+                    if (StringUtils.isNotEmpty(arraignmentssid)){
+                        EntityWrapper recorduserinfosParam=new EntityWrapper();
+                        recorduserinfosParam.eq("a.ssid",arraignmentssid);
+                        RecordUserInfos recordUserInfos=police_recordMapper.getRecordUserInfosByRecordSsid(recorduserinfosParam);
+                        if (null!=recordUserInfos){
+                            vo.setRecordUserInfos(recordUserInfos);
+                        }
 
 
-                        //查找用户:人员表
-                        Police_userinfo police_userinfo=new Police_userinfo();
+                        //获取相关人员：暂时只针对法院===
+                        List<Usergrade> usergrades=new ArrayList<>();
+                        EntityWrapper arre=new EntityWrapper();
+                        arre.eq("arraignmentssid",arraignmentssid);
+                        List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                        if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                            for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
+                                String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
+                                String userssid=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
+                                if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid)){
+                                    //查找等级
+                                    Police_userinfograde police_userinfograde=new Police_userinfograde();
+                                    police_userinfograde.setSsid(gradessid);
+                                    police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+
+
+                                    //查找用户:人员表
+                      /*  Police_userinfo police_userinfo=new Police_userinfo();
                         police_userinfo.setSsid(userssid);
-                        police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+                        police_userinfo=police_userinfoMapper.selectOne(police_userinfo);*/
+                                    String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证类型
+                                    EntityWrapper userparam=new EntityWrapper();
+                                    userparam.eq("ut.cardtypessid",cardtypessid);
+                                    userparam.eq("u.ssid",userssid);
+                                    List<UserInfo> userInfos=police_userinfoMapper.getUserByCard(userparam);
+                                    UserInfo police_userinfo=new UserInfo();
+                                    if (null!=userInfos&&userInfos.size()==1){
+                                        police_userinfo=userInfos.get(0);
+                                    }
 
-                        //查找用户：管理员表
-                        Base_admininfo admininfo=new Base_admininfo();
-                        admininfo.setSsid(userssid);
-                        admininfo=base_admininfoMapper.selectOne(admininfo);
+                                    //查找用户：管理员表
+                                    Base_admininfo admininfo=new Base_admininfo();
+                                    admininfo.setSsid(userssid);
+                                    admininfo=base_admininfoMapper.selectOne(admininfo);
 
-                        if (null!=police_userinfograde){
-                            Usergrade usergrade=new Usergrade();
-                            usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
-                            usergrade.setGrade(police_userinfograde.getGrade());
-                            usergrade.setGradename(police_userinfograde.getGradename());
-                            usergrade.setUserssid(userssid);
-                            if (null!=police_userinfo){
-                                usergrade.setUsername(police_userinfo.getUsername());
-                                usergrades.add(usergrade);
-                            }else if (null!=admininfo){
-                                usergrade.setUsername(admininfo.getUsername());
-                                usergrades.add(usergrade);
+                                    if (null!=police_userinfograde){
+                                        Usergrade usergrade=new Usergrade();
+                                        usergrade=gson.fromJson(gson.toJson(police_userinfograde), Usergrade.class);
+                                        usergrade.setUserssid(userssid);
+                                        if (null!=police_userinfo){
+                                            usergrade.setUsername(police_userinfo.getUsername());
+                                            usergrade.setUserinfo(police_userinfo);
+                                            usergrades.add(usergrade);
+                                        }else if (null!=admininfo){
+                                            usergrade.setUsername(admininfo.getUsername());
+                                            usergrades.add(usergrade);
+                                        }
+                                    }
+                                }
+                            }
+                            if (null!=usergrades&&usergrades.size()>0){
+                                vo.setUsergrades(usergrades);
                             }
                         }
                     }
                 }
-                if (null!=usergrades&&usergrades.size()>0){
-                    vo.setUsergrades(usergrades);
-                }
+                vo.setCase_(case_);
             }
         }
-
         result.setData(vo);
         changeResultToSuccess(result);
         return;

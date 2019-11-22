@@ -345,15 +345,18 @@ public class RecordService extends BaseService {
         if (null!=recordbool&&recordbool==2){
 
             //如果为3就改为休庭
+            EntityWrapper caseParam=new EntityWrapper();
+            caseParam.eq("r.ssid",recordssid);
+            Case case_= case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
+            String casessid=null;
+            if (null!=case_){
+                casessid=case_.getSsid();
+            }
             Integer casebool=addRecordParam.getCasebool();
             if (null!=casebool&&casebool.intValue()==3){
                 //先获取案件ssid
-                EntityWrapper caseParam=new EntityWrapper();
-                caseParam.eq("r.ssid",recordssid);
-
-                Case case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
                 if (null!=case_){
-                    String casessid=case_.getSsid();
+                    casessid=case_.getSsid();
                     if (StringUtils.isNotBlank(casessid)){
                         EntityWrapper updateParam=new EntityWrapper();
                         updateParam.eq("ssid",casessid);
@@ -379,6 +382,16 @@ public class RecordService extends BaseService {
                 //导出笔录pdf和word并且关闭会议
                 AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,recordService2,mtssid,outService);
                 addRecord_thread.start();
+
+                //笔录改为已结束，修改案件的谈话结束时间
+                if (StringUtils.isNotEmpty(casessid)&&null!=case_){
+                    EntityWrapper updateParam=new EntityWrapper();
+                    updateParam.eq("ssid",casessid);
+                    case_.setEndtime(new Date());
+                    int caseupdate_bool = police_caseMapper.update(case_,updateParam);
+                    LogUtil.intoLog(this.getClass(),"笔录改为已结束，修改案件的谈话结束时间caseupdate_bool___"+caseupdate_bool);
+                }
+
 
                 //结束后删除
                 RecordProtectCache.delRecordecordProtect(recordssid);
@@ -596,9 +609,7 @@ public class RecordService extends BaseService {
 
                                     if (null!=police_userinfograde){
                                         Usergrade usergrade=new Usergrade();
-                                        usergrade.setGradeintroduce(police_userinfograde.getGradeintroduce());
-                                        usergrade.setGrade(police_userinfograde.getGrade());
-                                        usergrade.setGradename(police_userinfograde.getGradename());
+                                        usergrade=gson.fromJson(gson.toJson(police_userinfograde), Usergrade.class);
                                         usergrade.setUserssid(userssid);
                                         if (null!=police_userinfo){
                                             usergrade.setUsername(police_userinfo.getUsername());

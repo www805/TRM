@@ -23,6 +23,7 @@ import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.Avstmt_modelAll;
+import com.avst.trm.v1.web.cweb.conf.UserinfogradeType;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
@@ -783,88 +784,90 @@ public class ArraignmentService extends BaseService {
             for (UserInfo userInfo : arraignmentexpand) {
                 if (null!=userInfo){
                     String userinfogradessid=userInfo.getUserinfogradessid();
-                    String userInfossid=null;
-                    String usertotypessid_=null;
-                    if (userinfogradessid.equals("userinfograde2")&&StringUtils.isNotEmpty(userInfo.getUsername())&&username.equals(userInfo.getUsername())){//默认参数//对应被告==被询问人==>可能多个哎哎哎判断是否跟被询问人一样一样不用新增
-                        userInfossid=userssid;//被询问人的，以免重复增加
-                        usertotypessid_=usertotypessid;
-                    }else {
-                        if (StringUtils.isBlank(userInfo.getCardtypessid())){
-                            userInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
-                        }
+                    if (StringUtils.isNotEmpty(userinfogradessid)){
+                        String userInfossid=null;
+                        String usertotypessid_=null;
+                        if (userinfogradessid.equals(UserinfogradeType.USERINFOGRADE2)&&StringUtils.isNotEmpty(userInfo.getUsername())&&username.equals(userInfo.getUsername())){//默认参数//对应被告==被询问人==>可能多个哎哎哎判断是否跟被询问人一样一样不用新增
+                            userInfossid=userssid;//被询问人的，以免重复增加
+                            usertotypessid_=usertotypessid;
+                        }else {
+                            if (StringUtils.isBlank(userInfo.getCardtypessid())){
+                                userInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
+                            }
 
-                        String userInfocardnum = userInfo.getCardnum();//人员证件号码
-                        String userInfousername = userInfo.getUsername();//人员名称
-                        List<UserInfo> checkuserInfoinfos=new ArrayList<>();
-                        EntityWrapper checkuserInfoparam=new EntityWrapper();
-                        checkuserInfoparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
+                            String userInfocardnum = userInfo.getCardnum();//人员证件号码
+                            String userInfousername = userInfo.getUsername();//人员名称
+                            List<UserInfo> checkuserInfoinfos=new ArrayList<>();
+                            EntityWrapper checkuserInfoparam=new EntityWrapper();
+                            checkuserInfoparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
                             /*if (StringUtils.isBlank(userInfocardnum)){
                                 checkuserInfoparam.eq("u.username",userInfousername);
                                 checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
                             }else */if (StringUtils.isNotEmpty(userInfocardnum)){
-                            checkuserInfoparam.eq("ut.cardnum",userInfocardnum);
-                            checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
-                        }
-
-                        String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-                        if (StringUtils.isBlank(userInfocardnum)){
-                            userInfocardnum="未知_"+time;
-                            userInfo.setCardnum(userInfocardnum);//默认身份证号码
-                        }
-
-                        if (null==checkuserInfoinfos||checkuserInfoinfos.size()<1){
-                            LogUtil.intoLog(this.getClass(),"【开始笔录】拓展数据需要新增人员____");
-                            userInfo.setSsid(OpenUtil.getUUID_32());
-                            userInfo.setCreatetime(new Date());
-                            Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
-                            int insertuserinfo_bool = police_userinfoMapper.insert(police_userinfo);
-                            LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
-                            if (insertuserinfo_bool>0){
-                                userInfossid=police_userinfo.getSsid();
-                                Police_userinfototype police_userinfototype=new Police_userinfototype();
-                                police_userinfototype.setCardnum(userInfo.getCardnum());
-                                police_userinfototype.setSsid(OpenUtil.getUUID_32());
-                                police_userinfototype.setCreatetime(new Date());
-                                police_userinfototype.setCardtypessid(userInfo.getCardtypessid());
-                                police_userinfototype.setUserssid(userInfo.getSsid());
-                                int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
-                                LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
-                                usertotypessid_=police_userinfototype.getSsid();
+                                checkuserInfoparam.eq("ut.cardnum",userInfocardnum);
+                                checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
                             }
-                        }else if (checkuserInfoinfos.size()==1){
-                            UserInfo userinfo_=checkuserInfoinfos.get(0);
-                            //修改用户信息
-                            EntityWrapper updateuserinfoParam=new EntityWrapper();
-                            updateuserinfoParam.eq("ssid",userinfo_.getSsid());
-                            Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
-                            int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
-                            LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
-                            userInfossid=userinfo_.getSsid();
-                            usertotypessid_=userinfo_.getUsertotypessid();
-                        }
-                        if (userinfogradessid.equals("userinfograde2")&&StringUtils.isNotEmpty(usertotypessid_)){
-                            //添加案件人员表
-                            Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
-                            police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
-                            police_casetouserinfo_.setCreatetime(new Date());
-                            police_casetouserinfo_.setCasessid(casessid);
-                            police_casetouserinfo_.setUserssid(userInfossid);
-                            police_casetouserinfo_.setUsertotypessid(usertotypessid_);
-                            int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
-                            LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
-                        }
-                    }
 
-                    LogUtil.intoLog(1,this.getClass(),"【开始笔录】添加拓展表数据外部人员__userInfossid："+userInfossid+"__userinfogradessid："+userinfogradessid);
-                    if (StringUtils.isNotEmpty(userInfossid)&&StringUtils.isNotEmpty(userinfogradessid)){
-                        Police_arraignmentexpand police_arraignmentexpand=new Police_arraignmentexpand();
-                        police_arraignmentexpand.setArraignmentssid(arraignmentssid);
-                        police_arraignmentexpand.setSsid(OpenUtil.getUUID_32());
-                        police_arraignmentexpand.setCreatetime(new Date());
-                        police_arraignmentexpand.setExpandname(userinfogradessid);
-                        police_arraignmentexpand.setExpandvalue(userInfossid);
-                        int police_arraignmentexpandMappe_insertbool=police_arraignmentexpandMapper.insert(police_arraignmentexpand);
-                        LogUtil.intoLog(1,this.getClass(),"police_arraignmentexpandMappe_insertbool__"+police_arraignmentexpandMappe_insertbool);
+                            String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                            if (StringUtils.isBlank(userInfocardnum)){
+                                userInfocardnum="未知_"+time;
+                                userInfo.setCardnum(userInfocardnum);//默认身份证号码
+                            }
+
+                            if (null==checkuserInfoinfos||checkuserInfoinfos.size()<1){
+                                LogUtil.intoLog(this.getClass(),"【开始笔录】拓展数据需要新增人员____");
+                                userInfo.setSsid(OpenUtil.getUUID_32());
+                                userInfo.setCreatetime(new Date());
+                                Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                                int insertuserinfo_bool = police_userinfoMapper.insert(police_userinfo);
+                                LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
+                                if (insertuserinfo_bool>0){
+                                    userInfossid=police_userinfo.getSsid();
+                                    Police_userinfototype police_userinfototype=new Police_userinfototype();
+                                    police_userinfototype.setCardnum(userInfo.getCardnum());
+                                    police_userinfototype.setSsid(OpenUtil.getUUID_32());
+                                    police_userinfototype.setCreatetime(new Date());
+                                    police_userinfototype.setCardtypessid(userInfo.getCardtypessid());
+                                    police_userinfototype.setUserssid(userInfo.getSsid());
+                                    int insertuserinfototype_bool = police_userinfototypeMapper.insert(police_userinfototype);
+                                    LogUtil.intoLog(this.getClass(),"insertuserinfototype_bool__"+insertuserinfototype_bool);
+                                    usertotypessid_=police_userinfototype.getSsid();
+                                }
+                            }else if (checkuserInfoinfos.size()==1){
+                                UserInfo userinfo_=checkuserInfoinfos.get(0);
+                                //修改用户信息
+                                EntityWrapper updateuserinfoParam=new EntityWrapper();
+                                updateuserinfoParam.eq("ssid",userinfo_.getSsid());
+                                Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                                int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
+                                LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                                userInfossid=userinfo_.getSsid();
+                                usertotypessid_=userinfo_.getUsertotypessid();
+                            }
+                            if (userinfogradessid.equals(UserinfogradeType.USERINFOGRADE2)&&StringUtils.isNotEmpty(usertotypessid_)){
+                                //添加案件人员表
+                                Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
+                                police_casetouserinfo_.setSsid(OpenUtil.getUUID_32());
+                                police_casetouserinfo_.setCreatetime(new Date());
+                                police_casetouserinfo_.setCasessid(casessid);
+                                police_casetouserinfo_.setUserssid(userInfossid);
+                                police_casetouserinfo_.setUsertotypessid(usertotypessid_);
+                                int police_casetouserinfoMapper_insert_bool=police_casetouserinfoMapper.insert(police_casetouserinfo_);
+                                LogUtil.intoLog(this.getClass(),"police_casetouserinfoMapper_insert_bool__"+police_casetouserinfoMapper_insert_bool);
+                            }
+                        }
+
+                        LogUtil.intoLog(1,this.getClass(),"【开始笔录】添加拓展表数据外部人员__userInfossid："+userInfossid+"__userinfogradessid："+userinfogradessid);
+                        if (StringUtils.isNotEmpty(userInfossid)&&StringUtils.isNotEmpty(userinfogradessid)){
+                            Police_arraignmentexpand police_arraignmentexpand=new Police_arraignmentexpand();
+                            police_arraignmentexpand.setArraignmentssid(arraignmentssid);
+                            police_arraignmentexpand.setSsid(OpenUtil.getUUID_32());
+                            police_arraignmentexpand.setCreatetime(new Date());
+                            police_arraignmentexpand.setExpandname(userinfogradessid);
+                            police_arraignmentexpand.setExpandvalue(userInfossid);
+                            int police_arraignmentexpandMappe_insertbool=police_arraignmentexpandMapper.insert(police_arraignmentexpand);
+                            LogUtil.intoLog(1,this.getClass(),"police_arraignmentexpandMappe_insertbool__"+police_arraignmentexpandMappe_insertbool);
+                        }
                     }
                 }
             }

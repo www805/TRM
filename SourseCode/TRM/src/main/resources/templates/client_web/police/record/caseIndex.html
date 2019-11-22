@@ -77,7 +77,7 @@
             <th>案件名</th>
             <th>涉案人</th>
             <th>案发时间</th>
-            <th style="width: 300px">谈话时间</th>
+            <th style="width: 310px">谈话时间</th>
             <th>笔录次数</th>
             <th>导出进度</th>
             <th  style="width: 310px">操作</th>
@@ -102,7 +102,7 @@
             {{# } USERHTNL = (USERHTNL .substring(USERHTNL .length - 1) == '、') ? USERHTNL .substring(0, USERHTNL .length - 1) : USERHTNL ;} }}
             <td style="overflow: hidden; white-space: nowrap;text-overflow: ellipsis;" title="{{USERHTNL}}">{{USERHTNL}}</td>
             <td>{{value.occurrencetime==null?"":value.occurrencetime}}</td>
-            <td>{{value.starttime==null?"未知":value.starttime}} ~ {{value.endtime==null?"未知":value.endtime}}</td>
+            <td title='{{value.starttime==null?"未知":value.starttime}} ~ {{value.endtime==null?"未知":value.endtime}}'>{{value.starttime==null?"未知":value.starttime}} ~ {{value.endtime==null?"未知":value.endtime}}</td>
             <td  class="noline"  onclick="open_RecordsByCasessid('{{value.ssid}}','{{value.arraignments==null?0:value.arraignments.length}}','{{value.creator}}')" title="{{value.arraignments==null?'该案件没有笔录':'点击查看笔录列表'}}" ><a href="javascript:void(0);" {{value.arraignments==null?"style='color:red'":"style='color:chartreuse'"}}>{{value.arraignments==null?"0":value.arraignments.length}}</a></td>
             <td>
                 <div class="layui-progress "  id="progress_{{value.ssid}}"style="visibility:hidden" >
