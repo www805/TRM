@@ -22,8 +22,8 @@ function getUpdateServerConfig(){
         return;
     }
 
-    if (clientname.length > 9) {
-        layer.msg("客户端名称不能超过9个字符",{icon: 5});
+    if (clientname.length > 15) {
+        layer.msg("客户端名称不能超过15个字符",{icon: 5});
         $("#clientname").focus();
         return;
     }

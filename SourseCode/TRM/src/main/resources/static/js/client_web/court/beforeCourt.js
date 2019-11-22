@@ -1451,6 +1451,7 @@ function callbackgetCasesByCasenum(data) {
              if (isNotEmpty(case_)){
                  $("#casename").val(case_.casename);
                  $("#cause").val(case_.cause);
+                 $("#asknum").val(0);
                  casenum_case=case_.casenum;
                  if (isNotEmpty(case_.starttime)){
                      $("#starttime").val(case_.starttime);
