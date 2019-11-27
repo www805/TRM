@@ -33,7 +33,7 @@
     </div>
 
     <div class="layui-row layui-form" id="layui-row1" >
-       <div class="layui-col-md3 " style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="shrink_html" >
+       <div class="layui-col-md3 " style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="shrink_html" >
             <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:90%;">
                 <ul class="layui-tab-title">
                     <li onclick="initasr()" id="asr" style="">语音识别 <span id="webkit2"></span></li>
@@ -95,11 +95,13 @@
            </div>
            <!--底部按钮组end-->
         </div>
-       <div class="layui-col-md9"  style="height: 830px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html1">
+       <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="notshrink_html1">
             <div class="layui-col-md12 "  style="margin-top: 1px;margin-bottom:1px" id="www">
                 <div class="layui-inline" >
                     <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
                     <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
+                    <button type="button" class="layui-btn layui-btn-normal  " id="wordupload" >导入Word模板</button>
+                    <button type="button" class="layui-btn layui-btn-normal " id="wordgoout" onclick="exporttemplate_ue();">导出Word笔录</button>
                 </div>
                 <div class="layui-inline" >
                     <div class="btn-group">
@@ -110,8 +112,6 @@
                         </ul>
                     </div>
                 </div>
-                <button class="layui-btn layui-btn-normal " onclick="clearRecord();" id="clearRecord">重置模板</button>
-                <button class="layui-btn layui-btn-primary" onclick="getRecordreal_LastByRecordssid();" id="getRecordreal_LastByRecordssid" style="display: none">获取重置</button>
                 <button class="layui-btn layui-btn-warm " onclick="focuslable(null,2,'q');">添加一行</button>
                 <!--<div style="float: right;">-->
                         <!--<button class="layui-btn layui-btn-normal " onclick="open_getNotifications();"><i class="iconfont icon-gaozhishuchakan" title="告知书"></i> 告知书</button>-->
@@ -121,8 +121,8 @@
                 <div class="layui-card-body layui-row " style="padding: 0">
                     <div class="layui-card" style="border-width: 0;box-shadow:none" >
                         <div class="layui-card-header">
-                            <div class="layui-input-inline layui-col-md6" >
-                            <span th:text="${Model.title}">加载中</span>
+                            <div class="layui-input-inline layui-col-md6" style="white-space: nowrap;text-overflow: ellipsis; overflow: hidden;">
+                                当前庭审：<span id="recordtitle">庭审标题</span>
                             </div>
                             <div class="layui-input-inline layui-col-md6">
                                 <div  style="float: right;visibility: hidden" id="record_switch_HTML">
@@ -137,7 +137,7 @@
                         <div style="" id="recorddetail_scrollhtml">
                             <div class="layui-card-body layui-row ">
                                 <div class="layui-col-lg12 ">
-                                    <div class="layui-col-md12  layui-show" style="height: 300px">
+                                    <!-- <div class="layui-col-md12  layui-show" style="height: 300px">
                                          <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
                                      </div>
                                      <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
@@ -150,8 +150,9 @@
                                              <td></td>
                                          </tr>
                                          </tbody>
-                                     </table>
-                                   <!--<textarea  id="editor" name="editor" textareaid="editor" type="text/plain" ></textarea>-->
+                                     </table>-->
+                                   <script  id="editor" name="editor" textareaid="editor" type="text/plain"  ></script>
+
                                 </div>
                             </div>
                             </div>
@@ -203,10 +204,11 @@
 <script th:src="@{/layui/lay/modules/laytpl.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/court/waitCourt.js}" type="text/javascript"></script>
 <script th:src="@{/js/client_web/police/record/recordSettings.js}" type="text/javascript"></script>
-<script th:src="@{/pdfjs/pdf.js}" type="text/javascript"></script><!--
+<script th:src="@{/pdfjs/pdf.js}" type="text/javascript"></script>
 <script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
 <script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
-<script type="text/javascript" src="/ueditor/lang/zh-cn/zh-cn.js"></script>-->
+<script type="text/javascript" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script type="text/javascript" charset="utf-8" src="/ueditor/toword.js"> </script>
 <script th:inline="javascript">
     var INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -220,7 +222,8 @@
     var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
 
 
-   /* var editor = UE.getEditor('editor', {
+    var editorhtml;//editor的html
+    var ue = UE.getEditor('editor', {
         toolbars: [
             [ 'undo', //撤销
                 'redo', //重做
@@ -232,7 +235,6 @@
                 'subscript', //下标
                 'fontborder', //字符边框
                 'superscript', //上标
-                'cleardoc', //清空文档
             ],
             ['time', //时间
                 'date', //日期
@@ -242,22 +244,38 @@
                 'justifyright', //居右对齐
                 'justifycenter', //居中对齐
                 'justifyjustify', //两端对齐
+                'fontfamily',//字体
                 'forecolor', //字体颜色
                 'backcolor', //背景色
-              /!*  'fullscreen', //全屏*!/
                 'rowspacingtop', //段前距
                 'rowspacingbottom', //段后距
-
+                'lineheight',//行间距
+                'template', //模板
+                'print', //打印
+                'preview', //预览
             ]
         ],
-        autoHeightEnabled: false,
         allHtmlEnabled:true,
         autoFloatEnabled: false,
         serverUrl:"upload",
-        initialFrameWidth:'98%', //初始化编辑器宽度,默认1000
-        initialFrameHeight:550,  //初始化编辑器高度,默认320/
-        initialContent:'<p style=\"color:red;\">我的哥省</p><p style=\"color:blue;\">我的哥省</p><br/>',//初始化编辑器的内容
-    });*/
+        initialFrameWidth:1017, //初始化编辑器宽度,默认1000,编辑框1000+下拉滚动条17
+        initialFrameHeight:1020,  //初始化编辑器高度,默认1000
+        autoHeightEnabled:false,
+        initialContent:"<div tabindex=\"0\" hidefocus=\"true\"  id='"+TOWORD.divpage.getnextpagedivid()+"' style= '"+TOWORD.divpage.divcss()+"'><p ></p></div>"
+    });
+
+    function onfocusfnc(num){
+        TOWORD.divpage.changediv(num);
+    }
+
+    ue.ready(function() {
+        var divid=TOWORD.divpage.getpagedivid(1);//初始化的num=1
+        var div=TOWORD.page.getifamedivByDivid(divid);
+        div.setAttribute("num",1);
+        div.addEventListener("onfocus",onfocusfnc);
+        editorhtml=$("#editor iframe").contents();
+    });
+
 
     $(function(){
         setpageAction(INIT_CLIENT,"client_web/court/waitCourt");
@@ -266,14 +284,16 @@
         $(window).resize(function(){
             $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         })
-        /*getgnlist();*/
         getRecordById();
-        getRecordrealByRecordssid();
+
     });
-    layui.use(['layer','element','form'], function(){
+
+
+    layui.use(['layer','element','form','upload'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         var form=layui.form;
+        var upload = layui.upload;
 
         //使用模块
         var html='<table class="layui-table"  lay-skin="nob" lay-size="sm">\
@@ -310,6 +330,31 @@
             content: html,
             success: function(layero,index){
                 layer.min(index);
+            }
+        });
+
+        //普通上传
+        var uploadInst = upload.render({
+            elem: '#wordupload'
+            , url: '/cweb/court/court/importtemplate_ue'
+            ,accept: 'file'
+            , before: function (obj) {
+               obj.preview(function(index, file, result){
+                   console.log("导入的Word文件名称"+file.name);
+               });
+            }
+            , done: function (data) {
+                if(null!=data&&data.actioncode=='SUCCESS'){
+                    var data=data.data;
+                    if (isNotEmpty(data)){
+                        TOWORD.page.importhtml(data)
+                    }
+                }else{
+                    return layer.msg(data.message,{icon: 5});
+                }
+            }
+            , error: function () {
+                return layer.msg('上传失败,网络异常');
             }
         });
 

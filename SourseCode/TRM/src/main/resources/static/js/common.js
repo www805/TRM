@@ -1364,6 +1364,26 @@ function getActionURL(actionid){
 
 }
 
+/**
+ * 检测字符串开头是否为指定字符串
+ */
+if (typeof String.prototype.startsWith != 'function'){
+    String.prototype.startsWith = function (str){
+        return this.slice(0, str.length) == str;
+    };
+}
+//判断当前字符串是否以str结束
+if (typeof String.prototype.endsWith != 'function') {
+    String.prototype.endsWith = function (str){
+        return this.slice(-str.length) == str;
+    };
+}
+
+
+
+
+
+
 //*****************************************************关于身份证**********************************************//
 
 /**

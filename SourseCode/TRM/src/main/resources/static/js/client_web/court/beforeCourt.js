@@ -1528,6 +1528,8 @@ function callbackgetCasesByCasenum(data) {
                          }
                      }
                  }
+             }else{
+                 layer.msg("没有找到相关案件",{icon:6})
              }
         }
     }else {

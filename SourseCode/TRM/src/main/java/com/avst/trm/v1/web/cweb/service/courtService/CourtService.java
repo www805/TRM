@@ -1,25 +1,29 @@
 package com.avst.trm.v1.web.cweb.service.courtService;
 
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Userinfograde;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfogradeMapper;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.log.LogUtil;
-import com.avst.trm.v1.web.cweb.req.courtreq.AddUserinfogradeParam;
-import com.avst.trm.v1.web.cweb.req.courtreq.GetUserinfogradeByssidParam;
-import com.avst.trm.v1.web.cweb.req.courtreq.GetUserinfogradePageParam;
-import com.avst.trm.v1.web.cweb.req.courtreq.UpdateUserinfogradeParam;
+import com.avst.trm.v1.common.util.poiwork.HtmlToWord;
+import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
+import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
+import com.avst.trm.v1.web.cweb.req.courtreq.*;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradeByssidVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradePageVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 
@@ -161,6 +165,56 @@ public class CourtService extends BaseService {
         }
         return;
     }
+
+    public  void importtemplate_ue(MultipartFile file, RResult result){
+        if (file.isEmpty()) {
+            result.setMessage("请选择doc或者docx文件进行导入");
+            return;
+        }
+        String filename=file.getOriginalFilename();
+        if (filename.endsWith(".doc")||filename.endsWith(".docx")){
+            InputStream inputStream = null;
+            try {
+                inputStream = file.getInputStream();
+                String html= WordToHtmlUtil.wordToHtml_in2str(inputStream,filename);
+                result.setData(html);
+                changeResultToSuccess(result);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if(null != inputStream){
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }else {
+            result.setMessage("请选择doc或者docx文件进行导入");
+            return;
+        }
+        return;
+    }
+
+    public void exporttemplate_ue(RResult result, Exporttemplate_ueParam param){
+        String recordssid=param.getRecordssid();
+        if (StringUtils.isEmpty(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        List<RecordToProblem> recordToProblems= RecordrealingCache.getRecordrealByRecordssid(recordssid);//笔录携带的题目答案集合
+        if (null!=recordToProblems&&recordToProblems.size()>0){
+            String content="";
+           for (RecordToProblem recordToProblem : recordToProblems) {
+                content+=recordToProblem.getProblem();
+            }
+            HtmlToWord.HtmlToWord("f:\\1.doc",content);
+        }
+        return;
+    }
+
 
 
 

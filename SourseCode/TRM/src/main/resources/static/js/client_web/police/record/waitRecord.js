@@ -556,6 +556,13 @@ function callbackgetRecordById(data) {
                 }
                 getMCCacheParamByMTssid();//获取缓存
                 getTDCacheParamByMTssid();
+
+
+                getRecordrealByRecordssid();
+                setInterval( function() {
+                    setRecordreal();//5秒实时保存
+                    setRecordProtect();//5秒缓存一次
+                },5000);
             }
 
             //获取默认的片头信息
@@ -2016,13 +2023,7 @@ $(function () {
 
     },1000);
 
-    setInterval( function() {
-        setRecordreal();//3秒实时保存
-    },3000)
 
-    setInterval( function() {
-        setRecordProtect();//5秒缓存一次
-    },5000);
 
 
 //自动甄别初始化

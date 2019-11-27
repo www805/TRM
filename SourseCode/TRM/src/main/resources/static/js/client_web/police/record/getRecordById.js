@@ -242,7 +242,7 @@ function callbackgetRecordById(data) {
             getRecordrealByRecordssid();//右侧数据
             setInterval( function() {
                 setRecordreal();//5秒实时保存
-            },3000);
+            },5000);
 
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){

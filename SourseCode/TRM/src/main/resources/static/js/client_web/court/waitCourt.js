@@ -1,4 +1,4 @@
-var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
+var record_index={};//笔录的上一个光标位置 key:p下标 value：类型
 
 var recorduser=[];//会议用户集合：副麦主麦
 var dq_recorduser=null;//当前被询问人ssid
@@ -98,32 +98,33 @@ function copy_text(obj,event) {
     //鼠标双击事件
     if( new Date().getTime() - touchtime < 350 ){
         console.log("现在是双击事件")
-        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
-        var old= $html.attr("q_starttime");
+        var $html=$('#recorddetail div:eq("'+record_index["key"]+'")');
+      /*  var $html=$('#recorddetail div:eq("'+record_index["key"]+'")',editorhtml);*/
+        var old= $html.attr("starttime");
         var h=$html.html();
         $html.append(copy_text_html);
         if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-            $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
+            $html.attr("starttime",starttime);//直接使用最后追加的时间点
         }
     }else{
         console.log("现在是单击事件")
         var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
         var dqselec_left= txt.toString();
         if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1&&new Date().getTime() - touchtime >700){
-            var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="q"]');
-            var old= $html.attr("q_starttime");
+            var $html=$('#recorddetail div:eq("'+record_index["key"]+'")');
+            /*var $html=$('#recorddetail div:eq("'+record_index["key"]+'")',editorhtml);*/
+            var old= $html.attr("starttime");
             var h=$html.html();
             $html.append(dqselec_left);
             dqselec_left="";
             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
             if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-                $html.attr("q_starttime",starttime);//直接使用最后追加的时间点
+                $html.attr("starttime",starttime);//直接使用最后追加的时间点
             }
         }
         touchtime = new Date().getTime();
     }
     copy_text_html="";
-    /* setRecordreal();*/
     return false;
 }
 
@@ -155,11 +156,12 @@ function callbackgetRecordById(data) {
                 var wordheaddownurl_html=record.wordheaddownurl_html;
                 if (isNotEmpty(wordheaddownurl_html)){
                     $("#wordheaddownurl").attr("src",wordheaddownurl_html);
+                        var html=' <iframe src="'+wordheaddownurl_html+'"  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>';
                 } else {
                     layer.msg("未找到模板头文件",{icon:5});
                 }
 
-
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 mcbool=record.mcbool;
 
                 //获取提讯会议ssid
@@ -359,6 +361,12 @@ function callbackgetRecordById(data) {
                 }
                 getMCCacheParamByMTssid();//获取缓存
                 getTDCacheParamByMTssid();
+
+                getRecordrealByRecordssid();
+                setInterval( function() {
+                    setRecordreal();//5秒实时保存
+                    setRecordProtect();//5秒缓存一次
+                },5000);
             }
         }
     }else{
@@ -897,33 +905,24 @@ function callbackgetgetRecordrealing(data) {
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
-                            var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
+                            var translatext=data.keyword_txt==null?"":data.keyword_txt;//翻译文本
+                            var gradename=user.gradename==null?"未知":user.gradename;
 
-
-                            /*translatext= checkKeyword(translatext);
-                            console.log(translatext)*/
 
                             //实时会议数据
                             if (usertype==1){
                                 //1放左边
+                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
+                                                            <span onmousedown="copy_text(this,event)" style="background-color: '+color+'" >'+translatext+'</span> \
                                                       </div >';
                             }else{
                                 //一下情况正对于法院
-                                var gradenum=0;
-                                for(var j =0 ; j < recorduser.length ; j++){
-                                    if(recorduser[j].grade==usertype){
-                                        gradenum ++;
-                                    }
-                                }
-                                if (gradenum>1){
-                                    username=user.gradeintroduce==null?username:user.gradeintroduce;
-                                }
+
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
                                                             <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> \
                                                       </div >';
                             }
@@ -1112,104 +1111,52 @@ function switchbtn(type,obj) {
 
 
 //默认问答
-var trtd_html='<tr>\
-        <td style="padding: 0;width: 95%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-               <div  id="btnadd"></div>\
-                </td>\
-                <td></td>\
-                </tr>';
+var trtd_html='<p><br/></p>';
 
 //lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
-    var qwfocus=null;
-
-    if (null!=td_lastindex["key"]&&type==1){
-        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
+    if (type==1){
+        $('#recorddetail tr:eq("'+record_index["key"]+'")').after(html);
         if (isNotEmpty(qw)){
-            qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
-            td_lastindex["key"]=td_lastindex["key"]+1;
+            qwfocus= $('#recorddetail tr:eq("'+(record_index["key"]+1)+'") label[name="'+qw+'"]');
+            record_index["key"]=record_index["key"]+1;
         }
     }  else if (type==0) {
         $("#recorddetail").prepend(html);
         if (isNotEmpty(qw)){
             qwfocus =  $('#recorddetail tr:eq(0) label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:eq(0)').index();
+            record_index["key"]=$('#recorddetail tr:eq(0)').index();
         }
-    }else {
-        $("#recorddetail").append(html);
-        $("#recorddetail").hover(
-            function(){
-                mouseoverbool_right=1
-            } ,
-            function(){
-                mouseoverbool_right=-1;
-            });
-        if (mouseoverbool_right==-1){
-            var div = document.getElementById('recorddetail_scrollhtml');
-            div.scrollTop = div.scrollHeight;
+    }else if (type==2){
+       /* $(editorhtml).find("#recorddetail").append(html);*/
+
+        var divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
+        if (!isNotEmpty(divid)){
+            divid = TOWORD.util.getdivByChildnode(ue);
         }
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:last').index();
+        $("#"+divid,editorhtml).append(html);
+        if (isNotEmpty(laststarttime_ue)){
+            var html1111=$("p[starttime="+laststarttime_ue+"]",editorhtml).html();
+            console.log(html1111)
+            $(html).insertAfter($("p[starttime="+laststarttime_ue+"]",editorhtml));
         }
     }
-
-    if (isNotEmpty(qw)){
-        setFocus(qwfocus);
-        td_lastindex["value"]=qw;
-    }
-    addbtn();
 }
-//最后一行添加按钮初始化
-function addbtn() {
-    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
-    $("#recorddetail tr").each(function () {
-        $("#btnadd",this).html("");
-    });
-    $('#recorddetail tr:last #btnadd').html(btnhtml);
 
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
-}
 
 /***************************************笔录实时问答start*************************************************/
 /*笔录实时保存*/
 function setRecordreal() {
-
     var url=getActionURL(getactionid_manage().waitCourt_setRecordreal);
-
     var recordToProblems=[];//题目集合
-    $("#recorddetail td.onetd").each(function (i) {
-        var arr={};
-        var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-        //经过筛选的q
-        var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
-        if (isNotEmpty(q)){
-            if (null!=ws&&ws.length>0){
-                for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).html();
-                    //经过筛选的w
-                    if (isNotEmpty(w)) {
-                        answers.push({
-                            answer:w,
-                            starttime:w_starttime,
-                        });
-                    }
-                }
-            }
-            recordToProblems.push({
-                problem:q,
-                starttime:q_starttime,
-                answers:answers
-            });
-        }
+    $("div",editorhtml).each(function (i) {
+        var q=$(this).html();
+        recordToProblems.push({
+            problem:q,
+            starttime:-1,
+            answers:null
+        });
     });
     var data={
         token:INIT_CLIENTKEY,
@@ -1248,163 +1195,38 @@ function callbackgetRecordrealByRecordssid(data) {
             var problems=data;
             $("#recorddetail").html("");
             if (isNotEmpty(problems)) {
-                var problemhtml= setqw(problems);
-                focuslable(problemhtml,2,'w');
+                var problemhtml="";
+                for (var z = 0; z< problems.length;z++) {
+                    var problem = problems[z];
+                    var problemtext=problem.problem==null?"未知":problem.problem;
+                    problemhtml+=problemtext;
+                }
+                TOWORD.page.importhtml(problemhtml);
+
+
+              /*  var problemhtml= setqw(problems);
+                focuslable(problemhtml,2,'w');*/
             }
         }
     }else{
         layer.msg(data.message,{icon: 5});
     }
+
+
 }
 
-//重置模板
-function clearRecord() {
-    //1、询问是否重置
-    //1、保存重置内容，并且给出返回上一份笔录的按钮
-    //返回按钮点击的时候询问要插入的位置当前光标孩纸追加后面或者最前面，没有任何光标将追加
-    layer.open({
-        content:"重置后问答将清空，确定要重置吗？"
-        ,btn: ['确定', '取消']
-        ,yes: function(index, layero){
-            var url=getActionURL(getactionid_manage().waitCourt_setRecordreal_Last);
-
-            var recordToProblems=[];//题目集合
-            $("#recorddetail td.onetd").each(function (i) {
-                var arr={};
-                var answers=[];//答案集合
-                var q=$(this).find("label[name='q']").text();
-                var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
-                q=q.replace(/\s/g,'');
-                //经过筛选的q
-                var ws=$(this).find("label[name='w']");
-                var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
-                if (isNotEmpty(q)){
-                    if (null!=ws&&ws.length>0){
-                        for (var j = 0; j < ws.length; j++) {
-                            var w =ws.eq(j).text();
-                            w=w.replace(/\s/g,'');
-                            //经过筛选的w
-                            if (isNotEmpty(w)) {
-                                answers.push({
-                                    answer:w,
-                                    starttime:w_starttime,
-                                });
-                            }
-                        }
-                    }
-                    recordToProblems.push({
-                        problem:q,
-                        starttime:q_starttime,
-                        answers:answers
-                    });
-                }
-            });
-            if (isNotEmpty(recordToProblems)){
-
-            }
-            var data2={
-                token:INIT_CLIENTKEY,
-                param:{
-                    recordssid: recordssid,
-                    recordToProblems:recordToProblems
-                }
-            };
-            ajaxSubmitByJson(url, data2, function (data) {
-                if(null!=data&&data.actioncode=='SUCCESS'){
-                    var data=data.data;
-                    if (isNotEmpty(data)){
-                        console.log("重置成功");
-                        //撤销重置按钮
-                        $("#getRecordreal_LastByRecordssid").show();
-                    }
-                }else{
-                    layer.msg(data.message,{icon: 5});
-                }
-            });
 
 
-            $("#recorddetail").html("");
-            laststarttime_qq=-1;
-            laststarttime_ww=-1;
-            last_type=-1;//1问题 2是答案
-            qq="";
-            qqq="";
-            ww="";
-            www="";
-            td_lastindex={};
-            /*setRecordreal();*/
-            layer.close(index);
-        }
-        ,btn2: function(index, layero){
-            layer.close(index);
-        }
-        ,cancel: function(){
-        }
-    });
-}
-
-//返回重置
-function getRecordreal_LastByRecordssid() {
-    var url=getActionURL(getactionid_manage().waitCourt_getRecordreal_LastByRecordssid);
-
-    var recordToProblems=[];//题目集合
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url, data,callbackgetgetRecordreal_LastByRecordssid);
-}
-function callbackgetgetRecordreal_LastByRecordssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var problems=data;
-            if (isNotEmpty(problems)) {
-                var problemhtml= setqw(problems);
-                var qw_location=2; //1当前光标加一行 2尾部追加 0首部
-                layer.open({
-                    content:"已获取重置问答，请选择要插入的位置"
-                    ,btn: ['当前光标', '首部追加','尾部追加']
-                    ,yes: function(index, layero){
-                        qw_location=1;
-                        focuslable(problemhtml,qw_location,'w');
-                        layer.close(index);
-                    }
-                    ,btn2: function(index, layero){
-                        qw_location=0;
-                        focuslable(problemhtml,qw_location,'w');
-                        layer.close(index);
-                    }
-                    ,btn3: function(index, layero){
-                        qw_location=2;
-                        focuslable(problemhtml,qw_location,'w');
-                        layer.close(index);
-                    }
-                });
-
-            }
-        }else {
-            focuslable(null,2,'q');//重置保存的内容为空时添加一行自定义问答
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
 /***************************************笔录实时问答end*************************************************/
 
 //整合问答笔录html
 function setqw(problems){
     if (isNotEmpty(problems)) {
-        var problemhtml=null;
+        var problemhtml="";
         for (var z = 0; z< problems.length;z++) {
             var problem = problems[z];
             var problemtext=problem.problem==null?"未知":problem.problem;
-            problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 95%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
-            problemhtml+=' <div  id="btnadd"></div></td><td></td></tr>';
+            problemhtml+= '<p style="margin: 0px; padding: 7px 7px 7px 15px; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); color: #000000; white-space: normal; border-bottom: 1px solid rgb(204, 204, 204); outline: none; font-family: " starttime="'+problem.starttime+'">'+problemtext+'</p>';
         }
         return problemhtml;
     }
@@ -1424,19 +1246,16 @@ var exportPdf_index=null;
 var currenttime;
 var yesterdaytime;
 $(function () {
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
 
 
 
-    $(document).keypress(function (e) {
+
+  /*  $(document).keypress(function (e) {
         if (e.which == 13) {
             focuslable(trtd_html,2,'q');
             event.preventDefault();
         }
-    });
+    });*/
 
     //导出
     $("#dc_li li").click(function () {
@@ -1465,7 +1284,7 @@ $(function () {
         $("#recorddetail label").each(function(){
             var lastindex=$(this).closest("tr").index();
             var value=$(this).attr("name");
-            if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+            if (lastindex==record_index["key"]&&value==record_index["value"]) {
                 $(this).append(text);
             }
         });
@@ -1497,7 +1316,7 @@ $(function () {
             $("#recorddetail label").each(function(){
                 var lastindex=$(this).closest("tr").index();
                 var value=$(this).attr("name");
-                if (lastindex==td_lastindex["key"]&&value==td_lastindex["value"]) {
+                if (lastindex==record_index["key"]&&value==record_index["value"]) {
                     $(this).append(time);
                 }
             });
@@ -1540,13 +1359,7 @@ $(function () {
 
     },1000);
 
-    setInterval( function() {
-        setRecordreal();//5秒实时保存
-    },3000)
 
-    setInterval( function() {
-        setRecordProtect();//5秒缓存一次
-    },5000);
 
 
 //自动甄别初始化
@@ -1588,61 +1401,29 @@ $(function () {
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
                             var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
-
-                            var gradeintroduce = user.gradeintroduce==null?"未知":user.gradeintroduce;
+                            var gradename=user.gradename==null?"未知":user.gradename;
+                            var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;
 
                             var p_span_HTML="";
                             //实时会议数据
                             if (usertype==1){
-                                p_span_HTML='<p>【'+username+'】 '+asrstartime+' </p>\
-                                            <span onmousedown="copy_text(this,event)"  >'+translatext+'</span>';
+                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                                p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
+                                            <span onmousedown="copy_text(this,event)"  style="background-color: '+color+'" >'+translatext+'</span>';
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
 
                             }else{
                                 //一下情况正对于法院
-                                var gradenum=0;
-                                for(var j =0 ; j < recorduser.length ; j++){
-                                    if(recorduser[j].grade==usertype){
-                                        gradenum ++;
-                                    }
-                                }
-                                if (gradenum>1){
-                                    username=gradeintroduce==null?username:gradeintroduce;
-                                }
-
                                 var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
-                                p_span_HTML= '<p>'+asrstartime+' 【'+username+'】 </p>\
+                                p_span_HTML= '<p>【'+gradename+'】'+asrstartime+'  </p>\
                                              <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> ';
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
-                                if (record_switch_bool==1){
-                                    $("#recorddetail label[q_starttime="+starttime+"]:last").html(gradeintroduce+"："+translatext);
-                                }
                             }else {
                                 $("#recordreals").append(recordrealshtml);
-                                if (record_switch_bool==1){
-                                    var trtd_html='<tr>\
-                                     <td style="padding: 0;width: 95%;" class="onetd">\
-                                    <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+starttime+'">'+gradeintroduce+'：'+translatext+'</label></div>\
-                                       <div  id="btnadd"></div>\
-                                        </td>\
-                                        <td></td>\
-                                        </tr>';
-                                    //第一行去掉-----------------------------start
-                                    var textlen=null;
-                                    $("#first_originaltr label").each(function(){
-                                        textlen+=$(this).text();
-                                    });
-                                    if (!isNotEmpty(textlen)){
-                                        $("#first_originaltr").remove();
-                                    }
-                                    //第一行去掉-----------------------------end
-                                    focuslable(trtd_html,2,null);//自动追加不设置光标
-                                }
                             }
 
 
@@ -1660,9 +1441,18 @@ $(function () {
                             }
                             $("#recordreals_selecthtml").show();
 
-
-
-
+                            //自动甄别开启没
+                            var record_switch_bool=$("#record_switch_bool").attr("isn");
+                            if (record_switch_bool==1){
+                                if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                    $("p[starttime="+starttime+"][usertype="+usertype+"]",editorhtml).html(gradeintroduce+"："+translatext);
+                                }else {
+                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+'：'+translatext+'</p>';
+                                    focuslable(trtd_html,2,null);
+                                }
+                                laststarttime_ue=starttime;//更新最后一个
+                                resetpage();
+                            }
                         }
                     }
                 }
@@ -2300,12 +2090,59 @@ function callbacksetRecordProtect(data) {
 
 
 //语音识别颜色
-var asrcolor=["#AA66CC","#0099CC","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
+var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
 
 
 
 
 ///////////////////////////////**********************************************************百度编辑器**************start
+var laststarttime_ue=null;//最后一个识别的starttime
+function  resetpage() {
+    var divid=null;
+    if (isNotEmpty(laststarttime_ue)) {
+        divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
+    }else {
+        divid = TOWORD.util.getdivByChildnode(ue);
+    }
 
+
+        if(!isNotEmpty(divid)){
+            return;
+        }else{
+            TOWORD.currentdivnum=parseInt(divid.replace(/[^0-9]/ig,""));
+        }
+        console.log(" TOWORD.currentdivnum=222==="+ TOWORD.currentdivnum)
+        var psheight=TOWORD.page.getAllPHeightByDivid(divid);
+        var pseight_old=TOWORD.divheightmap[divid];
+        if(isNotEmpty(psheight)){
+            //对比上一次的高度，有变化的话，触发重新排版
+            if(isNotEmpty(pseight_old)&&psheight!=pseight_old){
+                //重新排版，写入toWord里面
+                console.log("重新排版，写入toWord里面");
+                TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
+            }
+            console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
+        }
+
+}
+
+
+//导出模板
+function exporttemplate_ue() {
+    var url="/cweb/court/court/exporttemplate_ue";
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url,paramdata,function (d) {
+        if(null!=d&&d.actioncode=='SUCCESS'){
+
+        }else{
+
+        }
+    });
+}
 
 ///////////////////////////////**********************************************************百度编辑器**************end

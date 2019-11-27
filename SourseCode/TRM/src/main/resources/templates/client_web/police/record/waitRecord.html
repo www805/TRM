@@ -312,8 +312,8 @@
 
         recordssid=[[${waitRecordModel.recordssid}]];
         getRecordById();
-        getRecordrealByRecordssid();
         getTime();
+
 
         if (!isNotEmpty(gnlist)||gnlist.indexOf(RECORD_F)<0){
             layer.msg("请先获取笔录制作授权",{time:2000,icon:16,shade: 0.3},function () {
