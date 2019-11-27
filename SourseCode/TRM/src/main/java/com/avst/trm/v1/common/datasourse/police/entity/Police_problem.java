@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.datasourse.police.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.enums.IdType;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
@@ -49,7 +50,6 @@ public class Police_problem extends Model<Police_problem> {
      */
     private Date updatetime;
 
-
     private String ssid;
 
     private String string1;
@@ -59,6 +59,12 @@ public class Police_problem extends Model<Police_problem> {
     private Integer integer1;
 
     private Integer integer2;
+
+    /**
+     * 问题类型ssid
+     */
+    @TableField(exist = false)
+    private String problemtypessid;
 
     public Integer getId() {
         return id;
@@ -138,6 +144,18 @@ public class Police_problem extends Model<Police_problem> {
         this.integer2 = integer2;
     }
 
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    public String getProblemtypessid() {
+        return problemtypessid;
+    }
+
+    public void setProblemtypessid(String problemtypessid) {
+        this.problemtypessid = problemtypessid;
+    }
+
     @Override
     protected Serializable pkVal() {
         return this.id;
@@ -152,6 +170,7 @@ public class Police_problem extends Model<Police_problem> {
                 ", ordernum=" + ordernum +
                 ", createtime=" + createtime +
                 ", updatetime=" + updatetime +
+                ", problemtypessid='" + problemtypessid + '\'' +
                 ", ssid='" + ssid + '\'' +
                 ", string1='" + string1 + '\'' +
                 ", string2='" + string2 + '\'' +

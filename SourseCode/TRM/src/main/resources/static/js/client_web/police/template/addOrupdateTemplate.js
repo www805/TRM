@@ -204,24 +204,24 @@ function callAddOrUpdate(data){
             setTimeout("getProblems_init(1,10);layer.close(modelban_index);",1500);//getProblems_init(1,10);window.location.reload();
         }
     }else{
-        if (data.message.search("存在")) {
-            //询问框
-            layer.confirm(data.message, {
-                btn: ['继续','取消'] //按钮
-            }, function(){
-                var title = $("#problem").val();
-                $("#problem").val(title + "副本");
-                if (data.message.search("修改")) {
-                    AddOrUpdateProblem("");
-                }else{
-                    AddOrUpdateProblem("1");
-                }
-
-            });
-
-        }else{
-            layer.msg(data.message,{icon: 5});
-        }
+        // if (data.message.search("存在")) {
+        //     //询问框
+        //     layer.confirm(data.message, {
+        //         btn: ['继续','取消'] //按钮
+        //     }, function(){
+        //         var title = $("#problem").val();
+        //         $("#problem").val(title + "副本");
+        //         if (data.message.search("修改")) {
+        //             AddOrUpdateProblem("");
+        //         }else{
+        //             AddOrUpdateProblem("1");
+        //         }
+        //
+        //     });
+        //
+        // }else{
+        // }
+        layer.msg(data.message,{icon: 5});
     }
 }
 
@@ -234,7 +234,7 @@ function callProblemTypes(data){
             if (isNotEmpty(plistAll)) {
                 for (var i = 0; i < plistAll.length; i++) {
                     var problemType = plistAll[i];
-                    $("#problemType").append("<option value='" + problemType.id + "' >" + problemType.typename + "</option>");
+                    $("#problemType").append("<option value='" + problemType.ssid + "' >" + problemType.typename + "</option>");
                 }
             }
         }
@@ -529,7 +529,7 @@ function UpdateProblemBy(va, ByIdDDD, text) {
 
 function addUpdateinfo(ssid, problemtypessid, type) {
     version = "修改";
-    if (type) {
+    if (isNotEmpty(type)) {
         version = "添加";
     }
 
@@ -553,13 +553,14 @@ function addUpdateinfo(ssid, problemtypessid, type) {
         }
     }
 
-    if (ssid) {
+    if (isNotEmpty(ssid) && isNotEmpty(problemtypessid)) {
         // var url = "/cweb/police/template/getProblemById";
         var url = getActionURL(getactionid_manage().addOrupdateTemplate_getProblemById);
         var data = {
             token: INIT_CLIENTKEY,
             param: {
-                ssid: ssid
+                ssid: ssid,
+                problemtypessid: problemtypessid
             }
         };
         ajaxSubmitByJson(url, data, callUpdateProblem);
@@ -604,12 +605,14 @@ function modelban(problemV) {
     var referanswer = "";
     var id = "";
     var ssid = "";
+    var problemtypessid = "";
 
     if (isNotEmpty(problemV)){
         problem = problemV.problem;
         referanswer = problemV.referanswer;
         id = problemV.id;
         ssid = problemV.ssid;
+        problemtypessid = problemV.problemtypessid;
     }
 
     var content = "<div class=\"layui-form-item layui-form-text\" style='margin-top: 20px;padding-right: 20px;'>\n" +

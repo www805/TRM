@@ -31,7 +31,16 @@ public interface Police_problemMapper extends BaseMapper<Police_problem> {
 
     @Select("SELECT " +
             " p.*, " +
-            " pt.typename " +
+            " t.problemtypessid problemtypessid " +
+            " FROM " +
+            " police_problem p " +
+            " LEFT JOIN police_problemtotype t ON p.ssid = t.problemssid where 1=1 ${ew.sqlSegment} ")
+    Problem getProblemBySsid(@Param("ew") EntityWrapper ew);
+
+    @Select("SELECT " +
+            " p.*, " +
+            " pt.typename, " +
+            " pt.ssid problemtypessid " +
             " FROM " +
             " police_problem p " +
             " LEFT JOIN police_problemtotype pp ON pp.problemssid = p.ssid " +
