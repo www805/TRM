@@ -7,11 +7,14 @@ import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfogradeMappe
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.poiwork.HtmlToWord;
 import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.req.courtreq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.UploadWordTemplateParam;
+import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradeByssidVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradePageVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -26,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service("courtService")
 public class CourtService extends BaseService {
@@ -33,6 +37,9 @@ public class CourtService extends BaseService {
     private Police_userinfogradeMapper police_userinfogradeMapper;
 
     private Gson gson=new Gson();
+
+    @Autowired
+    private RecordService2 recordService2;
 
 
     public void getUserinfogradePage(RResult result, GetUserinfogradePageParam param){
@@ -166,7 +173,21 @@ public class CourtService extends BaseService {
         return;
     }
 
-    public  void importtemplate_ue(MultipartFile file, RResult result){
+    public  void importtemplate_ue(RResult result, ReqParam<Importtemplate_ueParam> param, MultipartFile file){
+        //请求参数转换
+        Importtemplate_ueParam importtemplate_ueParam=gson.fromJson(gson.toJson(param.getParam()), Importtemplate_ueParam.class);
+        if (null==importtemplate_ueParam){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=importtemplate_ueParam.getRecordssid();
+        LogUtil.intoLog(1,this.getClass(),"导入word笔录模板____参数_____recordssid："+recordssid);
+        if (StringUtils.isEmpty(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
         if (file.isEmpty()) {
             result.setMessage("请选择doc或者docx文件进行导入");
             return;
@@ -177,6 +198,14 @@ public class CourtService extends BaseService {
             try {
                 inputStream = file.getInputStream();
                 String html= WordToHtmlUtil.wordToHtml_in2str(inputStream,filename);
+                //替换对应笔录参数===start
+                Map<String,String> dataMap=recordService2.exportData(recordssid,false);
+                if (dataMap != null) {
+                    for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+                        html = html.replace(entry.getKey(), entry.getValue());
+                    }
+                }
+                //替换对应笔录参数===end
                 result.setData(html);
                 changeResultToSuccess(result);
             } catch (Exception e) {

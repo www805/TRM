@@ -6,6 +6,8 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.web.cweb.req.courtreq.*;
 import com.avst.trm.v1.web.cweb.service.courtService.CourtService;
+import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -91,10 +93,20 @@ public class CourtAction extends BaseAction {
      * @return
      */
     @RequestMapping(value = "/importtemplate_ue")
-    public RResult importtemplate_ue(@RequestParam("file") MultipartFile file){
+    public RResult importtemplate_ue(@RequestParam(value="param",required=false)String ReqParam, @RequestParam(value="file",required=false) MultipartFile multipartfile){
         RResult result=this.createNewResultOfFail();
-        if (!file.isEmpty()) {
-            courtService.importtemplate_ue(file,result);
+        if (StringUtils.isEmpty(ReqParam)){
+            result.setMessage("参数为空");
+        }else {
+            Gson gson=new Gson();
+            ReqParam param=gson.fromJson(ReqParam, ReqParam.class);
+            if (null==param){
+                result.setMessage("参数为空");
+            }else if (!checkToken(param.getToken())){
+                result.setMessage("授权异常");
+            }else{
+                courtService.importtemplate_ue(result,param,multipartfile);
+            }
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

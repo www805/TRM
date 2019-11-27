@@ -1136,11 +1136,11 @@ function focuslable(html,type,qw) {
             divid = TOWORD.util.getdivByChildnode(ue);
         }
         $("#"+divid,editorhtml).append(html);
-        if (isNotEmpty(laststarttime_ue)){
+      /*  if (isNotEmpty(laststarttime_ue)){
             var html1111=$("p[starttime="+laststarttime_ue+"]",editorhtml).html();
             console.log(html1111)
             $(html).insertAfter($("p[starttime="+laststarttime_ue+"]",editorhtml));
-        }
+        }*/
     }
 }
 
@@ -1477,6 +1477,9 @@ $(function () {
             ,btn: ['确定', '取消']
             ,yes: function(index, layero){
                 if (isn==-1){
+
+
+
                     $(obj).attr("isn",1);
                     $(obj).addClass("layui-form-onswitch");
                     $(obj).find("em").html("开启");

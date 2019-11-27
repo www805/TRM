@@ -333,12 +333,20 @@
             }
         });
 
+
         //普通上传
         var uploadInst = upload.render({
             elem: '#wordupload'
             , url: '/cweb/court/court/importtemplate_ue'
             ,accept: 'file'
             , before: function (obj) {
+                var param={
+                    token:INIT_CLIENTKEY,
+                    param:{
+                        recordssid:recordssid
+                    }
+                };
+                this.data.param=JSON.stringify(param)
                obj.preview(function(index, file, result){
                    console.log("导入的Word文件名称"+file.name);
                });
