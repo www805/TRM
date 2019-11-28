@@ -364,9 +364,12 @@ function callbackgetRecordById(data) {
 
                 getRecordrealByRecordssid();
                 setInterval( function() {
-                    setRecordreal();//5秒实时保存
+                    setRecordreal();//3秒实时保存
+                },3000);
+                setInterval( function() {
                     setRecordProtect();//5秒缓存一次
                 },5000);
+
             }
         }
     }else{
@@ -1129,18 +1132,43 @@ function focuslable(html,type,qw) {
             record_index["key"]=$('#recorddetail tr:eq(0)').index();
         }
     }else if (type==2){
-       /* $(editorhtml).find("#recorddetail").append(html);*/
 
-        var divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
+        //退出进来的时候需要TOWORD.util.getdivByChildnode(ue)等于最后一页：光标在最后一页
+      /* var divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
         if (!isNotEmpty(divid)){
             divid = TOWORD.util.getdivByChildnode(ue);
         }
-        $("#"+divid,editorhtml).append(html);
-      /*  if (isNotEmpty(laststarttime_ue)){
-            var html1111=$("p[starttime="+laststarttime_ue+"]",editorhtml).html();
-            console.log(html1111)
-            $(html).insertAfter($("p[starttime="+laststarttime_ue+"]",editorhtml));
-        }*/
+          $("#"+divid,editorhtml).append(html);
+          *//*var divid= TOWORD.util.getdivByChildnode(ue);
+        $("#"+divid,editorhtml).append(html);*/
+
+
+        //判断laststarttime_ue是否为空，
+        // 为空判断是否存在光标获取光标在第几行在该标签后边追加
+        //不为空获取最后一个p标签在该标签后边追加
+       var lastp=null;
+        if (isNotEmpty(laststarttime_ue)){
+             lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
+            if (!isNotEmpty(lastp)){
+                lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+            }
+        }else {
+            //光标追加
+            //获取光标所在的p标签
+            lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+        }
+
+        if (isNotEmpty(lastp)) {
+            $(html).insertAfter(lastp);//[lastp.length-1]
+        }else {
+            //p标签未获取到，使用append
+            console.log("p标签未获取到，使用append")
+            var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
+            if (!isNotEmpty(divid)){
+                divid = TOWORD.util.getdivByChildnode(ue);
+            }
+            $("#"+divid,editorhtml).append(html);
+        }
     }
 }
 
@@ -1202,8 +1230,8 @@ function callbackgetRecordrealByRecordssid(data) {
                     problemhtml+=problemtext;
                 }
                 TOWORD.page.importhtml(problemhtml);
-
-
+                laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
+                console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
               /*  var problemhtml= setqw(problems);
                 focuslable(problemhtml,2,'w');*/
             }
@@ -1363,15 +1391,8 @@ $(function () {
 
 
 //自动甄别初始化
-
-    var laststarttime_qq=-1;//上一个问时间
-    var laststarttime_ww=-1;//上一个答时间
-    var last_type=-1;//上一个是 1问题 2是答案
-    var qq="";//本次的问的内容
-    var qqq="";//没有跳问答的已经写入行中问的内容
-    var ww="";//本次的答的内容
-    var www="";//没有跳问答的已经写入行中答的内容
-
+    var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{starttime:123,translatext:"sasas",oldtranslatext:"sad",gradeintroduce:"gradeintroduce"}
+    var lastusertype=-1;//上一个类型
 
     // 建立连接
     if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
@@ -1444,14 +1465,94 @@ $(function () {
                             //自动甄别开启没
                             var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (record_switch_bool==1){
-                                if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                    $("p[starttime="+starttime+"][usertype="+usertype+"]",editorhtml).html(gradeintroduce+"："+translatext);
+                                /*if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                    $("p[starttime="+starttime+"][usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+"："+translatext);
                                 }else {
                                     var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+'：'+translatext+'</p>';
                                     focuslable(trtd_html,2,null);
                                 }
                                 laststarttime_ue=starttime;//更新最后一个
-                                resetpage();
+                                resetpage();*/
+                                console.log(last_identifys)
+                                gradeintroduce=gradeintroduce+"：";
+                                if (lastusertype!=-1){
+                                    var last_identify=last_identifys[""+lastusertype+""];//上一个数据
+                                    if (isNotEmpty(last_identify)) {
+                                        var newlast_identify={};
+                                        var last_starttime = null;
+                                        var last_translatext = null;
+                                        var last_oldtranslatext = null;
+                                        if (isNotEmpty(lastusertype)&&usertype==lastusertype) {
+                                            //console.log("当前和上一个相同")
+                                            //上一个和本次相同
+                                             last_starttime=last_identify.starttime;
+                                             last_translatext=last_identify.translatext;
+                                             last_oldtranslatext=last_identify.oldtranslatext;
+                                            //和上一个用户一致类加
+                                            if (last_starttime==starttime){
+                                                last_translatext=translatext;
+                                                //console.log("当前和上一个相同_____并且时间也相同____"+last_oldtranslatext+last_translatext)
+                                            }else{
+                                                last_oldtranslatext+=last_translatext;
+                                                last_translatext=translatext;
+                                                //console.log("当前和上一个相同_____时间不相同开始累加这个人____"+last_oldtranslatext+last_translatext)
+                                            }
+                                            $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
+                                        }else {
+                                            //console.log("当前和上一个不相同是一个新用户")
+                                             last_identify=last_identifys[""+usertype+""];//新用户的上一个数据
+                                            if (isNotEmpty(last_identify)){
+                                                last_starttime=last_identify.starttime;
+                                                last_translatext=last_identify.translatext;
+                                                last_oldtranslatext=last_identify.oldtranslatext;
+                                                if (last_starttime==starttime) {
+                                                    last_translatext=translatext;
+                                                    console.log("当前和上一个不相同是一个新用户新用户早就有了____"+last_oldtranslatext+last_translatext)
+                                                    $("p[usertype="+usertype+"]:last",editorhtml).html(last_oldtranslatext+last_translatext);
+                                                }else {
+                                                    last_oldtranslatext="";
+                                                    last_translatext=translatext;
+                                                    //console.log("当前和上一个不相同是一个新用户但是需要新增一行数据了____"+last_translatext)
+                                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
+                                                    focuslable(trtd_html,2,null);
+                                                    laststarttime_ue=starttime;//更新最后一个
+                                                    resetpage();
+                                                }
+                                            } else {
+                                                last_oldtranslatext="";
+                                                last_translatext=translatext;
+                                               // console.log("当前和上一个不相同是一个新用户真的新用户没有存在数据____"+last_translatext)
+                                                var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
+                                                focuslable(trtd_html,2,null);
+                                                laststarttime_ue=starttime;//更新最后一个
+                                                resetpage();
+                                            }
+                                        }
+
+                                        newlast_identify={
+                                            starttime:starttime,
+                                            translatext:last_translatext,
+                                            oldtranslatext:last_oldtranslatext,
+                                        }
+                                        //console.log("最终更新的数据____")
+                                       // console.log(newlast_identify)
+                                        last_identifys[""+usertype+""]=newlast_identify;
+                                    }
+                                } else {
+                                    //初始化追加新的
+                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+translatext+'</p>';
+                                    focuslable(trtd_html,2,null);
+                                    laststarttime_ue=starttime;//更新最后一个
+                                    resetpage();
+                                    var newlast_identify={
+                                        starttime:starttime,
+                                        translatext:translatext,
+                                        oldtranslatext:"",
+                                    }
+                                    last_identifys[""+usertype+""]=newlast_identify;
+                                }
+                                lastusertype=usertype;
+
                             }
                         }
                     }
@@ -1468,7 +1569,12 @@ $(function () {
         var obj=this;
         var con;
         if (isn==-1) {
-            con="确定要开启自动甄别吗";
+            if (!isNotEmpty(laststarttime_ue)) {
+                con="确定要开启自动甄别吗(<span style='color: red'>将在光标处追加</span>)";//
+            }else {
+                con="确定要开启自动甄别吗(<span style='color: red'>根据最后追加</span>)";//（<span style='color: red'>将在光标处加入自动甄别</span>）
+            }
+
         }else{
             con="确定要关闭自动甄别吗";
         }
@@ -1477,9 +1583,6 @@ $(function () {
             ,btn: ['确定', '取消']
             ,yes: function(index, layero){
                 if (isn==-1){
-
-
-
                     $(obj).attr("isn",1);
                     $(obj).addClass("layui-form-onswitch");
                     $(obj).find("em").html("开启");
@@ -2131,21 +2234,51 @@ function  resetpage() {
 
 
 //导出模板
-function exporttemplate_ue() {
-    var url="/cweb/court/court/exporttemplate_ue";
-    var paramdata={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-        }
-    };
-    ajaxSubmitByJson(url,paramdata,function (d) {
-        if(null!=d&&d.actioncode=='SUCCESS'){
+function exporttemplate_ue(exporttype) {
+    if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
+        var url="/cweb/court/court/exporttemplate_ue";
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                exporttype:exporttype,
+            }
+        };
+        ajaxSubmitByJson(url,paramdata,callbackexporttemplate_ue);
+    }
+}
 
-        }else{
+function callbackexporttemplate_ue(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var exporttype=data.exporttype;
+            var word_downurl=data.word_downurl;//word导出地址
+            var pdf_downurl=data.pdf_downurl;//pdf导出地址
+            if (isNotEmpty(exporttype)) {
+               if (exporttype==1&&isNotEmpty(word_downurl)){
+                   window.location.href = word_downurl;
+                   layer.msg("导出成功,等待下载中...",{icon: 6});
+               } else if (exporttype==2&&isNotEmpty(pdf_downurl)){
+                   layer.open({
+                       id:"pdfid",
+                       type: 1,
+                       title: '导出PDF',
+                       shadeClose: true,
+                       maxmin: true, //开启最大化最小化按钮
+                       area: ['893px', '600px'],
+                   });
+                   showPDF("pdfid",pdf_downurl);
+                   layer.msg("导出成功,等待下载中...",{icon: 6});
+               }else {
+                   layer.msg("未找到导出类型",{icon: 5});
+               }
 
+            }
         }
-    });
+    }else{
+         layer.msg(data.message,{icon: 5});
+    }
 }
 
 ///////////////////////////////**********************************************************百度编辑器**************end

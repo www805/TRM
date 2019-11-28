@@ -4,8 +4,7 @@ var videourl=null;//视频地址
 
 var recordnameshow="";
 
-var subtractime_q=0;//问的时间差
-var subtractime_w=0;//答的时间差
+var  subtractime={}//时间差，法院可能多用户 格式：subtractime['usertype']
 
 var iid=null;//打包iid
 
@@ -34,32 +33,7 @@ function getRecordById() {
         console.log("笔录信息未找到__"+recordssid);
     }
 }
-function setqw(problems) {
-    if (isNotEmpty(problems)){
-        var problemhtml="";
-        $("#recorddetail").empty();
-        $("#datanull_2").hide();
 
-        for (var z = 0; z< problems.length;z++) {
-            var problem = problems[z];
-
-            var problemstarttime=problem.starttime;
-            var q_starttime=problemstarttime
-            if (isNotEmpty(problemstarttime)&&problemstarttime!=-1) {
-                q_starttime= problemstarttime+parseFloat(subtractime_q);
-            }
-
-            var problemtext=problem.problem==null?"未知":problem.problem;
-             problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 100%;" class="onetd" id="record_qw">\
-                            <div class="table_td_tt font_red_color" ><span>&nbsp;</span><label name="q" contenteditable="false" times="'+q_starttime+'">'+problemtext+'</label></div>';
-            problemhtml+=' <div  id="btnadd" style="display: none;"></div></td>\
-                        <td style="display: block" id="record_util"></td></tr>';
-        }
-        return problemhtml;
-    }
-    return "";
-}
 function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -80,7 +54,7 @@ function callbackgetRecordById(data) {
                     layer.msg("未找到模板头文件",{icon:5});
                 }
 
-                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname);
+                $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()"></i>');
 
                 //会议人员
@@ -173,6 +147,11 @@ function callbackgetRecordById(data) {
                 }
             }
 
+            getRecordrealByRecordssid();//右侧数据
+            setInterval( function() {
+                setRecordreal();//3秒实时保存
+            },3000);
+
             //左侧asr识别数据
             var getMCVO=data.getMCVO;
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
@@ -181,7 +160,6 @@ function callbackgetRecordById(data) {
             }else  {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
-            getRecordrealByRecordssid();
 
             var getPlayUrlVO=data.getPlayUrlVO;
             if (isNotEmpty(getPlayUrlVO)) {
@@ -234,44 +212,18 @@ function set_getRecord(data){
                         var asrtime=data.asrtime;//时间
                         var starttime=data.starttime;
                         var asrstartime=data.asrstartime;
-                        var subtractime=data.subtractime;//时间差
+                        var subtractime_=data.subtractime;//时间差
                         //实时会议数据
                         var recordrealshtml="";
                         var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
                         var gradename=user.gradename==null?"未知":user.gradename;
-
-
-                        //实时会议数据
-                        if (usertype==1){
-                            subtractime_q=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
+                        subtractime[""+usertype+""]=subtractime_;//存储各个类型人员的时间差值
+                        var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                        starttime=parseFloat(starttime)+parseFloat(subtractime_);
+                        recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                             <p>【'+gradename+'】 '+asrstartime+'</p>\
-                                                            <span>'+translatext+'</span> \
-                                                      </div >';
-                        }else{
-                            //一下情况正对于法院
-                           /* var gradenum=0;
-                            for(var j =0 ; j < recorduser.length ; j++){
-                                if(recorduser[j].grade==usertype){
-                                    gradenum ++;
-                                }
-                            }
-                            if (gradenum>1){
-                                username=user.gradename==null?username:user.gradename;
-                            }
-*/
-                            var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
-                            subtractime_w=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)"  times='+starttime+'>\
-                                                           <p>【'+gradename+'】 '+asrstartime+'  </p>\
                                                             <span style="background-color: '+color+'">'+translatext+'</span> \
                                                       </div >';
-                        }
-
-
-
                         var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                         if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                             $("#recordreals div[userssid="+userssid+"]:last").remove();
@@ -464,9 +416,7 @@ $(function () {
 
     },1000);
 
-    setInterval( function() {
-        setRecordreal();//5秒实时保存
-    },3000)
+
 
     //检测视频是否播完，播完自动进入下一个视频
     SewisePlayer.onPlayTime(function(time, id){
@@ -572,10 +522,12 @@ function open_recordqw() {
     $("#recorddetail #record_util,#btnadd").css({"display":"block"});
     $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
     $("#wqutil").show();
-
+    ue.setEnabled();
     $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
         qw_keydown(this,event);
     })
+
+
 }
 
 //tr工具按钮==start
@@ -636,17 +588,6 @@ function focuslable(html,type,qw) {
         setFocus(qwfocus);
     }
     addbtn();
-
-    $("#recorddetail .table_td_tt").dblclick(function () {
-        var contenteditable=$("label",this).attr("contenteditable");
-        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
-            //开始定位视频位置
-            var times=$("label",this).attr("times");
-            if (times!="-1"&&isNotEmpty(times)){
-                showrecord(times,null);
-            }
-        }
-    })
 
 
     $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
@@ -735,35 +676,14 @@ function qw_keydown(obj,event) {
 function setRecordreal() {
 
     var url=getActionURL(getactionid_manage().getCourtDetail_setRecordreal);
-
     var recordToProblems=[];//题目集合
-    $("#recorddetail td.onetd").each(function (i) {
-        var arr={};
-        var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("times");
-        //经过筛选的q
-        var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("times");
-        if (isNotEmpty(q)){
-            if (null!=ws&&ws.length>0){
-                for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).html();
-                    //经过筛选的w
-                    if (isNotEmpty(w)) {
-                        answers.push({
-                            answer:w,
-                            starttime:w_starttime,
-                        });
-                    }
-                }
-            }
-            recordToProblems.push({
-                problem:q,
-                starttime:q_starttime,
-                answers:answers
-            });
-        }
+    $("div",editorhtml).each(function (i) {
+        var q=$(this).html();
+        recordToProblems.push({
+            problem:q,
+            starttime:-1,
+            answers:null
+        });
     });
     var data={
         token:INIT_CLIENTKEY,
@@ -798,13 +718,18 @@ function getRecordrealByRecordssid() {
 function callbackgetRecordrealByRecordssid(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
-        if (isNotEmpty(data)){
+        if (isNotEmpty(data)) {
             var problems=data;
             $("#recorddetail").html("");
             if (isNotEmpty(problems)) {
-                var problemhtml= setqw(problems);
-                focuslable(problemhtml,2,'w');
-
+                var problemhtml="";
+                for (var z = 0; z< problems.length;z++) {
+                    var problem = problems[z];
+                    var problemtext=problem.problem==null?"未知":problem.problem;
+                    problemhtml+=problemtext;
+                }
+                TOWORD.page.importhtml(problemhtml);
+                ue.setDisabled();
             }else {
                 $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
             }
@@ -812,6 +737,21 @@ function callbackgetRecordrealByRecordssid(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
+    $("p",editorhtml).dblclick(function () {
+        var contenteditable=$("body",editorhtml).attr("contenteditable");
+        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
+            //开始定位视频位置
+            var times=$(this).attr("starttime");
+            if (times!="-1"&&isNotEmpty(times)){
+                //时间差需要处理
+                var usertype=$(this).attr("usertype");
+                if (isNotEmpty(usertype)){
+                    times=parseInt(times)+subtractime[""+usertype+""];
+                    showrecord(times,null);
+                }
+            }
+        }
+    })
 }
 
 
@@ -850,6 +790,7 @@ function calladdRecord(data) {
             $("#recorddetail #record_util,#btnadd").css({"display":"none"});
             $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","false");
             $("#wqutil").hide();
+            ue.setDisabled();
             layer.msg('保存成功',{icon:6});
         }
     }else{
@@ -1102,6 +1043,56 @@ function callbackgetPlayUrl(data) {
 }
 //*******************************************************************定时请求视频地址start****************************************************************//
 
+//******************************************************************关于百度编辑器start****************************************************************//
+//导出模板
+function exporttemplate_ue(exporttype) {
+    if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
+        var url="/cweb/court/court/exporttemplate_ue";
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                exporttype:exporttype,
+            }
+        };
+        ajaxSubmitByJson(url,paramdata,callbackexporttemplate_ue);
+    }
+}
+
+function callbackexporttemplate_ue(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var exporttype=data.exporttype;
+            var word_downurl=data.word_downurl;//word导出地址
+            var pdf_downurl=data.pdf_downurl;//pdf导出地址
+            if (isNotEmpty(exporttype)) {
+                if (exporttype==1&&isNotEmpty(word_downurl)){
+                    window.location.href = word_downurl;
+                    layer.msg("导出成功,等待下载中...",{icon: 6});
+                } else if (exporttype==2&&isNotEmpty(pdf_downurl)){
+                    layer.open({
+                        id:"pdfid",
+                        type: 1,
+                        title: '导出PDF',
+                        shadeClose: true,
+                        maxmin: true, //开启最大化最小化按钮
+                        area: ['893px', '600px'],
+                    });
+                    showPDF("pdfid",pdf_downurl);
+                    layer.msg("导出成功,等待下载中...",{icon: 6});
+                }else {
+                    layer.msg("未找到导出类型",{icon: 5});
+                }
+
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+//******************************************************************关于百度编辑器end****************************************************************//
+
 
 //默认问答
 var trtd_html='<tr>\
@@ -1111,4 +1102,4 @@ var trtd_html='<tr>\
                 </td></tr>';
 //*******************************************************************笔录问答编辑end****************************************************************//
 //语音识别颜色
-var asrcolor=["#AA66CC","#0099CC","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
+var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];

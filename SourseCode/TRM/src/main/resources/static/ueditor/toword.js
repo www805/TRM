@@ -323,6 +323,12 @@ TOWORD.importwordrun=false;//导入Word的时候为true
                         UE.getEditor('editor').setContent(divhtml,false);
                     }
                 }
+            },
+            cleardoc:function(){
+                //清空整个doc，重置div page
+                TOWORD.divnum=0;
+                var divshtml="<div tabindex=\"0\" hidefocus=\"true\"  id='"+TOWORD.divpage.getnextpagedivid()+"' style= '"+TOWORD.divpage.divcss()+"'><p ></p></div>";
+                UE.getEditor('editor').setContent(divshtml,false);
             }
         };
 
@@ -341,6 +347,9 @@ TOWORD.importwordrun=false;//导入Word的时候为true
             getdivByChildnode:function(ue){
                 return getdivByChildnode(ue);
             },
+            getpByRange:function (ue) {
+                return getpByRange(ue);
+            }
         }
 
     }();
@@ -385,6 +394,31 @@ TOWORD.importwordrun=false;//导入Word的时候为true
         }
 
     }
+
+    /**
+     *
+     * 获取当前光标所在的P标签
+     * @param ue
+     * @returns {*}
+     */
+    function getpByRange(ue) {
+        var range=ue.selection.getRange().startContainer;
+        if(range.nodeName=='p'||range.nodeName=='P'){
+            return range;
+        }
+        var range2=range.parentNode;
+        if(range2.nodeName=='p'||range2.nodeName=='P'){
+            return range2;
+        }
+        var range3=range2.parentNode;
+        if(null!=range3&&(range2.nodeName=='p'||range2.nodeName=='P')){
+            return range3;
+        }else{
+            console.log("没有找到正在编辑的p-------------请注意");
+            return null;
+        }
+    }
+
 
 
     /**
@@ -441,13 +475,25 @@ TOWORD.importwordrun=false;//导入Word的时候为true
                 //判断一下是否有隐形的高度样式
                 var marginBottom=leastp.style.marginBottom;
                 if(isNotEmpty(marginBottom)){
-                    pht+=in2px(marginBottom);
+                    if(marginBottom.indexOf("in")> -1||marginBottom.indexOf("em")> -1){
+                        pht+=in2px(marginBottom);
+                    }else if(marginBottom.indexOf("pt")> -1||marginBottom.indexOf("PT")> -1){
+                        pht+=pt2px(marginBottom);
+                    }else {//这里可能还需要做细致的转换处理，in,em之类的单位转px
+                        pht+=parseInt(marginBottom.replace(/[^0-9]/ig,""));
+                    }
                 }else{
                     pht+=TOWORD.margintopandbutton
                 }
                 var marginTop=leastp.style.marginTop;
                 if(isNotEmpty(marginTop)){
-                    pht+=in2px(marginTop);
+                    if(marginTop.indexOf("in")> -1||marginTop.indexOf("em")> -1){
+                        pht+=in2px(marginTop);
+                    }else if(marginTop.indexOf("pt")> -1||marginTop.indexOf("PT")> -1){
+                        pht+=pt2px(marginTop);
+                    }else {//这里可能还需要做细致的转换处理，in,em之类的单位转px
+                        pht+=parseInt(marginTop.replace(/[^0-9]/ig,""));
+                    }
                 }
 
                 var POBJ={
@@ -647,13 +693,25 @@ TOWORD.importwordrun=false;//导入Word的时候为true
         //判断一下是否有隐形的高度样式
         var marginBottom=cnode.style.marginBottom;
         if(isNotEmpty(marginBottom)){
-            nodeheight+=in2px(marginBottom);
+            if(marginBottom.indexOf("in")> -1||marginBottom.indexOf("em")> -1){
+                nodeheight+=in2px(marginBottom);//这里可能还需要做细致的转换处理，in,em之类的单位转px
+            }else if(marginBottom.indexOf("pt")> -1||marginBottom.indexOf("PT")> -1){
+                nodeheight+=pt2px(marginBottom);
+            }else {
+                nodeheight+=parseInt(marginBottom.replace(/[^0-9]/ig,""));
+            }
         }else{//如果节点有margintopandbutton/marginTop就不需要上级节点的margin属性
             nodeheight+=TOWORD.margintopandbutton;//p的高度加上margin的高度
         }
         var marginTop=cnode.style.marginTop;
         if(isNotEmpty(marginTop)){
-            nodeheight+=in2px(marginTop);
+            if(marginTop.indexOf("in")> -1||marginTop.indexOf("em")> -1){
+                nodeheight+=in2px(marginTop);
+            }else if(marginTop.indexOf("pt")> -1||marginTop.indexOf("PT")> -1){
+                nodeheight+=pt2px(marginTop);
+            }else {//这里可能还需要做细致的转换处理，in,em之类的单位转px
+                nodeheight+=parseInt(marginTop.replace(/[^0-9]/ig,""));
+            }
         }
         return nodeheight;
     }
@@ -805,6 +863,19 @@ TOWORD.importwordrun=false;//导入Word的时候为true
         var pixel = parseFloat(cm)*100;
         return (parseInt(pixel))
     }
+
+    /**
+     * election上暂时可以
+     * PT换算成px后期需要找到更好的方法
+     * @param pt
+     * @returns {number}
+     */
+    function pt2px(pt) {
+        var pixel = parseFloat(pt)*16/12;
+        return (parseInt(pixel))
+    }
+
+
 
 
 })();

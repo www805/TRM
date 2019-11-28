@@ -92,6 +92,9 @@ function callbackgetRecords(data) {
 
             $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
+            if (gnlist.indexOf(FY_T) != -1){
+                TOWORD.divpage.cleardoc()
+            }
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
             if (isNotEmpty(records)) {
@@ -103,32 +106,39 @@ function callbackgetRecords(data) {
                 if (isNotEmpty(l)) {
                     var problems=l.problems;
                     if (isNotEmpty(problems)) {
-                        var q="问：";
-                        var w="答：";
-                        var q_class="font_red_color";
                         if (gnlist.indexOf(FY_T) != -1){
-                            q="";
-                            w="";
-                            q_class="";
-                        }
-                        for (var z = 0; z< problems.length;z++) {
-                            var problem = problems[z];
-                            var problemtext=problem.problem==null?"未知":problem.problem;
-                            var problemhtml=' <tr><td class="'+q_class+'">'+q+''+problemtext+' </td></tr>';
-                            if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
+                            //法院版本以编辑器方式体现
+                            var problemhtml="";
+                            for (var z = 0; z< problems.length;z++) {
+                                var problem = problems[z];
+                                var problemtext=problem.problem==null?"未知":problem.problem;
+                                problemhtml+=problemtext;
+                            }
+                            ue.setEnabled();
+                            TOWORD.page.importhtml(problemhtml);
+                            var p=$("p:eq(0)",editorhtml);
+                            if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
+                            ue.setDisabled();
+                        }else {
+                            //其他版本
+                            for (var z = 0; z< problems.length;z++) {
+                                var problem = problems[z];
+                                var problemtext=problem.problem==null?"未知":problem.problem;
+                                var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
                                 var answers=problem.answers;
                                 if (isNotEmpty(answers)){
                                     for (var j = 0; j < answers.length; j++) {
                                         var answer = answers[j];
                                         var answertext=answer.answer==null?"未知":answer.answer;
-                                        problemhtml+='<tr> <td class="font_blue_color">'+w+''+answertext+' </td></tr>';
+                                        problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
                                     }
                                 }else{
-                                    problemhtml+='<tr> <td class="font_blue_color">'+w+'</td></tr>';
+                                    problemhtml+='<tr> <td class="font_blue_color">答：</td></tr>';
                                 }
+                                $("#recorddetail").append(problemhtml);
                             }
-                            $("#recorddetail").append(problemhtml);
                         }
+
                     }
                 }
             }
@@ -154,6 +164,9 @@ function callbackgetRecords(data) {
 }
 function setproblems(recordssid,obj) {
     $('#recorddetail').html("");
+    if (gnlist.indexOf(FY_T) != -1){
+        TOWORD.divpage.cleardoc();
+    }
     $("#pagelisttemplates_tbody tr").css({"background-color":" #fff"});
 
     if (isNotEmpty(recordssid)&&isNotEmpty(records)) {
@@ -166,31 +179,38 @@ function setproblems(recordssid,obj) {
                 recordssid_go=l.ssid;
                 var problems=l.problems;
                 if (isNotEmpty(problems)) {
-                    var q="问：";
-                    var w="答：";
-                    var q_class="font_red_color";
                     if (gnlist.indexOf(FY_T) != -1){
-                        q="";
-                        w="";
-                        q_class="";
-                    }
-                    for (var z = 0; z< problems.length;z++) {
-                        var problem = problems[z];
-                        var problemtext=problem.problem==null?"未知":problem.problem;
-                        var problemhtml=' <tr><td class="'+q_class+'">'+q+''+problemtext+' </td></tr>';
-                        if (gnlist.indexOf(FY_T)<0) {//法院版本不需要答
+                        //法院版本以编辑器方式体现
+                        //法院版本以编辑器方式体现
+                        var problemhtml="";
+                        for (var z = 0; z< problems.length;z++) {
+                            var problem = problems[z];
+                            var problemtext=problem.problem==null?"未知":problem.problem;
+                            problemhtml+=problemtext;
+                        }
+                        ue.setEnabled();
+                        TOWORD.page.importhtml(problemhtml);
+                        var p=$("p:eq(0)",editorhtml);
+                        if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
+                        ue.setDisabled();
+                    }else {
+                        //其他版本
+                        for (var z = 0; z< problems.length;z++) {
+                            var problem = problems[z];
+                            var problemtext=problem.problem==null?"未知":problem.problem;
+                            var problemhtml=' <tr><td class="font_red_color">问：'+problemtext+' </td></tr>';
                             var answers=problem.answers;
                             if (isNotEmpty(answers)){
                                 for (var j = 0; j < answers.length; j++) {
                                     var answer = answers[j];
                                     var answertext=answer.answer==null?"未知":answer.answer;
-                                    problemhtml+='<tr> <td class="font_blue_color">'+w+''+answertext+' </td></tr>';
+                                    problemhtml+='<tr> <td class="font_blue_color">答：'+answertext+' </td></tr>';
                                 }
                             }else{
-                                problemhtml+='<tr> <td class="font_blue_color">'+w+' </td></tr>';
+                                problemhtml+='<tr> <td class="font_blue_color">答：</td></tr>';
                             }
+                            $("#recorddetail").append(problemhtml);
                         }
-                        $("#recorddetail").append(problemhtml);
                     }
                 }
             }
@@ -314,6 +334,62 @@ function changeboolRecord(obj) {
     }
 
 }
+
+
+function set_UE() {
+    ue = UE.getEditor('editor', {
+        toolbars: [
+            [ 'undo', //撤销
+                'redo', //重做
+                'bold', //加粗
+                'indent', //首行缩进
+                'italic', //斜体
+                'underline', //下划线
+                'strikethrough', //删除线
+                'subscript', //下标
+                'fontborder', //字符边框
+                'superscript', //上标
+            ],
+            ['time', //时间
+                'date', //日期
+                'fontsize', //字号
+                'paragraph', //段落格式
+                'justifyleft', //居左对齐
+                'justifyright', //居右对齐
+                'justifycenter', //居中对齐
+                'justifyjustify', //两端对齐
+                'fontfamily',//字体
+                'forecolor', //字体颜色
+                'backcolor', //背景色
+                'rowspacingtop', //段前距
+                'rowspacingbottom', //段后距
+                'lineheight',//行间距
+                'template', //模板
+                'print', //打印
+                'preview', //预览
+            ]
+        ],
+        allHtmlEnabled:true,
+        autoFloatEnabled: false,
+        serverUrl:"upload",
+        initialFrameWidth:1017, //初始化编辑器宽度,默认1000,编辑框1000+下拉滚动条17
+        initialFrameHeight:1020,  //初始化编辑器高度,默认1000
+        autoHeightEnabled:false,
+        initialContent:"<div tabindex=\"0\" hidefocus=\"true\"  id='"+TOWORD.divpage.getnextpagedivid()+"' style= '"+TOWORD.divpage.divcss()+"'><p ></p></div>"
+    });
+    ue.ready(function() {
+        var divid=TOWORD.divpage.getpagedivid(1);//初始化的num=1
+        var div=TOWORD.page.getifamedivByDivid(divid);
+        div.setAttribute("num",1);
+        div.addEventListener("onfocus",onfocusfnc);
+        editorhtml=$("#editor iframe").contents();
+        ue.setDisabled();
+    });
+}
+function onfocusfnc(num){
+    TOWORD.divpage.changediv(num);
+}
+
 
 
 

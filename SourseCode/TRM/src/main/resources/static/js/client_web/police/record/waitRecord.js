@@ -560,7 +560,9 @@ function callbackgetRecordById(data) {
 
                 getRecordrealByRecordssid();
                 setInterval( function() {
-                    setRecordreal();//5秒实时保存
+                    setRecordreal();//3秒实时保存
+                },3000);
+                setInterval( function() {
                     setRecordProtect();//5秒缓存一次
                 },5000);
             }

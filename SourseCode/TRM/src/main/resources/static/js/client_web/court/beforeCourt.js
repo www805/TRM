@@ -1462,66 +1462,64 @@ function callbackgetCasesByCasenum(data) {
                      $("#recotdtypes").val(arraignmentAndRecord.recordtypessid);
                      select_Model(arraignmentAndRecord.mtmodelssid,null);
                      select_Model2(arraignmentAndRecord.wordtemplatessid,null);
+                 }
+                 var usergrades=data.usergrades;
+                 if (isNotEmpty(usergrades)){
+                     for (let i = 0; i < usergrades.length; i++) {
+                         const usergrade = usergrades[i];
+                         var usergradessid=usergrade.ssid;
+                         var userssid=usergrade.userssid;
+                         var username=usergrade.username;
 
-
-                     var usergrades=data.usergrades;
-                     if (isNotEmpty(usergrades)){
-                         for (let i = 0; i < usergrades.length; i++) {
-                             const usergrade = usergrades[i];
-                             var usergradessid=usergrade.ssid;
-                             var userssid=usergrade.userssid;
-                             var username=usergrade.username;
-
-                             if (isNotEmpty(userssid)&&isNotEmpty(usergradessid)) {
-                                 if (usergradessid==USERINFOGRADE4){
-                                     $("#presidingjudge").val(userssid);
-                                 }else if (usergradessid==USERINFOGRADE5){
-                                     $("#recordadminssid").val(userssid);
-                                 }else if (usergradessid==USERINFOGRADE6){
-                                     $("#otheradminssid").val(userssid);
-                                 }else if (usergradessid==USERINFOGRADE7){
-                                     $("#judges").val(userssid);
-                                 }else if (usergradessid==USERINFOGRADE8||usergradessid==USERINFOGRADE1||usergradessid==USERINFOGRADE2||usergradessid==USERINFOGRADE3){
-                                     var userinfo=usergrade.userinfo;
-                                     var userinfogradeinput=$("input[name='"+usergradessid+"']").val();
-                                     if (isNotEmpty(userinfogradeinput)) {
-                                         $("input[name='"+usergradessid+"']").val(userinfogradeinput+"；"+username);
-                                         casenum_userinfos.push(userinfo)
-                                     }else {
-                                         $("input[name='"+usergradessid+"']").val(username);
-                                         userinfo["userinfogradessid"]=usergradessid
-                                         if (isNotEmpty(userinfo)&&dq_userinfograde==usergradessid){
-                                             var cardnum=userinfo.cardnum;
-                                             $("#cardnum").val(cardnum);
-                                             var bool=checkByIDCard(cardnum);
-                                             if (!bool){
-                                                 layer.msg("请输入有效的居民身份证号码",{icon: 5});
-                                                 return false;
-                                             }
-                                             getUserByCard();
-                                             if (bool){
-                                                 $("#both").val(getAnalysisIdCard(cardnum,1));
-                                                 $("#sex").val(getAnalysisIdCard(cardnum,2));
-                                                 $("#age").val(getAnalysisIdCard(cardnum,3));
-                                             }
-
-                                         }else if (isNotEmpty(userinfo)&&usergradessid!=dq_userinfograde ){
-                                             //其他的存储到
-                                             if (usergradessid==USERINFOGRADE8){
-                                                 userinfograde8=userinfo;
-                                             }else if (usergradessid==USERINFOGRADE1){
-                                                 userinfograde1=userinfo;
-                                             }else if (usergradessid==USERINFOGRADE2){
-                                                 userinfograde2=userinfo;
-                                             }else if (usergradessid==USERINFOGRADE3){
-                                                 userinfograde3=userinfo;
-                                             }
+                         if (isNotEmpty(userssid)&&isNotEmpty(usergradessid)) {
+                             if (usergradessid==USERINFOGRADE4){
+                                 $("#presidingjudge").val(userssid);
+                             }else if (usergradessid==USERINFOGRADE5){
+                                 $("#recordadminssid").val(userssid);
+                             }else if (usergradessid==USERINFOGRADE6){
+                                 $("#otheradminssid").val(userssid);
+                             }else if (usergradessid==USERINFOGRADE7){
+                                 $("#judges").val(userssid);
+                             }else if (usergradessid==USERINFOGRADE8||usergradessid==USERINFOGRADE1||usergradessid==USERINFOGRADE2||usergradessid==USERINFOGRADE3){
+                                 var userinfo=usergrade.userinfo;
+                                 var userinfogradeinput=$("input[name='"+usergradessid+"']").val();
+                                 if (isNotEmpty(userinfogradeinput)) {
+                                     $("input[name='"+usergradessid+"']").val(userinfogradeinput+"；"+username);
+                                     casenum_userinfos.push(userinfo)
+                                 }else {
+                                     $("input[name='"+usergradessid+"']").val(username);
+                                     userinfo["userinfogradessid"]=usergradessid
+                                     if (isNotEmpty(userinfo)&&dq_userinfograde==usergradessid){
+                                         var cardnum=userinfo.cardnum;
+                                         $("#cardnum").val(cardnum);
+                                         var bool=checkByIDCard(cardnum);
+                                         if (!bool){
+                                             layer.msg("请输入有效的居民身份证号码",{icon: 5});
+                                             return false;
                                          }
-                                         if (usergradessid==USERINFOGRADE2){/*&&dq_userinfograde==USERINFOGRADE2*/
-                                             dqcasessid=case_.ssid;
-                                             dquserssid=userssid;
-                                             getCaseById();
+                                         getUserByCard();
+                                         if (bool){
+                                             $("#both").val(getAnalysisIdCard(cardnum,1));
+                                             $("#sex").val(getAnalysisIdCard(cardnum,2));
+                                             $("#age").val(getAnalysisIdCard(cardnum,3));
                                          }
+
+                                     }else if (isNotEmpty(userinfo)&&usergradessid!=dq_userinfograde ){
+                                         //其他的存储到
+                                         if (usergradessid==USERINFOGRADE8){
+                                             userinfograde8=userinfo;
+                                         }else if (usergradessid==USERINFOGRADE1){
+                                             userinfograde1=userinfo;
+                                         }else if (usergradessid==USERINFOGRADE2){
+                                             userinfograde2=userinfo;
+                                         }else if (usergradessid==USERINFOGRADE3){
+                                             userinfograde3=userinfo;
+                                         }
+                                     }
+                                     if (usergradessid==USERINFOGRADE2){/*&&dq_userinfograde==USERINFOGRADE2*/
+                                         dqcasessid=case_.ssid;
+                                         dquserssid=userssid;
+                                         getCaseById();
                                      }
                                  }
                              }
@@ -1531,6 +1529,8 @@ function callbackgetCasesByCasenum(data) {
              }else{
                  layer.msg("没有找到相关案件",{icon:6})
              }
+
+
         }
     }else {
         console.log(data.message);

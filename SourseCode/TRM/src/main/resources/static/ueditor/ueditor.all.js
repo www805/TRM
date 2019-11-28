@@ -7606,7 +7606,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
          * @example
          * ```javascript
          * editor.execCommand(cmdName);
-         * ```
+         * ```insertHtml
          */
         execCommand: function (cmdName) {
             cmdName = cmdName.toLowerCase();
@@ -16592,6 +16592,7 @@ UE.plugins['enterkey'] = function() {
                         if (!h) {
                             me.document.execCommand('formatBlock', false, '<p>');
                             doSave = 1;
+
                         }
                     } else {
                         //chrome remove div
@@ -16604,6 +16605,7 @@ UE.plugins['enterkey'] = function() {
                                 while (div.firstChild) {
                                     p.appendChild(div.firstChild);
                                 }
+
                                 div.parentNode.insertBefore(p, div);
                                 domUtils.remove(div);
                                 range.setStartBefore(tmp).setCursor();
@@ -16624,6 +16626,13 @@ UE.plugins['enterkey'] = function() {
                 me.fireEvent('saveScene',true,true)
             }
         }
+
+        var prange=ue.selection.getRange().endContainer.parentNode;
+        //删除不应该存在P文件的属性，防止出错
+        if(isNotEmpty(prange.getAttribute('starttime'))){
+            console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
+            prange.removeAttribute('starttime');
+        };
     });
 
     me.addListener('keydown', function(type, evt) {
@@ -22073,9 +22082,11 @@ UE.plugins['contextmenu'] = function () {
                     label:lang.cleardoc,
                     cmdName:'cleardoc',
                     exec:function () {
-                        if ( confirm( lang.confirmclear ) ) {
-                            this.execCommand( 'cleardoc' );
-                        }
+                        // if ( confirm( lang.confirmclear ) ) {
+                        //     this.execCommand( 'cleardoc' );
+                        // }
+
+                        TOWORD.divpage.cleardoc();//修改清空问题
                     }
                 },
                 '-',
@@ -22390,15 +22401,15 @@ UE.plugins['contextmenu'] = function () {
                     ]
                 },
                 '-',
-                {
-                    label:lang.insertparagraphbefore,
-                    cmdName:'insertparagraph',
-                    value:true
-                },
-                {
-                    label:lang.insertparagraphafter,
-                    cmdName:'insertparagraph'
-                },
+                // {
+                //     label:lang.insertparagraphbefore,
+                //     cmdName:'insertparagraph',
+                //     value:true
+                // },
+                // {
+                //     label:lang.insertparagraphafter,
+                //     cmdName:'insertparagraph'
+                // },
                 {
                     label:lang['copy'],
                     cmdName:'copy'

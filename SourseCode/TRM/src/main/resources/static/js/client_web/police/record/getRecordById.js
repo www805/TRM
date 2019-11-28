@@ -241,8 +241,8 @@ function callbackgetRecordById(data) {
 
             getRecordrealByRecordssid();//右侧数据
             setInterval( function() {
-                setRecordreal();//5秒实时保存
-            },5000);
+                setRecordreal();//3秒实时保存
+            },3000);
 
             var phDataBackVoParams=data.phDataBackVoParams;
             if (isNotEmpty(phDataBackVoParams)){

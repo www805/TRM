@@ -103,8 +103,8 @@ public class WordToPDF {
     public static void main(String[] args) {
 
         long starttime=(new Date()).getTime();
-        String PDFpath="C:\\Users\\Administrator\\Desktop\\测试情绪报告001.pdf";
-        String docpath="C:\\Users\\Administrator\\Desktop\\测试情绪报告001.doc";
+        String PDFpath="C:\\Users\\admin\\Desktop\\测试情绪报告001.pdf";
+        String docpath="D:\\trmfile\\upload\\zips\\recordwordOrpdf\\2019\\11\\27\\刘一《anjian》提讯会议_行政询问笔录_第19次.doc";
         System.out.println(word2pdf(PDFpath,docpath)+"----wordTopdf(docpath,PDFpath)");
 
         System.out.println((new Date()).getTime()-starttime);
