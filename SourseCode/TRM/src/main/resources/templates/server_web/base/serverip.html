@@ -24,16 +24,15 @@
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
         <legend >本服务ip配置</legend>
     </fieldset>
-    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" onsubmit="return false">
+    <form class="layui-form " style="margin-top: 30px;" onsubmit="return false">
 
-        <div class="layui-form-item">
+        <div class="layui-form-item layui-main site-inline">
             <label class="layui-form-label"><span class="fontRed">*</span>笔录系统ip</label>
             <div class="layui-input-block">
                 <input type="text" name="trmip" id="trmip" required lay-verify="setip" placeholder="请输入笔录系统ip" autocomplete="off" class="layui-input">
             </div>
         </div>
 
-    </form>
 
 
     <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
@@ -41,7 +40,7 @@
     </fieldset>
 
 
-    <form class="layui-form layui-main site-inline" style="margin-top: 30px;" onsubmit="return false">
+    <div class="layui-main site-inline">
 
         <div class="layui-form-item">
             <label class="layui-form-label" ><span class="fontRed">*</span>会议模板通道</label>
@@ -71,16 +70,16 @@
             </div>
         </div>
         <!--<div class="layui-form-item">-->
-            <!--<label class="layui-form-label"><span class="fontRed">*</span>存储设备ip</label>-->
-            <!--<div class="layui-input-block">-->
-                <!--<input type="text" name="storageip" id="storageip" required lay-verify="setip" placeholder="请输入存储设备ip" autocomplete="off" class="layui-input">-->
-            <!--</div>-->
+        <!--<label class="layui-form-label"><span class="fontRed">*</span>存储设备ip</label>-->
+        <!--<div class="layui-input-block">-->
+        <!--<input type="text" name="storageip" id="storageip" required lay-verify="setip" placeholder="请输入存储设备ip" autocomplete="off" class="layui-input">-->
+        <!--</div>-->
         <!--</div>-->
         <!--<div class="layui-form-item">-->
-            <!--<label class="layui-form-label"><span class="fontRed">*</span>文字转语音服务ip</label>-->
-            <!--<div class="layui-input-block">-->
-                <!--<input type="text" name="ttsetinfoip" id="ttsetinfoip" required lay-verify="setip" placeholder="请输入文字转语音服务ip" autocomplete="off" class="layui-input">-->
-            <!--</div>-->
+        <!--<label class="layui-form-label"><span class="fontRed">*</span>文字转语音服务ip</label>-->
+        <!--<div class="layui-input-block">-->
+        <!--<input type="text" name="ttsetinfoip" id="ttsetinfoip" required lay-verify="setip" placeholder="请输入文字转语音服务ip" autocomplete="off" class="layui-input">-->
+        <!--</div>-->
         <!--</div>-->
 
         <div class="layui-form-item">
@@ -88,6 +87,8 @@
                 <button class="layui-btn layui-btn-normal" lay-filter="formDemo" lay-submit="">保存配置</button>
             </div>
         </div>
+    </div>
+
     </form>
 
 

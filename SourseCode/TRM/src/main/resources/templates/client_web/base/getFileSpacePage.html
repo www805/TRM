@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <meta charset="UTF-8">
+    <title  th:text="${getFileSpacePage.title}">智能提讯系统</title>
+    <link rel="stylesheet" href="/layui/new/css/layui.css">
+    <link rel="stylesheet" href="/uimaker/css/common.css">
+    <style type="text/css">
+        .layui-form-label {
+            width: 120px;
+        }
+        .layui-input-block {
+            margin-left: 150px;
+        }
+        .layui-btn{
+            padding-left: 10px;
+        }
+        #fileshow{
+            margin-left: 50px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+<div class=" layui-row" style="margin: 20px;">
+
+
+    <div class="layui-elem-quote" style=" padding: 10px;">
+        <h3 th:text="${getFileSpacePage.title}">磁盘文件管理</h3>
+    </div>
+
+    <!--<div>-->
+        <!--<button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon layui-icon-left"></i>返回</button>-->
+    <!--</div>-->
+
+    <div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend >磁盘信息</legend>
+        </fieldset>
+
+        <table class="layui-table" lay-even="" lay-skin="line" style="width: 600px;margin-left: 10px;">
+            <tr>
+                <td>磁盘名称：</td>
+                <td id="sysVersion">D盘</td>
+            </tr>
+            <tr>
+                <td>磁盘总容量：</td>
+                <td id="companyname">1000GB</td>
+            </tr>
+            <tr>
+                <td>磁盘可用容量：</td>
+                <td id="sysStartTime">320GB</td>
+            </tr>
+            <tr>
+                <td>当前base路径：</td>
+                <td id="workTime">D:/ftpdata</td>
+            </tr>
+            <tr>
+                <td>当前base已用容量：</td>
+                <td id="basenum">200GB</td>
+            </tr>
+        </table>
+
+        <form class="layui-form" action="" >
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend >自动删除文件</legend>
+            </fieldset>
+
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">容量上限</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="spacesize" lay-verify="spacesize" autocomplete="off" placeholder="请输入容量上限" onKeypress="return (/[\d]|\./.test(String.fromCharCode(event.keyCode)))" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-inline">
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <select name="units" lay-filter="units">
+                            <option value="0">MB</option>
+                            <option value="1">GB</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">是否开启自动删除</label>
+                    <div class="layui-input-block" style="padding-top: 8px;">
+                        <input type="checkbox" name="start" lay-skin="switch" lay-filter="filestart" lay-text="开启|关闭">
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="layui-col-xs12 layui-col-sm12 layui-col-md6">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend >手动删除文件</legend>
+        </fieldset>
+
+        <div style="margin-left: 50px;">
+            <button type="button" class="layui-btn layui-btn-normal"><i class="layui-icon layui-icon-left"></i>返回上一页</button>
+            <button type="button" class="layui-btn layui-btn-danger"><i class="layui-icon layui-icon-delete"></i>删除</button>
+        </div>
+
+        <div id="fileshow">
+            文件展示
+        </div>
+
+    </div>
+</div>
+
+<script th:src="@{/js/jquery-1.11.1.js}" type="text/javascript"></script>
+<script th:src="@{/js/common.js}"  type="text/javascript" ></script>
+<script th:src="@{/js/actionid.js}" type="text/javascript"></script>
+<script th:src="@{/js/list.js}" type="text/javascript"></script>
+<script th:src="@{/layui/new/layui.js}"type="text/javascript"></script>
+<script th:src="@{/layui/new/lay/modules/laytpl.js}" type="text/javascript"></script>
+<script th:src="@{/js/client_web/base/getFileSpacePage.js}" type="text/javascript"></script>
+
+<script>
+
+    layui.use(['form', 'layedit','laypage', 'layer','tree'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,tree = layui.tree;
+
+
+        form.verify({
+            setip: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(''==value){
+                    return "IP不能为空";
+                }
+                if(!(/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(value))){
+                    return '请输入一个正确的IP地址';
+                }
+            }
+        });
+
+        form.on('switch(filestart)', function(data){
+            console.log(data.elem); //得到checkbox原始DOM对象
+            console.log(data.elem.checked); //开关是否开启，true或者false
+            console.log(data.value); //开关value值，也可以通过data.elem.value得到
+            console.log(data.othis); //得到美化后的DOM对象
+        });
+
+
+        var treedata = [{
+            title: '一级1'
+            ,id: 1
+            ,field: 'name1'
+            ,checked: true
+            ,spread: true
+            ,children: [{
+                title: '二级1-1 可允许跳转'
+                ,id: 3
+                ,field: 'name11'
+                ,href: 'https://www.layui.com/'
+                ,children: [{
+                    title: '三级1-1-3'
+                    ,id: 23
+                    ,field: ''
+                    ,children: [{
+                        title: '四级1-1-3-1'
+                        ,id: 24
+                        ,field: ''
+                        ,children: [{
+                            title: '五级1-1-3-1-1'
+                            ,id: 30
+                            ,field: ''
+                        },{
+                            title: '五级1-1-3-1-2'
+                            ,id: 31
+                            ,field: ''
+                        }]
+                    }]
+                },{
+                    title: '三级1-1-1'
+                    ,id: 7
+                    ,field: ''
+                    ,children: [{
+                        title: '四级1-1-1-1 可允许跳转'
+                        ,id: 15
+                        ,field: ''
+                        ,href: 'https://www.layui.com/doc/'
+                    }]
+                },{
+                    title: '三级1-1-2'
+                    ,id: 8
+                    ,field: ''
+                    ,children: [{
+                        title: '四级1-1-2-1'
+                        ,id: 32
+                        ,field: ''
+                    }]
+                }]
+            },{
+                title: '二级1-2'
+                ,id: 4
+                ,spread: true
+                ,children: [{
+                    title: '三级1-2-1'
+                    ,id: 9
+                    ,field: ''
+                    ,disabled: true
+                },{
+                    title: '三级1-2-2'
+                    ,id: 10
+                    ,field: ''
+                }]
+            },{
+                title: '二级1-3'
+                ,id: 20
+                ,field: ''
+                ,children: [{
+                    title: '三级1-3-1'
+                    ,id: 21
+                    ,field: ''
+                },{
+                    title: '三级1-3-2'
+                    ,id: 22
+                    ,field: ''
+                }]
+            }]
+        },{
+            title: '一级2'
+            ,id: 2
+            ,field: ''
+            ,spread: true
+            ,children: [{
+                title: '二级2-1'
+                ,id: 5
+                ,field: ''
+                ,spread: true
+                ,children: [{
+                    title: '三级2-1-1'
+                    ,id: 11
+                    ,field: ''
+                },{
+                    title: '三级2-1-2'
+                    ,id: 12
+                    ,field: ''
+                }]
+            },{
+                title: '二级2-2'
+                ,id: 6
+                ,field: ''
+                ,children: [{
+                    title: '三级2-2-1'
+                    ,id: 13
+                    ,field: ''
+                },{
+                    title: '三级2-2-2'
+                    ,id: 14
+                    ,field: ''
+                    ,disabled: true
+                }]
+            }]
+        },{
+            title: '一级3'
+            ,id: 16
+            ,field: ''
+            ,children: [{
+                title: '二级3-1'
+                ,id: 17
+                ,field: ''
+                ,fixed: true
+                ,children: [{
+                    title: '三级3-1-1'
+                    ,id: 18
+                    ,field: ''
+                },{
+                    title: '三级3-1-2'
+                    ,id: 19
+                    ,field: ''
+                }]
+            },{
+                title: '二级3-2'
+                ,id: 27
+                ,field: ''
+                ,children: [{
+                    title: '三级3-2-1'
+                    ,id: 28
+                    ,field: ''
+                },{
+                    title: '三级3-2-2'
+                    ,id: 29
+                    ,field: ''
+                }]
+            }]
+        }]
+
+        //渲染
+        var inst1 = tree.render({
+            elem: '#fileshow'  //绑定元素
+            ,data: treedata
+            ,showCheckbox: true  //是否显示复选框
+            ,id: 'demoId1'
+            ,isJump: true //是否允许点击节点时弹出新窗口跳转
+            ,click: function(obj){
+                var data = obj.data;  //获取当前点击的节点数据
+                layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
+            }
+        });
+
+        form.render();
+    });
+
+</script>
+
+<script th:inline="javascript">
+
+
+    var INIT_CLIENT;
+    var INIT_CLIENTKEY;
+    $(function(){
+        INIT_CLIENT=[[${session.INIT_CLIENT}]];
+        INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
+        setpageAction(INIT_CLIENT,"standalone_web/setUp/basicConfigure/dateTime");
+
+        // getFDssid();//获取设备ssid
+
+    });
+
+
+
+</script>
+</body>
+
+</html>

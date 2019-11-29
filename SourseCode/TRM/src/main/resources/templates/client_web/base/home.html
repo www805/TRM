@@ -57,6 +57,11 @@
 
             getServerStatus();
 
+            $(".cpxinxi").click(function(){
+                $(".jq_hidebox").toggle();//隐藏
+            });
+
+
             startConversationURL=getActionURL(getactionid_manage().home_tostartConversation);//跳转到开启谈话页面
             recordIndexURL=getActionURL(getactionid_manage().home_torecordIndex);//跳转到笔录列表
             waitconversationURL=getActionURL(getactionid_manage().home_towaitconversation);//跳转到开启谈话页面
@@ -128,6 +133,10 @@
             font-size: 14px;
             padding: 2px 6px;
         }
+        .jq_hidebox{display:none;position:absolute;left:0;top:27px;padding-top:5px;background:#fff;z-index:10;width: 100%;}
+        .cipan_item{padding: 0px 15px 0 15px; clear:both;}
+        .cipan_item a{text-decoration:underline;}
+        .layui-progress-bar{position:static;}
     </style>
 
 
@@ -203,6 +212,74 @@
               </div>
           </div>
       </div>
+
+
+      <div class="layui-col-sm3 layui-col-md2" style="float: right;">
+          <div class="layui-card" style=" overflowa:hidden;">
+              <div class="layui-card-header" >
+                  磁盘信息
+              </div>
+              <div class="layui-card-body layuiadmin-card-list" style="padding-top: 5px;padding-bottom: 5px;">
+
+                  <div>
+                      <div style="float: left;">
+                          <span >C盘容量：</span>
+                      </div>
+                      <div class="layui-progress layui-progress-big" lay-showpercent="true" style="float: left;width: 50%;margin: 3px 0 0 6px;">
+                          <div class="layui-progress-bar" lay-percent="70%"></div>
+                      </div>
+                      <div style="float: right;" >
+                          <a href="/filespace/getFileSpacePage"><span class="layui-badge layui-bg-blue" >详情>></span></a>
+                      </div>
+                  </div>
+
+                <div >
+
+                    <div class="jq_hidebox" >
+                        <div class="cipan_item">
+                            <div style="float: left;">
+                                <span >D盘容量：</span>
+                            </div>
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true" style="float: left;width: 50%;margin: 3px 0 0 6px;">
+                                <div class="layui-progress-bar" lay-percent="70%"></div>
+                            </div>
+                            <div style="float: right;" >
+                                <a href="/filespace/getFileSpacePage"><span class="layui-badge layui-bg-blue" >详情>></span></a>
+                            </div>
+                        </div>
+
+                        <div class="cipan_item">
+                            <div style="float: left;">
+                                <span >E盘容量：</span>
+                            </div>
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true" style="float: left;width: 50%;margin: 3px 0 0 6px;">
+                                <div class="layui-progress-bar" lay-percent="30%"></div>
+                            </div>
+                            <div style="float: right;" >
+                                <a href="/filespace/getFileSpacePage"><span class="layui-badge layui-bg-blue" >详情>></span></a>
+                            </div>
+                        </div>
+
+                        <div class="cipan_item">
+                            <div style="float: left;">
+                                <span >F盘容量：</span>
+                            </div>
+                            <div class="layui-progress layui-progress-big" lay-showpercent="true" style="float: left;width: 50%;margin: 3px 0 0 6px;">
+                                <div class="layui-progress-bar" lay-percent="60%"></div>
+                            </div>
+                            <div style="float: right;" >
+                                <a href="/filespace/getFileSpacePage"><span class="layui-badge layui-bg-blue" >详情>></span></a>
+                            </div>
+                        </div>
+                        <button class="cpxinxi" style="width: 100%;margin-top: 5px;">隐藏</button>
+                    </div>
+                    <button class="cpxinxi" style="width: 100%;margin-top: 5px;">查看更多</button>
+                </div>
+
+              </div>
+          </div>
+      </div>
+
     </div>
 
     <div class="layui-row layui-col-space15">
