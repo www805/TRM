@@ -201,7 +201,7 @@
                        <!-- <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>-->
                     </div>
                 </div>
-                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="height: 60%">
+                 <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="height: 49%">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息<!--<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i>--></li>
                             <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
@@ -264,7 +264,7 @@
                            <!-- <div class="layui-tab-item">身心监测</div>-->
                         </div>
                 </div>
-                <div class="layui-col-md12" style="height: 32%">
+                <div class="layui-col-md12" style="margin-bottom: 10px;">
                     <div class="layui-col-md12">
                         <div th:replace="video :: video"   >...</div>
                     </div>
@@ -280,25 +280,15 @@
             </div>
             <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                         <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
-                        <!--<div class="layui-inline" style="margin-bottom:0">
-                            <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
-                                <div class="layui-select-title">
-                                    <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
-                                </div>
-                                <dl class="layui-anim layui-anim-upbit" >
-                                    <dd lay-value="" class="" onclick="exportWord(this);">导出word</dd>
-                                    <dd lay-value="" class="" onclick="exportPdf(this);">导出pdf</dd>
-                                </dl>
-                            </div>
-                        </div>-->
                     <div class="layui-inline" style="margin-bottom:0">
                         <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                             <div class="layui-select-title">
                                 <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
                             </div>
-                            <dl class="layui-anim layui-anim-upbit" >
-                                <dd lay-value="" class="" onclick="exportWord(this);">导出word</dd>
-                                <dd lay-value="" class="" onclick="exportPdf(this);">导出pdf</dd>
+                            <dl class="layui-anim layui-anim-upbit" style="z-index: 1000">
+                                <dd lay-value="" class="" onclick="exporttemplate_ue(1);">导出word</dd><!--onclick="exportWord(this);"-->
+                                <dd lay-value="" class="" onclick="exporttemplate_ue(2);">导出pdf</dd><!--onclick="exportPdf(this);"-->
+                                <dd lay-value="" class="" onclick="export_asr();">导出识别内容</dd>
                             </dl>
                         </div>
                     </div>

@@ -16633,6 +16633,10 @@ UE.plugins['enterkey'] = function() {
             console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
             prange.removeAttribute('starttime');
         };
+        if(isNotEmpty(prange.getAttribute('usertype'))){
+            console.log("删除了usertype这个属性----usertype="+prange.getAttribute('usertype'));
+            prange.removeAttribute('usertype');
+        };
     });
 
     me.addListener('keydown', function(type, evt) {

@@ -1,17 +1,20 @@
 package com.avst.trm.v1.web.cweb.service.courtService;
 
+import com.avst.trm.v1.common.conf.type.MCType;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignmentexpand;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Case;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Record;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.RecordToProblem;
-import com.avst.trm.v1.common.datasourse.police.entity.moreentity.Userinfograde;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_caseMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
-import com.avst.trm.v1.common.datasourse.police.mapper.Police_userinfogradeMapper;
+import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
+import com.avst.trm.v1.common.datasourse.police.mapper.*;
+import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
+import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
@@ -20,13 +23,20 @@ import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
+import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
+import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.req.courtreq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.UploadWordTemplateParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
+import com.avst.trm.v1.web.cweb.vo.courtvo.Export_asrVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.Exporttemplate_ueVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradeByssidVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.GetUserinfogradePageVO;
+import com.avst.trm.v1.web.cweb.vo.policevo.CheckKeywordVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
@@ -37,9 +47,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("courtService")
 public class CourtService extends BaseService {
@@ -59,6 +67,23 @@ public class CourtService extends BaseService {
 
     @Autowired
     private Police_caseMapper police_caseMapper;
+
+    @Autowired
+    private Police_arraignmentMapper police_arraignmentMapper;
+
+    @Autowired
+    private Police_arraignmentexpandMapper police_arraignmentexpandMapper;
+
+    @Autowired
+    private Police_userinfoMapper police_userinfoMapper;
+
+    @Autowired
+    private Base_admininfoMapper base_admininfoMapper;
+
+
+
+    @Autowired
+    private OutService outService;
 
 
     public void getUserinfogradePage(RResult result, GetUserinfogradePageParam param){
@@ -246,6 +271,11 @@ public class CourtService extends BaseService {
     }
 
     public void exporttemplate_ue(RResult result, Exporttemplate_ueParam param){
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+
         Exporttemplate_ueVO vo=new Exporttemplate_ueVO();
         String recordssid=param.getRecordssid();
         Integer exporttype=param.getExporttype();
@@ -315,7 +345,7 @@ public class CourtService extends BaseService {
                     String pdf_filesavessid=null;
                     if (exporttype==2){
                         //pdf
-                       /* String pdffilename=filename+".pdf";
+                       String pdffilename=filename+".pdf";
                         String pdfrealurl=OpenUtil.createpath_fileByBasepath(savePath, pdffilename);
                         LogUtil.intoLog(this.getClass(),"导出的笔录word或者pdf真实地址__"+pdfrealurl);
                         String pdfdownurl=uploadpath+OpenUtil.strMinusBasePath(qg, pdfrealurl) ;
@@ -346,7 +376,7 @@ public class CourtService extends BaseService {
                                 }
                                 vo.setPdf_downurl(pdfdownurl);
                             }
-                        }*/
+                        }
                     }
 
                     //开始进行保存操作
@@ -376,6 +406,148 @@ public class CourtService extends BaseService {
                     }
                 }
             }
+        }
+        return;
+    }
+
+    public void export_asr(RResult result,Export_asrParam param){
+        Export_asrVO vo=new Export_asrVO();
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String recordssid=param.getRecordssid();
+        LogUtil.intoLog(1,this.getClass(),"export_asr__recordssid："+recordssid);
+        if (StringUtils.isEmpty(recordssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        EntityWrapper recordParam=new EntityWrapper();
+        recordParam.eq("r.ssid",recordssid);
+        Record record=police_recordMapper.getRecordBySsid(recordParam);
+        if (null!=record){
+            Integer recordbool=record.getRecordbool();
+            if (!(recordbool.intValue()==2||recordbool.intValue()==3)){
+                result.setMessage("该笔录未结束");
+                return;
+            }
+            String mtssid = null;
+            Map<String,String> usergradesMap=new HashMap<>();
+            Police_arraignment police_arraignment=new Police_arraignment();
+            police_arraignment.setRecordssid(recordssid);
+            police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+            if (null!=police_arraignment) {
+                 mtssid = police_arraignment.getMtssid();
+
+                 //找到人员对应多角色
+                EntityWrapper arre=new EntityWrapper();
+                arre.eq("arraignmentssid",police_arraignment.getSsid());
+                List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                    for (Police_arraignmentexpand arraignmentexpand : arraignmentexpands) {
+                        String gradessid=arraignmentexpand.getExpandname();//拓展名为登记表ssid
+                        String userssid=arraignmentexpand.getExpandvalue();//拓展值为用户的ssid
+                        if (StringUtils.isNotBlank(gradessid)&&StringUtils.isNotBlank(userssid)){
+                            //查找等级
+                            Police_userinfograde police_userinfograde=new Police_userinfograde();
+                            police_userinfograde.setSsid(gradessid);
+                            police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+                            if (null!=police_userinfograde){
+                                usergradesMap.put(userssid,police_userinfograde.getGradename());
+                            }
+                        }
+                    }
+                }
+            }
+
+            LogUtil.intoLog(1,this.getClass(),"export_asr__mtssid："+mtssid);
+            if (StringUtils.isEmpty(mtssid)){
+                result.setMessage("不支持导出");
+                return;
+            }else {
+                //开始收集数据
+                String content="";//导出的内容收集
+                //getRecord：获取会议asr识别数据
+                GetMCVO getMCVO=new GetMCVO();
+                ReqParam getrecord_param=new ReqParam<>();
+                GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                getPhssidByMTssidParam_out.setMtssid(mtssid);
+                getrecord_param.setParam(getPhssidByMTssidParam_out);
+                RResult getrecord_rr=new RResult();
+                getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
+                    if (null!=getMCVO){
+                        List<AsrTxtParam_toout> asrTxtParam_toouts=getMCVO.getList();
+                        if (null!=asrTxtParam_toouts&&asrTxtParam_toouts.size()>0){
+                            for (AsrTxtParam_toout asrTxtParam_toout : asrTxtParam_toouts) {
+                                String txt=asrTxtParam_toout.getTxt();
+                                String userssid= asrTxtParam_toout.getUserssid();
+                                String starttime= asrTxtParam_toout.getAsrstartime();
+                                String usergrade="【未知】";
+                                if (!usergradesMap.isEmpty()){
+                                    usergrade=usergradesMap.get(userssid)==null?"【未知】":usergradesMap.get(userssid);
+                                }
+                                content+= "<div style='text-align: left'>" +
+                                        "<p style='color: #999;'>【"+usergrade+"】："+starttime+"  </p><span>"+txt+"</span></div>";
+                            }
+                        }else {
+                            result.setMessage("未找到可导出的语音识别内容");
+                            return;
+                        }
+                    }
+                    LogUtil.intoLog(1,this.getClass(),"export_asr__outService.getRecord__请求成功");
+                }else {
+                    Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
+                    LogUtil.intoLog(1,this.getClass(),"export_asr__outService.getRecord__请求失败__"+msg);
+                    result.setMessage(String.valueOf(msg));
+                    return;
+                }
+
+                //收集完 开始导出
+                String filename=record.getRecordname().replace(" ", "").replace("\"", "");
+                filename=filename+"_asr.doc";
+                String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");
+                String savePath=PropertiesListenerConfig.getProperty("file.phreport");//使用情绪报告的保存地址
+                String qg=PropertiesListenerConfig.getProperty("file.qg");
+
+                String realurl = OpenUtil.createpath_fileByBasepath(savePath, filename);
+                LogUtil.intoLog(1,this.getClass(),"export_asr__真实地址__："+realurl);
+                boolean  htmltowordbool = HtmlToWord.HtmlToWord(realurl,content);
+                if (htmltowordbool) {
+                    String downurl = OpenUtil.strMinusBasePath(qg, realurl);
+                    LogUtil.intoLog(1, this.getClass(), "情绪报表的下载地址__：" + downurl);
+
+                    if (StringUtils.isNotBlank(realurl) && StringUtils.isNotBlank(downurl)) {
+                        //添加数据库
+                        Base_filesave base_filesave = new Base_filesave();
+                        base_filesave.setDatassid(recordssid);
+                        base_filesave.setUploadfilename(filename);
+                        base_filesave.setRealfilename(filename);
+                        base_filesave.setRecordrealurl(realurl);
+                        base_filesave.setRecorddownurl(downurl);
+                        base_filesave.setSsid(OpenUtil.getUUID_32());
+                        base_filesave.setFilebool(1);
+                        base_filesave.setFiletype("word");//固定类型
+                        base_filesave.setCreatetime(DateUtil.getDateAndMinute());
+                        int filesaveinsert_bool = base_filesaveMapper.insert(base_filesave);
+                        LogUtil.intoLog(1, this.getClass(), "export_asr__filesaveinsert_bool__" + filesaveinsert_bool);
+                        if (filesaveinsert_bool > 0) {
+                            vo.setDownurl(uploadbasepath + downurl);
+                            result.setData(vo);
+                            changeResultToSuccess(result);
+                        }
+                    } else {
+                        LogUtil.intoLog(1, this.getClass(), "情绪报表地址有误__realurl__" + realurl + "__downurl__" + downurl);
+                    }
+                }
+            }
+        }else {
+            result.setMessage("未找到该笔录");
+            return;
         }
         return;
     }

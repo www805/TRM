@@ -1047,7 +1047,7 @@ function callbackgetPlayUrl(data) {
 //导出模板
 function exporttemplate_ue(exporttype) {
     if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
-        var url="/cweb/court/court/exporttemplate_ue";
+        var url=getActionURL(getactionid_manage().getCourtDetail_exporttemplate_ue);
         var paramdata={
             token:INIT_CLIENTKEY,
             param:{
@@ -1082,9 +1082,8 @@ function callbackexporttemplate_ue(data) {
                     showPDF("pdfid",pdf_downurl);
                     layer.msg("导出成功,等待下载中...",{icon: 6});
                 }else {
-                    layer.msg("未找到导出类型",{icon: 5});
+                    layer.msg("导出失败",{icon: 5});
                 }
-
             }
         }
     }else{
@@ -1093,6 +1092,33 @@ function callbackexporttemplate_ue(data) {
 }
 //******************************************************************关于百度编辑器end****************************************************************//
 
+function export_asr() {
+    if (isNotEmpty(recordssid)) {
+        var url=getActionURL(getactionid_manage().getCourtDetail_export_asr);
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+            }
+        };
+        ajaxSubmitByJson(url,paramdata,callbackexport_asr);
+    }
+}
+function callbackexport_asr(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var downurl=data.downurl;//word导出地址
+            if (isNotEmpty(downurl)) {
+                var $a = $("<a></a>").attr("href", downurl).attr("download", "down");
+                $a[0].click();
+                layer.msg('语音识别内容导出成功,等待下载中...',{icon:6});
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
 
 //默认问答
 var trtd_html='<tr>\

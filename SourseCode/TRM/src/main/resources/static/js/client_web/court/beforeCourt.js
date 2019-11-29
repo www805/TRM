@@ -27,6 +27,8 @@ var casenum_case;////根据案件编号回填的案件ssid
 
 
 
+
+
 //开始笔录按钮===================================================================start
 function addCaseToArraignment() {
     var url=getActionURL(getactionid_manage().beforeCourt_addCaseToArraignment);

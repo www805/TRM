@@ -391,6 +391,8 @@ function getactionid_manage() {
         getCourtDetail_getRecordrealByRecordssid:'getCourtDetail_getRecordrealByRecordssid',
         getCourtDetail_addRecord:'getCourtDetail_addRecord',
         getCourtDetail_updateRecord:'getCourtDetail_updateRecord',
+        getCourtDetail_exporttemplate_ue:"getCourtDetail_exporttemplate_ue",
+        getCourtDetail_export_asr:"getCourtDetail_export_asr",
 
         waitCourt_tocaseToUser:"waitCourt_tocaseToUser",
         waitCourt_getRecordById:"waitCourt_getRecordById",
@@ -407,6 +409,8 @@ function getactionid_manage() {
         waitCourt_gnlist:"waitCourt_gnlist",
         waitCourt_torecordIndex:"waitCourt_torecordIndex",
         waitCourt_setRecordProtect:"waitCourt_setRecordProtect",
+        waitCourt_exporttemplate_ue:"waitCourt_exporttemplate_ue",
+        waitCourt_importtemplate_ue:"waitCourt_importtemplate_ue",
 
         beforeCourt_getRecordtypes:"beforeCourt_getRecordtypes",
         beforeCourt_getNationals:"beforeCourt_getNationals",

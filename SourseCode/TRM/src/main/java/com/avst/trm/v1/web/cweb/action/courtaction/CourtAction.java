@@ -132,6 +132,21 @@ public class CourtAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping(value = "/export_asr")
+    public RResult export_asr(@RequestBody ReqParam<Export_asrParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            courtService.export_asr(result,param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
 
 

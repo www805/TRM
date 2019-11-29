@@ -100,8 +100,14 @@
                 <div class="layui-inline" >
                     <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
                     <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
-                    <button type="button" class="layui-btn layui-btn-normal  " id="wordupload" >导入Word模板</button>
-                    <button type="button" class="layui-btn layui-btn-normal " id="wordgoout" onclick="exporttemplate_ue(1);">导出Word笔录</button>
+                </div>
+                <div class="layui-inline" >
+                    <div class="btn-group">
+                        <button class="layui-btn layui-btn-normal" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导入<span class="caret"></span></button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" id="dr_li">
+                            <li type="1"><a href="#" id="wordupload">导入Word模板</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="layui-inline" >
                     <div class="btn-group">
@@ -337,9 +343,13 @@
         //普通上传
         var uploadInst = upload.render({
             elem: '#wordupload'
-            , url: '/cweb/court/court/importtemplate_ue'
+            , url: getActionURL(getactionid_manage().waitCourt_importtemplate_ue)
             ,accept: 'file'
             , before: function (obj) {
+                layer.msg("导入中，请稍等...", {
+                    icon: 16,
+                    shade: [0.1, 'transparent'],
+                });
                 var param={
                     token:INIT_CLIENTKEY,
                     param:{
@@ -355,7 +365,8 @@
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     var data=data.data;
                     if (isNotEmpty(data)){
-                        TOWORD.page.importhtml(data)
+                        TOWORD.page.importhtml(data);
+                        return layer.msg('导入成功',{icon:6});
                     }
                 }else{
                     return layer.msg(data.message,{icon: 5});

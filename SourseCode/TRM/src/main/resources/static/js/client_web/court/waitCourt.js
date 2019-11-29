@@ -735,69 +735,12 @@ function calladdRecord(data) {
             if (isNotEmpty(overRecord_loadindex)) {
                 layer.close(overRecord_loadindex);
             }
-
             if (recordbool==2) {
                 layer.msg("已结束",{time:500,icon:6},function () {
                     var url=getActionURL(getactionid_manage().waitCourt_torecordIndex);
                     window.location.href=url;
                 })
-            }else if (recordbool==-1){//导出word
-                var url=getActionURL(getactionid_manage().waitCourt_exportWord);
-                var paramdata={
-                    token:INIT_CLIENTKEY,
-                    param:{
-                        recordssid: recordssid,
-                    }
-                };
-                ajaxSubmitByJson(url, paramdata, function (data) {
-                    if (isNotEmpty(exportWord_index)) {
-                        layer.close(exportWord_index);
-                    }
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            var word_htmlpath=data.word_htmlpath;//预览html地址
-                            var word_path=data.word_path;//下载地址
-                            window.location.href = word_path;
-                            layer.msg("导出成功,等待下载中...",{icon: 6});
-                        }
-                    }else{
-                        layer.msg(data.message,{icon: 5});
-                    }
-                });
-            } else  if (recordbool==-2){//导出pdf
-                var url=getActionURL(getactionid_manage().waitCourt_exportPdf);
-                var paramdata={
-                    token:INIT_CLIENTKEY,
-                    param:{
-                        recordssid: recordssid,
-                    }
-                };
-                ajaxSubmitByJson(url, paramdata, function (data) {
-                    if (isNotEmpty(exportPdf_index)) {
-                        layer.close(exportPdf_index);
-                    }
-                    if(null!=data&&data.actioncode=='SUCCESS'){
-                        var data=data.data;
-                        if (isNotEmpty(data)){
-                            //window.location.href = data;
-                            layer.open({
-                                id:"pdfid",
-                                type: 1,
-                                title: '导出PDF',
-                                shadeClose: true,
-                                maxmin: true, //开启最大化最小化按钮
-                                area: ['893px', '600px'],
-                            });
-
-                            showPDF("pdfid",data);
-                            layer.msg("导出成功,等待下载中...",{icon: 6});
-                        }
-                    }else{
-                        layer.msg(data.message,{icon: 5});
-                    }
-                });
-            } else {
+            }else {
                 layer.msg('保存成功',{icon:6});
             }
         }
@@ -1289,21 +1232,21 @@ $(function () {
     $("#dc_li li").click(function () {
         var type=$(this).attr("type");
         if (type==1){
-            recordbool=-1; //不存在数据库
-            addRecord();
             exportWord_index=layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent'],
                 time:10000
             });
+           /* exportWord();*/
+            exporttemplate_ue(1);
         }else  if(type==2){
-            recordbool=-2; //不存在数据库
-            addRecord();
             exportPdf_index=layer.msg("导出中，请稍等...", {
                 icon: 16,
                 shade: [0.1, 'transparent'],
                 time:10000
             });
+           /* exportPdf();*/
+            exporttemplate_ue(2);
         }
     });
     //常用问答点击
@@ -1465,14 +1408,6 @@ $(function () {
                             //自动甄别开启没
                             var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (record_switch_bool==1){
-                                /*if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                    $("p[starttime="+starttime+"][usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+"："+translatext);
-                                }else {
-                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+'：'+translatext+'</p>';
-                                    focuslable(trtd_html,2,null);
-                                }
-                                laststarttime_ue=starttime;//更新最后一个
-                                resetpage();*/
                                 console.log(last_identifys)
                                 gradeintroduce=gradeintroduce+"：";
                                 if (lastusertype!=-1){
@@ -1483,23 +1418,17 @@ $(function () {
                                         var last_translatext = null;
                                         var last_oldtranslatext = null;
                                         if (isNotEmpty(lastusertype)&&usertype==lastusertype) {
-                                            //console.log("当前和上一个相同")
-                                            //上一个和本次相同
                                              last_starttime=last_identify.starttime;
                                              last_translatext=last_identify.translatext;
                                              last_oldtranslatext=last_identify.oldtranslatext;
-                                            //和上一个用户一致类加
                                             if (last_starttime==starttime){
                                                 last_translatext=translatext;
-                                                //console.log("当前和上一个相同_____并且时间也相同____"+last_oldtranslatext+last_translatext)
                                             }else{
                                                 last_oldtranslatext+=last_translatext;
                                                 last_translatext=translatext;
-                                                //console.log("当前和上一个相同_____时间不相同开始累加这个人____"+last_oldtranslatext+last_translatext)
                                             }
                                             $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
                                         }else {
-                                            //console.log("当前和上一个不相同是一个新用户")
                                              last_identify=last_identifys[""+usertype+""];//新用户的上一个数据
                                             if (isNotEmpty(last_identify)){
                                                 last_starttime=last_identify.starttime;
@@ -1507,12 +1436,10 @@ $(function () {
                                                 last_oldtranslatext=last_identify.oldtranslatext;
                                                 if (last_starttime==starttime) {
                                                     last_translatext=translatext;
-                                                    console.log("当前和上一个不相同是一个新用户新用户早就有了____"+last_oldtranslatext+last_translatext)
                                                     $("p[usertype="+usertype+"]:last",editorhtml).html(last_oldtranslatext+last_translatext);
                                                 }else {
                                                     last_oldtranslatext="";
                                                     last_translatext=translatext;
-                                                    //console.log("当前和上一个不相同是一个新用户但是需要新增一行数据了____"+last_translatext)
                                                     var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
                                                     focuslable(trtd_html,2,null);
                                                     laststarttime_ue=starttime;//更新最后一个
@@ -1521,7 +1448,6 @@ $(function () {
                                             } else {
                                                 last_oldtranslatext="";
                                                 last_translatext=translatext;
-                                               // console.log("当前和上一个不相同是一个新用户真的新用户没有存在数据____"+last_translatext)
                                                 var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
                                                 focuslable(trtd_html,2,null);
                                                 laststarttime_ue=starttime;//更新最后一个
@@ -1534,8 +1460,6 @@ $(function () {
                                             translatext:last_translatext,
                                             oldtranslatext:last_oldtranslatext,
                                         }
-                                        //console.log("最终更新的数据____")
-                                       // console.log(newlast_identify)
                                         last_identifys[""+usertype+""]=newlast_identify;
                                     }
                                 } else {
@@ -2199,7 +2123,67 @@ function callbacksetRecordProtect(data) {
 var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
 
 
+///////////////////************导出**********************//////////
+function exportWord() {
+    var url=getActionURL(getactionid_manage().waitCourt_exportWord);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if (isNotEmpty(exportWord_index)) {
+            layer.close(exportWord_index);
+        }
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var word_htmlpath=data.word_htmlpath;//预览html地址
+                var word_path=data.word_path;//下载地址
+                window.location.href = word_path;
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+}
 
+function exportPdf(){
+    var url=getActionURL(getactionid_manage().waitCourt_exportPdf);
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if (isNotEmpty(exportPdf_index)) {
+            layer.close(exportPdf_index);
+        }
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                //window.location.href = data;
+                layer.open({
+                    id:"pdfid",
+                    type: 1,
+                    title: '导出PDF',
+                    shadeClose: true,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                });
+
+                showPDF("pdfid",data);
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+}
+///////////////////************导出**********************//////////
 
 ///////////////////////////////**********************************************************百度编辑器**************start
 var laststarttime_ue=null;//最后一个识别的starttime
@@ -2236,7 +2220,7 @@ function  resetpage() {
 //导出模板
 function exporttemplate_ue(exporttype) {
     if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
-        var url="/cweb/court/court/exporttemplate_ue";
+        var url=getActionURL(getactionid_manage().waitCourt_exporttemplate_ue);
         var paramdata={
             token:INIT_CLIENTKEY,
             param:{
@@ -2271,9 +2255,8 @@ function callbackexporttemplate_ue(data) {
                    showPDF("pdfid",pdf_downurl);
                    layer.msg("导出成功,等待下载中...",{icon: 6});
                }else {
-                   layer.msg("未找到导出类型",{icon: 5});
+                   layer.msg("导出失败",{icon: 5});
                }
-
             }
         }
     }else{
