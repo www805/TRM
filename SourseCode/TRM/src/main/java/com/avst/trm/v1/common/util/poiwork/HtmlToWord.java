@@ -1,13 +1,16 @@
 package com.avst.trm.v1.common.util.poiwork;
 
+import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
+import com.aspose.words.ReadLicense;
 import com.avst.trm.v1.common.util.log.LogUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Element;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 
 /**
@@ -22,29 +25,100 @@ public class HtmlToWord {
      * @return
      */
     public static boolean HtmlToWord(String wordpath, String htmlcontent){
-        if (StringUtils.isNotEmpty(wordpath)){
-            String str = "<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:TrackMoves>false</w:TrackMoves><w:TrackFormatting/><w:ValidateAgainstSchemas/><w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid><w:IgnoreMixedContent>false</w:IgnoreMixedContent><w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText><w:DoNotPromoteQF/><w:LidThemeOther>EN-US</w:LidThemeOther><w:LidThemeAsian>ZH-CN</w:LidThemeAsian><w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript><w:Compatibility><w:BreakWrappedTables/><w:SnapToGridInCell/><w:WrapTextWithPunct/><w:UseAsianBreakRules/><w:DontGrowAutofit/><w:SplitPgBreakAndParaMark/><w:DontVertAlignCellWithSp/><w:DontBreakConstrainedForcedTables/><w:DontVertAlignInTxbx/><w:Word11KerningPairs/><w:CachedColBalance/><w:UseFELayout/></w:Compatibility><w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel><m:mathPr><m:mathFont m:val=\"Cambria Math\"/><m:brkBin m:val=\"before\"/><m:brkBinSub m:val=\"--\"/><m:smallFrac m:val=\"off\"/><m:dispDef/><m:lMargin m:val=\"0\"/> <m:rMargin m:val=\"0\"/><m:defJc m:val=\"centerGroup\"/><m:wrapIndent m:val=\"1440\"/><m:intLim m:val=\"subSup\"/><m:naryLim m:val=\"undOvr\"/></m:mathPr></w:WordDocument></xml><![endif]-->";
-            //其中content为ueditor生成的内容
-            String h = " <html xmlns:v='urn:schemas-microsoft-com:vml'xmlns:o='urn:schemas-microsoft-com:office:office'xmlns:w='urn:schemas-microsoft-com:office:word'xmlns:m='http://schemas.microsoft.com/office/2004/12/omml'xmlns='http://www.w3.org/TR/REC-html40'  ";
-            htmlcontent =h+"<head>"+"<meta http-equiv='Content-Type' content='text/html; charset=utf-8' />"+str+"</head><body>"+htmlcontent+"</body> </html>";
-            byte b[] = htmlcontent.getBytes();
+
+        InputStream is=null;
+        OutputStream os=null;
+        POIFSFileSystem fs=null;
+        if (null!=wordpath&&!wordpath.trim().equals("")){
+            if(htmlcontent.indexOf("<html") > -1&&htmlcontent.indexOf("<body") > -1){//全页面导入
+                System.out.println("全页面导入要处理");
+                htmlcontent=delHtml_head(htmlcontent);//获取body的数据
+            }
+            //只有body里面的数据导入
+//            String str = "<xml><w:WordDocument><w:View>Print</w:View><w:TrackMoves>false</w:TrackMoves><w:TrackFormatting/><w:ValidateAgainstSchemas/><w:SaveIfXMLInvalid>false</w:SaveIfXMLInvalid><w:IgnoreMixedContent>false</w:IgnoreMixedContent><w:AlwaysShowPlaceholderText>false</w:AlwaysShowPlaceholderText><w:DoNotPromoteQF/><w:LidThemeOther>EN-US</w:LidThemeOther><w:LidThemeAsian>ZH-CN</w:LidThemeAsian><w:LidThemeComplexScript>X-NONE</w:LidThemeComplexScript><w:Compatibility><w:BreakWrappedTables/><w:SnapToGridInCell/><w:WrapTextWithPunct/><w:UseAsianBreakRules/><w:DontGrowAutofit/><w:SplitPgBreakAndParaMark/><w:DontVertAlignCellWithSp/><w:DontBreakConstrainedForcedTables/><w:DontVertAlignInTxbx/><w:Word11KerningPairs/><w:CachedColBalance/><w:UseFELayout/></w:Compatibility><w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel><m:mathPr><m:mathFont m:val=\"Cambria Math\"/><m:brkBin m:val=\"before\"/><m:brkBinSub m:val=\"--\"/><m:smallFrac m:val=\"off\"/><m:dispDef/><m:lMargin m:val=\"0\"/> <m:rMargin m:val=\"0\"/><m:defJc m:val=\"centerGroup\"/><m:wrapIndent m:val=\"1440\"/><m:intLim m:val=\"subSup\"/><m:naryLim m:val=\"undOvr\"/></m:mathPr></w:WordDocument></xml>";
+//            String h = " <html xmlns:v='urn:schemas-microsoft-com:vml'xmlns:o='urn:schemas-microsoft-com:office:office'xmlns:w='urn:schemas-microsoft-com:office:word'xmlns:m='http://schemas.microsoft.com/office/2004/12/omml'xmlns='http://www.w3.org/TR/REC-html40'>";
+            htmlcontent ="<html><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' ></meta></head><body>"+htmlcontent+"</body> </html>";
             try {
-                InputStream is = new ByteArrayInputStream(b);
-                OutputStream os = new FileOutputStream(wordpath);
-                POIFSFileSystem fs = new POIFSFileSystem();
-                fs.createDocument(is, "WordDocument");
-                fs.writeFilesystem(os);
-                os.close();
-                is.close();
-                LogUtil.intoLog(4,WordToHtmlUtil.class,"HtmlToWord HTML转WORD成功"+wordpath);
-                return  true;
+                return  ConvertHtmlToDoc(htmlcontent,wordpath);
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                IOUtils.closeQuietly(fs);
+                IOUtils.closeQuietly(os);
+                IOUtils.closeQuietly(is);
+            }
+        }
+        System.out.println("HtmlToWord HTML转WORD失败"+wordpath);
+        return false;
+    }
+
+    /**
+     *
+     * @param htmlpath
+     * @return
+     */
+    public static String delHtml_head(String htmlpath) {
+
+        org.jsoup.nodes.Document doc = Jsoup.parse(htmlpath);
+        String httml= null;
+        try {
+            Element body=doc.body();
+            httml = body.html();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            doc=null;
+        }
+        return httml;
+    }
+
+    public static boolean ConvertHtmlToDoc(String html, String savePath)
+    {
+        try
+        {
+
+            if(!getLicense()){// 验证License 若不验证则转化出的PDP文档会有水印产生
+                System.out.println("word2pdf 验证License 失败");
             }
 
+            Document doc = new Document();
+            DocumentBuilder build = new DocumentBuilder(doc);
+            build.insertHtml(html);
+            doc.save(savePath);
+            return true;
         }
-        LogUtil.intoLog(4,WordToHtmlUtil.class,"HtmlToWord HTML转WORD失败"+wordpath);
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         return false;
+    }
+
+    public static boolean getLicense() {
+
+        boolean result = false;
+        InputStream is=null;
+        try {
+            is = ReadLicense.getStringInputStream();
+            com.aspose.words.License aposeLic = new com.aspose.words.License();
+            aposeLic.setLicense(is);
+            result = true;
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(null!=is){
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+
     }
 
     public static void main(String[] args) {

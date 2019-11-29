@@ -11,6 +11,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.apache.commons.lang.StringUtils;
@@ -302,9 +303,8 @@ public class WordToHtmlUtil {
 
             StringBuffer html=new StringBuffer();
 
-            final InputStream in2=inputStream;
             try {
-                wordDocument = new HWPFDocument(in2);
+                wordDocument = new HWPFDocument(inputStream);
             } catch (OfficeXmlFileException e) {
                 if(num<2){//可以尝试一下
                     num++;
@@ -312,11 +312,6 @@ public class WordToHtmlUtil {
                 }
                 return null;
             }finally {
-//                try {
-//                    in2.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
             }
             WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
 
@@ -406,8 +401,7 @@ public class WordToHtmlUtil {
     }
 
 
-    public static Map<String,String> getHtml_Css(String htmlpath) {
-        org.jsoup.nodes.Document doc = Jsoup.parse(htmlpath);
+    public static Map<String,String> getHtml_Css(org.jsoup.nodes.Document doc) {
         String[] styles = doc.head().select("style").html().split("\r\n");
         Map<String,String> css = new HashMap<String,String>();
         for(String style:styles)
@@ -433,53 +427,218 @@ public class WordToHtmlUtil {
      */
     public static String setHtml_LineStyle(String htmlpath,int type) {
 
-        Map<String,String> css = getHtml_Css(htmlpath);
+        System.out.println(htmlpath+"--htmlpath");
         org.jsoup.nodes.Document doc = Jsoup.parse(htmlpath);
-        Element body=doc.body();
+        System.out.println(doc.html()+"--Jsouphtmlpath");
+        String httml= null;
+        try {
+            Map<String,String> css = getHtml_Css(doc);
+            Element body=doc.body();
 
-        if(type==2){
-            if(htmlpath.indexOf("div") > -1){
-                Elements divs =body.getElementsByTag("div");
-                String divhtml="";
-                for (Element div: divs) {
-                    divhtml = div.html();
-                    div.remove();
-                    break;//只删除第一个
+            if(type==2){
+                if(htmlpath.indexOf("div") > -1){
+                    Elements divs =body.getElementsByTag("div");
+                    String divhtml="";
+                    for (Element div: divs) {
+                        divhtml += div.html();
+                        div.remove();
+                    }
+                    body.html(divhtml);
                 }
-                body.html(divhtml);
+            }else{
+                for(String key:css.keySet())
+                {
+                    Elements elements=body.select(key);
+                    String cssstyle="";
+                    if(null==elements||elements.isEmpty()){
+                        System.out.println("body.select(key).attr(\"style\") is null,key:"+key);
+                    }else{
+                        cssstyle=css.get(key)+elements.attr("style");
+                        elements.attr("style","" );
+                        elements.attr("style",cssstyle );
+
+                    }
+                }
             }
-        }else{
-            for(String key:css.keySet())
-            {
-                Elements elements=body.select(key);
-                String cssstyle="";
-                if(null==elements||elements.isEmpty()){
-                    System.out.println("body.select(key).attr(\"style\") is null,key:"+key);
-                }else{
-                    elements.attr("style","" );
-                    cssstyle=css.get(key)+elements.attr("key");
-                    System.out.println("cssnow:"+cssstyle+"------,"+css.get(key));
-                    elements.attr("style",cssstyle );
 
+
+            httml = body.html();
+
+            //把Word2003/2007默认的字体样式全改成宋体，这样做为了避免doc转HTML的布完整性
+            if(httml.indexOf("font-family:Times New Roman")> -1){
+                httml=httml.replaceAll("font-family:Times New Roman","font-family:宋体");
+            }else if(httml.indexOf("font-family:'Times New Roman'")> -1){
+                httml=httml.replaceAll("font-family:'Times New Roman'","font-family:'宋体'");
+            }
+            if(httml.indexOf("font-family:Calibri Light")> -1){
+                httml=httml.replaceAll("font-family:Calibri Light","font-family:宋体");
+            }else if(httml.indexOf("font-family:'Calibri Light'")> -1){
+                httml=httml.replaceAll("font-family:'Calibri Light'","font-family:'宋体'");
+            }
+
+            //去掉A标签，改成span
+            if(httml.indexOf("<a ")> -1){
+                httml=httml.replaceAll("<a ","<span ").replaceAll("</a>","</span>");
+            }
+            if(httml.indexOf("<a>")> -1){
+                httml=httml.replaceAll("<a>","<span>").replaceAll("</a>","</span>");
+            }
+
+            System.out.println(3+"--"+httml);
+
+            httml=httml.replace(" ","  ");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            doc=null;
+        }
+        return httml;
+    }
+
+
+    /**
+     * 2007版本word转换成html
+     */
+    public static StringBuffer Word2007ToHtml_in(InputStream inputStream){
+
+        XWPFDocument document=null;
+        ByteArrayOutputStream baos=null;
+        try {
+            StringBuffer html=new StringBuffer();
+            // 1) 加载word文档生成 XWPFDocument对象
+
+            document = new XWPFDocument(inputStream);
+
+            // 也可以使用字符数组流获取解析的内容
+            baos = new ByteArrayOutputStream();
+            XHTMLConverter.getInstance().convert(document, baos, null);
+            html.append( baos.toString());
+            baos.close();
+            return html;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null!=baos){
+                    baos.close();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (null!=document){
+                    document.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+        return null;
+    }
 
+    /**
+     * /**
+     * 2003版本word转换成html
+     * @throws IOException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     */
+    public static StringBuffer Word2003ToHtml_in(InputStream inputStream) {
 
+        HWPFDocument wordDocument=null;
+        ByteArrayOutputStream baos=null;
+        try {
 
-        String httml=body.html();
-        System.out.println(3+"--"+httml);
+            StringBuffer html=new StringBuffer();
 
-        httml=httml.replace(" ","  ");
-        return httml;
+            wordDocument = new HWPFDocument(inputStream);
+
+            WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
+
+            //解析word文档
+            wordToHtmlConverter.processDocument(wordDocument);
+            Document htmlDocument = wordToHtmlConverter.getDocument();
+
+            baos = new ByteArrayOutputStream();
+
+            DOMSource domSource = new DOMSource(htmlDocument);
+            StreamResult streamResult = new StreamResult(baos);
+            TransformerFactory factory = TransformerFactory.newInstance();
+            Transformer serializer = factory.newTransformer();
+            serializer.setOutputProperty(OutputKeys.ENCODING, "utf-8");
+            serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+            serializer.setOutputProperty(OutputKeys.METHOD, "html");
+            serializer.transform(domSource, streamResult);
+            html.append(baos.toString());
+            LogUtil.intoLog(1,WordToHtmlUtil.class,"doc_in转HTML成功");
+            return html;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (TransformerFactoryConfigurationError transformerFactoryConfigurationError) {
+            transformerFactoryConfigurationError.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (TransformerException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null!=baos){
+                    baos.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (null!=wordDocument){
+                    wordDocument.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        LogUtil.intoLog(4,WordToHtmlUtil.class,"Word2003ToHtml_in doc转HTML失败");
+        return null;
+    }
+
+    /**
+     * Word数据流转HTML数据流
+     * @param inputStream Word数据流
+     * @param name 文件名
+     * @return
+     */
+    public static StringBuffer wordToHtml_in2str2(InputStream inputStream,String name){
+
+        if(null==inputStream){
+            return null;
+        }
+        if(null==name){
+            return null;
+        }
+
+        if (name.endsWith(".docx") || name.endsWith(".DOCX")) {
+            return Word2007ToHtml_in(inputStream);
+        }else{
+            return Word2003ToHtml_in(inputStream);
+        }
     }
 
 
     public static void main(String[] args) {
 
         long starttime=(new Date()).getTime();
-        String htmlpath="I:\\wubin\\笔录管理系统\\服务安装\\安装指导\\安装说明文档20190612（bl.exe）.html";
-        String docpath="I:\\wubin\\笔录管理系统\\服务安装\\安装指导\\安装说明文档20190612（bl.exe）.docx";
+        String htmlpath="C:\\Users\\Administrator\\Desktop\\北京市国安笔录系统-模板\\审讯记录.html";
+        String docpath="C:\\Users\\Administrator\\Desktop\\北京市国安笔录系统-模板\\审讯记录.docx";
         String imgpath = htmlpath.substring(0,htmlpath.lastIndexOf("\\")+1);
         System.out.println(imgpath);
 

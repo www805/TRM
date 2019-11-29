@@ -22,24 +22,24 @@ public class WordToPDF {
     public static boolean getLicense() {
 
         boolean result = false;
-
+        InputStream is=null;
         try {
-
-            InputStream is = ReadLicense.getStringInputStream();
+            is = ReadLicense.getStringInputStream();
             com.aspose.words.License aposeLic = new com.aspose.words.License();
-
             aposeLic.setLicense(is);
-
             result = true;
-
         }
-
         catch (Exception e) {
-
             e.printStackTrace();
-
+        }finally {
+            try {
+                if(null!=is){
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
         return result;
 
     }
