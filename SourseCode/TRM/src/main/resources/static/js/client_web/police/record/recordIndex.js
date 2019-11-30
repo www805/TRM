@@ -92,9 +92,6 @@ function callbackgetRecords(data) {
 
             $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
-            if (gnlist.indexOf(FY_T) != -1){
-                TOWORD.divpage.cleardoc()
-            }
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
             if (isNotEmpty(records)) {

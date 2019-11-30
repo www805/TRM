@@ -487,12 +487,12 @@ public class CourtService extends BaseService {
                                 String txt=asrTxtParam_toout.getTxt();
                                 String userssid= asrTxtParam_toout.getUserssid();
                                 String starttime= asrTxtParam_toout.getAsrstartime();
-                                String usergrade="【未知】";
+                                String usergrade="未知";
                                 if (!usergradesMap.isEmpty()){
-                                    usergrade=usergradesMap.get(userssid)==null?"【未知】":usergradesMap.get(userssid);
+                                    usergrade=usergradesMap.get(userssid)==null?"未知":usergradesMap.get(userssid);
                                 }
                                 content+= "<div style='text-align: left'>" +
-                                        "<p style='color: #999;'>【"+usergrade+"】："+starttime+"  </p><span>"+txt+"</span></div>";
+                                        "<span style='font-size:16pt;'>"+usergrade+"："+txt+"</span></div>";
                             }
                         }else {
                             result.setMessage("未找到可导出的语音识别内容");

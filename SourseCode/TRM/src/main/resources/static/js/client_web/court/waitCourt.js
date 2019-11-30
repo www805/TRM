@@ -856,22 +856,22 @@ function callbackgetgetRecordrealing(data) {
 
 
                             //实时会议数据
-                            if (usertype==1){
                                 //1放左边
                                 var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                            var fontcolor="#ffffff";
+                            if (gnlist.indexOf(NX_O)!= -1){
+                                color="#ffffff";
+                                fontcolor="#000000";
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" style="background-color: '+color+'" >'+translatext+'</span> \
+                                                            <span style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+' </span>\
                                                       </div >';
-                            }else{
-                                //一下情况正对于法院
-
-                                var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
+                            }else {
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
                                                             <p>【'+gradename+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> \
+                                                            <span onmousedown="copy_text(this,event)" style="background-color: '+color+';color: '+fontcolor+';" >'+translatext+'</span> \
                                                       </div >';
                             }
+
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
@@ -1075,17 +1075,6 @@ function focuslable(html,type,qw) {
             record_index["key"]=$('#recorddetail tr:eq(0)').index();
         }
     }else if (type==2){
-
-        //退出进来的时候需要TOWORD.util.getdivByChildnode(ue)等于最后一页：光标在最后一页
-      /* var divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
-        if (!isNotEmpty(divid)){
-            divid = TOWORD.util.getdivByChildnode(ue);
-        }
-          $("#"+divid,editorhtml).append(html);
-          *//*var divid= TOWORD.util.getdivByChildnode(ue);
-        $("#"+divid,editorhtml).append(html);*/
-
-
         //判断laststarttime_ue是否为空，
         // 为空判断是否存在光标获取光标在第几行在该标签后边追加
         //不为空获取最后一个p标签在该标签后边追加
@@ -1093,7 +1082,10 @@ function focuslable(html,type,qw) {
         if (isNotEmpty(laststarttime_ue)){
              lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
             if (!isNotEmpty(lastp)){
-                lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+                lastp=$("p[starttime]:not(:empty)",editorhtml).last();
+                if (!isNotEmpty(lastp)){
+                    lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+                }
             }
         }else {
             //光标追加
@@ -1113,6 +1105,43 @@ function focuslable(html,type,qw) {
             $("#"+divid,editorhtml).append(html);
         }
     }
+}
+
+/**
+ * 获取上一个标签的样式
+ */
+function getlastp_style() {
+    var lastp=null;
+    var pstyle="";
+    if (isNotEmpty(laststarttime_ue)){
+        lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
+        if (!isNotEmpty(lastp)){
+            lastp=$("p[starttime]:not(:empty)",editorhtml).last();
+            if (!isNotEmpty(lastp)){
+                lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+            }
+        }
+    }else {
+        //光标追加
+        //获取光标所在的p标签
+        lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+    }
+
+    if (!isNotEmpty(lastp)) {
+        var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
+        if (!isNotEmpty(divid)){
+            divid = TOWORD.util.getdivByChildnode(ue);
+        }
+        lastp= $("#"+divid+" p:last",editorhtml);
+    }
+    if (isNotEmpty(lastp)){
+        pstyle=$("span",lastp).attr("style");
+        if (isNotEmpty(pstyle)){
+            pstyle = $(lastp).attr("style");
+        }
+        return pstyle;
+    }
+    return pstyle;
 }
 
 
@@ -1370,19 +1399,20 @@ $(function () {
 
                             var p_span_HTML="";
                             //实时会议数据
-                            if (usertype==1){
-                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
-                                p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
-                                            <span onmousedown="copy_text(this,event)"  style="background-color: '+color+'" >'+translatext+'</span>';
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
 
-                            }else{
-                                //一下情况正对于法院
-                                var color=asrcolor[usertype]==null?"#ef8201":asrcolor[usertype];
-                                p_span_HTML= '<p>【'+gradename+'】'+asrstartime+'  </p>\
-                                             <span onmousedown="copy_text(this,event)" style="background-color: '+color+'">'+translatext+'</span> ';
+                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                            var fontcolor="#ffffff";
+                            if (gnlist.indexOf(NX_O)!= -1){
+                                color="#ffffff";
+                                fontcolor="#000000";
+                                p_span_HTML='<span  style="style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+' </span>';
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                            }else {
+                                p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
+                                            <span onmousedown="copy_text(this,event)"  style="background-color: '+color+';color: '+fontcolor+';" >'+translatext+'</span>';
                                 recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                             }
+
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                                 $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
@@ -1436,11 +1466,12 @@ $(function () {
                                                 last_oldtranslatext=last_identify.oldtranslatext;
                                                 if (last_starttime==starttime) {
                                                     last_translatext=translatext;
-                                                    $("p[usertype="+usertype+"]:last",editorhtml).html(last_oldtranslatext+last_translatext);
+                                                    $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
                                                 }else {
                                                     last_oldtranslatext="";
                                                     last_translatext=translatext;
-                                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
+                                                    var pstyle=getlastp_style();
+                                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+last_translatext+'</p>';
                                                     focuslable(trtd_html,2,null);
                                                     laststarttime_ue=starttime;//更新最后一个
                                                     resetpage();
@@ -1448,7 +1479,8 @@ $(function () {
                                             } else {
                                                 last_oldtranslatext="";
                                                 last_translatext=translatext;
-                                                var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+last_translatext+'</p>';
+                                                var pstyle=getlastp_style();
+                                                var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+last_translatext+'</p>';
                                                 focuslable(trtd_html,2,null);
                                                 laststarttime_ue=starttime;//更新最后一个
                                                 resetpage();
@@ -1464,7 +1496,8 @@ $(function () {
                                     }
                                 } else {
                                     //初始化追加新的
-                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'">'+gradeintroduce+translatext+'</p>';
+                                    var pstyle=getlastp_style();
+                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+translatext+'</p>';
                                     focuslable(trtd_html,2,null);
                                     laststarttime_ue=starttime;//更新最后一个
                                     resetpage();

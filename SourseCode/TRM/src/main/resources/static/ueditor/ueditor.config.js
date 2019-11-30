@@ -183,17 +183,22 @@
            { label:'',name:'yahei',val:'微软雅黑,Microsoft YaHei'},
            { label:'',name:'heiti',val:'黑体, SimHei'},
            { label:'',name:'lishu',val:'隶书, SimLi'},
+            { label:'仿宋_GBK',name:'fangsong_gbk',val:'仿宋_GBK,FangSong_GBK'},
+            { label:'仿宋_GB2312',name:'fangsong_gb2312',val:'仿宋_GB2312,FangSong_GB2312'},
+            { label:'方正仿宋_GBK',name:'fangzhengfangsong_gbk',val:'方正仿宋_GBK,FZFangSong_GBK'},
+            { label:'方正黑体_GBK',name:'fangzhengheiti_gbk',val:'方正黑体_GBK,FZSimHei_GBK'},
+            { label:'方正楷体_GBK',name:'fangzhengkaiti_gbk',val:'方正楷体_GBK,FZSimKai_GBK'},
+            { label:'方正小标宋_GBK',name:'fangzhengxiaobiaosong_gbk',val:'方正小标宋_GBK,FZSong_GBK'},
            { label:'',name:'andaleMono',val:'andale mono'},
            { label:'',name:'arial',val:'arial, helvetica,sans-serif'},
            { label:'',name:'arialBlack',val:'arial black,avant garde'},
            { label:'',name:'comicSansMs',val:'comic sans ms'},
            { label:'',name:'impact',val:'impact,chicago'},
            { label:'',name:'timesNewRoman',val:'times new roman'}
-        ]
+        ],
 
         //fontsize
         //字号
-        ,/*'fontsize':[10, 11, 12, 14, 16, 18, 20, 24, 36]*/
         'fontsize': [
             { name: '\u516d\u53f7', val: 10},
             { name: '\u5c0f\u4e94', val: 12},
@@ -243,22 +248,13 @@
         //]
 
         //打开右键菜单功能
-        //,enableContextMenu: true
-        //右键菜单的内容，可以参考plugins/contextmenu.js里边的默认菜单的例子，label留空支持国际化，否则以此配置为准
-        //,contextMenu:[
-        //    {
-        //        label:'',       //显示的名称
-        //        cmdName:'selectall',//执行的command命令，当点击这个右键菜单时
-        //        //exec可选，有了exec就会在点击时执行这个function，优先级高于cmdName
-        //        exec:function () {
-        //            //this是当前编辑器的实例
-        //            //this.ui._dialogs['inserttableDialog'].open();
-        //        }
-        //    }
-        //]
+        // ,enableContextMenu: true
+        // 右键菜单的内容，可以参考plugins/contextmenu.js里边的默认菜单的例子，label留空支持国际化，否则以此配置为准
+        // ,contextMenu:[
+        // ]
 
         //快捷菜单
-        //,shortcutMenu:["fontfamily", "fontsize", "bold", "italic", "underline", "forecolor", "backcolor", "insertorderedlist", "insertunorderedlist"]
+        // ,shortcutMenu:["fontfamily", "fontsize", "bold", "italic", "underline", "forecolor", "backcolor", "insertorderedlist", "insertunorderedlist"]
 
         //elementPathEnabled
         //是否启用元素路径，默认是显示
@@ -266,7 +262,7 @@
 
         //wordCount
         ,wordCount:false          //是否开启字数统计
-        ,maximumWords:100000       //允许的最大字符数
+        ,maximumWords:500000       //允许的最大字符数
         //字数统计提示，{#count}代表当前字数，{#leave}代表还可以输入多少字符数,留空支持多语言自动切换，否则按此配置显示
         ,wordCountMsg:''   //当前已输入 {#count} 个字符，您还可以输入{#leave} 个字符
         //超出字数限制提示  留空支持多语言自动切换，否则按此配置显示
@@ -371,9 +367,9 @@
         //,rgb2Hex:true               //默认产出的数据中的color自动从rgb格式变成16进制格式
 
 		// xss 过滤是否开启,inserthtml等操作
-		,xssFilterRules: false
-		//input xss过滤
-		,inputXssFilter: false
+        ,xssFilterRules: false
+        //input xss过滤
+        ,inputXssFilter: false
 		//output xss过滤
 		,outputXssFilter: false
 		// xss过滤白名单 名单来源: https://raw.githubusercontent.com/leizongmin/js-xss/master/lib/default.js
@@ -415,7 +411,7 @@
 			header: [],
 			hr:     [],
 			i:      ['class', 'style'],
-			img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
+			//img:    ['src', 'alt', 'title', 'width', 'height', 'id', '_src', 'loadingclass', 'class', 'data-latex'],
 			ins:    ['datetime'],
 			li:     ['class', 'style'],
 			mark:   [],

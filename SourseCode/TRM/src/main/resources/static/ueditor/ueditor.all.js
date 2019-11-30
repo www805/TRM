@@ -11483,6 +11483,12 @@ UE.plugins['font'] = function () {
             { name: 'kaiti', val: '楷体,楷体_GB2312, SimKai'},
             { name: 'heiti', val: '黑体, SimHei'},
             { name: 'lishu', val: '隶书, SimLi'},
+            { name:'fangsong_gbk',val:'仿宋_GBK,FangSong_GBK'},
+            { name:'fangsong_gb2312',val:'仿宋_GB2312,FangSong_GB2312'},
+            { name:'fangzhengfangsong_gbk',val:'方正仿宋_GBK,FZFangSong_GBK'},
+            { name:'fangzhengheiti_gbk',val:'方正黑体_GBK,FZSimHei_GBK'},
+            { name:'fangzhengkaiti_gbk',val:'方正楷体_GBK,FZSimKai_GBK'},
+            { name:'fangzhengxiaobiaosong_gbk',val:'方正小标宋_GBK,FZSong_GBK'},
             { name: 'andaleMono', val: 'andale mono'},
             { name: 'arial', val: 'arial, helvetica,sans-serif'},
             { name: 'arialBlack', val: 'arial black,avant garde'},
@@ -22099,6 +22105,68 @@ UE.plugins['contextmenu'] = function () {
                     cmdName:'unlink'
                 },
                 '-',
+                {//字体样式
+                    group:lang.ziti,
+                    icon:'ziti',
+                    subMenu:[
+                        {
+                            label:'宋体',
+                            cmdName:'fontfamily',
+                            value:'宋体'
+                        },
+                        {
+                            label:'楷体',
+                            cmdName:'fontfamily',
+                            value:'楷体'
+                        },
+                        {
+                            label:'微软雅黑',
+                            cmdName:'fontfamily',
+                            value:'微软雅黑'
+                        },
+                        {
+                            label:'黑体',
+                            cmdName:'fontfamily',
+                            value:'黑体'
+                        },
+                        {
+                            label:'隶书',
+                            cmdName:'fontfamily',
+                            value:'隶书'
+                        },
+                        {
+                            label:'andale mono',
+                            cmdName:'fontfamily',
+                            value:'andale mono'
+                        },
+                        {
+                            label:'arial',
+                            cmdName:'fontfamily',
+                            value:'arial'
+                        },
+                        {
+                            label:'arial black',
+                            cmdName:'fontfamily',
+                            value:'arial black'
+                        },
+                        {
+                            label:'comic sans ms',
+                            cmdName:'fontfamily',
+                            value:'comic sans ms'
+                        },
+                        {
+                            label:'impact',
+                            cmdName:'fontfamily',
+                            value:'impact'
+                        },
+                        {
+                            label:'times new roman',
+                            cmdName:'fontfamily',
+                            value:'times new roman'
+                        }
+
+                    ]
+                },
                 {
                     group:lang.paragraph,
                     icon:'justifyjustify',
@@ -22480,6 +22548,8 @@ UE.plugins['contextmenu'] = function () {
                                     return me.getLang("contextMenu.aligntable");
                                 case "tablesort":
                                     return lang.tablesort;
+                                case "ziti":
+                                    return lang.ziti;//添加字体格式的右键名称的显示
                                 case "borderBack":
                                     return lang.borderbk;
                                 default :

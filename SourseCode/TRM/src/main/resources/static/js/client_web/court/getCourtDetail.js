@@ -45,7 +45,7 @@ function callbackgetRecordById(data) {
 
             if (isNotEmpty(record)){
                 positiontime=record.positiontime==null?0:record.positiontime;
-                $("#positiontime").val(positiontime);
+                $("#positiontime").val(parseFloat(positiontime)/1000);
 
                 var wordheaddownurl_html=record.wordheaddownurl_html;
                 if (isNotEmpty(wordheaddownurl_html)){
@@ -218,12 +218,24 @@ function set_getRecord(data){
                         var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
                         var gradename=user.gradename==null?"未知":user.gradename;
                         subtractime[""+usertype+""]=subtractime_;//存储各个类型人员的时间差值
-                        var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+
                         starttime=parseFloat(starttime)+parseFloat(subtractime_);
-                        recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
-                                                            <p>【'+gradename+'】 '+asrstartime+'</p>\
-                                                            <span style="background-color: '+color+'">'+translatext+'</span> \
+                        var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                        var fontcolor="#ffffff";
+                        if (gnlist.indexOf(NX_O)!= -1){
+                            color="#ffffff";
+                            fontcolor="#000000";
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
+                                                            <span style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+'</span>\
                                                       </div >';
+                        }else {
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
+                                                            <p>【'+gradename+'】 '+asrstartime+'</p>\
+                                                            <span style="background-color: '+color+';color:'+fontcolor+';">'+translatext+'</span> \
+                                                      </div >';
+                        }
+
+
                         var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                         if (laststarttime==starttime&&isNotEmpty(laststarttime)){
                             $("#recordreals div[userssid="+userssid+"]:last").remove();
@@ -456,7 +468,11 @@ $(function () {
                     end= $("#recordreals div:eq("+(i+1)+")").attr("times");//下一个区间
                 }
                 if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
-                    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+                    if (gnlist.indexOf(NX_O)!= -1){
+                        $("#recordreals span").css("color","#000").removeClass("highlight_left");
+                    }else {
+                        $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+                    }
                     $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
 
                     $("#record_hoverhtml").hover(
@@ -866,7 +882,11 @@ function  set_getPlayUrl(data) {
 //视频进度
 function showrecord(times,oldtime) {
     $("#recorddetail label").removeClass("highlight_right");
-    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+    if (gnlist.indexOf(NX_O)!= -1){
+        $("#recordreals span").css("color","#000").removeClass("highlight_left");
+    }else {
+        $("#recordreals span").css("color","#fff").removeClass("highlight_left");
+    }
     times=parseFloat(times);
     if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
         var isnvideo=0;//是否有视频定位点
@@ -942,7 +962,7 @@ function open_positiontime() {
                     <div class="layui-input-block">\
                     <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值" value="' + positiontime + '"  class="layui-input">\
                     </div>\
-                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-100000到-100或者100到10000区间的值以及0</div>\
+                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-10到-1或者1到10区间的值以及0</div>\
                 </div>\
             </form>';
     layui.use(['layer','element','form','laydate'], function() {
@@ -965,8 +985,8 @@ function open_positiontime() {
                         if (!(/\S/).test(value)) {
                             return "请输入定位差值";
                         }
-                        if (!((value<=-100&&value>=-100000)||(value<=100000&&value>=100)||value==0)) {
-                            return "请输入差值在-100000到-100或者100到10000区间的值以及0";
+                        if (!((value<=-1&&value>=-10)||(value<=10&&value>=1)||value==0)) {
+                            return "请输入差值在-10到-1或者1到10区间的值以及0";
                         }
                     }
                 });
@@ -987,6 +1007,8 @@ function updateRecord(){
         layer.msg("请输入定位差值",{icon:5});
         return;
     }
+
+    positiontime=parseFloat(positiontime)*1000;
     var url=getActionURL(getactionid_manage().getCourtDetail_updateRecord);
     var data={
         token:INIT_CLIENTKEY,
@@ -1006,7 +1028,7 @@ function callbackupdateRecord(data){
                 layer.close(open_positiontime_index);
                 positiontime=param.positiontime;//更新值
                 layer.msg("保存成功",{icon:6,time:500},function () {
-                    $("#positiontime").val(positiontime);
+                    $("#positiontime").val(parseFloat(positiontime)/1000);
                 });
             }
         }
