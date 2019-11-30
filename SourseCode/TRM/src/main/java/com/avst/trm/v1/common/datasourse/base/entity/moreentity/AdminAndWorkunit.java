@@ -11,6 +11,8 @@ import java.util.List;
 public class AdminAndWorkunit extends Base_admininfo {
     private String workname;//单位名称
 
+    private Integer superrolebool=-1;//角色中是否为包含超管:-1否1 是
+
     private List<Base_role> roles;//角色集合
 
     public String getWorkname() {
@@ -27,5 +29,14 @@ public class AdminAndWorkunit extends Base_admininfo {
 
     public void setRoles(List<Base_role> roles) {
         this.roles = roles;
+    }
+
+
+    public Integer getSuperrolebool() {
+        return superrolebool;
+    }
+
+    public void setSuperrolebool(Integer superrolebool) {
+        this.superrolebool = superrolebool;
     }
 }

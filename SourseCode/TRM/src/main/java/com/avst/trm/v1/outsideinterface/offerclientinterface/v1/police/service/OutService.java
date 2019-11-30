@@ -161,8 +161,13 @@ public class OutService  extends BaseService {
 
             //先检测是否可以开始笔录
             List<String> adminssids=new ArrayList<>();
-            adminssids.add(recordUserInfos.getOtheradminssid());
-            adminssids.add(recordUserInfos.getAdminssid());
+            if (StringUtils.isNotEmpty(recordUserInfos.getOtheradminssid())){
+                adminssids.add(recordUserInfos.getOtheradminssid());
+            }
+            if (StringUtils.isNotEmpty(recordUserInfos.getAdminssid())){
+                adminssids.add(recordUserInfos.getAdminssid());
+            }
+
             CheckStartRecordParam checkStartRecordParam=new CheckStartRecordParam();
             checkStartRecordParam.setMtmodel_ssid(mtmodelssid);
             checkStartRecordParam.setUserinfo_ssid(recordUserInfos.getUserssid());

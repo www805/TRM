@@ -225,7 +225,7 @@ function set_getRecord(data){
                         if (gnlist.indexOf(NX_O)!= -1){
                             color="#ffffff";
                             fontcolor="#000000";
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
+                            recordrealshtml='<div style="margin:10px 0px" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
                                                             <span style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+'</span>\
                                                       </div >';
                         }else {
@@ -956,11 +956,12 @@ function showrecord(times,oldtime) {
 //*******************************************************************修改定位时间start****************************************************************//
 var open_positiontime_index=null;
 function open_positiontime() {
+
     var html='  <form class="layui-form site-inline" style="margin-top: 20px;padding-right: 35px;">\
                <div class="layui-form-item">\
                    <label class="layui-form-label"><span style="color: red;">*</span>定位差值</label>\
                     <div class="layui-input-block">\
-                    <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值" value="' + positiontime + '"  class="layui-input">\
+                    <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值(秒)" value="' + parseFloat(positiontime)/1000 + '"  class="layui-input">\
                     </div>\
                      <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-10到-1或者1到10区间的值以及0</div>\
                 </div>\

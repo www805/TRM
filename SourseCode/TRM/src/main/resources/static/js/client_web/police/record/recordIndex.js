@@ -335,37 +335,7 @@ function changeboolRecord(obj) {
 
 function set_UE() {
     ue = UE.getEditor('editor', {
-        toolbars: [
-            [ 'undo', //撤销
-                'redo', //重做
-                'bold', //加粗
-                'indent', //首行缩进
-                'italic', //斜体
-                'underline', //下划线
-                'strikethrough', //删除线
-                'subscript', //下标
-                'fontborder', //字符边框
-                'superscript', //上标
-            ],
-            ['time', //时间
-                'date', //日期
-                'fontsize', //字号
-                'paragraph', //段落格式
-                'justifyleft', //居左对齐
-                'justifyright', //居右对齐
-                'justifycenter', //居中对齐
-                'justifyjustify', //两端对齐
-                'fontfamily',//字体
-                'forecolor', //字体颜色
-                'backcolor', //背景色
-                'rowspacingtop', //段前距
-                'rowspacingbottom', //段后距
-                'lineheight',//行间距
-                'template', //模板
-                'print', //打印
-                'preview', //预览
-            ]
-        ],
+        toolbars: [],
         allHtmlEnabled:true,
         autoFloatEnabled: false,
         serverUrl:"upload",

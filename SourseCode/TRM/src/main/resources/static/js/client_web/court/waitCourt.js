@@ -179,6 +179,8 @@ function callbackgetRecordById(data) {
 
                         $("#overRecord_btn").attr("src","/uimaker/images/record_stop_2.png");
                         $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
+                        $("#adjourn_btn").html("休庭");
+                        $("#overRecord_btn").html("结束");
 
                         if (record_pausebool==1){
                             $("#startrecord").attr("src","/uimaker/images/record6.png");
@@ -202,7 +204,8 @@ function callbackgetRecordById(data) {
                         $("#record_switch_HTML").css("visibility","visible");
                         $("#overRecord_btn").attr("src","/uimaker/images/record_stop_1.png");
                         $("#adjourn_btn").attr("src","/uimaker/images/record_zt.png");
-
+                        $("#adjourn_btn").html("休庭");
+                        $("#overRecord_btn").html("结束");
                         if (record_pausebool==1){
                             $("#startrecord").attr("src","/uimaker/images/record2.png");
                         }else {
@@ -228,7 +231,7 @@ function callbackgetRecordById(data) {
                             var layer=layui.layer;
                             layer.tips('该庭审已经制作过啦~' ,'#endrecord',{time:0, tips: 2});
                         });
-                        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
+                        $("#start_over_btn").text("庭审已结束").attr("onclick","img_bool(this,-1)");
                     }else if (null!=mcbool&&(mcbool==1||mcbool==3)){
                         if (multifunctionbool==2){
                             $("#pauserecord").attr({"src":"/uimaker/images/record7.png","onclick":"img_bool(this,1);"});
@@ -239,29 +242,32 @@ function callbackgetRecordById(data) {
                         if (mcbool==1){
                             $("#startrecord").css("display","block");
                             var tips_msg="庭审中~";
+                            var start_over_btn_msg="庭审中";
                             if (record_pausebool==1) {
                                 tips_msg="点击我可以暂停~";
+                                start_over_btn_msg="暂停庭审";
                             }
+                            $("#start_over_btn").text(start_over_btn_msg).attr("onclick","img_bool(this,2)");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips(tips_msg ,'#startrecord',{time:0, tips: 2});
                             });
+
                         } else if (mcbool==3&&record_pausebool==1) {
                             $("#pauserecord").css("display","block");
                             layui.use(['layer','element','form'], function(){
                                 var layer=layui.layer;
                                 layer.tips('点击我可以再次启动制作~' ,'#pauserecord',{time:0, tips: 2});
                             });
+                            $("#start_over_btn").text("继续庭审").attr("onclick","img_bool(this,1)");
                         }
-
-                        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
                     }else {
                         $("#pauserecord").css("display","block");
                         layui.use(['layer','element','form'], function(){
                             var layer=layui.layer;
                             layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                         });
-                        $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
+                        $("#start_over_btn").text("开始庭审").attr("onclick","img_bool(this,1)");
                     }
                 }
 
@@ -352,11 +358,13 @@ function callbackgetRecordById(data) {
                                 newarr.push(usergrades[i]);
                             }
                         };
-
+                        record_switchusers=newarr;
                         for (let i = 0; i < newarr.length; i++) {
                             const  other= newarr[i];
                             $("#caseAndUserInfo_html").append("<tr type='"+other.grade+"'><td>"+other.gradename+"</td><td>"+other.username+"</td> </tr>");
+                            dqswitchusers.push(other.grade)
                         }
+
                     }
                 }
                 getMCCacheParamByMTssid();//获取缓存
@@ -382,7 +390,7 @@ function callbackgetRecordById(data) {
 var mtssid=null;//会议ssid
 var useretlist=null;
 function startMC() {
-    $("#start_over_btn").text("谈话开启中").attr("onclick","");
+    $("#start_over_btn").text("庭审开启中").attr("onclick","");
     if (isNotEmpty(getRecordById_data)){
         $("#MtState").text("加载中");
         $("#MtState").attr({"MtState": "", "class": "layui-badge layui-bg-gray"});
@@ -463,7 +471,7 @@ function startMC() {
                 var layer=layui.layer;
                 layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
             });
-            $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
+            $("#start_over_btn").text("开始庭审").attr("onclick","img_bool(this,1)");
         });
     }
 }
@@ -473,8 +481,10 @@ function callbackstartMC(data) {
         $("#record_img img").css("display","none");
         $("#pauserecord").attr("onclick","img_bool(this,1);");
         var tips_msg="庭审作中~";
+        var start_over_btn_msg="庭审中";
         if (record_pausebool==1){
             tips_msg="点击我可以暂停~";
+            start_over_btn_msg="暂停庭审";
             //制作暂停 ，判断是笔录还是审讯
             if (multifunctionbool==2){
                 $("#startrecord").attr("src","/uimaker/images/record6.png");
@@ -491,6 +501,7 @@ function callbackstartMC(data) {
                 $("#startrecord").attr("src","/uimaker/images/record9.png");
             }
         }
+        $("#start_over_btn").text(start_over_btn_msg).attr("onclick","img_bool(this,2)");
         $("#startrecord").css("display","block");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
@@ -528,7 +539,7 @@ function callbackstartMC(data) {
             var con="已开启：<br>语音识别开启数："+asrnum;
             layer.msg(con, {time: 2000});
         }
-        $("#start_over_btn").text("结束谈话").attr("onclick","overRecord(0)");
+
     }else{
         $("#MtState").text("未启动");
         $("#MtState").attr({"MtState": "", "class": "layui-badge layui-bg-gray"});
@@ -543,12 +554,14 @@ function callbackstartMC(data) {
             $("#record_img img").css("display","none");
             if (null!=recordbool&&recordbool==true){
                 $("#endrecord").css("display","block");
+                $("#start_over_btn").text("庭审已结束").attr("onclick","img_bool(this,-1)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips("该庭审已经制作过啦~" ,'#endrecord',{time:0, tips: 2});
                 });
             }else {
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+                $("#start_over_btn").text("开始庭审").attr("onclick","img_bool(this,1)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips:2});
@@ -569,7 +582,7 @@ function callbackstartMC(data) {
             }
         }
         layer.msg("开启失败");
-        $("#start_over_btn").text("开始谈话").attr("onclick","startMC()");
+        $("#start_over_btn").text("开始庭审").attr("onclick","img_bool(this,1)");
         $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
         layui.use(['layer','element','form'], function(){
             var layer=layui.layer;
@@ -613,12 +626,14 @@ function callbackpauseOrContinueRercord(data) {
             layer.msg(con, {time: 2000});
             if (pauseOrContinue==1){
                 $("#pauserecord").css("display","block");
+                $("#start_over_btn").text("继续庭审").attr("onclick","img_bool(this,1)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
                 });
             } else {
                 $("#startrecord").css("display","block");
+                $("#start_over_btn").text("暂停庭审").attr("onclick","img_bool(this,2)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips: 2});
@@ -633,12 +648,14 @@ function callbackpauseOrContinueRercord(data) {
             $("#record_img img").css("display","none");
             if (pauseOrContinue==1){//请求暂停
                 $("#startrecord").css("display","block");
+                $("#start_over_btn").text("暂停庭审").attr("onclick","img_bool(this,2)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以暂停制作~' ,'#startrecord',{time:0, tips:2});
                 });
             } else if (pauseOrContinue==2){//请求继续
                 $("#pauserecord").css("display","block").attr("onclick","img_bool(this,1);");
+                $("#start_over_btn").text("暂停庭审").attr("onclick","img_bool(this,1)");
                 layui.use(['layer','element','form'], function(){
                     var layer=layui.layer;
                     layer.tips('点击我可以再次开启制作~' ,'#pauserecord',{time:0, tips: 2});
@@ -768,7 +785,7 @@ function overRecord(state) {
     }
 
 
-    layer.confirm(msgtxt2+'<br/><span style="color: red">*确保存在对应模板否则导出功能失效</span><br>'+msgtxt, {
+    layer.confirm(msgtxt2+'<br/>'+msgtxt, {
         btn: ['确认','取消'], //按钮
         shade: [0.1,'#fff'], //不显示遮罩
     }, function(index){
@@ -862,7 +879,7 @@ function callbackgetgetRecordrealing(data) {
                             if (gnlist.indexOf(NX_O)!= -1){
                                 color="#ffffff";
                                 fontcolor="#000000";
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                recordrealshtml='<div style="margin:10px 0px" userssid='+userssid+' starttime='+starttime+'>\
                                                             <span style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+' </span>\
                                                       </div >';
                             }else {
@@ -1136,10 +1153,16 @@ function getlastp_style() {
     }
     if (isNotEmpty(lastp)){
         pstyle=$("span",lastp).attr("style");
-        if (isNotEmpty(pstyle)){
-            pstyle = $(lastp).attr("style");
+        if(typeof(pstyle) == "undefined"){
+            pstyle="";
         }
-        return pstyle;
+       var newpstyle = $(lastp).attr("style");
+        if(typeof(newpstyle) == "undefined"){
+            newpstyle="";
+        }
+        console.log("span的样式："+pstyle);
+        console.log("p标签的样式："+newpstyle)
+        return pstyle+newpstyle;
     }
     return pstyle;
 }
@@ -1203,7 +1226,8 @@ function callbackgetRecordrealByRecordssid(data) {
                 }
                 TOWORD.page.importhtml(problemhtml);
                 laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
-                console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+                 console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+
               /*  var problemhtml= setqw(problems);
                 focuslable(problemhtml,2,'w');*/
             }
@@ -1386,132 +1410,147 @@ $(function () {
                     for (var i = 0; i < recorduser.length; i++) {
                         var user = recorduser[i];
                         var userssid=user.userssid;
+                        var usertype=user.grade;//1、询问人2被询问人 对应别色类型
                         if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            var translatext=data.txt==null?"":data.txt;//翻译文本
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var recordrealshtml="";
-                            var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
-                            var gradename=user.gradename==null?"未知":user.gradename;
-                            var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;
+                                var username=user.username==null?"未知":user.username;//用户名称
+                                var translatext=data.txt==null?"":data.txt;//翻译文本
+                                var starttime=data.starttime;
+                                var asrstartime=data.asrstartime;
+                                var recordrealshtml="";
+                                var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
+                                var gradename=user.gradename==null?"未知":user.gradename;
+                                var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;
 
-                            var p_span_HTML="";
-                            //实时会议数据
+                                var p_span_HTML="";
+                                //实时会议数据
 
                                 var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
-                            var fontcolor="#ffffff";
-                            if (gnlist.indexOf(NX_O)!= -1){
-                                color="#ffffff";
-                                fontcolor="#000000";
-                                p_span_HTML='<span  style="style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+' </span>';
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
-                            }else {
-                                p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
+                                var fontcolor="#ffffff";
+                                if (gnlist.indexOf(NX_O)!= -1){
+                                    color="#ffffff";
+                                    fontcolor="#000000";
+                                    p_span_HTML='<span  style="background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;">'+gradename+'： '+translatext+' </span>';
+                                    recordrealshtml='<div style="margin:10px 0px" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                }else {
+                                    p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
                                             <span onmousedown="copy_text(this,event)"  style="background-color: '+color+';color: '+fontcolor+';" >'+translatext+'</span>';
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
-                            }
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                }
 
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
-                            }else {
-                                $("#recordreals").append(recordrealshtml);
-                            }
+                                var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                                if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                    $("#recordreals div[userssid="+userssid+"]:last").html(p_span_HTML);
+                                }else {
+                                    $("#recordreals").append(recordrealshtml);
+                                }
 
 
-                            $("#asritem").hover(
-                                function(){
-                                    mouseoverbool_left=1
-                                } ,
-                                function(){
-                                    mouseoverbool_left=-1;
-                                });
+                                $("#asritem").hover(
+                                    function(){
+                                        mouseoverbool_left=1
+                                    } ,
+                                    function(){
+                                        mouseoverbool_left=-1;
+                                    });
 
-                            if (mouseoverbool_left==-1){
-                                var div = document.getElementById('recordreals_scrollhtml');
-                                div.scrollTop = div.scrollHeight;
-                            }
-                            $("#recordreals_selecthtml").show();
+                                if (mouseoverbool_left==-1){
+                                    var div = document.getElementById('recordreals_scrollhtml');
+                                    div.scrollTop = div.scrollHeight;
+                                }
+                                $("#recordreals_selecthtml").show();
 
-                            //自动甄别开启没
-                            var record_switch_bool=$("#record_switch_bool").attr("isn");
-                            if (record_switch_bool==1){
-                                console.log(last_identifys)
-                                gradeintroduce=gradeintroduce+"：";
-                                if (lastusertype!=-1){
-                                    var last_identify=last_identifys[""+lastusertype+""];//上一个数据
-                                    if (isNotEmpty(last_identify)) {
-                                        var newlast_identify={};
-                                        var last_starttime = null;
-                                        var last_translatext = null;
-                                        var last_oldtranslatext = null;
-                                        if (isNotEmpty(lastusertype)&&usertype==lastusertype) {
-                                             last_starttime=last_identify.starttime;
-                                             last_translatext=last_identify.translatext;
-                                             last_oldtranslatext=last_identify.oldtranslatext;
-                                            if (last_starttime==starttime){
-                                                last_translatext=translatext;
-                                            }else{
-                                                last_oldtranslatext+=last_translatext;
-                                                last_translatext=translatext;
-                                            }
-                                            $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
-                                        }else {
-                                             last_identify=last_identifys[""+usertype+""];//新用户的上一个数据
-                                            if (isNotEmpty(last_identify)){
-                                                last_starttime=last_identify.starttime;
-                                                last_translatext=last_identify.translatext;
-                                                last_oldtranslatext=last_identify.oldtranslatext;
-                                                if (last_starttime==starttime) {
-                                                    last_translatext=translatext;
+                                //自动甄别开启没
+                                var record_switch_bool=$("#record_switch_bool").attr("isn");
+                                if (record_switch_bool==1){
+                                    if (isNotEmpty(dqswitchusers)&&dqswitchusers.includes(usertype)) {
+                                        console.log(last_identifys)
+                                        gradeintroduce=gradeintroduce+"：";
+                                        if (lastusertype!=-1){
+                                            var last_identify=last_identifys[""+lastusertype+""];//上一个数据
+                                            if (isNotEmpty(last_identify)) {
+                                                var newlast_identify={};
+                                                var last_starttime = null;
+                                                var last_translatext = null;
+                                                var last_oldtranslatext = null;
+                                                if (isNotEmpty(lastusertype)&&usertype==lastusertype) {
+                                                    last_starttime=last_identify.starttime;
+                                                    last_translatext=last_identify.translatext;
+                                                    last_oldtranslatext=last_identify.oldtranslatext;
+                                                    if (last_starttime==starttime){
+                                                        last_translatext=translatext;
+                                                    }else{
+                                                        last_oldtranslatext+=last_translatext;
+                                                        last_translatext=translatext;
+                                                    }
                                                     $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
                                                 }else {
-                                                    last_oldtranslatext="";
-                                                    last_translatext=translatext;
-                                                    var pstyle=getlastp_style();
-                                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+last_translatext+'</p>';
-                                                    focuslable(trtd_html,2,null);
-                                                    laststarttime_ue=starttime;//更新最后一个
-                                                    resetpage();
+                                                    last_identify=last_identifys[""+usertype+""];//新用户的上一个数据
+                                                    if (isNotEmpty(last_identify)){
+                                                        last_starttime=last_identify.starttime;
+                                                        last_translatext=last_identify.translatext;
+                                                        last_oldtranslatext=last_identify.oldtranslatext;
+                                                        if (last_starttime==starttime) {
+                                                            last_translatext=translatext;
+                                                            $("p[usertype="+usertype+"]:last",editorhtml).html(gradeintroduce+last_oldtranslatext+last_translatext);
+                                                        }else {
+                                                            last_oldtranslatext="";
+                                                            last_translatext=translatext;
+                                                            var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+last_translatext+'</p>';
+                                                            focuslable(trtd_html,2,null);
+                                                            laststarttime_ue=starttime;//更新最后一个
+                                                            resetpage();
+                                                        }
+                                                    } else {
+                                                        last_oldtranslatext="";
+                                                        last_translatext=translatext;
+                                                        var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+last_translatext+'</p>';
+                                                        focuslable(trtd_html,2,null);
+                                                        laststarttime_ue=starttime;//更新最后一个
+                                                        resetpage();
+                                                    }
                                                 }
-                                            } else {
-                                                last_oldtranslatext="";
-                                                last_translatext=translatext;
-                                                var pstyle=getlastp_style();
-                                                var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+last_translatext+'</p>';
+
+                                                newlast_identify={
+                                                    starttime:starttime,
+                                                    translatext:last_translatext,
+                                                    oldtranslatext:last_oldtranslatext,
+                                                }
+                                                last_identifys[""+usertype+""]=newlast_identify;
+                                            }else {
+                                                console.log("我居然是空的"+usertype)
+                                                //初始化追加新的
+                                                var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
                                                 focuslable(trtd_html,2,null);
                                                 laststarttime_ue=starttime;//更新最后一个
                                                 resetpage();
+                                                var newlast_identify={
+                                                    starttime:starttime,
+                                                    translatext:translatext,
+                                                    oldtranslatext:"",
+                                                }
+                                                last_identifys[""+usertype+""]=newlast_identify;
                                             }
+                                        } else {
+                                            //初始化追加新的
+                                            var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
+                                            focuslable(trtd_html,2,null);
+                                            laststarttime_ue=starttime;//更新最后一个
+                                            resetpage();
+                                            var newlast_identify={
+                                                starttime:starttime,
+                                                translatext:translatext,
+                                                oldtranslatext:"",
+                                            }
+                                            last_identifys[""+usertype+""]=newlast_identify;
                                         }
-
-                                        newlast_identify={
-                                            starttime:starttime,
-                                            translatext:last_translatext,
-                                            oldtranslatext:last_oldtranslatext,
-                                        }
-                                        last_identifys[""+usertype+""]=newlast_identify;
+                                        lastusertype=usertype;
+                                    }else {
+                                        console.log("我没在里面啊啊啊啊__"+usertype)
+                                        last_identifys[""+usertype+""]=null;
                                     }
-                                } else {
-                                    //初始化追加新的
-                                    var pstyle=getlastp_style();
-                                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+pstyle+'">'+gradeintroduce+translatext+'</p>';
-                                    focuslable(trtd_html,2,null);
-                                    laststarttime_ue=starttime;//更新最后一个
-                                    resetpage();
-                                    var newlast_identify={
-                                        starttime:starttime,
-                                        translatext:translatext,
-                                        oldtranslatext:"",
-                                    }
-                                    last_identifys[""+usertype+""]=newlast_identify;
                                 }
-                                lastusertype=usertype;
-
                             }
-                        }
+
                     }
                 }
             }
@@ -2298,3 +2337,63 @@ function callbackexporttemplate_ue(data) {
 }
 
 ///////////////////////////////**********************************************************百度编辑器**************end
+
+///////////////////////////////**********************************************************甄别人员设置**************start
+var record_switchusers=[];//全部角色人员
+var dqswitchusers=[];//已选人员
+function set_record_switchusers() {
+    if (!isNotEmpty(record_switchusers)){
+        layer.msg("未找到可甄别角色",{icon: 5});
+        return;
+    }
+    console.log(record_switchusers)
+    console.log(dqswitchusers)
+    var HTML='<div id="switchusers" style="margin: 30px"></div>';
+    layui.use(['transfer','layer','element','form'], function(){
+        var transfer = layui.transfer;
+
+        layer.open({
+            type: 1,
+            title:'甄别角色筛选',
+            content:HTML,
+            btn: ['确定','取消'],
+            success:function(layero, index){
+                //渲染
+                transfer.render({
+                    elem: '#switchusers'  //绑定元素
+                    ,id:'switchusers'
+                    ,title: ['待选角色', '已选角色']
+                    ,width: 150 //定义宽度
+                    ,height: 250 //定义高度
+                    ,data: record_switchusers
+                    ,parseData: function(res){
+                    return {
+                        "value": res.grade //数据值
+                        ,"title": res.gradename //数据标题
+                        }
+                    }
+                     ,value: dqswitchusers
+                    });
+            },
+            yes:function(index, layero){
+               var switchusers = transfer.getData('switchusers');
+                dqswitchusers=[];
+                if (isNotEmpty(switchusers)){
+                    for (let i = 0; i < switchusers.length; i++) {
+                        const switchuser = switchusers[i];
+                        dqswitchusers.push(switchuser.value);
+                    }
+                }
+                layer.close(index);
+            },
+            btn2:function(index, layero){
+                layer.close(index);
+            }
+        });
+
+
+    });
+}
+
+///////////////////////////////**********************************************************甄别人员设置**************end
+

@@ -111,6 +111,9 @@ function showpagetohtml(){
 
 
 function open_RecordsByCasessid(casessid,arraignmentslength,creator,creatorname) {
+    if (!isNotEmpty(creatorname)) {
+        creatorname="未知";
+    }
     if (null==arraignmentslength||arraignmentslength<1){
         layer.msg("该案件没有笔录",{icon: 5});
         return;

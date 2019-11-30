@@ -104,13 +104,13 @@ public class CaseService extends BaseService {
 
 
         EntityWrapper record_num_ew=new EntityWrapper();
-        record_num_ew.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ record_num_ew.eq("c.creator",user.getSsid());}
         record_num_ew.ne("c.casebool",-1);
         record_num_ew.ne("r.recordbool",-1);
 
         EntityWrapper case_num_ew=new EntityWrapper();
         case_num_ew.ne("casebool",-1);
-        case_num_ew.eq("creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ case_num_ew.eq("creator",user.getSsid());}
 
         Integer record_num=police_arraignmentMapper.getArraignmentCount(record_num_ew);//审讯数量
         Integer case_num= police_caseMapper.selectCount(case_num_ew);//案件数量
@@ -121,7 +121,7 @@ public class CaseService extends BaseService {
         Integer case_endnum=police_caseMapper.Getcase_endnum(case_num_ew);//案件未开始提讯数量
 
         EntityWrapper record_num_ew2=new EntityWrapper();
-        record_num_ew2.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ record_num_ew2.eq("c.creator",user.getSsid());}
         record_num_ew2.ne("c.casebool",-1);
         List<Integer> recordbools=new ArrayList<>();
         recordbools.add(2);
@@ -129,12 +129,12 @@ public class CaseService extends BaseService {
         record_num_ew2.in("r.recordbool",recordbools);
         Integer record_finishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew2);//已完成笔录数量
         EntityWrapper record_num_ew3=new EntityWrapper();
-        record_num_ew3.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ record_num_ew3.eq("c.creator",user.getSsid());}
         record_num_ew3.ne("c.casebool",-1);
         record_num_ew3.eq("r.recordbool",1);
         Integer record_unfinishnum=police_arraignmentMapper.getArraignmentCount(record_num_ew3);//进行中的笔录数量
         EntityWrapper record_num_ew4=new EntityWrapper();
-        record_num_ew4.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ record_num_ew4.eq("c.creator",user.getSsid());}
         record_num_ew4.ne("c.casebool",-1);
         record_num_ew4.eq("r.recordbool",0);
         Integer record_waitnum=police_arraignmentMapper.getArraignmentCount(record_num_ew4);///未开始笔录数量
@@ -155,13 +155,13 @@ public class CaseService extends BaseService {
         for (int i = 1; i < 13; i++) {
             EntityWrapper case_monthnum_y_ew=new EntityWrapper();
             case_monthnum_y_ew.ne("casebool",-1);
-            case_monthnum_y_ew.eq("creator",user.getSsid());
+            if (user.getSuperrolebool()==-1){ case_monthnum_y_ew.eq("creator",user.getSsid());}
             case_monthnum_y_ew.where("date_format(createtime,'%m')={0} and  date_format(createtime,'%Y')={1}",String.format("%02d",i),years);
             Integer now_case=police_caseMapper.selectCount(case_monthnum_y_ew);
             case_monthnum_y.add(now_case==null?0:now_case);
 
             EntityWrapper record_monthnum_y_ew=new EntityWrapper();
-            record_monthnum_y_ew.eq("c.creator",user.getSsid());
+            if (user.getSuperrolebool()==-1){  record_monthnum_y_ew.eq("c.creator",user.getSsid());}
             record_monthnum_y_ew.ne("c.casebool",-1);
             record_monthnum_y_ew.ne("r.recordbool",-1);
             record_monthnum_y_ew.where("date_format(r.createtime,'%m')={0} and  date_format(r.createtime,'%Y')={1}",String.format("%02d",i),years);
@@ -184,21 +184,21 @@ public class CaseService extends BaseService {
 
         //总
         EntityWrapper recordparam3=new EntityWrapper();
-        recordparam3.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){  recordparam3.eq("c.creator",user.getSsid());}
         recordparam3.ne("c.casebool",-1);
         recordparam3.ne("r.recordbool",-1);
         recordparam3.where(" date_format(r.createtime,'%Y')={0}",years);
         Integer record_num_y=police_arraignmentMapper.getArraignmentCount(recordparam3);//笔录总数
         //进行中
         EntityWrapper recordparam1=new EntityWrapper();
-        recordparam1.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ recordparam1.eq("c.creator",user.getSsid());}
         recordparam1.ne("c.casebool",-1);
         recordparam1.eq("r.recordbool",1);
         recordparam1.where(" date_format(r.createtime,'%Y')={0}",years);
         Integer record_unfinishnum_y= police_arraignmentMapper.getArraignmentCount(recordparam1);
         //已完成
         EntityWrapper recordparam2=new EntityWrapper();
-        recordparam2.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ recordparam2.eq("c.creator",user.getSsid());}
         recordparam2.ne("c.casebool",-1);
         List<Integer> recordbools2=new ArrayList<>();
         recordbools2.add(2);
@@ -208,7 +208,7 @@ public class CaseService extends BaseService {
         Integer record_finishnum_y =police_arraignmentMapper.getArraignmentCount(recordparam2);
         //未开始
         EntityWrapper recordparam4=new EntityWrapper();
-        recordparam4.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ recordparam4.eq("c.creator",user.getSsid());}
         recordparam4.ne("c.casebool",-1);
         recordparam4.eq("r.recordbool",0);
         recordparam4.where(" date_format(r.createtime,'%Y')={0}",years);
@@ -257,7 +257,7 @@ public class CaseService extends BaseService {
         //根据用户userssid查询案件列表
         EntityWrapper caseparam=new EntityWrapper();
         caseparam.eq("u.ssid",userssid);
-        caseparam.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ caseparam.eq("c.creator",user.getSsid());}
         caseparam.ne("c.casebool",-1);//案件不为删除的
         caseparam.orderBy("c.occurrencetime",false);
         List<Case> cases=police_caseMapper.getCase(caseparam);//加入询问次数
@@ -288,7 +288,7 @@ public class CaseService extends BaseService {
             otherCasesparam.notIn("c.ssid",casessids);
         }
         otherCasesparam.ne("u.ssid",userssid);
-        otherCasesparam.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){ otherCasesparam.eq("c.creator",user.getSsid());}
         otherCasesparam.orderBy("c.occurrencetime",false);
         List<Case> otherCases=police_caseMapper.getCase(otherCasesparam);//加入询问次数
         if (null!=otherCases&&otherCases.size()>0){
@@ -339,7 +339,7 @@ public class CaseService extends BaseService {
         }
 
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
-        ew.eq("c.creator",user.getSsid());
+        if (user.getSuperrolebool()==-1){  ew.eq("c.creator",user.getSsid());}
 
         ew.ne("c.casebool",-1);//案件状态不能为删除状态
 

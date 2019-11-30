@@ -76,9 +76,10 @@
             <td>{{value.rolename==null?"":value.rolename}}</td>
             <td>{{value.description==null?"":value.description}}</td>
             <td>{{value.createtime==null?"":value.createtime}}</td>
-            <td>
+            <td style="text-align: left">
                 <a href="{{addOupdateurl}}?ssid={{value.ssid}}" class="layui-btn layui-btn-normal layui-btn-sm" shiro:hasPermission='updateRole'>修改</a>
-                <a onclick="deleteRole('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" shiro:hasPermission='deleteRole'>删除</a>
+                {{# var deletedisplay="inline-block";if(value.ssid=="role1"||value.ssid=="defaultrole"){ deletedisplay="none"} }}
+                <a onclick="deleteRole('{{value.ssid}}')" class="layui-btn layui-btn-danger layui-btn-sm" style="display:{{deletedisplay}}" shiro:hasPermission='deleteRole' >删除</a>
             </td>
 
         </tr>

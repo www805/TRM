@@ -491,8 +491,8 @@ public class CourtService extends BaseService {
                                 if (!usergradesMap.isEmpty()){
                                     usergrade=usergradesMap.get(userssid)==null?"未知":usergradesMap.get(userssid);
                                 }
-                                content+= "<div style='text-align: left'>" +
-                                        "<span style='font-size:16pt;'>"+usergrade+"："+txt+"</span></div>";
+                                content+= "<div style='text-align: left;margin: 5px 0;'>" +
+                                        "<span style='font-size:16pt;color:#000000;'>"+usergrade+"："+txt+"</span></div>";
                             }
                         }else {
                             result.setMessage("未找到可导出的语音识别内容");

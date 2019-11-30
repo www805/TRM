@@ -92,7 +92,7 @@ public class Base_admininfo extends Model<Base_admininfo> {
      * 是否为超级管理员
      * 1是
      * -1不是 默认为-1
-     * 超级管理员只存在一个不可删除
+     * 超级管理员只存在一个不可删除:m
      */
     private Integer superbool;
 

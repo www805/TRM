@@ -1,3 +1,5 @@
+var  superbool=-1;
+
 function getWorkunits() {
     var url=getActionURL(getactionid_manage().addOrUpdateUser_getWorkunits);
     ajaxSubmit(url,null,callbackgetWorkunits);
@@ -74,6 +76,7 @@ function callbackgetUserBySsid(data) {
         if (isNotEmpty(data)){
             var data=data.data;
             if (isNotEmpty(data)){
+                superbool=data.superbool;
                 $("#loginaccount").val(data.loginaccount);
                 $("#username").val(data.username);
                 $("#password").val(data.password);
@@ -133,11 +136,26 @@ function addOrUpdateUser() {
         adminbool=2;
     }
     var roles=[];
+    var super_=false;//是否有超管
     $("#rolessid_checkbox :checked").each(function(index, element){
         roles.push({
             ssid:this.value
         });
+        if (this.value=="role1") {
+            super_=true;
+        }
     });
+
+    if (superbool==1&&!super_){
+        layer.msg("该用户的默认超管角色请勿随意更改",{icon: 5});
+        $("#rolessid_checkbox input[value='role1']").prop("checked", true);
+        layui.use('form', function(){
+            var form =  layui.form;
+            form.render();
+        });
+        return false;
+    }
+
 
     if (!isNotEmpty(ssid)){
         var password_again=$("#password_again").val();
@@ -146,6 +164,7 @@ function addOrUpdateUser() {
             return false;
         }
     }
+
 
     var data={
         loginaccount:loginaccount,

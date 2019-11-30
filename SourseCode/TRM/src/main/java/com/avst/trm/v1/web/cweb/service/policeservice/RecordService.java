@@ -159,9 +159,8 @@ public class RecordService extends BaseService {
             recordparam.eq("c.creator",user.getSsid());
         }*/
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
-        recordparam.eq("c.creator",user.getSsid());
-
-
+        //如果不是超管就只能看自己的
+        if (user.getSuperrolebool()==-1){ recordparam.eq("c.creator",user.getSsid());}
 
         int count = police_recordMapper.countgetRecords(recordparam);
         getRecordsParam.setRecordCount(count);
