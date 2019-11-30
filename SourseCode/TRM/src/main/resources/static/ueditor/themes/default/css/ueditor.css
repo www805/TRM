@@ -119,7 +119,7 @@ div.edui-box {
     -webkit-user-select: none;
     -moz-user-select: none;
     padding: 1px;
-    overflow: hidden; /*全屏下单独一行不占位*/
+    //overflow: hidden; /*全屏下单独一行不占位*//*不用全屏*/
     zoom: 1;
     width:auto;
     height:auto;

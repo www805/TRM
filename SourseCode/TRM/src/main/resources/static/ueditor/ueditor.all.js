@@ -29447,9 +29447,9 @@ UE.ui = baidu.editor.ui = {};
         },
         getHtmlTpl:function () {
             return '<div id="##" class="%%">' +
-                '<div id="##_toolbarbox" class="%%-toolbarbox">' +
+                '<div id="##_toolbarbox" class="%%-toolbarbox"  >' +
                 (this.toolbars.length ?
-                    '<div id="##_toolbarboxouter" class="%%-toolbarboxouter"><div class="%%-toolbarboxinner">' +
+                    '<div id="##_toolbarboxouter" class="%%-toolbarboxouter" style="height: 60px;"><div class="%%-toolbarboxinner" style="width: 996px;position:fixed;z-index: 1000;height: 60px;margin-top: -1px;">' +
                         this.renderToolbarBoxHtml() +
                         '</div></div>' : '') +
                 '<div id="##_toolbarmsg" class="%%-toolbarmsg" style="display:none;">' +

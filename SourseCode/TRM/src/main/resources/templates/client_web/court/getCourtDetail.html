@@ -298,10 +298,10 @@
                         <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input" onclick="open_positiontime()">
                     </div>
                 </div>
-                    <div class="layui-card">
+                    <div class="layui-card" style="position:fixed;">
                         <div class="layui-card-header">笔录回放
                         </div>
-                        <div class="layui-card-body">
+                        <div class="layui-card-body" style="padding: 0px 0px 0px 15px">
                             <!--视频点播区域-->
                             <div class="layui-row" style="">
                                 <div class="layui-col-md12" id="record_qw_HTML" >
@@ -317,9 +317,9 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="recorddetail_webkit">
-                                            <div style="" id="recorddetail_scrollhtml">
-                                                <div class="layui-card-body">
+                                        <div id="recorddetail_webkit" >
+                                            <div  id="recorddetail_scrollhtml" >
+                                                <div class="layui-card-body" id="recorddetail_body" style="padding: 0"><!--style="position:fixed;"-->
                                                     <!--<div class="layui-col-md12  layui-show" style="height: 300px">
                                                         <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
                                                     </div>
@@ -434,6 +434,23 @@
         var slider = layui.slider;
         var form = layui.form;
         //使用模块
+        //设置步长(应该放在video。HTML里面的，但是放在里面就会出问题)
+        slider.render({
+            elem: '#slideTest4'
+            , step: 20, //步长
+            value: initvolume, //初始值
+            theme: '#C5C5C5',//主题色
+            change: function(value){
+                //动态获取滑块数值
+                value=value.replace(/[^0-9]/ig,"");
+                var val=parseFloat(value);
+                val=val/100;
+                SewisePlayer.setVolume(val);
+            }
+            ,setTips: function(value){ //自定义提示文本
+                return '音量:'+value;
+            }
+        });
     });
 
 
