@@ -25,7 +25,7 @@ UE.I18N['zh-cn'] = {
         'imageleft':'左浮动', 'imageright':'右浮动', 'attachment':'附件', 'imagecenter':'居中', 'wordimage':'图片转存',
         'lineheight':'行间距','edittip' :'编辑提示','customstyle':'自定义标题', 'autotypeset':'自动排版',
         'webapp':'百度应用','touppercase':'字母大写', 'tolowercase':'字母小写','background':'背景','template':'模板','scrawl':'涂鸦',
-        'music':'音乐','inserttable':'插入表格','drafts': '从草稿箱加载', 'charts': '图表','importword':'导入Word文档'
+        'music':'音乐','inserttable':'插入表格','drafts': '从草稿箱加载', 'charts': '图表','importword':'导入Word文档','ziti':'字体格式'
     },
     'insertorderedlist':{
         'num':'1,2,3...',
@@ -54,6 +54,12 @@ UE.I18N['zh-cn'] = {
         'heiti':'黑体',
         'lishu':'隶书',
         'yahei':'微软雅黑',
+        'fangsong_gbk':'仿宋_GBK,FangSong_GBK',
+        'fangsong_gb2312':'仿宋_GB2312,FangSong_GB2312',
+        'fangzhengfangsong_gbk':'方正仿宋_GBK,FZFangSong_GBK',
+        'fangzhengheiti_gbk':'方正黑体_GBK,FZSimHei_GBK',
+        'fangzhengkaiti_gbk':'方正楷体_GBK,FZSimKai_GBK',
+        'fangzhengxiaobiaosong_gbk':'方正小标宋_GBK,FZSong_GBK',
         'andaleMono':'andale mono',
         'arial': 'arial',
         'arialBlack':'arial black',
@@ -141,6 +147,7 @@ UE.I18N['zh-cn'] = {
         'confirmclear':"确定清空当前文档么？",
         'unlink':"删除超链接",
         'paragraph':"段落格式",
+        'ziti':"字体格式",
         'edittable':"表格属性",
         'aligntd':"单元格对齐方式",
         'aligntable':'表格对齐方式',
