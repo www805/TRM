@@ -14621,9 +14621,9 @@ UE.plugins['paste'] = function () {
             return;
         }
         var range = this.selection.getRange(),
-            bk = range.createBookmark(),
+        bk = range.createBookmark(),
         //创建剪贴的容器div
-            pastebin = doc.createElement('div');
+        pastebin = doc.createElement('div');
         pastebin.id = 'baidu_pastebin';
         // Safari 要求div必须有内容，才能粘贴内容进来
         browser.webkit && pastebin.appendChild(doc.createTextNode(domUtils.fillChar + domUtils.fillChar));
@@ -14633,7 +14633,7 @@ UE.plugins['paste'] = function () {
         bk.start.style.display = '';
         pastebin.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;left:-1000px;white-space:nowrap;top:" +
             //要在现在光标平行的位置加入，否则会出现跳动的问题
-            domUtils.getXY(bk.start).y + 'px';
+        domUtils.getXY(bk.start).y + 'px';
 
         range.selectNodeContents(pastebin).select(true);
 
@@ -14770,7 +14770,9 @@ UE.plugins['paste'] = function () {
                 }
                 utils.each(me.body.querySelectorAll('div'), function (node) {
                     if (domUtils.isEmptyBlock(node)) {
-                        domUtils.remove(node,true)
+                        if(node.id.indexOf('newpage') < 0){//不删除最外层的page页
+                            domUtils.remove(node,true);
+                        }
                     }
                 })
             }
@@ -22485,11 +22487,11 @@ UE.plugins['contextmenu'] = function () {
                 {
                     label:lang['copy'],
                     cmdName:'copy'
-                },
-                {
-                    label:lang['paste'],
-                    cmdName:'paste'
                 }
+                // ,{
+                //     label:lang['paste'],
+                //     cmdName:'paste'
+                // }
             ];
     if ( !items.length ) {
         return;
