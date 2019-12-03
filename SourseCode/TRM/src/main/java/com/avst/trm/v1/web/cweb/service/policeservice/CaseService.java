@@ -22,6 +22,7 @@ import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.Avstmt_modelAll;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
+import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -247,47 +248,46 @@ public class CaseService extends BaseService {
         }
 
         String userssid=getCaseByIdParam.getUserssid();
-        if (StringUtils.isBlank(userssid)){
-            result.setMessage("参数为空");
-            return;
-        }
-
+        LogUtil.intoLog(1,this.getClass(),"根据人员获取案件以及除开该人的全部案件____userssid："+userssid);
         AdminAndWorkunit user= (AdminAndWorkunit) session.getAttribute(Constant.MANAGE_CLIENT);
 
         //根据用户userssid查询案件列表
-        EntityWrapper caseparam=new EntityWrapper();
-        caseparam.eq("u.ssid",userssid);
-        if (user.getSuperrolebool()==-1){ caseparam.eq("c.creator",user.getSsid());}
-        caseparam.ne("c.casebool",-1);//案件不为删除的
-        caseparam.orderBy("c.occurrencetime",false);
-        List<Case> cases=police_caseMapper.getCase(caseparam);//加入询问次数
         List<String> casessids=new ArrayList<>();
-        if (null!=cases&&cases.size()>0){
-            for (Case c: cases) {
-                //提讯数据
-                EntityWrapper ewarraignment=new EntityWrapper();
-                ewarraignment.eq("cr.casessid",c.getSsid());
-                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
-                ewarraignment.orderBy("a.createtime",false);
-                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
-                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
-                    c.setArraignments(arraignmentAndRecords);
-                }
-                casessids.add(c.getSsid());
+        if (StringUtils.isNotEmpty(userssid)){
+            EntityWrapper caseparam=new EntityWrapper();
+            caseparam.eq("u.ssid",userssid);
+            if (user.getSuperrolebool()==-1){ caseparam.eq("c.creator",user.getSsid());}
+            caseparam.ne("c.casebool",-1);//案件不为删除的
+            caseparam.orderBy("c.occurrencetime",false);
+            List<Case> cases=police_caseMapper.getCase(caseparam);//加入询问次数
+            if (null!=cases&&cases.size()>0){
+                for (Case c: cases) {
+                    //提讯数据
+                    EntityWrapper ewarraignment=new EntityWrapper();
+                    ewarraignment.eq("cr.casessid",c.getSsid());
+                    ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                    ewarraignment.orderBy("a.createtime",false);
+                    List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);
+                    if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                        c.setArraignments(arraignmentAndRecords);
+                    }
+                    casessids.add(c.getSsid());
 
+                }
+                getCaseByIdVO.setCases(cases);
             }
-            getCaseByIdVO.setCases(cases);
         }
 
 
-
-
-        //出来关联的其他案件
+        //出来关联的其他案件:用户为空全部
         EntityWrapper otherCasesparam=new EntityWrapper();
         if (null!=casessids&&casessids.size()>0){
             otherCasesparam.notIn("c.ssid",casessids);
         }
-        otherCasesparam.ne("u.ssid",userssid);
+        if (StringUtils.isNotEmpty(userssid)){
+            otherCasesparam.ne("u.ssid",userssid);
+        }
+
         if (user.getSuperrolebool()==-1){ otherCasesparam.eq("c.creator",user.getSsid());}
         otherCasesparam.orderBy("c.occurrencetime",false);
         List<Case> otherCases=police_caseMapper.getCase(otherCasesparam);//加入询问次数
@@ -926,10 +926,21 @@ public class CaseService extends BaseService {
         if (bool==3){
             //该案件正在休庭，需要改为进行中
             bool=1;//改为进行中
-
-
+            RResult addCaseToArraignment_Backfill_result=new RResult();
+            AddCaseToArraignment_BackfillParam addCaseToArraignment_Backfill_param=new AddCaseToArraignment_BackfillParam();
+            addCaseToArraignment_Backfill_param.setCasessid(ssid);
+            addCaseToArraignment_Backfill_param.setRecordbool(3);
+            addCaseToArraignment_Backfill(addCaseToArraignment_Backfill_result,addCaseToArraignment_Backfill_param,session);
+            if (null!=addCaseToArraignment_Backfill_result&&addCaseToArraignment_Backfill_result.getActioncode().equals(Code.SUCCESS.toString())){
+                if (null!=addCaseToArraignment_Backfill_result.getData()){
+                    //获取到返回的笔录ssid
+                    vo.setAddcasetoarraignmentvo_data(String.valueOf(addCaseToArraignment_Backfill_result.getData()));
+                }
+            }else {
+                LogUtil.intoLog(1,this.getClass(),"案件暂停继续回填失败---");
+            }
             //查找该案件下所有提讯的笔录，找到暂停中的笔录并且生成一份新的笔录，状态为未开始;旧的改为已完成
-            EntityWrapper ewarraignment=new EntityWrapper();
+           /* EntityWrapper ewarraignment=new EntityWrapper();
             ewarraignment.eq("cr.casessid",ssid);
             ewarraignment.eq("r.recordbool",3);
             ewarraignment.orderBy("a.createtime",false);
@@ -1043,7 +1054,9 @@ public class CaseService extends BaseService {
                         }
                     }
                 }
-            }
+            }*/
+
+
         }
 
         police_case.setCasebool(bool);
@@ -1134,6 +1147,8 @@ public class CaseService extends BaseService {
                                     UserInfo police_userinfo=new UserInfo();
                                     if (null!=userInfos&&userInfos.size()==1){
                                         police_userinfo=userInfos.get(0);
+                                    }else {
+                                        police_userinfo=null;
                                     }
 
                                     //查找用户：管理员表
@@ -1167,6 +1182,219 @@ public class CaseService extends BaseService {
         }
         result.setData(vo);
         changeResultToSuccess(result);
+        return;
+    }
+
+
+    //根据案件编号回填该用户最后一份提讯
+    public void addCaseToArraignment_Backfill( RResult result,AddCaseToArraignment_BackfillParam param, HttpSession session){
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+        String casessid=param.getCasessid();
+        Integer recordbool=param.getRecordbool();//根据笔录状态：休庭
+        if (StringUtils.isEmpty(casessid)){
+            result.setMessage("参数为空");
+            return;
+        }
+
+
+        Police_case police_case=new Police_case();
+        police_case.setSsid(casessid);
+        police_case = police_caseMapper.selectOne(police_case);
+        if (null!=police_case){
+            if (StringUtils.isNotEmpty(casessid)){
+                EntityWrapper ewarraignment=new EntityWrapper();
+                ewarraignment.eq("cr.casessid",casessid);
+                if (null!=recordbool){
+                    ewarraignment.eq("r.recordbool",recordbool);
+                }
+                ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                ewarraignment.orderBy("a.createtime",false);
+                List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);//不出意外一般只存有一条数据
+                if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                    ArraignmentAndRecord arraignmentAndRecord=arraignmentAndRecords.get(0);
+                    //开始获取该信息进行添加新的案件提讯笔录
+                    RResult addCaseToArraignment_rr=new RResult();
+                    ReqParam<AddCaseToArraignmentParam> addCaseToArraignment_param=new ReqParam<>();
+                    AddCaseToArraignmentParam addCaseToArraignmentParam=new AddCaseToArraignmentParam();
+
+
+                    //回填数据-------------------------------------------------------------------------start
+                    String userssid=arraignmentAndRecord.getUserssid();
+                    if (StringUtils.isNotBlank(userssid)&&StringUtils.isNotBlank(casessid)){
+                        addCaseToArraignmentParam.setUserssid(userssid);
+                        addCaseToArraignmentParam.setCasessid(casessid);
+
+                        //获取案件和人员信息
+                        Police_userinfo police_userinfo=new Police_userinfo();
+                        police_userinfo.setSsid(userssid);
+                        police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+                        UserInfo userinfo_=gson.fromJson(gson.toJson(police_userinfo),UserInfo.class);
+                        EntityWrapper ewuserinfo=new EntityWrapper<>();
+                        ewuserinfo.eq("ctu.casessid",casessid);
+                        ewuserinfo.eq("u.ssid",userssid);
+                        List<UserInfo> userInfos=police_userinfoMapper.getUserByCase(ewuserinfo);
+                        if (null!=userInfos&&userInfos.size()>0){
+                            UserInfo userInfo=userInfos.get(0);
+                            //获取该案件人当前案件所使用的的证件
+                            String usertotypessid=userInfo.getUsertotypessid();
+                            EntityWrapper userparam=new EntityWrapper<>();
+                            if (StringUtils.isNotBlank(usertotypessid)){
+                                userparam.eq("ut.ssid",usertotypessid);
+                            }
+                            userparam.eq("u.ssid",userInfo.getSsid());
+                            List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+                            if (null!=userinfos&&userinfos.size()==1){
+                                UserInfo userInfo_=userinfos.get(0);
+                                userInfo.setCardtypessid(userInfo_.getCardtypessid());
+                                userInfo.setCardnum(userInfo_.getCardnum());
+                                userInfo.setCardtypename(userInfo_.getCardtypename());
+                            }
+                            userinfo_=userInfo;
+                        }
+
+
+                        police_case.setSsid(casessid);
+                        police_case=police_caseMapper.selectOne(police_case);
+
+                        if (null!=userinfo_&&null!=police_case){
+                            int asknum=arraignmentAndRecord.getAsknum()==null?0:arraignmentAndRecord.getAsknum();//询问
+                            addCaseToArraignmentParam.setAdminssid(arraignmentAndRecord.getAdminssid());
+                            addCaseToArraignmentParam.setOtheradminssid(arraignmentAndRecord.getOtheradminssid());
+                            addCaseToArraignmentParam.setRecordadminssid(arraignmentAndRecord.getRecordadminssid());
+                            addCaseToArraignmentParam.setRecordtypessid(arraignmentAndRecord.getRecordtypessid());
+                            addCaseToArraignmentParam.setRecordplace(arraignmentAndRecord.getRecordplace());
+                            addCaseToArraignmentParam.setMultifunctionbool(arraignmentAndRecord.getMultifunctionbool());
+                            addCaseToArraignmentParam.setAskobj(arraignmentAndRecord.getAskobj());
+                            addCaseToArraignmentParam.setAsknum(asknum);
+                            addCaseToArraignmentParam.setMtmodelssid(arraignmentAndRecord.getMtmodelssid());
+                            addCaseToArraignmentParam.setSkipCheckbool(1);//默认跳过检测
+                            addCaseToArraignmentParam.setSkipCheckCasebool(1);//默认跳过检测
+
+                            String mtmodelssidname="";
+                            if (StringUtils.isNotEmpty(arraignmentAndRecord.getMtmodelssid())){
+                                List<Avstmt_modelAll> modelAlls=new ArrayList<>();
+                                GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+                                getMc_modelParam_out.setMcType(MCType.AVST);
+                                getMc_modelParam_out.setModelssid(arraignmentAndRecord.getMtmodelssid());
+                                ReqParam reqParam=new ReqParam();
+                                reqParam.setParam(getMc_modelParam_out);
+                                try {
+                                    RResult rr = meetingControl.getMc_model(reqParam);
+                                    if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                        modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                                        if (null!=modelAlls&&modelAlls.size()==1){
+                                            mtmodelssidname=modelAlls.get(0).getExplain();
+                                        }
+                                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                                    }else{
+                                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            String recordname=userinfo_.getUsername()+"《"+police_case.getCasename().trim()+"》"+mtmodelssidname+"_"+arraignmentAndRecord.getRecordtypename()+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                            recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");//笔录名称
+                            if (null!=arraignmentAndRecord.getMultifunctionbool()&&arraignmentAndRecord.getMultifunctionbool()==1){
+                                recordname=arraignmentAndRecord.getRecordname()+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                            }
+
+                            addCaseToArraignmentParam.setRecordname(recordname);
+
+                            addCaseToArraignmentParam.setAddUserInfo(userinfo_);
+                            addCaseToArraignmentParam.setAddPolice_case(police_case);
+
+
+                            //其他拓展表人员添加
+                            List<UserInfo> arraignmentexpand=new ArrayList<>();
+                            List<ArrUserExpandParam> arrUserExpandParams=new ArrayList<>();
+                            EntityWrapper arre=new EntityWrapper();
+                            arre.eq("arraignmentssid",arraignmentAndRecord.getSsid());
+                            List<Police_arraignmentexpand> arraignmentexpands = police_arraignmentexpandMapper.selectList(arre);
+                            if (null!=arraignmentexpands&&arraignmentexpands.size()>0){
+                                for (Police_arraignmentexpand arraignmentexpand_ : arraignmentexpands) {
+
+                                    ArrUserExpandParam arrUserExpandParam=new ArrUserExpandParam();
+
+
+                                    String gradessid_=arraignmentexpand_.getExpandname();//拓展名为登记表ssid
+                                    String userssid_=arraignmentexpand_.getExpandvalue();//拓展值为用户的ssid
+                                    if (StringUtils.isNotBlank(gradessid_)&&StringUtils.isNotBlank(userssid_)){
+                                        //查找等级
+                                        Police_userinfograde police_userinfograde=new Police_userinfograde();
+                                        police_userinfograde.setSsid(gradessid_);
+                                        police_userinfograde=police_userinfogradeMapper.selectOne(police_userinfograde);
+
+
+                                        //查找用户:人员表
+                                        Police_userinfo police_userinfo_=new Police_userinfo();
+                                        police_userinfo_.setSsid(userssid_);
+                                        police_userinfo_=police_userinfoMapper.selectOne(police_userinfo_);
+
+
+                                        //查找用户：管理员表
+                                        Base_admininfo admininfo=new Base_admininfo();
+                                        admininfo.setSsid(userssid_);
+                                        admininfo=base_admininfoMapper.selectOne(admininfo);
+
+                                        if (null!=police_userinfograde){
+                                            if (null!=police_userinfo_){
+                                                UserInfo userInfo=new UserInfo();
+                                                    //获取该案件人当前案件所使用的的证件
+                                                    String cardtypessid= PropertiesListenerConfig.getProperty("cardtype_default");
+                                                    EntityWrapper userparam=new EntityWrapper<>();
+                                                    userparam.eq("t.ssid",cardtypessid);
+                                                    userparam.eq("u.ssid",userssid_);
+                                                    List<UserInfo> userinfos=police_userinfoMapper.getUserByCard(userparam);
+                                                    if (null!=userinfos&&userinfos.size()==1){
+                                                         userInfo=userinfos.get(0);
+                                                    }
+                                                userInfo.setUserinfogradessid(police_userinfograde.getSsid());
+                                                arraignmentexpand.add(userInfo);
+                                            }else if (null!=admininfo){
+                                                arrUserExpandParam.setUserssid(userssid_);
+                                                arrUserExpandParam.setUserinfogradessid(police_userinfograde.getSsid());
+                                                arrUserExpandParams.add(arrUserExpandParam);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            addCaseToArraignmentParam.setArraignmentexpand(arraignmentexpand);
+                            addCaseToArraignmentParam.setArrUserExpandParams(arrUserExpandParams);
+                            addCaseToArraignment_param.setParam(addCaseToArraignmentParam);
+                            //回填数据-------------------------------------------------------------------------end
+                            arraignmentService.addCaseToArraignment(addCaseToArraignment_rr,addCaseToArraignment_param,session);
+                            if (null!=addCaseToArraignment_rr&&addCaseToArraignment_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                if (null!=addCaseToArraignment_rr.getData()){
+                                    //获取到返回的笔录ssid
+                                    result.setData(JSON.toJSONString(addCaseToArraignment_rr.getData()));
+                                    changeResultToSuccess(result);
+                                    return;
+                                }
+                            }
+                        }else {
+                            LogUtil.intoLog(this.getClass(),"回填案件人员信息为空__userinfo__"+userinfo_+"__police_case__"+police_case);
+                        }
+
+                    }else {
+                        LogUtil.intoLog(this.getClass(),"回填案件人员信息参数错误__casessid_"+casessid+"__userssid__"+userssid);
+                    }
+                }else {
+                    result.setMessage("案件未提讯");
+                    LogUtil.intoLog(1,this.getClass(),"回填案件人员信息参错误__案件未提讯___casessid__"+casessid);
+                    return;
+                }
+            }
+        }else {
+            result.setMessage("未找到案件信息");
+            LogUtil.intoLog(1,this.getClass(),"回填案件人员信息参错误__未找到案件信息___casessid__"+casessid);
+            return;
+        }
+
         return;
     }
 

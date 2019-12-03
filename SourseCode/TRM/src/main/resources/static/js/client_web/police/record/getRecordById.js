@@ -215,6 +215,7 @@ function callbackgetRecordById(data) {
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
                     var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                    var starttime=case_.starttime==null?"":case_.starttime;
                     var casenum=case_.casenum==null?"":case_.casenum;
                     var adminname=recordUserInfosdata.adminname==null?"":recordUserInfosdata.adminname;
                     var otheradminname=recordUserInfosdata.otheradminname==null?"":recordUserInfosdata.otheradminname;
@@ -228,7 +229,7 @@ function callbackgetRecordById(data) {
                                   <tr><td>被询(讯)问人</td><td>"+username+"</td> </tr>\
                                   <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
-                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>案件时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>\
                                   <tr><td>询问人一</td><td>"+adminname+"</td></tr>\
                                   <tr><td>询问人二</td> <td>"+otheradminname+"</td> </tr>\

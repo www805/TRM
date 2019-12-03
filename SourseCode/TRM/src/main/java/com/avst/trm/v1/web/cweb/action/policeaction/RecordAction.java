@@ -862,6 +862,27 @@ public class RecordAction extends BaseAction {
         return result;
     }
 
+    /**
+     * 案件信息回填
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/addCaseToArraignment_Backfill")
+    public RResult addCaseToArraignment_Backfill(@RequestBody ReqParam<AddCaseToArraignment_BackfillParam> param, HttpSession session){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            caseService.addCaseToArraignment_Backfill(result,param.getParam(),session);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
+
 
 
 

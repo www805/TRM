@@ -340,7 +340,7 @@ function callbackgetRecordById(data) {
                     var  init_casehtml="<tr><td style='width: 40%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
-                                  <tr><td>庭审时间</td> <td>"+starttime+"</td> </tr>\
+                                  <tr><td>案件时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>案件编号</td><td>"+casenum+"</td> </tr>";
                     $("#caseAndUserInfo_html").html(init_casehtml);
                     var usergrades=recordUserInfosdata.usergrades;

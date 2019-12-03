@@ -336,12 +336,11 @@ function continueCase(ssid,casebool) {
 function callbackcontinueCase(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         if (isNotEmpty(data.data)) {
-            layer.msg("案件重新开启", {time: 500,icon: 6},function () {
+            layer.msg("案件重新开启成功", {time: 500,icon: 6},function () {
                 getCasesByParam();
                 var addcasetoarraignmentvo_data=data.data.addcasetoarraignmentvo_data;
                 if (isNotEmpty(addcasetoarraignmentvo_data)){
                     addcasetoarraignmentvo_data = eval('(' + addcasetoarraignmentvo_data + ')');
-
                     var recordssid=addcasetoarraignmentvo_data.recordssid;
                     var multifunctionbool=addcasetoarraignmentvo_data.multifunctionbool;
 
@@ -360,6 +359,9 @@ function callbackcontinueCase(data) {
                                 layer.close(index);
                             };
                         }
+                        if (gnlist.indexOf(FY_T)!=-1){
+                            btn=['开始庭审',"查看笔录列表","取消"];
+                        }
 
 
                         layer.confirm("<span style='color:red'>新的笔录/审讯已生成</span>", {
@@ -369,15 +371,21 @@ function callbackcontinueCase(data) {
                                 console.log("跳转笔录制作中");
                                 var index =layer.msg('开始进行笔录', {shade:[0.1,"#fff"],icon:6,time:500
                                 },function () {
-                                    if (multifunctionbool==1){
-                                        //跳转审讯制作中：
-                                        var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
+                                    if (gnlist.indexOf(FY_T)!=-1){
+                                        var url=getActionURL(getactionid_manage().caseIndex_towaitCourt);
                                         window.location.href=url+"?ssid="+recordssid;
-                                    } else if (multifunctionbool==2||multifunctionbool==3){
-                                        //跳转笔录制作
-                                        var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
-                                        window.location.href=url+"?ssid="+recordssid;
+                                    }else {
+                                        if (multifunctionbool==1){
+                                            //跳转审讯制作中：
+                                            var url=getActionURL(getactionid_manage().caseIndex_towaitconversation);
+                                            window.location.href=url+"?ssid="+recordssid;
+                                        } else if (multifunctionbool==2||multifunctionbool==3){
+                                            //跳转笔录制作
+                                            var url=getActionURL(getactionid_manage().caseIndex_towaitRecord);
+                                            window.location.href=url+"?ssid="+recordssid;
+                                        }
                                     }
+
                                 });
                                 layer.close(index);
                             },

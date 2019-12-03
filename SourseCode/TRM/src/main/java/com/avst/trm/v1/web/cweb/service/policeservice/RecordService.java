@@ -23,7 +23,9 @@ import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.*;
+import com.avst.trm.v1.feignclient.ec.vo.CheckRecordFileStateVO;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
+import com.avst.trm.v1.feignclient.ec.vo.param.RecordFileParam;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMCStateParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
@@ -173,34 +175,6 @@ public class RecordService extends BaseService {
             for (Record record : records) {
                 String  recordssid=record.getSsid();
                 Integer recordbool_=record.getRecordbool();//笔录状态1进行中2已完成
-                /*if (null!=recordbool_&&(recordbool_==1||recordbool_==0)){
-                    List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
-                    record.setProblems(recordToProblems);
-                }else  if (null!=recordbool_&&(recordbool_==2||recordbool_==3)){
-                    //查找笔录的全部题目
-                    EntityWrapper probleparam=new EntityWrapper();
-                    probleparam.eq("r.ssid",record.getSsid());
-                    probleparam.orderBy("p.ordernum",true);
-                    probleparam.orderBy("p.createtime",true);
-                    List<RecordToProblem> problems = police_recordtoproblemMapper.getRecordToProblemByRecordSsid(probleparam);
-                    if (null!=problems&&problems.size()>0){
-                        //根据题目和笔录查找对应答案
-                        for (RecordToProblem problem : problems) {
-                            String problemssid=problem.getSsid();
-                            if (StringUtils.isNotBlank(problem.getSsid())){
-                                EntityWrapper answerParam=new EntityWrapper();
-                                answerParam.eq("recordtoproblemssid",problemssid);
-                                answerParam.orderBy("ordernum",true);
-                                answerParam.orderBy("createtime",true);
-                                List<Police_answer> answers=police_answerMapper.selectList(answerParam);
-                                if (null!=answers&&answers.size()>0){
-                                    problem.setAnswers(answers);
-                                }
-                            }
-                        }
-                        record.setProblems(problems);
-                    }
-                }*/
                 List<RecordToProblem> recordToProblems = RecordrealingCache.getRecordrealByRecordssid(recordssid);
                 record.setProblems(recordToProblems);
 
@@ -230,6 +204,61 @@ public class RecordService extends BaseService {
                 police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
                 if(null!=police_arraignment){
                     record.setPolice_arraignment(police_arraignment);
+
+                    //开始获取录像文件的状态
+                    String mtssid=police_arraignment.getMtssid();
+                    if (StringUtils.isNotEmpty(mtssid)&&null!=recordbool_&&(recordbool_.intValue()==2||recordbool_.intValue()==3)){
+                            //getRecord：获取会议asr识别数据
+                            GetMCVO getMCVO=new GetMCVO();
+                            ReqParam getrecord_param=new ReqParam<>();
+                            GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                            getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                            getPhssidByMTssidParam_out.setMtssid(mtssid);
+                            getrecord_param.setParam(getPhssidByMTssidParam_out);
+                            RResult getrecord_rr=new RResult();
+                            getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                            if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
+                                if (null!=getMCVO) {
+                                    String iid=getMCVO.getIid();
+                                    if (StringUtils.isNotBlank(iid)){
+                                        RResult rr=new RResult();
+                                        CheckRecordFileStateParam checkRecordFileStateParam=new CheckRecordFileStateParam();
+                                        checkRecordFileStateParam.setSsType(SSType.AVST);
+                                        checkRecordFileStateParam.setIid(iid);
+                                        rr= equipmentControl.checkRecordFileState(checkRecordFileStateParam);
+                                        CheckRecordFileStateVO checkRecordFileStateVO=new CheckRecordFileStateVO();
+                                        Integer normalstate=0;//初始化
+                                        if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                            checkRecordFileStateVO = gson.fromJson(gson.toJson(rr.getData()), CheckRecordFileStateVO.class);
+                                            List<RecordFileParam> recordFileParams = checkRecordFileStateVO.getRecordList();
+                                            if (null != recordFileParams && recordFileParams.size() > 0) {
+                                                for (RecordFileParam recordFileParam : recordFileParams) {
+                                                    if(recordFileParam.getState()==2){ //2为正常状态
+                                                        normalstate++;
+                                                    }
+                                                }
+                                                if (recordFileParams.size()==normalstate.intValue()){
+                                                    normalstate=1; //全部弄完
+                                                }
+                                            }else {
+                                                normalstate=-1;
+                                            }
+                                            LogUtil.intoLog(this.getClass(), "文件数据存储状态__正常数" + normalstate);
+                                        }else {
+                                            normalstate=-1;
+                                            LogUtil.intoLog(this.getClass(), "文件数据存储状态__失败" );
+                                        }
+                                        record.setRecordfilestate(normalstate);
+                                    }
+
+                                }
+                            }else {
+                                Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
+                                LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
+                            }
+                    }
+
                 }
 
             }
@@ -770,7 +799,7 @@ public class RecordService extends BaseService {
                         outService.getPlayUrl(getplayurl_rr,getURLToPlayParam);
                         if (null!=getplayurl_rr&&getplayurl_rr.getActioncode().equals(Code.SUCCESS.toString())){
                             getPlayUrlVO=gson.fromJson(gson.toJson(getplayurl_rr.getData()),GetPlayUrlVO.class);
-                            if (null!=getMCVO){
+                            if (null!=getPlayUrlVO){
                                 getRecordByIdVO.setGetPlayUrlVO(getPlayUrlVO);
                             }
                             LogUtil.intoLog(this.getClass()," outService.getPlayUrl__请求成功");

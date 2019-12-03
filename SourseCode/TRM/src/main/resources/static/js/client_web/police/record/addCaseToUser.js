@@ -328,6 +328,7 @@ function callbackaddCaseToArraignment(data) {
                 var casename=case_.casename==null?"":case_.casename;
                 var cause=case_.cause==null?"":case_.cause;
                 var occurrencetime=case_.occurrencetime==null?"":case_.occurrencetime;
+                var starttime=case_.starttime==null?"":case_.starttime;
                 var casenum=case_.casenum==null?"":case_.casenum;
                 var department=case_.department==null?"":case_.department;
                var userInfos=case_.userInfos;
@@ -337,7 +338,7 @@ function callbackaddCaseToArraignment(data) {
                                   <tr><td style='width: 30%'>案件名称</td><td>"+casename+"</td></tr>\
                                   <tr><td>案件嫌疑人</td><td>"+USERHTNL+"</td> </tr>\
                                   <tr><td>当前案由</td><td title='"+cause+"'>"+cause+"</td></tr>\
-                                  <tr><td>案件时间</td> <td>"+occurrencetime+"</td> </tr>\
+                                  <tr><td>案件时间</td> <td>"+starttime+"</td> </tr>\
                                   <tr><td>办案部门</td><td>"+department+"</td> </tr>";
                 var TABLE_HTML='<form class="layui-form layui-row" style="margin: 10px"><table class="layui-table" lay-even lay-skin="nob" style="table-layout: fixed;">'+init_casehtml+' <tbody id="case_html"></tbody></table></form>';
                 parent.layer.open({

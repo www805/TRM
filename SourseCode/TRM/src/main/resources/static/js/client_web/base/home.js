@@ -334,6 +334,7 @@ function to_waitconversationURL() {
         param:{
             skipCheckbool:skipCheckbool,
             multifunctionbool:1,//单组件
+            custommsgbool:1,//需要自定义
         }
     };
     ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);

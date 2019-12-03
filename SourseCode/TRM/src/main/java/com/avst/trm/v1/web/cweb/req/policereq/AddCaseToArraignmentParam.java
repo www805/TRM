@@ -35,15 +35,33 @@ public class AddCaseToArraignmentParam {
     private String otheruserinfoname;//新增询问人二的名称
     private String otherworkname;//新增询问人二的对应的工作单位
 
-    private Integer skipCheckbool=-1;//是否跳过检测1跳过-1不跳过
-    private Integer skipCheckCasebool=-1;//是否跳过检测案件状态 1跳过-1不跳过
-
-    private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
-
+    //**暂时针对法院版人员
     private List<UserInfo> arraignmentexpand;//拓展表数据：针对未存在用户，主要用于外来人员
-
     private List<ArrUserExpandParam> arrUserExpandParams;//拓展表数据;针对已存在用户：主要用于内部管理员
 
+    private Integer skipCheckbool=-1;//是否跳过检测1跳过-1不跳过
+    private Integer skipCheckCasebool=-1;//是否跳过检测案件状态：系统 1跳过-1不跳过
+    private Integer skipCheckCaseNumbool;//是否跳过检测案件编号检测 1使用上一次提讯  -1不跳过 跳过检测
+
+    private Integer multifunctionbool;//功能类型 1 单功能 2双功能 3 多功能
+    private Integer custommsgbool=-1;//是否需要自定义信息默认不需要
+
+
+    public Integer getSkipCheckCaseNumbool() {
+        return skipCheckCaseNumbool;
+    }
+
+    public void setSkipCheckCaseNumbool(Integer skipCheckCaseNumbool) {
+        this.skipCheckCaseNumbool = skipCheckCaseNumbool;
+    }
+
+    public Integer getCustommsgbool() {
+        return custommsgbool;
+    }
+
+    public void setCustommsgbool(Integer custommsgbool) {
+        this.custommsgbool = custommsgbool;
+    }
 
     public String getMtmodelssidname() {
         return mtmodelssidname;

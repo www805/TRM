@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 
+import com.alibaba.fastjson.JSON;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.type.MCType;
@@ -31,6 +32,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.commons.lang.StringUtils;
+import org.apache.xmlbeans.UserType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -119,12 +121,14 @@ public class ArraignmentService extends BaseService {
         List<Userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态
+        Integer skipCheckCaseNumbool=addCaseToArraignmentParam.getSkipCheckCaseNumbool();//是否跳过检测案件编号检测 1跳过-1不跳过 跳过检测
         Integer multifunctionbool=addCaseToArraignmentParam.getMultifunctionbool();//功能类型
+        Integer custommsgbool=addCaseToArraignmentParam.getCustommsgbool();//是否需要自定义信息
         String mtmodelssid=addCaseToArraignmentParam.getMtmodelssid();//会议模板ssid
         String mtmodelssidname=addCaseToArraignmentParam.getMtmodelssidname();//会议模板名称
         String wordtemplatessid=addCaseToArraignmentParam.getWordtemplatessid();//笔录模板ssid
         //笔录信息
-        String recordtypessid=addCaseToArraignmentParam.getRecordtypessid();//笔录类型
+        String recordtypessid=addCaseToArraignmentParam.getRecordtypessid()==null?PropertiesListenerConfig.getProperty("recordtype_default"):addCaseToArraignmentParam.getRecordtypessid();//笔录类型
         String recordname=addCaseToArraignmentParam.getRecordname()==null?"":addCaseToArraignmentParam.getRecordname().replace(" ", "").replace("\"", "");//笔录名称
         //讯问信息
         String adminssid=addCaseToArraignmentParam.getAdminssid();//询问人一
@@ -151,40 +155,78 @@ public class ArraignmentService extends BaseService {
         List<ArrUserExpandParam> arrUserExpandParams=addCaseToArraignmentParam.getArrUserExpandParams();
         //参数**************************************************************************************************************************************end
 
+        //授权功能信息
+        String gnlist=getSQEntity.getGnlist();
+
         //快速笔录，添加默认数据
-        if (multifunctionbool==1){
+        if (null!=custommsgbool&&custommsgbool==1){
+            String defaulttitle="快速笔录";
+            String defaultrecordname="默认笔录";
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid= PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
             String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
-            String conversationmsg="快速谈话_"+time;
-
 
             //用户信息使用默认
-            addUserInfo=new UserInfo();
-            addUserInfo.setUsername("未知_"+time);
-            addUserInfo.setCardnum("未知_"+time);
-            addUserInfo.setCardtypessid(cardtypessid);
-
-
-
+            UserInfo newaddUserInfo=new UserInfo();
+            newaddUserInfo.setUsername("未知_"+time);
+            newaddUserInfo.setCardnum("未知_"+time);
+            newaddUserInfo.setCardtypessid(cardtypessid);
             //案件信息默认
-            addPolice_case=new Police_case();
-            addPolice_case.setCasename("案件名_"+conversationmsg);
-            addPolice_case.setOccurrencetime(new Date());
-            addPolice_case.setStarttime(new Date());
+            Police_case newaddPolice_case=new Police_case();
+            newaddPolice_case.setOccurrencetime(new Date());
+            newaddPolice_case.setStarttime(new Date());
+
+
+            //根据hk版本：
+            if (null!=multifunctionbool&&multifunctionbool==1){
+                defaulttitle="快速谈话";
+                defaultrecordname="审讯笔录";
+            }
+
+            //根据nx版本：
+            if (gnlist.indexOf(SQVersion.NX_O)!= -1){
+                defaulttitle="快速庭审";
+                newaddPolice_case.setCasenum(addPolice_case.getCasenum()==null?"":addPolice_case.getCasenum());
+
+                //此处需要加入默认的拓展表人员数据
+                if (null==arraignmentexpand||arraignmentexpand.size()<1){
+                    arraignmentexpand=new ArrayList<>();
+                    UserInfo userInfo=new UserInfo();
+                    userInfo.setUsername(newaddUserInfo.getUsername());
+                    userInfo.setUserinfogradessid(UserinfogradeType.USERINFOGRADE2);
+                    arraignmentexpand.add(userInfo);
+                }
+                if (null==arrUserExpandParams||arrUserExpandParams.size()<1){
+                    arrUserExpandParams=new ArrayList<>();
+                    if (StringUtils.isBlank(adminssid)){
+                        adminssid=user.getSsid();
+                    }
+                    ArrUserExpandParam arrUserExpandParam=new ArrUserExpandParam();
+                    arrUserExpandParam.setUserinfogradessid(UserinfogradeType.USERINFOGRADE4);
+                    arrUserExpandParam.setUserssid(adminssid);
+                    arrUserExpandParams.add(arrUserExpandParam);
+                }
+            }
+            String conversationmsg=defaulttitle+"_"+time;
+            newaddPolice_case.setCasename("案件名_"+conversationmsg);
+
 
             //笔录名称
-            recordname="审讯笔录【快速谈话】_"+time;
+            recordname=defaultrecordname+"【"+defaulttitle+"】_"+time;
             askobj="询问对象_"+conversationmsg;
 
             if (StringUtils.isBlank(adminssid)){
                 adminssid=user.getSsid();
             }
+            addUserInfo=newaddUserInfo;
+            addPolice_case=newaddPolice_case;
         }
         addCaseToArraignmentVO.setMultifunctionbool(multifunctionbool);
+        addCaseToArraignmentVO.setCustommsgbool(custommsgbool);
+
 
         //整理模板
-        if (multifunctionbool==1||multifunctionbool==2 ){//||单组件时候
+        if (null!=multifunctionbool&&(multifunctionbool==1||multifunctionbool==2 )){//||单组件时候
             mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");//使用指定谈话模板
         }
         //模板为空使用默认指定模板
@@ -207,7 +249,7 @@ public class ArraignmentService extends BaseService {
         //---------------------------------------------------------------------------------------------------------------检测开始
         //需要检测休庭中的案件 给出提示
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】休庭案件检测__skipCheckCasebool:"+skipCheckCasebool+"__casessid:"+casessid+"__userssid:"+userssid);
-        if (skipCheckCasebool==-1&&StringUtils.isNotBlank(casessid)&&StringUtils.isNotBlank(userssid)){
+        if (null!=skipCheckCasebool&&skipCheckCasebool==-1&&StringUtils.isNotBlank(casessid)&&StringUtils.isNotBlank(userssid)){
             EntityWrapper caseparam=new EntityWrapper();
             caseparam.eq("c.ssid",casessid);
             List<Case> cases=police_caseMapper.getCase(caseparam);
@@ -250,7 +292,7 @@ public class ArraignmentService extends BaseService {
 
         //人员检测：未针对法院全部人员
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】人员检测__skipCheckbool:"+skipCheckbool);
-        if (skipCheckbool==-1){
+        if (null!=skipCheckbool&&skipCheckbool==-1){
             List<String> adminssids=new ArrayList<>();
             if (StringUtils.isNotBlank(otheradminssid)){
                 adminssids.add(otheradminssid);//记录人
@@ -272,6 +314,27 @@ public class ArraignmentService extends BaseService {
                 result.setData(addCaseToArraignmentVO);
                 return;
             }
+        }
+
+        //检测案件号码
+        LogUtil.intoLog(1,this.getClass(),"【开始笔录】检测案件号码__skipCheckCaseNumbool:"+skipCheckCaseNumbool);
+        if (null!=skipCheckCaseNumbool&&skipCheckCaseNumbool==-1&&StringUtils.isNotEmpty(addPolice_case.getCasenum())){
+               String casenum=addPolice_case.getCasenum();
+               if (StringUtils.isNotEmpty(casenum)){
+                   EntityWrapper police_cases_param=new EntityWrapper();
+                   police_cases_param.eq("casenum",casenum);
+                   if (StringUtils.isNotEmpty(casessid)){
+                       police_cases_param.ne("ssid",casessid);
+                   }
+                   police_cases_param.ne("casebool",-1);
+                   List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                   if (null!=police_cases_&&police_cases_.size()>0){
+                       addCaseToArraignmentVO.setCasenumingbool(true);
+                       addCaseToArraignmentVO.setCasessid(police_cases_.get(0).getSsid());
+                       result.setData(addCaseToArraignmentVO);
+                       return;
+                   }
+               }
         }
         //---------------------------------------------------------------------------------------------------------------检测结束
 
@@ -317,7 +380,10 @@ public class ArraignmentService extends BaseService {
             Police_recordtype police_recordtype = new Police_recordtype();
             police_recordtype.setSsid(recordtypessid);
             police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
-            recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
+            if (null!=police_recordtype){
+                recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
+
+            }
         }
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】recordname__"+recordname);
 
@@ -362,17 +428,23 @@ public class ArraignmentService extends BaseService {
             addUserInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));//使用默认身份证类型
         }
 
+
         String cardnum = addUserInfo.getCardnum();//人员证件号码
         String username = addUserInfo.getUsername();//人员名称
         List<UserInfo> checkuserinfos=new ArrayList<>();
         EntityWrapper checkuserparam=new EntityWrapper();
         checkuserparam.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
-        /*if (StringUtils.isBlank(cardnum)){
-            checkuserparam.eq("u.username",username);
+        if (StringUtils.isNotEmpty(userssid)){
+            checkuserparam.eq("u.ssid",userssid);
             checkuserinfos=police_userinfoMapper.getUserByCard(checkuserparam);
-        }else */if (StringUtils.isNotEmpty(cardnum)){
-            checkuserparam.eq("ut.cardnum",cardnum);
-            checkuserinfos=police_userinfoMapper.getUserByCard(checkuserparam);
+        }else if (StringUtils.isNotEmpty(cardnum)&&(null==checkuserinfos||checkuserinfos.size()<1)){
+                checkuserparam.eq("ut.cardnum",cardnum);
+                checkuserinfos=police_userinfoMapper.getUserByCard(checkuserparam);
+        }
+        String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+        if (StringUtils.isBlank(cardnum)&&StringUtils.isEmpty(userssid)){
+            cardnum="未知_"+time;
+            addUserInfo.setCardnum(cardnum);//默认身份证号码
         }
 
         if ((null==checkuserinfos||checkuserinfos.size()<1)&&StringUtils.isBlank(userssid)){
@@ -383,7 +455,7 @@ public class ArraignmentService extends BaseService {
             LogUtil.intoLog(this.getClass(),"insertuserinfo_bool__"+insertuserinfo_bool);
             if (insertuserinfo_bool>0){
                 Police_userinfototype police_userinfototype=new Police_userinfototype();
-                police_userinfototype.setCardnum(cardnum==null?OpenUtil.getUUID_32():cardnum);
+                police_userinfototype.setCardnum(addUserInfo.getCardnum());
                 police_userinfototype.setSsid(OpenUtil.getUUID_32());
                 police_userinfototype.setCreatetime(new Date());
                 police_userinfototype.setCardtypessid(addUserInfo.getCardtypessid());
@@ -404,13 +476,44 @@ public class ArraignmentService extends BaseService {
             Police_userinfo police_userinfo=gson.fromJson(gson.toJson(addUserInfo),Police_userinfo.class);
             int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
             LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
-            EntityWrapper userparam=new EntityWrapper();
-            userparam.eq("ut.cardtypessid",addUserInfo.getCardtypessid());
-            userparam.eq("ut.cardnum",addUserInfo.getCardnum());
-            List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
-            if (null!=userInfos_&&userInfos_.size()==1){
-                UserInfo userInfo_=userInfos_.get(0);
-                usertotypessid=userInfo_.getUsertotypessid();
+            if (updateuserinfo_bool>0){
+                //此处需要修改身份证号码
+                //先判断重复
+                if (StringUtils.isNotEmpty(addUserInfo.getCardnum())&&StringUtils.isNotEmpty(addUserInfo.getCardtypessid())&&StringUtils.isNotEmpty(userssid)){
+                    EntityWrapper ew1=new EntityWrapper();
+                    ew1.eq("cardnum",addUserInfo.getCardnum());
+                    ew1.eq("cardtypessid",addUserInfo.getCardtypessid());
+                    ew1.ne("userssid",userssid);
+                    List<Police_userinfototype> police_userinfototypes=police_userinfototypeMapper.selectList(ew1);
+                    if (null!=police_userinfototypes&&police_userinfototypes.size()>0){
+                        result.setMessage("身份证号码已存在");
+                        LogUtil.intoLog(1,this.getClass(),"身份证号码不能重复__"+userInfo.getCardnum());
+                        return;
+                    }
+                    Police_userinfototype police_userinfototype=new Police_userinfototype();
+                    police_userinfototype.setCardnum(addUserInfo.getCardnum());
+                    EntityWrapper ew2=new EntityWrapper();
+                    ew2.eq("cardtypessid",addUserInfo.getCardtypessid());
+                    ew2.eq("userssid",userssid);
+                    int police_userinfototypeMapper_update_bool=police_userinfototypeMapper.update(police_userinfototype,ew2);
+                    LogUtil.intoLog(1,this.getClass(),"police_userinfototypeMapper_update_bool__"+police_userinfototypeMapper_update_bool);
+                    if (police_userinfototypeMapper_update_bool>0){
+                        userInfo.setCardnum(addUserInfo.getCardnum());
+                        userInfo.setCardtypessid(addUserInfo.getCardtypessid());
+                    }
+                }
+
+                usertotypessid=userInfo.getUsertotypessid();
+                if (StringUtils.isEmpty(usertotypessid)){
+                    EntityWrapper userparam=new EntityWrapper();
+                    userparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
+                    userparam.eq("ut.cardnum",userInfo.getCardnum());
+                    List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
+                    if (null!=userInfos_&&userInfos_.size()==1){
+                        UserInfo userInfo_=userInfos_.get(0);
+                        usertotypessid=userInfo_.getUsertotypessid();
+                    }
+                }
             }
             LogUtil.intoLog(this.getClass(),"【开始笔录】修改的人员ssid____"+userssid+"___usertotypessid__"+usertotypessid);
         }
@@ -585,7 +688,7 @@ public class ArraignmentService extends BaseService {
         record.setSsid(OpenUtil.getUUID_32());
         record.setCreatetime(new Date());
         record.setRecordbool(0);//1进行中0未开始
-        record.setRecordtypessid(recordtypessid==null?PropertiesListenerConfig.getProperty("recordtype_default"):recordtypessid);//默认谈话办案
+        record.setRecordtypessid(recordtypessid);//默认谈话办案
         record.setRecordname(recordname);
         if (StringUtils.isBlank(wordtemplatessid)){
             //选用默认的
@@ -733,6 +836,9 @@ public class ArraignmentService extends BaseService {
                     updateuserinfoParam.eq("ssid",userinfo_.getSsid());
                     int updateuserinfo_bool = police_userinfoMapper.update(userinfo_,updateuserinfoParam);
                     LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                    if (updateuserinfo_bool>0){
+                        //此处需要修改身份证号码
+                    }
                 }
 
                 //其他人员处理完毕处理人员关系
@@ -791,6 +897,7 @@ public class ArraignmentService extends BaseService {
                             userInfossid=userssid;//被询问人的，以免重复增加
                             usertotypessid_=usertotypessid;
                         }else {
+                            userInfossid=userInfo.getSsid();
                             if (StringUtils.isBlank(userInfo.getCardtypessid())){
                                 userInfo.setCardtypessid(PropertiesListenerConfig.getProperty("cardtype_default"));
                             }
@@ -800,17 +907,18 @@ public class ArraignmentService extends BaseService {
                             List<UserInfo> checkuserInfoinfos=new ArrayList<>();
                             EntityWrapper checkuserInfoparam=new EntityWrapper();
                             checkuserInfoparam.eq("ut.cardtypessid",userInfo.getCardtypessid());
-                            /*if (StringUtils.isBlank(userInfocardnum)){
-                                checkuserInfoparam.eq("u.username",userInfousername);
+
+                            if (StringUtils.isNotEmpty(userInfossid)){
+                                checkuserInfoparam.eq("u.ssid",userInfossid);
                                 checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
-                            }else */if (StringUtils.isNotEmpty(userInfocardnum)){
+                            }else if (StringUtils.isNotEmpty(userInfocardnum)&&(null==checkuserinfos||checkuserinfos.size()<1)){
                                 checkuserInfoparam.eq("ut.cardnum",userInfocardnum);
                                 checkuserInfoinfos=police_userinfoMapper.getUserByCard(checkuserInfoparam);
                             }
 
-                            String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                            String time2=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
                             if (StringUtils.isBlank(userInfocardnum)){
-                                userInfocardnum="未知_"+time;
+                                userInfocardnum="未知_"+time2;
                                 userInfo.setCardnum(userInfocardnum);//默认身份证号码
                             }
 
@@ -841,9 +949,30 @@ public class ArraignmentService extends BaseService {
                                 Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
                                 int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
                                 LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
-                                userInfossid=userinfo_.getSsid();
-                                usertotypessid_=userinfo_.getUsertotypessid();
+                                if (updateuserinfo_bool>0){
+                                    //先判断重复
+                                    if (StringUtils.isNotEmpty(userInfo.getCardnum())&&StringUtils.isNotEmpty(userInfo.getCardtypessid())&&StringUtils.isNotEmpty(userinfo_.getSsid())){
+                                        //重复了忽略----------
+                                        EntityWrapper ew1=new EntityWrapper();
+                                        ew1.eq("cardnum",userInfo.getCardnum());
+                                        ew1.eq("cardtypessid",userInfo.getCardtypessid());
+                                        ew1.ne("userssid",userinfo_.getSsid());
+                                        List<Police_userinfototype> police_userinfototypes=police_userinfototypeMapper.selectList(ew1);
+                                        if (null==police_userinfototypes||police_userinfototypes.size()<1){
+                                            Police_userinfototype police_userinfototype=new Police_userinfototype();
+                                            police_userinfototype.setCardnum(userInfo.getCardnum());
+                                            EntityWrapper ew2=new EntityWrapper();
+                                            ew2.eq("cardtypessid",userInfo.getCardtypessid());
+                                            ew2.eq("userssid",userinfo_.getSsid());
+                                            int police_userinfototypeMapper_update_bool=police_userinfototypeMapper.update(police_userinfototype,ew2);
+                                            LogUtil.intoLog(1,this.getClass(),"police_userinfototypeMapper_update_bool__"+police_userinfototypeMapper_update_bool);
+                                        }
+                                    }
+                                    userInfossid=userinfo_.getSsid();
+                                    usertotypessid_=userinfo_.getUsertotypessid();
+                                }
                             }
+                            LogUtil.intoLog(this.getClass(),"【开始笔录】拓展表关联案件信息userInfossid____"+userInfossid+"___usertotypessid___"+usertotypessid_+"__casessid__"+casessid);
                             if (userinfogradessid.equals(UserinfogradeType.USERINFOGRADE2)&&StringUtils.isNotEmpty(usertotypessid_)){
                                 //添加案件人员表
                                 Police_casetouserinfo police_casetouserinfo_=new Police_casetouserinfo();
@@ -1388,7 +1517,7 @@ public class ArraignmentService extends BaseService {
                     ew1.ne("userssid",userssid);
                     List<Police_userinfototype> police_userinfototypes=police_userinfototypeMapper.selectList(ew1);
                     if (null!=police_userinfototypes&&police_userinfototypes.size()>0){
-                        result.setMessage("证件号码不能重复");
+                        result.setMessage("身份证号码已存在");
                         LogUtil.intoLog(1,this.getClass(),"身份证号码不能重复__"+userInfo.getCardnum());
                         return;
                     }
@@ -1471,5 +1600,9 @@ public class ArraignmentService extends BaseService {
         changeResultToSuccess(result);
         return;
     }
+
+
     //=================================================关于提讯用户等其他=====================================================================end
+
+
 }

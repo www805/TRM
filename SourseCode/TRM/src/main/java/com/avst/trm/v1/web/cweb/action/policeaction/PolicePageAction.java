@@ -120,7 +120,11 @@ public class PolicePageAction {
         try {
             if (gnlist.indexOf(SQVersion.FY_T)!= -1){
                 //法院的
-                model.addAttribute("title","庭审查看");
+                if (gnlist.indexOf(SQVersion.NX_O)!= -1){
+                    model.addAttribute("title","笔录建立");
+                }else {
+                    model.addAttribute("title", "庭审查看");
+                }
             }else {
                 model.addAttribute("title","审讯查看");
             }
@@ -249,9 +253,12 @@ public class PolicePageAction {
         if (gnlist.indexOf(SQVersion.HK_O)!= -1){
             model.addAttribute("title","案件查看");
         }else {
-            model.addAttribute("title","案件管理");
+            if (gnlist.indexOf(SQVersion.NX_O)!= -1){
+                model.addAttribute("title","笔录管理");
+            }else {
+                model.addAttribute("title", "案件管理");
+            }
         }
-
         return new ModelAndView("client_web/police/record/caseIndex", "caseIndexModel", model);
     }
 

@@ -349,6 +349,10 @@ public class OutService  extends BaseService {
                     tdAndUserAndOtherParam.setUserecord(userecord);//使用录像
                 }
                 startMCParam_out.setTdList(tdList);
+            }else {
+                LogUtil.intoLog(1,this.getClass(),"startMC开启失败__人员为空___请注意___"+tdList.size());
+                result.setMessage("人员为空");
+                return result;
             }
 
             ReqParam<StartMCParam_out> param1=new ReqParam<>();

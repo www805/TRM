@@ -381,8 +381,6 @@ function getactionid_manage() {
 
         softAndHardInfo_getSystemInfo:"softAndHardInfo_getSystemInfo",
 
-        //以下为法庭的接口===============================start
-
         getCourtDetail_tocaseToUser:'getCourtDetail_tocaseToUser',
         getCourtDetail_getRecordById:"getCourtDetail_getRecordById",
         getCourtDetail_exportWord:'getCourtDetail_exportWord',
@@ -431,17 +429,22 @@ function getactionid_manage() {
         AddOrUpdateUserinfograde_addUserinfograde:"AddOrUpdateUserinfograde_addUserinfograde",
         AddOrUpdateUserinfograde_updateUserinfograde:"AddOrUpdateUserinfograde_updateUserinfograde",
 
+        quickCourt_addCaseToArraignment:"quickCourt_addCaseToArraignment",
+        quickCourt_towaitCourt:"quickCourt_towaitCourt",
+        quickCourt_torecordIndex:"quickCourt_torecordIndex",
+        quickCourt_addCaseToArraignment_Backfill:"quickCourt_addCaseToArraignment_Backfill",
+        quickCourt_getAdminList:"quickCourt_getAdminList",
+        quickCourt_getCaseById:"quickCourt_getCaseById",
+        quickCourt_getRecordtypes:"quickCourt_getRecordtypes",
+        quickCourt_getDefaultMtModelssid:"quickCourt_getDefaultMtModelssid",
+        quickCourt_getWordTemplates:"quickCourt_getWordTemplates",
+        quickCourt_getCasesByCasenum:"quickCourt_getCasesByCasenum",
 
-
-
-        //以上为法庭的接口===============================end
 
         resetPassword_resetPassword:"resetPassword_resetPassword",
+        resetPassword_resetPassword:"resetPassword_resetPassword",
+
         forgotpassword_uploadkey:"forgotpassword_uploadkey",
-
-
-
-        resetPassword_resetPassword:"resetPassword_resetPassword",
 
         networkConfigure_getFDNetWork:"networkConfigure_getFDNetWork",
         networkConfigure_setNetworkConfigure:"networkConfigure_setNetworkConfigure",

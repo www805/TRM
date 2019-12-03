@@ -42,7 +42,7 @@ public class CourtPageAction {
     public ModelAndView touserinfograde(Model model, HttpSession session){
         Gson gson=new Gson();
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
-        if (null!=user&&user.getSuperbool()==1){
+        if (null!=user&&user.getSuperrolebool()==1){
             model.addAttribute("title","人员类型级别查看");
             return new ModelAndView("client_web/court/userinfogradeIndex", "Model", model);
         }else {
@@ -56,7 +56,12 @@ public class CourtPageAction {
         model.addAttribute("ssid",ssid);
         return new ModelAndView("client_web/court/AddOrUpdateUserinfograde", "Model", model);
     }
-
+    @GetMapping("toquickCourt")
+    public ModelAndView toquickCourt(Model model,String ssid){
+        model.addAttribute("title","庭审办案");
+        model.addAttribute("ssid",ssid);
+        return new ModelAndView("client_web/court/quickCourt", "Model", model);
+    }
 
 
 
