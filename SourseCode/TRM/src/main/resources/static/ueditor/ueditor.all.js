@@ -13866,6 +13866,9 @@ UE.plugins['wordcount'] = function(){
     me.addListener('contentchange',function(){
         me.fireEvent('wordcount');
 
+        //检测所在子节点的高度
+        TOWORD.util.checkPHeight(ue,null);
+
         if(!TOWORD.importwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
             //找到div所有的P，计算所有P的总高度
@@ -14621,9 +14624,9 @@ UE.plugins['paste'] = function () {
             return;
         }
         var range = this.selection.getRange(),
-        bk = range.createBookmark(),
+            bk = range.createBookmark(),
         //创建剪贴的容器div
-        pastebin = doc.createElement('div');
+            pastebin = doc.createElement('div');
         pastebin.id = 'baidu_pastebin';
         // Safari 要求div必须有内容，才能粘贴内容进来
         browser.webkit && pastebin.appendChild(doc.createTextNode(domUtils.fillChar + domUtils.fillChar));
@@ -14633,7 +14636,7 @@ UE.plugins['paste'] = function () {
         bk.start.style.display = '';
         pastebin.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;left:-1000px;white-space:nowrap;top:" +
             //要在现在光标平行的位置加入，否则会出现跳动的问题
-        domUtils.getXY(bk.start).y + 'px';
+            domUtils.getXY(bk.start).y + 'px';
 
         range.selectNodeContents(pastebin).select(true);
 
@@ -14770,6 +14773,7 @@ UE.plugins['paste'] = function () {
                 }
                 utils.each(me.body.querySelectorAll('div'), function (node) {
                     if (domUtils.isEmptyBlock(node)) {
+
                         if(node.id.indexOf('newpage') < 0){//不删除最外层的page页
                             domUtils.remove(node,true);
                         }
@@ -22488,7 +22492,8 @@ UE.plugins['contextmenu'] = function () {
                     label:lang['copy'],
                     cmdName:'copy'
                 }
-                // ,{
+                // ,
+                // {
                 //     label:lang['paste'],
                 //     cmdName:'paste'
                 // }
@@ -29449,7 +29454,7 @@ UE.ui = baidu.editor.ui = {};
         },
         getHtmlTpl:function () {
             return '<div id="##" class="%%">' +
-                '<div id="##_toolbarbox" class="%%-toolbarbox"  >' +
+                '<div id="##_toolbarbox" class="%%-toolbarbox" >' +
                 (this.toolbars.length ?
                     '<div id="##_toolbarboxouter" class="%%-toolbarboxouter" style="height: 60px;"><div class="%%-toolbarboxinner" style="width: 996px;position:fixed;z-index: 1000;height: 60px;margin-top: -1px;">' +
                         this.renderToolbarBoxHtml() +

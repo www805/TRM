@@ -3,14 +3,15 @@
  */
 (function(){
 
-window.TOWORD=this;
+    window.TOWORD=this;
 
-TOWORD.divheightmap = {};
+    TOWORD.divheightmap = {};
 
-TOWORD.pagemaxheight=900;//每页最大的可编辑区域的高度
-TOWORD.margintopandbutton=5;//p标签的margin值
-TOWORD.importwordrun=false;//导入Word的时候为true
+    TOWORD.pagemaxheight=900;//每页最大的可编辑区域的高度
+    TOWORD.margintopandbutton=5;//p标签的margin值
+    TOWORD.importwordrun=false;//导入Word的时候为true
 
+    TOWORD.pmaxlineheight=150;//每页最大的一行只可能是150px
 
 //需要改变光标聚焦的div
     var changefocuspdiv;
@@ -142,8 +143,8 @@ TOWORD.importwordrun=false;//导入Word的时候为true
 
                         var newps=new Array();
                         var POBJs=getLeastPEvtAndDelByDivid(ue,divid,newheight);//最后几个子节点
-                        for(var po=0;po<POBJs.length;po++){
-                            newps.push(POBJs[po]);//当前页剩下的P重新分页
+                        for(var i=0;i<POBJs.length;i++){
+                            newps.push(POBJs[i]);//当前页剩下的P重新分页
                         }
                         newps=getNextAllPEvt(newps);
                         delDivNextHimselfByDividnum(nextdividnum);//删除除了下一页的以下所有页
@@ -349,6 +350,9 @@ TOWORD.importwordrun=false;//导入Word的时候为true
             },
             getpByRange:function (ue) {
                 return getpByRange(ue);
+            },
+            checkPHeight:function (ue,p) {
+                checkPHeight(ue,p);
             }
         }
 
@@ -360,15 +364,15 @@ TOWORD.importwordrun=false;//导入Word的时候为true
      * @returns {string}
      */
     function getlineHeight(ue) {
-    var range=ue.selection.getRange();
-    var bk_start = range.createBookmark().start; // 创建一个临时dom，用于获取当前光标的坐标
-    bk_start.style.display = ''; // 设置临时dom不隐藏
-    var domheight=UE.dom.domUtils.getComputedStyle(bk_start,"height");//当前行的高度
-    var domheight_num=domheight.replace(/[^0-9]/ig,"");
-    $(bk_start).remove() // 移除临时dom
+        var range=ue.selection.getRange();
+        var bk_start = range.createBookmark().start; // 创建一个临时dom，用于获取当前光标的坐标
+        bk_start.style.display = ''; // 设置临时dom不隐藏
+        var domheight=UE.dom.domUtils.getComputedStyle(bk_start,"height");//当前行的高度
+        var domheight_num=domheight.replace(/[^0-9]/ig,"");
+        $(bk_start).remove() // 移除临时dom
 
-    return domheight_num;
-}
+        return domheight_num;
+    }
 
     /**
      * 获取当前正在编辑的p的 父节点div
@@ -411,15 +415,22 @@ TOWORD.importwordrun=false;//导入Word的时候为true
             return range2;
         }
         var range3=range2.parentNode;
-        if(null!=range3&&(range2.nodeName=='p'||range2.nodeName=='P')){
+        if(null!=range3&&(range3.nodeName=='p'||range3.nodeName=='P')){
             return range3;
-        }else{
-            console.log("没有找到正在编辑的p-------------请注意");
-            return null;
         }
+        var range4=range3.parentNode;
+        if(null!=range4&&(range4.nodeName=='p'||range4.nodeName=='P')){
+            return range4;
+        }
+        var range5=range4.parentNode;
+        if(null!=range5&&(range5.nodeName=='p'||range5.nodeName=='P')){
+            return range5;
+        }
+
+        console.log("没有找到正在编辑的p-------------请注意");
+        return null;
+
     }
-
-
 
     /**
      * 获取该节点下的所有tagName子节点
@@ -471,6 +482,8 @@ TOWORD.importwordrun=false;//导入Word的时候为true
             for(var i=divps.length-1;i>=0;i--){
 
                 var leastp=divps[i];
+
+                //如果
                 var pht=leastp.scrollHeight;//p的高度加上margin的高度
                 //判断一下是否有隐形的高度样式
                 var marginBottom=leastp.style.marginBottom;
@@ -496,13 +509,7 @@ TOWORD.importwordrun=false;//导入Word的时候为true
                     }
                 }
 
-                var POBJ={
-                    realHeight:pht,//节点真实占用高度
-                    outerHTML:leastp.outerHTML,
-                    innerHTML:leastp.innerHTML,
-                    style:leastp.style,
-                    num:0+i
-                };
+
 
                 //判断光标所在位置
                 var range=ue.selection.getRange();
@@ -523,15 +530,62 @@ TOWORD.importwordrun=false;//导入Word的时候为true
                 $(bk_start).remove(); // 移除临时dom
 
 
-                //删除最后一个P
-                leastp.parentNode.removeChild(leastp);
-                rvnodeht+=pht;
+                var POBJ={
+                    realHeight:pht,//节点真实占用高度
+                    outerHTML:leastp.outerHTML,
+                    innerHTML:leastp.innerHTML,
+                    style:leastp.style,
+                    num:0+i
+                };
+                var parentNode=leastp.parentNode;
+                parentNode.removeChild(leastp);//删除最后一个P
                 moreps.push(POBJ);
-                if((newheight-rvnodeht) < TOWORD.pagemaxheight){//判断减去子元素后是否小于最大子元素高度和，小的话就直接出去
+
+                rvnodeht+=pht;
+                var realnewheight=newheight-rvnodeht;
+                if((realnewheight) < TOWORD.pagemaxheight){//判断减去子元素后是否小于最大子元素高度和，小的话就直接出去
+
+                    //找到当前p,分拆p，现阶段只做简单的分拆2个P
+                    // var newps=moreMaxHeightDealP(leastp,realnewheight);//leastp一定不能出现不在子节点下的文字12234234<span>sdfsdf</span>,这样是不允许的
+                    // if(null!=newps&&newps.length > 1 ){
+                    //
+                    //     leastp.innerHTML='';//先清空
+                    //
+                    //     for (var s=0;s<newps.length;s++){
+                    //         var sOBJ=newps[s];
+                    //         if((realnewheight+sOBJ.realHeight) < TOWORD.pagemaxheight){
+                    //             realnewheight+=sOBJ.realHeight;
+                    //             leastp.append(sOBJ.outerHTML);//添加上去
+                    //         }else{//放到下一个页面的数据
+                    //             moreps.push(sOBJ);
+                    //         }
+                    //     }
+                    //
+                    // }else{
+                    //     var POBJ={
+                    //         realHeight:pht,//节点真实占用高度
+                    //         outerHTML:leastp.outerHTML,
+                    //         innerHTML:leastp.innerHTML,
+                    //         style:leastp.style,
+                    //         num:0+i
+                    //     };
+                    //     parentNode.removeChild(leastp);//删除最后一个P
+                    //     moreps.push(POBJ);
+                    //
+                    // }
 
                     break;
                 }else{
                     console.log(newheight+":newheight--还需要再删除几个元素--rvnodeht："+rvnodeht);
+                    // var POBJ={
+                    //     realHeight:pht,//节点真实占用高度
+                    //     outerHTML:leastp.outerHTML,
+                    //     innerHTML:leastp.innerHTML,
+                    //     style:leastp.style,
+                    //     num:0+i
+                    // };
+                    // parentNode.removeChild(leastp);//删除最后一个P
+                    // moreps.push(POBJ);
                 }
             }
 
@@ -546,6 +600,82 @@ TOWORD.importwordrun=false;//导入Word的时候为true
             console.log(divps+"divps getAllPEvtByDivid is null");
         }
         return null;
+    }
+
+    /**
+     * 失效，暂停使用
+     * p大于div最大高度，大于的话就需要切割高度组成多个P并返回
+     * @param p 当前P
+     * @param pheight 当前P的高度
+     * @param cdivBeforePHeight 当前div页这个p之前的所有P的高度和
+     */
+    function moreMaxHeightDealP(p,cdivBeforePHeight){
+
+        var parr=new Array();
+
+        var pstyle=p.style;
+        var childNodes=p.childNodes;//一般都是span
+        if(null!=childNodes&&childNodes.length > 1){
+            var newp='<p style="'+pstyle+'">';
+            var newp_inner='';
+            //从上往下组P，高度从cdivBeforePHeight算起，大于最大div高度就分p,
+            i=0;
+            var newpHeight=cdivBeforePHeight;
+            var endp='</p>';
+
+            while(i<childNodes.length){
+
+                var cnode=childNodes[i];
+                var nodeh=cnode.scrollHeight;
+                if(nodeh>=TOWORD.pagemaxheight){//一个span的高度都大于div的最大高度，需要算字数，一个个减来处理，暂时不处理，直接对半处理
+                    console.log("最不想看见的问题 nodeh>=TOWORD.pagemaxheight 一个span的高度都大于div的最大高度，需要算字数，一个个减来处理，暂时不处理，直接对半处理")
+
+                }else if((nodeh+newpHeight) >= TOWORD.pagemaxheight){//说明从这个span开始，就是下一个p
+                    //组上一个P，开始下一个P
+                    if(isNotEmpty(newp_inner)){
+                        newp+=newp_inner+endp;
+                        var POBJ={
+                            realHeight:newpHeight,//节点真实占用高度
+                            outerHTML:newp,
+                            innerHTML:newp_inner,
+                            style:pstyle,
+                            num:0+i
+                        };
+                        parr.push(POBJ);
+                    }
+                    newp_inner=cnode.outerHTML;
+                    newpHeight=nodeh;//第二个P的高度从0算起
+                }else{//需要加入更多span
+                    newp_inner+=cnode.outerHTML;
+                    newpHeight+=nodeh;
+                }
+
+                if(i=childNodes.length-1){//最后一个，组成最后一个p
+
+                    if(isNotEmpty(newp_inner)){
+                        newp+=newp_inner+endp;
+                        var POBJ={
+                            realHeight:newpHeight,//节点真实占用高度
+                            outerHTML:newp,
+                            innerHTML:newp_inner,
+                            style:pstyle,
+                            num:0+i
+                        };
+                        parr.push(POBJ);
+                    }
+                    break;
+                }else{
+                    i++;
+                }
+            }
+            return (parr.length > 0)?parr:null;
+        }else{
+            //需要算字数，一个个减来处理，暂时不处理，直接对半处理
+            console.log('childNodes.length <= 1需要算字数，一个个减来处理，暂时不处理，直接对半处理');
+        }
+
+        return null;
+
     }
 
 
@@ -683,7 +813,7 @@ TOWORD.importwordrun=false;//导入Word的时候为true
     }
 
     /**
-     * 返回改节点的实际占用高度
+     * 返回该节点的实际占用高度
      * @param cnode 节点
      * @returns {*}
      */
@@ -876,6 +1006,61 @@ TOWORD.importwordrun=false;//导入Word的时候为true
     }
 
 
+    /**
+     * 检测节点高度是否超过警戒线，超过就自动分段
+     * @param ue
+     * @param p 可以不填，不填就检测当前光标所在的p的节点，填了就是填写的节点
+     */
+    function checkPHeight(ue,p){
+        if(!isNotEmpty(p)){
+            p=getpByRange(ue);
+        }
+        var realpmaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;//真实的最大子节点高度
+        var nodeHeight=getNodeHeightByNode(p);
+
+        console.log(realpmaxheight+"：realpmaxheight，---checkPHeight---，nodeHeight："+nodeHeight);
+        if(nodeHeight >= realpmaxheight){
+            console.log(realpmaxheight+"：realpmaxheight，子节点高度已经超过警戒线，分段开始，nodeHeight："+nodeHeight);
+
+            var newp=document.createElement('p');
+
+            var nodes=p.childNodes;
+            for(var i=nodes.length-1;i>=0;i--){
+                var node=nodes[i];
+                var nodeHeight=node.offsetHeight;
+                console.log(nodeHeight+"：node.height，p.childNodes");
+                if(nodeHeight > 0&&nodeHeight<realpmaxheight){
+
+                    newp.innerHTML=node.outerHTML;
+                    node.parentNode.removeChild(node);
+
+                    $(newp).insertAfter(p);
+                    var rng=ue.selection.getRange();
+                    rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                    return;
+                }else if(nodeHeight > 0&&nodeHeight>=realpmaxheight){
+                    var snodes=node.childNodes;
+                    for(var i=snodes.length-1;i>=0;i--){
+                        var snode=snodes[i];
+                        var nodeHeight=snode.offsetHeight;
+                        console.log(nodeHeight+"：snode.height，node.childNodes");
+                        if(nodeHeight > 0){
+
+                            newp.innerHTML=snode.outerHTML;
+                            snode.parentNode.removeChild(snode);
+
+                            $(newp).insertAfter(p);
+                            var rng=ue.selection.getRange();
+                            rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                            return ;
+                        }
+                    }
+                }
+            }
+
+        }
+
+    }
 
 
 })();
