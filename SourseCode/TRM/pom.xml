@@ -246,13 +246,13 @@
             <version>1.7.12</version>
         </dependency>
 
+        <!--com.aspose start-->
         <dependency>
             <groupId>com.wb</groupId>
             <artifactId>word2pdf</artifactId>
             <version>1.0</version>
             <classifier>license</classifier>
         </dependency>
-        <!-- netty-socketio-->
 
         <dependency>
             <groupId>com.wb</groupId>
@@ -260,6 +260,7 @@
             <version>1.0</version>
             <classifier>jdk16</classifier>
         </dependency>
+        <!--com.aspose end-->
 
 
         <!-- https://mvnrepository.com/artifact/org.freemarker/freemarker -->

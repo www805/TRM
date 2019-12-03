@@ -392,10 +392,13 @@
         var par3=par2.parentNode;
         if(null!=par3&&(par3.nodeName=='div'||par3.nodeName=='DIV')){
             return par3.id;
-        }else{
-            console.log("没有找到正在编辑的div的ID");
-            return null;
         }
+        var par4=par3.parentNode;
+        if(null!=par4&&(par4.nodeName=='div'||par4.nodeName=='DIV')){
+            return par4.id;
+        }
+        console.log("没有找到正在编辑的div的ID");
+        return null;
 
     }
 
@@ -1012,11 +1015,14 @@
      * @param p 可以不填，不填就检测当前光标所在的p的节点，填了就是填写的节点
      */
     function checkPHeight(ue,p){
-        if(!isNotEmpty(p)){
-            p=getpByRange(ue);
+        var realp;
+        if(isNotEmpty(p)){
+            realp=p;
+        }else{
+            realp=getpByRange(ue);
         }
         var realpmaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;//真实的最大子节点高度
-        var nodeHeight=getNodeHeightByNode(p);
+        var nodeHeight=getNodeHeightByNode(realp);
 
         console.log(realpmaxheight+"：realpmaxheight，---checkPHeight---，nodeHeight："+nodeHeight);
         if(nodeHeight >= realpmaxheight){
@@ -1024,7 +1030,7 @@
 
             var newp=document.createElement('p');
 
-            var nodes=p.childNodes;
+            var nodes=realp.childNodes;
             for(var i=nodes.length-1;i>=0;i--){
                 var node=nodes[i];
                 var nodeHeight=node.offsetHeight;
@@ -1034,9 +1040,11 @@
                     newp.innerHTML=node.outerHTML;
                     node.parentNode.removeChild(node);
 
-                    $(newp).insertAfter(p);
-                    var rng=ue.selection.getRange();
-                    rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                    $(newp).insertAfter(realp);
+                    if(!isNotEmpty(p)){//只有使用当前光标所在的p才会去考虑光标定位
+                        var rng=ue.selection.getRange();
+                        rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                    }
                     return;
                 }else if(nodeHeight > 0&&nodeHeight>=realpmaxheight){
                     var snodes=node.childNodes;
@@ -1049,9 +1057,11 @@
                             newp.innerHTML=snode.outerHTML;
                             snode.parentNode.removeChild(snode);
 
-                            $(newp).insertAfter(p);
-                            var rng=ue.selection.getRange();
-                            rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                            $(newp).insertAfter(realp);
+                            if(!isNotEmpty(p)){//只有使用当前光标所在的p才会去考虑光标定位
+                                var rng=ue.selection.getRange();
+                                rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+                            }
                             return ;
                         }
                     }
