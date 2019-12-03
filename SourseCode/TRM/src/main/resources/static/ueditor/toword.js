@@ -62,9 +62,19 @@
 
 
                     var divps=div.childNodes;//是否需要获取所有标签，而不只是P标签
+
                     if(null!=divps&&divps.length > 0){
 
                         for(var n=0;n<divps.length ;n++){
+                            checkPHeight(null,divps[n]);
+                        }
+                        divps=div.childNodes;//重新获取
+
+                        for(var n=0;n<divps.length ;n++){
+
+                            //检测子节点是否有大于最大div高度的节点
+
+
                             //console.log(n+":n," +divps[n].scrollHeight+":scrollHeight 导入Word");
                             var pht=getNodeHeightByNode(divps[n]);
 
@@ -122,7 +132,7 @@
                 // （先按照不拆分最后或最开始的P用于补充上一页/填充下一页；最后一定要考虑当前页最后一个P和下一页的第一个P在需要重新分页的时候的处理）
                 //（当剩下的P进行重新分页时，P为空的情况）
 
-                if(oldheight<newheight){//P总高大了
+                if(oldheight<newheight||newheight >TOWORD.pagemaxheight ){//P总高大了
 
                     //判断新增一行的高度之后是否大于每页的最大编辑高度，大于的话就是情况1的处理，不大于就不管
                     if(newheight<TOWORD.pagemaxheight){
@@ -217,10 +227,11 @@
                                         addPToDIV_Element(ue,newps_addc,ph,TOWORD.currentdivnum);//给当前页添加数据
                                         addtodivbool=true;
                                         console.log(ph+"ph,往上一个div加P，divnum："+TOWORD.currentdivnum);
-                                        break ;//把当前页加满了就跳出循环
                                     }else{
                                         console.log(ph+"：ph--不用往上一个div加P，divnum："+TOWORD.currentdivnum);
+                                        TOWORD.divheightmap[divid]=newheight;//下一页的第一个p的高度太高抬不上去也要把这个页面的的高度给它重置一下
                                     }
+                                    break ;//把当前页加满了就跳出循环
                                 }
                             }
                         }
@@ -345,8 +356,8 @@
             getlineHeight:function(ue){
                 return getlineHeight(ue);
             },
-            getdivByChildnode:function(ue){
-                return getdivByChildnode(ue);
+            getDivIdByUE:function(ue){
+                return getDivIdByUE(ue);
             },
             getpByRange:function (ue) {
                 return getpByRange(ue);
@@ -379,7 +390,7 @@
      * @param ue
      * @returns {string}
      */
-    function getdivByChildnode(ue) {
+    function getDivIdByUE(ue) {
         var range=ue.selection.getRange().startContainer;
         var par=range.parentNode;
         if(par.nodeName=='div'||par.nodeName=='DIV'){
@@ -396,6 +407,10 @@
         var par4=par3.parentNode;
         if(null!=par4&&(par4.nodeName=='div'||par4.nodeName=='DIV')){
             return par4.id;
+        }
+        var par5=par4.parentNode;
+        if(null!=par5&&(par5.nodeName=='div'||par5.nodeName=='DIV')){
+            return par5.id;
         }
         console.log("没有找到正在编辑的div的ID");
         return null;
@@ -742,6 +757,29 @@
     }
 
     /**
+     * 通过子节点获取div，最多4级子节点
+     */
+    function getDivByChildNode(node){
+        var range2=node.parentNode;
+        if(range2.nodeName=='div'||range2.nodeName=='DIV'){
+            return range2;
+        }
+        var range3=range2.parentNode;
+        if(null!=range3&&(range3.nodeName=='div'||range3.nodeName=='DIV')){
+            return range3;
+        }
+        var range4=range3.parentNode;
+        if(null!=range4&&(range4.nodeName=='div'||range4.nodeName=='DIV')){
+            return range4;
+        }
+        var range5=range4.parentNode;
+        if(null!=range5&&(range5.nodeName=='div'||range5.nodeName=='DIV')){
+            return range5;
+        }
+        return null;
+    }
+
+    /**
      * 删除divIDnum以下的所有div
      */
     function delDivNextHimselfByDividnum(dividnum){
@@ -1040,14 +1078,11 @@
                     newp.innerHTML=node.outerHTML;
                     node.parentNode.removeChild(node);
 
-                    $(newp).insertAfter(realp);
-                    if(!isNotEmpty(p)){//只有使用当前光标所在的p才会去考虑光标定位
-                        var rng=ue.selection.getRange();
-                        rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
-                    }
+                    insertAfterChildNode(newp,realp,!isNotEmpty(p));
                     return;
                 }else if(nodeHeight > 0&&nodeHeight>=realpmaxheight){
                     var snodes=node.childNodes;
+                    var addht=0;
                     for(var i=snodes.length-1;i>=0;i--){
                         var snode=snodes[i];
                         var nodeHeight=snode.offsetHeight;
@@ -1057,11 +1092,7 @@
                             newp.innerHTML=snode.outerHTML;
                             snode.parentNode.removeChild(snode);
 
-                            $(newp).insertAfter(realp);
-                            if(!isNotEmpty(p)){//只有使用当前光标所在的p才会去考虑光标定位
-                                var rng=ue.selection.getRange();
-                                rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
-                            }
+                            insertAfterChildNode(newp,realp,!isNotEmpty(p));
                             return ;
                         }
                     }
@@ -1072,5 +1103,17 @@
 
     }
 
+    function insertAfterChildNode(newp,realp,isworkp) {
+        $(newp).insertAfter(realp);
+        if(isworkp){//只有使用当前光标所在的p才会去考虑光标定位
+            var rng=ue.selection.getRange();
+            rng.setStart(newp,1).setCursor(false,true);//第一个节点之后
+        }
+        //更新div高度
+        var div=getDivByChildNode(realp);
+        if(isNotEmpty(div)){
+            TOWORD.divheightmap[div.id]=getAllPHeightByDivid(div.id);
+        }
+    }
 
 })();

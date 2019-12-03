@@ -1117,7 +1117,7 @@ function focuslable(html,type,qw) {
             console.log("p标签未获取到，使用append")
             var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
             if (!isNotEmpty(divid)){
-                divid = TOWORD.util.getdivByChildnode(ue);
+                divid = TOWORD.util.getDivIdByUE(ue);
             }
             $("#"+divid,editorhtml).append(html);
         }
@@ -1147,7 +1147,7 @@ function getlastp_style() {
     if (!isNotEmpty(lastp)) {
         var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
         if (!isNotEmpty(divid)){
-            divid = TOWORD.util.getdivByChildnode(ue);
+            divid = TOWORD.util.getDivIdByUE(ue);
         }
         lastp= $("#"+divid+" p:last",editorhtml);
     }
@@ -2264,7 +2264,7 @@ function  resetpage() {
     if (isNotEmpty(laststarttime_ue)) {
         divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
     }else {
-        divid = TOWORD.util.getdivByChildnode(ue);
+        divid = TOWORD.util.getDivIdByUE(ue);
     }
 
 

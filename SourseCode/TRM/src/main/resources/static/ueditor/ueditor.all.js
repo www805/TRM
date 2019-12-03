@@ -13873,7 +13873,7 @@ UE.plugins['wordcount'] = function(){
             //检测该页div中所有p的高度
             //找到div所有的P，计算所有P的总高度
 
-            var divid=TOWORD.util.getdivByChildnode(ue);
+            var divid=TOWORD.util.getDivIdByUE(ue);
             if(!isNotEmpty(divid)){
                 return;
             }else{
