@@ -66,7 +66,7 @@
                     if(null!=divps&&divps.length > 0){
 
                         for(var n=0;n<divps.length ;n++){
-                            checkPHeight(null,divps[n]);
+                            checkAndDealSpanHeight(divps[n],0);
                         }
                         divps=div.childNodes;//重新获取
 
@@ -395,18 +395,26 @@
         var par=range.parentNode;
         if(par.nodeName=='div'||par.nodeName=='DIV'){
             return par.id;
+        }else if(null==par){
+            return null;
         }
         var par2=par.parentNode;
         if(par2.nodeName=='div'||par2.nodeName=='DIV'){
             return par2.id;
+        }else if(null==par2){
+            return null;
         }
         var par3=par2.parentNode;
         if(null!=par3&&(par3.nodeName=='div'||par3.nodeName=='DIV')){
             return par3.id;
+        }else if(null==par3){
+            return null;
         }
         var par4=par3.parentNode;
         if(null!=par4&&(par4.nodeName=='div'||par4.nodeName=='DIV')){
             return par4.id;
+        }else if(null==par4){
+            return null;
         }
         var par5=par4.parentNode;
         if(null!=par5&&(par5.nodeName=='div'||par5.nodeName=='DIV')){
@@ -427,18 +435,26 @@
         var range=ue.selection.getRange().startContainer;
         if(range.nodeName=='p'||range.nodeName=='P'){
             return range;
+        }else if(null==range){
+            return null;
         }
         var range2=range.parentNode;
         if(range2.nodeName=='p'||range2.nodeName=='P'){
             return range2;
+        }else if(null==range2){
+            return null;
         }
         var range3=range2.parentNode;
         if(null!=range3&&(range3.nodeName=='p'||range3.nodeName=='P')){
             return range3;
+        }else if(null==range3){
+            return null;
         }
         var range4=range3.parentNode;
         if(null!=range4&&(range4.nodeName=='p'||range4.nodeName=='P')){
             return range4;
+        }else if(null==range4){
+            return null;
         }
         var range5=range4.parentNode;
         if(null!=range5&&(range5.nodeName=='p'||range5.nodeName=='P')){
@@ -860,7 +876,13 @@
      */
     function getNodeHeightByNode(cnode){
 
+        if(null==cnode){
+            console.log("getNodeHeightByNode cnode is null,警告")
+        }
         var nodeheight=cnode.scrollHeight;//节点本身的内部高度
+        if(!isNotEmpty(nodeheight)||nodeheight==0){
+            nodeheight=cnode.offsetHeight;//保险起见
+        }
         //判断一下是否有隐形的高度样式
         var marginBottom=cnode.style.marginBottom;
         if(isNotEmpty(marginBottom)){
@@ -1066,7 +1088,7 @@
         if(nodeHeight >= realpmaxheight){
             console.log(realpmaxheight+"：realpmaxheight，子节点高度已经超过警戒线，分段开始，nodeHeight："+nodeHeight);
 
-            var newp=document.createElement('p');
+            var newp=document.createElement(realp.nodeName);
 
             var nodes=realp.childNodes;
             for(var i=nodes.length-1;i>=0;i--){
@@ -1103,6 +1125,12 @@
 
     }
 
+    /**
+     *  往节点后追加一个同级节点
+     * @param newp 新节点
+     * @param realp 老节点
+     * @param isworkp 是否需要光标聚焦
+     */
     function insertAfterChildNode(newp,realp,isworkp) {
         $(newp).insertAfter(realp);
         if(isworkp){//只有使用当前光标所在的p才会去考虑光标定位
@@ -1113,6 +1141,104 @@
         var div=getDivByChildNode(realp);
         if(isNotEmpty(div)){
             TOWORD.divheightmap[div.id]=getAllPHeightByDivid(div.id);
+        }
+    }
+
+
+    /**
+     *  检测和处理的文本输入高度
+     * @param node 当前节点
+     * @param pageHeightBeforeNode 本页当前节点之前的高度
+     */
+    function checkAndDealSpanHeight(node,pageHeightBeforeNode){
+
+
+        var nodeHeight=getNodeHeightByNode(node);
+        var realnodemaxheight=TOWORD.pagemaxheight-pageHeightBeforeNode;//这个节点真实的最大高度
+        if(nodeHeight <= realnodemaxheight){
+            console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
+            return ;
+        }
+
+        if(null==pageHeightBeforeNode||pageHeightBeforeNode< 0){
+            pageHeightBeforeNode=0;
+        }else if(pageHeightBeforeNode >TOWORD.pagemaxheight){
+            console.log(pageHeightBeforeNode+":pageHeightBeforeNode 这不是扯淡吗，本页当前节点之前的高度还大于最大页面高度，那不早分页了");
+            return ;
+        }
+
+        var newnodetext='';//多出来的节点的文本
+
+        var style=null;//子节点的样式
+        var nodetag='';
+        var spannode='';//子节点的HTML
+        do{
+            var node_innerhtml=node.innerText;
+            if(!isNotEmpty(node_innerhtml)||node_innerhtml.length==0){
+                console.log(node_innerhtml+":nodetest node节点文字为空，偶买噶");
+                return ;
+            }
+
+            var dealnode;
+
+            //去掉可能存在的空子节点，这里不需要处理其他事件
+            var nodelastElementChild=node.lastElementChild;
+            if(isNotEmpty(nodelastElementChild)){
+                if(nodelastElementChild.innerText==""){
+                    //空节点
+                    node.removeChild(nodelastElementChild);
+                    if(spannode!=''){
+                        if(nodetag!=''){//这里就需要看他是否有子节点
+                            spannode='<'+nodetag+' style="'+style+'">'+spannode+'</'+nodetag+'>';
+                        }
+                        newnodetext=spannode+newnodetext;
+                    }
+                    style=null;//重置样式
+                    spannode='';
+                    console.log("这种情况出现就需要删除这个子节点，并新跑上一个节点")
+                    continue;//跳过继续
+                }else{ //在最后一个子节点上处理
+                    dealnode=nodelastElementChild;
+                    nodetag=nodelastElementChild.nodeName;
+                }
+            }else{ //说明没有子节点，只能在当前节点上处理
+                dealnode=node;
+            }
+
+            if(null==style){
+                style=dealnode.style.cssText;//当前节点样式
+            }
+
+            var dealtext=dealnode.innerText;
+            var dealinnerhtml=dealnode.innerHTML;
+
+            var leastchar=dealtext.charAt(dealtext.length-1);//获取最后一个字
+            spannode=leastchar+spannode;//拼接删除的字符
+            var m =dealinnerhtml.length;
+            var n = dealinnerhtml.lastIndexOf(leastchar);
+            dealinnerhtml=dealinnerhtml.substring(0,n);
+            var j = dealinnerhtml.substring(n+1);
+            dealinnerhtml=dealinnerhtml+j;
+            dealnode.innerHTML=dealinnerhtml;
+
+            nodeHeight=getNodeHeightByNode(node);//重新查询节点高度
+            console.log(nodeHeight+":nodeHeight--node.style"+node.style);
+        }while(nodeHeight >= realnodemaxheight);
+
+        if(spannode!=''){
+            if(nodetag!=''){//这里就需要看他是否有子节点
+                spannode='<'+nodetag+' style="'+style+'">'+spannode+'</'+nodetag+'>';
+            }
+            newnodetext=spannode+newnodetext;
+        }
+        if(newnodetext!=''){
+
+            //可能也会超过div最大高度，再来一遍就是了
+            var newp=document.createElement(node.nodeName);
+            newp.innerHTML=newnodetext;
+            newp.style=node.style.cssText;
+            newp.style.textIndent='';//不要首行缩进，因为这一段只是上一段的补充
+            insertAfterChildNode(newp,node,false);
         }
     }
 
