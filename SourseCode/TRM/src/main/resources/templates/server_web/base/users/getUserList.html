@@ -62,6 +62,15 @@
                 </select>
             </div>
 
+            <label class="layui-form-label" style="width: auto;">临时状态</label>
+            <div class="layui-input-inline">
+                <select name="temporaryaskbool" id="temporaryaskbool" lay-filter="temporaryaskbool">
+                    <option value="">全部</option>
+                    <option value="-1" selected>非临时</option>
+                    <option value="1">临时</option>
+                </select>
+            </div>
+
             <input type="button" class="layui-btn layui-btn-normal" onclick="getUserListByParam()" value="查询"/>
             <a onclick="window.location.href=addOupdateurl;" class="layui-btn layui-btn-normal" shiro:hasPermission='addUser'>添加用户</a>
         </div>
@@ -85,6 +94,7 @@
         <tr>
             <th>序号</th>
             <th>用户状态</th>
+            <th>是否临时</th>
             <th>登录账号</th>
             <th>用户名称</th>
             <th>所属角色</th>
@@ -100,6 +110,7 @@
         <tr>
             <td>{{index+1}}</td>
             <td> <input  type="checkbox" name="switch" lay-skin="switch" id="adminbool_switch" lay-text="正常|禁用"   lay-filter="adminbool_switch" {{value.adminbool==1?"checked":""}} value="{{value.ssid}}" ></td>
+            <td> <input  type="checkbox" name="switch" lay-skin="switch" id="temporaryaskbool_switch" lay-text="是|否"   lay-filter="temporaryaskbool_switch" {{value.temporaryaskbool==1?"checked":""}} value="{{value.ssid}}" ></td>
             <td>{{value.loginaccount==null?"":value.loginaccount}}</td>
             <td>{{value.username==null?"":value.username}}</td>
             <td>
@@ -160,6 +171,10 @@
         form.on('select(adminbool)', function (data) {
             getUserListByParam();
         });
+        form.on('select(temporaryaskbool)', function (data) {
+            getUserListByParam();
+        });
+
     });
 </script>
 

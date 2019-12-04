@@ -74,15 +74,20 @@ public class UserService extends BaseService {
         if (null!=param.getAdminbool()){
             ew.eq(true,"a.adminbool",param.getAdminbool());
         }
+        if (null!=param.getTemporaryaskbool()){
+            ew.eq(true,"a.temporaryaskbool",param.getTemporaryaskbool());
+        }
+
         //筛选剔除已删除用户：
         ew.ne(true,"a.adminbool",-1);
         //筛选剔除临时询问用户：
-        ew.ne(true,"a.temporaryaskbool",1);
+        //ew.ne(true,"a.temporaryaskbool",1);
 
        int count = base_admininfoMapper.countgetUserList(ew);
        param.setRecordCount(count);
 
         ew.orderBy("a.superbool",false);
+        ew.orderBy("a.temporaryaskbool",true);
        ew.orderBy("a.unitsort",true);
        ew.orderBy("a.registertime",false);
         ew.orderBy("a.lastlogintime",false);
@@ -122,15 +127,23 @@ public class UserService extends BaseService {
     public void  changeboolUser(RResult result, ChangeboolUserParam param){
         String ssid=param.getSsid();
         Integer adminbool=param.getAdminbool();
-        if (StringUtils.isBlank(ssid)||null==adminbool){
+        Integer temporaryaskbool=param.getTemporaryaskbool();
+
+        if (StringUtils.isBlank(ssid)||(null==adminbool&&temporaryaskbool==null)){
             result.setMessage("参数为空");
             return;
         }
+
         try {
             EntityWrapper ew=new EntityWrapper();
             ew.eq("ssid",ssid);
             Base_admininfo admininfo=new Base_admininfo();
-            admininfo.setAdminbool(adminbool);
+            if (null!=adminbool){
+                admininfo.setAdminbool(adminbool);
+            }
+            if (null!=temporaryaskbool){
+                admininfo.setTemporaryaskbool(temporaryaskbool);
+            }
             int delete_bool= base_admininfoMapper.update(admininfo,ew);
             LogUtil.intoLog(this.getClass(),"delete_bool__"+delete_bool);
             if (delete_bool<1){

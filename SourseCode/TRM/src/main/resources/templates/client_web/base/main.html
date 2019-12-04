@@ -107,73 +107,9 @@
             <img src="#" class="layui-nav-img" id="logoimg" style="width: 65px;height: 65px;margin-left: 1%;margin-top: 6px">
             <h1 class="layui-logo" id="logotitle" style="text-align: left; width:500px;height:60px;margin-top:10px;color: #fff; font-size:30px; font-weight:bold; font-family: SimSun;line-height: 60px;left:5%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;" th:title="${mainModel.title}"></h1>
         </a>
-        <ul class="layui-nav layui-layout-right" style="">
-           <div  id="nav_list" style="display: inline"></div>
-           <div style="display:none" id="menu_user"> <li class="layui-nav-item" id="pagehome">
-                <a href="/cweb/base/main/gotomain" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                    <i class="layui-icon layui-icon-home" style="left: 27%;"></i>
-                    <span>首页</span>
-                </a>
-            </li>
-                <li class="layui-nav-item" id="guidepage">
-                    <a th:href="${mainModel.guidepageUrl}" onclick="zkload();" style="display:block; padding-top:45px; height:32px; line-height:32px">
-                        <i class="layui-icon layui-icon-flag"></i>
-                        <span>进入后台</span>
-                    </a>
-                </li>
+        <ul class="layui-nav layui-layout-right" style="" id="nav_list">
 
-                <li class="layui-nav-item">
-                    <a href="javascript:;" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                        <i class="layui-icon layui-icon-username"></i>
-                        <span th:text="${session.MANAGE_CLIENT.username}">管理员</span>
-                    </a>
-                    <dl class="layui-nav-child">
-                        <dd><a id="userinfos">我的资料</a></dd> <!--target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}" -->
-                        <dd><a target="option" th:href="@{/cweb/base/main/gotoupdatePassword}">修改密码</a></dd>
-                        <dd><a href="javascript:;"  onclick="userloginout();">退出登录</a></dd>
-                        <dd><a href="javascript:;" onclick="exitsystem(this);" >退出系统</a></dd>
-                    </dl>
-                </li>
-                <li class="layui-nav-item">
-                    <a target="option" href="/cweb/police/about/toabout" title="关于" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                        <i class="layui-icon layui-icon-about" style="left: 28%;"></i>
-                        <span>关于</span>
-                    </a>
-                </li></div>
         </ul>
-      <!--  <ul class="layui-nav layui-layout-right"  style="display:none" id="menu_user">
-            <li class="layui-nav-item" id="pagehome">
-                <a href="/cweb/base/main/gotomain" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                    <i class="layui-icon layui-icon-home" style="left: 27%;"></i>
-                    <span>首页</span>
-                </a>
-            </li>
-            <li class="layui-nav-item" id="guidepage">
-                <a th:href="${mainModel.guidepageUrl}" onclick="zkload();" style="display:block; padding-top:45px; height:32px; line-height:32px">
-                    <i class="layui-icon layui-icon-flag"></i>
-                    <span>进入后台</span>
-                </a>
-            </li>
-
-            <li class="layui-nav-item">
-                <a href="javascript:;" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                    <i class="layui-icon layui-icon-username"></i>
-                    <span th:text="${session.MANAGE_CLIENT.username}">管理员</span>
-                </a>
-                <dl class="layui-nav-child">
-                    <dd><a id="userinfos">我的资料</a></dd> &lt;!&ndash;target="option" th:href="@{/cweb/base/main/gotoupdatePersonInfo}" &ndash;&gt;
-                    <dd><a target="option" th:href="@{/cweb/base/main/gotoupdatePassword}">修改密码</a></dd>
-                    <dd><a href="javascript:;"  onclick="userloginout();">退出登录</a></dd>
-                    <dd><a href="javascript:;" onclick="exitsystem(this);" >退出系统</a></dd>
-                </dl>
-            </li>
-            <li class="layui-nav-item">
-                <a target="option" href="/cweb/police/about/toabout" title="关于" style="display:block; padding-top:45px; height:32px; line-height:32px" >
-                    <i class="layui-icon layui-icon-about" style="left: 28%;"></i>
-                    <span>关于</span>
-                </a>
-            </li>
-        </ul>-->
     </div>
 
 
@@ -193,6 +129,9 @@
     var  INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
     var  userssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var  username=[[${session.MANAGE_CLIENT.username}]];
+    var  guidepageUrl=[[${mainModel.guidepageUrl}]];
+
         setpageAction(INIT_CLIENT,"client_web/base/main");
         var homeUrl=getActionURL(getactionid_manage().mian_home);
 

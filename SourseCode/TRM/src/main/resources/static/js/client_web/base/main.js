@@ -128,14 +128,22 @@ function callgetNavList(data) {
                 if (isNotEmpty(gnlist) && gnlist.indexOf(S_V) != -1) {
                     // $("#guidepage").hide();
                     $("#pagehome").hide();
-                    $("#nav_list").css("right", 350);
+                    $("#nav_list li:last").css("margin-right", "35px");
+                }
+
+                if(gnlist.indexOf(NX_O)==-1){
+                    //法院版不需要关于用户菜单
+                    $("#nav_list li:last").css("margin-right","30px");
+                    $("#nav_list").append(menu_userhtml);
+                    $("#username").html(username==null?"管理员":username);
+                    $("#guidepage a").attr("href",guidepageUrl);
                 }
 
 
                 //海康版不需要显示进入总控端
                 if (isNotEmpty(gnlist) && gnlist.indexOf(HK_O) != -1) {
                     $("#guidepage").hide();
-                    $("#nav_list").css("right", 250);
+                    $("#nav_list li:last").css("margin-right", "25px");
                 }
 
                 //设置logo和标题
@@ -279,6 +287,30 @@ function zkload() {
     });
 }
 
+function userinfos(){
+    var html=' <div class="layui-row layui-main " id="userinfoshtml">\
+                    <div class="layui-col-sm12" ><div>我的角色：</div><p id="rolesm">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>工作单位：</div><p id="workunitnamem">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>账号：</div><p id="loginaccountm">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>用户名：</div><p id="usernamem">加载中...</p></div>\
+                    <div class="layui-col-sm12"><div>注册时间：</div><p id="registertimem">加载中...</p></div>\
+                    </div>';
+    var layer = layui.layer;
+    layer.open({
+        type: 1,
+        title: "我的资料",
+        shade: 0.5,
+        shadeClose : true,
+        area: ['40%', '50%'],
+        content: html,
+        btn: ['确定'],
+        yes: function(index, layero){
+            layer.close(index);
+        }
+    });
+    getuserinfo();
+}
+
 
 $(function () {
     /*  var _t;
@@ -298,29 +330,6 @@ $(function () {
 
 
 
-    $("#userinfos").click(function () {
-        var html=' <div class="layui-row layui-main " id="userinfoshtml">\
-                    <div class="layui-col-sm12" ><div>我的角色：</div><p id="rolesm">加载中...</p></div>\
-                    <div class="layui-col-sm12"><div>工作单位：</div><p id="workunitnamem">加载中...</p></div>\
-                    <div class="layui-col-sm12"><div>账号：</div><p id="loginaccountm">加载中...</p></div>\
-                    <div class="layui-col-sm12"><div>用户名：</div><p id="usernamem">加载中...</p></div>\
-                    <div class="layui-col-sm12"><div>注册时间：</div><p id="registertimem">加载中...</p></div>\
-                    </div>';
-        var layer = layui.layer;
-        layer.open({
-            type: 1,
-            title: "我的资料",
-            shade: 0.5,
-            shadeClose : true,
-            area: ['40%', '50%'],
-            content: html,
-            btn: ['确定'],
-            yes: function(index, layero){
-                layer.close(index);
-            }
-        });
-        getuserinfo();
-    });
 })
 
 /**
@@ -331,6 +340,38 @@ function exitsystem(obj){
     fireKeyEvent(obj,"keydown",27);
 
 }
+
+var menu_userhtml=' <li class="layui-nav-item" id="pagehome">\n' +
+    '                <a href="/cweb/base/main/gotomain" style="display:block; padding-top:45px; height:32px; line-height:32px" >\n' +
+    '                    <i class="layui-icon layui-icon-home" style="left: 27%;"></i>\n' +
+    '                    <span>首页</span>\n' +
+    '                </a>\n' +
+    '            </li>\n' +
+    '            <li class="layui-nav-item" id="guidepage">\n' +
+    '                <a href="#"  onclick="zkload();" style="display:block; padding-top:45px; height:32px; line-height:32px">\n' +
+    '                    <i class="layui-icon layui-icon-flag"></i>\n' +
+    '                    <span>进入后台</span>\n' +
+    '                </a>\n' +
+    '            </li>\n' +
+    '\n' +
+    '            <li class="layui-nav-item">\n' +
+    '                <a href="javascript:;" style="display:block; padding-top:45px; height:32px; line-height:32px" >\n' +
+    '                    <i class="layui-icon layui-icon-username"></i>\n' +
+    '                    <span  id="username">管理员</span>\n' +
+    '                </a>\n' +
+    '                <dl class="layui-nav-child">\n' +
+    '                    <dd><a onclick="userinfos();">我的资料</a></dd>\n' +
+    '                    <dd><a target="option" href="/cweb/base/main/gotoupdatePassword">修改密码</a></dd>\n' +
+    '                    <dd><a href="javascript:;"  onclick="userloginout();">退出登录</a></dd>\n' +
+    '                    <dd><a href="javascript:;" onclick="exitsystem(this);" >退出系统</a></dd>\n' +
+    '                </dl>\n' +
+    '            </li>\n' +
+    '            <li class="layui-nav-item">\n' +
+    '                <a target="option" href="/cweb/police/about/toabout" title="关于" style="display:block; padding-top:45px; height:32px; line-height:32px" >\n' +
+    '                    <i class="layui-icon layui-icon-about" style="left: 28%;"></i>\n' +
+    '                    <span>关于</span>\n' +
+    '                </a>\n' +
+    '            </li>';
 
 
 

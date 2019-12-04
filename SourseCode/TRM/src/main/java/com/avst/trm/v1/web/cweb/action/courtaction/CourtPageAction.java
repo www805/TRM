@@ -20,14 +20,14 @@ public class CourtPageAction {
 
     @GetMapping("towaitCourt")
     public ModelAndView towaitCourt(Model model, String ssid){
-        model.addAttribute("title","庭审制作");
+        model.addAttribute("title","笔录制作");
         model.addAttribute("recordssid",ssid);
         return new ModelAndView("client_web/court/waitCourt", "Model", model);
     }
 
     @GetMapping("togetCourtDetail")
     public ModelAndView togetCourtDetails(Model model, String ssid){
-        model.addAttribute("title","庭审查看");
+        model.addAttribute("title","笔录查看");
         model.addAttribute("recordssid",ssid);
         return new ModelAndView("client_web/court/getCourtDetail", "Model", model);
     }

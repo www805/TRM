@@ -18,6 +18,16 @@ public class GetUserListParam extends Page {
 
     private Integer adminbool;//用户状态;1正常; 2禁用
 
+    private Integer temporaryaskbool;//1临时 -1非临时
+
+    public Integer getTemporaryaskbool() {
+        return temporaryaskbool;
+    }
+
+    public void setTemporaryaskbool(Integer temporaryaskbool) {
+        this.temporaryaskbool = temporaryaskbool;
+    }
+
     public String getUsername() {
         return username;
     }

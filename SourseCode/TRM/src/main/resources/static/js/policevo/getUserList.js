@@ -6,19 +6,21 @@ function getUserList_init(currPage,pageSize) {
     var workunitssid=$("#workunitssid option:selected").val();
     var rolessid=$("#rolessid option:selected").val();
     var adminbool=$("#adminbool option:selected").val();
+    var temporaryaskbool=$("#temporaryaskbool option:selected").val();
     var data={
         username:username,
         loginaccount:loginaccount,
         workunitssid:workunitssid,
         rolessid:rolessid,
         adminbool:adminbool,
+        temporaryaskbool:temporaryaskbool,
         currPage:currPage,
         pageSize:pageSize
     };
     ajaxSubmit(url,data,callbackgetUserList);
 }
 
-function getUserList(username,loginaccount,workunitssid,rolessid,adminbool,currPage,pageSize){
+function getUserList(username,loginaccount,workunitssid,rolessid,adminbool,temporaryaskbool,currPage,pageSize){
     var url=getActionURL(getactionid_manage().getUserList_getUserList);
     var data={
         username:username,
@@ -26,6 +28,7 @@ function getUserList(username,loginaccount,workunitssid,rolessid,adminbool,currP
         workunitssid:workunitssid,
         rolessid:rolessid,
         adminbool:adminbool,
+        temporaryaskbool:temporaryaskbool,
         currPage:currPage,
         pageSize:pageSize
     };
@@ -55,7 +58,7 @@ function getUserListByParam(){
     }else if (len==2){
         getUserList('',arguments[0],arguments[1]);
     }else if(len>2){
-        getUserList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6]);
+        getUserList(arguments[0],arguments[1],arguments[2],arguments[3],arguments[4],arguments[5],arguments[6],arguments[7]);
     }
 
 }
@@ -72,6 +75,7 @@ function showpagetohtml(){
         var workunitssid=pageparam.workunitssid;
         var rolessid=pageparam.rolessid;
         var adminbool=pageparam.adminbool;
+        var temporaryaskbool=pageparam.temporaryaskbool;
 
         var arrparam=new Array();
         arrparam[0]=username;
@@ -79,6 +83,7 @@ function showpagetohtml(){
         arrparam[2]=workunitssid;
         arrparam[3]=rolessid;
         arrparam[4]=adminbool;
+        arrparam[5]=temporaryaskbool;
         showpage("paging",arrparam,'getUserListByParam',currPage,pageCount,pageSize);
     }
 
@@ -235,6 +240,54 @@ $(function () {
                 }
             });
         });
+
+        form.on('switch(temporaryaskbool_switch)', function(switchdata){
+            var obj=switchdata.elem.checked;
+            var ssid=switchdata.value;
+            if (!isNotEmpty(ssid)){
+                layer.msg("系统异常",{icon: 5});
+                return;
+            }
+
+            var con;
+            var temporaryaskbool;
+            if (obj) {
+                con="你确定要改为临时吗";
+                temporaryaskbool=1;
+            }else{
+                con="你确定去掉该用户的临时状态吗";
+                temporaryaskbool=-1;
+            }
+            layer.open({
+                content:con
+                ,btn: ['确定', '取消']
+                ,yes: function(index, layero){
+                    var url=getActionURL(getactionid_manage().getUserList_changeboolUser);
+                    var data={
+                        ssid:ssid,
+                        temporaryaskbool:temporaryaskbool
+                    };
+                    ajaxSubmit(url,data,callbackchangeUser);
+                    switchdata.elem.checked=obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,btn2: function(index, layero){
+                    //按钮【按钮二】的回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                    layer.close(index);
+                }
+                ,cancel: function(){
+                    //右上角关闭回调
+                    switchdata.elem.checked=!obj;
+                    form.render();
+                }
+            });
+        });
+
+
+
     });
 });
 

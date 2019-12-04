@@ -710,6 +710,7 @@ public class MainService extends BaseService {
 
         EntityWrapper adminparam=new EntityWrapper();
         adminparam.eq("a.adminbool",1);//正常人
+        adminparam.orderBy("a.temporaryaskbool",true);
         adminparam.orderBy("a.registerTime",false);
         List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
         if (null!=adminList&&adminList.size()>0){

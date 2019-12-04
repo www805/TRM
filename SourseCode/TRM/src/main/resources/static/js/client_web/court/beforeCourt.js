@@ -267,7 +267,7 @@ function callbackaddCaseToArraignment(data) {
             var multifunctionbool=data.multifunctionbool;//功能控制跳转
             if (isNotEmpty(recordssid)&&toUrltype==1&&isNotEmpty(multifunctionbool)){
                 //跳转笔录制作
-                var index = layer.msg('开始进行庭审', {shade:[0.1,"#fff"],icon:6,time:500
+                var index = layer.msg('开始进行笔录', {shade:[0.1,"#fff"],icon:6,time:500
                 },function () {
                     if (multifunctionbool==1){
                     } else if (multifunctionbool==2||multifunctionbool==3){
@@ -315,7 +315,7 @@ function callbackaddCaseToArraignment(data) {
                     resize:false,
                     area: ['35%', '400px'],
                     content: TABLE_HTML,
-                    btn: ['继续庭审', '取消',]
+                    btn: ['继续笔录', '取消',]
                     ,yes: function(index, layero){
                         //按钮【按钮一】的回调
                         skipCheckCasebool = 1;
@@ -332,17 +332,17 @@ function callbackaddCaseToArraignment(data) {
                 var msg=checkStartRecordVO.msg;
                 if (isNotEmpty(msg)){
                     layer.confirm("<span style='color:red'>"+msg+"</span>", {
-                        btn: ['开始庭审',"查看庭审列表","取消"], //按钮
+                        btn: ['开始笔录',"查看笔录列表","取消"], //按钮
                         shade: [0.1,'#fff'], //不显示遮罩
                         btn1:function(index) {
-                            console.log("跳转庭审制作中");
+                            console.log("跳转笔录制作中");
                             //保存
                             skipCheckbool = 1;
                             addCaseToArraignment();
                             layer.close(index);
                         },
                         btn2: function(index) {
-                            console.log("跳转庭审列表")
+                            console.log("跳转笔录列表")
                             toUrltype=2;
                             skipCheckbool =1;
                             addCaseToArraignment();
@@ -611,7 +611,12 @@ function callbackgetAdminList(data) {
             for (var i = 0; i < otheruserinfos.length; i++) {
                 var u= otheruserinfos[i];
                     $("#otheradminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                    $("#recordadminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                    //书记员默认选中登陆人员
+                    if (isNotEmpty(sessionadminssid)&&isNotEmpty(u.ssid)&&sessionadminssid==u.ssid) {
+                        $("#recordadminssid").append("<option value='"+u.ssid+"' selected >"+u.username+"</option>");
+                    }else {
+                        $("#recordadminssid").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
+                    }
                     $("#presidingjudge").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                     $("#judges").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
             }

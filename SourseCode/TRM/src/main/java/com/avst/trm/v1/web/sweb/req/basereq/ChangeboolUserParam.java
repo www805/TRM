@@ -5,6 +5,16 @@ public class ChangeboolUserParam {
 
     private String ssid;
 
+    private Integer temporaryaskbool;
+
+    public Integer getTemporaryaskbool() {
+        return temporaryaskbool;
+    }
+
+    public void setTemporaryaskbool(Integer temporaryaskbool) {
+        this.temporaryaskbool = temporaryaskbool;
+    }
+
     public Integer getAdminbool() {
         return adminbool;
     }

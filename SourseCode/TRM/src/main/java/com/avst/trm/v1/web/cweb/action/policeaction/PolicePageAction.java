@@ -123,7 +123,7 @@ public class PolicePageAction {
                 if (gnlist.indexOf(SQVersion.NX_O)!= -1){
                     model.addAttribute("title","笔录建立");
                 }else {
-                    model.addAttribute("title", "庭审查看");
+                    model.addAttribute("title", "笔录查看");
                 }
             }else {
                 model.addAttribute("title","审讯查看");

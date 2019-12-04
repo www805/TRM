@@ -188,24 +188,53 @@ public class ArraignmentService extends BaseService {
                 defaulttitle="快速庭审";
                 newaddPolice_case.setCasenum(addPolice_case.getCasenum()==null?"":addPolice_case.getCasenum());
 
-                //此处需要加入默认的拓展表人员数据
+                //此处需要加入默认的拓展表人员数据====================================================
+                //外部人员默认4个
                 if (null==arraignmentexpand||arraignmentexpand.size()<1){
+                    String[] arraignmentexpand_ = new String[] {UserinfogradeType.USERINFOGRADE1,UserinfogradeType.USERINFOGRADE2,UserinfogradeType.USERINFOGRADE3,UserinfogradeType.USERINFOGRADE8};
                     arraignmentexpand=new ArrayList<>();
-                    UserInfo userInfo=new UserInfo();
-                    userInfo.setUsername(newaddUserInfo.getUsername());
-                    userInfo.setUserinfogradessid(UserinfogradeType.USERINFOGRADE2);
-                    arraignmentexpand.add(userInfo);
-                }
-                if (null==arrUserExpandParams||arrUserExpandParams.size()<1){
-                    arrUserExpandParams=new ArrayList<>();
-                    if (StringUtils.isBlank(adminssid)){
-                        adminssid=user.getSsid();
+                    for (int i = 0; i < 4; i++) {
+                        String username_time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                        UserInfo userInfo=new UserInfo();
+                        userInfo.setUsername("未知_"+username_time+"_"+i);
+                        userInfo.setUserinfogradessid(arraignmentexpand_[i]);
+                        arraignmentexpand.add(userInfo);
                     }
+                }
+
+                //内部人员也默认四个：除开书记员其他三个为新增的零时的用户
+                if (null==arrUserExpandParams||arrUserExpandParams.size()<1){
+                    String[] arrUserExpandParams_ = new String[] {UserinfogradeType.USERINFOGRADE4,UserinfogradeType.USERINFOGRADE6,UserinfogradeType.USERINFOGRADE7};
+                    arrUserExpandParams=new ArrayList<>();
+                    for (int i = 0; i < 3; i++) {
+                        //添加该管理员
+                        String newadminssid=OpenUtil.getUUID_32();
+                        String username_time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+                        Base_admininfo base_admininfo=new Base_admininfo();
+                        base_admininfo.setSsid(newadminssid);
+                        base_admininfo.setTemporaryaskbool(1);//是否为临时询问人1是
+                        base_admininfo.setCreator(user.getSsid());
+                        base_admininfo.setWorkunitssid(user.getWorkunitssid());
+                        base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
+                        base_admininfo.setUsername("临时_"+username_time+"_"+i);
+                        base_admininfo.setRegistertime(new Date());
+                        int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
+                        LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);
+                        if (base_admininfoMapper_insertbool>0){
+                            ArrUserExpandParam arrUserExpandParam=new ArrUserExpandParam();
+                            arrUserExpandParam.setUserinfogradessid(arrUserExpandParams_[i]);
+                            arrUserExpandParam.setUserssid(newadminssid);
+                            arrUserExpandParams.add(arrUserExpandParam);
+                        }
+                    }
+                    //书记员默认为登陆者不新增
                     ArrUserExpandParam arrUserExpandParam=new ArrUserExpandParam();
-                    arrUserExpandParam.setUserinfogradessid(UserinfogradeType.USERINFOGRADE4);
+                    arrUserExpandParam.setUserinfogradessid(UserinfogradeType.USERINFOGRADE5);
+                    if (StringUtils.isBlank(adminssid)){adminssid=user.getSsid();}
                     arrUserExpandParam.setUserssid(adminssid);
                     arrUserExpandParams.add(arrUserExpandParam);
                 }
+                //此处需要加入默认的拓展表人员数据====================================================end
             }
             String conversationmsg=defaulttitle+"_"+time;
             newaddPolice_case.setCasename("案件名_"+conversationmsg);
@@ -1207,7 +1236,7 @@ public class ArraignmentService extends BaseService {
         String username=addUserParam.getUsername();
         Base_admininfo base_admininfo=new Base_admininfo();
         base_admininfo.setSsid(OpenUtil.getUUID_32());
-        base_admininfo.setTemporaryaskbool(1);
+        base_admininfo.setTemporaryaskbool(1);//添加临时询问人
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);
         base_admininfo.setCreator(user.getSsid());
         base_admininfo.setWorkunitssid(user.getWorkunitssid());

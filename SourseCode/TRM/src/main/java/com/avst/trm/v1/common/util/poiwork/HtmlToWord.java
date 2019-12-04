@@ -3,6 +3,7 @@ package com.avst.trm.v1.common.util.poiwork;
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
 import com.aspose.words.ReadLicense;
+import com.aspose.words.SaveFormat;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +27,9 @@ public class HtmlToWord {
      */
     public static boolean HtmlToWord(String wordpath, String htmlcontent){
 
-        InputStream is=null;
+       /* InputStream is=null;
         OutputStream os=null;
-        POIFSFileSystem fs=null;
+        POIFSFileSystem fs=null;*/
         if (null!=wordpath&&!wordpath.trim().equals("")){
             if(htmlcontent.indexOf("<html") > -1&&htmlcontent.indexOf("<body") > -1){//全页面导入
                 System.out.println("全页面导入要处理");
@@ -43,9 +44,9 @@ public class HtmlToWord {
             } catch (Exception e) {
                 e.printStackTrace();
             }finally {
-                IOUtils.closeQuietly(fs);
+                /*IOUtils.closeQuietly(fs);
                 IOUtils.closeQuietly(os);
-                IOUtils.closeQuietly(is);
+                IOUtils.closeQuietly(is);*/
             }
         }
         System.out.println("HtmlToWord HTML转WORD失败"+wordpath);
@@ -81,11 +82,26 @@ public class HtmlToWord {
             if(!getLicense()){// 验证License 若不验证则转化出的PDP文档会有水印产生
                 System.out.println("word2pdf 验证License 失败");
             }
+            FileOutputStream fileOS =null;
+            try {
 
-            Document doc = new Document();
-            DocumentBuilder build = new DocumentBuilder(doc);
-            build.insertHtml(html);
-            doc.save(savePath);
+
+                Document doc = new Document();
+                DocumentBuilder build = new DocumentBuilder(doc);
+                build.insertHtml(html);
+               /* doc.save(savePath);*/
+                File targetFile = new File(savePath);
+                fileOS = new FileOutputStream(targetFile);
+                doc.save(fileOS, SaveFormat.DOC);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }finally {
+                if (null!=fileOS){
+                    fileOS.close();
+                }
+            }
+
+
             return true;
         }
         catch (Exception ex)

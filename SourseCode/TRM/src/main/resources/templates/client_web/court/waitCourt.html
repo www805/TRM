@@ -97,7 +97,7 @@
                     <button class="layui-btn layui-btn-primary " shrink_bool="1" onclick="shrink(this);" title="控制左侧功能和展开收缩"><i class="layui-icon layui-icon-shrink-right" ></i></button>
                     <button class="layui-btn layui-btn-normal " id="baocun"  >保存</button>
                 </div>
-                <button class="layui-btn layui-btn-normal " id="wordupload"  >导入模板</button>
+                <button class="layui-btn layui-btn-normal " id="wordupload"  >导入笔录</button>
                 <div class="layui-inline" >
                     <div class="btn-group">
                         <button class="layui-btn layui-btn-normal" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">导出<span class="caret"></span></button>
@@ -118,11 +118,11 @@
                 </div>
             </div>
             <div class="layui-col-md12 " >
-                <div class="layui-card-body layui-row " style="padding: 0">
+                <div class="layui-card-body layui-row " style="padding: 0;position:fixed;">
                     <div class="layui-card" style="border-width: 0;box-shadow:none" >
                         <div class="layui-card-header">
                             <div class="layui-input-inline layui-col-md6" style="white-space: nowrap;text-overflow: ellipsis; overflow: hidden;">
-                                当前庭审：<span id="recordtitle">庭审标题</span>
+                                当前笔录：<span id="recordtitle">笔录标题</span>
                             </div>
                             <div class="layui-input-inline layui-col-md6">
                                 <div  style="float: right;visibility: hidden" id="record_switch_HTML">
@@ -134,9 +134,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="recorddetail_webkit">
+                        <div id="recorddetail_webkit" >
                         <div style="" id="recorddetail_scrollhtml">
-                            <div class="layui-card-body layui-row ">
+                            <div class="layui-card-body layui-row " style="padding: 0px 0px 0px 15px">
                                 <div class="layui-col-lg12 ">
                                     <!-- <div class="layui-col-md12  layui-show" style="height: 300px">
                                          <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
@@ -301,7 +301,7 @@
                        </colgroup> \
                                 <tbody>\
                                     <tr>\
-                                         <td>庭审状态</td>\
+                                         <td>笔录状态</td>\
                                         <td>\
                                         <span class="layui-badge layui-bg-gray" id="MtState" MtState="0" >未开启</span>\
                                         </td>\
@@ -323,11 +323,11 @@
                 shade: 0,
                 offset: 'rb',
                 area: ['250px', '130px'],
-                maxmin: true,
+               /* maxmin: true,*/
                 resize:false,
             content: html,
             success: function(layero,index){
-                layer.min(index);
+                /*layer.min(index);*/
             }
         });
 
