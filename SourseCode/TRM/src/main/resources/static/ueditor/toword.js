@@ -132,7 +132,7 @@
                 // （先按照不拆分最后或最开始的P用于补充上一页/填充下一页；最后一定要考虑当前页最后一个P和下一页的第一个P在需要重新分页的时候的处理）
                 //（当剩下的P进行重新分页时，P为空的情况）
 
-                if(oldheight<newheight||newheight >TOWORD.pagemaxheight ){//P总高大了
+                if(oldheight<newheight || newheight >= TOWORD.pagemaxheight){//P总高大了
 
                     //判断新增一行的高度之后是否大于每页的最大编辑高度，大于的话就是情况1的处理，不大于就不管
                     if(newheight<TOWORD.pagemaxheight){
@@ -264,6 +264,9 @@
                     // ue.focus();
                 }
 
+            },
+            moreMaxHeight:function (ue,pseight_old,psheight,divid){//以后可能改，现在就用这个
+                TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
             }
         }
     }();
@@ -433,6 +436,10 @@
      */
     function getpByRange(ue) {
         var range=ue.selection.getRange().startContainer;
+        if(range.nodeName=='body'||range.nodeName=='BODY'){
+            console.log('应该是全选，返回null');
+            return null;
+        }
         if(range.nodeName=='p'||range.nodeName=='P'){
             return range;
         }else if(null==range){
@@ -634,6 +641,29 @@
             console.log(divps+"divps getAllPEvtByDivid is null");
         }
         return null;
+    }
+
+    //当前位置是光标的检测
+    /**
+     * 检测当前光标是不是在节点上
+     * @param ue
+     * @param node
+     */
+    function checkCurrentPosition(ue,node){
+
+        var bool=false;
+        //判断光标所在位置
+        var range=ue.selection.getRange();
+        var bk_start = range.createBookmark().start; // 创建一个临时dom，用于获取当前光标
+        bk_start.style.display = ''; // 设置临时dom不隐藏
+        var position = UE.dom.domUtils.getPosition(node,bk_start);
+        if(position==16||position==20){
+
+            bool=true;
+        }
+        $(bk_start).remove(); // 移除临时dom
+
+        return bool;
     }
 
     /**
@@ -877,7 +907,8 @@
     function getNodeHeightByNode(cnode){
 
         if(null==cnode){
-            console.log("getNodeHeightByNode cnode is null,警告")
+            console.log("getNodeHeightByNode cnode is null,警告");
+            return 0;
         }
         var nodeheight=cnode.scrollHeight;//节点本身的内部高度
         if(!isNotEmpty(nodeheight)||nodeheight==0){
@@ -1081,6 +1112,10 @@
         }else{
             realp=getpByRange(ue);
         }
+        if(!isNotEmpty(realp)){
+            console.log('没有找到对应的处理节点，直接返回');
+            return ;
+        }
         var realpmaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;//真实的最大子节点高度
         var nodeHeight=getNodeHeightByNode(realp);
 
@@ -1097,10 +1132,12 @@
                 console.log(nodeHeight+"：node.height，p.childNodes");
                 if(nodeHeight > 0&&nodeHeight<realpmaxheight){
 
+                    var bool=checkCurrentPosition(ue,node);
                     newp.innerHTML=node.outerHTML;
+                    checkExistByDivid()
                     node.parentNode.removeChild(node);
 
-                    insertAfterChildNode(newp,realp,!isNotEmpty(p));
+                    insertAfterChildNode(newp,realp,bool);
                     return;
                 }else if(nodeHeight > 0&&nodeHeight>=realpmaxheight){
                     var snodes=node.childNodes;
@@ -1111,10 +1148,11 @@
                         console.log(nodeHeight+"：snode.height，node.childNodes");
                         if(nodeHeight > 0){
 
+                            var bool=checkCurrentPosition(ue,snode);
                             newp.innerHTML=snode.outerHTML;
                             snode.parentNode.removeChild(snode);
-
-                            insertAfterChildNode(newp,realp,!isNotEmpty(p));
+                            //要判断是不是当前光标位置
+                            insertAfterChildNode(newp,realp,bool);
                             return ;
                         }
                     }

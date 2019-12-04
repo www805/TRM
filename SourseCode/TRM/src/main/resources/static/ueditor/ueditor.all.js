@@ -13883,10 +13883,14 @@ UE.plugins['wordcount'] = function(){
             var pseight_old=TOWORD.divheightmap[divid];
             if(isNotEmpty(psheight)){
                 //对比上一次的高度，有变化的话，触发重新排版
-                if(isNotEmpty(pseight_old)&&psheight!=pseight_old){
+                if(isNotEmpty(pseight_old)&&(psheight!=pseight_old)){
                     //重新排版，写入toWord里面
                     console.log("重新排版，写入toWord里面");
                     TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
+                }else if(psheight>=TOWORD.pagemaxheight){
+                    //重新排版，写入toWord里面
+                    console.log("重新排版，写入toWord里面--2,psheight:"+psheight);
+                    TOWORD.page.moreMaxHeight(ue,pseight_old,psheight,divid);
                 }
                 console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
             }
