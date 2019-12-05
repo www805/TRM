@@ -409,6 +409,7 @@ function getactionid_manage() {
         waitCourt_setRecordProtect:"waitCourt_setRecordProtect",
         waitCourt_exporttemplate_ue:"waitCourt_exporttemplate_ue",
         waitCourt_importtemplate_ue:"waitCourt_importtemplate_ue",
+        waitCourt_setMCTagTxtreal:"waitCourt_setMCTagTxtreal",
 
         beforeCourt_getRecordtypes:"beforeCourt_getRecordtypes",
         beforeCourt_getNationals:"beforeCourt_getNationals",

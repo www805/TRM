@@ -827,17 +827,18 @@ function callbackgetgetRecordrealing(data) {
                         if (data.userssid==userssid){
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
-                            var txt=data.txt==null?"...":data.txt;//翻译文本
+                            /*var txt=data.txt==null?"":data.txt;//翻译文本*/
+                            var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var recordrealshtml="";
-                            var translatext=data.keyword_txt==null?"":data.keyword_txt;//翻译文本
+                            //var translatext=data.keyword_txt==null?"":data.keyword_txt;//翻译文本
                             var gradename=user.gradename==null?"未知":user.gradename;
 
 
                             //实时会议数据
                                 //1放左边
-                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                            var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
                             var fontcolor="#ffffff";
                             if (gnlist.indexOf(NX_O)!= -1){
                                 color="#ffffff";
@@ -2356,6 +2357,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                     if (isNotEmpty(thisp)) {
                         $(thisp).html(gradeintroduce+last_oldtranslatext+last_translatext);
                         TOWORD.util.checkPHeight(ue,thisp[0]);
+                        usertype=lastusertype;//之前没讲完最后一个用户不变
                     }else {
                         console.log("我可能被删除了*******************************************2")
                         last_oldtranslatext="";
@@ -2407,17 +2409,47 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
 
 ///////////////////////////////**********************************************************左侧打点**************start
 function tagtext() {
-    /*$("#recordreals span").bind('mousedown', function(e) {
-        if (3 == e.which) {
+    $("#recordreals span").bind('mousedown', function(e) {
+        if (3 == e.which||1 == e.which){
+            var userssid=$(this).closest("div").attr("userssid");
+            var starttime=$(this).closest("div").attr("starttime");//语音识别时间标识
+            var tagtxt=$(this).html();//打点标记文本
             $(this).attr("contenteditable",true);
-            document.execCommand('removeFormat');
+            if (3 == e.which) {
+                document.execCommand('removeFormat');
+            }  else if (1 == e.which) {
+                document.execCommand('foreColor',false,'red');
+            }
             $(this).attr("contenteditable",false);
-        }  else if (1 == e.which) {
-            $(this).attr("contenteditable",true);
-            document.execCommand('foreColor',false,'red');
-            $(this).attr("contenteditable",false);
+            setMCTagTxtreal(userssid,starttime,tagtxt);
         }
-    });*/
+    });
+}
+
+//打点实时保存
+function setMCTagTxtreal(userssid,starttime,tagtxt) {
+    if (isNotEmpty(mtssid)&&isNotEmpty(userssid)&&isNotEmpty(starttime)&&isNotEmpty(tagtxt)) {
+      var url=getActionURL(getactionid_manage().waitCourt_setMCTagTxtreal);
+        var paramdata={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid,
+                userssid:userssid,
+                starttime:starttime,
+                tagtxt:tagtxt,
+            }
+        };
+        ajaxSubmitByJson(url,paramdata,callbacksetMCTagTxtreal);
+    }else {
+        console.log("打点实时保存___参数不全")
+    }
+}
+function callbacksetMCTagTxtreal(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        console.log("打点实时保存___成功")
+    }else{
+        console.log(data.message)
+    }
 }
 ///////////////////////////////**********************************************************左侧打点**************end
 

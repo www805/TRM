@@ -21,6 +21,16 @@ public class AsrTxtParam_toout {
 
     private long subtractime;//时间差
 
+    private String tagtext;//打点标记后的文本
+
+    public String getTagtext() {
+        return tagtext;
+    }
+
+    public void setTagtext(String tagtext) {
+        this.tagtext = tagtext;
+    }
+
 
 
     private String keyword_txt;//关键字检测之后的文本:trm加的

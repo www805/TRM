@@ -146,6 +146,20 @@ public class CourtAction extends BaseAction {
         return result;
     }
 
+    @RequestMapping(value = "/setMCTagTxtreal")
+    public RResult setMCTagTxtreal(@RequestBody ReqParam<SetMCTagTxtrealParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            courtService.setMCTagTxtreal(result,param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 

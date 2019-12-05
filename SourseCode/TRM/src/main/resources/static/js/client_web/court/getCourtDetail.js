@@ -208,14 +208,15 @@ function set_getRecord(data){
                     if (data.userssid==userssid){
                         var username=user.username==null?"未知":user.username;//用户名称
                         var usertype=user.grade;//1、询问人2被询问人
-                        var txt=data.txt==null?"...":data.txt;//翻译文本
+                       /* var txt=data.txt==null?"...":data.txt;//翻译文本*/
+                        var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
                         var asrtime=data.asrtime;//时间
                         var starttime=data.starttime;
                         var asrstartime=data.asrstartime;
                         var subtractime_=data.subtractime;//时间差
                         //实时会议数据
                         var recordrealshtml="";
-                        var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
+                       // var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
                         var gradename=user.gradename==null?"未知":user.gradename;
                         subtractime[""+usertype+""]=subtractime_;//存储各个类型人员的时间差值
 

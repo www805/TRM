@@ -126,5 +126,8 @@ public interface MeetingControl {
     @ResponseBody
     public RResult overAccidentMT(@RequestBody ReqParam<OverAccidentMTParam_out> param);
 
+    @RequestMapping("/mt/v1/setMCTagTxt")
+    @ResponseBody
+    public RResult setMCTagTxt(@RequestBody ReqParam<SetMCTagTxtParam_out> param);
 
 }

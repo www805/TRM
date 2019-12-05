@@ -23,7 +23,9 @@ import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.poiwork.WordToPDF;
 import com.avst.trm.v1.common.util.poiwork.XwpfTUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetPhssidByMTssidParam_out;
+import com.avst.trm.v1.feignclient.mc.req.SetMCTagTxtParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
@@ -81,9 +83,11 @@ public class CourtService extends BaseService {
     private Base_admininfoMapper base_admininfoMapper;
 
 
-
     @Autowired
     private OutService outService;
+
+    @Autowired
+    private MeetingControl meetingControl;
 
 
     public void getUserinfogradePage(RResult result, GetUserinfogradePageParam param){
@@ -547,6 +551,41 @@ public class CourtService extends BaseService {
             }
         }else {
             result.setMessage("未找到该笔录");
+            return;
+        }
+        return;
+    }
+
+
+    public void  setMCTagTxtreal(RResult result,SetMCTagTxtrealParam param){
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String mtssid=param.getMtssid();
+        String starttime=param.getStarttime();
+        String tagtxt=param.getTagtxt();
+        String userssid=param.getUserssid();
+        LogUtil.intoLog(1,this.getClass(),"setMCTagTxtreal参数：__mtssid："+mtssid+"__starttime："+starttime+"__tagtxt："+tagtxt+"__userssid："+userssid);
+        if (StringUtils.isNotEmpty(mtssid)&&StringUtils.isNotEmpty(starttime)&&StringUtils.isNotEmpty(tagtxt)&&StringUtils.isNotEmpty(userssid)){
+            ReqParam<SetMCTagTxtParam_out> setMCTagTxtParam_outReqParam=new ReqParam<>();
+            SetMCTagTxtParam_out setMCTagTxtParam_out=new SetMCTagTxtParam_out();
+            setMCTagTxtParam_out.setMcType(MCType.AVST);
+            setMCTagTxtParam_out.setMtssid(mtssid);
+            setMCTagTxtParam_out.setStarttime(starttime);
+            setMCTagTxtParam_out.setTagtxt(tagtxt);
+            setMCTagTxtParam_out.setUserssid(userssid);
+            setMCTagTxtParam_outReqParam.setParam(setMCTagTxtParam_out);
+            RResult rr = meetingControl.setMCTagTxt(setMCTagTxtParam_outReqParam);
+            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+               LogUtil.intoLog(1,this.getClass(),"setMCTagTxtreal__meetingControl.setMCTagTxt请求失败");
+                changeResultToSuccess(result);
+            }else {
+               LogUtil.intoLog(1,this.getClass(),"setMCTagTxtreal__meetingControl.setMCTagTxt请求成功");
+            }
+        }else {
+            result.setMessage("参数为空");
             return;
         }
         return;
