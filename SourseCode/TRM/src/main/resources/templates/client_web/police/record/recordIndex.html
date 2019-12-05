@@ -103,7 +103,7 @@
                    <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,10);">
                </div>
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
-               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;">&#xe623;</i>
+               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;" id="prompt">&#xe702;</i>
             </div>
                 <div class="layui-card">
                     <div style="height: 660px; overflow-x: hidden; overflow-y: scroll;">
@@ -155,8 +155,8 @@
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
         {{#  var multifunctionbool;var police_arraignment=value.police_arraignment;   if(null!=police_arraignment){multifunctionbool=police_arraignment.multifunctionbool} }}
         <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{multifunctionbool}}');" style="background-color: {{backgroundcolor}}">
-            {{#  var recordfilestate=value.recordfilestate;var recordfilestate_color="#bfbfbf";var recordfilestate_msg="未找到录像视频"; }}
-            {{#  if(recordfilestate==0){recordfilestate_color="#FFB800";recordfilestate_msg="录像视频上传中";}else  if(recordfilestate==1){recordfilestate_color="#00FF00";recordfilestate_msg="录像视频上传完成";}else  if(recordfilestate==-1){recordfilestate_color="#000000";recordfilestate_msg="录像视频丢失";}  }}
+            {{#  var recordfilestate=value.recordfilestate;var recordfilestate_color="#bfbfbf";var recordfilestate_msg="未发现录像视频"; }}
+            {{#  if(recordfilestate==0){recordfilestate_color="#FFB800";recordfilestate_msg="录像视频上传中";}else  if(recordfilestate==1){recordfilestate_color="#00FF00";recordfilestate_msg="录像视频上传完成";}else  if(recordfilestate==-1){recordfilestate_color="#000000";recordfilestate_msg="未找到录像视频";}  }}
             <td>  <span class="layui-badge-dot" style="background-color: {{recordfilestate_color}}!important;" title="{{recordfilestate_msg}}"></span></td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
@@ -223,6 +223,23 @@
         form.on('checkbox(change_creatorbool)', function(data){
             ggetRecordsByParam();
         });
+
+
+        var promptindex=null;
+        var prompthtml='圆点解释<br/><span class="layui-badge-dot" style="background-color: #000000!important;" ></span>：未发现录像视频' +
+            '<br/><span class="layui-badge-dot" style="background-color: #bfbfbf!important;" ></span>：未找到录像视频' +
+            '<br/><span class="layui-badge-dot" style="background-color: #FFB800!important;" ></span>：录像视频上传中' +
+            '<br/><span class="layui-badge-dot" style="background-color: #00FF00!important;" ></span>：录像视频上传完成';
+        $("#prompt").hover(function() {
+            promptindex=layer.tips(prompthtml, '#prompt', {
+                tips: [2, '#3595CC'],
+                time: 4000
+            });
+        }, function() {
+            layer.close(promptindex);
+        });
+
+
     });
 
 
