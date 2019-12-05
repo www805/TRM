@@ -249,6 +249,10 @@ function callbackgetRecordById(data) {
                                    ,gradeintroduce:other.gradeintroduce
 
                                };
+                              /* if (other.ssid==USERINFOGRADE2&&!isNotEmpty(dq_recorduser)){
+                                   //被告
+                                   dq_recorduser=other.userssid;
+                               }*/
                                recorduser.push(user);
                            }
                        }
@@ -268,6 +272,7 @@ function callbackgetRecordById(data) {
                        recorduser.push(user2);
                    }
                     dq_recorduser=recordUserInfosdata.userssid;
+
                 }
 
 
@@ -838,7 +843,7 @@ function callbackgetgetRecordrealing(data) {
                                 color="#ffffff";
                                 fontcolor="#000000";
                                 recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <span>'+gradename+'：</span><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
                                                       </div >';
 
                             }else {
@@ -856,6 +861,7 @@ function callbackgetgetRecordrealing(data) {
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals_scrollhtml');
                             div.scrollTop = div.scrollHeight;
+                            tagtext();
                         }
                     }
                 }
@@ -1405,7 +1411,7 @@ $(function () {
                                 if (gnlist.indexOf(NX_O)!= -1){
                                     color="#ffffff";
                                     fontcolor="#000000";
-                                    p_span_HTML='<span>'+gradename+'：</span><span ondblclick="copy_text(this)">'+translatext+' </span>';
+                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)">'+translatext+' </span>';
                                     recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                                 }else {
                                     p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
@@ -1419,6 +1425,7 @@ $(function () {
                                 }else {
                                     $("#recordreals").append(recordrealshtml);
                                 }
+                               tagtext();
 
 
                                 $("#asritem").hover(
@@ -2394,3 +2401,23 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
 
 
 ///////////////////////////////**********************************************************自动甄别**************end
+
+
+
+
+///////////////////////////////**********************************************************左侧打点**************start
+function tagtext() {
+    /*$("#recordreals span").bind('mousedown', function(e) {
+        if (3 == e.which) {
+            $(this).attr("contenteditable",true);
+            document.execCommand('removeFormat');
+            $(this).attr("contenteditable",false);
+        }  else if (1 == e.which) {
+            $(this).attr("contenteditable",true);
+            document.execCommand('foreColor',false,'red');
+            $(this).attr("contenteditable",false);
+        }
+    });*/
+}
+///////////////////////////////**********************************************************左侧打点**************end
+

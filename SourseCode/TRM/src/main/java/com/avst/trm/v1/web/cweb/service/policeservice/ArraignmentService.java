@@ -196,8 +196,12 @@ public class ArraignmentService extends BaseService {
                     for (int i = 0; i < 4; i++) {
                         String username_time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
                         UserInfo userInfo=new UserInfo();
-                        userInfo.setUsername("未知_"+username_time+"_"+i);
                         userInfo.setUserinfogradessid(arraignmentexpand_[i]);
+                        if (UserinfogradeType.USERINFOGRADE2.equals(arraignmentexpand_[i])){
+                            userInfo.setUsername(newaddUserInfo.getUsername());
+                        }else {
+                            userInfo.setUsername("未知_"+username_time+"_"+(i+1));
+                        }
                         arraignmentexpand.add(userInfo);
                     }
                 }
@@ -216,7 +220,7 @@ public class ArraignmentService extends BaseService {
                         base_admininfo.setCreator(user.getSsid());
                         base_admininfo.setWorkunitssid(user.getWorkunitssid());
                         base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
-                        base_admininfo.setUsername("临时_"+username_time+"_"+i);
+                        base_admininfo.setUsername("临时_"+username_time+"_"+(i+1));
                         base_admininfo.setRegistertime(new Date());
                         int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);

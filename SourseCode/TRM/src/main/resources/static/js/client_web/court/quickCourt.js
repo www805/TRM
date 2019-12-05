@@ -235,10 +235,13 @@ function addCaseToArraignment() {
         }
     };
     $("#startrecord_btn").attr("lay-filter","");
+    $("#startrecord_btn2").attr("lay-filter","");
+
     ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
 function callbackaddCaseToArraignment(data) {
     $("#startrecord_btn").attr("lay-filter","startrecord_btn");
+    $("#startrecord_btn2").attr("lay-filter","startrecord_btn2");
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
@@ -458,6 +461,7 @@ function addCaseToArraignment2() {
         }
     };
     $("#startrecord_btn").attr("lay-filter","");
+    $("#startrecord_btn2").attr("lay-filter","");
     var url=getActionURL(getactionid_manage().quickCourt_addCaseToArraignment);
     ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
 }
