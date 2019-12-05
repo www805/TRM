@@ -451,7 +451,8 @@ function addCaseToArraignment2() {
     var data={
         token:INIT_CLIENTKEY,
         param:{
-            mtmodelssidname:mtmodelssidname,
+            mtmodelssid:dqmodelssid,
+            mtmodelssidname:mtmodelssidname,//模板名称
             addPolice_case:addPolice_case,
             multifunctionbool:3,//庭审默认多功能
             custommsgbool:1,//是否需要自定义信息
