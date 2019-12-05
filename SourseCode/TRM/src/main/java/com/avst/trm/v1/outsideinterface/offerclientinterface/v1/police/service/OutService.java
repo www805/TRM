@@ -1056,7 +1056,9 @@ public class OutService  extends BaseService {
             result.setMessage("参数为空");
             return ;
         }
+
         String modelssid=getTdByModelSsidParam_out.getModelssid();
+        LogUtil.intoLog(this.getClass(),"getTdByModelSsid参数modelssid____"+modelssid);
         if (StringUtils.isBlank(modelssid)){
             LogUtil.intoLog(this.getClass(),"getTdByModelSsid参数为空modelssid____");
             result.setMessage("参数为空");
@@ -1092,6 +1094,7 @@ public class OutService  extends BaseService {
             return ;
         }
         String mtssid=out.getMtssid();
+        LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid参数mtssid____"+mtssid);
         if (StringUtils.isBlank(mtssid)){
             LogUtil.intoLog(this.getClass(),"getMCCacheParamByMTssid参数为空mtssid____");
             result.setMessage("参数为空");
@@ -1126,6 +1129,7 @@ public class OutService  extends BaseService {
         }
         String mtssid=out.getMtssid();
         String userssid=out.getUserssid();
+        LogUtil.intoLog(this.getClass(),"getTDCacheParamByMTssid参数mtssid____"+mtssid);
         if (StringUtils.isBlank(mtssid)||StringUtils.isBlank(userssid)){
             LogUtil.intoLog(this.getClass(),"getTDCacheParamByMTssid参数为空mtssid____");
             result.setMessage("参数为空");

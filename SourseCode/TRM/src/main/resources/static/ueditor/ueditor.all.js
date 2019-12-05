@@ -16643,7 +16643,7 @@ UE.plugins['enterkey'] = function() {
             }
         }
 
-        var prange=ue.selection.getRange().endContainer.parentNode;
+        var prange=TOWORD.util.getpByRange(ue);
         //删除不应该存在P文件的属性，防止出错
         if(isNotEmpty(prange.getAttribute('starttime'))){
             console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));

@@ -1384,7 +1384,7 @@ public class CaseService extends BaseService {
                         LogUtil.intoLog(this.getClass(),"回填案件人员信息参数错误__casessid_"+casessid+"__userssid__"+userssid);
                     }
                 }else {
-                    result.setMessage("案件未提讯");
+                    result.setMessage("案件未存在笔录");
                     LogUtil.intoLog(1,this.getClass(),"回填案件人员信息参错误__案件未提讯___casessid__"+casessid);
                     return;
                 }

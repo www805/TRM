@@ -963,7 +963,7 @@ function open_positiontime() {
                     <div class="layui-input-block">\
                     <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值(秒)" value="' + parseFloat(positiontime)/1000 + '"  class="layui-input">\
                     </div>\
-                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-10到-1或者1到10区间的值以及0</div>\
+                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-10到-1或者1到10区间的值以及0(秒)</div>\
                 </div>\
             </form>';
     layui.use(['layer','element','form','laydate'], function() {
@@ -987,7 +987,7 @@ function open_positiontime() {
                             return "请输入定位差值";
                         }
                         if (!((value<=-1&&value>=-10)||(value<=10&&value>=1)||value==0)) {
-                            return "请输入差值在-10到-1或者1到10区间的值以及0";
+                            return "请输入差值在-10到-1或者1到10区间的值以及0(秒)";
                         }
                     }
                 });

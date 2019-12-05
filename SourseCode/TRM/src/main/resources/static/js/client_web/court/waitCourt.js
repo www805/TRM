@@ -1071,7 +1071,7 @@ function focuslable(html,type,qw) {
 
         if (isNotEmpty(lastp)) {
             $(html).insertAfter(lastp);//[lastp.length-1]
-            //TOWORD.util.checkPHeight(ue,lastp);
+            TOWORD.util.checkPHeight(ue,lastp[0]);
         }else {
             //p标签未获取到，使用append
             console.log("p标签未获取到，使用append")
@@ -1082,7 +1082,7 @@ function focuslable(html,type,qw) {
             $("#"+divid,editorhtml).append(html);
             lastp=$("#"+divid+" p:last",editorhtml);
             if (isNotEmpty(lastp)) {
-                //TOWORD.util.checkPHeight(ue,lastp );
+               TOWORD.util.checkPHeight(ue,lastp[0]);
             }
 
 
@@ -2327,7 +2327,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                 var thisp= $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
                 if (isNotEmpty(thisp)) {
                     $(thisp).html(gradeintroduce+last_oldtranslatext+last_translatext);
-                    //TOWORD.util.checkPHeight(ue,thisp);
+                   TOWORD.util.checkPHeight(ue,thisp[0]);
                 }else {
                    console.log("我可能被删除了*******************************************1")
                     last_oldtranslatext="";
@@ -2348,7 +2348,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                     var thisp = $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
                     if (isNotEmpty(thisp)) {
                         $(thisp).html(gradeintroduce+last_oldtranslatext+last_translatext);
-                       // TOWORD.util.checkPHeight(ue,thisp);
+                        TOWORD.util.checkPHeight(ue,thisp[0]);
                     }else {
                         console.log("我可能被删除了*******************************************2")
                         last_oldtranslatext="";

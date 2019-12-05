@@ -358,9 +358,21 @@ public class ArraignmentService extends BaseService {
                    police_cases_param.ne("casebool",-1);
                    List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
                    if (null!=police_cases_&&police_cases_.size()>0){
-                       addCaseToArraignmentVO.setCasenumingbool(true);
-                       addCaseToArraignmentVO.setCasessid(police_cases_.get(0).getSsid());
-                       result.setData(addCaseToArraignmentVO);
+                       if (police_cases_.size()==1){
+                           EntityWrapper ewarraignment=new EntityWrapper();
+                           ewarraignment.eq("cr.casessid",police_cases_.get(0).getSsid());
+                           ewarraignment.ne("r.recordbool",-1);//笔录状态不为删除状态
+                           List<ArraignmentAndRecord> arraignmentAndRecords = police_casetoarraignmentMapper.getArraignmentByCaseSsid(ewarraignment);//不出意外一般只存有一条数据
+                           if (null!=arraignmentAndRecords&&arraignmentAndRecords.size()>0){
+                               addCaseToArraignmentVO.setCasenumingbool(true);
+                               addCaseToArraignmentVO.setCasessid(police_cases_.get(0).getSsid());
+                               result.setData(addCaseToArraignmentVO);
+                           }else {
+                               result.setMessage("案件编号不能重复");
+                           }
+                       }else {
+                           result.setMessage("案件编号不能重复");
+                       }
                        return;
                    }
                }
