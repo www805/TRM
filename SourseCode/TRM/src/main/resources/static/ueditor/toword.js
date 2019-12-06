@@ -66,7 +66,7 @@
                     if(null!=divps&&divps.length > 0){
 
                         for(var n=0;n<divps.length ;n++){
-                            checkAndDealSpanHeight(divps[n],0);
+                            checkAndDealSpanHeight(divps[n]);
                         }
                         divps=div.childNodes;//重新获取
 
@@ -267,6 +267,10 @@
             },
             moreMaxHeight:function (ue,pseight_old,psheight,divid){//以后可能改，现在就用这个
                 TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
+            },
+            checkAndDealSpanHeight:function (node){
+
+                checkAndDealSpanHeight(node);
             }
         }
     }();
@@ -367,6 +371,9 @@
             },
             checkPHeight:function (ue,p) {
                 checkPHeight(ue,p);
+            },
+            getBeforeCLineHeight:function(node){
+                return getBeforeCLineHeight(node);
             }
         }
 
@@ -386,6 +393,41 @@
         $(bk_start).remove() // 移除临时dom
 
         return domheight_num;
+    }
+
+    /**
+     * 获取当前div中正在编辑的行以上的所有元素的高度和
+     * @param ue
+     * @returns {string}
+     */
+    function getBeforeCLineHeight(node) {
+
+        var heightBeforeCLine=0;
+        if(isNotEmpty(node)){
+            var childNode=node;
+            var parentNode=childNode.parentNode;
+            do{
+                if(isNotEmpty(parentNode)){
+                    if(isNotEmpty(parentNode.id)&&parentNode.id.indexOf("newpage") > -1){
+
+                        return childNode.offsetTop;
+                    }else{
+                        childNode=parentNode;
+                        parentNode=childNode.parentNode;
+                    }
+                }else{
+                    console.log("没有父节点了");
+                    break;
+                }
+
+            }while(isNotEmpty(parentNode));
+
+            console.log("感觉这个节点不是用于page里面写数据的节点childNode:"+childNode.nodeName);
+        }else{
+            console.log("传过来的节点是个空节点");
+        }
+
+        return null;
     }
 
     /**
@@ -1134,7 +1176,7 @@
 
                     var bool=checkCurrentPosition(ue,node);
                     newp.innerHTML=node.outerHTML;
-                    checkExistByDivid()
+                    checkExistByDivid();
                     node.parentNode.removeChild(node);
 
                     insertAfterChildNode(newp,realp,bool);
@@ -1188,20 +1230,20 @@
      * @param node 当前节点
      * @param pageHeightBeforeNode 本页当前节点之前的高度
      */
-    function checkAndDealSpanHeight(node,pageHeightBeforeNode){
+    function checkAndDealSpanHeight(node){
 
-
-        var nodeHeight=getNodeHeightByNode(node);
-        var realnodemaxheight=TOWORD.pagemaxheight-pageHeightBeforeNode;//这个节点真实的最大高度
-        if(nodeHeight <= realnodemaxheight){
-            console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
+        // var beforeheight=getBeforeCLineHeight(node);
+        var beforeheight=0;
+        if(null==beforeheight||beforeheight< 0){
+            beforeheight=0;
+        }else if(beforeheight >TOWORD.pagemaxheight){
+            console.log(beforeheight+":pageHeightBeforeNode 这不是扯淡吗，本页当前节点之前的高度还大于最大页面高度，那不早分页了");
             return ;
         }
-
-        if(null==pageHeightBeforeNode||pageHeightBeforeNode< 0){
-            pageHeightBeforeNode=0;
-        }else if(pageHeightBeforeNode >TOWORD.pagemaxheight){
-            console.log(pageHeightBeforeNode+":pageHeightBeforeNode 这不是扯淡吗，本页当前节点之前的高度还大于最大页面高度，那不早分页了");
+        var nodeHeight=getNodeHeightByNode(node);
+        var realnodemaxheight=TOWORD.pagemaxheight-beforeheight;//这个节点真实的最大高度
+        if(nodeHeight <= realnodemaxheight){
+            console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
             return ;
         }
 
@@ -1209,6 +1251,7 @@
 
         var style=null;//子节点的样式
         var nodetag='';
+        var specialDeal='';//特殊的属性
         var spannode='';//子节点的HTML
         do{
             var node_innerhtml=node.innerText;
@@ -1221,13 +1264,14 @@
 
             //去掉可能存在的空子节点，这里不需要处理其他事件
             var nodelastElementChild=node.lastElementChild;
-            if(isNotEmpty(nodelastElementChild)){
+            if(isNotEmpty(nodelastElementChild)&&nodelastElementChild!=3){//不是文本标签
                 if(nodelastElementChild.innerText==""){
                     //空节点
                     node.removeChild(nodelastElementChild);
                     if(spannode!=''){
                         if(nodetag!=''){//这里就需要看他是否有子节点
-                            spannode='<'+nodetag+' style="'+style+'">'+spannode+'</'+nodetag+'>';
+                            spannode='<'+nodetag+' '+specialDeal+' style="'+style+'">'+spannode+'</'+nodetag+'>';
+                            specialDeal='';
                         }
                         newnodetext=spannode+newnodetext;
                     }
@@ -1241,6 +1285,17 @@
                 }
             }else{ //说明没有子节点，只能在当前节点上处理
                 dealnode=node;
+            }
+
+            var starttime=dealnode.getAttribute("starttime");
+            if(isNotEmpty(starttime)){
+                specialDeal="starttime='"+starttime+"'";
+                dealnode.removeAttribute("starttime");
+            }
+            var uesrtype=dealnode.getAttribute("uesrtype");
+            if(isNotEmpty(uesrtype)){
+                specialDeal+=" uesrtype='"+uesrtype+"'";
+                dealnode.removeAttribute("uesrtype");
             }
 
             if(null==style){
@@ -1265,7 +1320,7 @@
 
         if(spannode!=''){
             if(nodetag!=''){//这里就需要看他是否有子节点
-                spannode='<'+nodetag+' style="'+style+'">'+spannode+'</'+nodetag+'>';
+                spannode='<'+nodetag+' '+specialDeal+' style="'+style+'">'+spannode+'</'+nodetag+'>';
             }
             newnodetext=spannode+newnodetext;
         }
@@ -1276,6 +1331,18 @@
             newp.innerHTML=newnodetext;
             newp.style=node.style.cssText;
             newp.style.textIndent='';//不要首行缩进，因为这一段只是上一段的补充
+
+            var starttime=node.getAttribute("starttime");
+            if(isNotEmpty(starttime)){
+                newp.setAttribute("starttime",starttime);
+                node.removeAttribute("starttime");
+            }
+            var uesrtype=node.getAttribute("uesrtype");
+            if(isNotEmpty(uesrtype)){
+                newp.setAttribute("uesrtype",starttime);
+                node.removeAttribute("uesrtype");
+            }
+
             insertAfterChildNode(newp,node,false);
         }
     }

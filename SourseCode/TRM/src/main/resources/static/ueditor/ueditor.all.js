@@ -13867,7 +13867,8 @@ UE.plugins['wordcount'] = function(){
         me.fireEvent('wordcount');
 
         //检测所在子节点的高度
-        TOWORD.util.checkPHeight(ue,null);
+        // TOWORD.util.checkPHeight(ue,null);
+        TOWORD.page.checkAndDealSpanHeight(ue.selection.getRange().startContainer);
 
         if(!TOWORD.importwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
