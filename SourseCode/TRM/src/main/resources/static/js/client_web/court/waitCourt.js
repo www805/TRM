@@ -1078,7 +1078,7 @@ function focuslable(html,type,qw) {
 
         if (isNotEmpty(lastp)) {
             $(html).insertAfter(lastp);//[lastp.length-1]
-            TOWORD.util.checkPHeight(ue,lastp[0]);
+            TOWORD.page.checkAndDealSpanHeight(lastp[0]);
         }else {
             //p标签未获取到，使用append
             console.log("p标签未获取到，使用append")
@@ -1089,7 +1089,7 @@ function focuslable(html,type,qw) {
             $("#"+divid,editorhtml).append(html);
             lastp=$("#"+divid+" p:last",editorhtml);
             if (isNotEmpty(lastp)) {
-               TOWORD.util.checkPHeight(ue,lastp[0]);
+                TOWORD.page.checkAndDealSpanHeight(lastp[0]);
             }
 
 
@@ -1471,8 +1471,14 @@ $(function () {
         var obj=this;
         var con;
         if (isn==-1) {
+            if (!isNotEmpty(dqswitchusers)){
+                layer.msg("未找到可甄别的角色，请先设置",{icon:5})
+                return;
+            }
+
+
             if (!isNotEmpty(laststarttime_ue)) {
-                con="确定要开启自动甄别吗(<span style='color: red'>将在光标处追加</span>)";//
+                con="确定要开启自动甄别吗(<span style='color: red'>将在光标后追加</span>)";//
             }else {
                 con="确定要开启自动甄别吗(<span style='color: red'>根据最后追加</span>)";//（<span style='color: red'>将在光标处加入自动甄别</span>）
             }
@@ -2311,8 +2317,7 @@ var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{fi
 var lastusertype=-1;//上一个类型
 
 function identify(usertype,starttime,gradeintroduce,translatext) {
-    var last_identify=last_identifys[""+lastusertype+""];//上一个数据
-    var last_starttime = null;
+    var last_identify=last_identifys[""+lastusertype+""];
     var last_translatext = null;
     var last_oldtranslatext = null;
     var last_firsttime=null;
@@ -2321,11 +2326,10 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
 
     if (lastusertype!=-1&&isNotEmpty(last_identify)){
             if (usertype==lastusertype) {
-                last_starttime=last_identify.starttime;
                 last_translatext=last_identify.translatext;
                 last_oldtranslatext=last_identify.oldtranslatext;
                 last_firsttime=last_identify.firsttime;
-                if (last_starttime==starttime){
+                if (last_identify.starttime==starttime){
                     last_translatext=translatext;
                 }else{
                     last_oldtranslatext+=last_translatext;
@@ -2334,48 +2338,50 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
 
                 var thisp= $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
                 if (isNotEmpty(thisp)) {
-                    $(thisp).html(gradeintroduce+last_oldtranslatext+last_translatext);
-                   TOWORD.util.checkPHeight(ue,thisp[0]);
+                    var span_laststarttime = $("span[starttime]:not(:empty)",thisp).last().attr("starttime");
+                    if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
+                        $("span[starttime]:not(:empty)",thisp).last().html(last_translatext);
+                    }else {
+                        $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
+                    }
+                   TOWORD.page.checkAndDealSpanHeight(thisp[0]);
                 }else {
                    console.log("我可能被删除了*******************************************1")
                     last_oldtranslatext="";
                     last_translatext=translatext;
                     last_firsttime=starttime;
-                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
-                    focuslable(trtd_html,2,null);
-                    laststarttime_ue=starttime;
-                    resetpage();
+                    addidentify(usertype,starttime,gradeintroduce,translatext);
                 }
             }else {
                 last_identify=last_identifys[""+usertype+""];
                 if (isNotEmpty(last_identify)&&isNotEmpty(last_identify.starttime)&&last_identify.starttime==starttime){
-                    last_starttime=last_identify.starttime;
                     last_translatext=last_identify.translatext;
                     last_oldtranslatext=last_identify.oldtranslatext;
                     last_firsttime=last_identify.firsttime;
                     var thisp = $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
                     if (isNotEmpty(thisp)) {
-                        $(thisp).html(gradeintroduce+last_oldtranslatext+last_translatext);
-                        TOWORD.util.checkPHeight(ue,thisp[0]);
+                        //判断最后一句话有没有讲完
+                        var span_laststarttime = $("span[starttime]:not(:empty)",thisp).last().attr("starttime");
+                        if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
+                            $("span[starttime]:not(:empty)",thisp).last().html(last_translatext);
+                        }else {
+                            $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
+                        }
+                        TOWORD.page.checkAndDealSpanHeight(thisp[0]);
                         usertype=lastusertype;//之前没讲完最后一个用户不变
+                        console.log("之前没讲完最后一个用户不变")
                     }else {
                         console.log("我可能被删除了*******************************************2")
                         last_oldtranslatext="";
                         last_translatext=translatext;
                         last_firsttime=starttime;
-                        var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
-                        focuslable(trtd_html,2,null);
-                        laststarttime_ue=starttime;
-                        resetpage();
+                        addidentify(usertype,starttime,gradeintroduce,translatext);
                     }
                 } else {
                     last_oldtranslatext="";
                     last_translatext=translatext;
                     last_firsttime=starttime;
-                    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
-                    focuslable(trtd_html,2,null);
-                    laststarttime_ue=starttime;
-                    resetpage();
+                    addidentify(usertype,starttime,gradeintroduce,translatext);
                 }
             }
             newlast_identify={
@@ -2385,10 +2391,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                 oldtranslatext:last_oldtranslatext,
             }
     } else {
-        var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'">'+gradeintroduce+translatext+'</p>';
-        focuslable(trtd_html,2,null);
-        laststarttime_ue=starttime;
-        resetpage();
+        addidentify(usertype,starttime,gradeintroduce,translatext);
          newlast_identify={
             firsttime:starttime,
             starttime:starttime,
@@ -2398,6 +2401,14 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
     }
     lastusertype=usertype;
     last_identifys[""+usertype+""]=newlast_identify;
+}
+
+//追加新的一行哎哎哎
+function addidentify(usertype,starttime,gradeintroduce,translatext) {
+    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'"><span>'+gradeintroduce+'</span><span starttime="'+starttime+'">'+translatext+'</span></p>';
+    focuslable(trtd_html,2,null);
+    laststarttime_ue=starttime;
+    resetpage();
 }
 
 

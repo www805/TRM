@@ -577,6 +577,7 @@ function callbackgetUserByCard(data){
                     dquserssid=userinfo.ssid;
                     getCaseById();
                 }
+                userinfogrades[""+dq_userinfograde+""]=userinfo;//需要更新信息
             }
         }
     }else{
@@ -979,6 +980,11 @@ function checkuserinfograde(userinfograde,userinfogradetype) {
                 setuserval(userinfograde,userinfogradetype);
                 return false;
             }
+
+            //更新用户的身份信息
+            userinfogrades[""+userinfogradetype+""].both=getAnalysisIdCard(cardnum,1);
+            userinfogrades[""+userinfogradetype+""].sex=getAnalysisIdCard(cardnum,2);
+            userinfogrades[""+userinfogradetype+""].age=getAnalysisIdCard(cardnum,3);
         }
         if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
             layer.msg("请输入正确"+con+"联系电话",{icon: 5});
@@ -1418,7 +1424,7 @@ function callbackgetCasesByCasenum(data) {
             layui.use(['form','laydate'], function(){
                 var form=layui.form;
                 var laydate=layui.laydate;
-                $("input:not('#casenum'):not('#wordssid'):not('#modelssid')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#cardnum')*/
+                $("input:not('#casenum'):not('#wordssid'):not('#modelssid'):not('#startrecord_btn'):not('#startrecord_btn2')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#cardnum')*/
                 $('select').not("#cards").prop('selectedIndex', 0);
                 laydate.render({
                     elem: '#starttime' //指定元素
@@ -1486,6 +1492,13 @@ function callbackgetCasesByCasenum(data) {
 
                                      }else if (isNotEmpty(userinfo)&&usergradessid!=dq_userinfograde ){
                                          //其他的存储到
+                                         var cardnum=userinfo.cardnum;
+                                         var bool=checkByIDCard(cardnum);
+                                         if (bool){
+                                             userinfo.both=getAnalysisIdCard(cardnum,1);
+                                             userinfo.sex=getAnalysisIdCard(cardnum,2);
+                                             userinfo.age=getAnalysisIdCard(cardnum,3);
+                                         }
                                          userinfogrades[""+usergradessid+""]=userinfo;
                                      }
                                      if (usergradessid==USERINFOGRADE2){/*&&dq_userinfograde==USERINFOGRADE2*/

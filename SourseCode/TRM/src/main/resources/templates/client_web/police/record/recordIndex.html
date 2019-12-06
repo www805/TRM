@@ -81,7 +81,7 @@
                <div style="margin-top: 5px">
                    <label class="layui-form-label" style="width: auto;">关键字</label>
                    <div class="layui-input-inline" style="float: left; ">
-                       <input  type="text" name="recordname" id="recordname" style="width: 80px;" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" oninput="ggetRecordsByParam();">
+                       <input  type="text" name="recordname" id="recordname" style="width: 80px;" lay-verify="required" placeholder="关键字" autocomplete="off" class="layui-input" onchange="ggetRecordsByParam();">
                    </div>
                    <label class="layui-form-label" style="width: auto;">类型</label>
                    <div class="layui-input-inline" style="width: 80px;float: left;margin-right: 10px;">
@@ -103,7 +103,7 @@
                    <input type="button" class="layui-btn layui-btn-normal" value="查询" onclick="getRecords_init(1,10);">
                </div>
                 <div class="layui-card-header" style="margin-top:5px;padding:0 8px 0px 8px;margin-bottom: 0px;font-weight: normal">
-               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;" id="prompt">&#xe702;</i>
+               【笔录列表】（提示:双击可对<span style="color: red">*进行中</span> | <span style="color: #cccccc">*未开始</span>的笔录进行编辑,对<span style="color: #00FF00">*已完成</span>的笔录进行查看）<i class="layui-icon" style="right:inherit;color: red" id="prompt">&#xe702;</i>
             </div>
                 <div class="layui-card">
                     <div style="height: 660px; overflow-x: hidden; overflow-y: scroll;">
@@ -214,6 +214,10 @@
         var $ = layui.$; //由于layer弹层依赖jQuery，所以可以直接得到
         //使用模块
 
+      /* 影响百度编辑器焦点 $("#recordname").bind('input',function () {
+            ggetRecordsByParam();
+        });*/
+
         form.on('select(change_recordtypessid)', function(data){
             ggetRecordsByParam();
         });
@@ -233,7 +237,7 @@
         $("#prompt").hover(function() {
             promptindex=layer.tips(prompthtml, '#prompt', {
                 tips: [2, '#3595CC'],
-                time: 4000
+                time: -1
             });
         }, function() {
             layer.close(promptindex);

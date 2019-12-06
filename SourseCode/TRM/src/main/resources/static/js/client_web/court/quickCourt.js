@@ -1250,7 +1250,7 @@ function callbackgetCasesByCasenum(data) {
             layui.use(['form','laydate'], function(){
                 var form=layui.form;
                 var laydate=layui.laydate;
-                $("input:not('#casenum'):not('#wordssid'):not('#modelssid')").val("");
+                $("input:not('#casenum'):not('#wordssid'):not('#modelssid'):not('#startrecord_btn'):not('#startrecord_btn2')").val("");
                 $('select').not("#cards").prop('selectedIndex', 0);
                 laydate.render({
                     elem: '#starttime' //指定元素

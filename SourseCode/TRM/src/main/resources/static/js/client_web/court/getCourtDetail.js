@@ -754,14 +754,14 @@ function callbackgetRecordrealByRecordssid(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
-    $("p",editorhtml).dblclick(function () {
+    $("p span[starttime]:not(:empty)",editorhtml).dblclick(function () {
         var contenteditable=$("body",editorhtml).attr("contenteditable");
         if (isNotEmpty(contenteditable)&&contenteditable=="false") {
             //开始定位视频位置
             var times=$(this).attr("starttime");
             if (times!="-1"&&isNotEmpty(times)){
                 //时间差需要处理
-                var usertype=$(this).attr("usertype");
+                var usertype=$(this).closest("p").attr("usertype");
                 if (isNotEmpty(usertype)){
                     times=parseInt(times)+subtractime[""+usertype+""];
                     showrecord(times,null);

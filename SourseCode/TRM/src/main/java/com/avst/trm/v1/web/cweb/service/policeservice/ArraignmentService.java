@@ -987,6 +987,7 @@ public class ArraignmentService extends BaseService {
                                     usertotypessid_=police_userinfototype.getSsid();
                                 }
                             }else if (checkuserInfoinfos.size()==1){
+                                LogUtil.intoLog(this.getClass(),"【开始笔录】拓展数据需要修改人员____");
                                 UserInfo userinfo_=checkuserInfoinfos.get(0);
                                 //修改用户信息
                                 EntityWrapper updateuserinfoParam=new EntityWrapper();
@@ -1016,6 +1017,8 @@ public class ArraignmentService extends BaseService {
                                     userInfossid=userinfo_.getSsid();
                                     usertotypessid_=userinfo_.getUsertotypessid();
                                 }
+                            }else {
+                                LogUtil.intoLog(this.getClass(),"【开始笔录】拓展数据人员数据可能有异常啊啊啊啊啊啊啊啊啊啊啊啊啊啊____");
                             }
                             LogUtil.intoLog(this.getClass(),"【开始笔录】拓展表关联案件信息userInfossid____"+userInfossid+"___usertotypessid___"+usertotypessid_+"__casessid__"+casessid);
                             if (userinfogradessid.equals(UserinfogradeType.USERINFOGRADE2)&&StringUtils.isNotEmpty(usertotypessid_)){

@@ -121,7 +121,7 @@ public class PolicePageAction {
             if (gnlist.indexOf(SQVersion.FY_T)!= -1){
                 //法院的
                 if (gnlist.indexOf(SQVersion.NX_O)!= -1){
-                    model.addAttribute("title","笔录建立");
+                    model.addAttribute("title","笔录管理");
                 }else {
                     model.addAttribute("title", "笔录查看");
                 }
