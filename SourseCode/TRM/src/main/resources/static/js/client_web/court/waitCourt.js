@@ -226,6 +226,7 @@ function callbackgetRecordById(data) {
                             layer.tips('点击将开启场景模板对应的设备，进行制作' ,'#pauserecord',{time:0, tips: 2});
                         });
                         $("#start_over_btn").text("开始笔录").attr("onclick","img_bool(this,1)");
+                        $("#overRecord_btn").hide();
                     }
                 }
 
@@ -501,6 +502,7 @@ function callbackstartMC(data) {
 
             var con="已开启：<br>语音识别开启数："+asrnum;
             layer.msg(con, {time: 2000});
+            $("#overRecord_btn").show();
         }
 
     }else{
