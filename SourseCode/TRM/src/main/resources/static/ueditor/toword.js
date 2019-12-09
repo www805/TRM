@@ -269,7 +269,6 @@
                 TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
             },
             checkAndDealSpanHeight:function (node,bool){
-
                 //bool询问是否需要先判断该页的高度
                 if(isNotEmpty(bool)&&bool){
                     //先判断该节点的div的高度

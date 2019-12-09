@@ -144,20 +144,20 @@ function callbackgetRecords(data) {
         layer.msg(data.message,{icon: 5});
     }
 
-    var time = setInterval(function () {
-        var trlen=$("#pagelisttemplates_tbody tr").length;
-        if (null!=records&&trlen>0) {
-            $("#pagelisttemplates_tbody tr").hover(function(){
-                $("#hoverspan2",this).show();
-                $("#hoverspan1",this).hide();
-            },function(){
-                $("#hoverspan2",this).hide();
-                $("#hoverspan1",this).show();
-            });
-            clearInterval(time)
-        }
+  var time = setInterval(function () {
+      $("#pagelisttemplates_tbody tr").hover(function(){
+          $("#hoverspan2",this).show();
+          $("#hoverspan1",this).hide();
+      },function(){
+          $("#hoverspan2",this).hide();
+          $("#hoverspan1",this).show();
+      });
+       var trlen=$("#pagelisttemplates_tbody tr").length;
+       if (trlen>9||(trlen==records.length&&isNotEmpty(records))) {
+           console.log("可以不需要检测了")
+           clearInterval(time)
+       }
     },100)
-
 }
 function setproblems(recordssid,obj) {
     $('#recorddetail').html("");

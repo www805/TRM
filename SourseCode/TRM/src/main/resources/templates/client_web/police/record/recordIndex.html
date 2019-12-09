@@ -67,6 +67,8 @@
         background-color: rgba(203, 203, 203, 0.1);
     }
     .layui-table tbody tr:hover{ background-color: transparent;}
+
+
 </style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
@@ -154,16 +156,14 @@
         {{#  var backgroundcolor="#fff"; if(index==0){backgroundcolor="#f2f2f2";}   var case_=value.case_;var creator=null;var creatorname="";var sessionssid="[[${session.MANAGE_CLIENT.ssid}]]";var showname=""; if(null!=case_){creator=case_.creator;creatorname=case_.creatorname; if(sessionssid!=creator){showname=creatorname+"：";} }  }}
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
         {{#  var multifunctionbool;var police_arraignment=value.police_arraignment;   if(null!=police_arraignment){multifunctionbool=police_arraignment.multifunctionbool} }}
-        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{multifunctionbool}}');" style="background-color: {{backgroundcolor}}">
+        <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{multifunctionbool}}');" style="background-color: {{backgroundcolor}}" >
             {{#  var recordfilestate=value.recordfilestate;var recordfilestate_color="#bfbfbf";var recordfilestate_msg="未发现录像视频"; }}
             {{#  if(recordfilestate==0){recordfilestate_color="#FFB800";recordfilestate_msg="录像视频上传中";}else  if(recordfilestate==1){recordfilestate_color="#00FF00";recordfilestate_msg="录像视频上传完成";}else  if(recordfilestate==-1){recordfilestate_color="#000000";recordfilestate_msg="未找到录像视频";}  }}
             <td>  <span class="layui-badge-dot" style="background-color: {{recordfilestate_color}}!important;" title="{{recordfilestate_msg}}"></span></td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
-            <td style="text-align: right;" title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none" >{{ahtml}}</span></td>
+            <td style="text-align: right;"  title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none"  >{{ahtml}}</span></td>
         </tr>
         {{#  }); }}
-
-
         </tbody>
     </table>
 

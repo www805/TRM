@@ -118,6 +118,12 @@ public class ArraignmentService extends BaseService {
 
         //参数**************************************************************************************************************************************start
         AdminAndWorkunit user = gson.fromJson(gson.toJson(session.getAttribute(Constant.MANAGE_CLIENT)), AdminAndWorkunit.class);//session用户
+        if (null==user){
+            result.setMessage("参数为空");
+            return;
+        }
+
+
         List<Userto> usertos=addCaseToArraignmentParam.getUsertos();//其他在场人员信息
         Integer skipCheckbool=addCaseToArraignmentParam.getSkipCheckbool();//是否跳过检测
         Integer skipCheckCasebool=addCaseToArraignmentParam.getSkipCheckCasebool();//是否跳过案件状态检测主要针对休庭状态

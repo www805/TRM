@@ -1070,12 +1070,14 @@ function focuslable(html,type,qw) {
                 lastp=$("p[starttime]:not(:empty)",editorhtml).last();
                 if (!isNotEmpty(lastp)){
                     lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+                    lastp=$(lastp);
                 }
             }
         }else {
             //光标追加
             //获取光标所在的p标签
             lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+            lastp=$(lastp);
         }
 
         if (isNotEmpty(lastp)) {
@@ -2346,7 +2348,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                     }else {
                         $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
                     }
-                   TOWORD.page.checkAndDealSpanHeight(thisp,true);
+                   TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
                 }else {
                    console.log("我可能被删除了*******************************************1")
                     last_oldtranslatext="";
@@ -2369,7 +2371,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                         }else {
                             $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
                         }
-                        TOWORD.page.checkAndDealSpanHeight(thisp,true);
+                        TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
                         usertype=lastusertype;//之前没讲完最后一个用户不变
                         console.log("之前没讲完最后一个用户不变")
                     }else {
