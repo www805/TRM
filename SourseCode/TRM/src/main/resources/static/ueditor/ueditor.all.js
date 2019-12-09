@@ -12597,6 +12597,7 @@ UE.plugins['selectall'] = function(){
     var me = this;
     me.commands['selectall'] = {
         execCommand : function(){
+            TOWORD.notneedwordrun=true;
             //去掉了原生的selectAll,因为会出现报错和当内容为空时，不能出现闭合状态的光标
             var me = this,body = me.body,
                 range = me.selection.getRange();
@@ -12609,6 +12610,7 @@ UE.plugins['selectall'] = function(){
                 range.collapse(true);
             }
             range.select(true);
+            TOWORD.notneedwordrun=false;
         },
         notNeedUndo : 1
     };
@@ -13868,13 +13870,17 @@ UE.plugins['wordcount'] = function(){
     me.addListener('contentchange',function(){
         me.fireEvent('wordcount');
 
-        //检测所在子节点的高度
-        // TOWORD.util.checkPHeight(ue,null);
-        TOWORD.page.checkAndDealSpanHeight(ue.selection.getRange().startContainer,false);
 
-        if(!TOWORD.importwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
+
+        if(!TOWORD.notneedwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
             //找到div所有的P，计算所有P的总高度
+
+            //检测所在子节点的高度
+            // TOWORD.util.checkPHeight(ue,null);
+            var cchecknode=ue.selection.getRange().startContainer;
+            TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
+            console.log(cchecknode+":cchecknode-----");
 
             var divid=TOWORD.util.getDivIdByUE(ue);
             if(!isNotEmpty(divid)){
@@ -16648,14 +16654,17 @@ UE.plugins['enterkey'] = function() {
 
         var prange=TOWORD.util.getpByRange(ue);
         //删除不应该存在P文件的属性，防止出错
-        if(isNotEmpty(prange.getAttribute('starttime'))){
-            console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
-            prange.removeAttribute('starttime');
-        };
-        if(isNotEmpty(prange.getAttribute('usertype'))){
-            console.log("删除了usertype这个属性----usertype="+prange.getAttribute('usertype'));
-            prange.removeAttribute('usertype');
-        };
+        if(null!=prange){
+            if(isNotEmpty(prange.getAttribute('starttime'))){
+                console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
+                prange.removeAttribute('starttime');
+            };
+            if(isNotEmpty(prange.getAttribute('usertype'))){
+                console.log("删除了usertype这个属性----usertype="+prange.getAttribute('usertype'));
+                prange.removeAttribute('usertype');
+            };
+        }
+
     });
 
     me.addListener('keydown', function(type, evt) {

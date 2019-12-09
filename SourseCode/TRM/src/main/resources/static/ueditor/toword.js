@@ -9,7 +9,7 @@
 
     TOWORD.pagemaxheight=900;//每页最大的可编辑区域的高度
     TOWORD.margintopandbutton=5;//p标签的margin值
-    TOWORD.importwordrun=false;//导入Word的时候为true
+    TOWORD.notneedwordrun=false;//不需要监控键盘操作的时候给true
 
     TOWORD.pmaxlineheight=150;//每页最大的一行只可能是150px
 
@@ -25,7 +25,7 @@
              * 导入HTML页面数据到ueditor
              */
             importhtml:function (html){
-                TOWORD.importwordrun=true;
+                TOWORD.notneedwordrun=true;
                 ue.execCommand('insertHtml', html);
                 //分页逻辑
 
@@ -100,7 +100,7 @@
                 }
                 UE.getEditor('editor').setContent(divshtml,false);
 
-                TOWORD.importwordrun=false;//接触工作状态
+                TOWORD.notneedwordrun=false;//解除工作状态
 
                 //添加光标聚焦
                 changefocuspdiv=getDivByDivid(TOWORD.divpage.getpagedivid(TOWORD.divnum));
@@ -274,10 +274,11 @@
                     //先判断该节点的div的高度
                     var div=getDivByChildNode(node);
                     if(isNotEmpty(div)){
-                         var ht=getNodeHeightByNode(div);
+                        var divid=div.id;
+                         var ht=getAllPHeightByDivid(divid);
                          if(ht > TOWORD.pagemaxheight){
-                             var pseight_old=TOWORD.divheightmap[div.id];
-                             TOWORD.page.reTypesetting(ue,pseight_old,ht,div.id);
+                             var pseight_old=TOWORD.divheightmap[divid];
+                             TOWORD.page.reTypesetting(ue,pseight_old,ht,divid);
                          }
                     }else{
                         console.log("该节点不在div分页内？？node："+node.nodeName);
@@ -452,35 +453,24 @@
      * @returns {string}
      */
     function getDivIdByUE(ue) {
-        var range=ue.selection.getRange().startContainer;
-        var par=range.parentNode;
-        if(par.nodeName=='div'||par.nodeName=='DIV'){
-            return par.id;
-        }else if(null==par){
-            return null;
-        }
-        var par2=par.parentNode;
-        if(par2.nodeName=='div'||par2.nodeName=='DIV'){
-            return par2.id;
-        }else if(null==par2){
-            return null;
-        }
-        var par3=par2.parentNode;
-        if(null!=par3&&(par3.nodeName=='div'||par3.nodeName=='DIV')){
-            return par3.id;
-        }else if(null==par3){
-            return null;
-        }
-        var par4=par3.parentNode;
-        if(null!=par4&&(par4.nodeName=='div'||par4.nodeName=='DIV')){
-            return par4.id;
-        }else if(null==par4){
-            return null;
-        }
-        var par5=par4.parentNode;
-        if(null!=par5&&(par5.nodeName=='div'||par5.nodeName=='DIV')){
-            return par5.id;
-        }
+        //用循环的方式获取div
+        var childNode=ue.selection.getRange().startContainer;
+        var parentNode=childNode.parentNode;
+        do{
+            if(isNotEmpty(parentNode)){
+                if(isNotEmpty(parentNode.id)&&parentNode.id.indexOf("newpage") > -1){
+
+                    return parentNode.id;
+                }else{
+                    childNode=parentNode;
+                    parentNode=childNode.parentNode;
+                }
+            }else{
+                console.log("没有父节点了");
+                break;
+            }
+
+        }while(isNotEmpty(parentNode));
         console.log("没有找到正在编辑的div的ID");
         return null;
 
@@ -498,33 +488,24 @@
             console.log('应该是全选，返回null');
             return null;
         }
-        if(range.nodeName=='p'||range.nodeName=='P'){
-            return range;
-        }else if(null==range){
-            return null;
-        }
-        var range2=range.parentNode;
-        if(range2.nodeName=='p'||range2.nodeName=='P'){
-            return range2;
-        }else if(null==range2){
-            return null;
-        }
-        var range3=range2.parentNode;
-        if(null!=range3&&(range3.nodeName=='p'||range3.nodeName=='P')){
-            return range3;
-        }else if(null==range3){
-            return null;
-        }
-        var range4=range3.parentNode;
-        if(null!=range4&&(range4.nodeName=='p'||range4.nodeName=='P')){
-            return range4;
-        }else if(null==range4){
-            return null;
-        }
-        var range5=range4.parentNode;
-        if(null!=range5&&(range5.nodeName=='p'||range5.nodeName=='P')){
-            return range5;
-        }
+        //用循环的方式获取P
+        var childNode=range;
+        var parentNode=childNode.parentNode;
+        do{
+            if(isNotEmpty(parentNode)){
+                if(isNotEmpty(parentNode.id)&&parentNode.id.indexOf("newpage") > -1){
+
+                    return childNode;
+                }else{
+                    childNode=parentNode;
+                    parentNode=childNode.parentNode;
+                }
+            }else{
+                console.log("没有父节点了");
+                break;
+            }
+
+        }while(isNotEmpty(parentNode));
 
         console.log("没有找到正在编辑的p-------------请注意");
         return null;
@@ -1075,8 +1056,10 @@
         if(null!=div){//如果存在直接写入，如果不存在就需要创建再写入
             for(var i=0;i<divps.length;i++){
                 var pnewpage=document.createElement('p');
-                pnewpage.innerHTML=divps[i].innerHTML;
+                // pnewpage.innerHTML=divps[i].innerHTML;
+                // pnewpage.style=divps[i].style.cssText;
                 div.appendChild(pnewpage);//修改字符串为数组对象，innerHTML和style都上去就可以了
+                pnewpage.outerHTML=divps[i].outerHTML;
             }
 
         }else{
@@ -1248,6 +1231,13 @@
      */
     function checkAndDealSpanHeight(node){
 
+        if(node.nodeName=='BODY'||node.nodeName=='body'
+            ||node.nodeName=='div'||node.nodeName=='DIV'
+            ||node.nodeName=='WINDOWS'||node.nodeName=='Windows'||node.nodeName=='windows'){
+            console.log(node.nodeName+":node.nodeName 怎么可能，开玩笑吧，这个类型");
+            return ;
+        }
+
         // var beforeheight=getBeforeCLineHeight(node);
         var beforeheight=0;
         if(null==beforeheight||beforeheight< 0){
@@ -1347,17 +1337,6 @@
             newp.innerHTML=newnodetext;
             newp.style=node.style.cssText;
             newp.style.textIndent='';//不要首行缩进，因为这一段只是上一段的补充
-
-            var starttime=node.getAttribute("starttime");
-            if(isNotEmpty(starttime)){
-                newp.setAttribute("starttime",starttime);
-                node.removeAttribute("starttime");
-            }
-            var uesrtype=node.getAttribute("uesrtype");
-            if(isNotEmpty(uesrtype)){
-                newp.setAttribute("uesrtype",starttime);
-                node.removeAttribute("uesrtype");
-            }
 
             insertAfterChildNode(newp,node,false);
         }
