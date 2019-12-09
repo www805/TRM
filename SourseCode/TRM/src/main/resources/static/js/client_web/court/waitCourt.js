@@ -1080,7 +1080,7 @@ function focuslable(html,type,qw) {
 
         if (isNotEmpty(lastp)) {
             $(html).insertAfter(lastp);//[lastp.length-1]
-            TOWORD.page.checkAndDealSpanHeight(lastp[0]);
+            TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
         }else {
             //p标签未获取到，使用append
             console.log("p标签未获取到，使用append")
@@ -1091,7 +1091,7 @@ function focuslable(html,type,qw) {
             $("#"+divid,editorhtml).append(html);
             lastp=$("#"+divid+" p:last",editorhtml);
             if (isNotEmpty(lastp)) {
-                TOWORD.page.checkAndDealSpanHeight(lastp[0]);
+                TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
             }
 
 
@@ -2346,7 +2346,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                     }else {
                         $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
                     }
-                   TOWORD.page.checkAndDealSpanHeight(thisp[0]);
+                   TOWORD.page.checkAndDealSpanHeight(thisp,true);
                 }else {
                    console.log("我可能被删除了*******************************************1")
                     last_oldtranslatext="";
@@ -2369,7 +2369,7 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                         }else {
                             $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
                         }
-                        TOWORD.page.checkAndDealSpanHeight(thisp[0]);
+                        TOWORD.page.checkAndDealSpanHeight(thisp,true);
                         usertype=lastusertype;//之前没讲完最后一个用户不变
                         console.log("之前没讲完最后一个用户不变")
                     }else {

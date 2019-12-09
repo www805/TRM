@@ -268,8 +268,25 @@
             moreMaxHeight:function (ue,pseight_old,psheight,divid){//以后可能改，现在就用这个
                 TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
             },
-            checkAndDealSpanHeight:function (node){
+            checkAndDealSpanHeight:function (node,bool){
 
+                //bool询问是否需要先判断该页的高度
+                if(isNotEmpty(bool)&&bool){
+                    //先判断该节点的div的高度
+                    var div=getDivByChildNode(node);
+                    if(isNotEmpty(div)){
+                         var ht=getNodeHeightByNode(div);
+                         if(ht > TOWORD.pagemaxheight){
+                             var pseight_old=TOWORD.divheightmap[div.id];
+                             TOWORD.page.reTypesetting(ue,pseight_old,ht,div.id);
+                         }
+                    }else{
+                        console.log("该节点不在div分页内？？node："+node.nodeName);
+                        return ;
+                    }
+                }else{
+
+                }
                 checkAndDealSpanHeight(node);
             }
         }
@@ -948,8 +965,8 @@
      */
     function getNodeHeightByNode(cnode){
 
-        if(null==cnode){
-            console.log("getNodeHeightByNode cnode is null,警告");
+        if(null==cnode||cnode.nodeType==3){
+            console.log("getNodeHeightByNode cnode is null或者cnode.nodeType==3,警告");
             return 0;
         }
         var nodeheight=cnode.scrollHeight;//节点本身的内部高度
@@ -1236,12 +1253,12 @@
         var beforeheight=0;
         if(null==beforeheight||beforeheight< 0){
             beforeheight=0;
-        }else if(beforeheight >TOWORD.pagemaxheight){
+        }else if(beforeheight >TOWORD.pmaxlineheight){
             console.log(beforeheight+":pageHeightBeforeNode 这不是扯淡吗，本页当前节点之前的高度还大于最大页面高度，那不早分页了");
             return ;
         }
         var nodeHeight=getNodeHeightByNode(node);
-        var realnodemaxheight=TOWORD.pagemaxheight-beforeheight;//这个节点真实的最大高度
+        var realnodemaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight-beforeheight;//这个节点真实的最大高度
         if(nodeHeight <= realnodemaxheight){
             console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
             return ;

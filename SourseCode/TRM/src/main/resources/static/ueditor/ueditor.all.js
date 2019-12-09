@@ -29,6 +29,8 @@ UE.version = "1.4.3";
 
 var dom = UE.dom = {};
 
+UE.UETHIS=this;
+
 // UE.divcss ="margin: 10px auto;padding: 8% 7% 8% 7%;width: 65%;height:90%;background-repeat: no-repeat; background-size: 100% 100%;background-image: url(/ueditor/themes/default/images/body_bg.png);box-shadow:0 0 10px #000000;";
 
 
@@ -241,7 +243,7 @@ var browser = UE.browser = function(){
      * ```
      */
     if(/(\d+\.\d)?(?:\.\d)?\s+safari\/?(\d+\.\d+)?/i.test(agent) && !/chrome/i.test(agent)){
-    	browser.safari = + (RegExp['\x241'] || RegExp['\x242']);
+        browser.safari = + (RegExp['\x241'] || RegExp['\x242']);
     }
 
 
@@ -13868,7 +13870,7 @@ UE.plugins['wordcount'] = function(){
 
         //检测所在子节点的高度
         // TOWORD.util.checkPHeight(ue,null);
-        TOWORD.page.checkAndDealSpanHeight(ue.selection.getRange().startContainer);
+        TOWORD.page.checkAndDealSpanHeight(ue.selection.getRange().startContainer,false);
 
         if(!TOWORD.importwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
