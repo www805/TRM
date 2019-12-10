@@ -156,7 +156,7 @@
                         for(var i=0;i<POBJs.length;i++){
                             newps.push(POBJs[i]);//当前页剩下的P重新分页
                         }
-                        newps=getNextAllPEvt(newps);
+                        newps=getNextAllPEvt(TOWORD.currentdivnum,newps);
                         delDivNextHimselfByDividnum(nextdividnum);//删除除了下一页的以下所有页
                         var nextdiv=getDivByDivid(nextdivid);
                         nextdiv.innerHTML="";//清空下一页
@@ -187,7 +187,7 @@
                         //情况2
                         //2、P总高小了，有下一页；(要考虑下一页往上一页补充一P是否会超过900)
                         var newps=new Array();
-                        newps=getNextAllPEvt(newps);//下一页开始的所有页的子节点的集合
+                        newps=getNextAllPEvt(TOWORD.currentdivnum,newps);//下一页开始的所有页的子节点的集合
 
                         delDivNextHimselfByDividnum(nextdividnum);//删除除了下一页的以下所有页
                         var nextdiv=getDivByDivid(nextdivid);
@@ -277,8 +277,44 @@
                         var divid=div.id;
                          var ht=getAllPHeightByDivid(divid);
                          if(ht > TOWORD.pagemaxheight){
-                             var pseight_old=TOWORD.divheightmap[divid];
-                             TOWORD.page.reTypesetting(ue,pseight_old,ht,divid);
+
+                             //看是否存在下一页
+                             var currentdivnum=parseInt(divid.replace(/[^0-9]/ig,""));
+                             var nextdividnum=currentdivnum+1;
+                             var nextdivid=TOWORD.divpage.getpagedivid(nextdividnum);//下一页的ID
+                             if(checkExistByDivid(nextdivid)){//判断是否存在
+
+                                 //情况1
+                                 //获取本页最后一个P,缓存p，并删除P，以及以下所有页的P；
+                                 // 删除除了下一页的以下所有页，清空下一页，修改缓存页数；
+                                 // 在下一页中进行数据导入并分页；
+
+                                 var newps=new Array();
+                                 var POBJs=getLeastPEvtAndDelByDivid(ue,divid,ht);//最后几个子节点
+                                 for(var i=0;i<POBJs.length;i++){
+                                     newps.push(POBJs[i]);//当前页剩下的P重新分页
+                                 }
+                                 newps=getNextAllPEvt(currentdivnum,newps);
+                                 delDivNextHimselfByDividnum(nextdividnum);//删除除了下一页的以下所有页
+                                 var nextdiv=getDivByDivid(nextdivid);
+                                 nextdiv.innerHTML="";//清空下一页
+                                 TOWORD.divnum=nextdividnum;//修改缓存页数
+
+                                 //重新分页
+                                 againFY(ue,newps);
+
+                             }else{
+                                 //情况3
+                                 //获取本页最后一个P,缓存p，并删除P，
+                                 //直接新增一个div带入HTML，高度，div编号
+                                 var POBJs=getLeastPEvtAndDelByDivid(ue,divid,ht);//最后一个P
+                                 //需要判断是在第一个P的开头还是结尾
+                                 TOWORD.divnum=nextdividnum;//修改缓存页数
+                                 //重新分页
+                                 againFY(ue,POBJs);
+
+                             }
+
                          }
                     }else{
                         console.log("该节点不在div分页内？？node："+node.nodeName);
@@ -287,7 +323,10 @@
                 }else{
 
                 }
-                checkAndDealSpanHeight(node);
+
+                checkPHeight(ue,node);
+
+                // checkAndDealSpanHeight(node);
             }
         }
     }();
@@ -786,9 +825,9 @@
     /**
      * 获取当前divID的以下的所有页的所有标签
      */
-    function getNextAllPEvt(newps){
+    function getNextAllPEvt(currentdivnum,newps){
 
-        var nextdividnum=TOWORD.currentdivnum+1;
+        var nextdividnum=currentdivnum+1;
         if(nextdividnum > TOWORD.divnum){
             console.log(nextdividnum+":nextdividnum--TOWORD.divnum:"+TOWORD.divnum+"下一页比总页数还大，怎么可能");
             return newps;
@@ -1175,10 +1214,22 @@
 
                     var bool=checkCurrentPosition(ue,node);
                     newp.innerHTML=node.outerHTML;
-                    checkExistByDivid();
+                    newp.style=realp.style.cssText;
                     node.parentNode.removeChild(node);
 
                     insertAfterChildNode(newp,realp,bool);
+
+                    var starttime=realp.getAttribute('starttime');
+                    if(isNotEmpty(starttime)){
+                        newp.setAttribute('starttime',starttime);
+                        realp.removeAttribute('starttime');
+                    }
+                    var usertype=realp.getAttribute('usertype');
+                    if(isNotEmpty(usertype)){
+                        newp.setAttribute('usertype',usertype);
+                        realp.removeAttribute('usertype');
+                    }
+
                     return;
                 }else if(nodeHeight > 0&&nodeHeight>=realpmaxheight){
                     var snodes=node.childNodes;
@@ -1191,9 +1242,23 @@
 
                             var bool=checkCurrentPosition(ue,snode);
                             newp.innerHTML=snode.outerHTML;
+                            newp.style=realp.style.cssText;
                             snode.parentNode.removeChild(snode);
                             //要判断是不是当前光标位置
                             insertAfterChildNode(newp,realp,bool);
+
+
+                            var starttime=realp.getAttribute('starttime');
+                            if(isNotEmpty(starttime)){
+                                newp.setAttribute('starttime',starttime);
+                                realp.removeAttribute('starttime');
+                            }
+                            var usertype=realp.getAttribute('usertype');
+                            if(isNotEmpty(usertype)){
+                                newp.setAttribute('usertype',usertype);
+                                realp.removeAttribute('usertype');
+                            }
+
                             return ;
                         }
                     }
@@ -1339,7 +1404,23 @@
             newp.style.textIndent='';//不要首行缩进，因为这一段只是上一段的补充
 
             insertAfterChildNode(newp,node,false);
+
+
+            var starttime=node.getAttribute('starttime');
+            if(isNotEmpty(starttime)){
+                newp.setAttribute('starttime',starttime);
+                node.removeAttribute('starttime');
+            }
+            var usertype=node.getAttribute('usertype');
+            if(isNotEmpty(usertype)){
+                newp.setAttribute('usertype',usertype);
+                node.removeAttribute('usertype');
+            }
+
+
         }
     }
+
+
 
 })();

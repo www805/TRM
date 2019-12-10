@@ -13870,17 +13870,11 @@ UE.plugins['wordcount'] = function(){
     me.addListener('contentchange',function(){
         me.fireEvent('wordcount');
 
-
+console.log('121212----');
 
         if(!TOWORD.notneedwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
             //找到div所有的P，计算所有P的总高度
-
-            //检测所在子节点的高度
-            // TOWORD.util.checkPHeight(ue,null);
-            var cchecknode=ue.selection.getRange().startContainer;
-            TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
-            console.log(cchecknode+":cchecknode-----");
 
             var divid=TOWORD.util.getDivIdByUE(ue);
             if(!isNotEmpty(divid)){
@@ -13903,6 +13897,12 @@ UE.plugins['wordcount'] = function(){
                 }
                 console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
             }
+
+            //检测所在子节点的高度
+            // TOWORD.util.checkPHeight(ue,null);
+            var cchecknode=ue.selection.getRange().startContainer;
+            TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
+            console.log(cchecknode+":cchecknode-----");
         }
 
     });
