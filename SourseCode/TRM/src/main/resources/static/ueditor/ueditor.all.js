@@ -16650,20 +16650,20 @@ UE.plugins['enterkey'] = function() {
             }else{
                 me.fireEvent('saveScene',true,true)
             }
+            var prange=TOWORD.util.getpByRange(ue);
+            //删除不应该存在P文件的属性，防止出错
+            if(null!=prange){
+                if(isNotEmpty(prange.getAttribute('starttime'))){
+                    console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
+                    prange.removeAttribute('starttime');
+                };
+                if(isNotEmpty(prange.getAttribute('usertype'))){
+                    console.log("删除了usertype这个属性----usertype="+prange.getAttribute('usertype'));
+                    prange.removeAttribute('usertype');
+                };
+            }
         }
 
-        var prange=TOWORD.util.getpByRange(ue);
-        //删除不应该存在P文件的属性，防止出错
-        if(null!=prange){
-            if(isNotEmpty(prange.getAttribute('starttime'))){
-                console.log("删除了starttime这个属性----starttime="+prange.getAttribute('starttime'));
-                prange.removeAttribute('starttime');
-            };
-            if(isNotEmpty(prange.getAttribute('usertype'))){
-                console.log("删除了usertype这个属性----usertype="+prange.getAttribute('usertype'));
-                prange.removeAttribute('usertype');
-            };
-        }
 
     });
 
