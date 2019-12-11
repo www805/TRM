@@ -1081,6 +1081,13 @@ function exporttemplate_ue(exporttype) {
         };
         ajaxSubmitByJson(url,paramdata,callbackexporttemplate_ue);
     }
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent'],
+        time:6000
+    });
+    $("div[name='btn_div']").attr("showorhide","false");
+    $("div[name='btn_div']").removeClass("layui-form-selected");
 }
 
 function callbackexporttemplate_ue(data) {
@@ -1127,6 +1134,13 @@ function export_asr() {
         };
         ajaxSubmitByJson(url,paramdata,callbackexport_asr);
     }
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent'],
+        time:6000
+    });
+    $("div[name='btn_div']").attr("showorhide","false");
+    $("div[name='btn_div']").removeClass("layui-form-selected");
 }
 function callbackexport_asr(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){

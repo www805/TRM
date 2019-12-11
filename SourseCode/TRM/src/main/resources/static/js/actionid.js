@@ -440,6 +440,9 @@ function getactionid_manage() {
         quickCourt_getDefaultMtModelssid:"quickCourt_getDefaultMtModelssid",
         quickCourt_getWordTemplates:"quickCourt_getWordTemplates",
         quickCourt_getCasesByCasenum:"quickCourt_getCasesByCasenum",
+        quickCourt_userloginout:"quickCourt_userloginout",
+        quickCourt_gotologin:"quickCourt_gotologin",
+
 
 
         resetPassword_resetPassword:"resetPassword_resetPassword",
