@@ -287,6 +287,9 @@
                 TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
             },
             checkAndDealSpanHeight:function (node,bool){
+
+                checkPHeight(ue,node);
+
                 //bool询问是否需要先判断该页的高度
                 if(isNotEmpty(bool)&&bool){
                     //先判断该节点的div的高度
@@ -338,13 +341,48 @@
                         console.log("该节点不在div分页内？？node："+node.nodeName);
                         return ;
                     }
-                }else{
-
                 }
 
-                checkPHeight(ue,node);
+            },
+            checkDivAndChirldNodeHeight : function(){
+                if(!TOWORD.notneedwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
 
-                // checkAndDealSpanHeight(node);
+                    //为什么先检查子节点的高度再检查div的高度，
+                    // 因为子节点检查完后可能会导致div的总高度增加
+
+                    //检测所在子节点的高度
+                    //如果段落高度大于子节点的最大高度，就需要判断子节点的高度问题
+                    var cchecknode=ue.selection.getRange().startContainer;
+                    checkPHeight(ue,cchecknode);
+                    console.log(cchecknode+":cchecknode-----");
+
+                    //检测该页div中所有p的高度
+                    //找到div所有的P，计算所有P的总高度
+
+                    var divid=TOWORD.util.getDivIdByUE(ue);
+                    if(!isNotEmpty(divid)){
+                        return;
+                    }else{
+                        TOWORD.currentdivnum=parseInt(divid.replace(/[^0-9]/ig,""));
+                    }
+                    var psheight=TOWORD.page.getAllPHeightByDivid(divid);
+                    var pseight_old=TOWORD.divheightmap[divid];
+                    var pMaxHeight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;
+                    if(isNotEmpty(psheight)){
+                        //对比上一次的高度，有变化的话，触发重新排版
+                        if(isNotEmpty(pseight_old)&&(psheight!=pseight_old)){
+                            //重新排版，写入toWord里面
+                            console.log("重新排版，写入toWord里面");
+                            TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
+                        }else if(psheight>=TOWORD.pagemaxheight){
+                            //重新排版，写入toWord里面
+                            console.log("重新排版，写入toWord里面--2,psheight:"+psheight);
+                            TOWORD.page.moreMaxHeight(ue,pseight_old,psheight,divid);
+                        }
+                        console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
+                    }
+
+                }
             }
         }
     }();

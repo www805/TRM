@@ -4323,6 +4323,9 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
     }
     function setEndPoint(toStart, node, offset, range) {
         //如果node是自闭合标签要处理
+        if(null==node){
+            return ;
+        }
         if (node.nodeType == 1 && (dtd.$empty[node.tagName] || dtd.$nonChild[node.tagName])) {
             offset = domUtils.getNodeIndex(node) + (toStart ? 0 : 1);
             node = node.parentNode;
@@ -11635,6 +11638,10 @@ UE.plugins['font'] = function () {
                 }
             }
             node.tagName = 'span';
+
+            //字号、字体
+            console.log('字号、字体 变了');
+
         });
 //        utils.each(root.getNodesByTagName('span'), function (node) {
 //            var val;
@@ -12510,6 +12517,8 @@ UE.commands['indent'] = {
     execCommand : function() {
          var me = this,value = me.queryCommandState("indent") ? "0em" : (me.options.indentValue || '2em');
          me.execCommand('Paragraph','p',{style:'text-indent:'+ value});
+        //首行缩进
+        console.log('首行缩进 变了');
     },
     queryCommandState : function() {
         var pN = domUtils.filterNodeList(this.selection.getStartElementPath(),'p h1 h2 h3 h4 h5 h6');
@@ -13109,7 +13118,17 @@ UE.plugins['rowspacing'] = function(){
     });
     me.commands['rowspacing'] =  {
         execCommand : function( cmdName,value,dir ) {
+
+            if(value=='5'||value=='10'||value=='15'||value=='20'||value=='25'){
+
+            }else{
+                console.log(value+':value段前、段后距离的值 是一个不能理解的值，给出默认5px');
+                value='5';
+            }
+
             this.execCommand('paragraph','p',{style:'margin-'+dir+':'+value + 'px'});
+            //段前、段后
+            console.log('段前、段后 变了');
             return true;
         },
         queryCommandValue : function(cmdName,dir) {
@@ -13165,6 +13184,8 @@ UE.plugins['lineheight'] = function(){
     me.commands['lineheight'] =  {
         execCommand : function( cmdName,value ) {
             this.execCommand('paragraph','p',{style:'line-height:'+ (value == "1" ? "normal" : value + 'em') });
+            //行内间距
+            console.log('行内间距 变了');
             return true;
         },
         queryCommandValue : function() {
@@ -13870,40 +13891,7 @@ UE.plugins['wordcount'] = function(){
     me.addListener('contentchange',function(){
         me.fireEvent('wordcount');
 
-        if(!TOWORD.notneedwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
-            //检测该页div中所有p的高度
-            //找到div所有的P，计算所有P的总高度
-
-            var divid=TOWORD.util.getDivIdByUE(ue);
-            if(!isNotEmpty(divid)){
-                return;
-            }else{
-                TOWORD.currentdivnum=parseInt(divid.replace(/[^0-9]/ig,""));
-            }
-            var psheight=TOWORD.page.getAllPHeightByDivid(divid);
-            var pseight_old=TOWORD.divheightmap[divid];
-            var pMaxHeight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;
-            if(isNotEmpty(psheight)){
-                //对比上一次的高度，有变化的话，触发重新排版
-                if(isNotEmpty(pseight_old)&&(psheight!=pseight_old)){
-                    //重新排版，写入toWord里面
-                    console.log("重新排版，写入toWord里面");
-                    TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
-                }else if(psheight>=TOWORD.pagemaxheight){
-                    //重新排版，写入toWord里面
-                    console.log("重新排版，写入toWord里面--2,psheight:"+psheight);
-                    TOWORD.page.moreMaxHeight(ue,pseight_old,psheight,divid);
-                }else if(psheight > pMaxHeight){ //如果段落高度大于子节点的最大高度，就需要判断子节点的高度问题
-                    //检测所在子节点的高度
-                    var cchecknode=ue.selection.getRange().startContainer;
-                    TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
-                    console.log(cchecknode+":cchecknode-----");
-                }
-                console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
-            }
-
-
-        }
+        TOWORD.page.checkDivAndChirldNodeHeight();//检测当前光标所在段和行的高度
 
     });
     var timer;
@@ -22876,6 +22864,9 @@ UE.plugins['basestyle'] = function(){
                         obj ? range.removeInlineStyle( tagNames ) : range.applyInlineStyle( tagNames[0] );
                     }
                     range.select();
+
+                    //加粗、上标、下标
+                    console.log('加粗、上标、下标 变了');
                 },
                 queryCommandState : function() {
                    return getObj(this,tagNames) ? 1 : 0;
