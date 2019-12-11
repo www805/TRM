@@ -13870,8 +13870,6 @@ UE.plugins['wordcount'] = function(){
     me.addListener('contentchange',function(){
         me.fireEvent('wordcount');
 
-console.log('121212----');
-
         if(!TOWORD.notneedwordrun){//导入Word是非工作的状态下才会检测是否需要重新排版
             //检测该页div中所有p的高度
             //找到div所有的P，计算所有P的总高度
@@ -13884,6 +13882,7 @@ console.log('121212----');
             }
             var psheight=TOWORD.page.getAllPHeightByDivid(divid);
             var pseight_old=TOWORD.divheightmap[divid];
+            var pMaxHeight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;
             if(isNotEmpty(psheight)){
                 //对比上一次的高度，有变化的话，触发重新排版
                 if(isNotEmpty(pseight_old)&&(psheight!=pseight_old)){
@@ -13894,15 +13893,16 @@ console.log('121212----');
                     //重新排版，写入toWord里面
                     console.log("重新排版，写入toWord里面--2,psheight:"+psheight);
                     TOWORD.page.moreMaxHeight(ue,pseight_old,psheight,divid);
+                }else if(psheight > pMaxHeight){ //如果段落高度大于子节点的最大高度，就需要判断子节点的高度问题
+                    //检测所在子节点的高度
+                    var cchecknode=ue.selection.getRange().startContainer;
+                    TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
+                    console.log(cchecknode+":cchecknode-----");
                 }
                 console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
             }
 
-            //检测所在子节点的高度
-            // TOWORD.util.checkPHeight(ue,null);
-            var cchecknode=ue.selection.getRange().startContainer;
-            TOWORD.page.checkAndDealSpanHeight(cchecknode,false);
-            console.log(cchecknode+":cchecknode-----");
+
         }
 
     });

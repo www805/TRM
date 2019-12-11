@@ -123,6 +123,14 @@
              */
             reTypesetting:function(ue,oldheight,newheight,divid){
 
+                //首先检测当前div的子元素是否有超标的，有就需要处理
+
+                var div=getDivByDivid(divid);
+                var divps=div.childNodes;
+                for(var i=0;i<divps.length;i++){
+                    checkPHeight(ue,divps[i]);
+                }
+
                 //几种情况
                 //组合结果：
                 // 1、P总高大了，有下一页；(不需要判断这一页是否到达900的编辑极限)
@@ -596,6 +604,7 @@
         if(!isNotEmpty(div)) return null;
         var divps=div.childNodes;
         if(null!=divps&&divps.length > 0){
+
             var moreps=new Array();
             var rvnodeht=0;//减去的子节点的高度和
             for(var i=divps.length-1;i>=0;i--){
@@ -603,32 +612,7 @@
                 var leastp=divps[i];
 
                 //如果
-                var pht=leastp.scrollHeight;//p的高度加上margin的高度
-                //判断一下是否有隐形的高度样式
-                var marginBottom=leastp.style.marginBottom;
-                if(isNotEmpty(marginBottom)){
-                    if(marginBottom.indexOf("in")> -1||marginBottom.indexOf("em")> -1){
-                        pht+=in2px(marginBottom);
-                    }else if(marginBottom.indexOf("pt")> -1||marginBottom.indexOf("PT")> -1){
-                        pht+=pt2px(marginBottom);
-                    }else {//这里可能还需要做细致的转换处理，in,em之类的单位转px
-                        pht+=parseInt(marginBottom.replace(/[^0-9]/ig,""));
-                    }
-                }else{
-                    pht+=TOWORD.margintopandbutton
-                }
-                var marginTop=leastp.style.marginTop;
-                if(isNotEmpty(marginTop)){
-                    if(marginTop.indexOf("in")> -1||marginTop.indexOf("em")> -1){
-                        pht+=in2px(marginTop);
-                    }else if(marginTop.indexOf("pt")> -1||marginTop.indexOf("PT")> -1){
-                        pht+=pt2px(marginTop);
-                    }else {//这里可能还需要做细致的转换处理，in,em之类的单位转px
-                        pht+=parseInt(marginTop.replace(/[^0-9]/ig,""));
-                    }
-                }
-
-
+                var pht=getNodeHeightByNode(leastp);
 
                 //判断光标所在位置
                 var range=ue.selection.getRange();
@@ -647,6 +631,8 @@
                     }
                 }
                 $(bk_start).remove(); // 移除临时dom
+
+                //var pMaxHeight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;//每一个P段落最大的高度750
 
 
                 var POBJ={
@@ -696,15 +682,7 @@
                     break;
                 }else{
                     console.log(newheight+":newheight--还需要再删除几个元素--rvnodeht："+rvnodeht);
-                    // var POBJ={
-                    //     realHeight:pht,//节点真实占用高度
-                    //     outerHTML:leastp.outerHTML,
-                    //     innerHTML:leastp.innerHTML,
-                    //     style:leastp.style,
-                    //     num:0+i
-                    // };
-                    // parentNode.removeChild(leastp);//删除最后一个P
-                    // moreps.push(POBJ);
+
                 }
             }
 
@@ -1199,7 +1177,7 @@
         var realpmaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight;//真实的最大子节点高度
         var nodeHeight=getNodeHeightByNode(realp);
 
-        console.log(realpmaxheight+"：realpmaxheight，---checkPHeight---，nodeHeight："+nodeHeight);
+        // console.log(realpmaxheight+"：realpmaxheight，---checkPHeight---，nodeHeight："+nodeHeight);
         if(nodeHeight >= realpmaxheight){
             console.log(realpmaxheight+"：realpmaxheight，子节点高度已经超过警戒线，分段开始，nodeHeight："+nodeHeight);
 
@@ -1265,6 +1243,8 @@
                 }
             }
 
+        }else{
+            console.log(realpmaxheight+"：realpmaxheight，子节点高度没有超过警戒线，不用分段，nodeHeight："+nodeHeight);
         }
 
     }
