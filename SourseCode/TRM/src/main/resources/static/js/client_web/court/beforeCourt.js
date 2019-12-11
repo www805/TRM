@@ -740,7 +740,7 @@ function select_caseblur() {
     var username=$("#username").val();
     var modelssidname=$("#modelssid").val();
     //需要验证案件ssid
-    dqcasessid=null;
+  /*  dqcasessid=null;*/
     if (isNotEmpty(cases)){
         for (var i = 0; i < cases.length; i++) {
             var c = cases[i];

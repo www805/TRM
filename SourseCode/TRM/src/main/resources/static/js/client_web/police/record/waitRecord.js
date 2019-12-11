@@ -956,6 +956,7 @@ function getTDCacheParamByMTssid() {
 //保存按钮
 //recordbool 1进行中 2已结束
 function addRecord() {
+    setRecordreal();
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }

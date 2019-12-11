@@ -1331,3 +1331,34 @@ function callbackgetCasesByCasenum(data) {
     });
 }
 
+
+function userloginout() {
+    layer.confirm('确定要退出登录吗？', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        var url=getActionURL(getactionid_manage().quickCourt_userloginout);
+        var data={
+            token:INIT_CLIENTKEY
+        };
+        ajaxSubmitByJson(url,data,callbackuserloginout);
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+function callbackuserloginout(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        layer.msg("退出成功",{time:500,icon: 6,},function () {
+            var url=getActionURL(getactionid_manage().quickCourt_gotologin);
+            if (isNotEmpty(url)){
+                top.location.href=url;
+            }
+        });
+    }else{
+        layer.msg(data.message, {icon: 5});
+    }
+}
+
+

@@ -687,6 +687,7 @@ function getTDCacheParamByMTssid() {
 //保存按钮
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 function addRecord() {
+    setRecordreal();
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }
@@ -1456,7 +1457,7 @@ $(function () {
                                         identify(usertype,starttime,gradeintroduce,translatext)
                                     }else {
                                         console.log("我没在里面啊啊啊啊__"+usertype)
-                                        last_identifys[""+usertype+""]=null;
+                                        //last_identifys[""+usertype+""]=null;
                                     }
                                 }
                             }
@@ -2317,94 +2318,59 @@ function set_record_switchusers() {
 
 
 ///////////////////////////////**********************************************************自动甄别**************start
-var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{firsttime:第一句时间，starttime:当前句时间,translatext:"新文本",oldtranslatext:"原始文本"}
-var lastusertype=-1;//上一个类型
-
+var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{firsttime:第一句时间，starttime:当前句时间}
+var lastusertype=-1;//上一个角色类型
 function identify(usertype,starttime,gradeintroduce,translatext) {
-    var last_identify=last_identifys[""+lastusertype+""];
-    var last_translatext = null;
-    var last_oldtranslatext = null;
-    var last_firsttime=null;
+    var last_identify=last_identifys[""+lastusertype+""];//上一个角色
+    var dq_identify=last_identifys[""+usertype+""];//当前角色
 
-    var newlast_identify={};//更新数据
-
-    if (lastusertype!=-1&&isNotEmpty(last_identify)){
+    if (lastusertype!=-1){
+        if (isNotEmpty(last_identify)){
             if (usertype==lastusertype) {
-                last_translatext=last_identify.translatext;
-                last_oldtranslatext=last_identify.oldtranslatext;
-                last_firsttime=last_identify.firsttime;
-                if (last_identify.starttime==starttime){
-                    last_translatext=translatext;
-                }else{
-                    last_oldtranslatext+=last_translatext;
-                    last_translatext=translatext;
-                }
-
-                var thisp= $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
+                var thisp= $("p[usertype="+usertype+"][starttime="+last_identify.firsttime+"]:last",editorhtml);
                 if (isNotEmpty(thisp)) {
-                    var span_laststarttime = $("span[starttime]:not(:empty)",thisp).last().attr("starttime");
+                    var span_last = $("span[starttime]:not(:empty)",thisp).last();
+                    var span_laststarttime=$(span_last).attr("starttime");
                     if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
-                        $("span[starttime]:not(:empty)",thisp).last().html(last_translatext);
+                        $(span_last).html(translatext);
                     }else {
-                        $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
+                        $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
                     }
-                   TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
+                    TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
+                    last_identifys[""+usertype+""].starttime=starttime;
                 }else {
-                   console.log("我可能被删除了*******************************************1")
-                    last_oldtranslatext="";
-                    last_translatext=translatext;
-                    last_firsttime=starttime;
                     addidentify(usertype,starttime,gradeintroduce,translatext);
                 }
             }else {
-                last_identify=last_identifys[""+usertype+""];
-                if (isNotEmpty(last_identify)&&isNotEmpty(last_identify.starttime)&&last_identify.starttime==starttime){
-                    last_translatext=last_identify.translatext;
-                    last_oldtranslatext=last_identify.oldtranslatext;
-                    last_firsttime=last_identify.firsttime;
-                    var thisp = $("p[usertype="+usertype+"][starttime="+last_firsttime+"]:last",editorhtml);
-                    if (isNotEmpty(thisp)) {
-                        //判断最后一句话有没有讲完
-                        var span_laststarttime = $("span[starttime]:not(:empty)",thisp).last().attr("starttime");
-                        if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
-                            $("span[starttime]:not(:empty)",thisp).last().html(last_translatext);
-                        }else {
-                            $(thisp).append("<span starttime="+starttime+">"+last_translatext+"</span>");
-                        }
-                        TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
-                        usertype=lastusertype;//之前没讲完最后一个用户不变
-                        console.log("之前没讲完最后一个用户不变")
-                    }else {
-                        console.log("我可能被删除了*******************************************2")
-                        last_oldtranslatext="";
-                        last_translatext=translatext;
-                        last_firsttime=starttime;
+                console.log("角色改变了了了了了******************************************")
+                if (isNotEmpty(dq_identify)) {
+                    var thisp= $("p[usertype="+usertype+"][starttime="+dq_identify.firsttime+"]:last",editorhtml);
+                    if (dq_identify.starttime==starttime&&isNotEmpty(thisp)){
+                            var span_last = $("span[starttime]:not(:empty)",thisp).last();
+                            var span_laststarttime=$(span_last).attr("starttime");
+                            if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
+                                $(span_last).last().html(translatext);
+                            }else {
+                                $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
+                            }
+                            TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
+                            last_identifys[""+usertype+""].starttime=starttime;
+                            usertype=lastusertype;//不改变上一个
+                    } else {
                         addidentify(usertype,starttime,gradeintroduce,translatext);
                     }
-                } else {
-                    last_oldtranslatext="";
-                    last_translatext=translatext;
-                    last_firsttime=starttime;
+                }else {
                     addidentify(usertype,starttime,gradeintroduce,translatext);
                 }
             }
-            newlast_identify={
-                firsttime:last_firsttime,
-                starttime:starttime,//当前这句话时间
-                translatext:last_translatext,
-                oldtranslatext:last_oldtranslatext,
-            }
-    } else {
-        addidentify(usertype,starttime,gradeintroduce,translatext);
-         newlast_identify={
-            firsttime:starttime,
-            starttime:starttime,
-            translatext:translatext,
-            oldtranslatext:"",
+        }else {
+            console.log("存在上一个角色不应该进来的吧******************************")
         }
+    }else{
+        console.log("初始化一下自动甄别******************************")
+        addidentify(usertype,starttime,gradeintroduce,translatext);
     }
     lastusertype=usertype;
-    last_identifys[""+usertype+""]=newlast_identify;
 }
 
 //追加新的一行哎哎哎
@@ -2413,9 +2379,8 @@ function addidentify(usertype,starttime,gradeintroduce,translatext) {
     focuslable(trtd_html,2,null);
     laststarttime_ue=starttime;
     resetpage();
+    last_identifys[""+usertype+""]={firsttime:starttime,starttime:starttime};
 }
-
-
 
 ///////////////////////////////**********************************************************自动甄别**************end
 

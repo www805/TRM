@@ -776,6 +776,7 @@ function callbackgetRecordrealByRecordssid(data) {
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 var overRecord_index=null;
 function addRecord() {
+    setRecordreal();//3秒实时保存
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }
@@ -1081,6 +1082,13 @@ function exporttemplate_ue(exporttype) {
         };
         ajaxSubmitByJson(url,paramdata,callbackexporttemplate_ue);
     }
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent'],
+        time:6000
+    });
+    $("div[name='btn_div']").attr("showorhide","false");
+    $("div[name='btn_div']").removeClass("layui-form-selected");
 }
 
 function callbackexporttemplate_ue(data) {
@@ -1127,6 +1135,13 @@ function export_asr() {
         };
         ajaxSubmitByJson(url,paramdata,callbackexport_asr);
     }
+    layer.msg("导出中，请稍等...", {
+        icon: 16,
+        shade: [0.1, 'transparent'],
+        time:6000
+    });
+    $("div[name='btn_div']").attr("showorhide","false");
+    $("div[name='btn_div']").removeClass("layui-form-selected");
 }
 function callbackexport_asr(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){

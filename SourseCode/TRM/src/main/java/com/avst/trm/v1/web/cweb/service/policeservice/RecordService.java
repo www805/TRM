@@ -291,140 +291,147 @@ public class RecordService extends BaseService {
         RecordStatusCache.removeRecordInfoCache(recordssid);/**如果修改成功，删除这条缓存**/
 
         //判断笔录状态，如果等于2或者0（已完成或者已删除）不进行下一步
+        LogUtil.intoLog(1,this.getClass(),"addRecord__保存笔录参数:recordssid_"+recordssid);
         Police_record police_record=new Police_record();
-        police_record.setSsid(recordssid);
-        police_record=police_recordMapper.selectOne(police_record);
-        if (null==police_record){
-            result.setMessage("系统异常");
-            LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：未找到该笔录__");
-            return;
-        }
+        EntityWrapper policerecordew=new EntityWrapper();
+        policerecordew.eq("ssid",recordssid);
+        List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
+        if (null!=police_records&&police_records.size()==1){
+            police_record=police_records.get(0);
 
-        if ((police_record.getRecordbool()==2||police_record.getRecordbool()==-1||police_record.getRecordbool()==3)&&!justqwbool){
-            //2已完成或者-1已删除状态
-            result.setMessage("该笔录已结束...");
-            LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
-            return;
-        }
-
-
-        //修改笔录状态
-        Integer recordbool=addRecordParam.getRecordbool();
-        String mtssid=addRecordParam.getMtssid();
-
-
-
-        //获取该笔录下的全部题目答案
-        EntityWrapper recordToProblemsParam=new EntityWrapper();
-        recordToProblemsParam.eq("recordssid",recordssid);
-        List<Police_recordtoproblem> recordToProblems=police_recordtoproblemMapper.selectList(recordToProblemsParam);
-        if (null!=recordToProblems&&recordToProblems.size()>0){
-            for (Police_recordtoproblem recordToProblem : recordToProblems) {
-                //删除所有题目
-                EntityWrapper answersParam=new EntityWrapper();
-                answersParam.eq("recordtoproblemssid",recordToProblem.getSsid());
-                int answerdelete_bool=police_answerMapper.delete(answersParam);
-                LogUtil.intoLog(this.getClass(),"answerdelete_bool__"+answerdelete_bool);
+            if (null==police_record){
+                result.setMessage("未找到该笔录");
+                LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：未找到该笔录__recordssid:"+recordssid);
+                return;
             }
-            int recordtoproblemdelete_bool=police_recordtoproblemMapper.delete(recordToProblemsParam);
-            LogUtil.intoLog(this.getClass(),"recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
-        }else{
-            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__1");
-        }
 
-        //根据参数笔录题目包括答案，新增笔录题目答案
-        if (null!=recordToProblems1&&recordToProblems1.size()>0){
-            for (int i = 0; i < recordToProblems1.size(); i++) {
-                RecordToProblem problem=recordToProblems1.get(i);
-                problem.setCreatetime(new Date());
-                problem.setSsid(OpenUtil.getUUID_32());
-                problem.setOrdernum(Integer.valueOf(i+1));
-                problem.setRecordssid(recordssid);
-                int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
-                LogUtil.intoLog(this.getClass(),"recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
-                if (recordtoprobleminsert_bool>0){
-                    List<Police_answer> answers=problem.getAnswers();
-                    if (null!=answers&&answers.size()>0){
-                        for (int j = 0; j < answers.size(); j++) {
-                            Police_answer answer  = answers.get(j);
-                            answer.setSsid(OpenUtil.getUUID_32());
-                            answer.setCreatetime(new Date());
-                            answer.setOrdernum(Integer.valueOf(j+1));
-                            answer.setRecordtoproblemssid(problem.getSsid());
-                            int answerinsert_bool =  police_answerMapper.insert(answer);
-                            LogUtil.intoLog(this.getClass(),"answerinsert_bool__"+answerinsert_bool);
+            if ((police_record.getRecordbool()==2||police_record.getRecordbool()==-1||police_record.getRecordbool()==3)&&!justqwbool){
+                //2已完成或者-1已删除状态
+                result.setMessage("该笔录已结束...");
+                LogUtil.intoLog(this.getClass(),"addRecord__保存笔录异常__原因：该笔录已结束他人已结束或者已删除状态__police_record.getRecordbool()——-"+police_record.getRecordbool());
+                return;
+            }
+
+
+            //修改笔录状态
+            Integer recordbool=addRecordParam.getRecordbool();
+            String mtssid=addRecordParam.getMtssid();
+
+
+
+            //获取该笔录下的全部题目答案
+            EntityWrapper recordToProblemsParam=new EntityWrapper();
+            recordToProblemsParam.eq("recordssid",recordssid);
+            List<Police_recordtoproblem> recordToProblems=police_recordtoproblemMapper.selectList(recordToProblemsParam);
+            if (null!=recordToProblems&&recordToProblems.size()>0){
+                for (Police_recordtoproblem recordToProblem : recordToProblems) {
+                    //删除所有题目
+                    EntityWrapper answersParam=new EntityWrapper();
+                    answersParam.eq("recordtoproblemssid",recordToProblem.getSsid());
+                    int answerdelete_bool=police_answerMapper.delete(answersParam);
+                    LogUtil.intoLog(this.getClass(),"answerdelete_bool__"+answerdelete_bool);
+                }
+                int recordtoproblemdelete_bool=police_recordtoproblemMapper.delete(recordToProblemsParam);
+                LogUtil.intoLog(this.getClass(),"recordtoproblemdelete_bool__"+recordtoproblemdelete_bool);
+            }else{
+                LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__1");
+            }
+
+            //根据参数笔录题目包括答案，新增笔录题目答案
+            if (null!=recordToProblems1&&recordToProblems1.size()>0){
+                for (int i = 0; i < recordToProblems1.size(); i++) {
+                    RecordToProblem problem=recordToProblems1.get(i);
+                    problem.setCreatetime(new Date());
+                    problem.setSsid(OpenUtil.getUUID_32());
+                    problem.setOrdernum(Integer.valueOf(i+1));
+                    problem.setRecordssid(recordssid);
+                    int recordtoprobleminsert_bool=police_recordtoproblemMapper.insert(problem);
+                    LogUtil.intoLog(this.getClass(),"recordtoprobleminsert_bool__"+recordtoprobleminsert_bool);
+                    if (recordtoprobleminsert_bool>0){
+                        List<Police_answer> answers=problem.getAnswers();
+                        if (null!=answers&&answers.size()>0){
+                            for (int j = 0; j < answers.size(); j++) {
+                                Police_answer answer  = answers.get(j);
+                                answer.setSsid(OpenUtil.getUUID_32());
+                                answer.setCreatetime(new Date());
+                                answer.setOrdernum(Integer.valueOf(j+1));
+                                answer.setRecordtoproblemssid(problem.getSsid());
+                                int answerinsert_bool =  police_answerMapper.insert(answer);
+                                LogUtil.intoLog(this.getClass(),"answerinsert_bool__"+answerinsert_bool);
+                            }
                         }
                     }
                 }
+            }else{
+                LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
             }
-        }else{
-            LogUtil.intoLog(this.getClass(),"该笔录没有任何题目答案__2");
-        }
 
-        if (justqwbool){
-            //不需要进行下一步
-            result.setData(recordssid);
-            changeResultToSuccess(result);
-            return;
-        }
-
-
-        LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
-        if (null!=recordbool&&recordbool==2){
-
-            //如果为3就改为休庭
-            EntityWrapper caseParam=new EntityWrapper();
-            caseParam.eq("r.ssid",recordssid);
-            Case case_= case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
-            String casessid=null;
-            if (null!=case_){
-                casessid=case_.getSsid();
+            if (justqwbool){
+                //不需要进行下一步
+                result.setData(recordssid);
+                changeResultToSuccess(result);
+                return;
             }
-            Integer casebool=addRecordParam.getCasebool();
-            if (null!=casebool&&casebool.intValue()==3){
-                //先获取案件ssid
+
+
+            LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
+            if (null!=recordbool&&recordbool==2){
+
+                //如果为3就改为休庭
+                EntityWrapper caseParam=new EntityWrapper();
+                caseParam.eq("r.ssid",recordssid);
+                Case case_= case_ = police_caseMapper.getCaseByRecordSsid(caseParam);
+                String casessid=null;
                 if (null!=case_){
                     casessid=case_.getSsid();
-                    if (StringUtils.isNotBlank(casessid)){
-                        EntityWrapper updateParam=new EntityWrapper();
-                        updateParam.eq("ssid",casessid);
-                        case_.setCasebool(casebool);
-                        int caseupdate_bool = police_caseMapper.update(case_,updateParam);
-                        LogUtil.intoLog(this.getClass(),"案件修改成休庭状态caseupdate_bool___"+caseupdate_bool+"__state__"+case_.getCasebool());
-                        if (caseupdate_bool>0){
-                            recordbool=3;//笔录也需要改为3休庭
+                }
+                Integer casebool=addRecordParam.getCasebool();
+                if (null!=casebool&&casebool.intValue()==3){
+                    //先获取案件ssid
+                    if (null!=case_){
+                        casessid=case_.getSsid();
+                        if (StringUtils.isNotBlank(casessid)){
+                            EntityWrapper updateParam=new EntityWrapper();
+                            updateParam.eq("ssid",casessid);
+                            case_.setCasebool(casebool);
+                            int caseupdate_bool = police_caseMapper.update(case_,updateParam);
+                            LogUtil.intoLog(this.getClass(),"案件修改成休庭状态caseupdate_bool___"+caseupdate_bool+"__state__"+case_.getCasebool());
+                            if (caseupdate_bool>0){
+                                recordbool=3;//笔录也需要改为3休庭
+                            }
                         }
                     }
                 }
-            }
 
 
-            EntityWrapper updaterecordParam=new EntityWrapper();
-            updaterecordParam.eq("ssid",recordssid);
-            Police_record record=new Police_record();
-            record.setSsid(recordssid);
-            record.setRecordbool(recordbool);
-            int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
-            LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
-            if (updaterecord_bool>0){
-                //导出笔录pdf和word并且关闭会议
-                AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,recordService2,mtssid,outService);
-                addRecord_thread.start();
+                EntityWrapper updaterecordParam=new EntityWrapper();
+                updaterecordParam.eq("ssid",recordssid);
+                Police_record record=new Police_record();
+                record.setSsid(recordssid);
+                record.setRecordbool(recordbool);
+                int updaterecord_bool=police_recordMapper.update(record,updaterecordParam);
+                LogUtil.intoLog(this.getClass(),"updaterecord_bool__"+updaterecord_bool);
+                if (updaterecord_bool>0){
+                    //导出笔录pdf和word并且关闭会议
+                    AddRecord_Thread addRecord_thread=new AddRecord_Thread(recordssid,recordService,recordService2,mtssid,outService);
+                    addRecord_thread.start();
 
-                //笔录改为已结束，修改案件的谈话结束时间
-                if (StringUtils.isNotEmpty(casessid)&&null!=case_){
-                    EntityWrapper updateParam=new EntityWrapper();
-                    updateParam.eq("ssid",casessid);
-                    case_.setEndtime(new Date());
-                    int caseupdate_bool = police_caseMapper.update(case_,updateParam);
-                    LogUtil.intoLog(this.getClass(),"笔录改为已结束，修改案件的谈话结束时间caseupdate_bool___"+caseupdate_bool);
+                    //笔录改为已结束，修改案件的谈话结束时间
+                    if (StringUtils.isNotEmpty(casessid)&&null!=case_){
+                        EntityWrapper updateParam=new EntityWrapper();
+                        updateParam.eq("ssid",casessid);
+                        case_.setEndtime(new Date());
+                        int caseupdate_bool = police_caseMapper.update(case_,updateParam);
+                        LogUtil.intoLog(this.getClass(),"笔录改为已结束，修改案件的谈话结束时间caseupdate_bool___"+caseupdate_bool);
+                    }
+
+
+                    //结束后删除
+                    RecordProtectCache.delRecordecordProtect(recordssid);
                 }
-
-
-                //结束后删除
-                RecordProtectCache.delRecordecordProtect(recordssid);
             }
         }
+
 
         result.setData(recordssid);
         changeResultToSuccess(result);
