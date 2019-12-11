@@ -86,7 +86,17 @@
                                 divshtml+=divhtmlend;
                                 TOWORD.divheightmap[TOWORD.divpage.getpagedivid(TOWORD.divnum)]=ph;//设置这个div的高度
                                 ph=pht;
-                                divshtml+=divhtmlstart.replace("&nestdivid",TOWORD.divpage.getnextpagedivid())+divps[n].outerHTML;
+                                var outerHTML=divps[n].outerHTML;
+                                if(n==divps.length-1){//最后一个元素
+                                    if(divps[n].innerHTML==''||divps[n].innerHTML=='<br>'||divps[n].innerHTML=='<BR>'){//是理论上的无用段，就直接去掉
+                                        console.log("不需要再新建页为这一个不用段落，outerHTML："+outerHTML);
+                                    }else{
+                                        divshtml+=divhtmlstart.replace("&nestdivid",TOWORD.divpage.getnextpagedivid())+outerHTML;
+                                    }
+                                }else{
+                                    divshtml+=divhtmlstart.replace("&nestdivid",TOWORD.divpage.getnextpagedivid())+outerHTML;
+                                }
+
                             }
                         }
                     }else{
