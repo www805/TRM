@@ -2451,6 +2451,7 @@ function callbackgetRecordrealByRecordssid(data) {
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 var overRecord_index=null;
 function addRecord() {
+    setRecordreal();//3秒实时保存
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }
