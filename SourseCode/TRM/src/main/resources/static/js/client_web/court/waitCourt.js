@@ -1066,9 +1066,6 @@ function focuslable(html,type,qw) {
         //不为空获取最后一个p标签在该标签后边追加
        var lastp=getlastp();
         if (isNotEmpty(lastp)) {
-            setTimeout(function () {
-                $("#tag",editorhtml).remove();//去掉刚刚标记的红色z
-            },1000)
             $(html).insertAfter(lastp);//[lastp.length-1]
             TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
         }else {
@@ -1462,7 +1459,8 @@ $(function () {
                 layer.msg("未找到可甄别的角色，请先设置",{icon:5})
                 return;
             }
-
+            var latsp=getlastp();
+            $(latsp).append("<b style='color: red' id='tag'>从这里开始追加</b>");
 
             if (!isNotEmpty(laststarttime_ue)) {
                 con="确定要开启自动甄别吗(<span style='color: red'>将在光标后追加</span>)";//
@@ -1482,8 +1480,6 @@ $(function () {
                     $(obj).addClass("layui-form-onswitch");
                     $(obj).find("em").html("开启");
                     layer.msg("自动甄别已开启");
-                    var latsp=getlastp();
-                    $(latsp).append("<b style='color: red' id='tag'>从这里开始追加</b>");
                 } else {
                     $(obj).attr("isn",-1);
                     $(obj).removeClass("layui-form-onswitch");
@@ -1492,12 +1488,14 @@ $(function () {
                     last_identifys = {};//每个人上一次甄别内容 格式：usertype：{starttime:时间,translatext:"新文本",oldtranslatext:"原始文本"}
                     lastusertype=-1;//上一个类型
                 }
+                setTimeout(function () {
+                    $("#tag",editorhtml).remove();//去掉刚刚标记的红色z
+                },1000)
                 layer.close(index);
             }
             ,btn2: function(index, layero){
+                $("#tag",editorhtml).remove();//去掉刚刚标记的红色z
                 layer.close(index);
-            }
-            ,cancel: function(){
             }
         });
     });
