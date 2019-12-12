@@ -92,6 +92,9 @@ function callbackgetRecords(data) {
 
             $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
+            if (gnlist.indexOf(FY_T) != -1){
+                TOWORD.divpage.cleardoc();
+            }
             var bool= $("#recordtitle").attr("recordtitle_first");
             if (bool=="true"){  return;}
             if (isNotEmpty(records)) {
@@ -153,7 +156,7 @@ function callbackgetRecords(data) {
           $("#hoverspan1",this).show();
       });
        var trlen=$("#pagelisttemplates_tbody tr").length;
-       if (trlen>9||(trlen==records.length&&isNotEmpty(records))) {
+       if (trlen>12||(trlen==records.length&&isNotEmpty(records))) {
            console.log("可以不需要检测了")
            clearInterval(time)
        }
@@ -220,7 +223,7 @@ function ggetRecordsByParam(){
     var len=arguments.length;
     if(len==0){
         var currPage=1;
-        var pageSize=10;//测试
+        var pageSize=13;//测试
         getRecords_init(currPage,pageSize);
     }else if (len==2){
         getRecords('',arguments[0],arguments[1]);

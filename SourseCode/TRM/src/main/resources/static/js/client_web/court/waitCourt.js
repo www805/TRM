@@ -2342,7 +2342,6 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
                     addidentify(usertype,starttime,gradeintroduce,translatext);
                 }
             }else {
-                console.log("角色改变了了了了了******************************************")
                 if (isNotEmpty(dq_identify)) {
                     var thisp= $("p[usertype="+usertype+"][starttime="+dq_identify.firsttime+"]:last",editorhtml);
                     if (dq_identify.starttime==starttime&&isNotEmpty(thisp)){

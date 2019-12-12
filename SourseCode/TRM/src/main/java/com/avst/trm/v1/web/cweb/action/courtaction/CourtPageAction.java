@@ -1,8 +1,12 @@
 package com.avst.trm.v1.web.cweb.action.courtaction;
 
+import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.param.AppCacheParam;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,9 +61,14 @@ public class CourtPageAction {
         return new ModelAndView("client_web/court/AddOrUpdateUserinfograde", "Model", model);
     }
     @GetMapping("toquickCourt")
-    public ModelAndView toquickCourt(Model model,String ssid){
+    public ModelAndView toquickCourt(Model model,String indexbool){
+        AppCacheParam param = AppCache.getAppCacheParam();
+        if(StringUtils.isBlank(param.getGuidepageUrl())){
+            param = AppCache.getAppCacheParam();
+        }
+        model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
         model.addAttribute("title","庭审办案");
-        model.addAttribute("ssid",ssid);
+        model.addAttribute("indexbool", indexbool);//是否为首页1
         return new ModelAndView("client_web/court/quickCourt", "Model", model);
     }
 

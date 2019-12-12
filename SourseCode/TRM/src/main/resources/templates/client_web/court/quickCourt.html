@@ -80,11 +80,9 @@
 </style>
 <body>
 <div class="layadmin-message-fluid" style="margin: 20px;">
-   <!-- <div style="border: 1px solid #ffffff">
-        <div style="float: right">
-            <i class="iconfont icon-tuichu" style="font-size: 20px;" title="退出登录" onclick="userloginout()"></i>
-        </div>
-    </div>-->
+   <div style="border: 1px solid #ffffff;    position: fixed;top: 2%;right: 1%;display: none" id="gotocontrol">
+            <i class="iconfont icon-jinru" style="font-size: 20px;color: #1E9FFF" title="进入总控系统" onclick="gotocontrol()"></i>
+    </div>
     <div class="layui-container">
         <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="margin-top: 80px" >
             <ul class="layui-tab-title">
@@ -272,6 +270,9 @@
             </div>
         </div>
     </div>
+    <div style="border: 1px solid #ffffff; position: fixed;bottom: 2%;right: 1%;display: none"  id="userloginout">
+            <i class="iconfont icon-tuichu" style="font-size: 20px;color: #000" title="退出登录" onclick="userloginout()"></i>
+    </div>
     <div th:replace="footer :: footer">...</div>
 </div>
 </body>
@@ -292,7 +293,10 @@
     var sessionworkname=[[${session.MANAGE_CLIENT.workname}]];
     var sessionusername=[[${session.MANAGE_CLIENT.username}]];
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var guidepageUrl=[[${Model.guidepageUrl}]];
+    var indexbool=[[${Model.indexbool}]];//是否为首页
     var model_index=null;//模板index
+console.log(guidepageUrl)
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -303,6 +307,11 @@
         getMc_model();//获取全部的会议模板
         getWordTemplates();
         getCaseById();
+
+        if (isNotEmpty(indexbool)||indexbool==1) {
+            $("#userloginout").show();
+            $("#gotocontrol").show();
+        }
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块

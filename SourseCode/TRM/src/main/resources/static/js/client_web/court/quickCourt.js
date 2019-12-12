@@ -1361,4 +1361,20 @@ function callbackuserloginout(data) {
     }
 }
 
+//进入总控
+function gotocontrol() {
+    layui.use(['layer','element','form','laydate'], function() {
+        var layer = layui.layer; //获得layer模块
+        layer.msg("加载中，请稍后...", {
+            icon: 16,
+            time:15000,
+            shade: [0.1,"#fff"],
+        });
+    });
+
+    if (isNotEmpty(guidepageUrl)){
+        top.location.href=guidepageUrl;
+    }
+}
+
 
