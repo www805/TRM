@@ -1064,64 +1064,37 @@ function focuslable(html,type,qw) {
         //判断laststarttime_ue是否为空，
         // 为空判断是否存在光标获取光标在第几行在该标签后边追加
         //不为空获取最后一个p标签在该标签后边追加
-       var lastp=null;
-        if (isNotEmpty(laststarttime_ue)){
-             lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
-            if (!isNotEmpty(lastp)){
-                lastp=$("p[starttime]:not(:empty)",editorhtml).last();
-                if (!isNotEmpty(lastp)){
-                    lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-                    lastp=$(lastp);
-                }
-            }
-        }else {
-            //光标追加
-            //获取光标所在的p标签
-            lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-            lastp=$(lastp);
-        }
-
+       var lastp=getlastp();
         if (isNotEmpty(lastp)) {
+            setTimeout(function () {
+                $("#tag",editorhtml).remove();//去掉刚刚标记的红色z
+            },1000)
             $(html).insertAfter(lastp);//[lastp.length-1]
             TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
         }else {
-            //p标签未获取到，使用append
-            console.log("p标签未获取到，使用append")
-            var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
-            if (!isNotEmpty(divid)){
-                divid = TOWORD.util.getDivIdByUE(ue);
-            }
-            $("#"+divid,editorhtml).append(html);
-            lastp=$("#"+divid+" p:last",editorhtml);
-            if (isNotEmpty(lastp)) {
-                TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
-            }
-
-
+          console.log("追加的P未找到啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊**********************************")
         }
     }
 }
 
-/**
- * 获取上一个标签的样式
- */
-function getlastp_style() {
+function getlastp() {
     var lastp=null;
-    var pstyle="";
     if (isNotEmpty(laststarttime_ue)){
         lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
         if (!isNotEmpty(lastp)){
             lastp=$("p[starttime]:not(:empty)",editorhtml).last();
             if (!isNotEmpty(lastp)){
                 lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+                lastp=$(lastp);
             }
         }
     }else {
         //光标追加
         //获取光标所在的p标签
         lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+        lastp=$(lastp);
     }
-
+    //latsp不存在查找divid
     if (!isNotEmpty(lastp)) {
         var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
         if (!isNotEmpty(divid)){
@@ -1129,6 +1102,15 @@ function getlastp_style() {
         }
         lastp= $("#"+divid+" p:last",editorhtml);
     }
+    return lastp;
+}
+
+/**
+ * 获取上一个标签的样式
+ */
+function getlastp_style() {
+    var pstyle="";
+    var lastp=getlastp();
     if (isNotEmpty(lastp)){
         pstyle=$("span",lastp).attr("style");
         if(typeof(pstyle) == "undefined"){
@@ -1500,6 +1482,8 @@ $(function () {
                     $(obj).addClass("layui-form-onswitch");
                     $(obj).find("em").html("开启");
                     layer.msg("自动甄别已开启");
+                    var latsp=getlastp();
+                    $(latsp).append("<b style='color: red' id='tag'>从这里开始追加</b>");
                 } else {
                     $(obj).attr("isn",-1);
                     $(obj).removeClass("layui-form-onswitch");
