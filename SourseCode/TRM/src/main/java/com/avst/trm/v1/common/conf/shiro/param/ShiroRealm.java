@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.conf.shiro;
+package com.avst.trm.v1.common.conf.shiro.param;
 
 
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;

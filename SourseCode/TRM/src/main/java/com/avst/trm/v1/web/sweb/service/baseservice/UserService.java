@@ -1,7 +1,7 @@
 package com.avst.trm.v1.web.sweb.service.baseservice;
 
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.conf.shiro.ShiroRealm;
+import com.avst.trm.v1.common.conf.shiro.param.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admintorole;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
@@ -10,8 +10,6 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admintoroleMapper;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.Police_workunitMapper;
-import com.avst.trm.v1.common.util.DateUtil;
-import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -25,11 +23,9 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpSession;
 import java.io.BufferedReader;

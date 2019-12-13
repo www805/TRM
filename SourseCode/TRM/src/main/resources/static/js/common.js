@@ -383,10 +383,17 @@ function ajaxSubmitByJson(url, data, success_fun,error_fun) {
 /**
  * ajax 请求失败的提醒
  */
-function ajaxErrDialog() {
-/*	parent.layer.msg("网络异常,请稍后重试---!", {
-		icon : 1
-	},1);*/
+function ajaxErrDialog(data) {
+    var result=data.responseText;
+    //用于单用户登录时
+    if (isNotEmpty(result)&&result.indexOf("kickout")>0){
+        top.location.href=result;
+    }
+
+
+    /*	parent.layer.msg("网络异常,请稍后重试---!", {
+            icon : 1
+        },1);*/
 
 }
 

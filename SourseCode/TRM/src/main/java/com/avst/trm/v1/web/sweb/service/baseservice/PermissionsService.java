@@ -1,6 +1,6 @@
 package com.avst.trm.v1.web.sweb.service.baseservice;
 
-import com.avst.trm.v1.common.conf.shiro.ShiroRealm;
+import com.avst.trm.v1.common.conf.shiro.param.ShiroRealm;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_permissions;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_roletopermissions;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_permissionsMapper;

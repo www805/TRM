@@ -3,7 +3,7 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.Constant;
-import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
+import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.util.log.LogUtil;

@@ -1,4 +1,4 @@
-package com.avst.trm.v1.common.conf.socketio.param;
+package com.avst.trm.v1.common.conf.shiro.param;
 
 import javax.servlet.http.Cookie;
 
