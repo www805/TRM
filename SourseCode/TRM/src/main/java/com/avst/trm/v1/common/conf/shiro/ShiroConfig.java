@@ -114,7 +114,7 @@ public class ShiroConfig {
         kickoutSessionControlFilter.setSessionManager(sessionManager());
         kickoutSessionControlFilter.setCacheManager(ehCacheManager());
         kickoutSessionControlFilter.setKickoutAfter(false);
-        kickoutSessionControlFilter.setMaxSession(2);
+        kickoutSessionControlFilter.setMaxSession(1);
         kickoutSessionControlFilter.setKickoutUrl("/cweb/base/main/gotologin?kickout=1");
         return kickoutSessionControlFilter;
     }
