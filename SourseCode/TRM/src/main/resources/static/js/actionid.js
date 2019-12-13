@@ -107,6 +107,8 @@ function getactionid_manage() {
         main_toconversationIndex:"main_toconversationIndex",
         main_getServerStatus:"main_getServerStatus",
         main_getCDPlayback:"main_getCDPlayback",
+        mian_getFileSpaceList:"mian_getFileSpaceList",
+
 
 
 
@@ -467,6 +469,13 @@ function getactionid_manage() {
         dateTime_setNTP:"dateTime_setNTP",
         dateTime_getFDssid:"dateTime_getFDssid",
         dateTime_getFDNTP:"dateTime_getFDNTP",
+
+
+
+        fileSpaceAction_getFileSpaceByssid:"fileSpaceAction_getFileSpaceByssid",
+        fileSpaceAction_getFileSpaceAll:"fileSpaceAction_getFileSpaceAll",
+        fileSpaceAction_delFileSpaceAll:"fileSpaceAction_delFileSpaceAll",
+        fileSpaceAction_delFileSpaceByPath:"fileSpaceAction_delFileSpaceByPath",
 
 
     };

@@ -611,6 +611,7 @@ public class MainAction extends BaseAction {
             model.addAttribute("case","案件");//审讯字眼
         }
 
+
         return  new ModelAndView("client_web/base/home","homeModel", model);
     }
 

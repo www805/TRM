@@ -100,6 +100,36 @@ public interface EquipmentControl {
 
 
     /**
+     * 获取所有存储服务的信息
+     * @param param
+     * @return
+     */
+    @RequestMapping("/storage/v1/getToOutFileSpaceList")
+    @ResponseBody
+    public RResult getToOutFileSpaceList(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //通过ssid查询文件管理
+    @RequestMapping("/storage/v1/getToOutFileSpaceByssid")
+    @ResponseBody
+    public RResult getToOutFileSpaceByssid(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //查询路径下的所有文件
+    @RequestMapping("/storage/v1/getToOutFileSpaceAll")
+    @ResponseBody
+    public RResult getToOutFileSpaceAll(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //删除当前路径下的所有文件
+    @RequestMapping("/storage/v1/delToOutFileSpaceAll")
+    @ResponseBody
+    public RResult delToOutFileSpaceAll(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //删除单个文件
+    @RequestMapping("/storage/v1/delToOutFileSpaceByPath")
+    @ResponseBody
+    public RResult delToOutFileSpaceByPath(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+
+    /**
      * 获取其他全部设备IP
      * @param param
      * @return
