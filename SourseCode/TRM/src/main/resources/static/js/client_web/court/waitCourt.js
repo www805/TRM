@@ -2264,8 +2264,8 @@ function set_record_switchusers() {
                     elem: '#switchusers'  //绑定元素
                     ,id:'switchusers'
                     ,title: ['待选角色', '已选角色']
-                    ,width: "100px" //定义宽度
-                    ,height: "250px" //定义高度
+                    ,width: 150 //定义宽度
+                    ,height: 250 //定义高度
                     ,data: record_switchusers
                     ,parseData: function(res){
                     return {
