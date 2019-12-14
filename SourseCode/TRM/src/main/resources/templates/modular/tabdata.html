@@ -6,67 +6,7 @@
 </head>
 <body>
 <div data-th-fragment="tabdata">
-    <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:60%;">
-        <ul class="layui-tab-title">
-            <li onclick="initasr()" id="asr" style="display: none">语音识别 </span><span id="webkit2"></span></li>
-            <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
-            <li onclick="initcase()" id="case"  class="layui-this" > 案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i></li>
-        </ul>
-        <div class="layui-tab-content" id="leftdiv"  style="height:100%;">
-            <div class="layui-tab-item "  id="asritem" style="height:100%;" >
-                <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
-                    <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
-                        <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
-                    </div>
-                    <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
-                        <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
-                            <i class="layui-icon">&#xe619;</i>
-                        </button>
-                        <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
-                            <i class="layui-icon">&#xe61a;</i>
-                        </button>
-                    </div>
-                </div>
-                <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
-                    <div class="layui-card-body" >
-                        <div class="talk_show"  id="recordreals" >
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="layui-tab-item phitem2"  id="phitem2" style="height:100%;overflow-x: hidden; overflow-y: scroll;">
-                <div class="layui-col-md12" >
-                    <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height: 35px;line-height: 35px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心监测加载中...</strong></div>
-                </div>
-                <div class="layui-col-md12" >
-                    <div id="main1" style="height:200px;width:100%;"></div>
-                </div>
-                <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >
-                    <div  id="monitor_btn" style="display:inline">
-                        <span class="layui-badge layui-btn" isn="1"  type='stress'  onclick="select_monitor(this);">紧张值</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hr' onclick="select_monitor(this);">心率</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='spo2'  onclick="select_monitor(this);">血氧</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='hrv'  onclick="select_monitor(this);">心率变异</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='bp'  onclick="select_monitor(this);">血压变化</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1" type='br'  onclick="select_monitor(this);">呼吸次数</span>
-                        <span class="layui-badge layui-bg-gray layui-btn" isn="-1"  type='relax'  onclick="select_monitor(this);">放松值</span>
-                    </div>
-                    <span class="layui-badge layui-bg-blue layui-btn" isn="-1"  type='all'  onclick="select_monitorall(this);">查看全部</span>
-                    <div style="width:95%;text-align: center;margin-top: 2px;color:#1171d6"><span class="layui-badge layui-bg-black"  style="width: 100%;" id="snrtext">fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0</span></div>
-                </div>
-            </div>
-            <div class="layui-tab-item layui-show" id="caseitem"  style="height:100%;overflow-x: hidden; overflow-y: scroll;">
-                <div class="layui-card-body">
-                    <table class="layui-table" lay-skin="line" style="table-layout: fixed">
-                        <tbody id="caseAndUserInfo_html">
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
  <script src="/js/modular/tabdata.js" type="text/javascript"></script>
 </div>
 </body>

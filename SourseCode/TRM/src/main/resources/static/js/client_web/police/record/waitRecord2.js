@@ -1040,7 +1040,7 @@ function previewgetNotifications(ssid) {
                             if (isNotEmpty(dqrecorddownurl_htmlreads)){
                                 t1 = window.setInterval(function (args) {
                                     var text=dqrecorddownurl_htmlreads[len];
-                                    if (!isNotEmpty(audioplay)||len==0){
+                                    if (!isNotEmpty(audioplay)&&len==0){
                                         str2Tts(text);
                                         len++;
                                     } else if (isNotEmpty(audioplay)&&audioplay.ended) {
