@@ -514,6 +514,27 @@ public class MainAction extends BaseAction {
     }
 
 
+    /**
+     * 提供通用数据 ：民族 国籍 工作单位
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getBaseData")
+    @ResponseBody
+    public RResult getBaseData(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getBaseData(result);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
     /**
      * 跳转==》修改个人信息页面

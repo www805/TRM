@@ -19,7 +19,6 @@ var skipCheckCasebool=-1;
 var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 
 
-
 //开始笔录按钮
 function addCaseToArraignment() {
     var  addUserInfo={};//新增人员的信息
@@ -403,134 +402,59 @@ function callbackaddCaseToArraignment(data) {
     }
 }
 
-/**
- * 获取国籍
- */
-function getNationalitys(){
-    var url=getActionURL(getactionid_manage().addCaseToUser_getNationalitys);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetNationalitys);
-}
-function callbackgetNationalitys(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        $('#nationality option').not(":lt(1)").remove();
-        if (isNotEmpty(data)){
-            if (isNotEmpty(data)) {
-                for (var i = 0; i < data.length; i++) {
-                    var l = data[i];
-                    $("#nationality").append("<option value='"+l.ssid+"' title='"+l.enname+"'> "+l.zhname+"</option>");
-                }
-            }
-        }
-    }else{
-        parent.layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
+//初始化页面
+function init_form() {
+    layer.confirm('所填信息将会清空，确定要重置吗？', {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+
+        dquserssid=null;//当前用户的ssid
+        dqcasessid=null;//当前案件ssid
+        cases=null;
+        othercases=null;
+        dqotheruserinfossid=null;//当前询问人(新增询问人回显)
+        dqotherworkssid=null;//当前询问人对应的工作单位
+        layui.use(['form','laydate'], function(){
+            var form=layui.form;
+            var laydate=layui.laydate;
+            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#modelssid'):not('#wordssid')").val("");
+            $("#asknum").val(0);
+            $('select').not("#cards").prop('selectedIndex', 0);
+            $("#casename_ssid").html("");
+
+            laydate.render({
+                elem: '#occurrencetime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#starttime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+            laydate.render({
+                elem: '#endtime' //指定元素
+                ,type:"datetime"
+                ,value: new Date(Date.parse(new Date()))
+                ,format: 'yyyy-MM-dd HH:mm:ss'
+            });
+
+            form.render('select');
+        });
+
+        layer.close(index);
+    }, function(index){
+        layer.close(index);
     });
 }
 
-/**
- * 获取民族
- */
-function getNationals(){
-    var url=getActionURL(getactionid_manage().addCaseToUser_getNationals);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetNationals);
-}
-function callbackgetNationals(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        $('#national option').not(":lt(1)").remove();
-        if (isNotEmpty(data)) {
-            for (var i = 0; i < data.length; i++) {
-                var l = data[i];
-                $("#national").append("<option value='"+l.ssid+"' title='"+l.nationname+"'>"+l.nationname+"</option>");
-            }
-        }
-    }else{
-        parent.layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
 
-/**
- * 获取证件类型
- */
-function getCards(){
-    var url=getActionURL(getactionid_manage().addCaseToUser_getCards);
-    var data={
-        token:INIT_CLIENTKEY,
-    };
-    ajaxSubmitByJson(url,data,callbackgetCards);
-}
-function callbackgetCards(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        cards=data;
-        $('#cards').html("");
-        $("#tab_content select[name='tab_card']").html("");
-        if (isNotEmpty(data)){
-            for (var i = 0; i < data.length; i++) {
-                var l = data[i];
-                $("#cards").append("<option value='"+l.ssid+"' title='"+l.typename+"'> "+l.typename+"</option>");
-                $("#tab_content select[name='tab_card']").each(function(){
-                    $(this).append("<option value='"+l.ssid+"'  title='"+l.typename+"'> "+l.typename+"</option>");
-                });
-            }
-        }
-    }else{
-        parent.layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var form = layui.form;
-        form.render();
-    });
-}
 
-//获取全部管理员
-function getAdminList() {
-    var url=getActionURL(getactionid_manage().addCaseToUser_getAdminList);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{}
-    };
-    ajaxSubmitByJson(url,data,callbackgetAdminList);
-}
-function callbackgetAdminList(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-         otheruserinfos=data.data;
 
-        $('#otheruserinfos option').not(":lt(1)").remove();
-        $('#recordadmin option').not(":lt(1)").remove();
-        if (isNotEmpty(otheruserinfos)){
-            for (var i = 0; i < otheruserinfos.length; i++) {
-                var u= otheruserinfos[i];
-                if (u.ssid!=sessionadminssid) {
-                    $("#otheruserinfos").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                    $("#recordadmin").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
-                }
-            }
-        }
-    }else{
-        parent.layer.msg(data.message,{icon: 5});
-    }
-    layui.use('form', function(){
-        var $ = layui.$;
-        var form = layui.form;
-        form.render();
-    });
-}
-
+//*************************************************用户相关*****************************************
 /**
  * 获取人员信息
  */
@@ -637,7 +561,7 @@ function setcases(cases){
                 $("#casename_ssid").append("<dd lay-value='"+c.ssid+"' onmousedown='select_case(this);'>"+c.casename+"</dd>");
             }
         }
-        
+
         if (isNotEmpty(dqcasessid)){
             $("#casename").val("");
             $("#cause").val("");
@@ -770,7 +694,6 @@ function tabAdd(){
 
     });
 }
-
 //其他在场人员的查询
 function getUserByCard_other(obj){
     var url=getActionURL(getactionid_manage().addCaseToUser_getUserByCard);
@@ -841,7 +764,6 @@ function getUserByCard_other(obj){
         parent.layer.msg("请输入证件号码",{icon:5});
     }
 }
-
 //其他在场人员重置按钮
 function tab_reset(obj){
     layui.use(['form'], function(){
@@ -851,8 +773,6 @@ function tab_reset(obj){
         form.render('select');
     });
 }
-
-
 
 
 function getCaseById() {
@@ -877,39 +797,6 @@ function callbakegetCaseById(data) {
                 othercases=othercasesdata;
                 if (isNotEmpty(cases)){
                     setcases(cases);
-                }
-            }
-        }
-    }else{
-        parent.layer.msg(data.message,{icon: 5});
-    }
-}
-
-
-/**
- * 获取单位列表
- */
-function getWorkunits() {
-    var url=getActionURL(getactionid_manage().addCaseToUser_getWorkunits);
-    var userssid=dquserssid;
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-           
-        }
-    };
-    ajaxSubmitByJson(url,data,callbakegetWorkunits) ;
-}
-function callbakegetWorkunits(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        if (isNotEmpty(data)){
-            var data=data.data;
-            $("#otherworkname_text").html("");
-            if (isNotEmpty(data)){
-                workunits=data;
-                for (let i = 0; i < workunits.length; i++) {
-                    const l = workunits[i];
-                    $("#otherworkname_text").append("<dd lay-value='"+l.ssid+"' >"+l.workname+"</dd>");
                 }
             }
         }
@@ -981,6 +868,10 @@ function select_cardnumblur() {
     getUserByCard();
 }
 
+//*************************************************用户相关*****************************************
+
+
+//*************************************************案件相关*****************************************
 //案件
 function getCaseList() {
     $("#casename_ssid").html("");
@@ -1156,21 +1047,21 @@ function getCauseList() {
     var causelike=[];
     var cause = $("#cause").val();
     var causeList=["人格权纠纷","婚姻家庭纠纷","继承纠纷","不动产登记纠纷","物权保护纠纷","所有权纠纷","用益物权纠纷","担保物权纠纷","占有保护纠纷","合同纠纷","不当得利纠纷","无因管理纠纷","知识产权合同纠纷","知识产权权属、侵权纠纷","不正当竞争纠纷","垄断纠纷","劳动争议","人事争议","海事海商纠纷","与企业有关的纠纷","与公司有关的纠纷","合伙企业纠纷","与破产有关的纠纷","证券纠纷"];
-        if (isNotEmpty(causeList)){
-            for (var i = 0; i < causeList.length; i++) {
-                var c = causeList[i];
-                if (c.indexOf(cause) >= 0) {
-                    causelike.push(c);
-                }
+    if (isNotEmpty(causeList)){
+        for (var i = 0; i < causeList.length; i++) {
+            var c = causeList[i];
+            if (c.indexOf(cause) >= 0) {
+                causelike.push(c);
             }
-            if (isNotEmpty(causelike)){
-                for (var j = 0; j < causelike.length; j++) {
-                    var cl=causelike[j];
-                    $("#cause_text").append("<dd lay-value='"+cl+"' onmousedown='select_cause(this);'>"+cl+"</dd>");
-                }
-            }
-            $("#cause_text").css("display","block");
         }
+        if (isNotEmpty(causelike)){
+            for (var j = 0; j < causelike.length; j++) {
+                var cl=causelike[j];
+                $("#cause_text").append("<dd lay-value='"+cl+"' onmousedown='select_cause(this);'>"+cl+"</dd>");
+            }
+        }
+        $("#cause_text").css("display","block");
+    }
 }
 function select_cause(obj) {
     $("#cause_text").css("display","none");
@@ -1351,11 +1242,11 @@ function open_othercases() {
     }
     var CASE_HTML='<form class="layui-form layui-row" ><table class="layui-table" lay-skin="line" style="table-layout: fixed;">\
                      <tbody id="othercases_html"  >';
-                    for (let i = 0; i < othercases.length; i++) {
-                        const othercase = othercases[i];
-                        CASE_HTML+='<tr  ssid="'+othercase.ssid+'"><td >'+othercase.casename+'</td></tr>';
-                    }
-                     CASE_HTML+='</tbody>\
+    for (let i = 0; i < othercases.length; i++) {
+        const othercase = othercases[i];
+        CASE_HTML+='<tr  ssid="'+othercase.ssid+'"><td >'+othercase.casename+'</td></tr>';
+    }
+    CASE_HTML+='</tbody>\
                 </table></form>';
     parent.layer.open({
         type:1,
@@ -1419,63 +1310,10 @@ function open_othercases() {
         dqothercasessid= $(this).attr("ssid");
     });
 }
+//*************************************************案件相关*****************************************
 
 
-
-
-
-
-//初始化页面
-function init_form() {
-   layer.confirm('所填信息将会清空，确定要重置吗？', {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-
-        dquserssid=null;//当前用户的ssid
-        dqcasessid=null;//当前案件ssid
-        cases=null;
-        othercases=null;
-         dqotheruserinfossid=null;//当前询问人(新增询问人回显)
-         dqotherworkssid=null;//当前询问人对应的工作单位
-        layui.use(['form','laydate'], function(){
-            var form=layui.form;
-            var laydate=layui.laydate;
-            $("input:not('#adminname'):not('#workname'):not('#recordplace'):not('#modelssid')").val("");/*not('#occurrencetime'):not('#starttime'):not('#endtime'):not('#cardnum')*/
-            $("#asknum").val(0);
-            $('select').not("#cards").prop('selectedIndex', 0);
-            $("#casename_ssid").html("");
-
-            laydate.render({
-                elem: '#occurrencetime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-            laydate.render({
-                elem: '#starttime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-            laydate.render({
-                elem: '#endtime' //指定元素
-                ,type:"datetime"
-                ,value: new Date(Date.parse(new Date()))
-                ,format: 'yyyy-MM-dd HH:mm:ss'
-            });
-
-            form.render('select');
-        });
-
-        layer.close(index);
-    }, function(index){
-        layer.close(index);
-    });
-}
-
-
-
+//*************************************************模板相关*****************************************
 //获取会议模板
 function getMc_model(){
     var url=getUrl_manage().getMc_model;
@@ -1488,16 +1326,16 @@ function getMc_model(){
 }
 function callbackgetMc_model(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-       var data=data.data;
-       if (isNotEmpty(data)){
-           modelList=data;
-           if (isNotEmpty(modelList)&&isNotEmpty(model_index)){
-               $("#modelList").html("");
-               for (let i = 0; i < modelList.length; i++) {
-                   var model = modelList[i];
-                   var meetingtypehtml=model.meetingtype==null?"":(model.meetingtype==1?"<i class='layui-icon layui-icon-video'></i>视频":(model.meetingtype==2?"<i class='layui-icon layui-icon-headset'></i>音频":"未知"));
-                   var userecordhtml=model.userecord==null?"":(model.userecord==1?"录制":(model.userecord==-1?"不录制":"未知"));
-                   var html="<tr>\
+        var data=data.data;
+        if (isNotEmpty(data)){
+            modelList=data;
+            if (isNotEmpty(modelList)&&isNotEmpty(model_index)){
+                $("#modelList").html("");
+                for (let i = 0; i < modelList.length; i++) {
+                    var model = modelList[i];
+                    var meetingtypehtml=model.meetingtype==null?"":(model.meetingtype==1?"<i class='layui-icon layui-icon-video'></i>视频":(model.meetingtype==2?"<i class='layui-icon layui-icon-headset'></i>音频":"未知"));
+                    var userecordhtml=model.userecord==null?"":(model.userecord==1?"录制":(model.userecord==-1?"不录制":"未知"));
+                    var html="<tr>\
                                        <td>"+(i+1)+"</td>\
                                        <td>"+meetingtypehtml+"</td>\
                                        <td>"+model.explain+"</td>\
@@ -1509,19 +1347,19 @@ function callbackgetMc_model(data){
                                           </div>\
                                           </td>\
                                  </tr>";
-                   $("#modelList").append(html);
-               }
-           }
+                    $("#modelList").append(html);
+                }
+            }
 
-           if (isNotEmpty(dqmodelssid)&&isNotEmpty(modelList)){
-               for (let i = 0; i < modelList.length; i++) {
-                   var model = modelList[i];
-                   if (dqmodelssid==model.ssid){
-                       $("#modelssid").val(model.explain);
-                   }
-               }
-           }
-       }
+            if (isNotEmpty(dqmodelssid)&&isNotEmpty(modelList)){
+                for (let i = 0; i < modelList.length; i++) {
+                    var model = modelList[i];
+                    if (dqmodelssid==model.ssid){
+                        $("#modelssid").val(model.explain);
+                    }
+                }
+            }
+        }
     }else {
         console.log("获取会议模板"+data.message)
     }
@@ -1560,8 +1398,7 @@ function open_model(){
         }
     });
 }
-
-//获取默认模板
+//获取默认会议模板
 function getDefaultMtModelssid(){
     var url=getActionURL(getactionid_manage().addCaseToUser_getDefaultMtModelssid);
     var data={
@@ -1569,7 +1406,7 @@ function getDefaultMtModelssid(){
         param:{
         }
     };
-   ajaxSubmitByJson(url,data,callbackgetDefaultMtModelssid);
+    ajaxSubmitByJson(url,data,callbackgetDefaultMtModelssid);
 }
 function callbackgetDefaultMtModelssid(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
@@ -1581,8 +1418,6 @@ function callbackgetDefaultMtModelssid(data){
         console.log("获取会议默认模板ssid"+data.message)
     }
 }
-
-
 
 //获取全部笔录模板以及默认笔录模板
 function select_Model2(ssid,wordname){
@@ -1606,7 +1441,7 @@ function open_model2() {
         <tbody id="wordList">\
         </tbody>\
         </table>';
-     model_index2= layer.open({
+    model_index2= layer.open({
         type:1,
         title: '选中笔录模板',
         shade: 0.3,
@@ -1649,7 +1484,7 @@ function callbackgetWordTemplates(data){
         if (isNotEmpty(data)){
             var wordTemplates=data.wordTemplates;
             var default_word=data.default_word;
-            if (isNotEmpty(wordTemplates)&&isNotEmpty(default_word)) {
+            if (isNotEmpty(wordTemplates)) {
                 wordList=wordTemplates;
 
                 var defaultnum=0;//默认模板数量
@@ -1661,11 +1496,11 @@ function callbackgetWordTemplates(data){
                         dqwordssid=wordTemplate.ssid;
                         $("#wordssid").val(wordTemplate.wordtemplatename);
                     }
-                    if (wordTemplate.ssid==default_word) {
+                    if (wordTemplate.ssid==default_word&&isNotEmpty(default_word)) {
                         default_wordTemplate=wordTemplate;
                     }
                 }
-                if (defaultnum==0){
+                if (defaultnum==0&&isNotEmpty(default_wordTemplate)){
                     dqwordssid=default_wordTemplate.ssid;
                     $("#wordssid").val(default_wordTemplate.wordtemplatename);
                 }
@@ -1675,7 +1510,7 @@ function callbackgetWordTemplates(data){
         console.log("获取会议默认模板ssid"+data.message)
     }
 }
-
+//*************************************************模板相关*****************************************
 $(function () {
     layui.use(['form','jquery','laydate'], function() {
         var form=layui.form;
@@ -1692,10 +1527,7 @@ $(function () {
             } else {
                 $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
             }
-
-
         });
-
     });
 
 

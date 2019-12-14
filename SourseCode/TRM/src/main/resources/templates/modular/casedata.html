@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>案件基本信息</title>
+</head>
+<body>
+<div data-th-fragment="casedata">
+    <div class="layui-card" >
+    <div class="layui-card-header">案件基本信息</div>
+    <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
+        <div class="layui-card-body  layui-row layui-col-space10" >
+            <div class="layui-col-lg12">
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
+                <div class="layui-input-block">
+                    <div class="layui-col-lg12">
+                        <div class="layui-form-select">
+                            <div class="layui-select-title">
+                                <input type="text" name="casename" lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
+                                <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;" title="选择其他案件" onclick="open_othercases();"></i>
+                            </div>
+                            <dl class="layui-anim layui-anim-upbit"  id="casename_ssid"   >
+
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">当前案由</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-select">
+                        <div class="layui-select-title">
+                            <input type="text" name="cause"  placeholder="" autocomplete="off" class="layui-input" id="cause" oninput="getCauseList()"  onblur="select_causeblur();" onfocus="getCauseList()">
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit"  id="cause_text"   >
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg12">
+                <label class="layui-form-label">案件编号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="casenum" id="casenum"  lay-verify="casenum" placeholder="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-lg12">
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>笔录名称</label>
+                <div class="layui-input-block">
+                    <input style="color: red;" type="text" name="recordname" id="recordname" lay-verify="recordname" placeholder="默认：《案件名》笔录类型名_第n次" autocomplete="off" class="layui-input">
+
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">案发时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="occurrencetime"  id="occurrencetime" lay-verify="recordname" placeholder="请输入案发时间" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">到案方式</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-select">
+                        <div class="layui-select-title">
+                            <input type="text" name="caseway"  placeholder="" autocomplete="off" class="layui-input" id="caseway" oninput="getCasewayList()"  onblur="select_casewayblur();" onfocus="getCasewayList()">
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit"  id="caseway_text"   >
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">开始时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="starttime" id="starttime"  placeholder="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">结束时间</label>
+                <div class="layui-input-block">
+                    <input type="text" name="endtime" id="endtime"  placeholder="" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">询问人一</label>
+                <div class="layui-input-block">
+
+                    <input type="text" name="adminname"  id="adminname"  placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.username}" >
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">工作单位</label>
+                <div class="layui-input-block">
+                    <input type="text" name="workname" id="workname"  placeholder="" autocomplete="off" class="layui-input" disabled th:value="${session.MANAGE_CLIENT.workname}">
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">询问人二</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-select">
+                        <div class="layui-select-title">
+                            <input type="text" name="otheruserinfos"  placeholder="" autocomplete="off" class="layui-input" id="otheruserinfos" oninput="getOtheruserinfosList()"  onblur="select_otheruserinfosblur();" onfocus="getOtheruserinfosList()">
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit"  id="otheruserinfos_text"   >
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">工作单位</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-select">
+                        <div class="layui-select-title">
+                            <input type="text" name="otherworkname"  placeholder="" autocomplete="off" class="layui-input" id="otherworkname" oninput="getOtherworknameList()"  onblur="select_otherworknameblur();" onfocus="getOtherworknameList()">
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit"  id="otherworkname_text"   >
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>记录人</label>
+                <div class="layui-input-block">
+                    <select name="recordadmin"  id="recordadmin"  lay-search="" lay-verify="recordadmin" >
+                        <option value=""></option>
+
+                    </select>
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">问话地点</label>
+                <div class="layui-input-block">
+                    <input type="text" name="recordplace" id="recordplace"  placeholder="" autocomplete="off" class="layui-input" th:value="${session.MANAGE_CLIENT.workname}">
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>询问对象</label>
+                <div class="layui-input-block">
+                    <div class="layui-form-select">
+                        <div class="layui-select-title">
+                            <input type="text" name="askobj" lay-verify="askobj" placeholder="请输入询问对象" autocomplete="off" class="layui-input" id="askobj" oninput="getAskObjList()"  onblur="select_askobjblur();" onfocus="getAskObjList()">
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit"  id="askobj_text"   >
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-lg6">
+                <label class="layui-form-label">询问次数</label>
+                <div class="layui-input-block">
+                    <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
+                </div>
+            </div>
+            <div class="layui-col-lg6 ">
+                <label class="layui-form-label">办案部门</label>
+                <div class="layui-input-block">
+                    <input type="text" name="department" id="department"  placeholder="" autocomplete="off" class="layui-input"  >
+                </div>
+            </div>
+            <div class="layui-col-lg6 "></div>
+            <div class="layui-col-lg6" >
+                <label class="layui-form-label " style="font-weight: bold;">笔录模板</label>
+                <div class="layui-input-block">
+                    <input type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold;" onclick="open_model2()">
+                </div>
+            </div>
+            <div class="layui-col-lg6" id="multifunctionbool_showorhide" style="display: none">
+                <label class="layui-form-label " style="font-weight: bold;">办案地点</label>
+                <div class="layui-input-block">
+                    <input type="text" name="modelssid" id="modelssid"  placeholder="" autocomplete="off" class="layui-input" readonly  style="font-weight: bold" onclick="open_model()">
+                </div>
+            </div>
+            <div class="layui-col-lg6 "></div>
+            <div class="layui-col-lg6 layui-col-lg-offset6 ">
+                <div class="layui-input-block" >
+                    <button class=" layui-btn layui-btn-danger   layui-btn-lg" type="button" onclick="init_form(); return false;">重置信息</button>
+                    <button class=" layui-btn layui-btn-warm  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn" >加载中</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="/js/modular/casedata.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

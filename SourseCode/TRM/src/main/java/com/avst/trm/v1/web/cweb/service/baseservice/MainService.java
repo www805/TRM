@@ -11,6 +11,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -110,6 +111,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private ZkControl zkControl;
+
+    @Autowired
+    private Police_cardtypeMapper police_cardtypeMapper;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -1259,6 +1263,26 @@ public class MainService extends BaseService {
 
         vo.setLoginaccount(loginaccount);
         vo.setPassword(password);
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getBaseData(RResult result){
+        GetBaseDataVO vo=new GetBaseDataVO();
+        List<Base_nationality> nationalityList=base_nationalityMapper.selectList(null);
+        List<Base_national> nationalList=base_nationalMapper.selectList(null);
+        List<Police_workunit> workunitList=police_workunitMapper.selectList(null);
+        EntityWrapper adminparam=new EntityWrapper();
+        adminparam.eq("a.adminbool",1);//正常人
+        adminparam.orderBy("a.registerTime",false);
+        List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
+        List<Police_cardtype> cardtypeList=police_cardtypeMapper.selectList(null);
+        vo.setNationalityList(nationalityList);
+        vo.setNationalList(nationalList);
+        vo.setAdminList(adminList);
+        vo.setWorkunitList(workunitList);
+        vo.setCardtypeList(cardtypeList);
         result.setData(vo);
         changeResultToSuccess(result);
         return;

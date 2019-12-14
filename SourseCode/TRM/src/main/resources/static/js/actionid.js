@@ -142,6 +142,7 @@ function getactionid_manage() {
         addCaseToUser_towaitconversation:"addCaseToUser_towaitconversation",
         addCaseToUser_toconversationIndex:"addCaseToUser_toconversationIndex",
         addCaseToUser_getWordTemplates:"addCaseToUser_getWordTemplates",
+        addCaseToUser_getBaseData:"addCaseToUser_getBaseData",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",

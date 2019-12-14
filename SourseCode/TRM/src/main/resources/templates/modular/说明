@@ -1,4 +1,14 @@
 modular：用户存放组件化的页面
 
 recordtype:笔录类型
+userdata：人员基本信息
+casedata：案件基本信息
+tabdata：选项卡数据：案件语音识别 情绪报告 身心检测
+record_qw：问答版笔录
+record_word：word版笔录
+polygrapdata：身心检测
+
+
+
+
 

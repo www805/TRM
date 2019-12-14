@@ -1,3 +1,6 @@
+/**
+ * 归属页面：addCaseToUser
+ */
 function getRecordtypes() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getRecordtypes);
     var pid=$("#pid option:selected").val();
@@ -57,6 +60,25 @@ function gettree(data){
             var url=getActionURL(getactionid_manage().addCaseToUser_toaddCaseToUserDetail);
 
             $("iframe").prop("src",url);
+
+
+            //组件模式选择刷新
+            if(gnlist.indexOf(ASR_F)>0&&gnlist.indexOf(PH_F)>0){
+                //授权存在asr和ph默认打开多组件，并且显示组件选择
+                $("#multifunctionbool").closest("div").css("display","block");
+                $("#multifunctionbool").attr("checked",false);
+                setTimeout(function () {
+                    var multifunction_bool=$("#multifunctionbool").prop("checked");
+                    if (!multifunction_bool) {
+                        $("#ifranmehtml").contents().find("#multifunctionbool_showorhide").show();
+                    }
+                },500)
+            }else  if(gnlist.indexOf(S_V)<0){
+                //再去判断非单机版显示组件不需要自动默认多组件
+                $("#multifunctionbool").closest("div").css("display","block");
+            }
+
+
             layer.close(index);
         }, function(index){
             $('#recotdtypes td').not(obj).css({"background-color":"#ffffff","color":"#000000"});
