@@ -367,17 +367,21 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
  * @cmparam success_fun
  */
 function ajaxSubmitByJson(url, data, success_fun,error_fun) {
-    $.ajax({
-        url : url,
-        type : "POST",
-        async : true,
-        dataType : "json",
-        contentType: "application/json",
-        data : JSON.stringify(data),
-        timeout : 60000,
-        success : success_fun,
-        error : (error_fun != null ? error_fun : ajaxErrDialog)
-    });
+	if (isNotEmpty(url)&&isNotEmpty(success_fun)) {
+        $.ajax({
+            url : url,
+            type : "POST",
+            async : true,
+            dataType : "json",
+            contentType: "application/json",
+            data : JSON.stringify(data),
+            timeout : 60000,
+            success : success_fun,
+            error : (error_fun != null ? error_fun : ajaxErrDialog)
+        });
+	}else {
+		console.log("请求地址："+url+"__成功返回："+success_fun)
+	}
 }
 
 /**
