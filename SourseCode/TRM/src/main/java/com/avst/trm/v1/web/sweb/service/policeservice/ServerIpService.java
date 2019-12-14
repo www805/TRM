@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 
 import com.avst.trm.v1.common.util.ChangeIP;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.SystemIpUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RRParam;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -15,8 +16,10 @@ import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetTDCacheParamByMTssidParam_out;
 import com.avst.trm.v1.feignclient.mc.req.GetTdByModelSsidParam_out;
+import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
+import com.avst.trm.v1.web.sweb.req.basereq.UpdateIpParam;
 import com.avst.trm.v1.web.sweb.req.policereq.ServerconfigParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.GetServerConfigByIdVO;
 import com.avst.trm.v1.web.sweb.vo.basevo.GetServerIpVO;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ServerIpService extends BaseService {
@@ -45,8 +49,8 @@ public class ServerIpService extends BaseService {
         GetServerIpVO getServerIpVO = new GetServerIpVO();
 
         //获取配置文件
-        String trmIP = NetTool.getMyIP();
-        getServerIpVO.setTrmip(trmIP);
+        Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
+        getServerIpVO.setTrmipMap(map);
 
         try {
             //远程请求
@@ -105,7 +109,31 @@ public class ServerIpService extends BaseService {
             changeResultToSuccess(rResult);
         }
 
+    }
 
+    public void updateIp(RResult rResult, UpdateIpParam updateIpParam) {
+
+
+        if(OpenUtil.isIp(updateIpParam.getName()) == false){
+            rResult.setMessage("网卡名不能为空");
+            return;
+        }
+        if(OpenUtil.isIp(updateIpParam.getIp()) == false){
+            rResult.setMessage("ip不能为空");
+            return;
+        }
+        if(OpenUtil.isIp(updateIpParam.getSubnetMask()) == false){
+            rResult.setMessage("子网掩码不能为空");
+            return;
+        }
+        if(OpenUtil.isIp(updateIpParam.getGateway()) == false){
+            rResult.setMessage("默认网关不能为空");
+            return;
+        }
+
+//            SystemIpUtil.setLocalIP(getServerIpParam.getName(), getServerIpParam.getTrmip(), getServerIpParam.getZwm(), getServerIpParam.getWg());
+
+        changeResultToSuccess(rResult);
     }
 
     /**

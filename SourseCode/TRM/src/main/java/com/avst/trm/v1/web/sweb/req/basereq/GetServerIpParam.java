@@ -56,4 +56,5 @@ public class GetServerIpParam {
     public void setTtsetinfoip(ServerIpssidParam ttsetinfoip) {
         this.ttsetinfoip = ttsetinfoip;
     }
+
 }

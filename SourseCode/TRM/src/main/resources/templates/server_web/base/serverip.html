@@ -27,10 +27,12 @@
     <form class="layui-form " style="margin-top: 30px;" onsubmit="return false">
 
         <div class="layui-form-item layui-main site-inline">
-            <label class="layui-form-label"><span class="fontRed">*</span>笔录系统ip</label>
-            <div class="layui-input-block">
-                <input type="text" name="trmip" id="trmip" required lay-verify="setip" placeholder="请输入笔录系统ip" autocomplete="off" class="layui-input">
+            <label class="layui-form-label"><span class="fontRed">*</span>本机网卡</label>
+            <div class="layui-input-inline">
+                <select name="trmip" lay-verify="" id="trmip" lay-filter="trmip_filter" >
+                </select>
             </div>
+            <button class="layui-btn layui-btn-normal" lay-filter="updateIp" onclick="getNetworkPath();">修改IP</button>
         </div>
 
 
