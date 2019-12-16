@@ -1770,8 +1770,9 @@ function addidentify(usertype,starttime,gradeintroduce,translatext) {
 
 ///////////////////////////////**********************************************************左侧打点**************start
 function tagtext() {
-    $("#recordreals span").bind('mousedown', function(e) {
+    $("#recordreals span").off("mouseup").mouseup(function(e) {
         if (3 == e.which||1 == e.which){
+            console.log("2")
             var userssid=$(this).closest("div").attr("userssid");
             var starttime=$(this).closest("div").attr("starttime");//语音识别时间标识
             var tagtxt=$(this).html();//打点标记文本
