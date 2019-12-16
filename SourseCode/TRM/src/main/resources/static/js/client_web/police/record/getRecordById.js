@@ -82,9 +82,9 @@ function getRecordById() {
 
 
 function setqw(problems) {
+    $("#recorddetail").empty();
     if (isNotEmpty(problems)){
         var problemhtml="";
-        $("#recorddetail").empty();
         $("#datanull_2").hide();
 
         for (var z = 0; z< problems.length;z++) {
@@ -2491,7 +2491,7 @@ function calladdRecord(data) {
 }
 
 function contextMenu() {
-    $('#recorddetail label').bind('mousedown', function(e) {
+    $('#recorddetail label').bind('mouseup', function(e) {
         if (3 == e.which) {
             document.execCommand('removeFormat');
         }  else if (1 == e.which) {

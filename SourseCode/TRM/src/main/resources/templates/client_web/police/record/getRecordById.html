@@ -361,8 +361,6 @@
                                             </div>
                                     </div>
                                 </div>
-                                    </div>
-                                </div>
                                 <div class="layui-col-md7" id="record_qw_HTML" >
                                     <div class="layui-card">
                                         <div class="layui-col-md12">
@@ -376,7 +374,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div id="recorddetail_webkit">
+                                       <!-- <div th:replace="modular/record_qw :: record_qw"></div>-->
+                                      <div id="recorddetail_webkit">
                                             <div style="" id="recorddetail_scrollhtml">
                                                 <div class="layui-card-body">
                                                     <div class="layui-col-md12  layui-show" style="height: 300px">
@@ -395,8 +394,6 @@
                             </div>
                         </div>
                     </div>
-
-
             </div>
     </div>
     <div th:replace="footer :: footer">...</div>
@@ -462,7 +459,6 @@
       /*  main1();//身心统计回放*/
         togetPolygraphurl = getActionURL(getactionid_manage().getRecordById_togetPolygraph);
         tocaseToUserURL = getActionURL(getactionid_manage().getRecordById_tocaseToUser);
-
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});
         $(window).resize(function(){
             $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md7").width())});

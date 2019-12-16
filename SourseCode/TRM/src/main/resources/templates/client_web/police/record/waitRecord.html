@@ -70,7 +70,8 @@
                         </div>
                     </div>
             </div>
-           <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:60%;">
+           <!--<div th:replace="modular/tabdata :: tabdata"></div>-->
+          <div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:60%;">
                <ul class="layui-tab-title">
                    <li onclick="initasr()" id="asr" style="display: none">语音识别 </span><span id="webkit2"></span></li>
                    <li onclick="initheart();"id="ph" style="display: none">身心监测</li>
@@ -181,8 +182,8 @@
                                 </div>
                             </div>
                         </div>
-                       <!--<div th:replace="modular/record_qw :: record_qw"></div>-->
-                        <div id="recorddetail_webkit">
+                       <div th:replace="modular/record_qw :: record_qw"></div>
+                        <!--<div id="recorddetail_webkit">
                             <div style="" id="recorddetail_scrollhtml">
                                 <div class="layui-card-body layui-row ">
                                     <div class="layui-col-lg12 ">
@@ -210,7 +211,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>
@@ -338,11 +339,6 @@
             }
         }
 
-
-        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-        $(window).resize(function(){
-            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-        })
 
         $("#yuntaikz").click(function () {
             yuntaikz();

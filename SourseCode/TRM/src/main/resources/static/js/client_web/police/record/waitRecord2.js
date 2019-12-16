@@ -63,7 +63,9 @@ function callbackgetPolygraphdata(data) {
                 $("#xthtml #xt6").html(' '+hr+'  ');
                 $("#xthtml #xt7").html(' '+hrv+'  ');
                 $("#xthtml #xt8").html(' '+br+'  ');
-
+                var snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
+                $("#snrtext").html(snrtext);
+                $("#snrtext3").html(snrtext);
 
                 if (isNotEmpty(myChart)){
                     myChart.hideLoading();
@@ -93,11 +95,6 @@ function callbackgetPolygraphdata(data) {
                     }
                     select_monitorall_iframe_body==null?null:select_monitorall_iframe_body.find("#mood").attr({"src":moodsrc},{"title":moodtitle});
 
-
-                    var snrtext="fps：0&nbsp;hr_snr：0&nbsp;stress_snr：0";
-                    snrtext="fps："+fps+"&nbsp;hr_snr："+hr_snr+"&nbsp;stress_snr："+stress_snr+"";
-                    $("#snrtext").html(snrtext);
-                    $("#snrtext3").html(snrtext);
 
                     var tsmsg="身心监测加载中...";
                     var tsmsg_state=-1;
