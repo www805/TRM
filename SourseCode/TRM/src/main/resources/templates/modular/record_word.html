@@ -6,8 +6,66 @@
 </head>
 <body>
 <div data-th-fragment="record_word">
+  <script  id="editor" name="editor" textareaid="editor" type="text/plain"  ></script>
+   <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
+  <script src="/js/modular/record_word.js" type="text/javascript"></script>
+  <script type="text/javascript" src="/ueditor/ueditor.config.js"></script>
+  <script type="text/javascript" src="/ueditor/ueditor.all.js"></script>
+  <script type="text/javascript" src="/ueditor/lang/zh-cn/zh-cn.js"></script>
+  <script type="text/javascript" charset="utf-8" src="/ueditor/toword.js"> </script>
+  <script>
+      var editorhtml;//editor的html
+      var ue = UE.getEditor('editor', {
+          toolbars: [
+              [ 'undo', //撤销
+                  'redo', //重做
+                  'bold', //加粗
+                  'indent', //首行缩进
+                  'italic', //斜体
+                  'underline', //下划线
+                  'strikethrough', //删除线
+                  'subscript', //下标
+                  'fontborder', //字符边框
+                  'superscript', //上标
+              ],
+              ['time', //时间
+                  'date', //日期
+                  'fontsize', //字号
+                  'justifyleft', //居左对齐
+                  'justifyright', //居右对齐
+                  'justifycenter', //居中对齐
+                  'justifyjustify', //两端对齐
+                  'fontfamily',//字体
+                  'forecolor', //字体颜色
+                  'backcolor', //背景色
+                  'rowspacingtop', //段前距
+                  'rowspacingbottom', //段后距
+                  'lineheight',//行间距
+                  'print', //打印
+                  'preview', //预览
+              ]
+          ],
+          allHtmlEnabled:true,
+          autoFloatEnabled: false,
+          serverUrl:"upload",
+          initialFrameWidth:1017, //初始化编辑器宽度,默认1000,编辑框1000+下拉滚动条17
+          initialFrameHeight:1020,  //初始化编辑器高度,默认1000
+          autoHeightEnabled:false,
+          initialContent:"<div tabindex=\"0\" hidefocus=\"true\"  id='"+TOWORD.divpage.getnextpagedivid()+"' style= '"+TOWORD.divpage.divcss()+"'><p ></p></div>"
+      });
 
- <script src="/js/modular/record_word.js" type="text/javascript"></script>
+      function onfocusfnc(num){
+          TOWORD.divpage.changediv(num);
+      }
+
+      ue.ready(function() {
+          var divid=TOWORD.divpage.getpagedivid(1);//初始化的num=1
+          var div=TOWORD.page.getifamedivByDivid(divid);
+          div.setAttribute("num",1);
+          div.addEventListener("onfocus",onfocusfnc);
+          editorhtml=$("#editor iframe").contents();
+      });
+  </script>
 </div>
 </body>
 </html>

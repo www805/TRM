@@ -1,6 +1,5 @@
-var record_index={};//笔录的上一个光标位置 key:p下标 value：类型
 
-var recorduser=[];//会议用户集合：副麦主麦
+var recorduser=[];//会议用户集合：多个
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
@@ -9,11 +8,10 @@ var recordbool=null;//笔录状态 -1 -2暂时用于导出判断不存在数据�
 var casebool=null;//案件状态
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
-var  mouseoverbool_right=-1;//同上
 
 var MCCache=null;//会议缓存数据
 var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
-var  fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
+var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
@@ -21,7 +19,6 @@ var getRecordById_data=null;//单份笔录返回的全部数据
 var record_pausebool=-1;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
 var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
 
-var occurrencetime_format;//案发时间
 
 var multifunctionbool;
 
@@ -151,7 +148,6 @@ function callbackgetRecordById(data) {
                         console.log("我不是谈话笔录")
                         $("#asr").show();
                         $("#fd").show();
-                        $("#ph").show();
                         $("#xthtml").css("visibility","visible");
 
                         $("#initec ul li").removeClass("layui-this");
@@ -283,9 +279,6 @@ function callbackgetRecordById(data) {
                 $("#caseAndUserInfo_html").html("");
                 if (isNotEmpty(case_)){
                     var occurrencetime_format_=case_.occurrencetime_format;
-                    if (isNotEmpty(occurrencetime_format_)){
-                        occurrencetime_format=occurrencetime_format_;
-                    }
                     var casename=case_.casename==null?"":case_.casename;
                     var username=recordUserInfosdata.username==null?"":recordUserInfosdata.username;
                     var cause=case_.cause==null?"":case_.cause;
@@ -482,18 +475,6 @@ function callbackstartMC(data) {
             var mtssiddata=startMCVO.mtssid;
             useretlist=startMCVO.useretlist;
 
-            /*if (isNotEmpty(useretlist)) {
-                for (var i = 0; i < useretlist.length; i++) {
-                    var useret = useretlist[i];
-                    var userssid1 = useret.userssid;
-                    if (userssid1 == dq_recorduser) {
-                        liveurl = useret.livingurl;//开始会议后默认使用副麦预览地址
-                        console.log("当前liveurl————"+liveurl)
-                    }
-                }
-                initplayer();//初始化地址
-            }*/
-
             mtssid=mtssiddata;
             mcbool=1;//正常开启
 
@@ -673,10 +654,6 @@ function getTDCacheParamByMTssid() {
                 if (isNotEmpty(data)){
                     TDCache=data;
                     fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
-
-                    //第一行上时间
-                    var lable=  $('#first_originaltr label[name="q"]');
-                    setFocus(lable);
                 }
             }
         });
@@ -809,14 +786,7 @@ function callbackgetgetRecordrealing(data) {
 
         var list= datas.list;
         var fdCacheParams= datas.fdCacheParams;
-        /*if (isNotEmpty(fdCacheParams)){
-            for (var i = 0; i < fdCacheParams.length; i++) {
-                var fdCacheParam = fdCacheParams[i];
-                liveurl = fdCacheParam.livingUrl;//开始会议后默认使用副麦预览地址
-                console.log("当前liveurl————"+liveurl)
-            }
-            initplayer();
-        }*/
+
         if (isNotEmpty(list)) {
             layer.close(loadindex);
             $("#recordreals").html("");
@@ -875,109 +845,6 @@ function callbackgetgetRecordrealing(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-
-
-
-//回车
-function qw_keydown(obj,event) {
-    var e = event || window.event;
-    var keyCode = e.keyCode;
-
-    var dqname=$(obj).attr("name");
-    var trindex= $(obj).closest("tr").index();
-    var trlength=$("#recorddetail tr").length;
-    var lable=null;
-    switch(keyCode){
-        case 13:
-            console.log("回车")
-            if (trlength==(trindex+1)){//最后一行答直接追加一行问答
-                focuslable(trtd_html,1,'q');
-            } else {
-                lable=$('#recorddetail tr:eq("'+(trindex+1)+'") label[name="q"]');//定位到下一行的问
-                setFocus(lable);
-            }
-            event.preventDefault();
-            break;
-        case 38:
-            console.log("上一句")
-            var index=(trindex-1)<=0?0:(trindex-1);
-                if(trindex!=0){
-                    lable=$('#recorddetail tr:eq("'+index+'") label[name="q"]');
-                    setFocus(lable);
-                }
-                event.preventDefault();
-            break;
-        case 40:
-            console.log("下一句")
-            var index=(trindex+1)>=trlength?trlength:(trindex+1);
-            lable=$('#recorddetail tr:eq("'+index+'") label[name="q"]');
-            setFocus(lable);
-            break;
-        default: break;
-    }
-}
-function setFocus(el) {
-    if (isNotEmpty(el)){
-        el = el[0];
-
-        var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
-        if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
-            //回车加锚点：先判断语音识别是否开启
-            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)&&isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0) {
-                var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
-                var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
-                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr+"__语音识别数__"+asrnum)
-               /* if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))){   后期改为不需要判断是否开启了语音识别：回车都加时间*/
-                    var dqtime=new Date().getTime();
-                    var qw_type=el.getAttribute("name");
-                    if (isNotEmpty(qw_type)){
-                        console.log("开始使用直播时间~")
-                        if (qw_type=="w"){
-                            var w_starttime=el.getAttribute("w_starttime");
-                            if ((!isNotEmpty(w_starttime)||w_starttime<0)){
-                                //计算时间戳
-                                w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("w_starttime",w_starttime);
-                            }
-                        }else  if (qw_type=="q"){
-                            var q_starttime=el.getAttribute("q_starttime");
-                            if ((!isNotEmpty(q_starttime)||q_starttime<0)){
-                                //计算时间戳
-                                q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("q_starttime",q_starttime);
-                            }
-                        }
-                    }
-                /*}else {
-                    console.log("使用语音识别时间~")
-                }*/
-            }else{
-                console.log("TDCache___"+TDCache+"___MCCache___"+MCCache+"___fdrecordstarttime___"+fdrecordstarttime);
-            }
-        }else {
-            console.log("这是模板里面的题目~")
-        }
-
-        if (window.getSelection) {//ie11 10 9 ff safari
-            el.focus(); //解决ff不获取焦点无法定位问题
-            var range = window.getSelection();//创建range
-            range.selectAllChildren(el);//range 选择obj下所有子内容
-            range.collapseToEnd();//光标移至最后
-        }
-        else if (document.selection) {//ie10 9 8 7 6 5
-            var range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            var sel = window.getSelection();
-            if(sel.anchorOffset!=0){
-                return;
-            };
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-        event.preventDefault();
-    }
-};
 
 
 
@@ -1049,17 +916,7 @@ var trtd_html='<p><br/></p>';
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
     if (type==1){
-        $('#recorddetail tr:eq("'+record_index["key"]+'")').after(html);
-        if (isNotEmpty(qw)){
-            qwfocus= $('#recorddetail tr:eq("'+(record_index["key"]+1)+'") label[name="'+qw+'"]');
-            record_index["key"]=record_index["key"]+1;
-        }
     }  else if (type==0) {
-        $("#recorddetail").prepend(html);
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:eq(0) label[name="'+qw+'"]');
-            record_index["key"]=$('#recorddetail tr:eq(0)').index();
-        }
     }else if (type==2){
         //判断laststarttime_ue是否为空，
         // 为空判断是否存在光标获取光标在第几行在该标签后边追加
@@ -1151,6 +1008,30 @@ function callbacksetRecordreal(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){
+            console.log("笔录实时保存成功__"+data);
+        }
+    }else{
+        //layer.msg(data.message,{icon: 5});
+    }
+}
+
+function setRecordProtect() {
+    var url=getActionURL(getactionid_manage().waitCourt_setRecordProtect);
+
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+            mtssid:mtssid,
+        }
+    };
+    ajaxSubmitByJson(url, data, callbacksetRecordProtect);
+}
+function callbacksetRecordProtect(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log("笔录实时本地保存成功__"+data);
         }
     }else{
         //layer.msg(data.message,{icon: 5});
@@ -1237,20 +1118,9 @@ var setinterval1=null;
 var exportWord_index=null;
 var exportPdf_index=null;
 
-var currenttime;
-var yesterdaytime;
 $(function () {
 
 
-
-
-
-  /*  $(document).keypress(function (e) {
-        if (e.which == 13) {
-            focuslable(trtd_html,2,'q');
-            event.preventDefault();
-        }
-    });*/
 
     //导出
     $("#dc_li li").click(function () {
@@ -1273,50 +1143,6 @@ $(function () {
             exporttemplate_ue(2);
         }
     });
-    //常用问答点击
-    $("#cywd_li li").click(function () {
-        var text=$(this).text();
-        $("#recorddetail label").each(function(){
-            var lastindex=$(this).closest("tr").index();
-            var value=$(this).attr("name");
-            if (lastindex==record_index["key"]&&value==record_index["value"]) {
-                $(this).append(text);
-            }
-        });
-    });
-    //常用时间点击
-    $("#cysj_li li").click(function () {
-        var type=$(this).attr("type");
-        var text=$(this).text();
-        if (type==1){
-            var time="";
-            //当前时间
-            if (isNotEmpty(currenttime)){
-                time=currenttime;
-            }
-        }else  if(type==2){
-            //昨天时间
-            if (isNotEmpty(yesterdaytime)){
-                time=yesterdaytime;
-            }
-        }else  if(type==3){
-            //案发时间
-            if (isNotEmpty(occurrencetime_format)){
-                time=occurrencetime_format;
-            }else {
-                layer.msg("案发时间未设置",{icon:6})
-            }
-        }
-        if (isNotEmpty(time)){
-            $("#recorddetail label").each(function(){
-                var lastindex=$(this).closest("tr").index();
-                var value=$(this).attr("name");
-                if (lastindex==record_index["key"]&&value==record_index["value"]) {
-                    $(this).append(time);
-                }
-            });
-        }
-    })
 
 
     var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
@@ -1333,8 +1159,6 @@ $(function () {
         $("#min").html(( minutes < 10 ? "0" : "" ) + minutes);
         var hours = new Date().getHours();
         $("#hours").html(( hours < 10 ? "0" : "" ) + hours);
-        currenttime=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日' + dayNames[newDate.getDay()]+( hours < 10 ? "0" : "" ) + hours+"时"+( minutes < 10 ? "0" : "" ) + minutes+"分"+( seconds < 10 ? "0" : "" ) + seconds+"秒";
-        yesterdaytime=preDate.getFullYear() + "年" + monthNames[preDate.getMonth()] + '月' + preDate.getDate() + '日' + dayNames[preDate.getDay()]+( hours < 10 ? "0" : "" ) + hours+"时"+( minutes < 10 ? "0" : "" ) + minutes+"分"+( seconds < 10 ? "0" : "" ) + seconds+"秒";
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
@@ -1538,409 +1362,8 @@ function shrink(obj) {
 //*******************************************************************伸缩按钮end****************************************************************//
 
 
-//*******************************************************************告知书start****************************************************************//
-var notificationListdata=null;
-function getNotifications() {
-    var url=getActionURL(getactionid_manage().waitCourt_getNotifications);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            currPage:1,
-            pageSize:100
-        }
-    };
-    ajaxSubmitByJson(url, data, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var pagelist=data.pagelist;
-                $("#notificationList").html("");
-                if (isNotEmpty(pagelist)){
-                    notificationListdata=pagelist;
-                    for (var i = 0; i < pagelist.length; i++) {
-                        var l = pagelist[i];
-                        var l_html="<tr>\
-                                      <td>"+l.notificationname+"</td>\
-                                      <td style='padding-bottom: 0;'>\
-                                          <div class='layui-btn-container'>\
-                                          <button  class='layui-btn layui-btn-danger' onclick='previewgetNotifications(\""+l.ssid+"\");'>打开</button>\
-                                          <button  class='layui-btn layui-btn-normal' onclick='downloadNotification(\""+l.ssid+"\")'>直接下载</button>\
-                                          </div>\
-                                          </td>\
-                                 </tr>";
-                        $("#notificationList").append(l_html);
-                    }
-                }
-            }
-        }else{
-            layer.msg(data.message,{icon: 5});
-        }
-        layui.use(['layer','element','upload'], function(){
-            var layer = layui.layer; //获得layer模块
-            var element = layui.element;
-            var upload = layui.upload;
-            //使用模块
-
-            var url=getActionURL(getactionid_manage().waitCourt_uploadNotification);
-
-            //执行实例
-            var uploadInst = upload.render({
-                elem: "#uploadFile" //绑定元素
-                ,url: url //上传接口
-                , acceptMime: '.doc, .docx' //只允许上传图片文件
-                ,exts: 'doc|docx' //只允许上传压缩文件
-                ,before: function(obj){
-                }
-                ,done: function(res){
-                    if("SUCCESS" == res.actioncode){
-                        layer.msg(res.message,{time:500},function () {
-                            getNotifications();
-                        });
-                    }
-                }
-                ,error: function(res){
-                    console.log("请求异常回调");
-                }
-            });
-        });
-    })
-}
-
-//获取告知书列表
-function open_getNotifications() {
-    var html= '<table class="layui-table"  lay-skin="nob">\
-        <colgroup>\
-        <col>\
-        <col  width="200">\
-        </colgroup>\
-        <tbody id="notificationList">\
-        </tbody>\
-        <thead>\
-            <tr>\
-            <td></td><td style="float: right"><button  class="layui-btn layui-btn-warm" id="uploadFile">上传告知书</button></td>\
-            </tr>\
-         </thead>\
-        </table>';
-    var index = layer.open({
-        type:1,
-        title:'选择告知书',
-        content:html,
-        shadeClose:false,
-        shade:0,
-        area: ['893px', '600px']
-    });
-    getNotifications();
-}
-
-//下载告知书
-function downloadNotification(ssid) {
-    var url=getActionURL(getactionid_manage().waitCourt_downloadNotification);
-    var data = {
-        token: INIT_CLIENTKEY,
-        param: {
-            ssid: ssid
-        }
-    };
-    ajaxSubmitByJson(url, data, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var base_filesave=data.base_filesave;
-                if (isNotEmpty(base_filesave)) {
-                    var recorddownurl=base_filesave.recorddownurl;
-                    layer.msg("下载中，请稍后...",{icon: 6});
-                    window.location.href=recorddownurl;
-                }
-            }
-        }else{
-            layer.msg(data.message,{icon: 5});
-        }
-    });
-}
-
-//打开告知书
-var previewgetNotifications_index=null;
-var dqrecorddownurl_htmlreads=null;//读取阅读txt
-
-var t1=null;
-var len=0;
-function previewgetNotifications(ssid) {
-
-    if (isNotEmpty(previewgetNotifications_index)) {
-        layer.close(previewgetNotifications_index);
-        clearInterval(t1);
-        if (isNotEmpty(audioplay)){
-            audioplay.pause();
-        }
-        audioplay=null;
-        len=0;
-    }
-
-    var url=getActionURL(getactionid_manage().waitCourt_downloadNotification);
-    var setdata = {
-        token: INIT_CLIENTKEY,
-        param: {
-            ssid: ssid
-        }
-    };
 
 
-    ajaxSubmitByJson(url, setdata, function (data) {
-        if(null!=data&&data.actioncode=='SUCCESS'){
-            var data=data.data;
-            if (isNotEmpty(data)){
-                var recorddownurl_html=data.recorddownurl_html;
-
-                var base_filesave=data.base_filesave;
-
-                if (isNotEmpty(recorddownurl_html)) {
-                    previewgetNotifications_index = layer.open({
-                        type:2,
-                        title:'阅读告知书',
-                        content:recorddownurl_html,
-                        shadeClose:false,
-                        maxmin: true,
-                        shade:0,
-                        area: ['50%', '700px']
-                        ,btn: ['开始朗读', '取消'],
-                        id:"notification_read"
-                        ,yes: function(index, layero){
-                            var dis=$("#layui-layer"+previewgetNotifications_index).find(".layui-layer-btn0").attr('disabled');
-                            if (isNotEmpty(dis)){
-                                layer.msg("朗读中")
-                                return;
-                            }
-
-                            if (!isNotEmpty(gnlist)||!gnlist.includes(TTS_F)){
-                                layer.msg("请先获取语音播报授权")
-                                return;
-                            }
-                            layer.msg("加载中，请稍等...", {
-                                icon: 16,
-                                time:1000
-                            });
-
-                            clearInterval(t1);
-                            if (isNotEmpty(audioplay)){
-                                audioplay.pause();
-                            }
-                            audioplay=null;
-                            len=0;
-
-
-                            //点击了
-                            dqrecorddownurl_htmlreads=data.recorddownurl_htmlreads;
-                            if (isNotEmpty(dqrecorddownurl_htmlreads)){
-                                t1 = window.setInterval(function (args) {
-                                    var text=dqrecorddownurl_htmlreads[len];
-                                    if (!isNotEmpty(audioplay)&&len==0){
-                                        str2Tts(text);
-                                        len++;
-                                    } else if (audioplay.ended) {
-                                        str2Tts(text);
-                                        len++;
-                                    }
-                                    if (len>dqrecorddownurl_htmlreads.length-1){
-                                        clearInterval(t1);
-                                    }
-                                },500);
-                            }else {
-                                layer.msg("未找到需要朗读的文本");
-                            }
-                        }
-                        ,btn2: function(index, layero){
-                            clearInterval(t1);
-                            if (isNotEmpty(audioplay)){
-                                audioplay.pause();
-                            }
-                            audioplay=null;
-                            len=0;
-                            layer.close(index)
-                        }
-                        ,cancel: function(index, layero){
-                            clearInterval(t1);
-                            if (isNotEmpty(audioplay)){
-                                audioplay.pause();
-                            }
-                            audioplay=null;
-                            len=0;
-                            layer.close(index)
-                        }
-                    });
-                }else {
-                    layer.msg("文件未找到，可尝试下载预览");
-                }
-            }
-        }else{
-            layer.msg(data.message,{icon: 5});
-        }
-    });
-
-}
-
-//告知书朗读
-function str2Tts(text) {
-    if (isNotEmpty(text)){
-        var url=getUrl_manage().str2Tts;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                text:text
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackstr2Tts);
-    }
-}
-
-var audioplay=null;
-function callbackstr2Tts(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var uploadpath=data.uploadpath;
-            if (isNotEmpty(uploadpath)){
-                $("#layui-layer"+previewgetNotifications_index).find(".layui-layer-btn0").text("朗读中").attr('disabled',true);
-                audioplay =new Audio();
-                audioplay.src = uploadpath;
-                audioplay.play();
-            }
-        }
-    }else {
-        layer.msg(data.message,{icon: 5});
-    }
-}
-
-//*******************************************************************告知书start****************************************************************//
-
-//*******************************************************************左侧搜索块start****************************************************************//
-var dqindex_realtxt=0;//当前显示的下标
-var likerealtxtarr=[];//搜索txt
-//搜索上
-function last_realtxt() {
-    if (isNotEmpty(likerealtxtarr)) {
-        dqindex_realtxt--;
-        if (dqindex_realtxt<0){
-            dqindex_realtxt=0;
-            layer.msg("这是第一个~");
-        }
-        set_dqrealtxt();
-    }
-}
-//搜索下
-function next_realtxt() {
-    if (isNotEmpty(likerealtxtarr)) {
-        dqindex_realtxt++;
-        if (dqindex_realtxt>=likerealtxtarr.length-1){
-            dqindex_realtxt=likerealtxtarr.length-1;
-            layer.msg("这是最后一个~");
-        }
-        set_dqrealtxt();
-    }
-}
-//搜索赋值
-function set_dqrealtxt(){
-    mouseoverbool_left=1;//不滚动
-    if (isNotEmpty(likerealtxtarr)) {
-        for (var i = 0; i < likerealtxtarr.length; i++) {
-            var all = likerealtxtarr[i];
-            all.find("a").removeClass("highlight_dq");
-        }
-        likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
-        var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
-        var div = document.getElementById('recordreals_scrollhtml');
-        div.scrollTop = top;
-    }
-}
-function recordreals_select() {
-    mouseoverbool_left=1;//不滚动
-    var likerealtxt = $("#recordreals_select").val();
-    dqindex_realtxt=0;
-    likerealtxtarr=[];
-    var recordrealshtml= $("#recordreals").html();
-    recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
-    $("#recordreals").html(recordrealshtml);
-
-    $("#recordreals div").each(function (i,e) {
-        var spantxt=$(this).find("span").text();
-        if (isNotEmpty(likerealtxt)){
-            if (spantxt.indexOf(likerealtxt) >= 0) {
-                var html=$(this).find("span").html();
-                html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
-                $(this).find("span").html(html);
-                likerealtxtarr.push($(this).find("span"));
-            }
-        }
-    });
-
-    if (isNotEmpty(likerealtxtarr)){
-        set_dqrealtxt();
-    }else {
-        /*layer.msg("没有找到内容~");*/
-    }
-}
-//*******************************************************************左侧搜索块end****************************************************************//
-
-//*******************************************************************左侧授权模块显示start****************************************************************//
-var gnlist=null;
-function getgnlist() {
-    var url=getActionURL(getactionid_manage().waitCourt_gnlist);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgnlist);
-}
-function callbackgnlist(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var lists=data.lists;
-            if (isNotEmpty(lists)){
-                gnlist=lists;
-                if (!isNotEmpty(gnlist)||!gnlist.includes(RECORD_F)){
-                    layer.msg("请先获取笔录授权",{time:2000,icon:16,shade: 0.3},function () {
-                        window.history.go(-1);
-                        return false;
-                    })
-                }
-            }
-        }
-    }else {
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//*******************************************************************左侧授权模块显示endt****************************************************************//
-
-
-//*******************************************************************案件人员信息编辑start****************************************************************//
-var casetouser_iframe=null;
-var casetouser_body=null;
-function  open_casetouser() {
-    layer.open({
-        type: 2,
-        title:'人员案件基本信息',
-        content:tocaseToUserURL,
-        area: ['80%', '90%'],
-        btn: ['确定','取消'],
-        success:function(layero, index){
-            casetouser_iframe = window['layui-layer-iframe' + index];
-            casetouser_body=layer.getChildFrame('body', index);
-            casetouser_iframe.recordssid=recordssid;
-            casetouser_iframe.setcaseToUser(getRecordById_data);
-        },
-        yes:function(index, layero){
-            var formSubmit=layer.getChildFrame('body', index);
-            var submited = formSubmit.find('#permissionSubmit')[0];
-            submited.click();
-        },
-        btn2:function(index, layero){
-            layer.close(index);
-        }
-    });
-}
-//*******************************************************************案件人员信息编辑end****************************************************************//
 
 //*******************************************************************获取各个状态start****************************************************************//
 function  getEquipmentsState() {
@@ -2062,29 +1485,6 @@ function callbackgetEquipmentsState(data) {
 }
 //*******************************************************************获取各个状态end****************************************************************//
 
-
-function setRecordProtect() {
-    var url=getActionURL(getactionid_manage().waitCourt_setRecordProtect);
-
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-            mtssid:mtssid,
-        }
-    };
-    ajaxSubmitByJson(url, data, callbacksetRecordProtect);
-}
-function callbacksetRecordProtect(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            console.log("笔录实时本地保存成功__"+data);
-        }
-    }else{
-        //layer.msg(data.message,{icon: 5});
-    }
-}
 
 
 

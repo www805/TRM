@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div data-th-fragment="userdata_court">
+    <form class="layui-form" >
+        <div class="layui-col-md12" id="case">
+            <div class="layui-card" >
+                <div class="layui-card-body  layui-row layui-col-space10"  >
+                    <form class="layui-form" >
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label" >性别：</label>
+                            <div class="layui-input-block" >
+                                <select name="sex"  id="sex" >
+                                    <option value=""></option>
+                                    <option value="1">男</option>
+                                    <option value="2">女</option>
+                                    <option value="-1">未知</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">民族：</label>
+                            <div class="layui-input-block">
+                                <select name="national"  lay-search="" id="national">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">年龄：</label>
+                            <div class="layui-input-block"  >
+                                <input type="number" name="age" id="age"  placeholder="" autocomplete="off" class="layui-input"  >
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">文化程度：</label>
+                            <div class="layui-input-block">
+                                <select name="educationlevel"   lay-search="" id="educationlevel">
+                                    <option value=""></option>
+                                    <option value="小学">小学</option>
+                                    <option value="初中">初中</option>
+                                    <option value="高中">高中</option>
+                                    <option value="中等专科">中等专科</option>
+                                    <option value="大学专科">大学专科</option>
+                                    <option value="大学本科">大学本科</option>
+                                    <option value="研究生">研究生</option>
+                                    <option value="硕士研究生">硕士研究生</option>
+                                    <option value="博士研究生">博士研究生</option>
+                                    <option value="半文盲">半文盲</option>
+                                    <option value="文盲">文盲</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">出生日期：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="both"  id="both"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg6">
+                            <label class="layui-form-label">身份证号码：</label>
+                            <div class="layui-input-block">
+                                <div class="layui-form-select">
+                                    <div class="layui-select-title">
+                                        <input type="text" name="cardnum" lay-verify="cardnum" placeholder="请输入证件号码" autocomplete="off" class="layui-input" id="cardnum" oninput="getUserinfoList()"  onblur="select_cardnumblur();" onfocus="getUserinfoList()" onkeyup="value=value.replace(/[\W]/g,'')">
+                                        <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="getUserByCard();"></i>
+                                    </div>
+                                    <dl class="layui-anim layui-anim-upbit"  id="cardnum_ssid"   >
+
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">住址：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="domicile" id="domicile"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">签发机关：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="issuingauthority" id="issuingauthority"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">身份证有效期：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="validity" id="validity"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">现住址：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="residence" id="residence"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">联系方式：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="phone" id="phone"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-col-lg12">
+                            <label class="layui-form-label">工作单位：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="workunits" id="workunits"  placeholder="" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="/js/modular/userdata_court.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

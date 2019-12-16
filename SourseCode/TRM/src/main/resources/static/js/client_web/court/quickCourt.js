@@ -95,7 +95,7 @@ function addCaseToArraignment() {
     var arraignmentexpand=[];
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
         //被告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE2+""],2);
+        var bool=checkuserinfograde(USERINFOGRADE2);
         if (!bool){
             return;
         }
@@ -109,7 +109,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE1+""])){
         //原告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE1+""],1);
+        var bool=checkuserinfograde(USERINFOGRADE1);
         if (!bool){
             return;
         }
@@ -122,7 +122,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE3+""])){
         //被告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE3+""],3);
+        var bool=checkuserinfograde(USERINFOGRADE3);
         if (!bool){
             return;
         }
@@ -135,7 +135,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE8+""])){
         //原告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE8+""],8);
+        var bool=checkuserinfograde(USERINFOGRADE8);
         if (!bool){
             return;
         }
@@ -869,21 +869,20 @@ function callbakegetCaseById(data) {
 /*
 检测人员不分验证
  */
-function checkuserinfograde(userinfograde,type) {
-    if (isNotEmpty(userinfograde)&&isNotEmpty(type)){
+function checkuserinfograde(userinfogradetype) {
+    var userinfograde=userinfogrades[""+userinfogradetype+""];
+    if (isNotEmpty(userinfograde)&&isNotEmpty(userinfogradetype)){
         var con="";
-        if (type==1){con="原告";} else if (type==2){ con="被告";}else if (type==3){con="被告诉讼代理人";}else if (type==8){con="原告诉讼代理人";}
+        if (userinfogradetype==USERINFOGRADE1){con="原告";} else if (userinfogradetype==USERINFOGRADE2){ con="被告";}else if (userinfogradetype==USERINFOGRADE3){con="被告诉讼代理人";}else if (userinfogradetype==USERINFOGRADE8){con="原告诉讼代理人";}
         var username=userinfograde.username;
         if (!isNotEmpty(username)){
             layer.msg(con+"名称不能为空",{icon: 5});
             return false;
         }
-        return true;
     }
     return true;
 }
 
-//检测回填个人信息
 
 
 //收集人员数据
