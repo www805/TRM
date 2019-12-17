@@ -1,7 +1,6 @@
 package com.avst.trm.v1.web.sweb.action.baseaction;
 
-import com.avst.trm.v1.common.cache.AppCache;
-import com.avst.trm.v1.common.cache.AppServiceCache;
+import com.avst.trm.v1.common.cache.AppServerCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
@@ -10,17 +9,10 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
-import com.avst.trm.v1.common.util.baseaction.ReqParam;
-import com.avst.trm.v1.common.util.sq.SQEntity;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.param.ActionVO;
-import com.avst.trm.v1.outsideinterface.offerclientinterface.param.PageVO;
 import com.avst.trm.v1.web.sweb.req.basereq.LoginParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.HomeService;
 import com.avst.trm.v1.web.sweb.service.policeservice.LoginService;
-import com.avst.trm.v1.web.sweb.vo.InitVO;
 import org.apache.commons.lang.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -57,10 +48,10 @@ public class HomeAction extends BaseAction{
     public ModelAndView gotomain(Model model) {
         String type=CommonCache.getCurrentServerType();
 
-        AppCacheParam param = AppServiceCache.getAppServiceCache();
+        AppCacheParam param = AppServerCache.getAppServerCache();
         if(StringUtils.isBlank(param.getTitle())){
             this.getNavList();
-            param = AppServiceCache.getAppServiceCache();
+            param = AppServerCache.getAppServerCache();
             Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
             if (null != base_serverconfig) {
                 param.setTitle(base_serverconfig.getSysname());
@@ -98,10 +89,10 @@ public class HomeAction extends BaseAction{
     public ModelAndView gotologin(Model model, HttpServletRequest request, LoginParam loginParam) {
         RResult rResult=createNewResultOfFail();
 
-        AppCacheParam param = AppServiceCache.getAppServiceCache();
+        AppCacheParam param = AppServerCache.getAppServerCache();
         if(StringUtils.isBlank(param.getTitle()) || StringUtils.isBlank(param.getGuidepageUrl())){
             this.getNavList();
-            param = AppServiceCache.getAppServiceCache();
+            param = AppServerCache.getAppServerCache();
             Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
             if (null != base_serverconfig) {
                 param.setTitle(base_serverconfig.getSysname());
@@ -121,7 +112,7 @@ public class HomeAction extends BaseAction{
     public RResult checklogin(Model model, HttpServletRequest request, HttpServletResponse response, LoginParam loginParam) {
         RResult result=createNewResultOfFail();
         loginService.gotologin(result,request,response,loginParam);
-        AppServiceCache.delAppServiceCache();//清空logo导航栏缓存
+        AppServerCache.delAppServerCache();//清空logo导航栏缓存
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;
     }

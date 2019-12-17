@@ -45,26 +45,27 @@ function updateServerIp(){
 }
 
 
-//修改ip
+//修改网卡下本机ip
 function updateIp(){
 
-    // var url = getActionURL(getactionid_manage().serverip_updateServerIp);
-    var url = "/sweb/base/ip/updateIp";
+    var url = getActionURL(getactionid_manage().serverip_updateIp);
+    // var url = "/sweb/base/ip/updateIp";
 
     var serviceName = $("#serviceName").html();
     var trmip = $("#tip").val();
+    var eip = $("#eip").val();//原始ip
     var subnetMask = $("#subnetMask").val();
     var gateway = $("#gateway").val();
 
     var data={
         name: serviceName,
         ip: trmip,
+        eip: eip,
         subnetMask: subnetMask,
         gateway: gateway
     }
 
 
-    console.log(data);
     ajaxSubmitByJson(url,data,callUpdateServerIp);
 }
 
@@ -89,33 +90,34 @@ function getServerIpPath(trmipNum){
                     </div>\
                </div>\
                <div class="layui-form-item">\
-                   <label class="layui-form-label">ip</label>\
+                   <label class="layui-form-label"><span style="color: red;">*</span>ip</label>\
                     <div class="layui-input-block">\
-                        <input type="text" name="ip" lay-verify="ip" id="tip" autocomplete="off" placeholder="请输入ip" value="' + ip + '"  class="layui-input">\
+                        <input type="hidden" id="eip" value="' + ip + '" >\
+                        <input type="text" name="ip" id="tip" lay-verify="required" autocomplete="off" placeholder="请输入ip" value="' + ip + '"  class="layui-input">\
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
-                    <label class="layui-form-label">子网掩码</label>\
+                    <label class="layui-form-label"><span style="color: red;">*</span>子网掩码</label>\
                     <div class="layui-input-block">\
-                        <input type="text" name="subnetMask" id="subnetMask" lay-verify="title" autocomplete="off" placeholder="请输入子网掩码" value="' + subnetMask + '"  class="layui-input">\
+                        <input type="text" name="subnetMask" id="subnetMask" lay-verify="required" autocomplete="off" placeholder="请输入子网掩码" value="' + subnetMask + '"  class="layui-input">\
                     </div>\
                 </div>\
                 <div class="layui-form-item">\
-                    <label class="layui-form-label">默认网关</label>\
+                    <label class="layui-form-label"><span style="color: red;">*</span>默认网关</label>\
                     <div class="layui-input-block">\
-                        <input type="text" name="gateway" id="gateway" lay-verify="title" autocomplete="off" placeholder="请输入默认网关" value="' + gateway + '"  class="layui-input">\
+                        <input type="text" name="gateway" id="gateway" lay-verify="required" autocomplete="off" placeholder="请输入默认网关" value="' + gateway + '"  class="layui-input">\
                     </div>\
                 </div>\
             </form>';
 
 
-    var index = layer.open({
+    var getServerIpPathindex = layer.open({
         title:'修改IP',
         content: html,
         area: ['500px', '350px'],
         btn: ['确定', '取消'],
         yes:function(index, layero){
-            layer.close(index);
+            // layer.close(index);
 
             updateIp();//修改
 
@@ -137,6 +139,11 @@ function getServerIpPath(trmipNum){
 function getNetworkPath(){
     var trmList = trmipMap[trmipKey];
     var nrHTML = "";
+
+    if(!isNotEmpty(trmList)){
+        layer.msg("请选择网卡。。。", {icon:5});
+        return;
+    }
 
     for (var i = 0; i < trmList.length; i++) {
         var serviceip = trmList[i];
@@ -176,13 +183,13 @@ function getNetworkPath(){
         '  </tbody>\n' +
         '</table>';
 
-    var index = layer.open({
+    var getNetworkPathindex = layer.open({
         title:'网卡信息',
         content: html,
         area: ['900px', 'auto'],
         btn: ['返回'],
         btn2:function(index, layero){
-            layer.close(index);
+            layer.close(getNetworkPathindex);
         }
     });
 }
@@ -224,9 +231,7 @@ function callgetServerIpList(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         var serverIplist = data.data;
         modeltds = serverIplist.modeltds;
-        // $("#trmip").val(serverIplist.trmip);
-
-        console.log(serverIplist.trmipMap);
+        // console.log(serverIplist.trmipMap);
 
         var jc = 0;
         trmipMap = serverIplist.trmipMap;
@@ -313,7 +318,7 @@ $(function () {
         form.verify({
             setip: function(value, item){ //value：表单的值、item：表单的DOM对象
                 if(''==value){
-                    return "IP地址不能为空";
+                    return "必填项不能为空";
                 }
                 if(!(/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(value))){
                     return '请输入一个正确的IP地址';

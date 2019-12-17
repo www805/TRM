@@ -2,6 +2,7 @@ package com.avst.trm.v1.web.standaloneweb.service;
 
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
@@ -38,7 +39,7 @@ public class MainStandaloneService extends BaseService {
         AppCacheParam cacheParam = AppCache.getAppCacheParam();
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         if(null == cacheParam.getData()){
-            String myIP = NetTool.getMyIP();
+            String myIP = ServerIpCache.getServerIp();
             FileInputStream fis = null;
             try {
                 Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
@@ -82,7 +83,7 @@ public class MainStandaloneService extends BaseService {
                 String guidepageUrl = (String) guidepage.get("url");
                 fileYml.put("bottom", map.get("bottom"));
                 fileYml.put("gnlist", map.get(gnlist));
-                String hostAddress = NetTool.getMyIP();
+                String hostAddress = ServerIpCache.getServerIp();
 
                 cacheParam.setData(fileYml);
                 cacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);

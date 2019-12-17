@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import org.apache.commons.lang.StringUtils;
@@ -28,7 +29,7 @@ public class SystemIpUtil {
         BufferedReader br = null;
 
         try {
-            String myIP = NetTool.getMyIP();
+            String myIP = ServerIpCache.getServerIp();
             configureVO.setIp(myIP);//本机IP
 
             String osName = NetTool.getOsName();   //得到操作系统 xp 为"Windows XP"  其他的的楼主自己去试试
@@ -279,6 +280,7 @@ public class SystemIpUtil {
 //        }
 
 //        setLocalIP("本地连接", "192.168.17.173", "255.255.255.0", "192.168.17.254");
+//        setLocalIP("本地连接", "192.168.17.171", "255.255.255.0", "192.168.17.253");
 
     }
 

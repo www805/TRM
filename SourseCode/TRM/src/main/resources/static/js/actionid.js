@@ -58,6 +58,7 @@ function getactionid_manage() {
         serverip_updateServerIp: "serverip_updateServerIp",
         serverip_getServerIpList: "serverip_getServerIpList",
         serverip_getServerIpALL: "serverip_getServerIpALL",
+        serverip_updateIp: "serverip_updateIp",
 
         arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
         arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint ",

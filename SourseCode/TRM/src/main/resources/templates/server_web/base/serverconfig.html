@@ -72,14 +72,14 @@
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>服务器IP   (暂无用)</label>
             <div class="layui-input-block">
-                <input type="text" name="serverip" required th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="setip" placeholder="请输入服务器IP" autocomplete="off" class="layui-input"  onkeyup="value=value.replace(/[^0-9.]/g,'')">
+                <input type="text" name="serverip" required disabled th:value="( (*{serverip} == null)? '' : *{serverip})"  lay-verify="setip" placeholder="请输入服务器IP" autocomplete="off" class="layui-input"  onkeyup="value=value.replace(/[^0-9.]/g,'')">
             </div>
         </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label"><span style="color: red;">*</span>服务器端口(暂无用)</label>
             <div class="layui-input-block">
-                <input type="number" name="serverport" required th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="number" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
+                <input type="number" name="serverport" required disabled th:value="( (*{serverport} == null)? '' : *{serverport})"  lay-verify="number" placeholder="请输入服务器端口" autocomplete="off" class="layui-input">
             </div>
         </div>
 

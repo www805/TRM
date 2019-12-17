@@ -9,7 +9,6 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
-import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import org.apache.commons.lang.StringUtils;
 import org.yaml.snakeyaml.Yaml;
@@ -18,11 +17,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 
-public class AppServiceCache {
+public class AppServerCache {
 
     private static AppCacheParam appCacheParam;
 
-    public static synchronized AppCacheParam getAppServiceCache() {
+    public static synchronized AppCacheParam getAppServerCache() {
 
         if(null == appCacheParam || null == appCacheParam.getData()){
             init();
@@ -30,11 +29,11 @@ public class AppServiceCache {
         return appCacheParam;
     }
 
-    public static synchronized void setAppServiceCache(AppCacheParam appCacheParam) {
-        AppServiceCache.appCacheParam = appCacheParam;
+    public static synchronized void setAppServerCache(AppCacheParam appCacheParam) {
+        AppServerCache.appCacheParam = appCacheParam;
     }
 
-    public static synchronized void delAppServiceCache(){
+    public static synchronized void delAppServerCache(){
         appCacheParam = null;
     }
 
@@ -52,7 +51,7 @@ public class AppServiceCache {
         String nav_file_name= PropertiesListenerConfig.getProperty("nav.file.name");
         String path = OpenUtil.getXMSoursePath() + "\\" + nav_file_name + ".yml";
         FileInputStream fis = null;
-        String myIP = NetTool.getMyIP();
+        String myIP = ServerIpCache.getServerIp();
         try {
 
             Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
@@ -98,14 +97,14 @@ public class AppServiceCache {
             String guidepageUrl = (String) clientYml.get("home-url");//获取客户端的首页
             fileYml.put("bottom", commonYml.get("bottom"));
             fileYml.put("gnlist", gnlist);
-            String hostAddress = NetTool.getMyIP();
+            String hostAddress = ServerIpCache.getServerIp();
 
             appCacheParam.setData(fileYml);
 
             appCacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
 
         } catch (IOException e) {
-            LogUtil.intoLog(4, AppServiceCache.class, "没找到外部配置文件：" + path);
+            LogUtil.intoLog(4, AppServerCache.class, "没找到外部配置文件：" + path);
         }finally {
             if(null != fis){
                 try {

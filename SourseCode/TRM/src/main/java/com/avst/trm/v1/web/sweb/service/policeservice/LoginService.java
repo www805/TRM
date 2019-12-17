@@ -1,7 +1,7 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.CommonCache;
-import com.avst.trm.v1.common.cache.AppServiceCache;
+import com.avst.trm.v1.common.cache.AppServerCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
@@ -159,7 +159,7 @@ public class LoginService extends BaseService {
 
     public void logout(RResult rResult, HttpServletRequest request) {
         this.changeResultToSuccess(rResult);
-        AppServiceCache.delAppServiceCache();//清空logo导航栏缓存
+        AppServerCache.delAppServerCache();//清空logo导航栏缓存
         rResult.setMessage("退出成功");
         request.getSession().setAttribute(Constant.MANAGE_WEB, null);
         Subject subject = SecurityUtils.getSubject();

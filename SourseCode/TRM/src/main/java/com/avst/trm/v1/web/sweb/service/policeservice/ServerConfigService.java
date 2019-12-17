@@ -2,7 +2,8 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 
 
 import com.avst.trm.v1.common.cache.AppCache;
-import com.avst.trm.v1.common.cache.AppServiceCache;
+import com.avst.trm.v1.common.cache.AppServerCache;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
@@ -12,7 +13,6 @@ import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
-import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.sweb.req.policereq.ServerconfigParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.GetServerConfigByIdVO;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -51,7 +51,7 @@ public class ServerConfigService extends BaseService {
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
 
-        String myIP = NetTool.getMyIP();
+        String myIP = ServerIpCache.getServerIp();
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
             Base_filesave filesaveSyslogo = new Base_filesave();
             filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
@@ -96,7 +96,7 @@ public class ServerConfigService extends BaseService {
         }
 
         AppCache.delAppCacheParam();//清空客户端缓存
-        AppServiceCache.delAppServiceCache();//清空服务器缓存
+        AppServerCache.delAppServerCache();//清空服务器缓存
 
         Base_serverconfig baseserverconfig = serverconfigMapper.selectById(1);
         baseserverconfig.setClientname(serverconfig.getClientname());

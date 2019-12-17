@@ -3,6 +3,7 @@ package com.avst.trm.v1.web.cweb.service.baseservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
@@ -433,7 +434,7 @@ public class MainService extends BaseService {
         if (null!=list&&list.size()>0){
 
             if (list.size()==1){
-                String myIP = NetTool.getMyIP();
+                String myIP = ServerIpCache.getServerIp();
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_downurl())){
                     serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());

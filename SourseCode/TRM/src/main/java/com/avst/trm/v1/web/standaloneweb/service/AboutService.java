@@ -1,5 +1,6 @@
 package com.avst.trm.v1.web.standaloneweb.service;
 
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -35,7 +36,7 @@ public class AboutService extends BaseService {
         if (null!=list&&list.size()>0){
 
             if (list.size()==1){
-                String myIP = NetTool.getMyIP();
+                String myIP = ServerIpCache.getServerIp();
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
                 if (null!=serverconfig){
                     vo.setCompanymsg(serverconfig.getCompanymsg());

@@ -1,5 +1,6 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
@@ -31,7 +32,7 @@ public class ChangeIP {
         }
         fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
         if (null == localip || localip.trim().equals("")) {
-            localip = NetTool.getMyIP();
+            localip = ServerIpCache.getServerIp();
         }
         boolean client_bool = false;
 
@@ -48,6 +49,22 @@ public class ChangeIP {
             }
             client_bool = ReadWriteFile.writeTxtFile(newfiletxt, clientconfpath);
             LogUtil.intoLog(1, ChangeIP.class, client_bool + ":client_bool,修改客户端IP是否成功");
+        }
+
+        boolean staticPath_bool = false;
+        String staticconfpath = fileBasepath + "桌面式应用/客户端/page/index.html";
+        List<String> pathlist = ReadWriteFile.readTxtFileToList(staticconfpath, "utf8");
+        if (null != pathlist && pathlist.size() > 0) {
+            String writetxt = "var url = \"http://" + localip + ":8080/cweb/\";//笔录系统首页地址";
+            String newfiletxt = "";
+            for (String str : pathlist) {
+                if (str.indexOf("var url = \"http://") > -1) {
+                    str = writetxt;
+                }
+                newfiletxt += str + "\n";
+            }
+            staticPath_bool = ReadWriteFile.writeTxtFile(newfiletxt, staticconfpath);
+            LogUtil.intoLog(1, ChangeIP.class, staticPath_bool + ":client_bool,修改静态页面url地址是否成功");
         }
 
         String trmconfpath = fileBasepath + "WORKJAR/trm.properties";
