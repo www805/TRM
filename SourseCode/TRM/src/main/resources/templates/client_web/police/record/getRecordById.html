@@ -205,17 +205,17 @@
                        <!-- <a class="layui-a-tips" onclick="opneModal_1();">切换笔录</a>-->
                     </div>
                 </div>
-                <div >
-                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <div style="height:90%;"> <div th:replace="modular/tabdata :: tabdata"></div></div>
+                   <!-- <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
                         <ul class="layui-tab-title">
                             <li class="layui-this">案件信息<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_casetouser" onclick="open_casetouser()"></i></li>
-                            <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li><!--onclick="getRecord();"-->
+                            <li id="asr_html" style="display: none">语音识别<span id="webkit2"></span></li>&lt;!&ndash;onclick="getRecord();"&ndash;&gt;
                             <li id="mood_html" style="display: none">情绪报告</li>
                         </ul>
                         <div class="layui-tab-content" >
                             <div class="layui-tab-item layui-show" id="casehtml">
                                 <div class="layui-card">
-                                 <!--   <div class="layui-card-header">案件信息</div>-->
+                                 &lt;!&ndash;   <div class="layui-card-header">案件信息</div>&ndash;&gt;
                                     <div style="height: 640px; overflow-x: hidden; overflow-y: scroll; " >
                                         <div class="layui-card-body">
                                                 <table class="layui-table" lay-skin="line" style="table-layout: fixed" >
@@ -250,7 +250,7 @@
                                     </div>
                                 </div>
                                 <div class="layui-card">
-                                    <!--<div class="layui-card-header">笔录实时回访</div>-->
+                                    &lt;!&ndash;<div class="layui-card-header">笔录实时回访</div>&ndash;&gt;
                                     <div style="height:590px; overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
                                         <div class="layui-card-body" >
                                             <div class="talk_show"  id="recordreals">
@@ -266,20 +266,18 @@
                                        <div class="layui-input-inline">
                                            <input type="text" name="phreportname" id="phreportname" lay-verify="required" placeholder="请输入情绪报告名称" autocomplete="off" class="layui-input" oninput="getPhreportsByParam();" >
                                        </div>
-                                       <!--空间小-->
-                                     <!--  <label class="layui-form-label" style="width: auto;">创建时间</label>
+                                       &lt;!&ndash;空间小&ndash;&gt;
+                                     &lt;!&ndash;  <label class="layui-form-label" style="width: auto;">创建时间</label>
                                        <div class="layui-input-inline" style="width: 300px;">
                                            <input type="text" name="starttime" id="starttime" lay-verify="required" placeholder="请输入创建时间" autocomplete="off" class="layui-input" >
-                                       </div>-->
+                                       </div>&ndash;&gt;
                                        <input type="button" class="layui-btn layui-btn-normal " onclick="getPhreportsByParam();" value="查询"/>
                                    </div>
                                </form>
                                <div th:replace="page :: page">...</div>
                            </div>
                         </div>
-                    </div>
-
-                </div>
+                    </div>-->
             </div>
             <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
                         <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
@@ -324,8 +322,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--<div th:replace="modular/polygrapdata :: polygrapdata"></div>-->
-                                            <div class="layui-col-md12"id="ph_HTML" style="display: none">
+                                        <div th:replace="modular/polygrapdata :: polygrapdata"></div>
+                                           <!-- <div class="layui-col-md12"id="ph_HTML" style="display: none">
                                                 <div class="layui-col-md12" >
                                                     <div id="showmsg" style=" margin: 2px 0px 2px 0px;border-radius: 4px;border: 1px solid transparent;height:32px;line-height: 32px;color: #31708f; background-color: #d9edf7; border-color: #bce8f1;text-align: center" ><strong>身心回放加载中...</strong></div>
                                                 </div>
@@ -358,7 +356,7 @@
                                                      </span>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                     </div>
                                 </div>
                                 <div class="layui-col-md7" id="record_qw_HTML" >
@@ -479,6 +477,25 @@
             ,done: function(value, date, endDate){
                 starttime=value;
                 getPhreportsByParam();
+            }
+        });
+
+        //使用模块
+        //设置步长(应该放在video。HTML里面的，但是放在里面就会出问题)
+        slider.render({
+            elem: '#slideTest4'
+            , step: 20, //步长
+            value: initvolume, //初始值
+            theme: '#C5C5C5',//主题色
+            change: function(value){
+                //动态获取滑块数值
+                value=value.replace(/[^0-9]/ig,"");
+                var val=parseFloat(value);
+                val=val/100;
+                SewisePlayer.setVolume(val);
+            }
+            ,setTips: function(value){ //自定义提示文本
+                return '音量:'+value;
             }
         });
     });

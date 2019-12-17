@@ -379,8 +379,13 @@ function callbackgetRecordById(data) {
                 }
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
                     $("#ph").show();
+                    $("#ph_HTML").show();
                     $("#xthtml").css("visibility","visible");
                     $("#PolygraphState_tr").show();
+                }
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(FY_T)==-1) {
+                    //法院版暂未提供案件人员编辑页
+                    $("#open_casetouser").css("display","inline-block");
                 }
             }
 

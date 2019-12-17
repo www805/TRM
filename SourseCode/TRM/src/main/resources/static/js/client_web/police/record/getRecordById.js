@@ -160,11 +160,15 @@ function callbackgetRecordById(data) {
                 console.log("asrbool__"+asrbool+"__phbool__"+phbool)
                 //存在语音识别授权并且模板中使用语音识别的个数大于0
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(ASR_F)>0&&asrbool>0){
-                    $("#asr_html").show();
+                    $("#asr").show();
                 }
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
-                    $("#mood_html").show();
+                    $("#mood").show();
                     $("#generatePhreport").show();
+                }
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(FY_T)==-1) {
+                    //法院版暂未提供案件人员编辑页
+                    $("#open_casetouser").css("display","inline-block");
                 }
             }
 
@@ -1374,7 +1378,6 @@ $(function () {
 
         /!*此处开始定位*!/
         if (isNotEmpty(time)&&time>0){
-            console.log("自动:"+positiontime)
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
             locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
             locationtime+=positiontime;//时间戳加上毫秒差值
@@ -1396,7 +1399,7 @@ $(function () {
                 if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
                     $("#recordreals span").css("color","#fff").removeClass("highlight_left");
                     $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                    $("#record_hoverhtml").hover(
+                    $("#asritem").hover(
                         function(){
                             mouseoverbool=1
                         } ,
