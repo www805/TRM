@@ -130,4 +130,13 @@ public interface MeetingControl {
     @ResponseBody
     public RResult setMCTagTxt(@RequestBody ReqParam<SetMCTagTxtParam_out> param);
 
+    /**
+     * 获取默认会议模板
+     * @param param
+     * @return
+     */
+    @RequestMapping("/mt/v1/getDefaultMTModel")
+    @ResponseBody
+    public RResult getDefaultMTModel(@RequestBody GetDefaultMTModelParam param);
+
 }
