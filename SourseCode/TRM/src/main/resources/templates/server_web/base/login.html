@@ -100,6 +100,11 @@
             }
         };
 
+        var updateip = GetQueryString("updateip");
+        if(isNotEmpty(updateip)){
+            parent.location.href = "http://" + updateip + "/cweb/base/main/gotomain";
+        }
+
         //如果在iframe中打开，就自动点击登录按钮
         if (self != top || window.frames.length != parent.frames.length || self.frameElement && self.frameElement.tagName == "IFRAME") {
             $("#bottom_mian,#guidepage").remove();

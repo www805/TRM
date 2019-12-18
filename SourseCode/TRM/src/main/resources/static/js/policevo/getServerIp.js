@@ -46,7 +46,7 @@ function updateServerIp(){
 
 
 //修改网卡下本机ip
-function updateIp(){
+function updateIp() {
 
     var url = getActionURL(getactionid_manage().serverip_updateIp);
     // var url = "/sweb/base/ip/updateIp";
@@ -57,7 +57,7 @@ function updateIp(){
     var subnetMask = $("#subnetMask").val();
     var gateway = $("#gateway").val();
 
-    var data={
+    var data = {
         name: serviceName,
         ip: trmip,
         eip: eip,
@@ -66,7 +66,22 @@ function updateIp(){
     }
 
 
-    ajaxSubmitByJson(url,data,callUpdateServerIp);
+    ajaxSubmitByJson(url, data, callUpdateServerIp);
+
+
+
+    setTimeout(function () {
+        var tiaozhuan = "http://" + trmip + ":8080/sweb/base/home/login?updateip=" + trmip;//跳转到登录页面
+        console.log(tiaozhuan);
+        parent.location.href = tiaozhuan;//跳转到登录页面
+    }, 5000);
+
+    layer.msg("处理中，请稍后...", {
+        icon: 16,
+        time:15000,
+        shade: [0.1,"#fff"],
+    });
+
 }
 
 /**

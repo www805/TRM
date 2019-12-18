@@ -4,7 +4,7 @@ public class UpdateIpParam {
 
     private String name;//网卡名
     private String ip;//本机ip
-    private String eip;//本机ip
+    private String eip;//原始本机ip
     private String subnetMask;//子网掩码
     private String gateway;//网关
 

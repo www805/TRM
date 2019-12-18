@@ -28,6 +28,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,7 +52,7 @@ public class ServerIpService extends BaseService {
 
         GetServerIpVO getServerIpVO = new GetServerIpVO();
 
-        //获取配置文件
+        //获取所有网卡和网卡中的所有ip
         Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
         getServerIpVO.setTrmipMap(map);
 
@@ -137,14 +138,45 @@ public class ServerIpService extends BaseService {
         }
 
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
-        //把其他的也重新添加进去
 
+        try {
+            Thread.sleep(5000);//睡眠5秒
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        //判断数据库里的IP是否一样，如果修改的IP是一样就修改完数据库的IP再提交到总控里面去
+        //以下代码用来判断ip是否修改成功
+        Boolean bool = false;
+
+        Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
+        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> entries = map.entrySet().iterator();
+        while(entries.hasNext()){
+            Map.Entry<String, List<GetNetworkConfigureVO>> entry = entries.next();
+            String key = entry.getKey();
+
+            List<GetNetworkConfigureVO> list = entry.getValue();
+            for (GetNetworkConfigureVO vo : list) {
+                if(vo.getIp().equals(updateIpParam.getIp())){
+                    bool = true;
+                    break;
+                }
+            }
+
+            if(bool){
+                break;
+            }
+        }
+
+        if(!bool){
+            rResult.setMessage("ip修改失败，其他的不会继续执行");
+            return;
+        }
+
+        //把其他的配置文件ip、缓存IP、总控IP 也修改
+        //判断数据库里的IP是否一样，多网卡的情况下如果修改的IP是一样就修改完数据库的IP再提交到总控里面去
         Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
-
         if (null != base_serverconfig && base_serverconfig.getServerip().equals(updateIpParam.getEip())) {
-
+            //修改系统配置的ip
             Base_serverconfig serverconfig = new Base_serverconfig();
             serverconfig.setId(1);
             serverconfig.setServerip(updateIpParam.getIp());
