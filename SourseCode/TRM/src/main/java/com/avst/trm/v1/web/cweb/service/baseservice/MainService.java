@@ -7,7 +7,6 @@ import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
-import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
