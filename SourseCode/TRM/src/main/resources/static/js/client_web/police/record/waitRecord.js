@@ -1393,7 +1393,7 @@ function switchbtn(type,obj) {
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         $(".phitem1").attr("id","");
         $(".phitem2").attr("id","phitem");
-        main1();
+        main1($("#leftdiv").width());
     }
 
     initplayer();//启动设备画面预览
@@ -2014,7 +2014,7 @@ $(function () {
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-            if (usepolygraph==1){//使用测谎仪开启获取&&isNotEmpty(myChart)
+            if (usepolygraph==1){//使用测谎仪开启获取
                 getPolygraphdata();
             }
             if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){
