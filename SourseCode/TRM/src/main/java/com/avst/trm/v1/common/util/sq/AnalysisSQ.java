@@ -104,7 +104,12 @@ public class AnalysisSQ {
             try {
                 serverconfig.setType(servertype);//授权基本类型
                 if(StringUtils.isNotEmpty(clientName)){
+                    if(clientName.indexOf("笔录系统") < 0){
+                        clientName+="-笔录系统";
+                    }
                     serverconfig.setClientname(clientName);
+                }else{
+                    serverconfig.setClientname("笔录系统");
                 }
                 serverconfig.setAuthorizebool(1);
                 if(StringUtils.isNotEmpty(sortnum)){

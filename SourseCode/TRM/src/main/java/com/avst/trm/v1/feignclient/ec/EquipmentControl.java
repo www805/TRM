@@ -54,6 +54,16 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getSaveFilesPathByiid(@RequestBody GetSaveFilesPathByiidParam param);
 
+    @RequestMapping("/storage/v1/getDefaultSaveInfo")
+    @ResponseBody
+    public RResult getDefaultSaveInfo(@RequestBody GetDefaultSaveInfoParam param);
+
+    @RequestMapping("/storage/v1/reStartFTPServer")
+    @ResponseBody
+    public RResult reStartFTPServer(@RequestBody ReStartFTPServerParam param);
+
+
+
 
 //设备
     @RequestMapping("/flushbonading/v1/getFDListByFdid")

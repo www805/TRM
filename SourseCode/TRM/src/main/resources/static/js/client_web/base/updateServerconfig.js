@@ -162,7 +162,7 @@ function callbackupdateServerconfig(str) {
  */
 function rebootsocket(){
 
-    layer.confirm('确认重置SOCKET?', {
+    layer.confirm('确认重置通讯?', {
         btn: ['确定','取消'] //按钮
     }, function(index){
         $("#socketbtn").hide();
@@ -182,6 +182,38 @@ function rebootsocket(){
 
 
 function callbackrebootsocket(data) {
+    if(null!=data){
+        layer.msg(data.message,{icon: 1});
+    }else{
+        layer.msg("网络连接异常，请重试",{icon: 5});
+    }
+}
+
+/**
+ * 重置ftpserver，一般情况下不用
+ */
+function rebootftpserver(){
+
+    layer.confirm('确认重启存储服务?', {
+        btn: ['确定','取消'] //按钮
+    }, function(index){
+        $("#ftpserverbtn").hide();
+        layer.close(index);
+        //请求后台重启ftpserver
+        var url=getActionURL(getactionid_manage().updateServerconfig_rebootFTPServer);
+        var data={
+            token:INIT_CLIENTKEY
+        };
+        ajaxSubmitByJson(url,data,callbackrebootftpserver);
+
+    }, function(){
+
+    });
+
+}
+
+
+function callbackrebootftpserver(data) {
     if(null!=data){
         layer.msg(data.message,{icon: 1});
     }else{

@@ -495,9 +495,8 @@ function getFomathms(ss){
 }
 
 // 文件下载请求,uuid
-function fileDownload(fileuuid) {
-	var url = getPath();
-	location.href = url + "/FileDownloadServlet.servlet?uuid=" + fileuuid;
+function fileDownload(url) {
+	location.href = url;
 }
 
 // 文件下载请求,url

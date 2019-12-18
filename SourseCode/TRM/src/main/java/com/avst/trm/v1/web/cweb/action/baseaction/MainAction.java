@@ -217,6 +217,26 @@ public class MainAction extends BaseAction {
     }
 
     /**
+     * 重启FTPServer
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/rebootFTPServer")
+    @ResponseBody
+    public RResult rebootFTPServer(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.rebootFTPServer(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
      * 获取全部国籍
      * @param param
      * @return

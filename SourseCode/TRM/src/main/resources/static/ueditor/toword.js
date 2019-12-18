@@ -1342,7 +1342,7 @@
         var nodeHeight=getNodeHeightByNode(node);
         var realnodemaxheight=TOWORD.pagemaxheight-TOWORD.pmaxlineheight-beforeheight;//这个节点真实的最大高度
         if(nodeHeight <= realnodemaxheight){
-            console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
+            //console.log(nodeHeight+":nodeHeight 暂时不处理节点本身高度小于(div最大高度-本页当前节点之前的高度)");
             return ;
         }
 

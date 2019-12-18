@@ -117,6 +117,7 @@ function getactionid_manage() {
         updateServerconfig_getServerconfig:"updateServerconfig_getServerconfig",
         updateServerconfig_updateServerconfig:"updateServerconfig_updateServerconfig",
         updateServerconfig_rebootsocket:"updateServerconfig_rebootsocket",
+        updateServerconfig_rebootFTPServer:"updateServerconfig_rebootFTPServer",
 
         recordTypeList_getRecordtypes:"recordTypeList_getRecordtypes",
         recordTypeList_getPidRecordtypes:"recordTypeList_getPidRecordtypes",

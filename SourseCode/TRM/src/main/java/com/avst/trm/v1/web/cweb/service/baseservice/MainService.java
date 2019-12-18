@@ -7,6 +7,8 @@ import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
+import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
+import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
@@ -30,6 +32,7 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.ec.req.ReStartFTPServerParam;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
@@ -467,6 +470,21 @@ public class MainService extends BaseService {
             result.setMessage("重启SOCKET成功");
         }else{
             result.setMessage("重启SOCKET失败");
+        }
+        return;
+    }
+
+    public void rebootFTPServer(RResult result,ReqParam param){
+
+        ReStartFTPServerParam ftpparam=new ReStartFTPServerParam();
+        ftpparam.setSsType(SSType.AVST);
+        RResult rResult=equipmentControl.reStartFTPServer(ftpparam);//重启
+        if(null!=rResult&&rResult.getActioncode().equals(Code.SUCCESS.toString())){
+            result.setData(true);
+            changeResultToSuccess(result);
+            result.setMessage("重启存储服务成功");
+        }else{
+            result.setMessage("重启存储服务失败");
         }
         return;
     }

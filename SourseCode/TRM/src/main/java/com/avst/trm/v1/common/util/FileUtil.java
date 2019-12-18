@@ -18,7 +18,10 @@ public class FileUtil {
 	 * @return
 	 */
 	public static List<String> getAllFiles(File dir, List<String> filelist,int isfilespath){  
-        File[] fs = dir.listFiles();  
+        File[] fs = dir.listFiles();
+		if(null==fs||fs.length==0){
+			return null;
+		}
         for (int i = 0; i < fs.length; i++) {  
         	//只存文件路径
         	File file=fs[i];

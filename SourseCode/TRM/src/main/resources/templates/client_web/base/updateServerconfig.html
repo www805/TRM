@@ -97,7 +97,8 @@
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class=" layui-btn layui-btn-normal" onclick="updateServerconfig();" id="saveapkbtn" type="button">保存设置</button>
-                <button class=" layui-btn layui-btn-normal" onclick="rebootsocket();" id="socketbtn" type="button" style="visibility: hidden;">重置连接</button>
+                <button class=" layui-btn layui-btn-normal" onclick="rebootsocket();" id="socketbtn" type="button" style="visibility: hidden;">重置通讯连接</button>
+                <button class=" layui-btn layui-btn-normal" onclick="rebootftpserver();" id="ftpserverbtn" type="button" style="visibility: hidden;">重启存储服务</button>
             </div>
         </div>
     </form>
@@ -127,8 +128,8 @@
            $("#quote_html").css("visibility","visible");
            $("#oem_hk").css("display","block");
            $("#socketbtn").css("visibility","visible");
-
         }
+        $("#ftpserverbtn").css("visibility","visible");
     });
 
     layui.use(['layer','element','form'], function(){
