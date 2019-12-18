@@ -2,12 +2,21 @@ package com.avst.trm.v1.web.sweb.req.basereq;
 
 public class GetServerIpParam {
 
+    private String baseType;
     private String trmip;
     private ServerIpssidParam flushbonadingip;
     private ServerIpssidParam asrip;
     private ServerIpssidParam polygraphip;
     private ServerIpssidParam storageip;
     private ServerIpssidParam ttsetinfoip;
+
+    public String getBaseType() {
+        return baseType;
+    }
+
+    public void setBaseType(String baseType) {
+        this.baseType = baseType;
+    }
 
     public String getTrmip() {
         return trmip;

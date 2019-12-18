@@ -21,23 +21,23 @@ function updateServerIp(){
         trmip: trmip,
         flushbonadingip: {
             etip: flushbonadingip,
-            ssid: serverIpData['flushbonadingip'].equipmentssid
+            ssid: isNotEmpty(serverIpData['flushbonadingip']) == true ? serverIpData['flushbonadingip'].equipmentssid : ""
         },
         asrip: {
             etip: asrip,
-            ssid: serverIpData['asrip'].equipmentssid
+            ssid: isNotEmpty(serverIpData['asrip']) == true ? serverIpData['asrip'].equipmentssid : ""
         },
         polygraphip: {
             etip: polygraphip,
-            ssid: serverIpData['polygraphip'].equipmentssid
+            ssid: isNotEmpty(serverIpData['polygraphip']) == true ? serverIpData['polygraphip'].equipmentssid : ""
         },
         storageip: {
             etip: storageip,
-            ssid: serverIpData['storageip'].ssid
+            ssid: isNotEmpty(serverIpData['storageip']) == true ? serverIpData['storageip'].ssid : ""
         },
         ttsetinfoip: {
             etip: ttsetinfoip,
-            ssid: serverIpData['ttsetinfoip'].ssid
+            ssid: isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].ssid : ""
         }
     }
 
@@ -272,11 +272,11 @@ function callgetServerIpALL(data){
         // console.log(data);
 
         serverIpData = data.data;
-        $("#polygraphip").val(serverIpData['polygraphip'].etip);
-        $("#flushbonadingip").val(serverIpData['flushbonadingip'].etip);
-        $("#asrip").val(serverIpData['asrip'].etip);
-        $("#storageip").val(serverIpData['storageip'].etip);
-        $("#ttsetinfoip").val(serverIpData['ttsetinfoip'].etip);
+        $("#polygraphip").val(isNotEmpty(serverIpData['polygraphip']) == true ? serverIpData['polygraphip'].etip : "");
+        $("#flushbonadingip").val(isNotEmpty(serverIpData['flushbonadingip']) == true ? serverIpData['flushbonadingip'].etip : "");
+        $("#asrip").val(isNotEmpty(serverIpData['asrip']) == true ? serverIpData['asrip'].etip : "");
+        $("#storageip").val(isNotEmpty(serverIpData['storageip']) == true ? serverIpData['storageip'].etip : "");
+        $("#ttsetinfoip").val(isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].etip : "");
 
     }else{
         layer.msg(data.message, {icon:5});

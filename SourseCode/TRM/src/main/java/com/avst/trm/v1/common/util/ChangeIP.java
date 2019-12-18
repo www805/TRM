@@ -1,10 +1,13 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
+import com.avst.trm.v1.common.util.sq.SQEntity;
+import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
 
@@ -34,24 +37,13 @@ public class ChangeIP {
         if (null == localip || localip.trim().equals("")) {
             localip = ServerIpCache.getServerIp();
         }
-        boolean client_bool = false;
 
-        String clientconfpath = fileBasepath + "桌面式应用/客户端/resources/app/main.js";
-        List<String> clientlist = ReadWriteFile.readTxtFileToList(clientconfpath, "utf8");
-        if (null != clientlist && clientlist.size() > 0) {
-            String writetxt = "mainWindow.loadURL('http://" + localip + ":8080/cweb/');";
-            String newfiletxt = "";
-            for (String str : clientlist) {
-                if (str.indexOf("mainWindow.loadURL") > -1) {
-                    str = writetxt;
-                }
-                newfiletxt += str;
-            }
-            client_bool = ReadWriteFile.writeTxtFile(newfiletxt, clientconfpath);
-            LogUtil.intoLog(1, ChangeIP.class, client_bool + ":client_bool,修改客户端IP是否成功");
-        }
+        //获取授权信息
+        CommonCache.gnlist();
+        SQEntity getSQEntity = CommonCache.getSQEntity;//获取系统授权信息
+        String gnlist = getSQEntity.getGnlist();
 
-        boolean staticPath_bool = false;
+        boolean staticPape_bool = false;
         String staticconfpath = fileBasepath + "桌面式应用/客户端/page/index.html";
         List<String> pathlist = ReadWriteFile.readTxtFileToList(staticconfpath, "utf8");
         if (null != pathlist && pathlist.size() > 0) {
@@ -63,8 +55,8 @@ public class ChangeIP {
                 }
                 newfiletxt += str + "\n";
             }
-            staticPath_bool = ReadWriteFile.writeTxtFile(newfiletxt, staticconfpath);
-            LogUtil.intoLog(1, ChangeIP.class, staticPath_bool + ":client_bool,修改静态页面url地址是否成功");
+            staticPape_bool = ReadWriteFile.writeTxtFile(newfiletxt, staticconfpath);
+            LogUtil.intoLog(1, ChangeIP.class, staticPape_bool + ":staticPape_bool,修改静态页面url地址是否成功");
         }
 
         String trmconfpath = fileBasepath + "WORKJAR/trm.properties";
@@ -74,6 +66,13 @@ public class ChangeIP {
 
             String writetxt1 = "upload.basepath=http://" + localip;
             String writetxt2 = "socketio.server.host=" + localip;
+            String writetxt3 = "re.basepath=http://" + localip + ":8080/toup";
+
+            //取出授权缓存判断如果是客户端版就用localhost
+            if (gnlist.indexOf(SQVersion.S_E) == -1) {
+                writetxt1 = "upload.basepath=http://localhost" ;
+                writetxt2 = "socketio.server.host=localhost" ;
+            }
 
             String newfiletxt = "";
             for (String str : trmlist) {
@@ -83,7 +82,10 @@ public class ChangeIP {
                 if (str.indexOf("socketio.server.host") > -1) {
                     str = writetxt2;
                 }
-                newfiletxt += str;
+                if (str.indexOf("re.basepath") > -1) {
+                    str = writetxt3;
+                }
+                newfiletxt += str + "\n";
             }
             trmbool = ReadWriteFile.writeTxtFile(newfiletxt, trmconfpath);
             LogUtil.intoLog(1, ChangeIP.class, trmbool + ":trmbool,修改trm配置文件是否成功");
@@ -101,14 +103,14 @@ public class ChangeIP {
                 if (str.indexOf("httpbasestaticpath") > -1) {
                     str = writetxt1;
                 }
-                newfiletxt += str;
+                newfiletxt += str + "\n";
             }
             ecbool = ReadWriteFile.writeTxtFile(newfiletxt, ecconfpath);
             LogUtil.intoLog(1, ChangeIP.class, ecbool + ":ecbool,修改ec配置文件是否成功");
         }
 
-        LogUtil.intoLog(1, ChangeIP.class, trmbool + ":trmbool,client_bool:" + client_bool + ",ecbool:" + ecbool);
-        if (trmbool && client_bool && ecbool) {
+        LogUtil.intoLog(1, ChangeIP.class, trmbool + ":trmbool,staticPape_bool:" + staticPape_bool + ",ecbool:" + ecbool);
+        if (trmbool && staticPape_bool && ecbool) {
             return true;
         }
 

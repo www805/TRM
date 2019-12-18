@@ -4,7 +4,9 @@ package com.avst.trm.v1.web.sweb.service.policeservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.AppServerCache;
 import com.avst.trm.v1.common.cache.ServerIpCache;
+import com.avst.trm.v1.common.conf.type.BASEType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.ChangeIP;
 import com.avst.trm.v1.common.util.OpenUtil;
@@ -82,6 +84,7 @@ public class ServerIpService extends BaseService {
             return;
         }
 
+        getServerIpParam.setBaseType(BASEType.Base);//远程请求通行证
         getServerIpParam.setTrmip(ServerIpCache.getServerIp());//把本机IP赋值到这里
         String asrEtip = getServerIpParam.getAsrip().getEtip();
         String fluEtip = getServerIpParam.getFlushbonadingip().getEtip();
@@ -153,19 +156,16 @@ public class ServerIpService extends BaseService {
                 String upload = PropertiesListenerConfig.getProperty("upload.basepath");
                 String basepath = PropertiesListenerConfig.getProperty("re.basepath");
                 String host = PropertiesListenerConfig.getProperty("socketio.server.host");
-                String httpbasestaticpath = PropertiesListenerConfig.getProperty("httpbasestaticpath");
 
                 defaultZone = defaultZone.replace(updateIpParam.getEip(), updateIpParam.getIp());
                 upload = upload.replace(updateIpParam.getEip(), updateIpParam.getIp());
                 basepath = basepath.replace(updateIpParam.getEip(), updateIpParam.getIp());
                 host = host.replace(updateIpParam.getEip(), updateIpParam.getIp());
-                httpbasestaticpath = httpbasestaticpath.replace(updateIpParam.getEip(), updateIpParam.getIp());
 
                 PropertiesListenerConfig.setProperty("eureka.client.serviceUrl.defaultZone", defaultZone);
                 PropertiesListenerConfig.setProperty("upload.basepath", upload);
                 PropertiesListenerConfig.setProperty("re.basepath", basepath);
                 PropertiesListenerConfig.setProperty("socketio.server.host", host);
-                PropertiesListenerConfig.setProperty("httpbasestaticpath", httpbasestaticpath);
 
                 ServerIpCache.setServerIp(updateIpParam.getIp());//设置上报到总控的ip
                 //系统文件修改
@@ -193,6 +193,7 @@ public class ServerIpService extends BaseService {
 
         //获取其他所有的ip
         ReqParam<GetServerIpALLParam> reqParam = new ReqParam<>();
+        param.setBaseType(BASEType.Base);
         reqParam.setParam(param);
 
         RResult rResult1 = equipmentControl.getServerIpALL(reqParam);
