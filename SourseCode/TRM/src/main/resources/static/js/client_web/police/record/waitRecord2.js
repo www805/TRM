@@ -29,7 +29,7 @@ function callbackgetPolygraphdata(data) {
         if (isNotEmpty(data)){
             var obj=data.t;
             if (isNotEmpty(obj)) {
-                dqphdata(obj,true);
+                dqphdata(obj,true,null);
             }
         }
     }else{

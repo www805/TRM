@@ -81,7 +81,7 @@ function updateServerconfig() {
         return;
     }
 
-    if (!isNotEmpty(serverip)) {
+   /* if (!isNotEmpty(serverip)) {
         layer.msg("请输入服务器IP",{icon: 5});
         $("#serverip").focus();
         return;
@@ -97,7 +97,7 @@ function updateServerconfig() {
         layer.msg("请输入同步时间(天",{icon: 5});
         $("#workdays").focus();
         return;
-    }
+    }*/
 
 
 

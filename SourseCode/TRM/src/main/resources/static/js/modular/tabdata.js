@@ -20,10 +20,7 @@ function initmood() {
     $("#templatetoproblem").css("height","initial");
 }
 
-function initcase_header() {
-    $(".layui-tab-content").css("height","0%");
-    $("#templatetoproblem").css("height","62%");
-}
+
 
 
 //*******************************************************************左侧搜索块start****************************************************************//
@@ -70,10 +67,6 @@ function recordreals_select() {
     var likerealtxt = $("#recordreals_select").val();
     dqindex_realtxt=0;
     likerealtxtarr=[];
-    var recordrealshtml= $("#recordreals").html();
-    recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
-    $("#recordreals").html(recordrealshtml);
-
     $("#recordreals div").each(function (i,e) {
         var spantxt=$(this).find("span").text();
         if (isNotEmpty(likerealtxt)){
@@ -93,3 +86,35 @@ function recordreals_select() {
     }
 }
 //*******************************************************************左侧搜索块end****************************************************************//
+
+//*******************************************************************案件人员信息编辑start****************************************************************//
+var casetouser_iframe=null;
+var casetouser_body=null;
+function  open_casetouser() {
+    layer.open({
+        type: 2,
+        title:'人员案件基本信息',
+        content:tocaseToUserURL,
+        area: ['80%', '90%'],
+        btn: ['确定','取消'],
+        success:function(layero, index){
+            casetouser_iframe = window['layui-layer-iframe' + index];
+            casetouser_body=layer.getChildFrame('body', index);
+            if (isNotEmpty(recordssid)&&isNotEmpty(getRecordById_data)) {
+                casetouser_iframe.recordssid=recordssid;
+                casetouser_iframe.setcaseToUser(getRecordById_data);
+            }else {
+                console.log("案件人员信息编辑参数recordssid："+recordssid+"__getRecordById_data："+getRecordById_data);
+            }
+        },
+        yes:function(index, layero){
+            var formSubmit=layer.getChildFrame('body', index);
+            var submited = formSubmit.find('#permissionSubmit')[0];
+            submited.click();
+        },
+        btn2:function(index, layero){
+            layer.close(index);
+        }
+    });
+}
+//*******************************************************************案件人员信息编辑end****************************************************************//

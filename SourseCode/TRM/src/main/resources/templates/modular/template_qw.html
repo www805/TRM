@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div data-th-fragment="template_qw">
+    <div class="layui-col-md12" style="position: absolute;bottom: 0;" id="templatetoproblem">
+        <h2 class=" layui-card-header " onclick="initcase_header();">
+            问答模板<span style="color: red;font-weight: normal">（提示;双击模板内容自动新增到中文区域）</span>
+            <a class="layui-a-tips" onclick="opneModal_1();" style="float: right;" title="点击变更模板">变更模板</a>
+        </h2>
+        <div  class="layui-card-body layui-row layui-show" style="padding: 0;overflow-x: hidden; overflow-y: scroll;height: 90%;" >
+            <div class="layui-col-lg12" style="height: 0px;">
+                <table class="layui-table" lay-skin="line" style="table-layout: fixed;"lay-size="sm">
+                    <tbody id="templatetoproblem_html">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="/js/modular/template_qw.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

@@ -277,6 +277,7 @@ function select_monitorall(obj) {
                     });
                 },
                 cancel: function(index, layero){
+                    select_monitorall_indedx=null;
                     select_monitorall_iframe=null;
                     select_monitorall_iframe_body=null;
                     layer.close(index)
@@ -285,6 +286,8 @@ function select_monitorall(obj) {
         }else {
             layer.close(select_monitorall_indedx);
             select_monitorall_indedx=null;
+            select_monitorall_iframe=null;
+            select_monitorall_iframe_body=null;
         }
     }
 }
@@ -508,8 +511,8 @@ function set_phranking(type,sorttype) {
 
 
 
-//回填当前情绪报告obj当前数据  bool是否需要add
-function dqphdata(obj,bool) {
+//回填当前情绪报告obj当前数据  bool是否需要add 气泡位置bool:true为末尾
+function dqphdata(obj,bool,num) {
     if (isNotEmpty(obj)) {
         var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
         var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
@@ -607,7 +610,7 @@ function dqphdata(obj,bool) {
 
         //图标规划参数
         var redcolor="#00CD68";
-        var itemStyle_color="red";
+        var itemStyle_color="#e90717";
         var itemStyle_color_hr=itemStyle_color;
         var itemStyle_color_hrv=itemStyle_color;
         var itemStyle_color_br=itemStyle_color;
@@ -684,8 +687,15 @@ function dqphdata(obj,bool) {
                     itemStyle_color_relax=redcolor;
                 }
                 if (stress>=0&&stress<=30){
-                    itemStyle_color_stress=redcolor;
-                }else  if (tsmsg_state==1) {
+                    itemStyle_color_stress="#00CD68";
+                }else if (stress>30&&stress<=50){
+                    itemStyle_color_stress="#e4e920";
+                }else if (stress>50&&stress<=70){
+                    itemStyle_color_stress="#ff840f";
+                }else if (stress>70&&stress<=100){
+                    itemStyle_color_stress="#e90717";
+                }
+                if ((!(stress>=0&&stress<=30)&&tsmsg_state==1)) {
                     $("monitorall_stress,#xthtml #xt3").addClass("highlight_monitorall");
                     select_monitorall_iframe_body.find("#xt3").addClass("highlight_monitorall");
                 }
@@ -703,7 +713,7 @@ function dqphdata(obj,bool) {
                 }
             }
 
-
+            var dqy=0;
             var dq_type=null;
             $("#monitor_btn span").each(function (e) {
                 var type=$(this).attr("type");
@@ -755,6 +765,12 @@ function dqphdata(obj,bool) {
                         dqpieces=pieces_stress;
                         if (stress>=0&&stress<=30){
                             itemStyle_color="#00CD68";
+                        }else if (stress>30&&stress<=50){
+                            itemStyle_color="#e4e920";
+                        }else if (stress>50&&stress<=70){
+                            itemStyle_color="#ff840f";
+                        }else if (stress>70&&stress<=100){
+                            itemStyle_color="#e90717";
                         }
                     }else if (type=="bp") {
                         date1=date_bp;
@@ -779,9 +795,33 @@ function dqphdata(obj,bool) {
             });
 
 
-            var dqx=date1[date1.length-1]==null?0:date1[date1.length-1];
-            dqx=dqx.toString();
-
+            var dqx=0;
+            var dqx_hr=0;
+            var dqx_br=0;
+            var dqx_relax=0;
+            var dqx_stress=0;
+            var dqx_bp=0;
+            var dqx_spo2=0;
+            var dqx_hrv=0;
+            if (bool){
+                dqx=date1[date1.length-1]==null?0:date1[date1.length-1];
+                dqx_hr=date_hr[date_hr.length-1]==null?0:date_hr[date_hr.length-1];
+                dqx_br=date_br[date_br.length-1]==null?0:date_br[date_br.length-1];
+                dqx_relax=date_relax[date_relax.length-1]==null?0:date_relax[date_relax.length-1];
+                dqx_stress=date_stress[date_stress.length-1]==null?0:date_stress[date_stress.length-1];
+                dqx_bp=date_bp[date_bp.length-1]==null?0:date_bp[date_bp.length-1];
+                dqx_spo2=date_spo2[date_spo2.length-1]==null?0:date_spo2[date_spo2.length-1];
+                dqx_hrv=date_hrv[date_hrv.length-1]==null?0:date_hrv[date_hrv.length-1];
+            }else {
+                dqx=num;
+                dqx_hr=num;
+                dqx_br=num;
+                dqx_relax=num;
+                dqx_stress=num;
+                dqx_bp=num;
+                dqx_spo2=num;
+                dqx_hrv=num;
+            }
             myChart.setOption({
                 xAxis: {
                     data: date1
@@ -797,7 +837,7 @@ function dqphdata(obj,bool) {
                     data: data1,
                     markPoint: {
                         data: [
-                            {name: '当前值', value:dqy, xAxis:dqx, yAxis: dqy}
+                            {name: '当前值', value:dqy, xAxis:dqx.toString(), yAxis: dqy}
                         ],
                         itemStyle:{
                             color:itemStyle_color,
@@ -825,7 +865,7 @@ function dqphdata(obj,bool) {
                         data: data_hr,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:hr, xAxis:date_hr[date_hr.length-1].toString(), yAxis: hr}
+                                {name: '当前值', value:hr, xAxis:dqx_hr.toString(), yAxis: hr}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_hr,
@@ -851,7 +891,7 @@ function dqphdata(obj,bool) {
                         data: data_hrv,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:hrv, xAxis:date_hrv[date_hrv.length-1].toString(), yAxis: hrv}
+                                {name: '当前值', value:hrv, xAxis:dqx_hrv.toString(), yAxis: hrv}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_hrv,
@@ -877,7 +917,7 @@ function dqphdata(obj,bool) {
                         data: data_br,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:br, xAxis:date_hrv[date_hrv.length-1].toString(), yAxis: br}
+                                {name: '当前值', value:br, xAxis:dqx_hrv.toString(), yAxis: br}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_br,
@@ -903,7 +943,7 @@ function dqphdata(obj,bool) {
                         data: data_relax,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:relax, xAxis:date_relax[date_relax.length-1].toString(), yAxis: relax}
+                                {name: '当前值', value:relax, xAxis:dqx_relax.toString(), yAxis: relax}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_relax,
@@ -929,7 +969,7 @@ function dqphdata(obj,bool) {
                         data: data_stress,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:stress, xAxis:date_stress[date_stress.length-1].toString(), yAxis: stress}
+                                {name: '当前值', value:stress, xAxis:dqx_stress.toString(), yAxis: stress}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_stress,
@@ -955,7 +995,7 @@ function dqphdata(obj,bool) {
                         data: data_bp,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:bp, xAxis:date_stress[date_stress.length-1].toString(), yAxis: bp}
+                                {name: '当前值', value:bp, xAxis:dqx_stress.toString(), yAxis: bp}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_bp,
@@ -981,7 +1021,7 @@ function dqphdata(obj,bool) {
                         data: data_spo2,
                         markPoint: {
                             data: [
-                                {name: '当前值', value:spo2, xAxis:date_stress[date_stress.length-1].toString(), yAxis: spo2}
+                                {name: '当前值', value:spo2, xAxis:dqx_stress.toString(), yAxis: spo2}
                             ],
                             itemStyle:{
                                 color:itemStyle_color_spo2,
@@ -1116,10 +1156,32 @@ function phdata(datad,dqdata) {
         //当前数据
         if (isNotEmpty(dqobj)){
             //回填当前数据
-            dqphdata(obj,false);//不需要add只需要渲染当前数据
+            dqphdata(dqobj,false,dqnum);//不需要add只需要渲染当前数据
         }
     }
 }
+
+var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
+var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+var newDate = new Date();
+newDate.setDate(newDate.getDate());
+var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()];
+setInterval( function() {
+        var seconds = new Date().getSeconds();
+        var sec=( seconds < 10 ? "0" : "" ) + seconds;
+        var minutes = new Date().getMinutes();
+        var min=( minutes < 10 ? "0" : "" ) + minutes;
+        var hours = new Date().getHours();
+        var hour=( hours < 10 ? "0" : "" ) + hours;
+
+        if (isNotEmpty(select_monitorall_iframe_body)) {
+            var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ';
+            var week=dayNames[newDate.getDay()];
+            var time=hour + "：" + min + "：" + sec;
+            select_monitorall_iframe_body.find("#dqtime1").html(date);
+            select_monitorall_iframe_body.find("#dqtime2").html(week+time);
+        }
+},1000);
 
 
 

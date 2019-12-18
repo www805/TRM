@@ -16,12 +16,12 @@
                     <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
                         <tbody id="recorddetail">
                         <tr id="first_originaltr">
-                            <td style="padding: 0;width: 80%;" class="onetd">
+                            <td style="padding: 0;width: 80%;" class="onetd" id="record_qw">
                                 <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>
                                 <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" w_starttime=""></label></div>
                                 <div id="btnadd"><button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="focuslable(trtd_html,2,'q');"><i class="layui-icon" style="font-size: 45px"></i></button></div>
                             </td>
-                            <td>
+                            <td id="record_util">
                                 <div class="layui-btn-group">
                                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>
                                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>

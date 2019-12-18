@@ -1333,21 +1333,6 @@ function setrecord_html() {
 
 
 //*******************************************************************点击start****************************************************************//
-//身心检测
-function initheart() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//语音识别
-function initasr() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//案件
-function initcase() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
 function initcase_header() {
     $(".layui-tab-content").css("height","0%");
     $("#templatetoproblem").css("height","62%");
