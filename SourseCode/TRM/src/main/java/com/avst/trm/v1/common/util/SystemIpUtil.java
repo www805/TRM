@@ -156,10 +156,11 @@ public class SystemIpUtil {
             gateway = "Default Gateway . . . . . . . . . :";
         }
 
+        BufferedReader br = null;
         try {
 //            Process ps = Runtime.getRuntime().exec("cmd /c ipconfig /all");
             Process ps = Runtime.getRuntime().exec("ipconfig");
-            BufferedReader br = new BufferedReader(new InputStreamReader(ps.getInputStream(), "GB2312"));
+            br = new BufferedReader(new InputStreamReader(ps.getInputStream(), "GB2312"));
             while(null != (line = br.readLine())) {
                 lineAll += line + "\n";
             }
@@ -168,6 +169,14 @@ public class SystemIpUtil {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if(null != br){
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         String[] split = lineAll.split(name);
