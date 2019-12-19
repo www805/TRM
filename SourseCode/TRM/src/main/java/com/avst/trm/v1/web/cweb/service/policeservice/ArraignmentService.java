@@ -22,8 +22,10 @@ import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
+import com.avst.trm.v1.feignclient.mc.req.GetDefaultMTModelParam;
 import com.avst.trm.v1.feignclient.mc.req.GetMc_modelParam_out;
 import com.avst.trm.v1.feignclient.mc.vo.Avstmt_modelAll;
+import com.avst.trm.v1.feignclient.mc.vo.GetDefaultMTModelVO;
 import com.avst.trm.v1.web.cweb.conf.UserinfogradeType;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
@@ -265,11 +267,26 @@ public class ArraignmentService extends BaseService {
 
 
         //整理模板
-        if (null!=multifunctionbool&&(multifunctionbool==1||multifunctionbool==2 )){//||单组件时候
-            mtmodelssid=PropertiesListenerConfig.getProperty("mcmodel_conversation");//使用指定谈话模板
+        if ((null!=multifunctionbool&&(multifunctionbool==1||multifunctionbool==2 ))||null==mtmodelssid){//||单组件时候
+            GetDefaultMTModelParam getDefaultMTModelParam=new GetDefaultMTModelParam();
+            getDefaultMTModelParam.setMcType(MCType.AVST);
+            try {
+                RResult rr = meetingControl.getDefaultMTModel(getDefaultMTModelParam);
+                if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    GetDefaultMTModelVO getDefaultMTModelVO=gson.fromJson(gson.toJson(rr.getData()),GetDefaultMTModelVO.class);
+                    if (null!=getDefaultMTModelVO){
+                        mtmodelssid=getDefaultMTModelVO.getSsid();
+                    }
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__成功");
+                }else{
+                    LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__失败"+rr.getMessage());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         //模板为空使用默认指定模板
-        if (StringUtils.isBlank(mtmodelssid)) {
+       /* if (StringUtils.isBlank(mtmodelssid)) {
             //会议模板为空，直接取默认的
             Base_type base_type=new Base_type();
             base_type.setType(CommonCache.getCurrentServerType());
@@ -277,7 +294,7 @@ public class ArraignmentService extends BaseService {
             if (null!=base_type){
                 mtmodelssid=base_type.getMtmodelssid();
             }
-        }
+        }*/
         LogUtil.intoLog(this.getClass(),"【开始笔录】添加笔录使用的会议模板ssid_"+mtmodelssid);
         if (StringUtils.isBlank(mtmodelssid)){
             result.setMessage("未找到会议模板");

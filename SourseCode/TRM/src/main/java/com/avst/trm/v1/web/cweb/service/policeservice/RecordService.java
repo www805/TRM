@@ -204,61 +204,6 @@ public class RecordService extends BaseService {
                 police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
                 if(null!=police_arraignment){
                     record.setPolice_arraignment(police_arraignment);
-
-                    //开始获取录像文件的状态
-                    String mtssid=police_arraignment.getMtssid();
-                    if (StringUtils.isNotEmpty(mtssid)&&null!=recordbool_&&(recordbool_.intValue()==2||recordbool_.intValue()==3)){
-                            //getRecord：获取会议asr识别数据
-                            GetMCVO getMCVO=new GetMCVO();
-                            ReqParam getrecord_param=new ReqParam<>();
-                            GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
-                            getPhssidByMTssidParam_out.setMcType(MCType.AVST);
-                            getPhssidByMTssidParam_out.setMtssid(mtssid);
-                            getrecord_param.setParam(getPhssidByMTssidParam_out);
-                            RResult getrecord_rr=new RResult();
-                            getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
-                            if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
-                                getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
-                                if (null!=getMCVO) {
-                                    String iid=getMCVO.getIid();
-                                    if (StringUtils.isNotBlank(iid)){
-                                        RResult rr=new RResult();
-                                        CheckRecordFileStateParam checkRecordFileStateParam=new CheckRecordFileStateParam();
-                                        checkRecordFileStateParam.setSsType(SSType.AVST);
-                                        checkRecordFileStateParam.setIid(iid);
-                                        rr= equipmentControl.checkRecordFileState(checkRecordFileStateParam);
-                                        CheckRecordFileStateVO checkRecordFileStateVO=new CheckRecordFileStateVO();
-                                        Integer normalstate=0;//初始化
-                                        if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                                            checkRecordFileStateVO = gson.fromJson(gson.toJson(rr.getData()), CheckRecordFileStateVO.class);
-                                            List<RecordFileParam> recordFileParams = checkRecordFileStateVO.getRecordList();
-                                            if (null != recordFileParams && recordFileParams.size() > 0) {
-                                                for (RecordFileParam recordFileParam : recordFileParams) {
-                                                    if(recordFileParam.getState()==2){ //2为正常状态
-                                                        normalstate++;
-                                                    }
-                                                }
-                                                if (recordFileParams.size()==normalstate.intValue()){
-                                                    normalstate=1; //全部弄完
-                                                }
-                                            }else {
-                                                normalstate=-1;
-                                            }
-                                            LogUtil.intoLog(this.getClass(), "文件数据存储状态__正常数" + normalstate);
-                                        }else {
-                                            normalstate=-1;
-                                            LogUtil.intoLog(this.getClass(), "文件数据存储状态__失败" );
-                                        }
-                                        record.setRecordfilestate(normalstate);
-                                    }
-
-                                }
-                            }else {
-                                Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
-                                LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
-                            }
-                    }
-
                 }
 
             }
@@ -1176,5 +1121,70 @@ public class RecordService extends BaseService {
         return;
     }
     //=================================================关于笔录类型=====================================================================end
+
+    public void checkVideosState(RResult result,CheckVideosStateParam param){
+        if (null==param){
+            result.setMessage("参数为空");
+            return;
+        }
+
+        String mtssid=param.getMtssid();
+        LogUtil.intoLog(1,this.getClass(),"checkVideosState参数mtssid："+mtssid);
+        if (StringUtils.isBlank(mtssid)){
+            result.setMessage("参数为空");
+            return;
+        }
+                //getRecord：获取会议asr识别数据
+                GetMCVO getMCVO=new GetMCVO();
+                ReqParam getrecord_param=new ReqParam<>();
+                GetPhssidByMTssidParam_out getPhssidByMTssidParam_out=new GetPhssidByMTssidParam_out();
+                getPhssidByMTssidParam_out.setMcType(MCType.AVST);
+                getPhssidByMTssidParam_out.setMtssid(mtssid);
+                getrecord_param.setParam(getPhssidByMTssidParam_out);
+                RResult getrecord_rr=new RResult();
+                getrecord_rr= outService.getRecord(getrecord_rr,getrecord_param);
+                if (null!=getrecord_rr&&getrecord_rr.getActioncode().equals(Code.SUCCESS.toString())){
+                    getMCVO=gson.fromJson(gson.toJson(getrecord_rr.getData()),GetMCVO.class);
+                    if (null!=getMCVO) {
+                        String iid=getMCVO.getIid();
+                        if (StringUtils.isNotBlank(iid)){
+                            RResult rr=new RResult();
+                            CheckRecordFileStateParam checkRecordFileStateParam=new CheckRecordFileStateParam();
+                            checkRecordFileStateParam.setSsType(SSType.AVST);
+                            checkRecordFileStateParam.setIid(iid);
+                            rr= equipmentControl.checkRecordFileState(checkRecordFileStateParam);
+                            CheckRecordFileStateVO checkRecordFileStateVO=new CheckRecordFileStateVO();
+                            Integer normalstate=0;//初始化
+                            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                checkRecordFileStateVO = gson.fromJson(gson.toJson(rr.getData()), CheckRecordFileStateVO.class);
+                                List<RecordFileParam> recordFileParams = checkRecordFileStateVO.getRecordList();
+                                if (null != recordFileParams && recordFileParams.size() > 0) {
+                                    for (RecordFileParam recordFileParam : recordFileParams) {
+                                        if(recordFileParam.getState()==2){ //2为正常状态
+                                            normalstate++;
+                                        }
+                                    }
+                                    if (recordFileParams.size()==normalstate.intValue()){
+                                        normalstate=1; //全部弄完
+                                    }
+                                }else {
+                                    normalstate=-1;
+                                }
+                                LogUtil.intoLog(this.getClass(), "文件数据存储状态__正常数" + normalstate);
+                            }else {
+                                normalstate=-1;
+                                LogUtil.intoLog(this.getClass(), "文件数据存储状态__失败" );
+                            }
+                            result.setData(normalstate);
+                            changeResultToSuccess(result);
+                        }
+
+                    }
+                }else {
+                    Object msg=getrecord_rr==null?getrecord_rr:getrecord_rr.getMessage();
+                    LogUtil.intoLog(this.getClass()," outService.getRecord__请求失败__"+msg);
+                }
+        return;
+    }
 
 }

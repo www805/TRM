@@ -147,16 +147,6 @@ public class OutService  extends BaseService {
                     }
                 }
 
-            //未指定模板使用默认模板
-            if (StringUtils.isBlank(mtmodelssid)){
-                Base_type base_type=new Base_type();
-                base_type.setType(CommonCache.getCurrentServerType());
-                base_type=base_typeMapper.selectOne(base_type);
-                if (null!=base_type){
-                    mtmodelssid=base_type.getMtmodelssid();
-                }
-            }
-
             LogUtil.intoLog(this.getClass(),"开启笔录使用的会议模板ssid_"+mtmodelssid);
 
             //先检测是否可以开始笔录

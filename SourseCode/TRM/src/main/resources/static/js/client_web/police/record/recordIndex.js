@@ -90,6 +90,21 @@ function callbackgetRecords(data) {
             records=data.data.pagelist;
             pageshow(data);
 
+           /* if (isNotEmpty(records)) {
+                for (let i = 0; i < records.length; i++) {
+                    const record = records[i];
+                    var recordbool=record.recordbool;
+                    if (recordbool==2||recordbool==3) {
+                        var police_arraignment=record.police_arraignment;
+                        if (isNotEmpty(police_arraignment)){
+                            var mtssid=police_arraignment.mtssid;
+                            checkVideosState(mtssid,i);
+                        }
+                    }
+                }
+            }*/
+
+
             $("#recordtitle").attr("recordtitle_first","false");
             $('#recorddetail').html("");
             if (gnlist.indexOf(FY_T) != -1){
@@ -334,6 +349,40 @@ function changeboolRecord(obj) {
     }
 
 }
+function checkVideosState(mtssid,recordssid) {
+    if (isNotEmpty(mtssid)&&isNotEmpty(recordssid)){
+        var url=getActionURL(getactionid_manage().recordIndex_checkVideosState);
+        var d={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid:mtssid,
+            }
+        };
+       ajaxSubmitByJson(url,d,function (data) {
+            if(null!=data&&data.actioncode=='SUCCESS') {
+                if (isNotEmpty(data)) {
+                    var recordfilestate=data.data;
+                    var tr =  $("#pagelisttemplates_tbody tr[ssid='"+recordssid+"']");
+                    var recordfilestate_color="#bfbfbf";
+                    var recordfilestate_msg="未发现录像视频";
+                   if(recordfilestate==0){recordfilestate_color="#FFB800";recordfilestate_msg="录像视频上传中";
+                   }else  if(recordfilestate==1){recordfilestate_color="#00FF00";recordfilestate_msg="录像视频上传完成";
+                   }else  if(recordfilestate==-1){recordfilestate_color="#000000";recordfilestate_msg="未找到录像视频";
+                   }
+                  if (isNotEmpty(tr)) {
+                     $("td:eq(0) span",tr).css("background-color",recordfilestate_color);
+                     $("td:eq(0)",tr).attr("title",recordfilestate_msg);
+                  }
+                }
+            }else{
+                console.log(data.message)
+            }
+        });
+    }
+}
+function callbackcheckVideosState(data) {
+
+}
 
 
 function set_UE() {
@@ -359,6 +408,8 @@ function set_UE() {
 function onfocusfnc(num){
     TOWORD.divpage.changediv(num);
 }
+
+
 
 
 

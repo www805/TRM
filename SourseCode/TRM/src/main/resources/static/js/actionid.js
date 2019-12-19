@@ -164,6 +164,7 @@ function getactionid_manage() {
         recordIndex_toconversationById:"recordIndex_toconversationById",
         recordIndex_towaitCourt:"recordIndex_towaitCourt",
         recordIndex_togetCourtDetail:"recordIndex_togetCourtDetail",
+        recordIndex_checkVideosState:"recordIndex_checkVideosState",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",

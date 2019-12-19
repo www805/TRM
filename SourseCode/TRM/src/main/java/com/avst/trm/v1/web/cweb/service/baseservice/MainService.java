@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
+import com.avst.trm.v1.common.conf.type.MCType;
 import com.avst.trm.v1.common.conf.type.SSType;
 import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
@@ -33,6 +34,9 @@ import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
 import com.avst.trm.v1.feignclient.ec.req.ReStartFTPServerParam;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
+import com.avst.trm.v1.feignclient.mc.MeetingControl;
+import com.avst.trm.v1.feignclient.mc.req.GetDefaultMTModelParam;
+import com.avst.trm.v1.feignclient.mc.vo.GetDefaultMTModelVO;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
@@ -114,6 +118,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private Police_cardtypeMapper police_cardtypeMapper;
+
+    @Autowired
+    private MeetingControl meetingControl;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -741,7 +748,7 @@ public class MainService extends BaseService {
 
     public void getDefaultMtModelssid(RResult result,ReqParam param){
         String modelssid=null;
-        Base_type base_type=new Base_type();
+        /*Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
         base_type=base_typeMapper.selectOne(base_type);
         if (null!=base_type){
@@ -749,6 +756,25 @@ public class MainService extends BaseService {
             result.setData(modelssid);
             changeResultToSuccess(result);
             LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
+        }*/
+        GetDefaultMTModelParam getDefaultMTModelParam=new GetDefaultMTModelParam();
+        getDefaultMTModelParam.setMcType(MCType.AVST);
+        try {
+            RResult rr = meetingControl.getDefaultMTModel(getDefaultMTModelParam);
+            if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                GetDefaultMTModelVO getDefaultMTModelVO=gson.fromJson(gson.toJson(rr.getData()),GetDefaultMTModelVO.class);
+                if (null!=getDefaultMTModelVO){
+                    modelssid=getDefaultMTModelVO.getSsid();
+                    result.setData(modelssid);
+                    changeResultToSuccess(result);
+                    LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
+                }
+                LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__成功");
+            }else{
+                LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__失败"+rr.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return;
     }
