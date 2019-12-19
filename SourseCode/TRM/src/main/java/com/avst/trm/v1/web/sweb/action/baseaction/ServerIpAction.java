@@ -15,6 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Controller
 @RequestMapping("/sweb/base/ip")
 public class ServerIpAction extends BaseAction{
@@ -57,16 +60,17 @@ public class ServerIpAction extends BaseAction{
 
     /**
      * 修改网卡里指定的IP
+     *
      * @return
      */
-    @PostMapping(value = "/updateIp",produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/updateIp", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public RResult updateIp(@RequestBody UpdateIpParam updateIpParam) {
+    public RResult updateIp(HttpServletRequest request, HttpServletResponse response, @RequestBody UpdateIpParam updateIpParam) {
         RResult rResult = createNewResultOfFail();
         Subject subject = SecurityUtils.getSubject();
-        if(subject.isPermitted("updateIp")) {
-            serverIpService.updateIp(rResult, updateIpParam);
-        }else{
+        if (subject.isPermitted("updateIp")) {
+            serverIpService.updateIp(request, response, rResult, updateIpParam);
+        } else {
             rResult.setMessage("权限不足");
         }
         return rResult;

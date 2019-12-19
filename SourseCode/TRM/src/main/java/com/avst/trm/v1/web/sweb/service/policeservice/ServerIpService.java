@@ -28,6 +28,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -117,22 +121,22 @@ public class ServerIpService extends BaseService {
 
     }
 
-    public void updateIp(RResult rResult, UpdateIpParam updateIpParam) {
+    public void updateIp(HttpServletRequest request, HttpServletResponse response, RResult rResult, UpdateIpParam updateIpParam) {
 
 
-        if(StringUtils.isBlank(updateIpParam.getName())){
+        if (StringUtils.isBlank(updateIpParam.getName())) {
             rResult.setMessage("网卡名不能为空");
             return;
         }
-        if(OpenUtil.isIp(updateIpParam.getIp()) == false){
+        if (OpenUtil.isIp(updateIpParam.getIp()) == false) {
             rResult.setMessage("ip不能为空");
             return;
         }
-        if(OpenUtil.isIp(updateIpParam.getSubnetMask()) == false){
+        if (OpenUtil.isIp(updateIpParam.getSubnetMask()) == false) {
             rResult.setMessage("子网掩码不能为空");
             return;
         }
-        if(OpenUtil.isIp(updateIpParam.getGateway()) == false){
+        if (OpenUtil.isIp(updateIpParam.getGateway()) == false) {
             rResult.setMessage("默认网关不能为空");
             return;
         }
@@ -140,34 +144,35 @@ public class ServerIpService extends BaseService {
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
 
         try {
-            Thread.sleep(5000);//睡眠5秒
+            Thread.sleep(8000);//睡眠8秒
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
 
         //以下代码用来判断ip是否修改成功
         Boolean bool = false;
 
         Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
         Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> entries = map.entrySet().iterator();
-        while(entries.hasNext()){
+        while (entries.hasNext()) {
             Map.Entry<String, List<GetNetworkConfigureVO>> entry = entries.next();
             String key = entry.getKey();
 
             List<GetNetworkConfigureVO> list = entry.getValue();
             for (GetNetworkConfigureVO vo : list) {
-                if(vo.getIp().equals(updateIpParam.getIp())){
+                if (vo.getIp().equals(updateIpParam.getIp())) {
                     bool = true;
                     break;
                 }
             }
 
-            if(bool){
+            if (bool) {
                 break;
             }
         }
 
-        if(!bool){
+        if (!bool) {
             rResult.setMessage("ip修改失败，其他的不会继续执行");
             return;
         }
@@ -201,7 +206,7 @@ public class ServerIpService extends BaseService {
 
                 ServerIpCache.setServerIp(updateIpParam.getIp());//设置上报到总控的ip
                 //系统文件修改
-                String fileBasepath= PropertiesListenerConfig.getProperty("sysBasepath");
+                String fileBasepath = PropertiesListenerConfig.getProperty("sysBasepath");
                 fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
                 boolean outbool = ChangeIP.otherPCConnectChangeIP(fileBasepath, ServerIpCache.getServerIp());
 
@@ -213,6 +218,16 @@ public class ServerIpService extends BaseService {
 
         }
 
+        //消除session
+        HttpSession session = request.getSession();
+        session.invalidate();
+
+        //清除cookie，并且退出
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
 
     }
 

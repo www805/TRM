@@ -74,7 +74,7 @@ function updateIp() {
         var tiaozhuan = "http://" + trmip + ":8080/sweb/base/home/login?updateip=" + trmip;//跳转到登录页面
         console.log(tiaozhuan);
         parent.location.href = tiaozhuan;//跳转到登录页面
-    }, 5000);
+    }, 10000);
 
     layer.msg("处理中，请稍后...", {
         icon: 16,

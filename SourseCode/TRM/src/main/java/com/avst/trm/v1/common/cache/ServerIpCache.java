@@ -28,7 +28,7 @@ public class ServerIpCache {
     }
 
     public static synchronized void setServerIp(String ip) {
-        serverIp = ip;
+        ServerIpCache.serverIp = ip;
     }
 
     public static synchronized void delServerIp() {
@@ -74,7 +74,7 @@ public class ServerIpCache {
         }else if (null != base_serverconfig && StringUtils.isNotBlank(base_serverconfig.getServerip())){
             serverIp = base_serverconfig.getServerip();
         }else{
-            //如果数据库没有就从utl的方法拿一条
+            //如果数据库没有就从util的方法拿一条
             serverIp = NetTool.getMyIP();//如果找不到，就用获取的ip
         }
 
