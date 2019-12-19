@@ -143,6 +143,17 @@ public class ServerIpService extends BaseService {
 
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
 
+        //消除session
+        HttpSession session = request.getSession();
+        session.invalidate();
+
+        //清除cookie，并且退出
+        Cookie[] cookies = request.getCookies();
+        for (Cookie cookie : cookies) {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        }
+
         try {
             Thread.sleep(8000);//睡眠8秒
         } catch (InterruptedException e) {
@@ -218,16 +229,7 @@ public class ServerIpService extends BaseService {
 
         }
 
-        //消除session
-        HttpSession session = request.getSession();
-        session.invalidate();
 
-        //清除cookie，并且退出
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            cookie.setMaxAge(0);
-            response.addCookie(cookie);
-        }
 
     }
 
