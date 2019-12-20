@@ -1,5 +1,6 @@
 package com.avst.trm.v1.feignclient.mc.vo;
 
+import com.avst.trm.v1.feignclient.mc.vo.param.Base_modeltype;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,8 +35,37 @@ public class Avstmt_modelAll {
 
     private String ssid;
 
+    /**
+     * 1对单单语音识别，2单对多语音识别
+     */
+    private Integer asrservermodel;
+
+    /**
+     * 单对多语音识别模式下才有效，用于标记，开启几路语音识别给这个会话
+     */
+    private Integer asrnum;
+
+    /**
+     * 模版状态，1可以使用，0暂停使用，-1删除
+     */
+    private Integer modelstate;
+
+    /**
+     * 默认会议模板，1是，0不是
+     */
+    private Integer defaultmtmodelbool;
+
+    /**
+     * 模板类型编号,0/1/2/3/4(一般0是默认)
+     */
+    private Integer modeltypenum;
+
+    private Base_modeltype base_modeltype;//对应会议模板类型
 
     private List<Avstmt_modeltdAll> avstmt_modeltdAlls;//全部模板通道
+
+
+
 
     public Integer getId() {
         return id;
@@ -139,5 +169,53 @@ public class Avstmt_modelAll {
 
     public void setAvstmt_modeltdAlls(List<Avstmt_modeltdAll> avstmt_modeltdAlls) {
         this.avstmt_modeltdAlls = avstmt_modeltdAlls;
+    }
+
+    public Integer getAsrservermodel() {
+        return asrservermodel;
+    }
+
+    public void setAsrservermodel(Integer asrservermodel) {
+        this.asrservermodel = asrservermodel;
+    }
+
+    public Integer getAsrnum() {
+        return asrnum;
+    }
+
+    public void setAsrnum(Integer asrnum) {
+        this.asrnum = asrnum;
+    }
+
+    public Integer getModelstate() {
+        return modelstate;
+    }
+
+    public void setModelstate(Integer modelstate) {
+        this.modelstate = modelstate;
+    }
+
+    public Integer getDefaultmtmodelbool() {
+        return defaultmtmodelbool;
+    }
+
+    public void setDefaultmtmodelbool(Integer defaultmtmodelbool) {
+        this.defaultmtmodelbool = defaultmtmodelbool;
+    }
+
+    public Integer getModeltypenum() {
+        return modeltypenum;
+    }
+
+    public void setModeltypenum(Integer modeltypenum) {
+        this.modeltypenum = modeltypenum;
+    }
+
+    public Base_modeltype getBase_modeltype() {
+        return base_modeltype;
+    }
+
+    public void setBase_modeltype(Base_modeltype base_modeltype) {
+        this.base_modeltype = base_modeltype;
     }
 }

@@ -1590,6 +1590,15 @@ var USERINFOGRADE5="userinfograde5";//书记员
 var USERINFOGRADE6="userinfograde6";//陪审员
 var USERINFOGRADE7="userinfograde7";//审判员
 var USERINFOGRADE8="userinfograde8";//原告诉讼代理人
+//多角色默认人称
+var USERINFOGRADE1_NAME="原告";//原告
+var USERINFOGRADE2_NAME="被告";//被告
+var USERINFOGRADE3_NAME="被告诉讼代理人";//被告诉讼代理人
+var USERINFOGRADE4_NAME="审判长";//审判长
+var USERINFOGRADE5_NAME="书记员";//书记员
+var USERINFOGRADE6_NAME="陪审员";//陪审员
+var USERINFOGRADE7_NAME="审判员";//审判员
+var USERINFOGRADE8_NAME="原告诉讼代理人";//原告诉讼代理人
 
 var S_V = "s_v";//单机版
 var O_V = "o_v";//联机版
@@ -1609,6 +1618,31 @@ var ASR_F="asr_f";
 var TTS_F="tts_f";
 var FD_F="fd_f";
 var PH_F="ph_f";
+
+
+
+function set_said(modeltypenum) {
+    if (isNotEmpty(modeltypenum)){
+        if (modeltypenum==1){
+            //刑庭
+            userinfograde3_name="辩护人";
+            userinfograde1_name="公诉人";
+            userinfograde2_name="被告人";
+
+        }else  if (modeltypenum==2){
+            //民庭
+            userinfograde2_name="被告";
+        }
+    }
+    $("."+USERINFOGRADE1).html(userinfograde1_name);
+    $("."+USERINFOGRADE2).html('<span style="color: red;font-weight: initial">*</span>'+userinfograde2_name);
+    $("."+USERINFOGRADE3).html(userinfograde3_name);
+    $("."+USERINFOGRADE4).html('<span style="color: red;font-weight: initial">*</span>'+userinfograde4_name);
+    $("."+USERINFOGRADE5).html(userinfograde5_name);
+    $("."+USERINFOGRADE6).html(userinfograde6_name);
+    $("."+USERINFOGRADE7).html(userinfograde7_name);
+    $("."+USERINFOGRADE8).html(userinfograde8_name);
+}
 //========================================js通用常量:需要和java文件的同步========================end
 
 

@@ -7358,6 +7358,9 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             me.filterInputRule(root);
             html = root.toHtml();
 
+            if (!isNotEmpty(me.body)){
+                return;
+            }
             me.body.innerHTML = (isAppendTo ? me.body.innerHTML : '') + html;
 
 

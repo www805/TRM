@@ -313,7 +313,9 @@
                                 </tbody>\
                         </table>';
 
-        recordstate_index = layer.open({
+
+        if (gnlist.indexOf(NX_O)== -1){
+            recordstate_index = layer.open({
                 type:1,
                 title: '状态栏',
                 closeBtn: 0,
@@ -321,13 +323,14 @@
                 shade: 0,
                 offset: 'rb',
                 area: ['250px', '130px'],
-               /* maxmin: true,*/
+                /* maxmin: true,*/
                 resize:false,
-            content: html,
-            success: function(layero,index){
-                /*layer.min(index);*/
-            }
-        });
+                content: html,
+                success: function(layero,index){
+                    /*layer.min(index);*/
+                }
+            });
+        }
 
 
         //普通上传

@@ -5,7 +5,10 @@ import com.avst.trm.v1.common.cache.AppServiceCache;
 import com.avst.trm.v1.common.cache.Constant;
 import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
+import com.avst.trm.v1.common.datasourse.base.entity.Base_role;
+import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
+import com.avst.trm.v1.common.datasourse.base.mapper.Base_admintoroleMapper;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
@@ -31,6 +34,9 @@ public class LoginService extends BaseService {
     @Autowired
     private Base_admininfoMapper admininfoMapper;
 
+    @Autowired
+    private Base_admintoroleMapper base_admintoroleMapper;
+
     private Gson gson=new Gson();
 
     /***
@@ -54,12 +60,12 @@ public class LoginService extends BaseService {
         }
         try {
 
-
+            //检查用户登录
             EntityWrapper ew=new EntityWrapper();
-            ew.eq("loginaccount", loginParam.getLoginaccount());
-
+            ew.eq("BINARY  loginaccount",loginParam.getLoginaccount());//BINARY区分大小写
             LogUtil.intoLog(this.getClass(),ew.getSqlSegment()+"---------");
-            List<Base_admininfo> adminManage=admininfoMapper.selectList(ew);
+            List<AdminAndWorkunit> adminManage= admininfoMapper.getAdminListAndWorkunit(ew);
+
             if (null==adminManage||adminManage.size()<1){
                 result.setMessage("未找到该用户");
                 return;
@@ -69,7 +75,7 @@ public class LoginService extends BaseService {
 
             if (null!=adminManage&&adminManage.size()>0){
                     if (adminManage.size()==1){
-                        Base_admininfo base_admininfo=adminManage.get(0);
+                        AdminAndWorkunit base_admininfo=adminManage.get(0);
 
 
                         String password1=base_admininfo.getPassword();
@@ -95,6 +101,19 @@ public class LoginService extends BaseService {
                         if (null!=base_admininfo.getTemporaryaskbool()&&base_admininfo.getTemporaryaskbool()==1){
                             result.setMessage("临时询问人不可登录");
                             return;
+                        }
+
+                        EntityWrapper ewrole=new EntityWrapper();
+                        ewrole.eq("ar.adminssid",base_admininfo.getSsid());
+                        List<Base_role> roles = base_admintoroleMapper.getRolesByAdminSsid(ewrole);
+                        if (null!=roles&&roles.size()>0){
+                            base_admininfo.setRoles(roles);
+                            for (Base_role role : roles) {
+                                if (StringUtils.isNotEmpty(role.getSsid())&&role.getSsid().equals("role1")){//role1超管
+                                    base_admininfo.setSuperrolebool(1);
+                                    break;
+                                }
+                            }
                         }
 
                         request.getSession().setAttribute(Constant.MANAGE_WEB,base_admininfo);
