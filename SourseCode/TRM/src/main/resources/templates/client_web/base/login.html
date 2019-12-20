@@ -69,8 +69,8 @@
                 <div class="layui-col-md6 ">
                     <div class="login" style="margin-left: 100px">
                         <div class="login_logo"><a href="#"><img id="login_img" src="/uimaker/images/login_logo.png" /></a></div>
-                        <div class="login_name">
-                            <p th:text="${loginModel.serviceName}">智能提讯系统</p>
+                        <div class="login_name" >
+                            <p th:text="${loginModel.serviceName}" th:title="${loginModel.serviceName}" style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;width: 100%">智能提讯系统</p>
                         </div>
                         <input name="loginaccount" id="loginaccount" type="text" placeholder="账号" value="" lay-verify="loginaccount">
                         <input name="password" id="password" type="password" placeholder="密码" value="" lay-verify="password">

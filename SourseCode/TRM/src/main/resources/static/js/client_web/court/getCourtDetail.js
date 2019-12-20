@@ -2,7 +2,7 @@ var recorduser=[];//会议用户集合
 var mtssid=null;//当前会议的ssid
 var videourl=null;//视频地址
 
-var recordnameshow="";
+
 
 var  subtractime={}//时间差，法院可能多用户 格式：subtractime['usertype']
 
@@ -14,6 +14,8 @@ var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是�
 var first_playstarttime=0;//第一个视频的开始时间
 var dq_play=null;//当前视频数据
 var recordPlayParams=[];//全部视频数据集合
+
+var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 
 var positiontime=0;
 
@@ -156,7 +158,7 @@ function callbackgetRecordById(data) {
             var getMCVO=data.getMCVO;
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
                 set_getRecord(getMCVO);
-                $("#asr_html").show();
+                $("#asr").show();
             }else  {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
@@ -341,93 +343,13 @@ function exportPdf(obj) {
 }
 
 
-var dqindex_realtxt=0;//当前显示的下标
-var likerealtxtarr=[];//搜索txt
-//搜索上
-function last_realtxt() {
-    if (isNotEmpty(likerealtxtarr)) {
-        dqindex_realtxt--;
-        if (dqindex_realtxt<0){
-            dqindex_realtxt=0;
-            layer.msg("这是第一个~");
-        }
-        set_dqrealtxt();
-    }
-}
-//搜索下
-function next_realtxt() {
-    if (isNotEmpty(likerealtxtarr)) {
-        dqindex_realtxt++;
-        if (dqindex_realtxt>=likerealtxtarr.length-1){
-            dqindex_realtxt=likerealtxtarr.length-1;
-            layer.msg("这是最后一个~");
-        }
-        set_dqrealtxt();
-    }
-}
-//搜索赋值
-function set_dqrealtxt(){
-    mouseoverbool=1;//不滚动
-    if (isNotEmpty(likerealtxtarr)) {
-        for (let i = 0; i < likerealtxtarr.length; i++) {
-            const all = likerealtxtarr[i];
-            all.find("a").removeClass("highlight_dq");
-        }
-        likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
-        var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
-        var div = document.getElementById('recordreals_scrollhtml');
-        div.scrollTop = top;
-    }
-}
 
-function recordreals_select() {
-    mouseoverbool=1;//不滚动
-    var likerealtxt = $("#recordreals_select").val();
-    dqindex_realtxt=0;
-    likerealtxtarr=[];
-
-    var recordrealshtml= $("#recordreals").html();
-    recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');
-    $("#recordreals").html(recordrealshtml);
-    $("#recordreals div").each(function (i,e) {
-        var spantxt=$(this).find("span").text();
-        if (isNotEmpty(likerealtxt)){
-            if (spantxt.indexOf(likerealtxt) >= 0) {
-                var html=$(this).find("span").html();
-                html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
-                $(this).find("span").html(html);
-                likerealtxtarr.push($(this).find("span"));
-            }
-        }
-    });
-
-    if (isNotEmpty(likerealtxtarr)){
-        set_dqrealtxt();
-    }else {
-        /*layer.msg("没有找到内容~");*/
-    }
-}
 
 
 $(function () {
     $("#baocun").click(function () {
       addRecord();
     });
-
-    var monthNames = [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" ];
-    var dayNames= ["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
-    var newDate = new Date();
-    newDate.setDate(newDate.getDate());
-    var date=newDate.getFullYear() + "年" + monthNames[newDate.getMonth()] + '月' + newDate.getDate() + '日 ' + dayNames[newDate.getDay()];
-    setinterval1= setInterval( function() {
-        var seconds = new Date().getSeconds();
-        var sec=( seconds < 10 ? "0" : "" ) + seconds;
-        var minutes = new Date().getMinutes();
-        var min=( minutes < 10 ? "0" : "" ) + minutes;
-        var hours = new Date().getHours();
-        var hour=( hours < 10 ? "0" : "" ) + hours;
-
-    },1000);
 
 
 
@@ -451,8 +373,6 @@ $(function () {
             }
         }
 
-
-        /!*此处开始定位*!/
         if (isNotEmpty(time)&&time>0){
             var locationtime=time*1000<0?0:time*1000; //秒转时间戳
             locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
@@ -476,15 +396,15 @@ $(function () {
                     }
                     $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
 
-                    $("#record_hoverhtml").hover(
+                    $("#recordreals_scrollhtml").hover(
                         function(){
-                            mouseoverbool=1
+                            mouseoverbool_left=1
                         } ,
                         function(){
-                            mouseoverbool=-1;
+                            mouseoverbool_left=-1;
                         });
 
-                    if (parseInt(mouseoverbool)==-1&&parseInt(mouseoverbool)!=1){
+                    if (parseInt(mouseoverbool_left)==-1&&parseInt(mouseoverbool_left)!=1){
                         var top=$(this).position().top;
                         var div = document.getElementById('recordreals_scrollhtml');
                         div.scrollTop = top;

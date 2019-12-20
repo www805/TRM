@@ -2,45 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>视频点播</title>
-
+    <title>Title</title>
 </head>
 <body>
-<div  data-th-fragment="video" style="height: 95%">
+<div data-th-fragment="playback">
     <div id="view" >
         <div id="player" class="player"></div>
     </div>
-
-    <!--播放器/代码开始-->
-    <link rel="stylesheet" href="/layui/css/layui.css" >
     <script src="/js/jquery-1.11.1.js" type="text/javascript"></script>
-    <script src="/layui/layui.js"type="text/javascript"></script>
     <script type="text/javascript" src="/sewiseplayer/player/sewise.player.min.js"></script>
+    <script src="/js/modular/playback.js" type="text/javascript"></script>
     <script type="text/javascript">
-
-        //必须把这个写在主页面里面去，坑，后期改
-        // layui.use(['slider','element'], function() {
-        //     var slider = layui.slider;
-        //     var element = layui.element;
-        //     //设置步长
-        //     slider.render({
-        //         elem: '#slideTest4'
-        //         , step: 20, //步长
-        //         value: initvolume, //初始值
-        //         change: function(value){
-        //             //动态获取滑块数值
-        //             var val=parseFloat(value)/100;
-        //             SewisePlayer.setVolume(val);
-        //         }
-        //     });
-        // });
-
-
-        var setinterval1;
-        var totaltime;
-        var progrssBar_width="65%";
+        //初始参数
+        var setinterval;
+        var totaltime;//视频总时间
+        var progrssBar_width="65%";//默认进度套宽度
         var initvolume=100;//默认音量
+        var recordnameshow="";//视频名称
 
+        //视频回放初始化
         SewisePlayer.setup({
             server: "vod",
             type: "mp4",
@@ -52,6 +32,7 @@
             skin: "vodWhite",
             volume:1
         });
+
         function initplayer(time){
             var starttime=0;
             if (isNotEmpty(time)){
@@ -60,10 +41,11 @@
             SewisePlayer.toPlay(videourl, recordnameshow,starttime, false);
             /*初始化总时间*/
             totaltime=SewisePlayer.duration();
-            if(isNumber(totaltime)){
-                // $("#totaltime").html(getFomathms(totaltime));
-            };
-            setinterval1= setInterval( function() {
+
+            if (isNotEmpty(setinterval)){
+                clearInterval(setinterval)
+            }
+            setinterval= setInterval( function() {
                 gotoprogrssBarByPlayer();
             },1000);
 
@@ -124,29 +106,23 @@
         });
 
 
-     var currentplaynum;//当前播放的文件是第几个
-     var Frontvideoestotals;//前面播放视频使用的秒数总和，不计当前播放文件
-     var currentrecordstarttime;//当前播放文件的系统开始时间，用于进度跳转同步asr和ph
-     //asr开始时间知道，定位record时间，(asrstarttime-currentrecordstarttime)+asrtime(秒数) + = record视频定位(秒数)
-     //asr开始时间知道，定位record时间，(phstarttime-currentrecordstarttime)+phtime (秒数) =record视频定位(秒数)
 
     </script>
-    <!--播放器/代码结束-->
-
     <div  style="width: 100%;display:flex;align-items: center;">
-
         <div class="layui-progress layui-progress-big layui-bg-gray" id="progrssBar" style="width: 65%;flex:none;" onclick="changeProgrss();">
             <div class="layui-progress-bar layui-bg-red" lay-percent="20%" style="width: 20%"></div>
         </div>
-        <div style="flex:none;width: 15%;"><!--时间显示-->
-            <!--<label >&nbsp;&nbsp;</label><label id="currenttime">00:00:00</label>/<label id="totaltime" >未知</label>-->
+        <div style="flex:none;width: 15%;">
             <label >&nbsp;&nbsp;</label><label id="currenttime">00:00:00</label>
         </div>
         <div id="slideTest4" class="slideTest" style="width: 12%;flex:none;"></div>
     </div>
-
+    <div class="layui-col-md12" style="line-height: 50px">
+    <div style="width: 95%">
+        <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width:100%;margin:5px;" id="videos">
+        </div>
+    </div>
+    </div>
 </div>
 </body>
-
-
 </html>

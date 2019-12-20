@@ -58,11 +58,12 @@
             </div>
         </div>
     <div class="layui-col-md12 ">
-         <form class="layui-form layui-row" >
+        <!-- <form class="layui-form layui-row" >-->
             <div class="layui-col-md6" id="case">
                 <div class="layui-card" >
                     <div class="layui-card-header">案件基本信息<span style="color: red">(提示：排列第一人员可绑定个人信息)</span></div>
-                    <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
+                    <div th:replace="modular/casedata_court :: casedata_court"></div>
+                   <!-- <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                         <div class="layui-card-body  layui-row layui-col-space10" >
                             <div class="layui-col-lg6">
                                 <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件类型：</label>
@@ -189,26 +190,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="layui-col-lg6" ><!--style="margin-right: 50%"-->
+                            <div class="layui-col-lg6" >&lt;!&ndash;style="margin-right: 50%"&ndash;&gt;
                                     <label class="layui-form-label">询问次数：</label>
                                     <div class="layui-input-block">
                                         <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
                                     </div>
                             </div>
-                            <!--<div class="layui-col-lg6" >
+                            &lt;!&ndash;<div class="layui-col-lg6" >
                                 <label class="layui-form-label " style="font-weight: bold" >笔录模板：</label>
                                 <div class="layui-input-block">
                                     <input  style="font-weight: bold"  type="text" name="wordssid" id="wordssid"  placeholder="" autocomplete="off" class="layui-input" readonly onclick="open_model2()">
                                 </div>
-                            </div>-->
+                            </div>&ndash;&gt;
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </div>
             <div class="layui-col-md6" id="user">
                      <div class="layui-card" >
                          <div class="layui-card-header"><span id="usertype"><span style='color: red;font-weight: bold'>被告</span>个人信息</span></div>
-                         <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
+                         <div th:replace="modular/userdata_court :: userdata_court"></div>
+                        <!-- <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                              <div class="layui-card-body  layui-row layui-col-space10"  >
                                  <div class="layui-col-lg6">
                                      <label class="layui-form-label" >性别：</label>
@@ -326,11 +328,17 @@
                                      </div>
                                  </div>
                              </div>
-                         </div>
+                         </div>-->
                      </div>
-
+             </div>
+             <form class="layui-form" style="padding: 20px">
+                 <div class="layui-col-lg6 layui-col-lg-offset6 ">
+                     <div class="layui-input-block" >
+                         <button class=" layui-btn layui-btn-primary  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn">保存</button>
+                     </div>
                  </div>
-         </form>
+             </form>
+         <!--</form>-->
     </div>
     <div th:replace="footer :: footer">...</div>
 </div>

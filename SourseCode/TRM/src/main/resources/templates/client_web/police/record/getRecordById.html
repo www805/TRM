@@ -238,12 +238,7 @@
                                     <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                                         <div class="layui-col-md12" id="fd_HTML">
                                             <div class="layui-col-md12">
-                                              <div th:replace="video :: video"   >...</div>
-                                            </div>
-                                            <div class="layui-col-md12" style="line-height: 50px">
-                                                <div style="width: 95%">
-                                                    <div style="overflow-x: auto;overflow-y: hidden;white-space: nowrap;width:100%;margin:5px;" id="videos"></div>
-                                                </div>
+                                                <div th:replace="modular/playback :: playback"></div>
                                             </div>
                                         </div>
                                         <div th:replace="modular/polygrapdata :: polygrapdata"></div>

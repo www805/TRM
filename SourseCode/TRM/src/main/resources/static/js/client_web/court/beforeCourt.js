@@ -15,11 +15,6 @@ var toUrltype=1;//跳转笔录类型 1笔录制作页 2笔录查看列表
 var dq_userinfograde=USERINFOGRADE2;//默认为被告
 
 
-//可多个
-/*var userinfograde1=null;//原告信息
-var userinfograde2=null;//被告信息
-var userinfograde3=null;//被代理人
-var userinfograde8=null;//原代理人*/
 
 var userinfogrades={}
 

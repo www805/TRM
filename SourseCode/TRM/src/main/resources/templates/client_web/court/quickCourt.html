@@ -80,49 +80,48 @@
 </style>
 <body>
 <div class="layadmin-message-fluid" style="margin: 20px;">
+   <div th:replace="header :: header">...</div>
    <div style="border: 1px solid #ffffff;    position: fixed;top: 2%;right: 1%;display: none" id="gotocontrol">
             <i class="iconfont icon-jinru" style="font-size: 20px;color: #1E9FFF" title="进入管理端" onclick="gotocontrol()"></i>
     </div>
     <div class="layui-container">
         <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="margin-top: 80px" >
             <ul class="layui-tab-title">
-                <li class="layui-this" >快速庭审</li>
-                <li >庭审办案 </li>
+                <li class="layui-this"  type="1">快速庭审</li>
+                <li  type="2">庭审办案 </li>
             </ul>
             <div class="layui-tab-content">
                 <div class="layui-tab-item layui-show">
-                        <form class="layui-form layui-row" >
-                            <div class="layui-col-md12">
-                                <form class="layui-form layui-row" >
-                                    <div class="layui-col-md12" >
-                                        <div class="layui-card" >
-                                                <div class="layui-card-body  layui-row layui-col-space10" >
-                                                    <div class="layui-col-lg12">
-                                                        <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件编号：</label>
-                                                        <div class="layui-input-block">
-                                                            <input type="text" name="casenum2" id="casenum2"  lay-verify="casenum2" placeholder="" autocomplete="off" class="layui-input">
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg12" id="multifunctionbool_showorhide2" >
-                                                        <label class="layui-form-label "  ><span style="color: red;">*</span>承办庭：</label>
-                                                        <div class="layui-input-block">
-                                                            <input    type="text" name="modelssid2" id="modelssid2" lay-verify="modelssid2" placeholder="" autocomplete="off" class="layui-input" readonly   onclick="open_model()">
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-lg6 layui-col-lg-offset6 ">
-                                                        <div class="layui-input-block" >
-                                                            <input  type="button" class=" layui-btn layui-btn-primary  layui-btn-lg"  style="float: right"  id="startrecord_btn2"  lay-submit="" lay-filter="startrecord_btn2" value="保存"/>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </form>
+                    <div th:replace="modular/quickdata_court :: quickdata_court"></div>
+                    <!-- <form class="layui-form layui-row" >
+                         <div class="layui-col-md12" >
+                             <div class="layui-card" >
+                                     <div class="layui-card-body  layui-row layui-col-space10" >
+                                         <div class="layui-col-lg12">
+                                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件编号：</label>
+                                             <div class="layui-input-block">
+                                                 <input type="text" name="casenum2" id="casenum2"  lay-verify="casenum2" placeholder="" autocomplete="off" class="layui-input">
+                                             </div>
+                                         </div>
+                                         <div class="layui-col-lg12" id="multifunctionbool_showorhide2" >
+                                             <label class="layui-form-label "  ><span style="color: red;">*</span>承办庭：</label>
+                                             <div class="layui-input-block">
+                                                 <input    type="text" name="modelssid2" id="modelssid2" lay-verify="modelssid2" placeholder="" autocomplete="off" class="layui-input" readonly   onclick="open_model()">
+                                             </div>
+                                         </div>
+                                         <div class="layui-col-lg6 layui-col-lg-offset6 ">
+                                             <div class="layui-input-block" >
+                                                 <input  type="button" class=" layui-btn layui-btn-primary  layui-btn-lg"  style="float: right"  id="startrecord_btn2"  lay-submit="" lay-filter="startrecord_btn2" value="保存"/>
+                                             </div>
+                                         </div>
+                                     </div>
+                             </div>
+                         </div>
+                     </form>-->
                 </div>
                 <div class="layui-tab-item">
-                        <form class="layui-form layui-row" >
+                    <div th:replace="modular/casedata_court :: casedata_court"></div>
+                       <!-- <form class="layui-form layui-row" >
                             <div class="layui-col-md12" id="case">
                                 <div class="layui-card" >
                                     <div class="layui-card-body  layui-row layui-col-space10" >
@@ -251,7 +250,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="layui-col-lg6" ><!--style="margin-right: 50%"-->
+                                            <div class="layui-col-lg6" >&lt;!&ndash;style="margin-right: 50%"&ndash;&gt;
                                                 <label class="layui-form-label">询问次数：</label>
                                                 <div class="layui-input-block">
                                                     <input type="number" name="asknum" id="asknum"  placeholder="" autocomplete="off" class="layui-input" disabled value="0" >
@@ -265,9 +264,16 @@
                                         </div>
                                 </div>
                             </div>
-                        </form>
+                        </form>-->
                 </div>
             </div>
+            <form class="layui-form" style="padding: 30px">
+                <div class="layui-col-lg6 layui-col-lg-offset6 ">
+                    <div class="layui-input-block" >
+                        <input  type="button" class=" layui-btn layui-btn-primary  layui-btn-lg"  style="float: right"  id="startrecord_btn"  lay-submit="" lay-filter="startrecord_btn" value="保存"/>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <div style="border: 1px solid #ffffff; position: fixed;bottom: 2%;right: 1%;display: none"  id="userloginout">
@@ -392,12 +398,13 @@ console.log(guidepageUrl)
         });
 
         form.on('submit(startrecord_btn)', function (data) {
-            addCaseToArraignment();
-            return false;
-        });
-        form.on('submit(startrecord_btn2)', function (data) {
-            //只需要承办庭和案件号码
-            addCaseToArraignment2();
+            var litype=$("li[class='layui-this']").attr("type");
+            console.log("快速庭审类型litype："+litype)
+            if (litype==2){
+                addCaseToArraignment();
+            } else {
+                addCaseToArraignment2();
+            }
             return false;
         });
 

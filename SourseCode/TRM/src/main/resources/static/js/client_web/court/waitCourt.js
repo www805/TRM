@@ -1,4 +1,3 @@
-
 var recorduser=[];//会议用户集合：多个
 var dq_recorduser=null;//当前被询问人ssid
 
@@ -15,10 +14,8 @@ var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
-
 var record_pausebool=-1;//笔录是否允许暂停1允许 -1 不允许 默认不允许-1
 var record_adjournbool=-1;//笔录是否显示休庭按钮，用于案件已存在休庭笔录的时候不显示 1显示 -1 不显示 默认-1
-
 
 var multifunctionbool;
 

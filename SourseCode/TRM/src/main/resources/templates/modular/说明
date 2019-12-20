@@ -8,6 +8,8 @@ record_qw：问答版笔录
 record_word：word版笔录
 polygrapdata：身心检测
 template_qw:问答模板
+playback:视频回放
+live：点播
 
 quickdata_court：法院快速庭审
 casedata_court：案件基本信息庭审

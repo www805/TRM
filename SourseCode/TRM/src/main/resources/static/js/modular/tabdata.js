@@ -64,20 +64,29 @@ function set_dqrealtxt(){
 }
 function recordreals_select() {
     mouseoverbool_left=1;//不滚动
-    var likerealtxt = $("#recordreals_select").val();
     dqindex_realtxt=0;
     likerealtxtarr=[];
-    $("#recordreals div").each(function (i,e) {
-        var spantxt=$(this).find("span").text();
-        if (isNotEmpty(likerealtxt)){
-            if (spantxt.indexOf(likerealtxt) >= 0) {
-                var html=$(this).find("span").html();
-                html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
-                $(this).find("span").html(html);
-                likerealtxtarr.push($(this).find("span"));
-            }
-        }
-    });
+
+
+    var recordrealshtml= $("#recordreals").html();
+    if (isNotEmpty(recordrealshtml)){
+        recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');//过滤之前的highlight_all标签
+        $("#recordreals").html(recordrealshtml);
+    }
+
+    var likerealtxt = $("#recordreals_select").val();
+    if (isNotEmpty(likerealtxt)){
+        $("#recordreals div").each(function (i,e) {
+            var spantxt=$(this).find("span").text();
+                if (spantxt.indexOf(likerealtxt) >= 0) {
+                    var html=$(this).find("span").html();
+                    html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
+                    $(this).find("span").html(html);
+                    likerealtxtarr.push($(this).find("span"));
+                }
+        });
+    }
+
 
     if (isNotEmpty(likerealtxtarr)){
         set_dqrealtxt();
