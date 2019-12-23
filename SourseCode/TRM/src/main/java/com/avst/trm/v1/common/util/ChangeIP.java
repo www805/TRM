@@ -38,7 +38,7 @@ public class ChangeIP {
         String clientconfpath = fileBasepath + "桌面式应用/客户端/resources/app/main.js";
         List<String> clientlist = ReadWriteFile.readTxtFileToList(clientconfpath, "utf8");
         if (null != clientlist && clientlist.size() > 0) {
-            String writetxt = "mainWindow.loadURL('http://" + localip + ":8080/cweb/');";
+            String writetxt = "mainWindow.loadURL('http://" + localip + ":6060/cweb/');";
             String newfiletxt = "";
             for (String str : clientlist) {
                 if (str.indexOf("mainWindow.loadURL") > -1) {
