@@ -865,7 +865,6 @@ function callbackgetgetRecordrealing(data) {
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals_scrollhtml');
                             div.scrollTop = div.scrollHeight;
-                            tagtext();
                         }
                     }
                 }
@@ -874,6 +873,7 @@ function callbackgetgetRecordrealing(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
+    tagtext();
 }
 
 
@@ -1443,8 +1443,14 @@ $(function () {
                                     function(){
                                         mouseoverbool_left=-1;
                                     });
-
+                               $("#tooltip").hover(function(){
+                                    mouseoverbool_left=1;
+                                });
+                            console.log(mouseoverbool_left)
                                 if (mouseoverbool_left==-1){
+                                    $("#tooltip").remove();//移除标记提示
+                                    window.getSelection().removeAllRanges();
+                                    dq_recordrealsspan=null;
                                     var div = document.getElementById('recordreals_scrollhtml');
                                     div.scrollTop = div.scrollHeight;
                                 }
@@ -2389,22 +2395,96 @@ function addidentify(usertype,starttime,gradeintroduce,translatext) {
 
 
 ///////////////////////////////**********************************************************左侧打点**************start
+var dq_recordrealsspan=null;
+function bj() {
+    mouseoverbool_left=1;
+    if (isNotEmpty(dq_recordrealsspan)) {
+        $(dq_recordrealsspan).attr("contenteditable",true);
+        document.execCommand('foreColor',false,'red');
+        $(dq_recordrealsspan).attr("contenteditable",false);
+
+        var userssid=$(dq_recordrealsspan).closest("div").attr("userssid");
+        var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
+        var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
+        setMCTagTxtreal(userssid,starttime,tagtxt);
+        $("#tooltip").remove();
+        window.getSelection().removeAllRanges();
+        dq_recordrealsspan=null;
+    }
+}
+function qxbj() {
+    mouseoverbool_left=1;
+    if (isNotEmpty(dq_recordrealsspan)) {
+        $(dq_recordrealsspan).attr("contenteditable",true);
+        document.execCommand('removeFormat');
+        $(dq_recordrealsspan).attr("contenteditable",false);
+
+        var userssid=$(dq_recordrealsspan).closest("div").attr("userssid");
+        var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
+        var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
+        setMCTagTxtreal(userssid,starttime,tagtxt);
+        $("#tooltip").remove();
+        window.getSelection().removeAllRanges();
+        dq_recordrealsspan=null;
+    }
+}
 function tagtext() {
-    $("#recordreals span").bind('mousedown', function(e) {
-        if (3 == e.which||1 == e.which){
-            var userssid=$(this).closest("div").attr("userssid");
-            var starttime=$(this).closest("div").attr("starttime");//语音识别时间标识
-            var tagtxt=$(this).html();//打点标记文本
-            $(this).attr("contenteditable",true);
-            if (3 == e.which) {
-                document.execCommand('removeFormat');
-            }  else if (1 == e.which) {
-                document.execCommand('foreColor',false,'red');
-            }
-            $(this).attr("contenteditable",false);
-            setMCTagTxtreal(userssid,starttime,tagtxt);
+    $("#recordreals span").off("mouseup").bind("mouseup",function (e) {
+        mouseoverbool_left=1;
+        dq_recordrealsspan=this;
+        var x = 10;
+        var y = 10;
+        var text = "";
+        if (document.selection) {
+            text = document.selection.createRange().text;
         }
+        else if (window.getSelection()) {
+            text = window.getSelection();
+        }
+        if (text!= "") {
+            var tooltip = '<div id="tooltip" class="tooltip" >\
+                    <div class="layui-btn-group">\
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="bj()">标记</button>\
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="qxbj();">取消标记</button>\
+                    </div>\
+                 </div>';
+            $("body").append(tooltip);
+            $("#tooltip").css({
+                "top": (e.pageY + y) + "px",
+                "left": (e.pageX + x) + "px",
+                "position": "absolute"
+            }).show("fast");
+        }
+    }).off("mousedown").bind("mousedown",function (e) {
+        $("#tooltip").remove();
+        window.getSelection().removeAllRanges();
+        dq_recordrealsspan=null;
     });
+
+   $("#recordreals").bind("mousewheel", function (e) {
+       $("#tooltip").remove();
+       window.getSelection().removeAllRanges();
+       dq_recordrealsspan=null;
+   });
+
+
+
+
+    /*   $("#recordreals span").bind('mousedown', function(e) {
+           if (3 == e.which||1 == e.which){
+               var userssid=$(this).closest("div").attr("userssid");
+               var starttime=$(this).closest("div").attr("starttime");//语音识别时间标识
+               var tagtxt=$(this).html();//打点标记文本
+               $(this).attr("contenteditable",true);
+               if (3 == e.which) {
+                   document.execCommand('removeFormat');
+               }  else if (1 == e.which) {
+                   document.execCommand('foreColor',false,'red');
+               }
+               $(this).attr("contenteditable",false);
+               setMCTagTxtreal(userssid,starttime,tagtxt);
+           }
+       });*/
 }
 
 //打点实时保存

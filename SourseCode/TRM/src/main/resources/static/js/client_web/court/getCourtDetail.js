@@ -1166,5 +1166,105 @@ var trtd_html='<tr>\
                <div  id="btnadd" ></div>\
                 </td></tr>';
 //*******************************************************************笔录问答编辑end****************************************************************//
+
+
+//*******************************************************************打点标记目录start****************************************************************//
+var TAGTEXT_INDEX=null;
+function open_tagtext() {
+    var TAGTEXT_HTML='<div class="layui-row layui-form " > \
+        <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >\
+         <div class="layui-col-md8 layui-col-md-offset2 layui-input-inline">\
+             <div class="layui-col-md9"><input type="text" id="tagtext" lay-verify="tagtext" placeholder="请输入关键字" autocomplete="off" class="layui-input"  oninput="selecttagtext();"></div>\
+             <div class="layui-col-md3"> <input type="button"  class="layui-btn layui-btn-normal" value="搜索" onclick="selecttagtext();" /></div>\
+         </div>\
+        <table class="layui-table" lay-skin="nob">\
+        <colgroup>\
+        <col width="30">\
+        <col width="120">\
+        </colgroup>\
+         <tr >\
+            <th>角色</th>\
+            <th>标记内容</th>\
+        </tr>\
+        <tbody id="tagtext_html">\
+        </tbody>\
+        </table>\
+         </div>\
+      </div>';
+    if (TAGTEXT_INDEX==null){
+        TAGTEXT_INDEX= layer.open({
+            title: '打点标记',
+            type: 1,
+            content: TAGTEXT_HTML,
+            offset:'r', area:["20%", "100%"],
+            anim:2,
+            shade: 0,
+            closeBtn:0,
+            btn: [],
+            resize:false,
+            move: false,
+            success: function(layero, index){
+                selecttagtext();
+            }
+        });
+    } else {
+        layer.close(TAGTEXT_INDEX);
+        TAGTEXT_INDEX=null;
+    }
+}
+
+function selecttagtext() {
+    var tagtext=$("#tagtext").val();
+
+    //收集打点目录
+    $("#tagtext_html").empty();
+    var morenHTML='<tr style="border-bottom: 1px solid #ccc">\
+                        <td colspan="3" style="text-align: center">暂无数据</td>\
+                        </tr>';
+    var HTML="";
+    if (isNotEmpty(getRecordById_data)){
+        var getMCVO=getRecordById_data.getMCVO;
+        if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
+            var list=getMCVO.list;
+            for (var i = 0; i < list.length; i++) {
+              var data=list[i];
+                var  reg = /<[^>]+>/g;//检测是否包含html标签
+                if (isNotEmpty(data.tagtext)&&isNotEmpty(recorduser)&&reg.test(data.tagtext)){
+                    if (!isNotEmpty(tagtext)||(isNotEmpty(tagtext)&&data.tagtext.indexOf(tagtext)>0)) {
+                        for (var j = 0; j < recorduser.length; j++) {
+                            var user = recorduser[j];
+                            var userssid=user.userssid;
+                            if (data.userssid==userssid){
+                                var username=user.username==null?"未知":user.username;//用户名称
+                                var usertype=user.grade;//1、询问人2被询问人
+                                var translatext=data.tagtext;//需要保留打点标记的文本
+                                var asrtime=data.asrtime;//时间
+                                var starttime=data.starttime;
+                                var asrstartime=data.asrstartime;
+                                var subtractime_=data.subtractime;//时间差
+                                var gradename=user.gradename==null?"未知":user.gradename;
+                                starttime=parseFloat(starttime)+parseFloat(subtractime_);
+
+                                HTML+='<tr ondblclick="showrecord('+starttime+',null)">\
+                                                     <td >'+gradename+'</td>\
+                                                      <td >'+translatext+'</td>\
+                                                    </tr>';
+
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }else {
+        layer.msg("数据加载中，请稍后再试")
+    }
+    console.log("进来啦")
+    $("#tagtext_html").html(HTML==""?morenHTML:HTML);
+    
+}
+//*******************************************************************打点标记目录end****************************************************************//
+
+
 //语音识别颜色
 var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];

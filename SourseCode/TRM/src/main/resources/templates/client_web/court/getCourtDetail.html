@@ -244,7 +244,7 @@
                                 </div>
                             </div>
                             <div class="layui-tab-item" id="record_hoverhtml"style="height:100%;">
-                                <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
+                                <div class="layui-card-header" style="border: none;height: 12%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
                                     <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
                                         <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();" >
                                     </div>
@@ -257,7 +257,7 @@
                                             </button>
                                     </div>
                                 </div>
-                                <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
+                                <div class="layui-card" style="box-shadow: initial;height: 86%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
                                     <div class="layui-card-body" >
                                         <div class="talk_show"  id="recordreals" >
 
@@ -283,8 +283,8 @@
                 </div>
             </div>
             <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
-                        <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
-                    <div class="layui-inline" style="margin-bottom:0">
+                   <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
+                   <div class="layui-inline" style="margin-bottom:0">
                         <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                             <div class="layui-select-title">
                                 <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
@@ -295,7 +295,8 @@
                                 <dd lay-value="" class="" onclick="export_asr();">导出识别内容</dd>
                             </dl>
                         </div>
-                    </div>
+                 </div>
+                <button class="layui-btn layui-btn-normal " onclick="open_tagtext();">打点标记</button>
                 <div class="layui-inline" style="float: right">
                     <label class="layui-form-label" style="width: 100px">定位差值(秒)：</label>
                     <div class="layui-input-inline" style="width: 80px;">
