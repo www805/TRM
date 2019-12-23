@@ -1625,13 +1625,16 @@ function set_said(modeltypenum) {
     if (isNotEmpty(modeltypenum)){
         if (modeltypenum==1){
             //刑庭
-            userinfograde3_name="辩护人";
             userinfograde1_name="公诉人";
             userinfograde2_name="被告人";
+            userinfograde3_name="辩护人";
 
         }else  if (modeltypenum==2){
             //民庭
+            userinfograde1_name=USERINFOGRADE1_NAME;
             userinfograde2_name="被告";
+            userinfograde3_name=USERINFOGRADE3_NAME;
+
         }
     }
     $("."+USERINFOGRADE1).html(userinfograde1_name);

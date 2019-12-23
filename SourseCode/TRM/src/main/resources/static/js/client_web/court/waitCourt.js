@@ -1436,16 +1436,37 @@ $(function () {
                                tagtext();
 
 
-                                $("#asritem").hover(
+                            $("#asritem").off("mouseout").bind("mouseout",function(event) {
+                                var div = document.getElementById("asritem");
+                                var x = event.clientX;
+                                var y = event.clientY;
+                                var divx1 = div.offsetLeft;
+                                var divy1 = div.offsetTop;
+                                var divx2 = div.offsetLeft + div.offsetWidth;
+                                var divy2 = div.offsetTop + div.offsetHeight;
+                                if (x < divx1 || x > divx2 || y < divy1 || y > divy2) {
+                                    //如果离开，则执行。。
+                                    console.log("哈哈哈哈哈哈哈哈哈哈或或或")
+                                    mouseoverbool_left=-1;
+                                }else {
+                                    mouseoverbool_left=1
+                                }
+                            });
+
+                              /*  $("#asritem").hover(
                                     function(){
                                         mouseoverbool_left=1
                                     } ,
                                     function(){
                                         mouseoverbool_left=-1;
                                     });
-                               $("#tooltip").hover(function(){
-                                    mouseoverbool_left=1;
-                                });
+*/
+
+
+
+                            $("#tooltip").hover(function(){
+                                mouseoverbool_left=1;
+                            });
                             console.log(mouseoverbool_left)
                                 if (mouseoverbool_left==-1){
                                     $("#tooltip").remove();//移除标记提示

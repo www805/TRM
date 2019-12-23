@@ -1193,7 +1193,7 @@ function open_tagtext() {
       </div>';
     if (TAGTEXT_INDEX==null){
         TAGTEXT_INDEX= layer.open({
-            title: '打点标记',
+            title: '打点目录',
             type: 1,
             content: TAGTEXT_HTML,
             offset:'r', area:["20%", "100%"],
