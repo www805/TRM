@@ -4,6 +4,7 @@
  */
 var dquserssid=null;//当前被告人ssid
 var dqcasessid=null;//当前案件ssid
+var dqmodeltypenum=null;//当前所选的会议模板类型
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
 var skipCheckCasebool=-1;//是否跳过案件检查(法庭)
@@ -15,7 +16,19 @@ var dq_userinfograde=USERINFOGRADE2;//默认为被告
 var userinfogrades={};
 
 
-//开始笔录按钮=====================================================================================================start
+var userinfograde1_name=USERINFOGRADE1_NAME;//原告
+var userinfograde2_name=USERINFOGRADE2_NAME;//被告
+var userinfograde3_name=USERINFOGRADE3_NAME;//被告诉讼代理人
+var userinfograde4_name=USERINFOGRADE4_NAME;//审判长
+var userinfograde5_name=USERINFOGRADE5_NAME;//书记员
+var userinfograde6_name=USERINFOGRADE6_NAME;//陪审员
+var userinfograde7_name=USERINFOGRADE7_NAME;//审判员
+var userinfograde8_name=USERINFOGRADE8_NAME;//原告诉讼代理人
+
+
+
+
+//开始笔录按钮===================================================================start
 function addCaseToArraignment() {
     var url=getActionURL(getactionid_manage().quickCourt_addCaseToArraignment);
     var recordtypessid= $("#recotdtypes").val();
@@ -26,7 +39,7 @@ function addCaseToArraignment() {
 
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
-        layer.msg("被告不能为空",{icon: 5});
+        layer.msg(userinfograde2_name+"不能为空",{icon: 5});
         return;
     }
 
@@ -72,7 +85,7 @@ function addCaseToArraignment() {
     userinfogrades[""+userinfogradessid+""]=olduserinfo;
 
     if (!isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
-        layer.msg("被告不能为空",{icon: 5});
+        layer.msg(userinfograde2_name+"不能为空",{icon: 5});
         return;
     }
 
@@ -83,7 +96,7 @@ function addCaseToArraignment() {
     var arraignmentexpand=[];
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
         //被告
-        var bool=checkuserinfograde(USERINFOGRADE2);
+        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE2+""],2);
         if (!bool){
             return;
         }
@@ -97,7 +110,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE1+""])){
         //原告
-        var bool=checkuserinfograde(USERINFOGRADE1);
+        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE1+""],1);
         if (!bool){
             return;
         }
@@ -110,7 +123,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE3+""])){
         //被告代理人
-        var bool=checkuserinfograde(USERINFOGRADE3);
+        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE3+""],3);
         if (!bool){
             return;
         }
@@ -123,7 +136,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE8+""])){
         //原告代理人
-        var bool=checkuserinfograde(USERINFOGRADE8);
+        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE8+""],8);
         if (!bool){
             return;
         }
@@ -190,7 +203,7 @@ function addCaseToArraignment() {
             userinfogradessid:USERINFOGRADE4,
         });
     }else {
-        layer.msg("审判长不能为空",{icon: 5});
+        layer.msg(userinfograde4_name+"不能为空",{icon: 5});
         return;
     }
 
