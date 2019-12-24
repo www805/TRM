@@ -70,21 +70,20 @@
 
     <div class="layui-form layui-row" >
                 <div class="layui-col-md2" style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;display: none" id="left_html">
-                    <div class="layui-card" >
+                    <div th:replace="modular/recordtype :: recordtype"></div>
+                    <!--<div class="layui-card" >
                         <div class="layui-card-header">
                             选择审讯类型
                         </div>
-                             <div class="layui-card-body" >
-                                <div class="layui-collapse" lay-filter="test" id="recotdtypes" style="border:0">
+                        <div class="layui-card-body" >
+                            <div class="layui-collapse" lay-filter="test" id="recotdtypes" style="border:0">
 
-                                </div>
                             </div>
-                    </div>
+                        </div>
+                    </div>-->
                 </div>
                 <iframe name="ifranmehtml" id="ifranmehtml" class="layui-col-md12" style="height: 810px;border:1px  solid #F2F2F2" frameborder="0" src="/cweb/police/policePage/toaddCaseToUserDetail"></iframe>
     </div>
-
-
     <div th:replace="footer :: footer">...</div>
 </div>
 
@@ -99,23 +98,21 @@
 <script th:src="@{/js/client_web/police/record/addCaseToUser.js}" type="text/javascript"></script>
 <script th:src="@{/js/socket.io.js}" type="text/javascript"></script>
 <script th:inline="javascript">
-    var INIT_CLIENT;
-    var INIT_CLIENTKEY;
+    var INIT_CLIENT=[[${session.INIT_CLIENT}]];
+    var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
     var gnlist = [[${session.AUTHORIZATIONALL_CLIENT.gnlist}]]; //全局授权
     $(function(){
-        INIT_CLIENT=[[${session.INIT_CLIENT}]];
-        INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/addCaseToUser");
         getRecordtypes();
-
-
     });
     layui.use(['layer','element','form','laydate'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         var form = layui.form;
         var laydate = layui.laydate;
-        //使用模块shade
+
+
+        //授权显示=================start
         if (isNotEmpty(gnlist)) {
             //非HK
             if(gnlist.indexOf(HK_O)<0){
@@ -139,8 +136,9 @@
                 //再去判断非单机版显示组件不需要自动默认多组件
                 $("#multifunctionbool").closest("div").css("display","block");
             }
-            
         }
+        //授权显示=================en
+
         form.render();
     });
 

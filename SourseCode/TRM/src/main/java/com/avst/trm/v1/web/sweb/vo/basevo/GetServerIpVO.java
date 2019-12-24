@@ -1,16 +1,21 @@
 package com.avst.trm.v1.web.sweb.vo.basevo;
 
+import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
+
+import java.util.List;
+import java.util.Map;
+
 public class GetServerIpVO {
 
-    private String trmip;
+    private Map<String, List<GetNetworkConfigureVO>> trmipMap;
     private Object modeltds;
 
-    public String getTrmip() {
-        return trmip;
+    public Map<String, List<GetNetworkConfigureVO>> getTrmipMap() {
+        return trmipMap;
     }
 
-    public void setTrmip(String trmip) {
-        this.trmip = trmip;
+    public void setTrmipMap(Map<String, List<GetNetworkConfigureVO>> trmipMap) {
+        this.trmipMap = trmipMap;
     }
 
     public Object getModeltds() {

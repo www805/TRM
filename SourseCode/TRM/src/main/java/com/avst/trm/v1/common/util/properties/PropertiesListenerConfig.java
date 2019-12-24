@@ -91,6 +91,12 @@ public class PropertiesListenerConfig {
         return propertiesMap.get(name);
     }
 
+    public static void setProperty(String name,String val) {
+
+        propertiesMap.put(name, val);
+
+    }
+
     public static Map<String, String> getAllProperty() {
         return propertiesMap;
     }

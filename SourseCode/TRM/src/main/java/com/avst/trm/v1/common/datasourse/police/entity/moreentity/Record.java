@@ -36,7 +36,7 @@ public class Record extends Police_record {
     private String recordtypename;//案件类型名称
 
 
-    private Integer recordfilestate;//视频文件状态针对已完成的笔录 -1未存在视频 0上传进行中 1已完成
+    private Integer recordfilestate=-1;//视频文件状态针对已完成的笔录 -1未存在视频 0上传进行中 1已完成
 
     public Integer getRecordfilestate() {
         return recordfilestate;

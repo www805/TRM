@@ -6,9 +6,7 @@
 var dquserssid=null;//当前被告人ssid
 var dqcasessid=null;//当前案件ssid
 var dqmodelssid=null;//当前所选的会议模板ssid
-var dqmodeltypenum=null;//当前所选的会议模板类型
 var dqwordssid=null;//当前笔录模板ssid
-
 
 var cases=null;//我的全部案件数据
 var othercases=null;//除开自己全部的案件信息
@@ -26,15 +24,6 @@ var userinfogrades={};
 var casenum_userinfos=[];//根据案件编号回填的多角色人员
 var casenum_case;////根据案件编号回填的案件ssid
 
-var userinfograde1_name=USERINFOGRADE1_NAME;//原告
-var userinfograde2_name=USERINFOGRADE2_NAME;//被告
-var userinfograde3_name=USERINFOGRADE3_NAME;//被告诉讼代理人
-var userinfograde4_name=USERINFOGRADE4_NAME;//审判长
-var userinfograde5_name=USERINFOGRADE5_NAME;//书记员
-var userinfograde6_name=USERINFOGRADE6_NAME;//陪审员
-var userinfograde7_name=USERINFOGRADE7_NAME;//审判员
-var userinfograde8_name=USERINFOGRADE8_NAME;//原告诉讼代理人
-
 
 
 
@@ -49,7 +38,7 @@ function addCaseToArraignment() {
 
     var  username=$("#username").val();
     if (!isNotEmpty(username)){
-        layer.msg(userinfograde2_name+"不能为空",{icon: 5});
+        layer.msg("被告不能为空",{icon: 5});
         return;
     }
 
@@ -95,7 +84,7 @@ function addCaseToArraignment() {
     userinfogrades[""+userinfogradessid+""]=olduserinfo;
 
     if (!isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
-        layer.msg(userinfograde2_name+"不能为空",{icon: 5});
+        layer.msg("被告不能为空",{icon: 5});
         return;
     }
 
@@ -106,7 +95,7 @@ function addCaseToArraignment() {
     var arraignmentexpand=[];
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
         //被告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE2+""],2);
+        var bool=checkuserinfograde(USERINFOGRADE2);
         if (!bool){
             return;
         }
@@ -120,7 +109,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE1+""])){
         //原告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE1+""],1);
+        var bool=checkuserinfograde(USERINFOGRADE1);
         if (!bool){
             return;
         }
@@ -133,7 +122,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE3+""])){
         //被告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE3+""],3);
+        var bool=checkuserinfograde(USERINFOGRADE3);
         if (!bool){
             return;
         }
@@ -146,7 +135,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE8+""])){
         //原告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE8+""],8);
+        var bool=checkuserinfograde(USERINFOGRADE8);
         if (!bool){
             return;
         }
@@ -213,7 +202,7 @@ function addCaseToArraignment() {
             userinfogradessid:USERINFOGRADE4,
         });
     }else {
-        layer.msg(userinfograde4_name+"不能为空",{icon: 5});
+        layer.msg("审判长不能为空",{icon: 5});
         return;
     }
 
@@ -880,21 +869,20 @@ function callbakegetCaseById(data) {
 /*
 检测人员不分验证
  */
-function checkuserinfograde(userinfograde,type) {
-    if (isNotEmpty(userinfograde)&&isNotEmpty(type)){
+function checkuserinfograde(userinfogradetype) {
+    var userinfograde=userinfogrades[""+userinfogradetype+""];
+    if (isNotEmpty(userinfograde)&&isNotEmpty(userinfogradetype)){
         var con="";
-        if (type==1){con=userinfograde1_name;} else if (type==2){ con=userinfograde2_name;}else if (type==3){con=userinfograde3_name;}else if (type==8){con=userinfograde8_name;}
+        if (userinfogradetype==USERINFOGRADE1){con="原告";} else if (userinfogradetype==USERINFOGRADE2){ con="被告";}else if (userinfogradetype==USERINFOGRADE3){con="被告诉讼代理人";}else if (userinfogradetype==USERINFOGRADE8){con="原告诉讼代理人";}
         var username=userinfograde.username;
         if (!isNotEmpty(username)){
             layer.msg(con+"名称不能为空",{icon: 5});
             return false;
         }
-        return true;
     }
     return true;
 }
 
-//检测回填个人信息
 
 
 //收集人员数据
@@ -1015,11 +1003,9 @@ function callbackgetMc_model(data){
                     var model = modelList[i];
                     var meetingtypehtml=model.meetingtype==null?"":(model.meetingtype==1?"<i class='layui-icon layui-icon-video'></i>视频":(model.meetingtype==2?"<i class='layui-icon layui-icon-headset'></i>音频":"未知"));
                     var userecordhtml=model.userecord==null?"":(model.userecord==1?"录制":(model.userecord==-1?"不录制":"未知"));
-                   var modeltypename=model.base_modeltype==null?'未知':(model.base_modeltype.modeltypename==null?'':model.base_modeltype.modeltypename)
                     var html="<tr>\
                                        <td>"+(i+1)+"</td>\
                                        <td>"+meetingtypehtml+"</td>\
-                                        <td>"+modeltypename+"</td>\
                                        <td>"+model.explain+"</td>\
                                        <td>"+model.usernum+"</td>\
                                        <td>"+userecordhtml+"</td>\
@@ -1039,7 +1025,6 @@ function callbackgetMc_model(data){
                     if (dqmodelssid==model.ssid){
                         $("#modelssid").val(model.explain);
                         $("#modelssid2").val(model.explain);
-                        dqmodeltypenum=model.modeltypenum;
                     }
                 }
             }
@@ -1047,17 +1032,15 @@ function callbackgetMc_model(data){
     }else {
         console.log("获取会议模板"+data.message)
     }
-    set_said(dqmodeltypenum)
 }
 function select_Model(ssid,explain){
     if (isNotEmpty(ssid)){
         dqmodelssid=ssid;
-        if (isNotEmpty(modelList)){
+        if (!isNotEmpty(explain)&&isNotEmpty(modelList)){
             for (let i = 0; i < modelList.length; i++) {
                 const model = modelList[i];
                 if (ssid==model.ssid) {
                     explain=model.explain;
-                    dqmodeltypenum=model.modeltypenum;
                 }
             }
         }
@@ -1065,8 +1048,6 @@ function select_Model(ssid,explain){
         $("#modelssid2").val(explain);
         layer.close(model_index);
     }
-
-    set_said(dqmodeltypenum)
 }
 function open_model(){
     var html= '<table class="layui-table"  lay-skin="nob" style="margin-bottom: 30px;">\
@@ -1074,8 +1055,7 @@ function open_model(){
         <tr>\
         <th>序号</th>\
         <th>会议类型</th>\
-        <th>模板类型</th> \
-        <th>模板说明</th>\
+        <th>模板名称</th>\
         <th>人员数量</th>\
         <th>是否录制</th>\
         <th>操作</th>\
@@ -1119,7 +1099,6 @@ function callbackgetDefaultMtModelssid(data){
     }else {
         console.log("获取会议默认模板ssid"+data.message)
     }
-    getMc_model();//获取全部的会议模板
 }
 function select_Model2(ssid,wordname){
     if (isNotEmpty(ssid)){
@@ -1396,9 +1375,5 @@ function gotocontrol() {
         top.location.href=guidepageUrl;
     }
 }
-
-
-
-
 
 

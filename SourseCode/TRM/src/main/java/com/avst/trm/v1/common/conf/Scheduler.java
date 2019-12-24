@@ -2,6 +2,7 @@ package com.avst.trm.v1.common.conf;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.RecordStatusCache;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.RecordStatusCacheParam;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
@@ -182,7 +183,7 @@ public class Scheduler {
         ReqParam<ControlInfoParamVO> param = new ReqParam<>();
 
         //获取本机ip地址
-        String hostAddress = NetTool.getMyIP();
+        String hostAddress = ServerIpCache.getServerIp();
         if(StringUtils.isBlank(hostAddress)){
             hostAddress = "localhost";
         }

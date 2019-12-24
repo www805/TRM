@@ -37,9 +37,11 @@ import com.avst.trm.v1.common.util.uploadfile.UploadType;
 import com.avst.trm.v1.common.util.uploadfile.param.FileParam;
 import com.avst.trm.v1.common.util.uploadfile.param.UploadParam_FD;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.GetDefaultSaveInfoParam;
 import com.avst.trm.v1.feignclient.ec.req.GetSaveFilesPathByiidParam;
 import com.avst.trm.v1.feignclient.ec.req.GetSavePathParam;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.ec.vo.GetDefaultSaveInfoVO;
 import com.avst.trm.v1.feignclient.ec.vo.GetSavepathVO;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
 import com.avst.trm.v1.feignclient.ec.vo.param.RecordSavepathParam;
@@ -588,13 +590,36 @@ public class RecordService2 extends BaseService {
                 }else {
                     zipfilepath+="/"+zipfilename+gztype;
                 }
-                String staticpath=PropertiesListenerConfig.getProperty("staticpath");
-                String httpbasestaticpath=PropertiesListenerConfig.getProperty("httpbasestaticpath");
-                String httpzipfilepath=httpbasestaticpath+OpenUtil.strMinusBasePath(staticpath,zipfilepath);
-                LogUtil.intoLog(1,this.getClass(),"打包下载的地址,httpzipfilepath:"+httpzipfilepath);
 
-                result.setData(httpzipfilepath);
-                this.changeResultToSuccess(result);
+
+                //请求默认存储服务
+                GetDefaultSaveInfoParam getDefaultSaveInfoParam=new GetDefaultSaveInfoParam();
+                getDefaultSaveInfoParam.setSsType(SSType.AVST);
+                RResult result1=equipmentControl.getDefaultSaveInfo(getDefaultSaveInfoParam);
+                if(null!=result1&&result1.getActioncode().equals(Code.SUCCESS.toString())){
+
+                    String staticpath="ftpdata";
+                    Gson gson=new Gson();
+                    GetDefaultSaveInfoVO getDefaultSaveInfoVO=gson.fromJson(gson.toJson(result1.getData()),GetDefaultSaveInfoVO.class);
+                    if(null!=getDefaultSaveInfoVO&&StringUtils.isNotEmpty(getDefaultSaveInfoVO.getSsstatic())){
+                        staticpath=getDefaultSaveInfoVO.getSsstatic();
+                    }
+                    String httpbasestaticpath="http://localhost";
+                    if(null!=getDefaultSaveInfoVO&&StringUtils.isNotEmpty(getDefaultSaveInfoVO.getHttpbasestaticpath())){
+                        httpbasestaticpath=getDefaultSaveInfoVO.getHttpbasestaticpath();
+                    }
+
+                    String httpzipfilepath=httpbasestaticpath+OpenUtil.strMinusBasePath(staticpath,zipfilepath);
+                    LogUtil.intoLog(1,this.getClass(),"打包下载的地址,httpzipfilepath:"+httpzipfilepath);
+
+                    result.setData(httpzipfilepath);
+                    this.changeResultToSuccess(result);
+
+                }else{
+                    LogUtil.intoLog(4,this.getClass(),null==result1?"请求获取默认存储服务失败,sstype:"+SSType.AVST:result1.getMessage());
+                }
+
+
             }
         }else{
             LogUtil.intoLog(4,this.getClass(),"根据iid获取文件路径异常，iid："+iid);

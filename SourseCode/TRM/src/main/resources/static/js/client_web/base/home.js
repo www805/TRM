@@ -108,6 +108,89 @@ function getServerStatus() {
     ajaxSubmitByJson(url,data,callgetServerStatus);
 }
 
+//获取存储服务列表
+function getFileSpaceList() {
+    var url=getActionURL(getactionid_manage().mian_getFileSpaceList);
+    // var url = "/filespace/getFileSpaceList";
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+        }
+    };
+    ajaxSubmitByJson(url,data,callgetFileSpaceList);
+}
+
+
+function callgetFileSpaceList(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log(data);
+
+            if (data.length > 0) {
+                $("#fileSpaca").show();
+
+
+                //driverSpaceParam
+                var driverSpace = data[0];
+                var driverSpaceParam = driverSpace.driverSpaceParam;
+                var ss_saveinfo = driverSpace.ss_saveinfo;
+
+                var driverPath = driverSpaceParam.driverPath;
+                var totalSpace = driverSpaceParam.totalSpace;//总容量
+                var freeSpace = driverSpaceParam.freeSpace;//已用容量
+                var yu = freeSpace / totalSpace * 100;
+                var sheng = 100 - yu;
+                yu = Math.floor(sheng);
+
+                //取得是什么盘
+                var drinum = driverPath.indexOf(":");
+                if (drinum < 0) {
+                    drinum = driverPath.indexOf("：");
+                }
+                var sysVersion = driverPath.substring(0,drinum);
+
+                var one_fileSpaceHTML = '<div style="float: left;">\n' +
+                    '                          <span >' + sysVersion + '盘容量：</span>\n' +
+                    '                      </div>\n' +
+                    '                      <div class="layui-progress layui-progress-big" lay-showpercent="true"  lay-filter="demospace" style="float: left;width: 50%;margin: 3px 0 0 6px;">\n' +
+                    '                          <div class="layui-progress-bar" lay-percent="' + yu + '%" id="meibanfa">' +
+                    '                               <span class="layui-progress-text">' + yu + '%</span id="gaiwenzi">' +
+                    '                           </div>\n' +
+                    '                      </div>\n' +
+                    '                      <div style="float: right;" >\n' +
+                    '                          <a href="/filespace/getFileSpacePage?ssid=' + ss_saveinfo.ssid + '"><span class="layui-badge layui-bg-blue" >详情>></span></a>\n' +
+                    '                      </div>';
+
+
+                $("#one_fileSpace").html(one_fileSpaceHTML);
+
+                layui.use(['element','form'], function(){
+                    var $ = layui.jquery
+                        ,form = layui.form
+                        ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+                    element.progress('demospace', yu + "%");
+
+                    $("#gaiwenzi").html(yu + "%");
+
+                    form.render();
+                });
+
+
+            }else{
+                $("#fileSpaca").hide();
+            }
+
+            $(".jq_hidebox").hide();
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+
 function callgetServerStatus(data) {
     if (null != data && data.actioncode == 'SUCCESS') {
         // console.log(data.data);

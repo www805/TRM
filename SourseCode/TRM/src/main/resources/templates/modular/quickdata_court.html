@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div data-th-fragment="quickdata_court">
+    <form class="layui-form" >
+        <div class="layui-col-md12" >
+            <div class="layui-card" >
+                <div class="layui-card-body  layui-row layui-col-space10" >
+                    <div class="layui-col-lg12">
+                        <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件编号：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="casenum2" id="casenum2"  lay-verify="casenum2" placeholder="" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-col-lg12" id="multifunctionbool_showorhide2" >
+                        <label class="layui-form-label "  ><span style="color: red;">*</span>承办庭：</label>
+                        <div class="layui-input-block">
+                            <input    type="text" name="modelssid2" id="modelssid2" lay-verify="modelssid2" placeholder="" autocomplete="off" class="layui-input" readonly   onclick="open_model()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script src="/js/modular/quickdata_court.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

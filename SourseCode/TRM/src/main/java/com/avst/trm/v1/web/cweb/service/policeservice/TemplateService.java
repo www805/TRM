@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.cweb.service.policeservice;
 
 import com.avst.trm.v1.common.cache.AppCache;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.SysYmlCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.cache.param.SysYmlParam;
@@ -1219,7 +1220,7 @@ public class TemplateService extends BaseService {
             out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String uploadbasepath = NetTool.getMyIP();
+            String uploadbasepath = ServerIpCache.getServerIp();
             result.setData("http://" + uploadbasepath + uploadpath);
 
             changeResultToSuccess(result);
@@ -1325,7 +1326,7 @@ public class TemplateService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String uploadbasepath=NetTool.getMyIP();
+            String uploadbasepath = ServerIpCache.getServerIp();
             result.setData("http://" + uploadbasepath + uploadpath);
 
             this.changeResultToSuccess(result);

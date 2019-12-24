@@ -42,7 +42,8 @@
 <body>
     <form class="layui-form layui-row" >
         <div class="layui-col-md6" >
-            <div class="layui-card" >
+           <div th:replace="modular/userdata :: userdata"></div>
+           <!-- <div class="layui-card" >
                 <div class="layui-card-header">人员基本信息
                     <i class="layui-icon layui-icon-template " id="getCardreader_btn" title="点击开始读卡" style="position: absolute;right: 15px;color: #1E9FFF;cursor: pointer"></i>
                 </div>
@@ -204,7 +205,7 @@
                         </div>
                         <div class="layui-col-lg12" >
 
-                            <!--qqq-->
+                            &lt;!&ndash;qqq&ndash;&gt;
                             <div class="layui-card" >
                                 <div class="layui-card-header">
                                     其他在场人员
@@ -231,7 +232,7 @@
                                                         <label class="layui-form-label">证件号码</label>
                                                         <div class="layui-input-block">
                                                             <input type="text" name="tab_cardnum"   placeholder="" autocomplete="off" class="layui-input" onkeyup="value=value.replace(/[\W]/g,'')">
-                                                             <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;"  onclick="getUserByCard_other(this);"></i>
+                                                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right: 8px;cursor: pointer;"  onclick="getUserByCard_other(this);"></i>
                                                         </div>
                                                     </div>
                                                     <div class="layui-col-lg6">
@@ -344,17 +345,17 @@
 
                                 </div>
                             </div>
-                            <!--222-->
+                            &lt;!&ndash;222&ndash;&gt;
 
                         </div>
                     </div>
 
                 </div>
-            </div>
-
+            </div>-->
         </div>
         <div class="layui-col-md6">
-            <div class="layui-card" >
+            <div th:replace="modular/casedata :: casedata"></div>
+            <!--<div class="layui-card" >
                 <div class="layui-card-header">案件基本信息</div>
                 <div style="height: 730px; overflow-x: hidden; overflow-y: scroll;">
                     <div class="layui-card-body  layui-row layui-col-space10" >
@@ -362,7 +363,7 @@
                             <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>案件名称</label>
                             <div class="layui-input-block">
                                 <div class="layui-col-lg12">
-                                <div class="layui-form-select">
+                                    <div class="layui-form-select">
                                         <div class="layui-select-title">
                                             <input type="text" name="casename" lay-verify="casename" placeholder="请输入案件名称" autocomplete="off" class="layui-input" id="casename" oninput="getCaseList()"  onblur="select_caseblur();" onfocus="getCaseList()">
                                             <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;" title="选择其他案件" onclick="open_othercases();"></i>
@@ -377,7 +378,7 @@
                         <div class="layui-col-lg12">
                             <label class="layui-form-label">当前案由</label>
                             <div class="layui-input-block">
-                               <div class="layui-form-select">
+                                <div class="layui-form-select">
                                     <div class="layui-select-title">
                                         <input type="text" name="cause"  placeholder="" autocomplete="off" class="layui-input" id="cause" oninput="getCauseList()"  onblur="select_causeblur();" onfocus="getCauseList()">
                                     </div>
@@ -532,7 +533,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
         </div>
     </form>
 
@@ -563,11 +564,7 @@
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/police/record/addCaseToUser");
         getDefaultMtModelssid();//获取默认的会议模板ssid
-        getNationalitys();
-        getNationals();
-        getWorkunits();
-        getAdminList();
-        getCards();
+        getBaseData();//基础信息
         getMc_model();//获取全部的会议模板
         getWordTemplates();
 

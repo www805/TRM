@@ -10,7 +10,7 @@
 #bars2 {
     position: absolute;
     top: 5px;
-    left: 410px;
+    right: -3px;
     width: 150px;
     height: 50px;
 }

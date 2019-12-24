@@ -367,26 +367,37 @@ function ajaxSubmit(url, data, success_fun, error_fun, haveloading) {
  * @cmparam success_fun
  */
 function ajaxSubmitByJson(url, data, success_fun,error_fun) {
-    $.ajax({
-        url : url,
-        type : "POST",
-        async : true,
-        dataType : "json",
-        contentType: "application/json",
-        data : JSON.stringify(data),
-        timeout : 60000,
-        success : success_fun,
-        error : (error_fun != null ? error_fun : ajaxErrDialog)
-    });
+	if (isNotEmpty(url)&&isNotEmpty(success_fun)) {
+        $.ajax({
+            url : url,
+            type : "POST",
+            async : true,
+            dataType : "json",
+            contentType: "application/json",
+            data : JSON.stringify(data),
+            timeout : 60000,
+            success : success_fun,
+            error : (error_fun != null ? error_fun : ajaxErrDialog)
+        });
+	}else {
+		console.log("请求地址："+url+"__成功返回："+success_fun)
+	}
 }
 
 /**
  * ajax 请求失败的提醒
  */
-function ajaxErrDialog() {
-/*	parent.layer.msg("网络异常,请稍后重试---!", {
-		icon : 1
-	},1);*/
+function ajaxErrDialog(data) {
+    var result=data.responseText;
+    //用于单用户登录时
+    if (isNotEmpty(result)&&result.indexOf("kickout")>0){
+        top.location.href=result;
+    }
+
+
+    /*	parent.layer.msg("网络异常,请稍后重试---!", {
+            icon : 1
+        },1);*/
 
 }
 
@@ -484,9 +495,8 @@ function getFomathms(ss){
 }
 
 // 文件下载请求,uuid
-function fileDownload(fileuuid) {
-	var url = getPath();
-	location.href = url + "/FileDownloadServlet.servlet?uuid=" + fileuuid;
+function fileDownload(url) {
+	location.href = url;
 }
 
 // 文件下载请求,url

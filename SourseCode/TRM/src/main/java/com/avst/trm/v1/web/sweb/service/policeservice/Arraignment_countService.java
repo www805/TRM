@@ -1,6 +1,7 @@
 package com.avst.trm.v1.web.sweb.service.policeservice;
 
 
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_keyword;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
@@ -468,7 +469,7 @@ public class Arraignment_countService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String myIP = NetTool.getMyIP();
+            String myIP = ServerIpCache.getServerIp();
             result.setData("http://" + myIP + uploadpath);
 
             this.changeResultToSuccess(result);

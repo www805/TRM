@@ -3,14 +3,18 @@ package com.avst.trm.v1.web.cweb.service.baseservice;
 import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.Constant;
+import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.conf.socketio.SocketIOConfig;
 import com.avst.trm.v1.common.conf.type.FDType;
-import com.avst.trm.v1.common.conf.socketio.param.LoginConstant;
+import com.avst.trm.v1.common.conf.type.MCType;
+import com.avst.trm.v1.common.conf.type.SSType;
+import com.avst.trm.v1.common.conf.shiro.param.LoginConstant;
 import com.avst.trm.v1.common.datasourse.base.entity.*;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -28,7 +32,11 @@ import com.avst.trm.v1.common.util.sq.SQGN;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.feignclient.ec.req.GetToOutFlushbonadingListParam;
+import com.avst.trm.v1.feignclient.ec.req.ReStartFTPServerParam;
 import com.avst.trm.v1.feignclient.ec.vo.fd.Flushbonadinginfo;
+import com.avst.trm.v1.feignclient.mc.MeetingControl;
+import com.avst.trm.v1.feignclient.mc.req.GetDefaultMTModelParam;
+import com.avst.trm.v1.feignclient.mc.vo.GetDefaultMTModelVO;
 import com.avst.trm.v1.feignclient.zk.ZkControl;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.param.InitVO;
 import com.avst.trm.v1.web.cweb.conf.CheckPasswordKey;
@@ -38,10 +46,7 @@ import com.avst.trm.v1.web.cweb.vo.basevo.*;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.google.gson.Gson;/*
-import org.ansj.domain.Result;
-import org.ansj.domain.Term;
-import org.ansj.splitWord.analysis.ToAnalysis;*/
+import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -110,6 +115,12 @@ public class MainService extends BaseService {
 
     @Autowired
     private ZkControl zkControl;
+
+    @Autowired
+    private Police_cardtypeMapper police_cardtypeMapper;
+
+    @Autowired
+    private MeetingControl meetingControl;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -429,7 +440,7 @@ public class MainService extends BaseService {
         if (null!=list&&list.size()>0){
 
             if (list.size()==1){
-                String myIP = NetTool.getMyIP();
+                String myIP = ServerIpCache.getServerIp();
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_downurl())){
                     serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
@@ -462,6 +473,21 @@ public class MainService extends BaseService {
             result.setMessage("重启SOCKET成功");
         }else{
             result.setMessage("重启SOCKET失败");
+        }
+        return;
+    }
+
+    public void rebootFTPServer(RResult result,ReqParam param){
+
+        ReStartFTPServerParam ftpparam=new ReStartFTPServerParam();
+        ftpparam.setSsType(SSType.AVST);
+        RResult rResult=equipmentControl.reStartFTPServer(ftpparam);//重启
+        if(null!=rResult&&rResult.getActioncode().equals(Code.SUCCESS.toString())){
+            result.setData(true);
+            changeResultToSuccess(result);
+            result.setMessage("重启存储服务成功");
+        }else{
+            result.setMessage("重启存储服务失败");
         }
         return;
     }
@@ -722,7 +748,7 @@ public class MainService extends BaseService {
 
     public void getDefaultMtModelssid(RResult result,ReqParam param){
         String modelssid=null;
-        Base_type base_type=new Base_type();
+        /*Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
         base_type=base_typeMapper.selectOne(base_type);
         if (null!=base_type){
@@ -730,6 +756,25 @@ public class MainService extends BaseService {
             result.setData(modelssid);
             changeResultToSuccess(result);
             LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
+        }*/
+        GetDefaultMTModelParam getDefaultMTModelParam=new GetDefaultMTModelParam();
+        getDefaultMTModelParam.setMcType(MCType.AVST);
+        try {
+            RResult rr = meetingControl.getDefaultMTModel(getDefaultMTModelParam);
+            if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                GetDefaultMTModelVO getDefaultMTModelVO=gson.fromJson(gson.toJson(rr.getData()),GetDefaultMTModelVO.class);
+                if (null!=getDefaultMTModelVO){
+                    modelssid=getDefaultMTModelVO.getSsid();
+                    result.setData(modelssid);
+                    changeResultToSuccess(result);
+                    LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
+                }
+                LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__成功");
+            }else{
+                LogUtil.intoLog(this.getClass(),"meetingControl.getDefaultMTModel请求__失败"+rr.getMessage());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return;
     }
@@ -1259,6 +1304,26 @@ public class MainService extends BaseService {
 
         vo.setLoginaccount(loginaccount);
         vo.setPassword(password);
+        result.setData(vo);
+        changeResultToSuccess(result);
+        return;
+    }
+
+    public void getBaseData(RResult result){
+        GetBaseDataVO vo=new GetBaseDataVO();
+        List<Base_nationality> nationalityList=base_nationalityMapper.selectList(null);
+        List<Base_national> nationalList=base_nationalMapper.selectList(null);
+        List<Police_workunit> workunitList=police_workunitMapper.selectList(null);
+        EntityWrapper adminparam=new EntityWrapper();
+        adminparam.eq("a.adminbool",1);//正常人
+        adminparam.orderBy("a.registerTime",false);
+        List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
+        List<Police_cardtype> cardtypeList=police_cardtypeMapper.selectList(null);
+        vo.setNationalityList(nationalityList);
+        vo.setNationalList(nationalList);
+        vo.setAdminList(adminList);
+        vo.setWorkunitList(workunitList);
+        vo.setCardtypeList(cardtypeList);
         result.setData(vo);
         changeResultToSuccess(result);
         return;

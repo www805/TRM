@@ -259,7 +259,7 @@ function getrememberpassword(){
 }
 //记住密码----------------------------------------end
 
-
+var kickout_msg=null;
 $(function () {
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
@@ -275,5 +275,9 @@ $(function () {
             userlogin();
             return false;
         });
+        if (isNotEmpty(kickout)&&kickout==1&&window == top){
+            kickout_msg=layer.alert("您的账号已在别处登录；若不是您本人操作，请立即修改密码！");
+        }
+
     });
 })

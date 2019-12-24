@@ -54,6 +54,16 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult getSaveFilesPathByiid(@RequestBody GetSaveFilesPathByiidParam param);
 
+    @RequestMapping("/storage/v1/getDefaultSaveInfo")
+    @ResponseBody
+    public RResult getDefaultSaveInfo(@RequestBody GetDefaultSaveInfoParam param);
+
+    @RequestMapping("/storage/v1/reStartFTPServer")
+    @ResponseBody
+    public RResult reStartFTPServer(@RequestBody ReStartFTPServerParam param);
+
+
+
 
 //设备
     @RequestMapping("/flushbonading/v1/getFDListByFdid")
@@ -97,6 +107,36 @@ public interface EquipmentControl {
     @RequestMapping("/tts/v1/str2Tts")
     @ResponseBody
     public RResult str2Tts(@RequestBody  ReqParam<Str2TtsParam> param);
+
+
+    /**
+     * 获取所有存储服务的信息
+     * @param param
+     * @return
+     */
+    @RequestMapping("/storage/v1/getToOutFileSpaceList")
+    @ResponseBody
+    public RResult getToOutFileSpaceList(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //通过ssid查询文件管理
+    @RequestMapping("/storage/v1/getToOutFileSpaceByssid")
+    @ResponseBody
+    public RResult getToOutFileSpaceByssid(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //查询路径下的所有文件
+    @RequestMapping("/storage/v1/getToOutFileSpaceAll")
+    @ResponseBody
+    public RResult getToOutFileSpaceAll(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //删除当前路径下的所有文件
+    @RequestMapping("/storage/v1/delToOutFileSpaceAll")
+    @ResponseBody
+    public RResult delToOutFileSpaceAll(@RequestBody ReqParam<GetToOutStorageListParam> param);
+
+    //删除单个文件
+    @RequestMapping("/storage/v1/delToOutFileSpaceByPath")
+    @ResponseBody
+    public RResult delToOutFileSpaceByPath(@RequestBody ReqParam<GetToOutStorageListParam> param);
 
 
     /**

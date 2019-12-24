@@ -217,6 +217,26 @@ public class MainAction extends BaseAction {
     }
 
     /**
+     * 重启FTPServer
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/rebootFTPServer")
+    @ResponseBody
+    public RResult rebootFTPServer(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if(null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.rebootFTPServer(result,param);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return  result;
+    }
+
+    /**
      * 获取全部国籍
      * @param param
      * @return
@@ -514,6 +534,27 @@ public class MainAction extends BaseAction {
     }
 
 
+    /**
+     * 提供通用数据 ：民族 国籍 工作单位
+     * @param param
+     * @return
+     */
+    @RequestMapping(value = "/getBaseData")
+    @ResponseBody
+    public RResult getBaseData(@RequestBody ReqParam param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            mainService.getBaseData(result);
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
+
 
     /**
      * 跳转==》修改个人信息页面
@@ -550,7 +591,7 @@ public class MainAction extends BaseAction {
      * 跳转==》登录页
      */
     @RequestMapping(value = "/gotologin")
-    public ModelAndView gotologin(Model model){
+    public ModelAndView gotologin(Model model,String kickout){
         AppCacheParam param = AppCache.getAppCacheParam();
         if(StringUtils.isBlank(param.getTitle()) || StringUtils.isBlank(param.getGuidepageUrl())){
             this.getNavList();
@@ -563,6 +604,7 @@ public class MainAction extends BaseAction {
         model.addAttribute("title", "欢迎使用" + param.getTitle());
         model.addAttribute("serviceName",  param.getTitle());
         model.addAttribute("guidepageUrl",  param.getGuidepageUrl());
+        model.addAttribute("kickout",  kickout);//是否是被挤下去的
         return  new ModelAndView("client_web/base/login","loginModel", model);
     }
 
@@ -610,6 +652,7 @@ public class MainAction extends BaseAction {
             model.addAttribute("arraignment","审讯");//审讯字眼
             model.addAttribute("case","案件");//审讯字眼
         }
+
 
         return  new ModelAndView("client_web/base/home","homeModel", model);
     }

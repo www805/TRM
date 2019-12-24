@@ -58,6 +58,7 @@ function getactionid_manage() {
         serverip_updateServerIp: "serverip_updateServerIp",
         serverip_getServerIpList: "serverip_getServerIpList",
         serverip_getServerIpALL: "serverip_getServerIpALL",
+        serverip_updateIp: "serverip_updateIp",
 
         arraignment_count_getArraignment_countList: "arraignment_count_getArraignment_countList",
         arraignment_count_getArraignment_countPrint: "arraignment_count_getArraignment_countPrint ",
@@ -107,6 +108,8 @@ function getactionid_manage() {
         main_toconversationIndex:"main_toconversationIndex",
         main_getServerStatus:"main_getServerStatus",
         main_getCDPlayback:"main_getCDPlayback",
+        mian_getFileSpaceList:"mian_getFileSpaceList",
+
 
 
 
@@ -114,6 +117,7 @@ function getactionid_manage() {
         updateServerconfig_getServerconfig:"updateServerconfig_getServerconfig",
         updateServerconfig_updateServerconfig:"updateServerconfig_updateServerconfig",
         updateServerconfig_rebootsocket:"updateServerconfig_rebootsocket",
+        updateServerconfig_rebootFTPServer:"updateServerconfig_rebootFTPServer",
 
         recordTypeList_getRecordtypes:"recordTypeList_getRecordtypes",
         recordTypeList_getPidRecordtypes:"recordTypeList_getPidRecordtypes",
@@ -140,6 +144,7 @@ function getactionid_manage() {
         addCaseToUser_towaitconversation:"addCaseToUser_towaitconversation",
         addCaseToUser_toconversationIndex:"addCaseToUser_toconversationIndex",
         addCaseToUser_getWordTemplates:"addCaseToUser_getWordTemplates",
+        addCaseToUser_getBaseData:"addCaseToUser_getBaseData",
 
         problemIndex_getProblems:"problemIndex_getProblems",
         problemIndex_getProblemTypes:"problemIndex_getProblemTypes",
@@ -159,6 +164,7 @@ function getactionid_manage() {
         recordIndex_toconversationById:"recordIndex_toconversationById",
         recordIndex_towaitCourt:"recordIndex_towaitCourt",
         recordIndex_togetCourtDetail:"recordIndex_togetCourtDetail",
+        recordIndex_checkVideosState:"recordIndex_checkVideosState",
 
         getRecordById_getRecordById:"getRecordById_getRecordById",
         getRecordById_tomoreRecord:"getRecordById_tomoreRecord",
@@ -467,6 +473,13 @@ function getactionid_manage() {
         dateTime_setNTP:"dateTime_setNTP",
         dateTime_getFDssid:"dateTime_getFDssid",
         dateTime_getFDNTP:"dateTime_getFDNTP",
+
+
+
+        fileSpaceAction_getFileSpaceByssid:"fileSpaceAction_getFileSpaceByssid",
+        fileSpaceAction_getFileSpaceAll:"fileSpaceAction_getFileSpaceAll",
+        fileSpaceAction_delFileSpaceAll:"fileSpaceAction_delFileSpaceAll",
+        fileSpaceAction_delFileSpaceByPath:"fileSpaceAction_delFileSpaceByPath",
 
 
     };

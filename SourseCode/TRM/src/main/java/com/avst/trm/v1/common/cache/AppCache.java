@@ -103,7 +103,7 @@ public class AppCache {
 
         AppCacheParam cacheParam = new AppCacheParam();
 
-        String myIP = NetTool.getMyIP();
+        String myIP = ServerIpCache.getServerIp();
         Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
 
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
@@ -186,7 +186,7 @@ public class AppCache {
 //                fileYml.put("bottom", commonYml.get("bottom"));
 //                fileYml.put("login", commonYml.get("login"));
         fileYml.put("gnlist", gnlist);
-//                String hostAddress = NetTool.getMyIP();
+//                String hostAddress = ServerIpCache.getServerIp();
 
 
         Map<String, Object> branchYml = (Map<String, Object>) avstYml.get("branch");//分支

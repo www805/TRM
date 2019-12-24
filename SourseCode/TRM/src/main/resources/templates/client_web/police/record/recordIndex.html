@@ -157,13 +157,15 @@
         {{# var ahtml="<span class='layui-badge' onclick='changeboolRecord(this)'>删除</span>";if(showname!=""&&showname!=null){ahtml=showname+recordbooltext;}  }}
         {{#  var multifunctionbool;var police_arraignment=value.police_arraignment;   if(null!=police_arraignment){multifunctionbool=police_arraignment.multifunctionbool} }}
         <tr  ssid="{{value.ssid}}" onclick="setproblems('{{value.ssid}}',this)"  ondblclick="towaitRecord('{{value.ssid}}','{{value.recordbool}}','{{creator}}','{{creatorname}}','{{multifunctionbool}}');" style="background-color: {{backgroundcolor}}" >
-            {{#  var recordfilestate=value.recordfilestate;var recordfilestate_color="#bfbfbf";var recordfilestate_msg="未发现录像视频"; }}
+            <!--{{#  var recordfilestate=value.recordfilestate;var recordfilestate_color="#bfbfbf";var recordfilestate_msg="未发现录像视频"; }}
             {{#  if(recordfilestate==0){recordfilestate_color="#FFB800";recordfilestate_msg="录像视频上传中";}else  if(recordfilestate==1){recordfilestate_color="#00FF00";recordfilestate_msg="录像视频上传完成";}else  if(recordfilestate==-1){recordfilestate_color="#000000";recordfilestate_msg="未找到录像视频";}  }}
-            <td>  <span class="layui-badge-dot" style="background-color: {{recordfilestate_color}}!important;" title="{{recordfilestate_msg}}"></span></td>
+            --><td>  <span class="layui-badge-dot" style="background-color: #bfbfbf !important;" title="未发现录像视频"></span></td>
             <td >{{value.recordname==null?"":value.recordname}}</td>
             <td style="text-align: right;"  title="创建人：{{creatorname}}" ><span id="hoverspan1" >{{showname}}{{recordbooltext}}</span><span id="hoverspan2" style="display: none"  >{{ahtml}}</span></td>
         </tr>
+        {{#   checkVideosState(police_arraignment.mtssid,value.ssid); }}
         {{#  }); }}
+
         </tbody>
     </table>
 

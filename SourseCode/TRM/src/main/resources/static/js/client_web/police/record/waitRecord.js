@@ -135,7 +135,7 @@ function callsetAllproblem(data) {
                         $("#templatetoproblem_html").append(html);
 
                         var html='<tr >\
-                                <td style="padding: 0;width: 85%;" class="onetd" >\
+                                <td style="padding: 0;width: 80%;" class="onetd" >\
                                     <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
                                     <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""  isn_fdtime="-1"></label></div>\
                                     <div  id="btnadd"></div>\
@@ -164,7 +164,7 @@ function copy_problems(obj) {
     var text=$(obj).find("span").text();
     var w=$(obj).attr("referanswer");
     var html='<tr>\
-        <td style="padding: 0;width: 85%;" class="onetd">\
+        <td style="padding: 0;width: 80%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="" isn_fdtime="-1">'+text+'</label></div>\
             <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime="" isn_fdtime="-1"></label></div>\
             <div  id="btnadd"></div>\
@@ -379,8 +379,13 @@ function callbackgetRecordById(data) {
                 }
                 if (isNotEmpty(gnlist)&&gnlist.indexOf(PH_F)>0&&phbool>0){
                     $("#ph").show();
+                    $("#ph_HTML").show();
                     $("#xthtml").css("visibility","visible");
                     $("#PolygraphState_tr").show();
+                }
+                if (isNotEmpty(gnlist)&&gnlist.indexOf(FY_T)==-1) {
+                    //法院版暂未提供案件人员编辑页
+                    $("#open_casetouser").css("display","inline-block");
                 }
             }
 
@@ -1299,7 +1304,7 @@ function setFocus(el) {
 function setrecord_html() {
     $("#recorddetail tr").attr("automaticbool","");
     var trtd_html='<tr automaticbool="1">\
-        <td style="padding: 0;width: 85%;" class="onetd" >\
+        <td style="padding: 0;width: 80%;" class="onetd" >\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  ></label></div>\
               <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime="" ></label></div>\
                <div  id="btnadd"></div>\
@@ -1309,6 +1314,7 @@ function setrecord_html() {
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
                     <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
                     <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                    </div>\
                 </td>\
                 </tr>';
     //第一行去掉-----------------------------start
@@ -1327,21 +1333,6 @@ function setrecord_html() {
 
 
 //*******************************************************************点击start****************************************************************//
-//身心检测
-function initheart() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//语音识别
-function initasr() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//案件
-function initcase() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
 function initcase_header() {
     $(".layui-tab-content").css("height","0%");
     $("#templatetoproblem").css("height","62%");
@@ -1387,7 +1378,7 @@ function switchbtn(type,obj) {
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         $(".phitem1").attr("id","");
         $(".phitem2").attr("id","phitem");
-        main1();
+        main1($("#leftdiv").width());
     }
 
     initplayer();//启动设备画面预览
@@ -1429,7 +1420,7 @@ function initliving() {
 
 //默认问答
 var trtd_html='<tr>\
-        <td style="padding: 0;width: 85%;" class="onetd">\
+        <td style="padding: 0;width: 80%;" class="onetd">\
             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
               <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>\
                <div  id="btnadd"></div>\
@@ -1766,7 +1757,7 @@ function setqw(problems){
             var problem = problems[z];
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 85%;" class="onetd">\
+                        <td style="padding: 0;width: 80%;" class="onetd">\
                             <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
@@ -2008,7 +1999,7 @@ $(function () {
 
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
-            if (usepolygraph==1){//使用测谎仪开启获取&&isNotEmpty(myChart)
+            if (usepolygraph==1){//使用测谎仪开启获取
                 getPolygraphdata();
             }
             if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){

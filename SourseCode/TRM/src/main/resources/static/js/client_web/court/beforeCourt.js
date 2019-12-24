@@ -120,7 +120,7 @@ function addCaseToArraignment() {
     var arraignmentexpand=[];
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE2+""])){
         //被告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE2+""],USERINFOGRADE2);
+        var bool=checkuserinfograde(USERINFOGRADE2);
         if (!bool){
             return;
         }
@@ -134,7 +134,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE1+""])){
         //原告
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE1+""],USERINFOGRADE1);
+        var bool=checkuserinfograde(USERINFOGRADE1);
         if (!bool){
             return;
         }
@@ -147,7 +147,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE3+""])){
         //被告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE3+""],USERINFOGRADE3);
+        var bool=checkuserinfograde(USERINFOGRADE3);
         if (!bool){
             return;
         }
@@ -160,7 +160,7 @@ function addCaseToArraignment() {
 
     if (isNotEmpty(userinfogrades[""+USERINFOGRADE8+""])){
         //原告代理人
-        var bool=checkuserinfograde(userinfogrades[""+USERINFOGRADE8+""],USERINFOGRADE8);
+        var bool=checkuserinfograde(USERINFOGRADE8);
         if (!bool){
             return;
         }
@@ -508,9 +508,8 @@ function getUserByCard(usertype){
             $("#usertype").html("<span style='color: red;font-weight: bold'>原告诉讼代理人</span>个人信息")
         }
         //判断是否存在回显
-        var virtualuser=userinfogrades[""+dq_userinfograde+""];
-        if (isNotEmpty(virtualuser)){
-            setuserval(virtualuser,dq_userinfograde);
+        if (isNotEmpty(userinfogrades[""+dq_userinfograde+""])){
+            setuserval(dq_userinfograde);
             return;
         }
     }else {
@@ -970,7 +969,8 @@ function callbakegetCaseById(data) {
 /*
 检测人员不分验证
  */
-function checkuserinfograde(userinfograde,userinfogradetype) {
+function checkuserinfograde(userinfogradetype) {
+    var userinfograde=userinfogrades[""+userinfogradetype+""];
     if (isNotEmpty(userinfograde)&&isNotEmpty(userinfogradetype)){
         var con="";
         if (userinfogradetype==USERINFOGRADE1){con=userinfograde1_name;} else if (userinfogradetype==USERINFOGRADE2){ con=userinfograde2_name;}else if (userinfogradetype==USERINFOGRADE3){con=userinfograde3_name;}else if (userinfogradetype==USERINFOGRADE8){con=userinfograde8_name;}
@@ -979,7 +979,7 @@ function checkuserinfograde(userinfograde,userinfogradetype) {
         var phone=userinfograde.phone;
         if (!isNotEmpty(username)){
             layer.msg(con+"名称不能为空",{icon: 5});
-            setuserval(userinfograde,userinfogradetype);
+            setuserval(userinfogradetype);
             return false;
         }
         if (isNotEmpty(cardnum)){
@@ -987,7 +987,7 @@ function checkuserinfograde(userinfograde,userinfogradetype) {
             if (!bool){
                 layer.msg("请输入有效的"+con+"居民身份证号码",{icon: 5});
                 $("#cardnum").focus();
-                setuserval(userinfograde,userinfogradetype);
+                setuserval(userinfogradetype);
                 return false;
             }
 
@@ -999,16 +999,16 @@ function checkuserinfograde(userinfograde,userinfogradetype) {
         if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
             layer.msg("请输入正确"+con+"联系电话",{icon: 5});
             $("#phone").focus();
-            setuserval(userinfograde,userinfogradetype);
+            setuserval(userinfogradetype);
             return false;
         }
-        return true;
     }
     return true;
 }
 
 //检测回填个人信息
-function setuserval(virtualuser,userinfogradetype) {
+function setuserval(userinfogradetype) {
+    var virtualuser=userinfogrades[""+userinfogradetype+""];
     if (isNotEmpty(virtualuser)){
         dq_userinfograde=userinfogradetype;
 

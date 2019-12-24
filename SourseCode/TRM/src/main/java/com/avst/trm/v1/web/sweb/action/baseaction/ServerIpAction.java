@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
+import com.avst.trm.v1.web.sweb.req.basereq.UpdateIpParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.ServerIpService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/sweb/base/ip")
@@ -49,6 +53,24 @@ public class ServerIpAction extends BaseAction{
         if(subject.isPermitted("updateServerIp")) {
             serverIpService.updateServerIp(rResult, getServerIpParam);
         }else{
+            rResult.setMessage("权限不足");
+        }
+        return rResult;
+    }
+
+    /**
+     * 修改网卡里指定的IP
+     *
+     * @return
+     */
+    @PostMapping(value = "/updateIp", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public RResult updateIp(HttpServletRequest request, HttpServletResponse response, @RequestBody UpdateIpParam updateIpParam) {
+        RResult rResult = createNewResultOfFail();
+        Subject subject = SecurityUtils.getSubject();
+        if (subject.isPermitted("updateIp")) {
+            serverIpService.updateIp(request, response, rResult, updateIpParam);
+        } else {
             rResult.setMessage("权限不足");
         }
         return rResult;

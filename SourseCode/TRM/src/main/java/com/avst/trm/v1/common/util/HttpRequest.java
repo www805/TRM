@@ -658,15 +658,15 @@ public static String uploadFile_HttpPost(String actionURL,String filepath,Map<St
 	public static void main(String[] args) {
 
 		String uuid=OpenUtil.getUUID_32();
-		String actionUrl="http://192.168.17.183:80/uploadService/httpFileUpload";
+		String actionUrl="http://192.168.17.186:80/uploadService/httpFileUpload";
 //		String actionUrl="http://192.168.17.175:8080/cweb/police/notification/uploadNotification";
-		String uploadFilePath="D:\\ftpdata\\sb3\\2019-10-22\\8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233\\刘一《测试案件001》谈话办案_第7版.doc";
+		String uploadFilePath="D:\\ftpdata\\sb3\\2019-11-09\\3a1c836a072d4331aece7698f63ae379_fd31bf2a3fa94ca881e3e63e6fc2f233\\刘一《测试案件001》谈话办案_第15次.pdf";
 		Map<String,String> map=new HashMap<String,String>();
-		map.put("upload_task_id","8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233");
-		map.put("dstPath","/tmp/hd0/2019-10-22/8373b2686aea42cda9e819b301c712f1_fd31bf2a3fa94ca881e3e63e6fc2f233/");
-		map.put("fileName","刘一《测试案件001》谈话办案_第7版.doc");
+		map.put("upload_task_id","ab4f64f5af30406a827e2ac9ccdc2a0a_fd31bf2a3fa94ca881e3e63e6fc2f2");
+		map.put("dstPath","/tmp/hd0/2019-11-14/ab4f64f5af30406a827e2ac9ccdc2a0a_fd31bf2a3fa94ca881e3e63e6fc2f2/");
+		map.put("fileName","刘一《测试案件001》谈话办案_第15次.pdf");
 		map.put("linkaction","burn");
-		map.put("discFileName","刘一《测试案件001》谈话办案_第7版.doc");
+		map.put("discFileName","刘一《测试案件001》谈话办案_第15次.pdf");
 		map.put("action","upload_file");
 		boolean rr=uploadFile_fd(actionUrl,uploadFilePath,map);
 

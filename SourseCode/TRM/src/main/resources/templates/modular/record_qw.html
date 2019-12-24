@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>智能笔录系统</title>
+</head>
+<body>
+<div data-th-fragment="record_qw">
+    <div id="recorddetail_webkit">
+        <div style="" id="recorddetail_scrollhtml">
+            <div class="layui-card-body layui-row ">
+                <div class="layui-col-lg12 ">
+                    <div class="layui-col-md12  layui-show" style="height: 300px">
+                        <iframe src=""  frameborder="0" class="layui-iframe"  id="wordheaddownurl" name="wordheaddownurl" style="height: 100%;width: 100%"></iframe>
+                    </div>
+                    <table class="layui-table"  lay-skin="nob"style="table-layout: fixed;margin-bottom: 45px">
+                        <tbody id="recorddetail">
+                        <tr id="first_originaltr">
+                            <td style="padding: 0;width: 80%;" class="onetd" id="record_qw">
+                                <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>
+                                <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);" w_starttime=""></label></div>
+                                <div id="btnadd"><button type="button" class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px" title="添加一行自定义问答" onclick="focuslable(trtd_html,2,'q');"><i class="layui-icon" style="font-size: 45px"></i></button></div>
+                            </td>
+                            <td id="record_util">
+                                <div class="layui-btn-group">
+                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>
+                                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+ <script src="/js/modular/record_qw.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

@@ -94,6 +94,10 @@
 
 
 <script th:inline="javascript">
+    var kickout=[[${loginModel.kickout}]];
+    if (isNotEmpty(kickout)&&kickout==1&&window != top){
+            top.location.href = window.location.href;
+    }
 
     var INIT_WEB;
     var INIT_CLIENT;
@@ -104,17 +108,17 @@
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
         setpageAction(INIT_CLIENT,"client_web/base/login");
-         forgotpasswordURL=getActionURL(getactionid_manage().login_gotoforgotpassword);
+        forgotpasswordURL=getActionURL(getactionid_manage().login_gotoforgotpassword);
         getNavList();
+       getrememberpassword();
 
-      getrememberpassword();
 
         document.onkeydown = function (event) {
             var e = event || window.event;
             if (e && e.keyCode == 13) { //回车键的键值为13
-                if (updatePassWord_index==null){
+                if (updatePassWord_index==null&&kickout_msg==null){
                     userlogin();
-                }else {
+                }else if (isNotEmpty(updatePassWord_index)) {
                     $("[lay-filter='fromContent']").click();
                 }
             }
