@@ -1066,7 +1066,7 @@ function open_tagtext() {
     var TAGTEXT_HTML='<div class="layui-row layui-form " > \
         <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >\
          <div class="layui-col-md8 layui-col-md-offset2 layui-input-inline">\
-             <div class="layui-col-md9"><input type="text" id="tagtext" lay-verify="tagtext" placeholder="请输入关键字" autocomplete="off" class="layui-input"  oninput="selecttagtext();"></div>\
+             <div class="layui-col-md9"><input type="text" id="tagtext" lay-verify="tagtext" placeholder="请输入标记内容" autocomplete="off" class="layui-input"  oninput="selecttagtext();"></div>\
              <div class="layui-col-md3"> <input type="button"  class="layui-btn layui-btn-normal" value="搜索" onclick="selecttagtext();" /></div>\
          </div>\
         <table class="layui-table" lay-skin="nob">\

@@ -548,6 +548,7 @@ function callbackgetMc_model(data){
                     var model = modelList[i];
                     if (dqmodelssid==model.ssid){
                         $("#modelssid").val(model.explain);
+                        $("#modelssid2").val(model.explain);
                         dqmodeltypenum=model.modeltypenum;
                     }
                 }
@@ -571,6 +572,7 @@ function select_Model(ssid,explain){
             }
         }
         $("#modelssid").val(explain);
+        $("#modelssid2").val(explain);
         layer.close(model_index);
     }
     set_said(dqmodeltypenum)
