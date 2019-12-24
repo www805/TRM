@@ -6,9 +6,8 @@ import com.avst.trm.v1.common.cache.AppServerCache;
 import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.conf.type.BASEType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
-import com.avst.trm.v1.common.datasourse.base.entity.Base_type;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
-import com.avst.trm.v1.common.util.ChangeIP;
+import com.avst.trm.v1.common.util.ipandport.ChangeIPAndPort;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.SystemIpUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
@@ -115,7 +114,7 @@ public class ServerIpService extends BaseService {
         String fileBasepath= PropertiesListenerConfig.getProperty("sysBasepath");
 
         if(StringUtils.isNotBlank(fileBasepath)){
-            ChangeIP.updateIp(getServerIpParam, fileBasepath);
+            ChangeIPAndPort.updateIp(getServerIpParam, fileBasepath);
             changeResultToSuccess(rResult);
         }
 
@@ -219,7 +218,7 @@ public class ServerIpService extends BaseService {
                 //系统文件修改
                 String fileBasepath = PropertiesListenerConfig.getProperty("sysBasepath");
                 fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
-                boolean outbool = ChangeIP.otherPCConnectChangeIP(fileBasepath, ServerIpCache.getServerIp());
+                boolean outbool = ChangeIPAndPort.otherPCConnectChangeIP(fileBasepath, ServerIpCache.getServerIp());
 
                 AppCache.delAppCacheParam();
                 AppServerCache.delAppServerCache();
