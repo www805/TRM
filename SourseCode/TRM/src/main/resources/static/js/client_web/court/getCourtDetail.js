@@ -846,32 +846,6 @@ function showrecord(times,oldtime) {
         if (isnvideo==0){
             layer.msg("没有找到视频定位点",{time:500})
         }
-
-
-        /* 视频会处理此处可不处理
-        var recorddetailtrlen= $("#recorddetail label").length;
-        $("#recorddetail label").each(function (i,e) {
-            var t1=$(this).attr("times");
-            var name=$(this).attr("name");
-            if (t1==times) {//需要减去差值
-                $(this).addClass("highlight_right");
-                var top=$(this).position().top;
-                var div = document.getElementById('recorddetail_scrollhtml');
-                div.scrollTop = top;
-                return false;
-            }
-        });
-
-        $("#recordreals div").each(function (i,e) {
-            var t2=$(this).attr("times");
-            if (t2==times) {
-                $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                var top=$(this).position().top;
-                var div = document.getElementById('recordreals_scrollhtml');
-                div.scrollTop = top;
-                return false;
-            }
-        });*/
     }
 }
 
@@ -988,8 +962,7 @@ function callbackgetPlayUrl(data) {
 }
 //*******************************************************************定时请求视频地址start****************************************************************//
 
-//******************************************************************关于百度编辑器start****************************************************************//
-//导出模板
+//导出模板word or pdf
 function exporttemplate_ue(exporttype) {
     if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
         var url=getActionURL(getactionid_manage().getCourtDetail_exporttemplate_ue);
@@ -1010,7 +983,6 @@ function exporttemplate_ue(exporttype) {
     $("div[name='btn_div']").attr("showorhide","false");
     $("div[name='btn_div']").removeClass("layui-form-selected");
 }
-
 function callbackexporttemplate_ue(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -1042,8 +1014,8 @@ function callbackexporttemplate_ue(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-//******************************************************************关于百度编辑器end****************************************************************//
 
+//导出语音识别内容
 function export_asr() {
     if (isNotEmpty(recordssid)) {
         var url=getActionURL(getactionid_manage().getCourtDetail_export_asr);
@@ -1079,12 +1051,4 @@ function callbackexport_asr(data) {
     }
 }
 
-//默认问答
-var trtd_html='<tr>\
-        <td style="padding: 0;width: 80%;" class="onetd" id="record_qw">\
-            <div class="table_td_tt font_red_color"><span>&nbsp;</span><label contenteditable="true" name="q" times=""></label></div>\
-               <div  id="btnadd" ></div>\
-                </td></tr>';
-//*******************************************************************笔录问答编辑end****************************************************************//
-//语音识别颜色
-var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
+

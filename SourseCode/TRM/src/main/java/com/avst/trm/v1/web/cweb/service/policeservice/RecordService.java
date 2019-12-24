@@ -654,7 +654,7 @@ public class RecordService extends BaseService {
                                     }
                                 }
                             }
-                            LogUtil.intoLog(1,this.getClass()," outService.getTdByModelSsid__modeltds__"+getRecordByIdVO.getModeltds().size());
+                            LogUtil.intoLog(1,this.getClass()," outService.getTdByModelSsid__modeltds__"+getRecordByIdVO.getModeltds());
 
 
 

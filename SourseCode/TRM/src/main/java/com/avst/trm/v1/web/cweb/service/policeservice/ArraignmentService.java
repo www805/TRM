@@ -202,13 +202,12 @@ public class ArraignmentService extends BaseService {
                     String[] arraignmentexpand_ = new String[] {UserinfogradeType.USERINFOGRADE1,UserinfogradeType.USERINFOGRADE2,UserinfogradeType.USERINFOGRADE3,UserinfogradeType.USERINFOGRADE8};
                     arraignmentexpand=new ArrayList<>();
                     for (int i = 0; i < 4; i++) {
-                        String username_time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
                         UserInfo userInfo=new UserInfo();
                         userInfo.setUserinfogradessid(arraignmentexpand_[i]);
                         if (UserinfogradeType.USERINFOGRADE2.equals(arraignmentexpand_[i])){
                             userInfo.setUsername(newaddUserInfo.getUsername());
                         }else {
-                            userInfo.setUsername("未知_"+username_time+"_"+(i+1));
+                            userInfo.setUsername("未知_"+time+"_"+(i+1));
                         }
                         arraignmentexpand.add(userInfo);
                     }
@@ -221,14 +220,13 @@ public class ArraignmentService extends BaseService {
                     for (int i = 0; i < 3; i++) {
                         //添加该管理员
                         String newadminssid=OpenUtil.getUUID_32();
-                        String username_time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
                         Base_admininfo base_admininfo=new Base_admininfo();
                         base_admininfo.setSsid(newadminssid);
                         base_admininfo.setTemporaryaskbool(1);//是否为临时询问人1是
                         base_admininfo.setCreator(user.getSsid());
                         base_admininfo.setWorkunitssid(user.getWorkunitssid());
                         base_admininfo.setLoginaccount(OpenUtil.getUUID_32());
-                        base_admininfo.setUsername("临时_"+username_time+"_"+(i+1));
+                        base_admininfo.setUsername("临时_"+time+"_"+(i+1));
                         base_admininfo.setRegistertime(new Date());
                         int base_admininfoMapper_insertbool=base_admininfoMapper.insert(base_admininfo);
                         LogUtil.intoLog(this.getClass(),"base_admininfoMapper_insertbool__"+base_admininfoMapper_insertbool);

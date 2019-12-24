@@ -35,46 +35,6 @@
     <div class="layui-row layui-form" id="layui-row1" >
        <div class="layui-col-md3 " style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="shrink_html" >
            <div style="height:100%;"> <div th:replace="modular/tabdata :: tabdata"></div></div>
-            <!--<div class="layui-col-md12 layui-tab layui-tab-brief" id="initec"  style="height:90%;">
-                <ul class="layui-tab-title">
-                    <li onclick="initasr()" id="asr" style="">语音识别 <span id="webkit2"></span></li>
-                    <li onclick="initcase()" id="case"  class="layui-this" > 案件信息&lt;!&ndash;<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red" title="编辑" onclick="open_casetouser()"></i>&ndash;&gt;</li>
-                </ul>
-                <div class="layui-tab-content" id="leftdiv"  style="height:90%;">
-                    <div class="layui-tab-item "  id="asritem" style="height:100%;" >
-                        <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
-                            <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
-                                <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
-                            </div>
-                            <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
-                                <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
-                                    <i class="layui-icon">&#xe619;</i>
-                                </button>
-                                <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
-                                    <i class="layui-icon">&#xe61a;</i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
-                                <div class="layui-card-body" >
-                                    <div class="talk_show"  id="recordreals" >
-
-                                    </div>
-                                </div>
-                        </div>
-                    </div>
-                    <div class="layui-tab-item layui-show" id="caseitem"  style="height:100%;overflow-x: hidden; overflow-y: scroll;">
-                            <div class="layui-card-body">
-                                <table class="layui-table" lay-skin="line" style="table-layout: fixed">
-                                    <tbody id="caseAndUserInfo_html">
-
-                                    </tbody>
-                                </table>
-                            </div>
-                    </div>
-                </div>
-            </div>-->
-
            <!--底部按钮组start-->
           <!-- <div class="layui-col-md12 " style="position: absolute;bottom: 0;background-color: #FFFFFF;z-index:1;height: 80px;line-height: 80px;text-align: center;" >
                <div class="layui-col-md4 "  id="record_img" style="width: 110px;" >
@@ -164,20 +124,19 @@
 <script th:inline="javascript">
     var INIT_CLIENT=[[${session.INIT_CLIENT}]];
     var INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
-    var recordssid =[[${Model.recordssid}]];
     var SOCKETIO_HOST=[[${session.SOCKETIO_HOST}]];
     var SOCKETIO_PORT=[[${session.SOCKETIO_PORT}]];
     var sessionadminssid=[[${session.MANAGE_CLIENT.ssid}]];
+    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
+    var recordssid =[[${Model.recordssid}]];//笔录ssid
     var tocaseToUserURL;//人员案件编辑页
     var socket;
     var recordstate_index=null;//笔录状态栏的下标
-    var gnlist=[[${session.AUTHORIZATIONALL_CLIENT.gnlist}]];
-
-
 
     $(function(){
         setpageAction(INIT_CLIENT,"client_web/court/waitCourt");
         tocaseToUserURL= getActionURL(getactionid_manage().waitCourt_tocaseToUser);
+
         $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
         $(window).resize(function(){
             $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
@@ -193,7 +152,9 @@
         var element = layui.element;
         var form=layui.form;
         var upload = layui.upload;
-        //使用模块
+
+
+        //状态栏显示
         var html='<table class="layui-table"  lay-skin="nob" lay-size="sm">\
                         <colgroup>\
                         <col width="50">\
@@ -235,7 +196,7 @@
         }
 
 
-        //普通上传
+        //导入模板
         var uploadInst = upload.render({
             elem: '#wordupload'
             , url: getActionURL(getactionid_manage().waitCourt_importtemplate_ue)
@@ -271,9 +232,6 @@
                 return layer.msg('上传失败,网络异常');
             }
         });
-
-
-
     });
 
 </script>

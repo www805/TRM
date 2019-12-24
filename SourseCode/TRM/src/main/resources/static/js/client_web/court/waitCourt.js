@@ -668,7 +668,7 @@ function addRecord() {
     if (isNotEmpty(recordssid)){
         var url=getActionURL(getactionid_manage().waitCourt_addRecord);
         //需要收拾数据
-        var recordToProblems=[];//题目集合
+        var recordToProblems=[];//题目集合：不需要了直接保存缓存里面的
         var data={
             token:INIT_CLIENTKEY,
             param:{
@@ -844,77 +844,14 @@ function callbackgetgetRecordrealing(data) {
 }
 
 
-
-
-//*******************************************************************点击start****************************************************************//
-//身心检测
-function initheart() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//语音识别
-function initasr() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-//案件
-function initcase() {
-    $(".layui-tab-content").css("height","90%");
-    $("#templatetoproblem").css("height","initial");
-}
-function initcase_header() {
-    $(".layui-tab-content").css("height","0%");
-    $("#templatetoproblem").css("height","62%");
-}
-
-function switchbtn(type,obj) {
-    if (type==1){
-        $(".phitem1").css("display","block");
-        $("#shrink_html").css("display","none");
-        $("#notshrink_html1").css("display","none");
-
-        var html=$("#living3_2").html();
-        if (!isNotEmpty(html)){
-            $("#living3_2").html($("#living3_1").html());
-            $("#living3_1").empty();
-        }
-
-        $(".phitem2").attr("id","");
-        $(".phitem1").attr("id","phitem");
-    } else {
-        $(".phitem1").css("display","none");
-        $("#shrink_html").css("display","block");
-        $("#notshrink_html1").css("display","block");
-
-        var html=$("#living3_1").html();
-        if (!isNotEmpty(html)){
-            $("#living3_1").html($("#living3_2").html());
-            $("#living3_2").empty();
-        }
-        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-        $(".phitem1").attr("id","");
-        $(".phitem2").attr("id","phitem");
-        main1();
-    }
-
-    $(obj).removeClass("layui-btn-primary").addClass("layui-btn-normal").siblings().removeClass("layui-btn-normal").addClass("layui-btn-primary");
-}
-
-//*******************************************************************点击end****************************************************************//
-
-
-
-
-
 //默认问答
 var trtd_html='<p><br/></p>';
 
 //lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
-    if (type==1){
-    }  else if (type==0) {
-    }else if (type==2){
+    if (type==1){}  else if (type==0) {}
+    else if (type==2){
         //判断laststarttime_ue是否为空，
         // 为空判断是否存在光标获取光标在第几行在该标签后边追加
         //不为空获取最后一个p标签在该标签后边追加
@@ -1098,10 +1035,6 @@ function copy_text(obj) {
         $(lastp).attr("starttime",starttime);
         $(lastp).attr("style",newpstyle+pstyle);
     }
-
-
-
-
 }
 
 
@@ -1116,8 +1049,6 @@ var exportWord_index=null;
 var exportPdf_index=null;
 
 $(function () {
-
-
 
     //导出
     $("#dc_li li").click(function () {
@@ -1173,7 +1104,6 @@ $(function () {
         }else {
             $("#webkit2").empty();
         }
-
 
     },1000);
 
@@ -1259,7 +1189,6 @@ $(function () {
                                         identify(usertype,starttime,gradeintroduce,translatext)
                                     }else {
                                         console.log("我没在里面啊啊啊啊__"+usertype)
-                                        //last_identifys[""+usertype+""]=null;
                                     }
                                 }
                             }

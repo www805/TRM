@@ -429,6 +429,7 @@ function getactionid_manage() {
         beforeCourt_getDefaultMtModelssid:"beforeCourt_getDefaultMtModelssid",
         beforeCourt_getWordTemplates:"beforeCourt_getWordTemplates",
         beforeCourt_getCasesByCasenum:"beforeCourt_getCasesByCasenum",
+        beforeCourt_getBaseData:"beforeCourt_getBaseData",
 
         userinfogradeIndex_getUserinfogradePage:"userinfogradeIndex_getUserinfogradePage",
         userinfogradeIndex_toAddOrUpdateUserinfograde:"userinfogradeIndex_toAddOrUpdateUserinfograde",
@@ -448,6 +449,7 @@ function getactionid_manage() {
         quickCourt_getCasesByCasenum:"quickCourt_getCasesByCasenum",
         quickCourt_userloginout:"quickCourt_userloginout",
         quickCourt_gotologin:"quickCourt_gotologin",
+        quickCourt_getBaseData:"quickCourt_getBaseData",
 
 
 

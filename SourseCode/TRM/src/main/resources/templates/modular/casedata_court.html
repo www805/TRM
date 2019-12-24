@@ -28,28 +28,28 @@
                         <label class="layui-form-label">案件编号：</label>
                         <div class="layui-input-block">
                             <input type="text" name="casenum" id="casenum"  lay-verify="casenum" placeholder="" autocomplete="off" class="layui-input">
-                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" onclick="getCasesByCasenum();"></i>
+                            <i class="layui-icon layui-icon-search" style="position: absolute;top:8px;right:  8px;cursor: pointer;" id="getCasesByCasenum"></i>
                         </div>
                     </div>
                     <div class="layui-col-lg6">
                         <label class="layui-form-label">原告：</label>
                         <div class="layui-input-block">
                             <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onkeyup="getUserByCard('userinfograde1')"onclick="getUserByCard('userinfograde1')"  >
-                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,1)" title="追加"></i>
+                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(1)" title="追加"></i>
                         </div>
                     </div>
                     <div class="layui-col-lg6">
                         <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>被告：</label>
                         <div class="layui-input-block">
                             <input type="text" name="userinfograde2"  id="username"  lay-verify="username" placeholder="" autocomplete="off" class="layui-input" onkeyup="getUserByCard('userinfograde2')" onclick="getUserByCard('userinfograde2')" >
-                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,2)" title="追加"></i>
+                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(2)" title="追加"></i>
                         </div>
                     </div>
                     <div class="layui-col-lg6">
                         <label class="layui-form-label">原告诉讼代理人：</label>
                         <div class="layui-input-block">
                             <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input"  onkeyup="getUserByCard('userinfograde8')" onclick="getUserByCard('userinfograde8')" >
-                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,8)" title="追加"></i>
+                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(8)" title="追加"></i>
                         </div>
                     </div>
 
@@ -57,7 +57,7 @@
                         <label class="layui-form-label">被告诉讼代理人：</label>
                         <div class="layui-input-block">
                             <input type="text" name="userinfograde3" id="defendant_agent"  placeholder="" autocomplete="off" class="layui-input"  onkeyup="getUserByCard('userinfograde3')" onclick="getUserByCard('userinfograde3')" >
-                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,3)" title="追加"></i>
+                            <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(3)" title="追加"></i>
                         </div>
                     </div>
                     <div class="layui-col-lg6">

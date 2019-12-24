@@ -1316,6 +1316,7 @@ public class MainService extends BaseService {
         List<Police_workunit> workunitList=police_workunitMapper.selectList(null);
         EntityWrapper adminparam=new EntityWrapper();
         adminparam.eq("a.adminbool",1);//正常人
+        adminparam.orderBy("a.temporaryaskbool",true);
         adminparam.orderBy("a.registerTime",false);
         List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
         List<Police_cardtype> cardtypeList=police_cardtypeMapper.selectList(null);

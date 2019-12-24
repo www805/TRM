@@ -1629,6 +1629,9 @@ var TTS_F="tts_f";
 var FD_F="fd_f";
 var PH_F="ph_f";
 
+//语音识别颜色
+var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
+
 
 
 function set_said(modeltypenum) {
