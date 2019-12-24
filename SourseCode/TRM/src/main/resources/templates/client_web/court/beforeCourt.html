@@ -87,21 +87,21 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">原告：</label>
+                                <label class="layui-form-label userinfograde1">原告：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde1" id="plaintiff"    placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard('userinfograde1')" onkeyup="getUserByCard('userinfograde1')">
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,1)" title="追加"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>被告：</label>
+                                <label class="layui-form-label userinfograde2"><span style="color: red;font-weight: initial">*</span>被告：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde2"  id="username"  lay-verify="username" placeholder="" autocomplete="off" class="layui-input" onclick="getUserByCard('userinfograde2')" onkeyup="getUserByCard('userinfograde2')">
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,2)" title="追加"></i>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">原告诉讼代理人：</label>
+                                <label class="layui-form-label userinfograde8">原告诉讼代理人：</label>
                                 <div class="layui-input-block">
                                     <input type="text" name="userinfograde8" id="plaintiff_agent"   placeholder="" autocomplete="off" class="layui-input"  onclick="getUserByCard('userinfograde8')" onkeyup="getUserByCard('userinfograde8')">
                                     <i class="layui-icon layui-icon-add-circle" style="position: absolute;top:8px;right:  8px;cursor: pointer;color:#ccc" onclick="adduser(this,8)" title="追加"></i>
@@ -116,17 +116,17 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label"><span style="color: red;font-weight: initial">*</span>审判长：</label>
+                                <label class="layui-form-label userinfograde8"><span style="color: red;font-weight: initial">*</span>审判长：</label>
                                 <div class="layui-input-block">
-                                    <select name="presidingjudge"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" lay-verify="presidingjudge" >
+                                    <select name="userinfograde8"  id="presidingjudge"  lay-search="" lay-filter="presidingjudge" lay-verify="presidingjudge" >
                                         <option value=""></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg6">
-                                <label class="layui-form-label">审判员：</label>
+                                <label class="layui-form-label userinfograde7">审判员：</label>
                                 <div class="layui-input-block">
-                                    <select name="judges"  id="judges"  lay-search="" lay-filter="judges" >
+                                    <select name="userinfograde7"  id="judges"  lay-search="" lay-filter="judges" >
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -175,17 +175,17 @@
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
-                                <label class="layui-form-label">书记员：</label>
+                                <label class="layui-form-label userinfograde5">书记员：</label>
                                 <div class="layui-input-block">
-                                    <select name="recordadminssid"  id="recordadminssid"  lay-search="" lay-filter="recordadminssid" >
+                                    <select name="userinfograde5"  id="recordadminssid"  lay-search="" lay-filter="recordadminssid" >
                                         <option value=""></option>
                                     </select>
                                 </div>
                             </div>
                             <div class="layui-col-lg12">
-                                <label class="layui-form-label">陪审员：</label>
+                                <label class="layui-form-label userinfograde6">陪审员：</label>
                                 <div class="layui-input-block">
-                                    <select name="otheradminssid"  id="otheradminssid"  lay-search="" lay-filter="otheradminssid" >
+                                    <select name="userinfograde6"  id="otheradminssid"  lay-search="" lay-filter="otheradminssid" >
                                         <option value=""></option>
                                     </select>
                                 </div>
@@ -369,7 +369,6 @@
         getNationals();
         getAdminList();
         getDefaultMtModelssid();//获取默认的会议模板ssid
-        getMc_model();//获取全部的会议模板
         getWordTemplates();
         getCaseById();
     });
@@ -443,10 +442,10 @@
 
 
         form.verify({
-            username:[ /\S/,"请输入被告人"],
+            /*username:[ /\S/,"请输入被告人"],*/
             recotdtypes:[ /\S/,"请选择案件类型"],
             casename:[ /\S/,"请输入案件名称"],
-            presidingjudge:[ /\S/,"审判长不能为空"]
+           /* presidingjudge:[ /\S/,"审判长不能为空"]*/
         });
 
         form.on('submit(startrecord_btn)', function (data) {

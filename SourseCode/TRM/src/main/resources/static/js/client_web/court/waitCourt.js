@@ -1160,7 +1160,9 @@ $(function () {
         if (isNotEmpty(mtssid)&&isNotEmpty(TDCache)) {
             var usepolygraph=TDCache.usepolygraph==null?-1:TDCache.usepolygraph;//是否使用测谎仪，1使用，-1 不使用
             if (isNotEmpty(mcbool)&&(mcbool==1||mcbool==3)){
-                getEquipmentsState();
+                if (gnlist.indexOf(NX_O)== -1){
+                    getEquipmentsState();
+                }
             }
         }
 

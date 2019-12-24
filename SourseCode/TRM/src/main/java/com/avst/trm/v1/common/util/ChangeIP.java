@@ -10,6 +10,7 @@ import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
@@ -47,7 +48,11 @@ public class ChangeIP {
         String staticconfpath = fileBasepath + "桌面式应用/客户端/page/index.html";
         List<String> pathlist = ReadWriteFile.readTxtFileToList(staticconfpath, "utf8");
         if (null != pathlist && pathlist.size() > 0) {
-            String writetxt = "var url = \"http://" + localip + ":8080/cweb/\";//笔录系统首页地址";
+            String serverport=PropertiesListenerConfig.getProperty("server.port");
+            if(StringUtils.isEmpty(serverport)){
+                serverport="6060";
+            }
+            String writetxt = "var url = \"http://" + localip + ":"+serverport+"/cweb/\";//笔录系统首页地址";
             String newfiletxt = "";
             for (String str : pathlist) {
                 if (str.indexOf("var url = \"http://") > -1) {
@@ -66,7 +71,11 @@ public class ChangeIP {
 
             String writetxt1 = "upload.basepath=http://" + localip;
             String writetxt2 = "socketio.server.host=" + localip;
-            String writetxt3 = "re.basepath=http://" + localip + ":8080/toup";
+            String serverport=PropertiesListenerConfig.getProperty("server.port");
+            if(StringUtils.isEmpty(serverport)){
+                serverport="6060";
+            }
+            String writetxt3 = "re.basepath=http://" + localip + ":"+serverport+"/toup";
 
             //取出授权缓存判断如果是客户端版就用localhost
             if (gnlist.indexOf(SQVersion.S_E) == -1) {

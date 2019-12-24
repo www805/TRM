@@ -129,11 +129,15 @@ function callbackgetRecords(data) {
                                 var problemtext=problem.problem==null?"未知":problem.problem;
                                 problemhtml+=problemtext;
                             }
-                            ue.setEnabled();
-                            TOWORD.page.importhtml(problemhtml);
-                            var p=$("p:eq(0)",editorhtml);
-                            if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
-                            ue.setDisabled();
+                            if (isNotEmpty(problemhtml)){
+                                ue.ready(function() {
+                                    ue.setEnabled();
+                                    TOWORD.page.importhtml(problemhtml);
+                                    var p=$("p:eq(0)",editorhtml);
+                                    if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
+                                    ue.setDisabled();
+                                });
+                            }
                         }else {
                             //其他版本
                             for (var z = 0; z< problems.length;z++) {
@@ -203,11 +207,15 @@ function setproblems(recordssid,obj) {
                             var problemtext=problem.problem==null?"未知":problem.problem;
                             problemhtml+=problemtext;
                         }
-                        ue.setEnabled();
-                        TOWORD.page.importhtml(problemhtml);
-                        var p=$("p:eq(0)",editorhtml);
-                        if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
-                        ue.setDisabled();
+                        if (isNotEmpty(problemhtml)){
+                            ue.ready(function() {
+                                ue.setEnabled();
+                                TOWORD.page.importhtml(problemhtml);
+                                var p=$("p:eq(0)",editorhtml);
+                                if (isNotEmpty(p)){  var rng=ue.selection.getRange();rng.setStart(p[0],0).setCursor(false,true);}
+                                ue.setDisabled();
+                            });
+                        }
                     }else {
                         //其他版本
                         for (var z = 0; z< problems.length;z++) {
@@ -397,16 +405,9 @@ function set_UE() {
         initialContent:"<div tabindex=\"0\" hidefocus=\"true\"  id='"+TOWORD.divpage.getnextpagedivid()+"' style= '"+TOWORD.divpage.divcss()+"'><p ></p></div>"
     });
     ue.ready(function() {
-        var divid=TOWORD.divpage.getpagedivid(1);//初始化的num=1
-        var div=TOWORD.page.getifamedivByDivid(divid);
-        div.setAttribute("num",1);
-        div.addEventListener("onfocus",onfocusfnc);
         editorhtml=$("#editor iframe").contents();
         ue.setDisabled();
     });
-}
-function onfocusfnc(num){
-    TOWORD.divpage.changediv(num);
 }
 
 

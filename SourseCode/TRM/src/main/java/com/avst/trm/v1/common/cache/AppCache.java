@@ -216,10 +216,14 @@ public class AppCache {
         RResult zkResult = new RResult();
         mainService.getServerStatus(zkResult, null);
         if(null != zkResult.getData()){
+            String port=PropertiesListenerConfig.getProperty("server.port");
+            if(StringUtils.isEmpty(port)){
+                port="6060";
+            }
             List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
             for (LinkedHashMap<String, Object> hashMap : data) {
                 if("zk".equals(hashMap.get("servername"))){
-                    cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url") + "?client=http://" + myIP + ":8080/cweb/base/main/gotomain");//进入总控
+                    cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url") + "?client=http://" + myIP + ":"+port+"/cweb/base/main/gotomain");//进入总控
                 }
             }
         }

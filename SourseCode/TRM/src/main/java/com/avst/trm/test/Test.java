@@ -163,7 +163,7 @@ public class Test {
 
    public static void upload(){
 
-      String actionUrl="http://192.168.17.175:8080/forDownServer/synchronizedata_file";
+      String actionUrl="http://192.168.17.175:6060/forDownServer/synchronizedata_file";
       String uploadFilePath="F:\\wubin\\笔录管理系统\\系统设计\\ceshi.mp4";
 
 
