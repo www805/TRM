@@ -847,7 +847,7 @@ function callbackgetgetRecordrealing(data) {
                                 color="#ffffff";
                                 fontcolor="#000000";
                                 recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" onmouseup="tagtext(this)" onmouseleave="tagtext(this)"> '+translatext+' </span>\
                                                       </div >';
 
                             }else {
@@ -873,7 +873,6 @@ function callbackgetgetRecordrealing(data) {
     }else{
         layer.msg(data.message,{icon: 5});
     }
-    tagtext();
 }
 
 
@@ -1419,7 +1418,7 @@ $(function () {
                                 if (gnlist.indexOf(NX_O)!= -1){
                                     color="#ffffff";
                                     fontcolor="#000000";
-                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)">'+translatext+' </span>';
+                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)" onmouseup="tagtext(this)"  onmouseleave="tagtext(this)">'+translatext+' </span>';
                                     recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                                 }else {
                                     p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
@@ -1433,7 +1432,6 @@ $(function () {
                                 }else {
                                     $("#recordreals").append(recordrealshtml);
                                 }
-                               tagtext();
 
 
                             $("#asritem").off("mouseout").bind("mouseout",function(event) {
@@ -1469,9 +1467,9 @@ $(function () {
                             });
                             console.log(mouseoverbool_left)
                                 if (mouseoverbool_left==-1){
-                                    $("#tooltip").remove();//移除标记提示
+                                   /* $("#tooltip").remove();//移除标记提示
                                     window.getSelection().removeAllRanges();
-                                    dq_recordrealsspan=null;
+                                    dq_recordrealsspan=null;*/
                                     var div = document.getElementById('recordreals_scrollhtml');
                                     div.scrollTop = div.scrollHeight;
                                 }
@@ -2428,7 +2426,9 @@ function bj() {
         var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
         var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
         setMCTagTxtreal(userssid,starttime,tagtxt);
-        $("#tooltip").remove();
+       /* $("#tooltip").remove();
+        window.getSelection().removeAllRanges();
+        dq_recordrealsspan=null;*/
         window.getSelection().removeAllRanges();
         dq_recordrealsspan=null;
     }
@@ -2444,68 +2444,15 @@ function qxbj() {
         var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
         var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
         setMCTagTxtreal(userssid,starttime,tagtxt);
-        $("#tooltip").remove();
+       /* $("#tooltip").remove();
+        dq_recordrealsspan=null;*/
         window.getSelection().removeAllRanges();
         dq_recordrealsspan=null;
     }
 }
-function tagtext() {
-    $("#recordreals span").off("mouseup").bind("mouseup",function (e) {
-        mouseoverbool_left=1;
-        dq_recordrealsspan=this;
-        var x = 10;
-        var y = 10;
-        var text = "";
-        if (document.selection) {
-            text = document.selection.createRange().text;
-        }
-        else if (window.getSelection()) {
-            text = window.getSelection();
-        }
-        if (text!= "") {
-            var tooltip = '<div id="tooltip" class="tooltip" >\
-                    <div class="layui-btn-group">\
-                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="bj()">标记</button>\
-                    <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" onclick="qxbj();">取消标记</button>\
-                    </div>\
-                 </div>';
-            $("body").append(tooltip);
-            $("#tooltip").css({
-                "top": (e.pageY + y) + "px",
-                "left": (e.pageX + x) + "px",
-                "position": "absolute"
-            }).show("fast");
-        }
-    }).off("mousedown").bind("mousedown",function (e) {
-        $("#tooltip").remove();
-        window.getSelection().removeAllRanges();
-        dq_recordrealsspan=null;
-    });
-
-   $("#recordreals").bind("mousewheel", function (e) {
-       $("#tooltip").remove();
-       window.getSelection().removeAllRanges();
-       dq_recordrealsspan=null;
-   });
-
-
-
-
-    /*   $("#recordreals span").bind('mousedown', function(e) {
-           if (3 == e.which||1 == e.which){
-               var userssid=$(this).closest("div").attr("userssid");
-               var starttime=$(this).closest("div").attr("starttime");//语音识别时间标识
-               var tagtxt=$(this).html();//打点标记文本
-               $(this).attr("contenteditable",true);
-               if (3 == e.which) {
-                   document.execCommand('removeFormat');
-               }  else if (1 == e.which) {
-                   document.execCommand('foreColor',false,'red');
-               }
-               $(this).attr("contenteditable",false);
-               setMCTagTxtreal(userssid,starttime,tagtxt);
-           }
-       });*/
+function tagtext(obj) {
+    mouseoverbool_left=1;
+    dq_recordrealsspan=obj;
 }
 
 //打点实时保存

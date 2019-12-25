@@ -42,16 +42,18 @@
                 <div class="layui-tab-content" id="leftdiv"  style="height:90%;">
                     <div class="layui-tab-item "  id="asritem" style="height:100%;" >
                         <div class="layui-card-header" style="height: 10%;font-weight: normal;background-color: transparent;overflow: hidden;line-height: normal;display: none" id="recordreals_selecthtml">
-                            <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
+                            <div class="layui-col-md4 layui-col-xs4 layui-col-lg4" >
                                 <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
                             </div>
-                            <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
-                                <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
+                            <div class="layui-col-md8 layui-col-xs8  layui-col-lg8 layui-btn-group" >
+                                <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" style="width: 30px;padding: unset">
                                     <i class="layui-icon">&#xe619;</i>
                                 </button>
-                                <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
+                                <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();"style="width: 30px;padding: unset">
                                     <i class="layui-icon">&#xe61a;</i>
                                 </button>
+                                <button type="button" class="layui-btn  layui-btn-danger" onclick="bj()"style="width: 50px;padding: unset">标记</button>
+                                <button type="button" class="layui-btn  layui-btn-primary" onclick="qxbj();"style="width: 70px;padding: unset">取消标记</button>
                             </div>
                         </div>
                         <div class="layui-card" style="box-shadow: initial;height: 88%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">
