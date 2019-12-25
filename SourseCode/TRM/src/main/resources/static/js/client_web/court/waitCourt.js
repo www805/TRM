@@ -847,7 +847,7 @@ function callbackgetgetRecordrealing(data) {
                                 color="#ffffff";
                                 fontcolor="#000000";
                                 recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" onmouseup="tagtext(this)" onmouseleave="tagtext(this)"> '+translatext+' </span>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" onmouseup="tagtext(this)" > '+translatext+' </span>\
                                                       </div >';
 
                             }else {
@@ -1418,7 +1418,7 @@ $(function () {
                                 if (gnlist.indexOf(NX_O)!= -1){
                                     color="#ffffff";
                                     fontcolor="#000000";
-                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)" onmouseup="tagtext(this)"  onmouseleave="tagtext(this)">'+translatext+' </span>';
+                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)" onmouseup="tagtext(this)" >'+translatext+' </span>';
                                     recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                                 }else {
                                     p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
@@ -2444,13 +2444,12 @@ function qxbj() {
         var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
         var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
         setMCTagTxtreal(userssid,starttime,tagtxt);
-       /* $("#tooltip").remove();
-        dq_recordrealsspan=null;*/
         window.getSelection().removeAllRanges();
         dq_recordrealsspan=null;
     }
 }
 function tagtext(obj) {
+    console.log("jinlailalalla")
     mouseoverbool_left=1;
     dq_recordrealsspan=obj;
 }
