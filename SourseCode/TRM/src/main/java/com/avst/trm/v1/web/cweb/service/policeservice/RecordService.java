@@ -43,6 +43,7 @@ import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetPla
 import com.avst.trm.v1.web.cweb.cache.RecordProtectCache;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.conf.AddRecord_Thread;
+import com.avst.trm.v1.web.cweb.conf.UserinfogradeType;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
@@ -584,6 +585,88 @@ public class RecordService extends BaseService {
                 }
 
 
+                //根据笔录ssid获取提讯数据
+                String mtssid=null;
+                Integer mtstate=null;
+                String modelssid=null;
+                try {
+                    Police_arraignment police_arraignment=new Police_arraignment();
+                    police_arraignment.setRecordssid(recordssid);
+                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+                    if (null!=police_arraignment){
+                        mtssid=police_arraignment.getMtssid();
+                        modelssid=police_arraignment.getMtmodelssid();
+                        //笔录为进行中的时候
+                        if (StringUtils.isNotBlank(mtssid)&&null!=recordbool&&recordbool.intValue()==1){//笔录状态为进行中
+                            ReqParam<GetMCStateParam_out> getMCStateParam_outReqParam=new ReqParam<>();
+                            GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
+                            getMCStateParam_out.setMcType(MCType.AVST);
+                            getMCStateParam_out.setMtssid(mtssid);
+                            getMCStateParam_outReqParam.setParam(getMCStateParam_out);
+                            RResult rr = meetingControl.getMCState(getMCStateParam_outReqParam);
+                            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
+                                mtstate= (Integer) rr.getData();
+                                record.setMcbool(mtstate);
+                            }
+                        }
+                        //获取模板通道：笔录制作过程中获取：
+                        if (StringUtils.isNotBlank(modelssid)){//&&null!=recordbool&&recordbool.intValue()!=2&&recordbool.intValue()!=3
+                            RResult getTdByModelSsid__rr=new RResult();
+                            GetTdByModelSsidParam_out getTdByModelSsidParam_out=new GetTdByModelSsidParam_out();
+                            getTdByModelSsidParam_out.setModelssid(modelssid);
+                            getTdByModelSsidParam_out.setMcType(MCType.AVST);
+                            ReqParam reqParam=new ReqParam();
+                            reqParam.setParam(getTdByModelSsidParam_out);
+                            outService.getTdByModelSsid(getTdByModelSsid__rr,reqParam);
+                            if (null!=getTdByModelSsid__rr&&getTdByModelSsid__rr.getActioncode().equals(Code.SUCCESS.toString())){
+                                Object data=getTdByModelSsid__rr.getData();
+                                if (null!=data){
+                                    GetTdByModelSsidVO vo=gson.fromJson(gson.toJson(getTdByModelSsid__rr.getData()),GetTdByModelSsidVO.class);
+                                    List<Avstmt_modeltd> modeltds=vo.getModeltds();
+                                    if (null!=modeltds&&modeltds.size()>0){
+                                        getRecordByIdVO.setModeltds(modeltds);
+                                    }
+                                }
+                            }
+                            LogUtil.intoLog(1,this.getClass()," outService.getTdByModelSsid__modeltds__"+getRecordByIdVO.getModeltds().size());
+                        }
+
+                        //获取嫌疑人详情
+
+                        record.setPolice_arraignment(police_arraignment);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
+                List<Avstmt_modelAll> modelAlls=new ArrayList<>();//全部模板
+                Integer modeltypenum=-1;//-1默认
+                GetMc_modelParam_out getMc_modelParam_out=new GetMc_modelParam_out();
+                getMc_modelParam_out.setMcType(MCType.AVST);
+                ReqParam reqParam=new ReqParam();
+                reqParam.setParam(getMc_modelParam_out);
+                try {
+                    RResult rr = meetingControl.getMc_model(reqParam);
+                    if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
+                        modelAlls=gson.fromJson(gson.toJson(rr.getData()), new TypeToken<List<Avstmt_modelAll>>(){}.getType());
+                        if (null!=modelAlls&&modelAlls.size()>0){
+                            for (Avstmt_modelAll modelAll : modelAlls) {
+                                if (StringUtils.isNotEmpty(modelssid)&&StringUtils.isNotEmpty(modelAll.getSsid())&&modelAll.getSsid().equals(modelssid)){
+                                    modeltypenum=modelAll.getModeltypenum();//获取会议对应的类型
+                                }
+                            }
+                        }
+                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__成功");
+                    }else{
+                        LogUtil.intoLog(this.getClass(),"meetingControl.getMc_modeltd请求__失败"+rr);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
                 try {
                     /**
                      *   获取提讯人和被询问人
@@ -642,6 +725,32 @@ public class RecordService extends BaseService {
                                     admininfo.setSsid(userssid);
                                     admininfo=base_admininfoMapper.selectOne(admininfo);
 
+                                    //获取所选会议模板类型：1民庭 2刑庭
+                                    //判断显示
+                                    String oldgradename=police_userinfograde.getGradename();
+                                    String oldgradeintroduce=police_userinfograde.getGradeintroduce();
+                                    if (modeltypenum==1){
+                                        if (gradessid.equals(UserinfogradeType.USERINFOGRADE1)){
+                                            oldgradename="公诉人";
+                                            oldgradeintroduce="公诉人";
+                                        }
+                                        if (gradessid.equals(UserinfogradeType.USERINFOGRADE2)){
+                                            oldgradename="被告人";
+                                            oldgradeintroduce="被告人";
+                                        }
+                                        if (gradessid.equals(UserinfogradeType.USERINFOGRADE3)){
+                                            oldgradename="辩护人";
+                                            oldgradeintroduce="辩护人";
+                                        }
+
+                                    }else  if (modeltypenum==2){
+                                        if (gradessid.equals(UserinfogradeType.USERINFOGRADE2)){
+
+                                        }
+                                    }
+                                    police_userinfograde.setGradename(oldgradename);
+                                    police_userinfograde.setGradeintroduce(oldgradeintroduce);
+
                                     if (null!=police_userinfograde){
                                         Usergrade usergrade=new Usergrade();
                                         usergrade=gson.fromJson(gson.toJson(police_userinfograde), Usergrade.class);
@@ -666,59 +775,7 @@ public class RecordService extends BaseService {
                     e.printStackTrace();
                 }
 
-                //根据笔录ssid获取提讯数据
-                String mtssid=null;
-                Integer mtstate=null;
-                String modelssid=null;
-                try {
-                    Police_arraignment police_arraignment=new Police_arraignment();
-                    police_arraignment.setRecordssid(recordssid);
-                    police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
-                    if (null!=police_arraignment){
-                        mtssid=police_arraignment.getMtssid();
-                        modelssid=police_arraignment.getMtmodelssid();
-                        //笔录为进行中的时候
-                        if (StringUtils.isNotBlank(mtssid)&&null!=recordbool&&recordbool.intValue()==1){//笔录状态为进行中
-                            ReqParam<GetMCStateParam_out> getMCStateParam_outReqParam=new ReqParam<>();
-                            GetMCStateParam_out getMCStateParam_out=new GetMCStateParam_out();
-                            getMCStateParam_out.setMcType(MCType.AVST);
-                            getMCStateParam_out.setMtssid(mtssid);
-                            getMCStateParam_outReqParam.setParam(getMCStateParam_out);
-                            RResult rr = meetingControl.getMCState(getMCStateParam_outReqParam);
-                            if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
-                                mtstate= (Integer) rr.getData();
-                                record.setMcbool(mtstate);
-                            }
-                        }
-                        //获取模板通道：笔录制作过程中获取：
-                        if (StringUtils.isNotBlank(modelssid)){//&&null!=recordbool&&recordbool.intValue()!=2&&recordbool.intValue()!=3
-                            RResult getTdByModelSsid__rr=new RResult();
-                            GetTdByModelSsidParam_out getTdByModelSsidParam_out=new GetTdByModelSsidParam_out();
-                            getTdByModelSsidParam_out.setModelssid(modelssid);
-                            getTdByModelSsidParam_out.setMcType(MCType.AVST);
-                            ReqParam reqParam=new ReqParam();
-                            reqParam.setParam(getTdByModelSsidParam_out);
-                            outService.getTdByModelSsid(getTdByModelSsid__rr,reqParam);
-                            if (null!=getTdByModelSsid__rr&&getTdByModelSsid__rr.getActioncode().equals(Code.SUCCESS.toString())){
-                                Object data=getTdByModelSsid__rr.getData();
-                                if (null!=data){
-                                    GetTdByModelSsidVO vo=gson.fromJson(gson.toJson(getTdByModelSsid__rr.getData()),GetTdByModelSsidVO.class);
-                                    List<Avstmt_modeltd> modeltds=vo.getModeltds();
-                                    if (null!=modeltds&&modeltds.size()>0){
-                                        getRecordByIdVO.setModeltds(modeltds);
-                                    }
-                                }
-                            }
-                            LogUtil.intoLog(1,this.getClass()," outService.getTdByModelSsid__modeltds__"+getRecordByIdVO.getModeltds().size());
-                        }
 
-                        //获取嫌疑人详情
-
-                      record.setPolice_arraignment(police_arraignment);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
 
 

@@ -847,7 +847,7 @@ function callbackgetgetRecordrealing(data) {
                                 color="#ffffff";
                                 fontcolor="#000000";
                                 recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" onmouseup="tagtext(this)" > '+translatext+' </span>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"  > '+translatext+' </span>\
                                                       </div >';
 
                             }else {
@@ -1418,7 +1418,7 @@ $(function () {
                                 if (gnlist.indexOf(NX_O)!= -1){
                                     color="#ffffff";
                                     fontcolor="#000000";
-                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)" onmouseup="tagtext(this)" >'+translatext+' </span>';
+                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)" >'+translatext+' </span>';
                                     recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
                                 }else {
                                     p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
@@ -2414,45 +2414,38 @@ function addidentify(usertype,starttime,gradeintroduce,translatext) {
 
 
 ///////////////////////////////**********************************************************左侧打点**************start
-var dq_recordrealsspan=null;
-function bj() {
-    mouseoverbool_left=1;
-    if (isNotEmpty(dq_recordrealsspan)) {
-        $(dq_recordrealsspan).attr("contenteditable",true);
-        document.execCommand('foreColor',false,'red');
-        $(dq_recordrealsspan).attr("contenteditable",false);
-
-        var userssid=$(dq_recordrealsspan).closest("div").attr("userssid");
-        var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
-        var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
-        setMCTagTxtreal(userssid,starttime,tagtxt);
-       /* $("#tooltip").remove();
-        window.getSelection().removeAllRanges();
-        dq_recordrealsspan=null;*/
-        window.getSelection().removeAllRanges();
-        dq_recordrealsspan=null;
+//type 1标记 2取消标记
+function tagtext(type) {
+    if (isNotEmpty(window.getSelection())&&isNotEmpty(window.getSelection().anchorNode)) {
+        var stratnode=window.getSelection().anchorNode;//选择文本开始的节点
+        var parentdiv = $(stratnode).closest("div");//获取选中区域的父节点div;
+        if (isNotEmpty(parentdiv)) {
+            var userssid=$(parentdiv).attr("userssid");
+            var starttime=$(parentdiv).attr("starttime");//语音识别时间标识
+            var tagtxt=$("span",parentdiv).html();//打点标记文本
+            if (isNotEmpty(userssid)&&isNotEmpty(starttime)){
+                console.log("开始进行标记操作了")
+                //选择的是语音识别内容
+                $("span",parentdiv).attr("contenteditable",true);
+                if (type==1){
+                    document.execCommand('foreColor',false,'red');
+                } else {
+                    document.execCommand('removeFormat');
+                }
+                $("span",parentdiv).attr("contenteditable",false);
+                setMCTagTxtreal(userssid,starttime,tagtxt);
+                window.getSelection().removeAllRanges();
+            }else {
+                layer.msg("未找到选中的语音识别内容",{icon:5})
+            }
+        } else {
+            layer.msg("请确认是否选中语音识别内容",{icon:5})
+        }
+    }else {
+        layer.msg("请先选择语音识别内容进行标记操作",{icon:5})
     }
 }
-function qxbj() {
-    mouseoverbool_left=1;
-    if (isNotEmpty(dq_recordrealsspan)) {
-        $(dq_recordrealsspan).attr("contenteditable",true);
-        document.execCommand('removeFormat');
-        $(dq_recordrealsspan).attr("contenteditable",false);
 
-        var userssid=$(dq_recordrealsspan).closest("div").attr("userssid");
-        var starttime=$(dq_recordrealsspan).closest("div").attr("starttime");//语音识别时间标识
-        var tagtxt=$(dq_recordrealsspan).html();//打点标记文本
-        setMCTagTxtreal(userssid,starttime,tagtxt);
-        window.getSelection().removeAllRanges();
-        dq_recordrealsspan=null;
-    }
-}
-function tagtext(obj) {
-    console.log("jinlailalalla")
-    mouseoverbool_left=1;
-    dq_recordrealsspan=obj;
-}
 
 //打点实时保存
 function setMCTagTxtreal(userssid,starttime,tagtxt) {
