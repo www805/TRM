@@ -22,16 +22,33 @@
                                         <button type="button" class="layui-btn layui-btn-normal" id="uploadPhreport" onclick="uploadPhreport();" style="visibility: hidden">生成情绪报告</button>
                           </span>
                     </div>
-                    <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
-                        <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select();"  >
+                    <div class="layui-col-md12 layui-col-xs12 layui-col-lg12" id="defaultsearch">
+                        <div class="layui-col-md7 layui-col-xs7 layui-col-lg7" >
+                            <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select(this);"  >
+                        </div>
+                        <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
+                            <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
+                                <i class="layui-icon">&#xe619;</i>
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
+                                <i class="layui-icon">&#xe61a;</i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="layui-col-md5 layui-col-xs5  layui-col-lg5 layui-btn-group" >
-                        <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" >
-                            <i class="layui-icon">&#xe619;</i>
-                        </button>
-                        <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();">
-                            <i class="layui-icon">&#xe61a;</i>
-                        </button>
+                    <div class="layui-col-md12 layui-col-xs12 layui-col-lg12" id="tagtxtsearch" style="display: none">
+                        <div class="layui-col-md4 layui-col-xs4 layui-col-lg4" >
+                            <input type="text" name="recordreals_select" lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" id="recordreals_select" oninput="recordreals_select(this);"  >
+                        </div>
+                        <div class="layui-col-md8 layui-col-xs8  layui-col-lg8 layui-btn-group" >
+                            <button type="button" class="layui-btn layui-btn-normal" onclick="last_realtxt();" style="width: 30px;padding: unset">
+                                <i class="layui-icon">&#xe619;</i>
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-normal "onclick="next_realtxt();"style="width: 30px;padding: unset">
+                                <i class="layui-icon">&#xe61a;</i>
+                            </button>
+                            <button type="button" class="layui-btn  layui-btn-danger" onclick="tagtext(1)"style="width: 50px;padding: unset">标记</button>
+                            <button type="button" class="layui-btn  layui-btn-primary" onclick="tagtext(2);"style="width: 70px;padding: unset">取消标记</button>
+                        </div>
                     </div>
                 </div>
                 <div class="layui-card" style="box-shadow: initial;height: 83%;overflow-x: hidden; overflow-y: scroll;" id="recordreals_scrollhtml">

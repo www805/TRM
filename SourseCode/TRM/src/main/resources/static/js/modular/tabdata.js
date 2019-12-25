@@ -62,7 +62,7 @@ function set_dqrealtxt(){
         div.scrollTop = top;
     }
 }
-function recordreals_select() {
+function recordreals_select(obj) {
     mouseoverbool_left=1;//不滚动
     dqindex_realtxt=0;
     likerealtxtarr=[];
@@ -74,7 +74,7 @@ function recordreals_select() {
         $("#recordreals").html(recordrealshtml);
     }
 
-    var likerealtxt = $("#recordreals_select").val();
+    var likerealtxt = $(obj).val();
     if (isNotEmpty(likerealtxt)){
         $("#recordreals div").each(function (i,e) {
             var spantxt=$(this).find("span").text();
