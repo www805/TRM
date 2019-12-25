@@ -2422,7 +2422,6 @@ function tagtext(type) {
         if (isNotEmpty(parentdiv)) {
             var userssid=$(parentdiv).attr("userssid");
             var starttime=$(parentdiv).attr("starttime");//语音识别时间标识
-            var tagtxt=$("span",parentdiv).html();//打点标记文本
             if (isNotEmpty(userssid)&&isNotEmpty(starttime)){
                 console.log("开始进行标记操作了")
                 //选择的是语音识别内容
@@ -2433,6 +2432,7 @@ function tagtext(type) {
                     document.execCommand('removeFormat');
                 }
                 $("span",parentdiv).attr("contenteditable",false);
+                var tagtxt=$("span",parentdiv).html();//打点标记文本
                 setMCTagTxtreal(userssid,starttime,tagtxt);
                 window.getSelection().removeAllRanges();
             }else {
