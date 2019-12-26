@@ -136,8 +136,8 @@ function callsetAllproblem(data) {
 
                         var html='<tr >\
                                 <td style="padding: 0;width: 85%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
-                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""  isn_fdtime="-1"></label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" starttime=""  isn_fdtime="-1"></label></div>\
                                     <div  id="btnadd"></div>\
                                 </td>\
                                 <td>\
@@ -165,8 +165,8 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 85%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="" isn_fdtime="-1">'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime="" isn_fdtime="-1"></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  starttime="" isn_fdtime="-1">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" starttime="" isn_fdtime="-1"></label></div>\
             <div  id="btnadd"></div>\
         </td>\
         <td>\
@@ -1243,18 +1243,18 @@ function setFocus(el) {
                     if (isNotEmpty(qw_type)){
                         console.log("开始使用直播时间~")
                         if (qw_type=="w"){
-                            var w_starttime=el.getAttribute("w_starttime");
+                            var w_starttime=el.getAttribute("starttime");
                             if ((!isNotEmpty(w_starttime)||w_starttime<0)){
                                 //计算时间戳
                                 w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("w_starttime",w_starttime);
+                                el.setAttribute("starttime",w_starttime);
                             }
                         }else  if (qw_type=="q"){
-                            var q_starttime=el.getAttribute("q_starttime");
+                            var q_starttime=el.getAttribute("starttime");
                             if ((!isNotEmpty(q_starttime)||q_starttime<0)){
                                 //计算时间戳
                                 q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("q_starttime",q_starttime);
+                                el.setAttribute("starttime",q_starttime);
                             }
                         }
                     }
@@ -1295,35 +1295,7 @@ function setFocus(el) {
 };
 
 
-//自动上墙
-function setrecord_html() {
-    $("#recorddetail tr").attr("automaticbool","");
-    var trtd_html='<tr automaticbool="1">\
-        <td style="padding: 0;width: 85%;" class="onetd" >\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   q_starttime=""  ></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime="" ></label></div>\
-               <div  id="btnadd"></div>\
-                </td>\
-                <td\>\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                </td>\
-                </tr>';
-    //第一行去掉-----------------------------start
-    var textlen=null;
-    $("#first_originaltr label").each(function(){
-        textlen+=$(this).text();
-    });
-    if (!isNotEmpty(textlen)){
-        $("#first_originaltr").remove();
-        td_lastindex["key"]=null;
-        td_lastindex["value"]=null;
-    }
-    //第一行去掉-----------------------------end
-    focuslable(trtd_html,2,null);//自动追加不设置光标
-}
+
 
 
 //*******************************************************************点击start****************************************************************//
@@ -1430,8 +1402,8 @@ function initliving() {
 //默认问答
 var trtd_html='<tr>\
         <td style="padding: 0;width: 85%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  starttime=""></label></div>\
                <div  id="btnadd"></div>\
                 </td>\
                 <td>\
@@ -1516,10 +1488,10 @@ function setRecordreal() {
         var arr={};
         var answers=[];//答案集合
         var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
+        var q_starttime=$(this).find("label[name='q']").attr("starttime");
         //经过筛选的q
         var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
+        var w_starttime=$(this).find("label[name='w']").attr("starttime");
         if (isNotEmpty(q)){
             if (null!=ws&&ws.length>0){
                 for (var j = 0; j < ws.length; j++) {
@@ -1637,11 +1609,11 @@ function clearRecord() {
                 var arr={};
                 var answers=[];//答案集合
                 var q=$(this).find("label[name='q']").text();
-                var q_starttime=$(this).find("label[name='q']").attr("q_starttime");
+                var q_starttime=$(this).find("label[name='q']").attr("starttime");
                 q=q.replace(/\s/g,'');
                 //经过筛选的q
                 var ws=$(this).find("label[name='w']");
-                var w_starttime=$(this).find("label[name='w']").attr("w_starttime");
+                var w_starttime=$(this).find("label[name='w']").attr("starttime");
                 if (isNotEmpty(q)){
                     if (null!=ws&&ws.length>0){
                         for (var j = 0; j < ws.length; j++) {
@@ -1767,16 +1739,16 @@ function setqw(problems){
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 85%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
                     var answer = answers[j];
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"    w_starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"    starttime="'+answer.starttime+'">'+answertext+'</label></div>';
                 }
             }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>';
+                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  starttime=""></label></div>';
             }
             problemhtml+=' <div  id="btnadd"></div></td>\
                         <td>\
@@ -1865,19 +1837,8 @@ function exportPdf() {
 }
 
 
-//自动甄别初始化
-var laststarttime_qq=-1;//上一个问时间
-var laststarttime_ww=-1;//上一个答时间
-var last_type=-1;//上一个是 1问题 2是答案
-var qq="";
-var qqq="";
-var ww="";
-var www="";
 
-/*var q_prevstarttime=-1;
-var qq_prev="";*/
-var w_prevstarttime=-1;
-var ww_prev="";
+
 
 
 //定时器关闭
@@ -2030,15 +1991,14 @@ $(function () {
 
 
 
-//自动甄别初始化
-
-    var laststarttime_qq=-1;//上一个问时间
+    //自动甄别初始化
+   /* var laststarttime_qq=-1;//上一个问时间
     var laststarttime_ww=-1;//上一个答时间
     var last_type=-1;//上一个是 1问题 2是答案
     var qq="";//本次的问的内容
     var qqq="";//没有跳问答的已经写入行中问的内容
     var ww="";//本次的答的内容
-    var www="";//没有跳问答的已经写入行中答的内容
+    var www="";//没有跳问答的已经写入行中答的内容*/
 
 
     // 建立连接
@@ -2112,84 +2072,7 @@ $(function () {
                             //检测自动上墙是否开启
                             var record_switch_bool=$("#record_switch_bool").attr("isn");
                             if (record_switch_bool==1){
-                                if (last_type==-1){
-                                    //初始化，开始有问就开始追加一行
-                                    if (usertype==1){//初始化上墙，
-
-                                        qq=translatext;
-
-                                        setrecord_html();
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").html(qq);
-
-                                        last_type=usertype;
-                                        laststarttime_qq=starttime;
-                                        www="";
-                                        qqq="";
-                                    }
-                                }else  if (last_type==1){
-                                    //最后是问
-
-                                    if (usertype==1){
-                                        //最后是问，本次是问，判断本次问和最后一次问的时间是否一致，一致问刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_qq==starttime){//修改最后一条数据
-                                            qq=translatext;
-                                        }else{//追加这条数据
-                                            qqq+=qq;//把上一条数据加到qqq，说明上一条数据已经完成，qqq记录的都是已经完成的问
-                                            qq=translatext;
-                                        }
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").html(qqq+qq);
-                                        laststarttime_qq=starttime;
-                                    }else if (usertype==2){
-                                        //最后是问，本次是答，开始拼接答案
-                                        if (laststarttime_ww==starttime){//判断这次答的时间跟上一句答的时间是否一样，一样的话
-                                            console.log("修改即可————————————————————————————w")
-                                            console.log("www_______________________________"+www);
-                                            $("#recorddetail tr[automaticbool='1']").prev().find("td:first label[name='w']").html(www+translatext);
-                                        }else {//建立新答
-                                            ww=translatext;
-                                            www="";
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").html(ww);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").attr("w_starttime",starttime);
-                                            console.log("建立新答_____________________________"+ww);
-                                        }
-                                        laststarttime_ww=starttime;
-                                    }
-                                    last_type=usertype;
-
-                                }else  if (last_type==2){
-                                    //最后是答
-
-                                    if (usertype==2){//最后是答，本次确实答，判断本次答和最后一次答的时间是否一致，一致刷新，不一致开始追加问答，并且初始化数据
-                                        if (laststarttime_ww==starttime){//答的修改最后一句
-                                            ww=translatext;
-                                        }else{//答的追加最后一句
-                                            www+=ww;
-                                            ww=translatext;
-                                        }
-                                        $("#recorddetail tr[automaticbool='1'] td:first label[name='w']").html(www+ww);
-                                        laststarttime_ww=starttime;
-                                        console.log("www_________________________"+www)
-                                    }else if (usertype==1){//最后是答，本次为问
-                                        //判断本次问是否和上一次问相同时间，相同改变否则追加一行
-                                        if (laststarttime_qq==starttime){//只需要修改最后一个问
-                                            console.log("修改即可————————————————————————————q")
-                                            qq=translatext;
-
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q'] ").html(qqq+qq);
-                                        }else {//追加一个新问
-                                            console.log("从这里开始追加新的一行_________")
-                                            qqq="";
-                                            qq=translatext;
-                                            setrecord_html();
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").html(qq);
-                                            $("#recorddetail tr[automaticbool='1'] td:first label[name='q']").attr("q_starttime",starttime);
-                                        }
-                                        laststarttime_qq=starttime;
-                                    }
-                                    last_type=usertype;
-                                }
-                              /*  setRecordreal();//实时保存一下*/
+                                identify(usertype,starttime,null,translatext);
                             }
                         }
                     }
@@ -2240,6 +2123,110 @@ $(function () {
         addRecord();
     });
 });
+
+
+var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{firsttime:第一句时间，starttime:当前句时间}
+var lastusertype=-1;//上一个类型
+
+function identify(usertype,starttime,gradeintroduce,translatext){
+    var last_identify=last_identifys[""+lastusertype+""];//上一个角色
+    var dq_identify=last_identifys[""+usertype+""];//当前角色
+
+    if (usertype==1){gradeintroduce="q"}else {gradeintroduce="w"}//问答临时代号
+
+    if (lastusertype!=-1){
+        if (isNotEmpty(last_identify)){
+            if (usertype==lastusertype) {
+                var thisp= $("#recorddetail label[name="+gradeintroduce+"][starttime="+last_identify.firsttime+"]:last");
+                if (isNotEmpty(thisp)) {
+                    var span_last = $("span[starttime]:not(:empty)",thisp).last();
+                    var span_laststarttime=$(span_last).attr("starttime");
+                    if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
+                        $(span_last).html(translatext);
+                    }else {
+                        $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
+                    }
+                    last_identifys[""+usertype+""].starttime=starttime;
+                    lastusertype=usertype;
+                }else {
+                    addidentify(usertype,starttime,gradeintroduce,translatext);
+                }
+            }else {
+                if (isNotEmpty(dq_identify)) {
+                    var thisp= $("#recorddetail label[name="+gradeintroduce+"][starttime="+dq_identify.firsttime+"]:last");
+                    if (dq_identify.starttime==starttime&&isNotEmpty(thisp)){
+                        var span_last = $("span[starttime]:not(:empty)",thisp).last();
+                        var span_laststarttime=$(span_last).attr("starttime");
+                        if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
+                            $(span_last).last().html(translatext);
+                        }else {
+                            $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
+                        }
+                        last_identifys[""+usertype+""].starttime=starttime;
+                        usertype=lastusertype;//不改变上一个
+                        lastusertype=usertype;
+                    } else {
+                        addidentify(usertype,starttime,gradeintroduce,translatext);
+                    }
+                }else {
+                    addidentify(usertype,starttime,gradeintroduce,translatext);
+                }
+            }
+        }else {
+            console.log("存在上一个角色不应该进来的吧******************************")
+        }
+    }else{
+        if (usertype==1){
+            console.log("初始化一下自动甄别******************************")
+            addidentify(usertype,starttime,gradeintroduce,translatext);
+        }
+    }
+}
+
+function addidentify(usertype,starttime,gradeintroduce,translatext) {
+
+    //判断是问答类型
+    if (usertype==1){
+        //新增一行问答
+        var trtd_html='<tr>\
+        <td style="padding: 0;width: 85%;" class="onetd" >\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"   starttime="'+starttime+'"  ><span starttime="'+starttime+'">'+translatext+'</span></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  starttime="" ></label></div>\
+               <div  id="btnadd"></div>\
+                </td>\
+                <td\>\
+                    <div class="layui-btn-group">\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                </td>\
+                </tr>';
+        //第一行去掉-----------------------------start
+        var textlen=null;
+        $("#first_originaltr label").each(function(){
+            textlen+=$(this).text();
+        });
+        if (!isNotEmpty(textlen)){
+            $("#first_originaltr").remove();
+            td_lastindex["key"]=null;
+            td_lastindex["value"]=null;
+        }
+        //第一行去掉-----------------------------end
+        focuslable(trtd_html,2,null);//自动追加不设置光标
+    } else  if (usertype==2){
+        //对答做处理
+        //获取最后一个问，定位到答
+        var last_q=last_identifys["1"];
+        var thisp_q= $("#recorddetail label[name='q'][starttime="+last_q.firsttime+"]:last");
+        var last_td=$(thisp_q).closest("td");
+        $("label[name="+gradeintroduce+"]:last",last_td).attr("starttime",starttime);
+        $("label[name="+gradeintroduce+"]:last",last_td).append("<span starttime="+starttime+">"+translatext+"</span>");
+    }
+    last_identifys[""+usertype+""]={firsttime:starttime,starttime:starttime};
+    lastusertype=usertype;
+}
+
+
 
 layui.use('form', function(){
     var form=layui.form;
