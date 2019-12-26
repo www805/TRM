@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
+import com.avst.trm.v1.web.sweb.req.basereq.GetServerPortALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.UpdateIpParam;
 import com.avst.trm.v1.web.sweb.service.policeservice.ServerIpService;
 import org.apache.shiro.SecurityUtils;
@@ -104,6 +105,43 @@ public class ServerIpAction extends BaseAction{
         Subject subject = SecurityUtils.getSubject();
         if(subject.isPermitted("getServerIpALL")) {
             serverIpService.getServerIpALL(rResult, param);
+        }else{
+            rResult.setMessage("权限不足");
+        }
+        return rResult;
+    }
+
+
+    /**
+     * 获取所有服务端口
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/getServerPortALL", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public RResult getServerPortALL(GetServerPortALLParam param) {
+        RResult rResult = createNewResultOfFail();
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getServerIpALL")) {
+            serverIpService.getServerPortALL(rResult, param);
+        }else{
+            rResult.setMessage("权限不足");
+        }
+        return rResult;
+    }
+
+    /**
+     * 设置所有服务端口
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/setServerPortALL", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public RResult setServerPortALL(@RequestBody GetServerPortALLParam param) {
+        RResult rResult = createNewResultOfFail();
+        Subject subject = SecurityUtils.getSubject();
+        if(subject.isPermitted("getServerIpALL")) {
+            serverIpService.setServerPortALL(rResult, param);
         }else{
             rResult.setMessage("权限不足");
         }

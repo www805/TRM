@@ -44,7 +44,6 @@ function updateServerIp(){
     ajaxSubmitByJson(url,data,callUpdateServerIp);
 }
 
-
 //修改网卡下本机ip
 function updateIp() {
 
@@ -82,6 +81,37 @@ function updateIp() {
         shade: [0.1,"#fff"],
     });
 
+}
+
+//修改端口
+function setServerPortALL() {
+
+    // var url = getActionURL(getactionid_manage().serverip_updateIp);
+    var url = "/sweb/base/ip/setServerPortALL";
+
+    var trmport = $("#trmport").val();
+    var zkport = $("#zkport").val();
+    var mcport = $("#mcport").val();
+    var ecport = $("#ecport").val();
+    // var saveinfoport = $("#saveinfoport").val();
+    var ftpport = $("#ftpport").val();
+    var socketioport = $("#socketioport").val();
+    var nginxport = $("#nginxport").val();
+    // var anzhuangpath = $("#anzhuangpath").val();
+
+    var data = {
+        trmport: parseInt(trmport),
+        zkport: parseInt(zkport),
+        mcport: parseInt(mcport),
+        ecport: parseInt(ecport),
+        // saveinfoport: saveinfoport,
+        ftpport: parseInt(ftpport),
+        socketioport: parseInt(socketioport),
+        nginxport: parseInt(nginxport),
+        // anzhuangpath: anzhuangpath
+    }
+
+    ajaxSubmitByJson(url, data, callUpdateServerIp);
 }
 
 /**
@@ -148,7 +178,13 @@ function getServerIpPath(trmipNum){
     });
 }
 
+//获取所有服务端口
+function getServerPortALL(){
+    // var url = getActionURL(getactionid_manage().serverip_getServerIpList);
+    var url = "/sweb/base/ip/getServerPortALL";
 
+    ajaxSubmit(url,null,callgetServerPortALL);
+}
 
 //遍历网卡中的ip
 function getNetworkPath(){
@@ -298,6 +334,25 @@ function callgetServerIpALL(data){
     }
 }
 
+function callgetServerPortALL(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var serverPort = data.data;
+
+        $("#trmport").val(isNotEmpty(serverPort['trmport']) == true ? serverPort['trmport'] : "");
+        $("#zkport").val(isNotEmpty(serverPort['zkport']) == true ? serverPort['zkport'] : "");
+        $("#mcport").val(isNotEmpty(serverPort['mcport']) == true ? serverPort['mcport'] : "");
+        $("#ecport").val(isNotEmpty(serverPort['ecport']) == true ? serverPort['ecport'] : "");
+        // $("#saveinfoport").val(isNotEmpty(serverPort['saveinfoport']) == true ? serverPort['saveinfoport'] : "");
+        $("#ftpport").val(isNotEmpty(serverPort['ftpport']) == true ? serverPort['ftpport'] : "");
+        $("#socketioport").val(isNotEmpty(serverPort['socketioport']) == true ? serverPort['socketioport'] : "");
+        $("#nginxport").val(isNotEmpty(serverPort['nginxport']) == true ? serverPort['nginxport'] : "");
+        // $("#anzhuangpath").val(isNotEmpty(serverPort['anzhuangpath']) == true ? serverPort['anzhuangpath'] : "");
+
+    }else{
+        layer.msg(data.message, {icon:5});
+    }
+}
+
 function callUpdateServerIp(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         layer.msg("操作成功",{icon: 6});
@@ -309,7 +364,7 @@ function callUpdateServerIp(data){
 
 
 $(function () {
-    layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload'], function () {
+    layui.use(['form', 'layedit', 'laydate', 'laypage', 'layer', 'upload','element'], function () {
         var $ = layui.jquery
             , upload = layui.upload
             , form = layui.form
@@ -343,6 +398,11 @@ $(function () {
 
         form.on('submit(formDemo)', function (data) {
             updateServerIp();
+            return false;
+        });
+
+        form.on('submit(formPort)', function (data) {
+            setServerPortALL();
             return false;
         });
 

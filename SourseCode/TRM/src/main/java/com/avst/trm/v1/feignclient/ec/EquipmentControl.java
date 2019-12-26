@@ -149,6 +149,15 @@ public interface EquipmentControl {
     public RResult getServerIpALL(@RequestBody ReqParam<GetServerIpALLParam> param);
 
     /**
+     * 获取其他全部设备端口
+     * @param param
+     * @return
+     */
+    @RequestMapping("/flushbonading/v1/getToOutFtpPort")
+    @ResponseBody
+    public RResult getToOutFtpPort(@RequestBody ReqParam<GetToOutMiddleware_FTPParam> param);
+
+    /**
      * 修改配置
      * @return
      */
@@ -156,6 +165,23 @@ public interface EquipmentControl {
     @ResponseBody
     public RResult updateServerIp(@RequestBody GetServerIpParam getServerIpParam);
 
+    /**
+     * 修改ec数据库里的接口端口
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/flushbonading/v1/setToOutBacktxtinterface")
+    @ResponseBody
+    public RResult setToOutBacktxtinterface(@RequestBody ReqParam<SetToOutBacktxtinterfaceParam> param);
+
+    /**
+     * 数据库ec的ss_saveinfo中的port设备集中控制ftp的port也要修改
+     * @param param
+     * @return
+     */
+    @PostMapping(value = "/flushbonading/v1/setFtpAndSaveinfoPort")
+    @ResponseBody
+    public RResult setFtpAndSaveinfoPort(@RequestBody ReqParam<SetToOutBacktxtinterfaceParam> param);
 
 //    @RequestMapping("/flushbonading/v1/getFDState")
 //    @ResponseBody

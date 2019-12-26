@@ -1219,8 +1219,12 @@ public class MainService extends BaseService {
 
     public void getServerStatus(RResult result, ReqParam param) {
 
-
-        RResult controlInfoAll = zkControl.getServerStatus();
+        RResult controlInfoAll = new RResult();
+        try {
+            controlInfoAll = zkControl.getServerStatus();
+        } catch (Exception e) {
+            LogUtil.intoLog(4,this.getClass(),"获取服务器时间，远程请求接口出错！");
+        }
 
         result.setActioncode(controlInfoAll.getActioncode());
         result.setNextpageid(controlInfoAll.getNextpageid());

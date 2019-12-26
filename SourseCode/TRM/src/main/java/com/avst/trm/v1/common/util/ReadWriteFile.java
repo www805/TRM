@@ -1,16 +1,6 @@
 package com.avst.trm.v1.common.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +65,14 @@ public class ReadWriteFile {
      * 
      */
     public static List<String> readTxtFileToList(String path,String code){
-        String read="";
+
+		File file = new File(path);
+		if(!file.exists()){
+			LogUtil.intoLog(4,ReadWriteFile.class,"文件不存在！读取文件文本,文件路径为："+path);
+			return null;
+		}
+
+		String read="";
         InputStream input = null;
         InputStreamReader inp=null;
         try {
@@ -303,18 +300,20 @@ public class ReadWriteFile {
 			}
 
 			File f = new File(path);
-        	FileWriter fw=null;
+			BufferedWriter writer = null;
 			try {
-				fw =  new FileWriter(f);
-				fw.write(newStr);
+				FileOutputStream writerStream = new FileOutputStream(f);
+				writer = new BufferedWriter(new OutputStreamWriter(writerStream, "UTF-8"));
+
+				writer.write(newStr);
 
 				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-				if(null!=fw){
-					fw.flush();
-					fw.close();
+				if(null!=writer){
+					writer.flush();
+					writer.close();
 				}
 
 

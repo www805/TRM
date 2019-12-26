@@ -2,20 +2,25 @@ package com.avst.trm.v1.common.util.ipandport;
 
 import com.avst.trm.v1.common.cache.CommonCache;
 import com.avst.trm.v1.common.cache.ServerIpCache;
+import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.baseaction.Code;
 import com.avst.trm.v1.common.util.baseaction.RResult;
+import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQVersion;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.SetToOutBacktxtinterfaceParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.*;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * 系统修改IP或者端口
@@ -176,6 +181,7 @@ public class ChangeIPAndPort {
         //nginx,conf的配置文件
         //数据库，ec的asr_etinfo中的backtxtinterface
         //数据库，ec的ss_saveinfo中的port
+        EquipmentControl equipmentControl = SpringUtil.getBean(EquipmentControl.class);
 
         String fileBasepath=updatePortParam.getAnzhuangpath();
         if (null == fileBasepath || fileBasepath.trim().equals("")) {
@@ -210,7 +216,15 @@ public class ChangeIPAndPort {
 
             //数据库修改
             //数据库，ec的asr_etinfo中的backtxtinterface的端口修改
-
+            ReqParam<SetToOutBacktxtinterfaceParam> reqParam = new ReqParam();
+            SetToOutBacktxtinterfaceParam baPort = new SetToOutBacktxtinterfaceParam();
+            baPort.setPort(ecserverport);
+            baPort.setFdType(FDType.FD_AVST);
+            reqParam.setParam(baPort);
+            RResult result = equipmentControl.setToOutBacktxtinterface(reqParam);
+            if (!"SUCCESS".equalsIgnoreCase(result.getActioncode())) {
+                LogUtil.intoLog(4,ChangeIPAndPort.class,ecserverport+":ecserverport ,远程修改ec数据库端口失败。。");
+            }
         }else{
             LogUtil.intoLog(3,ChangeIPAndPort.class,ecserverport+":ecserverport ,端口必须是大于0的才会进行修改");
         }
@@ -219,14 +233,18 @@ public class ChangeIPAndPort {
         //trm.priperties
         if(trmserverport>0){
             String trmconfpath = fileBasepath + "WORKJAR/trm.properties";
+//            setPropertiesByKey(trmconfpath, "server.port", trmserverport + "");
+
             List<String> trmlist = ReadWriteFile.readTxtFileToList(trmconfpath, "utf8");
             boolean trmbool = false;
             if (null != trmlist && trmlist.size() > 0) {
                 String newfiletxt = "";
                 boolean updatebool=true;//如果是false就不修改文件
+                boolean breakbool=true;//如果是false就跳出不修改文件
                 for (String str : trmlist) {
-                    if (str.indexOf("server.port") > -1) {
-                        str="server.port="+trmserverport;
+                    if (str.indexOf("server.port") > -1 && breakbool == true) {
+                        str = "server.port=" + trmserverport;
+                        breakbool = false;
                     }
                     newfiletxt += str + "\n";
                 }
@@ -318,6 +336,18 @@ public class ChangeIPAndPort {
 
             //数据库，ec的ss_saveinfo中的port
             //设备集中控制ftp的port也要修改
+            ReqParam<SetToOutBacktxtinterfaceParam> reqParam = new ReqParam();
+            SetToOutBacktxtinterfaceParam baPort = new SetToOutBacktxtinterfaceParam();
+            baPort.setPort(ecserverport);
+            baPort.setFdType(FDType.FD_AVST);
+            baPort.setFtpport(updatePortParam.getFtpserverport());
+            reqParam.setParam(baPort);
+            RResult result = equipmentControl.setFtpAndSaveinfoPort(reqParam);
+            if (!"SUCCESS".equalsIgnoreCase(result.getActioncode())) {
+                LogUtil.intoLog(4,ChangeIPAndPort.class,ecserverport+":ecserverport ,远程修改ec数据库端口和ftp端口失败。。");
+            }
+
+
         }
 
         int nginxserverport=updatePortParam.getNginxserverport();
@@ -439,6 +469,7 @@ public class ChangeIPAndPort {
             }else{
                 LogUtil.intoLog(4,ChangeIPAndPort.class,"trm.properties没有读到数据");
             }
+            return true;
         }else{
             LogUtil.intoLog(3,ChangeIPAndPort.class,trmserverport+":trmserverport ,端口必须是大于0的才会进行修改");
         }
@@ -448,5 +479,81 @@ public class ChangeIPAndPort {
         return false;
     }
 
+    /**
+     * 获取配置文件里的服务器端口
+     * @param path  文件地址
+     * @param key  server.port
+     * @return
+     */
+    public static String getPropertiesByKey(String path, String key){
+        String value = "";
+        InputStream input = null;
+
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                Properties properties = new Properties();
+                input = new BufferedInputStream(new FileInputStream(path));//"D:\\TRM\\WORKJAR\\trm.properties"
+                properties.load(input);
+                value = properties.getProperty(key, "没有该key值");
+//            System.out.println("输出值:" + value);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (null != input) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return value;
+    }
+
+
+    /**
+     * 设置Properties键值
+     * @param path
+     * @param key
+     * @param value
+     */
+    public static void setPropertiesByKey(String path, String key, String value){
+        InputStream input = null;
+        OutputStream output  = null;
+
+        File file = new File(path);
+        if (file.exists()) {
+            try {
+                Properties properties = new Properties();
+                input = new BufferedInputStream(new FileInputStream(path));//"D:\\TRM\\WORKJAR\\trm.properties"
+                output = new BufferedOutputStream(new FileOutputStream(path));
+                properties.load(input);
+
+                properties.setProperty(key, value);
+                properties.store(output,"");//写出更新到文件
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (null != input) {
+                    try {
+                        input.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (null != output) {
+                    try {
+                        output.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
 
 }

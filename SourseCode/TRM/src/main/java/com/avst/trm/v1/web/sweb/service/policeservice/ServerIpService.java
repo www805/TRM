@@ -5,24 +5,33 @@ import com.avst.trm.v1.common.cache.AppCache;
 import com.avst.trm.v1.common.cache.AppServerCache;
 import com.avst.trm.v1.common.cache.ServerIpCache;
 import com.avst.trm.v1.common.conf.type.BASEType;
+import com.avst.trm.v1.common.conf.type.FDType;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
+import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.ipandport.ChangeIPAndPort;
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.SystemIpUtil;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
+import com.avst.trm.v1.common.util.ipandport.UpdatePortParam;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.feignclient.ec.EquipmentControl;
+import com.avst.trm.v1.feignclient.ec.req.GetToOutMiddleware_FTPParam;
+import com.avst.trm.v1.feignclient.ec.vo.GetMiddleware_FTPVO;
 import com.avst.trm.v1.feignclient.mc.MeetingControl;
 import com.avst.trm.v1.feignclient.mc.req.GetTDCacheParamByMTssidParam_out;
+import com.avst.trm.v1.feignclient.zk.ZkControl;
+import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
 import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.GetServerIpParam;
+import com.avst.trm.v1.web.sweb.req.basereq.GetServerPortALLParam;
 import com.avst.trm.v1.web.sweb.req.basereq.UpdateIpParam;
 import com.avst.trm.v1.web.sweb.vo.basevo.GetServerIpVO;
+import com.avst.trm.v1.web.sweb.vo.basevo.GetServerPortALLVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +41,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +56,9 @@ public class ServerIpService extends BaseService {
 
     @Autowired
     private Base_serverconfigMapper base_serverconfigMapper;
+
+    @Autowired
+    private MainService mainService;
 
     /**
      * 获取ip和会议模板
@@ -227,9 +240,6 @@ public class ServerIpService extends BaseService {
             }
 
         }
-
-
-
     }
 
     /**
@@ -239,15 +249,167 @@ public class ServerIpService extends BaseService {
      */
     public void getServerIpALL(RResult rResult, GetServerIpALLParam param) {
 
-        //获取其他所有的ip
-        ReqParam<GetServerIpALLParam> reqParam = new ReqParam<>();
-        param.setBaseType(BASEType.Base);
-        reqParam.setParam(param);
+        try {
+            //获取其他所有的ip
+            ReqParam<GetServerIpALLParam> reqParam = new ReqParam<>();
+            param.setBaseType(BASEType.Base);
+            reqParam.setParam(param);
 
-        RResult rResult1 = equipmentControl.getServerIpALL(reqParam);
-        rResult.setData(rResult1.getData());
+            RResult rResult1 = equipmentControl.getServerIpALL(reqParam);
+            rResult.setData(rResult1.getData());
+            changeResultToSuccess(rResult);
+        } catch (Exception e) {
+            LogUtil.intoLog(4,this.getClass(),"获取其他全部设备IP，远程请求接口出错！");
+        }
+
+    }
+
+    /**
+     * 获取所有服务端口
+     * @param rResult
+     * @param param
+     */
+    public void getServerPortALL(RResult rResult, GetServerPortALLParam param) {
+
+        GetServerPortALLVO vo = new GetServerPortALLVO();
+
+        try {
+            //请求总控获取所有服务的端口
+//            RResult zkResult = new RResult();
+//            mainService.getServerStatus(zkResult, null);
+//            if(null != zkResult.getData()){
+//                List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
+//                for (LinkedHashMap<String, Object> hashMap : data) {
+//
+//                    String url = (String) hashMap.get("url");
+//                    int startNum = url.indexOf(":",10);
+//                    int endNum = url.indexOf("/", 10);
+//                    String portStr = url.substring(startNum + 1, endNum);
+//
+//                    if("trm".equals(hashMap.get("servername"))){
+//                        vo.setTrmport(portStr);
+//                    }else if("zk".equals(hashMap.get("servername"))){
+//                        vo.setZkport(portStr);
+//                    }else if("mc".equals(hashMap.get("servername"))){
+//                        vo.setMcport(portStr);
+//                    }else if("ec".equals(hashMap.get("servername"))){
+//                        vo.setEcport(portStr);
+//                    }
+//                }
+//            }
+
+//            String socketioport = PropertiesListenerConfig.getProperty("socketio.server.port");
+            String sysBasepath = PropertiesListenerConfig.getProperty("sysBasepath");
+            String fileBasepath = sysBasepath.endsWith("/") ? sysBasepath : (sysBasepath + "/");
+            String listen = "";
+
+            //从配置文件读trm、zk、ec、mc端口
+            String socketioport = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/trm.properties", "socketio.server.port");
+            String trmPort = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/trm.properties", "server.port");
+            String mcPort = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/mc.properties", "server.port");
+            String ecPort = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/ec.properties", "server.port");
+            String ftpPort = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/ec.properties", "ftpport");
+            String zkPort = ChangeIPAndPort.getPropertiesByKey(fileBasepath + "WORKJAR/zk.properties", "server.port");
+            vo.setTrmport(trmPort);
+            vo.setMcport(mcPort);
+            vo.setEcport(ecPort);
+            vo.setZkport(zkPort);
+            vo.setFtpport(ftpPort);
+            vo.setSocketioport(socketioport);
+            vo.setAnzhuangpath(sysBasepath);
+
+            //从ec获取ftp集中控制端口
+//            ReqParam<GetToOutMiddleware_FTPParam> reqParam = new ReqParam<>();
+//            GetToOutMiddleware_FTPParam ftpParam = new GetToOutMiddleware_FTPParam();
+//            ftpParam.setFdType(FDType.FD_AVST);
+//            reqParam.setParam(ftpParam);
+//            RResult ftpPortResult = equipmentControl.getToOutFtpPort(reqParam);
+//            if(null != ftpPortResult.getData()){
+//                LinkedHashMap<String, String> map = (LinkedHashMap<String, String>) ftpPortResult.getData();
+//                if (null != map.get("saveinfoport")) {
+//                    vo.setSaveinfoport((String) map.get("saveinfoport"));
+//                }
+//                if (null != map.get("ftpport")) {
+//                    vo.setFtpport((String) map.get("ftpport"));
+//                }
+//            }
+
+            //NGINX。conf
+            String nginxconfpath = fileBasepath + "other/nginx-1.8.1/nginx-1.8.1/conf/nginx.conf";
+            List<String> nginxlist = ReadWriteFile.readTxtFileToList(nginxconfpath, "utf8");
+            if (null != nginxlist && nginxlist.size() > 0) {
+                for (String str : nginxlist) {
+                    if (str.trim().startsWith("listen ")) {
+                        listen = str.replace("listen ", "").replace(";","").trim();
+                        break;
+                    }
+                }
+            }else{
+                LogUtil.intoLog(4,ChangeIPAndPort.class,"nginx.conf没有读到数据");
+            }
+
+            vo.setNginxport(listen);
+        } catch (Exception e) {
+            LogUtil.intoLog(4,this.getClass(),"获取所有服务端口，远程请求接口出错！");
+        }
+
+        rResult.setData(vo);
         changeResultToSuccess(rResult);
-        return;
+    }
+
+    public void setServerPortALL(RResult rResult, GetServerPortALLParam param) {
+
+        if (null == param.getTrmport()) {
+            rResult.setMessage("trm端口不能为空");
+            return;
+        }
+        if (null == param.getZkport()) {
+            rResult.setMessage("zk端口不能为空");
+            return;
+        }
+        if (null == param.getMcport()) {
+            rResult.setMessage("mc端口不能为空");
+            return;
+        }
+        if (null == param.getEcport()) {
+            rResult.setMessage("ec端口不能为空");
+            return;
+        }
+//        if (null == param.getSaveinfoport()) {
+//            rResult.setMessage("ec存储设备端口不能为空");
+//            return;
+//        }
+        if (null == param.getFtpport()) {
+            rResult.setMessage("ftp端口不能为空");
+            return;
+        }
+        if (null == param.getSocketioport()) {
+            rResult.setMessage("socketioport端口不能为空");
+            return;
+        }
+        if (null == param.getNginxport()) {
+            rResult.setMessage("nginx端口不能为空");
+            return;
+        }
+
+
+        UpdatePortParam updatePortParam = new UpdatePortParam();
+        updatePortParam.setTrmserverport(param.getTrmport());
+        updatePortParam.setZkserverport(param.getZkport());
+        updatePortParam.setMcserverport(param.getMcport());
+        updatePortParam.setEcserverport(param.getEcport());
+        updatePortParam.setFtpserverport(param.getFtpport());
+        updatePortParam.setSocketioserverport(param.getSocketioport());
+        updatePortParam.setNginxserverport(param.getNginxport());
+//        updatePortParam.setAnzhuangpath(param.getAnzhuangpath());
+
+        boolean b = ChangeIPAndPort.updatePort(updatePortParam);
+        if (b) {
+            changeResultToSuccess(rResult);
+        }else{
+            rResult.setMessage("端口修改失败。。");
+        }
+
     }
 
     /**
@@ -267,7 +429,5 @@ public class ServerIpService extends BaseService {
         }
         return true;
     }
-
-
 
 }
