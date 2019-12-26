@@ -16,17 +16,6 @@ var dq_userinfograde=USERINFOGRADE2;//默认为被告
 var userinfogrades={};
 
 
-var userinfograde1_name=USERINFOGRADE1_NAME;//原告
-var userinfograde2_name=USERINFOGRADE2_NAME;//被告
-var userinfograde3_name=USERINFOGRADE3_NAME;//被告诉讼代理人
-var userinfograde4_name=USERINFOGRADE4_NAME;//审判长
-var userinfograde5_name=USERINFOGRADE5_NAME;//书记员
-var userinfograde6_name=USERINFOGRADE6_NAME;//陪审员
-var userinfograde7_name=USERINFOGRADE7_NAME;//审判员
-var userinfograde8_name=USERINFOGRADE8_NAME;//原告诉讼代理人
-
-
-
 
 //开始笔录按钮===================================================================start
 function addCaseToArraignment() {

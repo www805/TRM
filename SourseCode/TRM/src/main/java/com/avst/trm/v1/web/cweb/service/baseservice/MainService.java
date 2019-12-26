@@ -15,6 +15,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -118,6 +119,9 @@ public class MainService extends BaseService {
 
     @Autowired
     private Police_cardtypeMapper police_cardtypeMapper;
+
+    @Autowired
+    private Police_userinfogradeMapper police_userinfogradeMapper;
 
     @Autowired
     private MeetingControl meetingControl;
@@ -1320,11 +1324,15 @@ public class MainService extends BaseService {
         adminparam.orderBy("a.registerTime",false);
         List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
         List<Police_cardtype> cardtypeList=police_cardtypeMapper.selectList(null);
+        List<Police_userinfograde> userinfogradeList=police_userinfogradeMapper.selectList(null);
+
+
         vo.setNationalityList(nationalityList);
         vo.setNationalList(nationalList);
         vo.setAdminList(adminList);
         vo.setWorkunitList(workunitList);
         vo.setCardtypeList(cardtypeList);
+        vo.setUserinfogradeList(userinfogradeList);
         result.setData(vo);
         changeResultToSuccess(result);
         return;

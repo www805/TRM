@@ -803,6 +803,7 @@ function callbackgetgetBaseData(data) {
             var nationalList=data.nationalList;//全部民族
             var workunitList=data.workunitList;//全部工作单位
             var cardtypeList=data.cardtypeList;//全部的证件类型
+            var userinfogradeList=data.userinfogradeList;//全部人员级别类型
 
 
             //全部民族
@@ -834,6 +835,57 @@ function callbackgetgetBaseData(data) {
                     $("#judges").append("<option value='"+u.ssid+"' >"+u.username+"</option>");
                 }
             }
+
+            //全部人员级别类型
+            if (isNotEmpty(userinfogradeList)) {
+                //回填角色显示名称
+                for (let i = 0; i < userinfogradeList.length; i++) {
+                    const userinfograde = userinfogradeList[i];
+                    if (userinfograde.ssid==USERINFOGRADE1) {
+                        userinfograde1_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE2) {
+                        userinfograde2_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE3) {
+                        userinfograde3_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE4) {
+                        userinfograde4_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE5) {
+                        userinfograde5_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE6) {
+                        userinfograde6_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE7) {
+                        userinfograde7_name=userinfograde.gradename;
+                    }
+                    if (userinfograde.ssid==USERINFOGRADE8) {
+                        userinfograde8_name=userinfograde.gradename;
+                    }
+                }
+                //回填
+                $("."+USERINFOGRADE1).html(userinfograde1_name);
+                $("."+USERINFOGRADE2).html('<span style="color: red;font-weight: initial">*</span>'+userinfograde2_name);
+                $("."+USERINFOGRADE3).html(userinfograde3_name);
+                $("."+USERINFOGRADE4).html('<span style="color: red;font-weight: initial">*</span>'+userinfograde4_name);
+                $("."+USERINFOGRADE5).html(userinfograde5_name);
+                $("."+USERINFOGRADE6).html(userinfograde6_name);
+                $("."+USERINFOGRADE7).html(userinfograde7_name);
+                $("."+USERINFOGRADE8).html(userinfograde8_name);
+
+                USERINFOGRADE1_NAME=userinfograde1_name;
+                USERINFOGRADE2_NAME=userinfograde1_name;
+                USERINFOGRADE3_NAME=userinfograde1_name;
+                USERINFOGRADE4_NAME=userinfograde1_name;
+                USERINFOGRADE5_NAME=userinfograde1_name;
+                USERINFOGRADE6_NAME=userinfograde1_name;
+                USERINFOGRADE7_NAME=userinfograde1_name;
+                USERINFOGRADE8_NAME=userinfograde1_name;
+
+            }
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -844,5 +896,14 @@ function callbackgetgetBaseData(data) {
     });
 }
 //********************************************base基础数据获取*****************************************start
+var loadname="加载中";
+var userinfograde1_name=loadname;//原告
+var userinfograde2_name=loadname;//被告
+var userinfograde3_name=loadname;//被告诉讼代理人
+var userinfograde4_name=loadname;//审判长
+var userinfograde5_name=loadname;//书记员
+var userinfograde6_name=loadname;//陪审员
+var userinfograde7_name=loadname;//审判员
+var userinfograde8_name=loadname;//原告诉讼代理人
 
 

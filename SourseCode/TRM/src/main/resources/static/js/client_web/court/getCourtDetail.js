@@ -199,6 +199,9 @@ function callbackgetRecordById(data) {
 function set_getRecord(data){
     if (isNotEmpty(data.list)){
         $("#recordreals").empty();
+        if (gnlist.indexOf(NX_O)!= -1){
+            $("#open_tagtext").show();
+        }
         $("#recordreals_selecthtml").show();
         var list=data.list;
         for (var i = 0; i < list.length; i++) {

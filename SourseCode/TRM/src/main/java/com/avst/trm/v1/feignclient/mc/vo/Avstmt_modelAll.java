@@ -65,8 +65,6 @@ public class Avstmt_modelAll {
     private List<Avstmt_modeltdAll> avstmt_modeltdAlls;//全部模板通道
 
 
-
-
     public Integer getId() {
         return id;
     }
