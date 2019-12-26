@@ -1405,7 +1405,7 @@ var trtd_html='<tr>\
                 </td>\
                 </tr>';
 
-//lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
+//lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标问还是答null//不设置光标
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
     var qwfocus=null;

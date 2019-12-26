@@ -48,10 +48,10 @@ public class RecordProtectCache {
      */
     public synchronized static List<RecordProtectParam> getRecordProtectList() {
         if (null==recordProtectList){
-            recordProtectList=new ArrayList<>();
+            recordProtectList=new ArrayList<RecordProtectParam>();
         }
         LogUtil.intoLog(1,RecordProtectCache.class,"获取全部异常笔录地址__recordcachepath："+recordcachepath);
-        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,2);
+        List<String> filelist= FileUtil.getAllFilePath(recordcachepath,1);
         if(null!=filelist&&filelist.size() > 0) {
             for (String path_ : filelist) {
                 try {
@@ -69,8 +69,15 @@ public class RecordProtectCache {
                             recordProtectList.add(recordProtectParam);
                         }
                     }
-                } catch (JsonSyntaxException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
+                }finally {
+                    try {
+                        File file=new File(path_);
+                        file.delete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

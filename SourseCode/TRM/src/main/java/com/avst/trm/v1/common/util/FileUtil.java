@@ -55,12 +55,16 @@ public class FileUtil {
 	 * @return
 	 */
 	public static List<String> getAllFilePath(String basepath,int isfilespath){
-		
-		File file = new File(basepath);
-		List<String> filelist = new ArrayList<String>();
-		if (file.exists()){
-			List<String> list = getAllFiles(file, filelist,isfilespath );
-			return list;
+
+		try {
+			File file = new File(basepath);
+			List<String> filelist = new ArrayList<String>();
+			if (file.exists()){
+				List<String> list = getAllFiles(file, filelist,isfilespath );
+				return list;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
