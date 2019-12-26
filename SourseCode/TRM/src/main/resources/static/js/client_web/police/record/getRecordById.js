@@ -22,7 +22,7 @@ var phSubtracSeconds=0;
 var iid=null;//打包iid
 
 var getRecordById_data=null;
-
+var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
 
 var positiontime=0;
 
@@ -626,7 +626,6 @@ $(function () {
                             }
 
                             if (isNotEmpty(arrph)){
-                                console.log(arrph)
                                 var max_stress = 0;
                                 var max_stress_i = 0;
                                 for (var z = 0; z < arrph.length; z++) {

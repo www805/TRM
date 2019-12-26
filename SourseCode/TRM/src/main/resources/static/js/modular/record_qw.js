@@ -180,18 +180,18 @@ function focuslable(html,type,qw) {
     addbtn();
     contextMenu();
 
-    $("#recorddetail .table_td_tt").dblclick(function () {
-        var contenteditable=$("label",this).attr("contenteditable");
+    $("#recorddetail  span[starttime]:not(:empty)").dblclick(function () {
+        var contenteditable=$(this).closest("label").attr("contenteditable");
         if (isNotEmpty(contenteditable)&&contenteditable=="false") {
             //开始定位视频位置
-            var times=$("label",this).attr("times");
+            var times=$(this).attr("starttime");
             if (times!="-1"&&isNotEmpty(times)){
-                /*var name=$("label",this).attr("name");
+                var name=$("label",this).attr("name");
                 if (name == "q"){
                     times=parseInt(times)+subtractime_q;
                 }else if( name=="w") {
                     times=parseInt(times)+subtractime_w;
-                }*/
+                }
                 showrecord(times,null);
             }
         }
