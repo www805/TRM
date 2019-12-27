@@ -1,4 +1,5 @@
 var recorduser=[];//会议用户集合
+
 var mtssid=null;//当前会议的ssid
 var videourl=null;//视频地址
 
@@ -9,7 +10,6 @@ var  subtractime={}//时间差，法院可能多用户 格式：subtractime['use
 var iid=null;//打包iid
 
 var getRecordById_data=null;
-var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
 
 var first_playstarttime=0;//第一个视频的开始时间
 var dq_play=null;//当前视频数据

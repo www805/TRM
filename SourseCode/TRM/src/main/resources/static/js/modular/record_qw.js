@@ -8,8 +8,8 @@ var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是�
 //默认问答
 var trtd_html='<tr>\
         <td style="padding: 0;width: 80%;" class="onetd" id="record_qw">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" times=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"   times=""></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" onkeydown="qw_keydown(this,event);" name="q" starttime=""></label></div>\
+              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" onkeydown="qw_keydown(this,event);" name="w"   starttime=""></label></div>\
                <div  id="btnadd" ></div>\
                 </td>\
                 <td id="record_util">\
@@ -21,7 +21,6 @@ var trtd_html='<tr>\
                 </td>\
                 </tr>';
 
-
 //最后一行添加按钮初始化
 function addbtn() {
     var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
@@ -29,6 +28,12 @@ function addbtn() {
         $("#btnadd",this).html("");
     });
     $('#recorddetail tr:last #btnadd').html(btnhtml);
+
+    //鼠标聚焦位置
+    $("#recorddetail label").focus(function(){
+        td_lastindex["key"]=$(this).closest("tr").index();
+        td_lastindex["value"]=$(this).attr("name");
+    });
 }
 
 //tr工具按钮==start
@@ -266,6 +271,59 @@ function exportPdf(url) {
         }
     });
     btn();
+}
+
+//左侧语音文本点击追加到右侧
+var copy_text_html="";
+var touchtime = new Date().getTime();
+function copy_text(obj,event) {
+    var text=$(obj).html();
+    copy_text_html=text;
+    var classc=$(obj).closest("div").attr("class");
+    var starttime=$(obj).closest("div").attr("starttime");
+
+    var qw=null;
+    if ((classc=="atalk"&&1 == event.which)||(classc=="btalk"&&3 == event.which)) {//左键并且为问||右键并且为答
+        qw="q";
+    }else  if ((classc=="btalk"&&1 == event.which)||(classc=="atalk"&&3 == event.which)){//左键并且为答 || 右键并且为问
+        qw="w";
+    }
+
+
+    //鼠标双击事件
+    if( new Date().getTime() - touchtime < 350 ){
+        console.log("现在是双击事件")
+        var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
+        var old= $html.attr(qw+"_starttime");
+        var h=$html.html();
+        $html.append(copy_text_html);
+        if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
+            $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
+        }
+    }else{
+        console.log("现在是单击事件")
+        var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
+        var dqselec_left= txt.toString();
+        if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1&&new Date().getTime() - touchtime >700){
+            if (classc=="btalk") {
+                qw="w";
+            }else if(classc=="atalk"){
+                qw="q";
+            }
+            var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
+            var old= $html.attr(qw+"_starttime");
+            var h=$html.html();
+            $html.append(dqselec_left);
+            dqselec_left="";
+            window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+            if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
+                $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
+            }
+        }
+        touchtime = new Date().getTime();
+    }
+    copy_text_html="";
+    return false;
 }
 
 

@@ -130,6 +130,32 @@ function callbackexporttemplate_ue(data) {
     }
 }
 
+//左侧语音文本点击追加到右侧
+function copy_text(obj) {
+    var lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+    if (!isNotEmpty(lastp)) {
+        layer.msg("请先在笔录界面加入光标")
+        return;
+    }
+    var starttime=$(obj).closest("div").attr("starttime");
+    var txt=$(obj).text();
+    var oldstarttime=$(lastp).attr("starttime");//获取光标所在位置
+    //样式
+    var  pstyle=$("span",lastp).attr("style");
+    if(typeof(pstyle) == "undefined"){
+        pstyle="";
+    }
+    var newpstyle = $(lastp).attr("style");
+    if(typeof(newpstyle) == "undefined"){
+        newpstyle="";
+    }
+    $(lastp).append(txt);
+    if (!isNotEmpty(oldstarttime)&&isNotEmpty(starttime)){
+        $(lastp).attr("starttime",starttime);
+        $(lastp).attr("style",newpstyle+pstyle);
+    }
+}
+
 
 ///////////////////////////////**********************************************************自动甄别**************start
 //usertype 角色类型  starttime语音识别开始时间 gradeintroduce角色简称 translatext当前识别文本

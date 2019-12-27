@@ -1,4 +1,5 @@
-var recorduser=[];//会议用户集合：副麦主麦
+var recorduser=[];//会议用户集合
+
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
@@ -336,31 +337,7 @@ function callbackgetRecordById(data) {
     }
 }
 
-//左侧点击
-function copy_text(obj) {
-    var lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-    if (!isNotEmpty(lastp)) {
-        layer.msg("请先在笔录界面加入光标");''
-        return;
-    }
-    var starttime=$(obj).closest("div").attr("starttime");
-    var txt=$(obj).text();
-    var oldstarttime=$(lastp).attr("starttime");//获取光标所在位置
-    //样式
-    var  pstyle=$("span",lastp).attr("style");
-    if(typeof(pstyle) == "undefined"){
-        pstyle="";
-    }
-    var newpstyle = $(lastp).attr("style");
-    if(typeof(newpstyle) == "undefined"){
-        newpstyle="";
-    }
-    $(lastp).append(txt);
-    if (!isNotEmpty(oldstarttime)&&isNotEmpty(starttime)){
-        $(lastp).attr("starttime",starttime);
-        $(lastp).attr("style",newpstyle+pstyle);
-    }
-}
+
 
 //保存按钮
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
@@ -751,6 +728,8 @@ function getMCCacheParamByMTssid() {
         });
     }
 }
+
+
 function getTDCacheParamByMTssid() {
     if ((mcbool==1||mcbool==3)&&isNotEmpty(dq_recorduser)) {//会议正常的时候
         var url=getUrl_manage().getTDCacheParamByMTssid;
@@ -1019,7 +998,7 @@ $(function () {
 
         socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
         socket.on('connect', function (data) {
-            console.log("socket连接成功__");
+            console.log("socket连接成功__SOCKETIO_HOST："+SOCKETIO_HOST+"__SOCKETIO_PORT："+SOCKETIO_PORT);
         });
         socket.on('disconnect', function (data) {
             console.log("socket断开连接__");

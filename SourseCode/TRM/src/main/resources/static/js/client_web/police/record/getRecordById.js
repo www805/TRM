@@ -62,7 +62,7 @@ function setqw(problems) {
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 95%;" class="onetd" id="record_qw">\
-                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q" contenteditable="false" times="'+q_starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q" contenteditable="false" starttime="'+q_starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
@@ -75,7 +75,7 @@ function setqw(problems) {
                     }
 
                     var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" times="'+w_starttime+'" >'+answertext+'</label></div>';
+                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" starttime="'+w_starttime+'" >'+answertext+'</label></div>';
                 }
             }else{
                 problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" ></label></div>';
@@ -647,10 +647,10 @@ function setRecordreal() {
         var arr={};
         var answers=[];//答案集合
         var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("times");
+        var q_starttime=$(this).find("label[name='q']").attr("starttime");
         //经过筛选的q
         var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("times");
+        var w_starttime=$(this).find("label[name='w']").attr("starttime");
         if (isNotEmpty(q)){
             if (null!=ws&&ws.length>0){
                 for (var j = 0; j < ws.length; j++) {
