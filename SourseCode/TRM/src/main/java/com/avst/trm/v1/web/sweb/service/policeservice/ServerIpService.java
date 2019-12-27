@@ -156,8 +156,8 @@ public class ServerIpService extends BaseService {
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
 
         //消除session
-//        HttpSession session = request.getSession();
-//        session.invalidate();
+        HttpSession session = request.getSession();
+        session.invalidate();
 
         //清除cookie
         Cookie[] cookies = request.getCookies();
@@ -168,7 +168,7 @@ public class ServerIpService extends BaseService {
         LogUtil.intoLog(1, this.getClass(), "已清除session、cookie");
         LogUtil.intoLog(1, this.getClass(), "因修改了IP，所以开始睡眠12秒");
         try {
-            Thread.sleep(12000);//睡眠12秒
+            Thread.sleep(10 * 1000);//睡眠10秒
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
