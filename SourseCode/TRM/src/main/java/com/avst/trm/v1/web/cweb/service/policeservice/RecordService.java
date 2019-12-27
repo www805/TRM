@@ -913,26 +913,35 @@ public class RecordService extends BaseService {
         }
 
         Police_record record=new Police_record();
-        record.setSsid(recordssid);
-        record=police_recordMapper.selectOne(record);
-        if (null!=record){
-            Integer oldrecordbool=record.getRecordbool();
-            if (oldrecordbool==1){
-                result.setMessage("该笔录正在进行中，请先结束");
+        EntityWrapper policerecordew=new EntityWrapper();
+        policerecordew.eq("ssid",recordssid);
+        List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
+        if (null!=police_records&&police_records.size()==1) {
+            record = police_records.get(0);
+            if (null!=record){
+                Integer oldrecordbool=record.getRecordbool();
+                if (oldrecordbool==1){
+                    result.setMessage("该笔录正在进行中，请先结束");
+                    return;
+                }
+
+                EntityWrapper entityWrapper=new EntityWrapper();
+                entityWrapper.eq("ssid",recordssid);
+                record.setSsid(recordssid);
+                record.setRecordbool(recordbool);
+                int  police_recordMapper_updatebool=police_recordMapper.update(record,entityWrapper);
+                if (police_recordMapper_updatebool>0){
+                    result.setData(police_recordMapper_updatebool);
+                    changeResultToSuccess(result);
+                }
+            }else {
+                LogUtil.intoLog(this.getClass(),"changeboolRecord__police_recordMapper.selectOne__未找到笔录信息__recordssid__"+recordssid);
+                result.setMessage("未找到该笔录");
                 return;
             }
-
-            EntityWrapper entityWrapper=new EntityWrapper();
-            entityWrapper.eq("ssid",recordssid);
-            record.setSsid(recordssid);
-            record.setRecordbool(recordbool);
-            int  police_recordMapper_updatebool=police_recordMapper.update(record,entityWrapper);
-            if (police_recordMapper_updatebool>0){
-                result.setData(police_recordMapper_updatebool);
-                changeResultToSuccess(result);
-            }
         }else {
-            LogUtil.intoLog(this.getClass(),"changeboolRecord__police_recordMapper.selectOne__未找到笔录信息__recordssid__"+recordssid);
+            result.setMessage("笔录异常");
+            return;
         }
         return;
     }

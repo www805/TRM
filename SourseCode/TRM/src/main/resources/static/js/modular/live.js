@@ -1,3 +1,3 @@
-function ceshi(){
-    console.log(123);
-}
+/*
+直播
+*/

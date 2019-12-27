@@ -13,6 +13,7 @@ import com.avst.trm.v1.common.util.baseaction.BaseAction;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.common.util.sq.SQVersion;
+import com.avst.trm.v1.feignclient.mc.req.GetDefaultMTModelParam;
 import com.avst.trm.v1.web.cweb.req.basereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
 import com.avst.trm.v1.web.cweb.service.baseservice.MainService;
@@ -349,14 +350,14 @@ public class MainAction extends BaseAction {
      */
     @RequestMapping("/getDefaultMtModelssid")
     @ResponseBody
-    public RResult getDefaultMtModelssid(@RequestBody ReqParam param){
+    public RResult getDefaultMtModelssid(@RequestBody ReqParam<GetDefaultMTModelParam> param){
         RResult result=this.createNewResultOfFail();
         if (null==param){
             result.setMessage("参数为空");
         }else if (!checkToken(param.getToken())){
             result.setMessage("授权异常");
         }else{
-            mainService.getDefaultMtModelssid(result,param);
+            mainService.getDefaultMtModelssid(result,param.getParam());
         }
         result.setEndtime(DateUtil.getDateAndMinute());
         return result;

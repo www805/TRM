@@ -211,11 +211,11 @@
                         <div class="layui-inline" style="margin-bottom:0">
                             <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                                 <div class="layui-select-title">
-                                    <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
+                                    <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn();" id=""><i class="layui-icon" >&#xe601;</i>  导出</button>
                                 </div>
-                                <dl class="layui-anim layui-anim-upbit" >
-                                    <dd lay-value="" class="" onclick="exportWord(this);">导出word</dd>
-                                    <dd lay-value="" class="" onclick="exportPdf(this);">导出pdf</dd>
+                                <dl class="layui-anim layui-anim-upbit" id="dc_li" >
+                                    <dd lay-value="" class="" type="1">导出word</dd>
+                                    <dd lay-value="" class="" type="2">导出pdf</dd>
                                 </dl>
                             </div>
                         </div>
@@ -225,7 +225,7 @@
                    <div class="layui-inline" style="float: right">
                         <label class="layui-form-label" style="width: 100px">当前定位差值：</label>
                         <div class="layui-input-inline" style="width: 80px;">
-                            <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input" onclick="open_positiontime()">
+                            <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-card">

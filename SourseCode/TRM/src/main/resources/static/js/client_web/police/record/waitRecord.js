@@ -136,8 +136,8 @@ function callsetAllproblem(data) {
 
                         var html='<tr >\
                                 <td style="padding: 0;width: 80%;" class="onetd" >\
-                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" q_starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
-                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" w_starttime=""  isn_fdtime="-1"></label></div>\
+                                    <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"  onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.problem+'" starttime="" isn_fdtime="-1">'+templateToProblem.problem+'</label></div>\
+                                    <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  placeholder="'+templateToProblem.referanswer+'" starttime=""  isn_fdtime="-1"></label></div>\
                                     <div  id="btnadd"></div>\
                                 </td>\
                                 <td>\
@@ -165,8 +165,8 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 80%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  q_starttime="" isn_fdtime="-1">'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" w_starttime="" isn_fdtime="-1"></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  starttime="" isn_fdtime="-1">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" starttime="" isn_fdtime="-1"></label></div>\
             <div  id="btnadd"></div>\
         </td>\
         <td>\
@@ -191,35 +191,6 @@ function copy_problems(obj) {
     focuslable(html,1,'w');
 }
 
-//tr移动删除事件
-function tr_remove(obj) {
-     var bool=$(obj).parents("tr").attr("automaticbool");
-     if (isNotEmpty(bool)&&bool==1){
-         laststarttime_qq=-1;
-         laststarttime_ww=-1;
-         last_type=-1;//1问题 2是答案
-         qq="";
-         qqq="";
-         ww="";
-         www="";
-     }
-    td_lastindex={};
-    $(obj).parents("tr").remove();
-    addbtn();
-    /*setRecordreal();*/
-}
-function tr_up(obj) {
-    var $tr = $(obj).parents("tr");
-    $tr.prev().before($tr);
-    addbtn();
-   /* setRecordreal();*/
-}
-function tr_downn(obj) {
-    var $tr = $(obj).parents("tr");
-    $tr.next().after($tr);
-    addbtn();
-    /*setRecordreal();*/
-}
 
 //录音按钮显示隐藏 type:1开始录音
 var startMC_index;
@@ -280,60 +251,6 @@ function img_bool(obj,type){
         console.log("会议已结束")
         layer.msg("该笔录已经制作过啦~");
     }
-}
-
-//粘贴语音翻译文本
-var copy_text_html="";
-var touchtime = new Date().getTime();
-function copy_text(obj,event) {
-    var text=$(obj).html();
-    copy_text_html=text;
-    var classc=$(obj).closest("div").attr("class");
-    var starttime=$(obj).closest("div").attr("starttime");
-
-    var qw=null;
-    if ((classc=="atalk"&&1 == event.which)||(classc=="btalk"&&3 == event.which)) {//左键并且为问||右键并且为答
-        qw="q";
-    }else  if ((classc=="btalk"&&1 == event.which)||(classc=="atalk"&&3 == event.which)){//左键并且为答 || 右键并且为问
-        qw="w";
-    }
-
-
-    //鼠标双击事件
-   if( new Date().getTime() - touchtime < 350 ){
-       console.log("现在是双击事件")
-       var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
-       var old= $html.attr(qw+"_starttime");
-       var h=$html.html();
-       $html.append(copy_text_html);
-       if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-           $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
-       }
-    }else{
-       console.log("现在是单击事件")
-       var txt = window.getSelection?window.getSelection():document.selection.createRange().text;
-       var dqselec_left= txt.toString();
-       if (3 == event.which&&isNotEmpty(dqselec_left)&&copy_text_html.indexOf(dqselec_left)>-1&&new Date().getTime() - touchtime >700){
-           if (classc=="btalk") {
-               qw="w";
-           }else if(classc=="atalk"){
-               qw="q";
-           }
-           var $html=$('#recorddetail tr:eq("'+td_lastindex["key"]+'") label[name="'+qw+'"]');
-           var old= $html.attr(qw+"_starttime");
-           var h=$html.html();
-           $html.append(dqselec_left);
-           dqselec_left="";
-           window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-           if (!isNotEmpty(old)||!isNotEmpty(h)) {//开始时间为空或者文本为空时追加时间点
-               $html.attr(qw+"_starttime",starttime);//直接使用最后追加的时间点
-           }
-       }
-       touchtime = new Date().getTime();
-   }
-    copy_text_html="";
-   /* setRecordreal();*/
-    return false;
 }
 
 
@@ -948,7 +865,7 @@ function getTDCacheParamByMTssid() {
                     TDCache=data;
                     fdrecordstarttime=data.fdrecordstarttime==null?0:data.fdrecordstarttime;
 
-                    //第一行上时间
+                    //第一行上时间:视频时间
                     var lable=  $('#first_originaltr label[name="q"]');
                     setFocus(lable);
                 }
@@ -1386,25 +1303,6 @@ function initliving() {
 //*******************************************************************点击end****************************************************************//
 
 
-
-
-
-//默认问答
-var trtd_html='<tr>\
-        <td style="padding: 0;width: 80%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime=""></label></div>\
-              <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  w_starttime=""></label></div>\
-               <div  id="btnadd"></div>\
-                </td>\
-                <td>\
-                    <div class="layui-btn-group">\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                    <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                    <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                   </div>\
-                </td>\
-                </tr>';
-
 //lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标问还是答null//不设置光标
 function focuslable(html,type,qw) {
     if (!isNotEmpty(html)) {html=trtd_html}
@@ -1448,24 +1346,7 @@ function focuslable(html,type,qw) {
     addbtn();
     contextMenu();
 }
-//最后一行添加按钮初始化
-function addbtn() {
-    var btnhtml='<button type="button"  class="layui-btn layui-btn-warm" style="border-radius: 50%;width: 45px;height: 45px;padding:0px"  title="添加一行自定义问答" onclick="focuslable(trtd_html,2,\'q\');"><i class="layui-icon" style="font-size: 45px" >&#xe608;</i></button>';
-    $("#recorddetail tr").each(function () {
-        $("#btnadd",this).html("");
-    });
-  $('#recorddetail tr:last #btnadd').html(btnhtml);
 
-    $("#recorddetail label").focus(function(){
-        td_lastindex["key"]=$(this).closest("tr").index();
-        td_lastindex["value"]=$(this).attr("name");
-    });
-
-   /* setRecordreal();
-    $('#recorddetail label').bind('mouseout', function() {
-        setRecordreal();
-    });*/
-}
 
 /***************************************笔录实时问答start*************************************************/
 /*笔录实时保存*/
@@ -1729,7 +1610,7 @@ function setqw(problems){
             var problemtext=problem.problem==null?"未知":problem.problem;
              problemhtml+= '<tr>\
                         <td style="padding: 0;width: 80%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" q_starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
             var answers=problem.answers;
             if (isNotEmpty(answers)){
                 for (var j = 0; j < answers.length; j++) {
@@ -1981,22 +1862,12 @@ $(function () {
 
 
 
-    //自动甄别初始化
-   /* var laststarttime_qq=-1;//上一个问时间
-    var laststarttime_ww=-1;//上一个答时间
-    var last_type=-1;//上一个是 1问题 2是答案
-    var qq="";//本次的问的内容
-    var qqq="";//没有跳问答的已经写入行中问的内容
-    var ww="";//本次的答的内容
-    var www="";//没有跳问答的已经写入行中答的内容*/
-
-
     // 建立连接
     if (isNotEmpty(SOCKETIO_HOST)&&isNotEmpty(SOCKETIO_PORT)) {
 
         socket = io.connect('http://'+SOCKETIO_HOST+':'+SOCKETIO_PORT+'');
         socket.on('connect', function (data) {
-            console.log("socket连接成功__");
+            console.log("socket连接成功__SOCKETIO_HOST："+SOCKETIO_HOST+"__SOCKETIO_PORT："+SOCKETIO_PORT);
         });
         socket.on('disconnect', function (data) {
             console.log("socket断开连接__");

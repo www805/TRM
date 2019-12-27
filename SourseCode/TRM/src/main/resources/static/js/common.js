@@ -380,7 +380,7 @@ function ajaxSubmitByJson(url, data, success_fun,error_fun) {
             error : (error_fun != null ? error_fun : ajaxErrDialog)
         });
 	}else {
-		console.log("请求地址："+url+"__成功返回："+success_fun)
+		console.log("json格式ajax提交请求地址："+url);
 	}
 }
 
@@ -1629,11 +1629,8 @@ var TTS_F="tts_f";
 var FD_F="fd_f";
 var PH_F="ph_f";
 
-//语音识别颜色
-var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
 
-
-
+//回填角色显示名称
 function set_said(modeltypenum) {
     if (isNotEmpty(modeltypenum)){
         if (modeltypenum==1){
@@ -1659,6 +1656,10 @@ function set_said(modeltypenum) {
     $("."+USERINFOGRADE7).html(userinfograde7_name);
     $("."+USERINFOGRADE8).html(userinfograde8_name);
 }
+
+//语音识别颜色
+var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
+
 //========================================js通用常量:需要和java文件的同步========================end
 
 

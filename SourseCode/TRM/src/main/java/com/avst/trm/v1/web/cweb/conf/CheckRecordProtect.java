@@ -16,6 +16,7 @@ import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
 import com.avst.trm.v1.web.cweb.cache.param.RecordProtectParam;
 import com.avst.trm.v1.web.cweb.req.policereq.AddRecordParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -83,8 +84,14 @@ public class CheckRecordProtect  implements ApplicationRunner {
             if (null!=recordssid){
                 //获取笔录状态，进行中的删除
                 Police_record police_record=new Police_record();
-                police_record.setSsid(recordssid);
-                police_record=police_recordMapper.selectOne(police_record);
+
+                EntityWrapper policerecordew=new EntityWrapper();
+                policerecordew.eq(recordssid,recordssid);
+                List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
+                if (null!=police_records&&police_records.size()==1) {
+                    police_record = police_records.get(0);
+                }
+
                 if (null!=police_record){
 
                     Integer recordbool=police_record.getRecordbool();
