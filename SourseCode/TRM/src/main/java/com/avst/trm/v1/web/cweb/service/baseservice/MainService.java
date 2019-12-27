@@ -750,7 +750,7 @@ public class MainService extends BaseService {
         return;
     }
 
-    public void getDefaultMtModelssid(RResult result,ReqParam param){
+    public void getDefaultMtModelssid(RResult result,GetDefaultMTModelParam param){
         String modelssid=null;
         /*Base_type base_type=new Base_type();
         base_type.setType(CommonCache.getCurrentServerType());
@@ -761,10 +761,9 @@ public class MainService extends BaseService {
             changeResultToSuccess(result);
             LogUtil.intoLog(this.getClass(),"获取到默认的会议模板ssid__"+modelssid);
         }*/
-        GetDefaultMTModelParam getDefaultMTModelParam=new GetDefaultMTModelParam();
-        getDefaultMTModelParam.setMcType(MCType.AVST);
+        param.setMcType(MCType.AVST);
         try {
-            RResult rr = meetingControl.getDefaultMTModel(getDefaultMTModelParam);
+            RResult rr = meetingControl.getDefaultMTModel(param);
             if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){
                 GetDefaultMTModelVO getDefaultMTModelVO=gson.fromJson(gson.toJson(rr.getData()),GetDefaultMTModelVO.class);
                 if (null!=getDefaultMTModelVO){

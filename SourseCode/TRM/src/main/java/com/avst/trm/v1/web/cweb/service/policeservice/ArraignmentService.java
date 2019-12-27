@@ -268,6 +268,7 @@ public class ArraignmentService extends BaseService {
         if ((null!=multifunctionbool&&(multifunctionbool==1||multifunctionbool==2 ))||null==mtmodelssid){//||单组件时候
             GetDefaultMTModelParam getDefaultMTModelParam=new GetDefaultMTModelParam();
             getDefaultMTModelParam.setMcType(MCType.AVST);
+            getDefaultMTModelParam.setOnlinebool(2);//单机
             try {
                 RResult rr = meetingControl.getDefaultMTModel(getDefaultMTModelParam);
                 if (null!=rr&&rr.getActioncode().equals(Code.SUCCESS.toString())){

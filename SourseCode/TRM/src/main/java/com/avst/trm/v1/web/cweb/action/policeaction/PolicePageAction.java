@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.police.mapper.Police_recordMapper;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.SQEntity;
 import com.avst.trm.v1.common.util.sq.SQVersion;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 import static com.avst.trm.v1.common.cache.CommonCache.getSQEntity;
 
@@ -176,8 +179,13 @@ public class PolicePageAction {
         }
         String recordtype_conversation2=PropertiesListenerConfig.getProperty("recordtype_conversation2");
         Police_record record=new Police_record();
-        record.setSsid(ssid);
-        record=police_recordMapper.selectOne(record);
+        EntityWrapper policerecordew=new EntityWrapper();
+        policerecordew.eq("ssid",ssid);
+        List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
+        if (null!=police_records&&police_records.size()==1) {
+            record = police_records.get(0);
+        }
+
         if (StringUtils.isNotBlank(record.getRecordtypessid())&&StringUtils.isNotBlank(recordtype_conversation2)&&recordtype_conversation2.equals(record.getRecordtypessid())){
             model.addAttribute("title","审讯控制台");
         }else {

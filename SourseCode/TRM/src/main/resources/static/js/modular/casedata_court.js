@@ -611,6 +611,7 @@ function getDefaultMtModelssid(url){
     var data={
         token:INIT_CLIENTKEY,
         param:{
+
         }
     };
     ajaxSubmitByJson(url,data,callbackgetDefaultMtModelssid);
