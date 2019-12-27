@@ -22,9 +22,7 @@ var phSubtracSeconds=0;
 var iid=null;//打包iid
 
 var getRecordById_data=null;
-var td_lastindex={};//td的上一个光标位置 key:tr下标 value：问还是答
 
-var positiontime=0;
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
@@ -139,7 +137,7 @@ function callbackgetRecordById(data) {
 
             if (isNotEmpty(record)){
                 positiontime=record.positiontime==null?0:record.positiontime;
-                $("#positiontime").val(positiontime);
+                $("#positiontime").val(parseFloat(positiontime)/1000);
 
                 var wordheaddownurl_html=record.wordheaddownurl_html;
                 if (isNotEmpty(wordheaddownurl_html)){
@@ -297,19 +295,15 @@ function set_getRecord(data){
                             //询问人没有情绪报告
                             subtractime_q=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_q);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate="">\
+                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
                                                             <a style="display: none;color: #ccc" id="dqphdate"></a>\
                                                             <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none;" title="未找到最高值">-1</a></p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
-                            /*recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+'</p>\
-                                                            <span>'+translatext+'</span> \
-                                                      </div >';*/
                         }else if (usertype==2){
                             subtractime_w=subtractime==null?0:subtractime;
                             starttime=parseFloat(starttime)+parseFloat(subtractime_w);
-                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+',null)" times='+starttime+' usertype='+usertype+' dqphdate="">\
+                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
                                                             <a style="display: none;color: #ccc" id="dqphdate"></a>\
                                                             <p><a class="layui-badge " style="visibility:hidden; background-color: #00CD68  " title="未找到最高值">-1</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
                                                             <span id="translatext">'+translatext+'</span> \
@@ -346,225 +340,14 @@ function set_getRecord(data){
     });
 }
 
-function sortPlayUrl(a, b) {
-    return a.filenum - b.filenum;//由低到高
-}
-function set_getPlayUrl(data) {
-    if (isNotEmpty(data)){
-         iid=data.iid;
-        var recordFileParams=data.recordFileParams;
-        recordPlayParams=data.recordPlayParams;
-        var state;
-        $("#videos").empty();
-        if (isNotEmpty(recordFileParams)&&isNotEmpty(recordPlayParams)){
-            recordPlayParams.sort(sortPlayUrl);//重新排序一边
-            dq_play=recordPlayParams[0];
-            first_playstarttime=parseFloat(dq_play.recordstarttime);
-            var oldname=[];
-            for (let i = 0; i < recordPlayParams.length; i++) {
-                var play=recordPlayParams[i];
-                var playname=play.filename;
-                for (let j = 0; j < recordFileParams.length; j++) {
-                    const file = recordFileParams[j]
-                    var filename= file.filename;
-                    if (filename==playname&&oldname.indexOf(filename)<0) {
-                        var VIDEO_HTML = '<span style="height: 50px;width: 50px;background:  url(/uimaker/images/videoback.png)  no-repeat;background-size:100% 100%; " class="layui-badge layui-btn layui-bg-gray"   filenum="' + play.filenum + '"  state="' + file.state + '">视频' + play.filenum + '</span>';
-                        $("#videos").append(VIDEO_HTML);
-                        play["start_range"] = parseFloat(play.recordstarttime) - parseFloat(first_playstarttime);
-                        play["end_range"] = parseFloat(play.recordendtime) - parseFloat(first_playstarttime);
-                        recordPlayParams[i] = play;
-                        //时间毫秒区域计算结束------
-                        oldname.push(filename);
-                    }
-                }
-            }
-
-            var firststate= $("#videos span:eq(0)").attr("state");
-            //文件状态,0文件未获取，等待中；1文件正常，生成请求地址中；2文件可以正常使用；-1文件未正常获取，需强制获取；-2文件请求地址有误，需重新生成
-            if (firststate==2) {
-                videourl=dq_play.playUrl;
-                initplayer();
-            }else {
-                layer.msg("文件获取中...",{icon: 5})
-            }
-
-            $("#videos span:eq(0)").removeClass("layui-bg-gray").addClass("layui-bg-black");
-            $("#videos span").click(function () {
-                $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
-                var filenum= $(this).attr("filenum");
-                var state= $(this).attr("state");
-                if (state==2) {
-                    for (let i = 0; i < recordPlayParams.length; i++) {
-                        const dqdata = recordPlayParams[i];
-                        if (dqdata.filenum==filenum){
-                            dq_play=dqdata;
-                        }
-                    }
-                    videourl=dq_play.playUrl;
-                    initplayer();
-                }else {
-                    layer.msg("文件获取中...",{icon: 5})
-                }
-            });
-        }
-    }else {
-        $("#videos").html('<div id="datanull_1" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无视频...可能正在生成中请稍后访问</div>');
-    }
-}
-
-function btn(obj) {
-    var selected=$(obj).closest("div[name='btn_div']").attr("showorhide");
-    if (isNotEmpty(selected)&&selected=="false"){
-        $("div[name='btn_div']").attr("showorhide","false");
-        $("div[name='btn_div']").removeClass("layui-form-selected");
-        $(obj).closest("div[name='btn_div']").attr("showorhide","true");
-        $(obj).closest("div[name='btn_div']").addClass("layui-form-selected");
-    }else if (isNotEmpty(selected)&&selected=="true") {
-        $(obj).closest("div[name='btn_div']").attr("showorhide","false");
-        $(obj).closest("div[name='btn_div']").removeClass("layui-form-selected");
-    }
-}
-function exportWord(obj){
-        //调用导出方法
-        layer.msg("导出中，请稍等...", {
-            icon: 16,
-            shade: [0.1, 'transparent']
-        });
-        var url=getActionURL(getactionid_manage().getRecordById_exportWord);
-        var paramdata={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-            }
-        };
-        ajaxSubmitByJson(url, paramdata, function (data) {
-            if(null!=data&&data.actioncode=='SUCCESS'){
-                var data=data.data;
-                if (isNotEmpty(data)){
-                    var word_htmlpath=data.word_htmlpath;//预览html地址
-                    var word_path=data.word_path;//下载地址
-                    window.location.href = word_path;
-                    layer.msg("导出成功,等待下载中...",{icon: 6});
-                }
-            }else{
-                layer.msg(data.message,{icon: 5});
-            }
-        });
-    btn(obj);
-}
-function exportPdf(obj) {
-        //调用导出方法
-        layer.msg("导出中，请稍等...", {
-            icon: 16,
-            shade: [0.1, 'transparent']
-        });
-        var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
-        var paramdata={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-            }
-        };
-        ajaxSubmitByJson(url, paramdata, function (data) {
-            if(null!=data&&data.actioncode=='SUCCESS'){
-                var data=data.data;
-                if (isNotEmpty(data)){
-                    //window.location.href = data;
-                    layer.open({
-                        id:"pdfid",
-                        type: 1,
-                        title: '导出PDF笔录',
-                        shadeClose: true,
-                        shade: false,
-                        maxmin: true, //开启最大化最小化按钮
-                        area: ['893px', '600px'],
-                    });
-                    showPDF("pdfid",pdfdownurl);
-                    layer.msg("导出成功,等待下载中...",{icon: 6});
-                }
-            }else{
-                layer.msg(data.message,{icon: 5});
-            }
-        });
-    btn(obj);
-}
 
 
-//视频进度
-function showrecord(times,oldtime) {
-    $("#recorddetail label").removeClass("highlight_right");
-    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
-    times=parseFloat(times);
 
-    console.log("双击:"+positiontime)
-
-    if (isNotEmpty(times)&&times!=-1&&first_playstarttime!=0&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)){
-        var isnvideo=0;//是否有视频定位点
-        //检测点击的时间戳是否在当前视频中，不在切换视频并且定位
-        for (let i = 0; i < recordPlayParams.length; i++) {
-            const recordPlayParam = recordPlayParams[i];
-            var start_range=recordPlayParam.start_range;
-            var end_range=recordPlayParam.end_range;
-            if (parseFloat(times)>=parseFloat(start_range)&&parseFloat(times)<=parseFloat(end_range)) {
-                if (dq_play.filenum==recordPlayParam.filenum){
-                    var  locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
-                    locationtime+=positiontime;
-                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-                    changeProgrss(parseFloat(locationtime));
-                } else {
-                    //赋值新视频,计算新的时间
-                    dq_play=recordPlayParam;
-                    videourl=dq_play.playUrl;
-                   var locationtime=(first_playstarttime+times)-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);//重新计算时间
-                    locationtime+=positiontime;
-                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-                    initplayer(parseFloat(locationtime));
-
-                    //样式跟着改变
-                    $("#videos span").each(function () {
-                        var filenum=$(this).attr("filenum");
-                        if (filenum==dq_play.filenum){
-                            $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
-                        }
-                    });
-                }
-                isnvideo++;
-            }
-        }
-        if (isnvideo==0){
-            layer.msg("没有找到视频定位点",{time:500})
-        }
-
-        /* 视频播放会自动定位变色 此处可以不处理
-                var recorddetailtrlen= $("#recorddetail label").length;
-                $("#recorddetail label").each(function (i,e) {
-                    var t1=$(this).attr("times");
-                    var name=$(this).attr("name");
-                    if (t1==times) {//需要减去差值
-                        $(this).addClass("highlight_right");
-                        var top=$(this).position().top;
-                        var div = document.getElementById('recorddetail');
-                        div.scrollTop = top;
-                        return false;
-                    }
-                });
-
-                $("#recordreals div").each(function (i,e) {
-                    var t2=$(this).attr("times");
-                    if (t2==times) {
-                        $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                        var top=$(this).position().top;
-                        var div = document.getElementById('recordreals_scrollhtml');
-                        div.scrollTop = top;
-                        return false;
-                    }
-                });*/
-    }
-}
 
 
 var phreportfirst=-1;//是否为第一次打开情绪报告
 $(function () {
+    //情绪报告
     layui.use(['layer','element','slider','form','laydate'], function(){
         var form = layui.form;
         form.on('switch(phreportshowhide)', function(data){
@@ -576,122 +359,8 @@ $(function () {
                 layer.msg("暂未找到身心监测数据，未能出现情绪报告");
                 return;
             }
-
             var bool=data.elem.checked;
-            if (bool) {
-                //显示checkbox
-                $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
-                $("#uploadPhreport").css("visibility","visible");
-                $("#recordreals #dqphdate").css("display", "block");
-                $("#recordreals").children('div').each(function () {
-                    var talkclass=$(this).attr("class");
-                    if (talkclass=="atalk"){
-                        $("p",this).prepend('<input type="checkbox" name="" lay-skin="primary" >');
-                    }else if (talkclass=="btalk"){
-                        $("#recordreals .layui-badge").css("visibility", "visible");
-                        $("p",this).append('<input type="checkbox" name="" lay-skin="primary" >');
-                    }
-                });
-                console.log("phreportfirst__"+phreportfirst)
-                if (isNotEmpty(phdatabackList)&&isNotEmpty(dq_play)&&phreportfirst==-1){
-                    //身心监测数据时间点已在后台计算好差值，首先先获取asr差值后的数据
-                    layer.msg("情绪加载中，请稍等",{icon:16})
-                    var ph_stress=-1;//最高点 -1为不正常数据
-                    var dqphdate="";//找出来最大值的全部data
-                    $("#recordreals").children('div').each(function (i,e) {
-                        var starttime=$(this).attr("times");
-                        var usertype=$(this).attr("usertype");
-                        if (usertype==2) {
-                            var  locationtime=(parseFloat(first_playstarttime)+parseFloat(starttime))-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
-                            locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
-                            //获取该时间的前五秒和后五秒
-                            var arrph=[];//找出来的集合
-                            for (var j = 0; j < phdatabackList.length; j++) {
-                                var phdataback = phdatabackList[j];
-                                var num=phdataback.num;
-                                var phBataBackJson=phdataback.phBataBackJson;
-                                var obj=eval("(" + phBataBackJson + ")");
-                                var startph=num;
-                                var endph=0;
-                                if (j>= phdatabackList.length-1) {
-                                    endph= num;//下一个区间
-                                }else {
-                                    endph=phdatabackList[j+1].num;
-                                }
-                                if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
-                                    var start_i=(j-4)<0?0:(j-4);
-                                    var end_i=(j+6)>=phdatabackList.length?phdatabackList.length:(j+6);
-                                    arrph= phdatabackList.slice(start_i,end_i);
-                                }
-                            }
-
-                            if (isNotEmpty(arrph)){
-                                var max_stress = 0;
-                                var max_stress_i = 0;
-                                for (var z = 0; z < arrph.length; z++) {
-                                    var data = arrph[z];
-                                    if(isNotEmpty(data)){
-                                        var phBataBackJson=data.phBataBackJson;
-                                        var obj=eval("(" + phBataBackJson + ")");
-                                        if (isNotEmpty(obj)) {//&&obj.hr_snr>=0.1
-                                            var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
-                                            var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);
-                                            if (stress > max_stress) {
-                                                max_stress =stress;
-                                                max_stress_i = z;
-                                            }
-                                        }
-                                    }
-                                }
-                                ph_stress=max_stress==null?0:max_stress;
-                                dqphdate=arrph[max_stress_i]==null?"":arrph[max_stress_i];
-                                if (isNotEmpty(dqphdate)){
-                                    var phBataBackJson=dqphdate.phBataBackJson;
-                                    var obj=eval("(" + phBataBackJson + ")");
-                                    var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
-                                    var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
-                                    var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
-                                    var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
-                                    var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
-                                    var spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
-                                    var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
-                                    dqphdate="(紧张值:"+stress+";呼吸次数:"+br+";心率:"+hr+";血氧:"+spo2+";血压变化:"+bp+")";
-                                }
-                            }
-
-
-                            var phbadge="#00CD68";
-                            var phtitle="最高紧张值";
-                            if (ph_stress>=0&&ph_stress<=30){
-                                phbadge="#00CD68";
-                            }else if (ph_stress>30&&ph_stress<=50){
-                                phbadge="#e4e920";
-                            }else if (ph_stress>50&&ph_stress<=70){
-                                phbadge="#ff840f";
-                            }else if (ph_stress>70&&ph_stress<=100){
-                                phbadge="#e90717";
-                            }else {
-                                phtitle="未找到最高值";
-                            }// !important
-                            $(this).attr("dqphdate",dqphdate);
-                            $(this).find("#dqphdate").html(dqphdate);
-                            $(this).find(".layui-badge").css("background-color",phbadge);
-                            $(this).find(".layui-badge").attr("title",phtitle).html(ph_stress);
-                        }
-                    });
-                    phreportfirst=1;
-                }
-                form.render();
-            }else {
-                //隐藏并且checkbox
-                $("#phreportshowhidemsg").text("（提示:开启可勾选生成情绪报告)");
-                $("#uploadPhreport").css("visibility","hidden");
-                $("#recordreals .layui-badge").css("visibility", "hidden");
-                $("#recordreals #dqphdate").css("display", "none");
-                $("#recordreals input[type=checkbox]").remove();
-                $("#recordreals .layui-form-checkbox").remove();
-            }
-
+            phreportshowhide(bool);
         });
     });
 
@@ -699,97 +368,144 @@ $(function () {
       addRecord();
     });
 
+    //定位差值
+    $("#positiontime").click(function () {
+        var url=getActionURL(getactionid_manage().getRecordById_updateRecord);
+        open_positiontime(url);
+    });
 
-
-   //检测视频是否播完，播完自动进入下一个视频===================================
-    SewisePlayer.onPlayTime(function(time, id){
-        var totaltime=SewisePlayer.duration()==null?0:SewisePlayer.duration();
-        if (parseFloat(time)==parseFloat(totaltime)&&isNotEmpty(dq_play)&&isNotEmpty(recordPlayParams)) {
-            var dqfilenum=dq_play.filenum; //1
-            if (dqfilenum<recordPlayParams.length){  //3
-                dq_play=recordPlayParams[dqfilenum];
-                videourl=dq_play.playUrl;
-                initplayer();
-                //样式跟着改变
-                $("#videos span").each(function () {
-                    var filenum=$(this).attr("filenum");
-                    if (filenum==dq_play.filenum){
-                        $(this).removeClass("layui-bg-gray").addClass("layui-bg-black").siblings().addClass("layui-bg-gray");
-                        return false;
-                    }
-                });
-            }
-        }
-
-
-        /!*此处开始定位*!/
-        if (isNotEmpty(time)&&time>0){
-            var locationtime=time*1000<0?0:time*1000; //秒转时间戳
-            locationtime=locationtime+dq_play.recordstarttime+(parseFloat(dq_play.repeattime)*1000)-first_playstarttime;
-            locationtime+=positiontime;//时间戳加上毫秒差值
-
-
-            //左侧
-            var recordrealsdivlen=$("#recordreals").children('div').length;;//识别长度
-            $("#recordreals").children('div').each(function (i,e) {
-                var t=$(this).attr("times");
-                var start=parseFloat(t);
-                var end=0;
-                if (i>=recordrealsdivlen-1) {
-                    end= t;//下一个区间
-                }else {
-                    var end_=$("#recordreals").children("div:eq("+(i+1)+")").attr("times");
-                    end=parseFloat(end_);//下一个区间
-                }
-                if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {
-                    $("#recordreals span").css("color","#fff").removeClass("highlight_left");
-                    $("span",this).css("color","#FFFF00 ").addClass("highlight_left");
-                    $("#asritem").hover(
-                        function(){
-                            mouseoverbool_left=1
-                        } ,
-                        function(){
-                            mouseoverbool_left=-1;
-                        });
-
-                    if (parseInt(mouseoverbool_left)==-1&&parseInt(mouseoverbool_left)!=1){
-                        var top=$(this).position().top;
-                        var div = document.getElementById('recordreals_scrollhtml');
-                        div.scrollTop = top;
-                    }
-                    return false;
-                }
-            });
-
-            //中间
-            var arrph=[];
-            var dq_phdataback=null;
-            if (isNotEmpty(phdatabackList)){
-                locationtime=locationtime/1000<0?0:locationtime/1000; //秒转时间戳//时间戳转秒
-                for (var i = 0; i < phdatabackList.length; i++) {
-                    var phdataback = phdatabackList[i];
-                    var num=phdataback.num;
-                    var startph=num;
-                    var endph=0;
-                    if (i>= phdatabackList.length-1) {
-                        endph= num;//下一个区间
-                    }else {
-                        endph=phdatabackList[i+1].num;
-                    }
-                    if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
-                        dq_phdataback = phdatabackList[i];
-                        var start_i=(i-26)<0?0:(i-26);
-                        var end_i=(i+25)>=phdatabackList.length?phdatabackList.length:(i+25);
-                        arrph= phdatabackList.slice(start_i,end_i);
-                    }
-                }
-                phdata(arrph,dq_phdataback);
-            }
+    //导出
+    $("#dc_li dd").click(function () {
+        layer.msg("导出中，请稍等...", { icon: 16, shade: [0.1, 'transparent'],time:6000});
+        var type=$(this).attr("type");
+        if (type==1){
+            var url=getActionURL(getactionid_manage().getRecordById_exportWord);
+            exportWord(url);
+        }else  if(type==2){
+            var url=getActionURL(getactionid_manage().getRecordById_exportPdf);
+            exportPdf(url);
         }
     });
 
-
 });
+
+//显示审讯检测数据到语音识别上
+function phreportshowhide(bool) {
+    if (bool) {
+        //显示checkbox
+        $("#phreportshowhidemsg").text("（提示:勾选需要生成的情绪数据)");
+        $("#uploadPhreport").css("visibility","visible");
+        $("#recordreals #dqphdate").css("display", "block");
+        $("#recordreals").children('div').each(function () {
+            var talkclass=$(this).attr("class");
+            if (talkclass=="atalk"){
+                $("p",this).prepend('<input type="checkbox" name="" lay-skin="primary" >');
+            }else if (talkclass=="btalk"){
+                $("#recordreals .layui-badge").css("visibility", "visible");
+                $("p",this).append('<input type="checkbox" name="" lay-skin="primary" >');
+            }
+        });
+        console.log("phreportfirst__"+phreportfirst)
+        if (isNotEmpty(phdatabackList)&&isNotEmpty(dq_play)&&phreportfirst==-1){
+            //身心监测数据时间点已在后台计算好差值，首先先获取asr差值后的数据
+            layer.msg("情绪加载中，请稍等",{icon:16})
+            var ph_stress=-1;//最高点 -1为不正常数据
+            var dqphdate="";//找出来最大值的全部data
+            $("#recordreals").children('div').each(function (i,e) {
+                var starttime=$(this).attr("times");
+                var usertype=$(this).attr("usertype");
+                if (usertype==2) {
+                    var  locationtime=(parseFloat(first_playstarttime)+parseFloat(starttime))-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
+                    locationtime=locationtime/1000<0?0:locationtime/1000; //时间戳转秒
+                    //获取该时间的前五秒和后五秒
+                    var arrph=[];//找出来的集合
+                    for (var j = 0; j < phdatabackList.length; j++) {
+                        var phdataback = phdatabackList[j];
+                        var num=phdataback.num;
+                        var phBataBackJson=phdataback.phBataBackJson;
+                        var obj=eval("(" + phBataBackJson + ")");
+                        var startph=num;
+                        var endph=0;
+                        if (j>= phdatabackList.length-1) {
+                            endph= num;//下一个区间
+                        }else {
+                            endph=phdatabackList[j+1].num;
+                        }
+                        if (locationtime>=parseFloat(startph)&&(parseFloat(startph)==parseFloat(endph)||locationtime<=parseFloat(endph))) {
+                            var start_i=(j-4)<0?0:(j-4);
+                            var end_i=(j+6)>=phdatabackList.length?phdatabackList.length:(j+6);
+                            arrph= phdatabackList.slice(start_i,end_i);
+                        }
+                    }
+
+                    if (isNotEmpty(arrph)){
+                        var max_stress = 0;
+                        var max_stress_i = 0;
+                        for (var z = 0; z < arrph.length; z++) {
+                            var data = arrph[z];
+                            if(isNotEmpty(data)){
+                                var phBataBackJson=data.phBataBackJson;
+                                var obj=eval("(" + phBataBackJson + ")");
+                                if (isNotEmpty(obj)) {//&&obj.hr_snr>=0.1
+                                    var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                                    var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);
+                                    if (stress > max_stress) {
+                                        max_stress =stress;
+                                        max_stress_i = z;
+                                    }
+                                }
+                            }
+                        }
+                        ph_stress=max_stress==null?0:max_stress;
+                        dqphdate=arrph[max_stress_i]==null?"":arrph[max_stress_i];
+                        if (isNotEmpty(dqphdate)){
+                            var phBataBackJson=dqphdate.phBataBackJson;
+                            var obj=eval("(" + phBataBackJson + ")");
+                            var hr=obj.hr.toFixed(0)==null?0:obj.hr.toFixed(0);//心率
+                            var br=obj.br.toFixed(0)==null?0:obj.br.toFixed(0);//呼吸次数
+                            var relax=obj.relax.toFixed(0)==null?0:obj.relax.toFixed(0);
+                            var stress=obj.stress.toFixed(0)==null?0:obj.stress.toFixed(0);
+                            var bp=obj.bp.toFixed(0)==null?0:obj.bp.toFixed(0);
+                            var spo2=obj.spo2.toFixed(0)==null?0:obj.spo2.toFixed(0);
+                            var hrv=obj.hrv.toFixed(0)==null?0:obj.hrv.toFixed(0);
+                            dqphdate="(紧张值:"+stress+";呼吸次数:"+br+";心率:"+hr+";血氧:"+spo2+";血压变化:"+bp+")";
+                        }
+                    }
+
+
+                    var phbadge="#00CD68";
+                    var phtitle="最高紧张值";
+                    if (ph_stress>=0&&ph_stress<=30){
+                        phbadge="#00CD68";
+                    }else if (ph_stress>30&&ph_stress<=50){
+                        phbadge="#e4e920";
+                    }else if (ph_stress>50&&ph_stress<=70){
+                        phbadge="#ff840f";
+                    }else if (ph_stress>70&&ph_stress<=100){
+                        phbadge="#e90717";
+                    }else {
+                        phtitle="未找到最高值";
+                    }// !important
+                    $(this).attr("dqphdate",dqphdate);
+                    $(this).find("#dqphdate").html(dqphdate);
+                    $(this).find(".layui-badge").css("background-color",phbadge);
+                    $(this).find(".layui-badge").attr("title",phtitle).html(ph_stress);
+                }
+            });
+            phreportfirst=1;
+        }
+        form.render();
+    }else {
+        //隐藏并且checkbox
+        $("#phreportshowhidemsg").text("（提示:开启可勾选生成情绪报告)");
+        $("#uploadPhreport").css("visibility","hidden");
+        $("#recordreals .layui-badge").css("visibility", "hidden");
+        $("#recordreals #dqphdate").css("display", "none");
+        $("#recordreals input[type=checkbox]").remove();
+        $("#recordreals .layui-form-checkbox").remove();
+    }
+}
+
 
 
 //导出下载
@@ -853,7 +569,6 @@ function callbackgZIPVod(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-
 function zIPVodProgress() {
     var url=getActionURL(getactionid_manage().getRecordById_zIPVodProgress);
     var data={
@@ -1099,7 +814,6 @@ function uploadPhreport() {
     });
 
 }
-
 function callbackuploadPhreport(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -1119,114 +833,4 @@ function callbackuploadPhreport(data) {
 //*******************************************************************情绪报告的生成end****************************************************************//
 
 
-//*******************************************************************修改定位时间start****************************************************************//
-var open_positiontime_index=null;
-function open_positiontime() {
-    var html='  <form class="layui-form site-inline" style="margin-top: 20px;padding-right: 35px;">\
-               <div class="layui-form-item">\
-                   <label class="layui-form-label"><span style="color: red;">*</span>定位差值</label>\
-                    <div class="layui-input-block">\
-                    <input type="number" name="positiontimem" id="positiontimem" lay-verify="positiontimem" autocomplete="off" placeholder="请输入定位差值" value="' + positiontime + '"  class="layui-input">\
-                    </div>\
-                     <div class="layui-form-mid layui-word-aux" style="float: right;margin-right: 0px">请输入差值在-100000到-100或者100到10000区间的值以及0</div>\
-                </div>\
-            </form>';
-    layui.use(['layer','element','form','laydate'], function() {
-        var form = layui.form;
-        open_positiontime_index=layer.open({
-            type:1,
-            title:'编辑定位差值',
-            content:html,
-            area: ['25%', '30%'],
-            btn: ['确定','取消'],
-            success:function(layero, index){
-                layero.addClass('layui-form');//添加form标识
-                layero.find('.layui-layer-btn0').attr('lay-filter', 'fromContent').attr('lay-submit', '');//将按钮弄成能提交的
-                form.render();
-            },
-            yes:function(index, layero){
-                //自定义验证规则
-                form.verify({
-                    positiontimem:function (value) {
-                        if (!(/\S/).test(value)) {
-                            return "请输入定位差值";
-                        }
-                        if (!((value<=-100&&value>=-100000)||(value<=100000&&value>=100)||value==0)) {
-                            return "请输入差值在-100000到-100或者100到10000区间的值以及0";
-                        }
-                    }
-                });
-                //监听提交
-                form.on('submit(fromContent)', function(data){
-                    updateRecord();
-                });
-            },
-            btn2:function(index, layero){
-                layer.close(index);
-            }
-        });
-    });
-}
-function updateRecord(){
-    var positiontime=$("#positiontimem").val();
-    if (!isNotEmpty(positiontime)){
-        layer.msg("请输入定位差值",{icon:5});
-        return;
-    }
-    var url=getActionURL(getactionid_manage().getRecordById_updateRecord);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            ssid: recordssid,
-            positiontime:positiontime
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackupdateRecord);
-}
-function callbackupdateRecord(data){
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var param=data.param;
-            if (isNotEmpty(param)){
-                layer.close(open_positiontime_index);
-                 positiontime=param.positiontime;//更新值
-                layer.msg("保存成功",{icon:6,time:500},function () {
-                    $("#positiontime").val(positiontime);
-                });
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//*******************************************************************修改定位时间start****************************************************************//
 
-
-//*******************************************************************定时请求视频地址start****************************************************************//
-var getplayurl_setinterval=null;
-function getPlayUrl() {
-    if (isNotEmpty(iid)) {
-        var url=getUrl_manage().getPlayUrl;
-        var data={
-            iid: iid
-        };
-        ajaxSubmitByJson(url, data, callbackgetPlayUrl);
-    }else{
-        console.log("直播信息未找到__"+iid);
-    }
-}
-function callbackgetPlayUrl(data) {
-    $("#gZIPVod_html").css("display","block");
-    if(null!=data&&data.actioncode=='SUCCESS') {
-        $("#gZIPVod_html").css("display","none");
-        var data=data.data;
-        if (isNotEmpty(data)){
-            clearInterval(getplayurl_setinterval);
-            set_getPlayUrl(data);
-        }
-    }else{
-        $("#gZIPVod_html .layui-col-md9").html(data.message);
-    }
-}
-//*******************************************************************定时请求视频地址start****************************************************************//

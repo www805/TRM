@@ -218,12 +218,12 @@
                     <div class="layui-inline" style="margin-bottom:0">
                         <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
                             <div class="layui-select-title">
-                                <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn(this);"><i class="layui-icon" >&#xe601;</i>  导出</button>
+                                <button type="button"  value="" readonly="" class="layui-btn layui-btn-normal" onclick="btn();"><i class="layui-icon" >&#xe601;</i>  导出</button>
                             </div>
-                            <dl class="layui-anim layui-anim-upbit" style="z-index: 1000">
-                                <dd lay-value="" class="" onclick="exporttemplate_ue(1);">导出word</dd><!--onclick="exportWord(this);"-->
-                                <dd lay-value="" class="" onclick="exporttemplate_ue(2);">导出pdf</dd><!--onclick="exportPdf(this);"-->
-                                <dd lay-value="" class="" onclick="export_asr();">导出识别内容</dd>
+                            <dl class="layui-anim layui-anim-upbit" style="z-index: 1000" id="dc_li">
+                                <dd lay-value="" class=""  type="1">导出word</dd><!--onclick="exportWord(this);"-->
+                                <dd lay-value="" class=""  type="2">导出pdf</dd><!--onclick="exportPdf(this);"-->
+                                <dd lay-value="" class=""  type="3">导出识别内容</dd>
                             </dl>
                         </div>
                     </div>
@@ -231,7 +231,7 @@
                 <div class="layui-inline" style="float: right">
                     <label class="layui-form-label" style="width: 100px">定位差值(秒)：</label>
                     <div class="layui-input-inline" style="width: 80px;">
-                        <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input" onclick="open_positiontime()">
+                        <input type="number" name="positiontime"  id="positiontime"  readonly  title="点击可修改" autocomplete="off" class="layui-input" >
                     </div>
 
                 </div>

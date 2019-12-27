@@ -1,3 +1,1 @@
-function ceshi(){
-    console.log(123);
-}
+/*笔录问答模板*/

@@ -78,9 +78,6 @@ function img_bool(obj,type){
     }
 }
 
-
-
-
 //获取笔录信息
 function getRecordById() {
     var url=getActionURL(getactionid_manage().waitCourt_getRecordById);
@@ -339,7 +336,134 @@ function callbackgetRecordById(data) {
     }
 }
 
+//左侧点击
+function copy_text(obj) {
+    var lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
+    if (!isNotEmpty(lastp)) {
+        layer.msg("请先在笔录界面加入光标");''
+        return;
+    }
+    var starttime=$(obj).closest("div").attr("starttime");
+    var txt=$(obj).text();
+    var oldstarttime=$(lastp).attr("starttime");//获取光标所在位置
+    //样式
+    var  pstyle=$("span",lastp).attr("style");
+    if(typeof(pstyle) == "undefined"){
+        pstyle="";
+    }
+    var newpstyle = $(lastp).attr("style");
+    if(typeof(newpstyle) == "undefined"){
+        newpstyle="";
+    }
+    $(lastp).append(txt);
+    if (!isNotEmpty(oldstarttime)&&isNotEmpty(starttime)){
+        $(lastp).attr("starttime",starttime);
+        $(lastp).attr("style",newpstyle+pstyle);
+    }
+}
 
+//保存按钮
+//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
+function addRecord() {
+    setRecordreal();
+    if (isNotEmpty(overRecord_index)) {
+        layer.close(overRecord_index);
+    }
+    if (isNotEmpty(recordssid)){
+        var url=getActionURL(getactionid_manage().waitCourt_addRecord);
+        //需要收拾数据
+        var recordToProblems=[];//题目集合：不需要了直接保存缓存里面的
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                recordbool:recordbool,
+                casebool:casebool,
+                recordToProblems:recordToProblems,
+                mtssid:mtssid //会议ssid用于笔录结束时关闭会议
+            }
+        };
+        $("#overRecord_btn").attr("click","");
+        ajaxSubmitByJson(url, data, calladdRecord);
+    }else{
+        layer.msg("系统异常");
+    }
+}
+function calladdRecord(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            if (isNotEmpty(overRecord_loadindex)) {
+                layer.close(overRecord_loadindex);
+            }
+            if (recordbool==2) {
+                layer.msg("已结束",{time:500,icon:6},function () {
+                    var url=getActionURL(getactionid_manage().waitCourt_torecordIndex);
+                    window.location.href=url;
+                })
+            }else {
+                layer.msg('保存成功',{icon:6});
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+    $("#overRecord_btn").attr("click","overRecord();");
+}
+
+//结束笔录按钮
+var overRecord_index=null;
+var overRecord_loadindex =null;
+function overRecord(state) {
+    var msgtxt2="是否结束？";
+    if (state==1){
+        msgtxt2="是否暂停？";
+    }
+    var msgtxt="";
+    if (isNotEmpty(fdStateInfo)) {
+        var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
+        var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
+        if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
+            msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
+        }
+    }
+
+
+    layer.confirm(msgtxt2+'<br/>'+msgtxt, {
+        btn: ['确认','取消'], //按钮
+        shade: [0.1,'#fff'], //不显示遮罩
+    }, function(index){
+        if (null!=setinterval1){
+            clearInterval(setinterval1);
+        }
+
+        $("#record_switch_bool").attr("isn",-1);
+        $("#record_switch_bool").removeClass("layui-form-onswitch");
+        $("#record_switch_bool").find("em").html("关闭");
+
+
+        overRecord_index=index;
+        recordbool=2;
+        if (state==1){
+            casebool=3;//需要暂停
+        }
+
+
+        addRecord();
+        overRecord_loadindex = layer.msg("保存中，请稍等...", {
+            typy:1,
+            icon: 16,
+            shade: [0.1, 'transparent'],
+            time:10000
+        });
+    }, function(index){
+        layer.close(index);
+    });
+}
+
+
+
+//**********************************************************关于会议***********************************************start
 //开始会议
 var mtssid=null;//会议ssid
 var useretlist=null;
@@ -534,10 +658,7 @@ function callbackstartMC(data) {
     }
 }
 
-
-/*
-会议暂停或者继续 pauseOrContinue 1请求暂停，2请求继续
-*/
+//会议暂停或者继续 pauseOrContinue 1请求暂停，2请求继续
 function pauseOrContinueRercord(pauseOrContinue) {
     if (isNotEmpty(mtssid)){
         var url=getUrl_manage().pauseOrContinueRercord;
@@ -551,7 +672,6 @@ function pauseOrContinueRercord(pauseOrContinue) {
         ajaxSubmitByJson(url, data, callbackpauseOrContinueRercord);
     }
 }
-
 function callbackpauseOrContinueRercord(data) {
     layer.close(startMC_index);
     getMCCacheParamByMTssid();//获取缓存
@@ -611,8 +731,6 @@ function callbackpauseOrContinueRercord(data) {
 }
 
 
-
-
 //获取会议缓存
 function getMCCacheParamByMTssid() {
     if (mcbool==1||mcbool==3){
@@ -633,7 +751,6 @@ function getMCCacheParamByMTssid() {
         });
     }
 }
-
 function getTDCacheParamByMTssid() {
     if ((mcbool==1||mcbool==3)&&isNotEmpty(dq_recorduser)) {//会议正常的时候
         var url=getUrl_manage().getTDCacheParamByMTssid;
@@ -656,111 +773,11 @@ function getTDCacheParamByMTssid() {
         });
     }
 }
+//**********************************************************关于会议*************************************************end
 
 
-//保存按钮
-//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
-function addRecord() {
-    setRecordreal();
-    if (isNotEmpty(overRecord_index)) {
-        layer.close(overRecord_index);
-    }
-    if (isNotEmpty(recordssid)){
-        var url=getActionURL(getactionid_manage().waitCourt_addRecord);
-        //需要收拾数据
-        var recordToProblems=[];//题目集合：不需要了直接保存缓存里面的
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                recordbool:recordbool,
-                casebool:casebool,
-                recordToProblems:recordToProblems,
-                mtssid:mtssid //会议ssid用于笔录结束时关闭会议
-            }
-        };
-        $("#overRecord_btn").attr("click","");
-        ajaxSubmitByJson(url, data, calladdRecord);
-    }else{
-        layer.msg("系统异常");
-    }
-}
-function calladdRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            if (isNotEmpty(overRecord_loadindex)) {
-                layer.close(overRecord_loadindex);
-            }
-            if (recordbool==2) {
-                layer.msg("已结束",{time:500,icon:6},function () {
-                    var url=getActionURL(getactionid_manage().waitCourt_torecordIndex);
-                    window.location.href=url;
-                })
-            }else {
-                layer.msg('保存成功',{icon:6});
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    $("#overRecord_btn").attr("click","overRecord();");
-}
-
-//结束笔录按钮
-var overRecord_index=null;
-var overRecord_loadindex =null;
-function overRecord(state) {
-    var msgtxt2="是否结束？";
-    if (state==1){
-        msgtxt2="是否暂停？";
-    }
-    var msgtxt="";
-    if (isNotEmpty(fdStateInfo)) {
-        var atxt=fdStateInfo.roma_status==null?"":fdStateInfo.roma_status;//1是刻录中
-        var btxt=fdStateInfo.romb_status==null?"":fdStateInfo.romb_status;
-        if (isNotEmpty(atxt)&&isNotEmpty(btxt)&&atxt=="1"||btxt=="1") {
-            msgtxt="<span style='color: red'>*存在光驱正在刻录中，审讯关闭将会停止刻录</span>"
-        }
-    }
-
-
-    layer.confirm(msgtxt2+'<br/>'+msgtxt, {
-        btn: ['确认','取消'], //按钮
-        shade: [0.1,'#fff'], //不显示遮罩
-    }, function(index){
-        if (null!=setinterval1){
-            clearInterval(setinterval1);
-        }
-
-        $("#record_switch_bool").attr("isn",-1);
-        $("#record_switch_bool").removeClass("layui-form-onswitch");
-        $("#record_switch_bool").find("em").html("关闭");
-
-
-        overRecord_index=index;
-        recordbool=2;
-        if (state==1){
-            casebool=3;//需要暂停
-        }
-
-
-        addRecord();
-        overRecord_loadindex = layer.msg("保存中，请稍等...", {
-            typy:1,
-            icon: 16,
-            shade: [0.1, 'transparent'],
-            time:10000
-        });
-    }, function(index){
-        layer.close(index);
-    });
-}
-
-
-/**
- * 获取会议asr实时数据
- */
+//*********************************************笔录实时问答********************************************************start
+//获取会议asr实时数据
 function getRecordrealing() {
     if (isNotEmpty(mtssid)) {
         var url=getUrl_manage().getRecordrealing;
@@ -812,7 +829,7 @@ function callbackgetgetRecordrealing(data) {
 
 
                             //实时会议数据
-                                //1放左边
+                            //1放左边
                             var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
                             var fontcolor="#ffffff";
                             if (gnlist.indexOf(NX_O)!= -1){
@@ -847,80 +864,6 @@ function callbackgetgetRecordrealing(data) {
     }
 }
 
-
-//默认问答
-var trtd_html='<p><br/></p>';
-
-//lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
-function focuslable(html,type,qw) {
-    if (!isNotEmpty(html)) {html=trtd_html}
-    if (type==1){}  else if (type==0) {}
-    else if (type==2){
-        //判断laststarttime_ue是否为空，
-        // 为空判断是否存在光标获取光标在第几行在该标签后边追加
-        //不为空获取最后一个p标签在该标签后边追加
-       var lastp=getlastp();
-        if (isNotEmpty(lastp)) {
-            $(html).insertAfter(lastp);//[lastp.length-1]
-            TOWORD.page.checkAndDealSpanHeight(lastp[0],true);
-        }else {
-          console.log("追加的P未找到啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊**********************************")
-        }
-    }
-}
-
-function getlastp() {
-    var lastp=null;
-    if (isNotEmpty(laststarttime_ue)){
-        lastp=$("p[starttime="+laststarttime_ue+"]:last",editorhtml);
-        if (!isNotEmpty(lastp)){
-            lastp=$("p[starttime]:not(:empty)",editorhtml).last();
-            if (!isNotEmpty(lastp)){
-                lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-                lastp=$(lastp);
-            }
-        }
-    }else {
-        //光标追加
-        //获取光标所在的p标签
-        lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-        lastp=$(lastp);
-    }
-    //latsp不存在查找divid
-    if (!isNotEmpty(lastp)) {
-        var divid=$("p[starttime="+laststarttime_ue+"]:last",editorhtml).closest("div").attr("id");
-        if (!isNotEmpty(divid)){
-            divid = TOWORD.util.getDivIdByUE(ue);
-        }
-        lastp= $("#"+divid+" p:last",editorhtml);
-    }
-    return lastp;
-}
-
-/**
- * 获取上一个标签的样式
- */
-function getlastp_style() {
-    var pstyle="";
-    var lastp=getlastp();
-    if (isNotEmpty(lastp)){
-        pstyle=$("span",lastp).attr("style");
-        if(typeof(pstyle) == "undefined"){
-            pstyle="";
-        }
-       var newpstyle = $(lastp).attr("style");
-        if(typeof(newpstyle) == "undefined"){
-            newpstyle="";
-        }
-        console.log("span的样式："+pstyle);
-        console.log("p标签的样式："+newpstyle)
-        return pstyle+newpstyle;
-    }
-    return pstyle;
-}
-
-
-/***************************************笔录实时问答start*************************************************/
 /*笔录实时保存*/
 function setRecordreal() {
     var url=getActionURL(getactionid_manage().waitCourt_setRecordreal);
@@ -1002,45 +945,14 @@ function callbackgetRecordrealByRecordssid(data) {
                 }
                 TOWORD.page.importhtml(problemhtml);
                 laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
-                 console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+               console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
             }
         }
     }else{
         layer.msg(data.message,{icon: 5});
     }
-
-
 }
-
-
-
-/***************************************笔录实时问答end*************************************************/
-//左侧点击
-function copy_text(obj) {
-    var lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
-    if (!isNotEmpty(lastp)) {
-        layer.msg("请先在笔录界面加入光标");''
-        return;
-    }
-    var starttime=$(obj).closest("div").attr("starttime");
-    var txt=$(obj).text();
-    var oldstarttime=$(lastp).attr("starttime");//获取光标所在位置
-    //样式
-    var  pstyle=$("span",lastp).attr("style");
-    if(typeof(pstyle) == "undefined"){
-        pstyle="";
-    }
-    var newpstyle = $(lastp).attr("style");
-    if(typeof(newpstyle) == "undefined"){
-        newpstyle="";
-    }
-    $(lastp).append(txt);
-    if (!isNotEmpty(oldstarttime)&&isNotEmpty(starttime)){
-        $(lastp).attr("starttime",starttime);
-        $(lastp).attr("style",newpstyle+pstyle);
-    }
-}
-
+//***********************************************笔录实时问答********************************************************end
 
 
 
@@ -1048,31 +960,19 @@ function copy_text(obj) {
 
 //定时器关闭
 var setinterval1=null;
-//导出word
-var exportWord_index=null;
-var exportPdf_index=null;
 
 $(function () {
 
     //导出
     $("#dc_li li").click(function () {
         var type=$(this).attr("type");
+        layer.msg("导出中，请稍等...", { icon: 16, shade: [0.1, 'transparent'],time:6000});
         if (type==1){
-            exportWord_index=layer.msg("导出中，请稍等...", {
-                icon: 16,
-                shade: [0.1, 'transparent'],
-                time:10000
-            });
-           /* exportWord();*/
-            exporttemplate_ue(1);
+            var exporttemplate_ueUrl=getActionURL(getactionid_manage().waitCourt_exporttemplate_ue);
+            exporttemplate_ue(1,exporttemplate_ueUrl);
         }else  if(type==2){
-            exportPdf_index=layer.msg("导出中，请稍等...", {
-                icon: 16,
-                shade: [0.1, 'transparent'],
-                time:10000
-            });
-           /* exportPdf();*/
-            exporttemplate_ue(2);
+            var exporttemplate_ueUrl=getActionURL(getactionid_manage().waitCourt_exporttemplate_ue);
+            exporttemplate_ue(2,exporttemplate_ueUrl);
         }
     });
 
@@ -1316,8 +1216,6 @@ function shrink(obj) {
 
 
 
-
-
 //*******************************************************************获取各个状态start****************************************************************//
 function  getEquipmentsState() {
     if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
@@ -1439,16 +1337,6 @@ function callbackgetEquipmentsState(data) {
 //*******************************************************************获取各个状态end****************************************************************//
 
 
-
-
-
-
-
-
-//语音识别颜色
-var asrcolor=["#AA66CC","#0181cc","#ef8201","#99CC00","#e30000"," #ff80bf","#00b8e6","#00802b","#6f0000","#3333ff","#e64d00","#688b00","#b35900","#5c8a8a","#999966","#b3b3b3","#3366cc"];
-
-
 ///////////////////************导出**********************//////////
 function exportWord() {
     var url=getActionURL(getactionid_manage().waitCourt_exportWord);
@@ -1459,9 +1347,6 @@ function exportWord() {
         }
     };
     ajaxSubmitByJson(url, paramdata, function (data) {
-        if (isNotEmpty(exportWord_index)) {
-            layer.close(exportWord_index);
-        }
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
@@ -1475,7 +1360,6 @@ function exportWord() {
         }
     });
 }
-
 function exportPdf(){
     var url=getActionURL(getactionid_manage().waitCourt_exportPdf);
     var paramdata={
@@ -1485,9 +1369,6 @@ function exportPdf(){
         }
     };
     ajaxSubmitByJson(url, paramdata, function (data) {
-        if (isNotEmpty(exportPdf_index)) {
-            layer.close(exportPdf_index);
-        }
         if(null!=data&&data.actioncode=='SUCCESS'){
             var data=data.data;
             if (isNotEmpty(data)){
@@ -1512,83 +1393,7 @@ function exportPdf(){
 ///////////////////************导出**********************//////////
 
 ///////////////////////////////**********************************************************百度编辑器**************start
-var laststarttime_ue=null;//最后一个识别的starttime
-function  resetpage() {
-    var divid=null;
-    if (isNotEmpty(laststarttime_ue)) {
-        divid=$("p[starttime="+laststarttime_ue+"]",editorhtml).closest("div").attr("id");
-    }else {
-        divid = TOWORD.util.getDivIdByUE(ue);
-    }
 
-
-        if(!isNotEmpty(divid)){
-            return;
-        }else{
-            TOWORD.currentdivnum=parseInt(divid.replace(/[^0-9]/ig,""));
-        }
-        console.log(" TOWORD.currentdivnum=222==="+ TOWORD.currentdivnum)
-        var psheight=TOWORD.page.getAllPHeightByDivid(divid);
-        var pseight_old=TOWORD.divheightmap[divid];
-        if(isNotEmpty(psheight)){
-            //对比上一次的高度，有变化的话，触发重新排版
-            if(isNotEmpty(pseight_old)&&psheight!=pseight_old){
-                //重新排版，写入toWord里面
-                console.log("重新排版，写入toWord里面");
-                TOWORD.page.reTypesetting(ue,pseight_old,psheight,divid);
-            }
-            console.log(pseight_old+":pseight_old----pseight:"+psheight+"---divid:"+divid);
-        }
-
-}
-
-
-//导出模板
-function exporttemplate_ue(exporttype) {
-    if (isNotEmpty(exporttype)&&isNotEmpty(recordssid)) {
-        var url=getActionURL(getactionid_manage().waitCourt_exporttemplate_ue);
-        var paramdata={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                exporttype:exporttype,
-            }
-        };
-        ajaxSubmitByJson(url,paramdata,callbackexporttemplate_ue);
-    }
-}
-
-function callbackexporttemplate_ue(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var exporttype=data.exporttype;
-            var word_downurl=data.word_downurl;//word导出地址
-            var pdf_downurl=data.pdf_downurl;//pdf导出地址
-            if (isNotEmpty(exporttype)) {
-               if (exporttype==1&&isNotEmpty(word_downurl)){
-                   window.location.href = word_downurl;
-                   layer.msg("导出成功,等待下载中...",{icon: 6});
-               } else if (exporttype==2&&isNotEmpty(pdf_downurl)){
-                   layer.open({
-                       id:"pdfid",
-                       type: 1,
-                       title: '导出PDF',
-                       shadeClose: true,
-                       maxmin: true, //开启最大化最小化按钮
-                       area: ['893px', '600px'],
-                   });
-                   showPDF("pdfid",pdf_downurl);
-                   layer.msg("导出成功,等待下载中...",{icon: 6});
-               }else {
-                   layer.msg("导出失败",{icon: 5});
-               }
-            }
-        }
-    }else{
-         layer.msg(data.message,{icon: 5});
-    }
-}
 
 ///////////////////////////////**********************************************************百度编辑器**************end
 
@@ -1600,8 +1405,6 @@ function set_record_switchusers() {
         layer.msg("未找到可甄别角色",{icon: 5});
         return;
     }
-    console.log(record_switchusers)
-    console.log(dqswitchusers)
     var HTML='<div id="switchusers" style="margin: 30px"></div>';
     layui.use(['transfer','layer','element','form'], function(){
         var transfer = layui.transfer;
@@ -1648,81 +1451,12 @@ function set_record_switchusers() {
 
     });
 }
-
 ///////////////////////////////**********************************************************甄别人员设置**************end
-
-
-///////////////////////////////**********************************************************自动甄别**************start
-var last_identifys = {};//每个人上一次甄别内容 格式：usertype：{firsttime:第一句时间，starttime:当前句时间}
-var lastusertype=-1;//上一个角色类型
-function identify(usertype,starttime,gradeintroduce,translatext) {
-    var last_identify=last_identifys[""+lastusertype+""];//上一个角色
-    var dq_identify=last_identifys[""+usertype+""];//当前角色
-
-    if (lastusertype!=-1){
-        if (isNotEmpty(last_identify)){
-            if (usertype==lastusertype) {
-                var thisp= $("p[usertype="+usertype+"][starttime="+last_identify.firsttime+"]:last",editorhtml);
-                if (isNotEmpty(thisp)) {
-                    var span_last = $("span[starttime]:not(:empty)",thisp).last();
-                    var span_laststarttime=$(span_last).attr("starttime");
-                    if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
-                        $(span_last).html(translatext);
-                    }else {
-                        $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
-                    }
-                    TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
-                    last_identifys[""+usertype+""].starttime=starttime;
-                }else {
-                    addidentify(usertype,starttime,gradeintroduce,translatext);
-                }
-            }else {
-                if (isNotEmpty(dq_identify)) {
-                    var thisp= $("p[usertype="+usertype+"][starttime="+dq_identify.firsttime+"]:last",editorhtml);
-                    if (dq_identify.starttime==starttime&&isNotEmpty(thisp)){
-                            var span_last = $("span[starttime]:not(:empty)",thisp).last();
-                            var span_laststarttime=$(span_last).attr("starttime");
-                            if (isNotEmpty(span_laststarttime)&&span_laststarttime==starttime) {
-                                $(span_last).last().html(translatext);
-                            }else {
-                                $(thisp).append("<span starttime="+starttime+">"+translatext+"</span>");
-                            }
-                            TOWORD.page.checkAndDealSpanHeight(thisp[0],true);
-                            last_identifys[""+usertype+""].starttime=starttime;
-                            usertype=lastusertype;//不改变上一个
-                    } else {
-                        addidentify(usertype,starttime,gradeintroduce,translatext);
-                    }
-                }else {
-                    addidentify(usertype,starttime,gradeintroduce,translatext);
-                }
-            }
-        }else {
-            console.log("存在上一个角色不应该进来的吧******************************")
-        }
-    }else{
-        console.log("初始化一下自动甄别******************************")
-        addidentify(usertype,starttime,gradeintroduce,translatext);
-    }
-    lastusertype=usertype;
-}
-
-//追加新的一行哎哎哎
-function addidentify(usertype,starttime,gradeintroduce,translatext) {
-    var trtd_html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'"><span>'+gradeintroduce+'</span><span starttime="'+starttime+'">'+translatext+'</span></p>';
-    focuslable(trtd_html,2,null);
-    laststarttime_ue=starttime;
-    resetpage();
-    last_identifys[""+usertype+""]={firsttime:starttime,starttime:starttime};
-}
-
-///////////////////////////////**********************************************************自动甄别**************end
-
 
 
 
 ///////////////////////////////**********************************************************左侧打点**************start
-//type 1标记 2取消标记
+//type 1标记 2取消标记 暂时只支持宁夏
 function tagtext(type) {
     if (!isNotEmpty(type)) {
         return;

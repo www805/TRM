@@ -192,7 +192,7 @@ function focuslable(html,type,qw) {
                 }else if( name=="w") {
                     times=parseInt(times)+subtractime_w;
                 }
-                showrecord(times,null);
+                showrecord(times);
             }
         }
     })
@@ -200,6 +200,72 @@ function focuslable(html,type,qw) {
     $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
         qw_keydown(this,event);
     })
+}
+
+
+//导出word or pdf
+function btn() {
+    var selected=$("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $("div[name='btn_div']").attr("showorhide","true");
+        $("div[name='btn_div']").addClass("layui-form-selected");
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
+function exportWord(url){
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                var word_htmlpath=data.word_htmlpath;//预览html地址
+                var word_path=data.word_path;//下载地址
+                window.location.href = word_path;
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+    btn();
+}
+function exportPdf(url) {
+    var paramdata={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid: recordssid,
+        }
+    };
+    ajaxSubmitByJson(url, paramdata, function (data) {
+        if(null!=data&&data.actioncode=='SUCCESS'){
+            var data=data.data;
+            if (isNotEmpty(data)){
+                layer.open({
+                    id:"pdfid",
+                    type: 1,
+                    title: '导出PDF笔录',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['893px', '600px'],
+                });
+                showPDF("pdfid",pdfdownurl);
+                layer.msg("导出成功,等待下载中...",{icon: 6});
+            }
+        }else{
+            layer.msg(data.message,{icon: 5});
+        }
+    });
+    btn();
 }
 
 
