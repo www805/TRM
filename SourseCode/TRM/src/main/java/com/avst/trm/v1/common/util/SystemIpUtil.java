@@ -1,6 +1,7 @@
 package com.avst.trm.v1.common.util;
 
 import com.avst.trm.v1.common.cache.ServerIpCache;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import org.apache.commons.lang.StringUtils;
@@ -133,7 +134,19 @@ public class SystemIpUtil {
                 + newip + "    " + zwm + "     " + wg + "     1";
 
 //        System.out.println(cmd);
+        LogUtil.intoLog(1, SystemIpUtil.class, "正在修改本机ip：" + cmd);
         NetTool.executeCMD(cmd);
+
+//        Process process = null;
+//        try {
+//            process = Runtime.getRuntime().exec(cmd);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//            if(null != process){
+//                process.destroy();
+//            }
+//        }
     }
 
 

@@ -15,6 +15,7 @@ var fdtype = "FD_AVST";
 var fdStateInfo;
 var CDNumModel_index;
 var getCDNumberMsg;
+var fdStateNum=0;
 
 
 //使用模块
@@ -1051,7 +1052,12 @@ function callFDState(data){
 
         }
     }else{
-        layer.msg(data.message,{icon:5});
+        fdStateNum++;
+        //最少20秒才会弹一次
+        if (fdStateNum > 20) {
+            fdStateNum = 0;
+            layer.msg(data.message,{icon:5});
+        }
     }
 }
 

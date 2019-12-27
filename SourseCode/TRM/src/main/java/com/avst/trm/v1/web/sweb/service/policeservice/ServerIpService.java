@@ -156,18 +156,19 @@ public class ServerIpService extends BaseService {
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
 
         //消除session
-        HttpSession session = request.getSession();
-        session.invalidate();
+//        HttpSession session = request.getSession();
+//        session.invalidate();
 
-        //清除cookie，并且退出
+        //清除cookie
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         }
-
+        LogUtil.intoLog(1, this.getClass(), "已清除session、cookie");
+        LogUtil.intoLog(1, this.getClass(), "因修改了IP，所以开始睡眠12秒");
         try {
-            Thread.sleep(8000);//睡眠8秒
+            Thread.sleep(12000);//睡眠12秒
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -191,12 +192,14 @@ public class ServerIpService extends BaseService {
             }
 
             if (bool) {
+                LogUtil.intoLog(1, this.getClass(), "本机ip修改成功：" + updateIpParam.getIp());
                 break;
             }
         }
 
         if (!bool) {
-            rResult.setMessage("ip修改失败，其他的不会继续执行");
+            LogUtil.intoLog(4, this.getClass(), "ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
+            rResult.setMessage("ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
             return;
         }
 
@@ -236,9 +239,14 @@ public class ServerIpService extends BaseService {
                 AppCache.delAppCacheParam();
                 AppServerCache.delAppServerCache();
 
+                LogUtil.intoLog(1, this.getClass(), "配置文件ip、缓存IP、总控IP 修改成功");
                 changeResultToSuccess(rResult);
+            }else{
+                LogUtil.intoLog(4, this.getClass(), "修改系统配置的ip失败");
             }
 
+        }else{
+            LogUtil.intoLog(4, this.getClass(), "成功修改的ip与数据库的ip不一致，不继续上报总控");
         }
     }
 
@@ -258,6 +266,7 @@ public class ServerIpService extends BaseService {
             RResult rResult1 = equipmentControl.getServerIpALL(reqParam);
             rResult.setData(rResult1.getData());
             changeResultToSuccess(rResult);
+            LogUtil.intoLog(1, this.getClass(), "获取其他全部设备IP，请求成功");
         } catch (Exception e) {
             LogUtil.intoLog(4,this.getClass(),"获取其他全部设备IP，远程请求接口出错！");
         }

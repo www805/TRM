@@ -2,6 +2,8 @@ var modeltds = [];
 var serverIpData;
 var trmipMap;
 var trmipKey="";
+var trmportOne;
+var tiaozhuan = "";
 // var trmipNum=0;
 
 //修改会议模板ip
@@ -41,7 +43,7 @@ function updateServerIp(){
         }
     }
 
-    ajaxSubmitByJson(url,data,callUpdateServerIp);
+    ajaxSubmitByJson(url,data,callcommonState);
 }
 
 //修改网卡下本机ip
@@ -64,30 +66,28 @@ function updateIp() {
         gateway: gateway
     }
 
+    tiaozhuan = "http://" + trmip + ":" + trmportOne + "/sweb/base/home/login?updateip=" + trmip;//跳转到登录页面
+
+
 
     ajaxSubmitByJson(url, data, callUpdateServerIp);
 
-
-
     setTimeout(function () {
-        var tiaozhuan = "http://" + trmip + ":8080/sweb/base/home/login?updateip=" + trmip;//跳转到登录页面
-        console.log(tiaozhuan);
         parent.location.href = tiaozhuan;//跳转到登录页面
-    }, 10000);
+    },15000);
 
     layer.msg("处理中，请稍后...", {
         icon: 16,
-        time:15000,
+        time:20000,
         shade: [0.1,"#fff"],
     });
-
 }
 
 //修改端口
 function setServerPortALL() {
 
-    // var url = getActionURL(getactionid_manage().serverip_updateIp);
-    var url = "/sweb/base/ip/setServerPortALL";
+    var url = getActionURL(getactionid_manage().serverip_setServerPortALL);
+    // var url = "/sweb/base/ip/setServerPortALL";
 
     var trmport = $("#trmport").val();
     var zkport = $("#zkport").val();
@@ -111,7 +111,7 @@ function setServerPortALL() {
         // anzhuangpath: anzhuangpath
     }
 
-    ajaxSubmitByJson(url, data, callUpdateServerIp);
+    ajaxSubmitByJson(url, data, callcommonState);
 }
 
 /**
@@ -180,8 +180,8 @@ function getServerIpPath(trmipNum){
 
 //获取所有服务端口
 function getServerPortALL(){
-    // var url = getActionURL(getactionid_manage().serverip_getServerIpList);
-    var url = "/sweb/base/ip/getServerPortALL";
+    var url = getActionURL(getactionid_manage().serverip_getServerPortALL);
+    // var url = "/sweb/base/ip/getServerPortALL";
 
     ajaxSubmit(url,null,callgetServerPortALL);
 }
@@ -320,7 +320,8 @@ function callgetServerIpList(data){
 
 function callgetServerIpALL(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        // console.log(data);
+        layer.closeAll();
+        // console.log(data);IPIndexLoad
 
         serverIpData = data.data;
         $("#polygraphip").val(isNotEmpty(serverIpData['polygraphip']) == true ? serverIpData['polygraphip'].etip : "");
@@ -337,6 +338,8 @@ function callgetServerIpALL(data){
 function callgetServerPortALL(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         var serverPort = data.data;
+
+        trmportOne = serverPort['trmport'];
 
         $("#trmport").val(isNotEmpty(serverPort['trmport']) == true ? serverPort['trmport'] : "");
         $("#zkport").val(isNotEmpty(serverPort['zkport']) == true ? serverPort['zkport'] : "");
@@ -356,6 +359,15 @@ function callgetServerPortALL(data){
 function callUpdateServerIp(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         layer.msg("操作成功",{icon: 6});
+        setTimeout("parent.location.href = tiaozhuan;//跳转到登录页面",1500);
+    }else{
+        layer.msg(data.message, {icon:5});
+    }
+}
+
+function callcommonState(data){
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        layer.msg("操作成功",{icon: 6});
         setTimeout("window.location.reload()",1500);
     }else{
         layer.msg(data.message, {icon:5});
@@ -373,6 +385,13 @@ $(function () {
             ,laydate = layui.laydate
             ,laypage = layui.laypage
             ,element = layui.element;
+
+        layer.msg("加载中，请稍后...", {
+            icon: 16,
+            time: 10000,
+            shade: [0.1, "#fff"],
+        });
+
 
         form.on('select(trmip_filter)', function (data) {
             // console.log(data);
