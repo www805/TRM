@@ -522,8 +522,22 @@ public class RecordService2 extends BaseService {
             return result;
         }
         Police_record record=new Police_record();
-        record.setSsid(recordssid);
-        record=police_recordMapper.selectOne(record);
+        EntityWrapper policerecordew=new EntityWrapper();
+        policerecordew.eq("ssid",recordssid);
+        List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
+        if (null!=police_records&&police_records.size()==1) {
+            record = police_records.get(0);
+        }else {
+            result.setMessage("笔录异常");
+            return result;
+        }
+
+        if (null==record){
+            result.setMessage("未找到该笔录");
+            return result;
+        }
+
+
         boolean repackbool_=false;
         Integer repackbool=record.getRepackbool();
         if (repackbool==1&&null!=repackbool){
