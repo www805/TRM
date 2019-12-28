@@ -599,96 +599,6 @@ function callbackstartMC(data) {
 //**********************************************************关于会议*************************************************end
 
 
-//*********************************************笔录实时问答********************************************************start
-//获取会议asr实时数据
-function getRecordrealing() {
-    if (isNotEmpty(mtssid)) {
-        var url=getUrl_manage().getRecordrealing;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetgetRecordrealing);
-    }
-}
-function callbackgetgetRecordrealing(data) {
-    if(null!=data&&data.actioncode=='SUCCESS') {
-        var datas = data.data;
-        var loadindex = layer.msg("加载中，请稍等...", {
-            icon: 16,
-            time:1000
-        });
-
-        var list= datas.list;
-        var fdCacheParams= datas.fdCacheParams;
-
-        if (isNotEmpty(list)) {
-            layer.close(loadindex);
-            $("#recordreals").html("");
-            //法院加了打点标记操作
-            if (gnlist.indexOf(NX_O)!= -1){
-                $("#defaultsearch").hide();
-                $("#tagtxtsearch").show();
-            }
-            $("#recordreals_selecthtml").show();
-            for (var i = 0; i < list.length; i++) {
-                var data=list[i];
-                if (isNotEmpty(recorduser)){
-                    for (var j = 0; j < recorduser.length; j++) {
-                        var user = recorduser[j];
-                        var userssid=user.userssid;
-                        if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            /*var txt=data.txt==null?"":data.txt;//翻译文本*/
-                            var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var recordrealshtml="";
-                            //var translatext=data.keyword_txt==null?"":data.keyword_txt;//翻译文本
-                            var gradename=user.gradename==null?"未知":user.gradename;
-
-
-                            //实时会议数据
-                            //1放左边
-                            var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
-                            var fontcolor="#ffffff";
-                            if (gnlist.indexOf(NX_O)!= -1){
-                                color="#ffffff";
-                                fontcolor="#000000";
-                                recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
-                                                      </div >';
-
-                            }else {
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
-                                                            <span  style="background-color: '+color+';color: '+fontcolor+';"   ondblclick="copy_text(this)">'+translatext+'</span> \
-                                                      </div >';
-                            }
-
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
-                            }
-
-                            $("#recordreals").append(recordrealshtml);
-                            var div = document.getElementById('recordreals_scrollhtml');
-                            div.scrollTop = div.scrollHeight;
-                        }
-                    }
-                }
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-
-
-//***********************************************笔录实时问答********************************************************end
 
 
 $(function () {
@@ -737,6 +647,7 @@ $(function () {
         }else {
             $("#webkit2").empty();
         }
+
     },1000);
 
 
@@ -802,8 +713,6 @@ $(function () {
                                 var divx2 = div.offsetLeft + div.offsetWidth;
                                 var divy2 = div.offsetTop + div.offsetHeight;
                                 if (x < divx1 || x > divx2 || y < divy1 || y > divy2) {
-                                    //如果离开，则执行。。
-                                    console.log("哈哈哈哈哈哈哈哈哈哈或或或")
                                     mouseoverbool_left=-1;
                                 }else {
                                     mouseoverbool_left=1
@@ -849,8 +758,6 @@ $(function () {
     }else{
         console.log("socket连接失败")
     }
-
-
     $("#record_switch_bool").click(function () {
         var isn=$(this).attr("isn");
         var obj=this;
@@ -909,7 +816,9 @@ $(function () {
 
 
 
-///////////////////////////////**********************************************************甄别人员设置**************start
+
+
+//甄别人员设置
 var record_switchusers=[];//全部角色人员
 var dqswitchusers=[];//已选人员
 function set_record_switchusers() {
@@ -963,12 +872,10 @@ function set_record_switchusers() {
 
     });
 }
-///////////////////////////////**********************************************************甄别人员设置**************end
 
 
 
-///////////////////////////////**********************************************************左侧打点**************start
-//type 1标记 2取消标记 暂时只支持宁夏
+//左侧打点:暂时只支持宁夏版本
 function tagtext(type) {
     if (!isNotEmpty(type)) {
         return;
@@ -1026,5 +933,4 @@ function callbacksetMCTagTxtreal(data) {
         console.log(data.message)
     }
 }
-///////////////////////////////**********************************************************左侧打点**************end
 

@@ -113,6 +113,46 @@ function qw_keydown(obj,event) {
 function setFocus(el) {
     if (isNotEmpty(el)){
         el = el[0];
+
+        var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
+        if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
+            //回车加锚点：先判断语音识别是否开启
+            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)&&isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0) {
+                var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
+                var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
+                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr+"__语音识别数__"+asrnum)
+                /* if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))){*/
+                var dqtime=new Date().getTime();
+                var qw_type=el.getAttribute("name");
+                if (isNotEmpty(qw_type)){
+                    console.log("开始使用直播时间~")
+                    if (qw_type=="w"){
+                        var w_starttime=el.getAttribute("starttime");
+                        if ((!isNotEmpty(w_starttime)||w_starttime<0)){
+                            //计算时间戳
+                            w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                            el.setAttribute("starttime",w_starttime);
+                        }
+                    }else  if (qw_type=="q"){
+                        var q_starttime=el.getAttribute("starttime");
+                        if ((!isNotEmpty(q_starttime)||q_starttime<0)){
+                            //计算时间戳
+                            q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
+                            el.setAttribute("starttime",q_starttime);
+                        }
+                    }
+                }
+                /* }else {
+                     console.log("使用语音识别时间~")
+                 }*/
+            }else{
+                console.log("TDCache___"+TDCache+"___MCCache___"+MCCache+"___fdrecordstarttime___"+fdrecordstarttime);
+            }
+        }else {
+            console.log("不会给你视频点")
+        }
+
+
         if (window.getSelection) {//ie11 10 9 ff safari
             el.focus(); //解决ff不获取焦点无法定位问题
             var range = window.getSelection();//创建range
@@ -134,15 +174,6 @@ function setFocus(el) {
     }
 };
 
-function contextMenu() {
-    $('#recorddetail label').bind('mouseup', function(e) {
-        if (3 == e.which) {
-            document.execCommand('removeFormat');
-        }  else if (1 == e.which) {
-            document.execCommand('backColor',false,'yellow');
-        }
-    });
-}
 
 //lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标文还是答null//不设置光标
 function focuslable(html,type,qw) {
@@ -163,6 +194,17 @@ function focuslable(html,type,qw) {
         }
     }else {
         $("#recorddetail").append(html);
+        $("#recorddetail").hover(
+            function(){
+                mouseoverbool_right=1
+            } ,
+            function(){
+                mouseoverbool_right=-1;
+            });
+        if (mouseoverbool_right==-1){
+            var div = document.getElementById('recorddetail_scrollhtml');
+            div.scrollTop = div.scrollHeight;
+        }
         if (isNotEmpty(qw)){
             qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
             td_lastindex["key"]=$('#recorddetail tr:last').index();
@@ -484,7 +526,7 @@ function callbackgetRecordrealByRecordssid(data) {
         var data=data.data;
         if (isNotEmpty(data)){
             var problems=data;
-            $("#recorddetail").html("");
+            $("#recorddetail").empty();
             if (isNotEmpty(problems)) {
                 var problemhtml= setqw(problems);
                 focuslable(problemhtml,2,'w');
@@ -494,6 +536,19 @@ function callbackgetRecordrealByRecordssid(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
+
+//给右侧的上标记功能
+function contextMenu() {
+    $('#recorddetail label').bind('mousedown', function(e) {
+        if (3 == e.which) {
+            document.execCommand('removeFormat');
+        }  else if (1 == e.which) {
+            document.execCommand('backColor',false,'yellow');
+        }
+    });
+}
+
+
 
 
 

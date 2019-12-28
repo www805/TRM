@@ -165,8 +165,8 @@ function copy_problems(obj) {
     var w=$(obj).attr("referanswer");
     var html='<tr>\
         <td style="padding: 0;width: 80%;" class="onetd">\
-            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);"  class=""  placeholder="'+text+'"  starttime="" isn_fdtime="-1">'+text+'</label></div>\
-            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  class="" placeholder="'+w+'" starttime="" isn_fdtime="-1"></label></div>\
+            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q"   class=""  placeholder="'+text+'"  starttime="" isn_fdtime="-1">'+text+'</label></div>\
+            <div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"   class="" placeholder="'+w+'" starttime="" isn_fdtime="-1"></label></div>\
             <div  id="btnadd"></div>\
         </td>\
         <td>\
@@ -802,104 +802,12 @@ function calladdRecord(data) {
 
 
 
-/**
- * 获取会议asr实时数据
- */
-function getRecordrealing() {
-    if (isNotEmpty(mtssid)) {
-        var url=getUrl_manage().getRecordrealing;
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                mtssid: mtssid
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackgetgetRecordrealing);
-    }
-}
-function callbackgetgetRecordrealing(data) {
-    if(null!=data&&data.actioncode=='SUCCESS') {
-        var datas = data.data;
-        var loadindex = layer.msg("加载中，请稍等...", {
-            icon: 16,
-            time:1000
-        });
-
-        var list= datas.list;
-        var fdCacheParams= datas.fdCacheParams;
-        if (isNotEmpty(fdCacheParams)){
-            for (var i = 0; i < fdCacheParams.length; i++) {
-                var fdCacheParam = fdCacheParams[i];
-                    dq_livingurl= fdCacheParam.livingUrl;
-                    dq_previewurl= fdCacheParam.previewurl;
-                    liveurl = dq_livingurl;//开始会议后默认使用副麦预览地址
-                    console.log("当前liveurl————"+liveurl)
-            }
-            initplayer();
-        }
-        if (isNotEmpty(list)) {
-            layer.close(loadindex);
-            $("#recordreals").html("");
-            $("#recordreals_selecthtml").show();
-            for (var i = 0; i < list.length; i++) {
-                var data=list[i];
-                if (isNotEmpty(recorduser)){
-                    for (var j = 0; j < recorduser.length; j++) {
-                        var user = recorduser[j];
-                        var userssid=user.userssid;
-                        if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            var txt=data.txt==null?"...":data.txt;//翻译文本
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var recordrealshtml="";
-                            var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
-
-
-                            /*translatext= checkKeyword(translatext);
-                            console.log(translatext)*/
-
-                            //实时会议数据
-                            if (usertype==1){
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                            }else if (usertype==2){
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                            }
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
-                            }
-
-                            $("#recordreals").append(recordrealshtml);
-                            var div = document.getElementById('recordreals_scrollhtml');
-                            div.scrollTop = div.scrollHeight;
-                        }
-                    }
-                }
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
 
 
 
 
-/**
- * 视频地址切换 type 1主麦 type 2副麦
- */
-
+//视频地址切换 type 1主麦 type 2副麦
 function select_liveurl(obj,type){
-    /*$(obj).removeClass("layui-bg-gray").attr("isn","1");
-    $(obj).siblings().addClass("layui-bg-gray").attr("isn","-1");*/
     for (let i = 0; i < recorduser.length; i++) {
         const user = recorduser[i];
         if (user.userssid==dq_recorduser){
@@ -914,140 +822,7 @@ function select_liveurl(obj,type){
     initplayer();
 }
 
-
-//回车
-function qw_keydown(obj,event) {
-    var e = event || window.event;
-  var keyCode = e.keyCode;
-
-    var dqname=$(obj).attr("name");
-    var trindex= $(obj).closest("tr").index();
-    var trlength=$("#recorddetail tr").length;
-    var lable=null;
-    switch(keyCode){
-        case 13:
-            console.log("回车")
-            if (dqname=="q") {
-                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="w"]');//定位本行的答
-                setFocus(lable);
-            }else {
-                if (trlength==(trindex+1)){//最后一行答直接追加一行问答
-                    focuslable(trtd_html,1,'q');
-                } else {
-                     lable=$('#recorddetail tr:eq("'+(trindex+1)+'") label[name="q"]');//定位到下一行的问
-                    setFocus(lable);
-                }
-            }
-            event.preventDefault();
-            break;
-        case 38:
-            console.log("上一句")
-           var name=dqname=="q"?"w":"q";
-            var index=(trindex-1)<=0?0:(trindex-1);
-            if (dqname=="w"){
-                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="'+name+'"]');
-                setFocus(lable);
-            }else {
-                if(trindex!=0){
-                   lable=$('#recorddetail tr:eq("'+index+'") label[name="'+name+'"]');
-                    setFocus(lable);
-                }
-                event.preventDefault();
-            }
-            break;
-        case 40:
-            console.log("下一句")
-            var index=(trindex+1)>=trlength?trlength:(trindex+1);
-            var name=dqname=="q"?"w":"q";
-            if (dqname=="q"){
-                 lable=$('#recorddetail tr:eq("'+trindex+'") label[name="'+name+'"]');
-                setFocus(lable);
-            }else {
-                 lable=$('#recorddetail tr:eq("'+index+'") label[name="'+name+'"]');
-                setFocus(lable);
-            }
-            break;
-        default: break;
-    }
-}
-function setFocus(el) {
-    if (isNotEmpty(el)){
-        el = el[0];
-
-        var isn_fdtime=el.getAttribute("isn_fdtime");//是否为模板里面的问答 -1不是 1 是的 用户回车追加时间点判别为模板里面的问题不加时间点
-        if (!isNotEmpty(isn_fdtime)&&isn_fdtime!="-1") {
-            //回车加锚点：先判断语音识别是否开启
-            if (isNotEmpty(TDCache)&&isNotEmpty(MCCache)&&isNotEmpty(fdrecordstarttime)&&fdrecordstarttime>0) {
-                var useasr=TDCache.useasr==null?-1:TDCache.useasr;//是否使用语言识别，1使用，-1 不使用
-                var asrnum=MCCache.asrnum==null?0:MCCache.asrnum;
-                console.log("直播的开始时间："+fdrecordstarttime+";是否开启语音识别："+useasr+"__语音识别数__"+asrnum)
-               /* if ((useasr==-1&&isNotEmpty(mtssid))||(asrnum<1&&isNotEmpty(mtssid))){*/
-                    var dqtime=new Date().getTime();
-                    var qw_type=el.getAttribute("name");
-                    if (isNotEmpty(qw_type)){
-                        console.log("开始使用直播时间~")
-                        if (qw_type=="w"){
-                            var w_starttime=el.getAttribute("starttime");
-                            if ((!isNotEmpty(w_starttime)||w_starttime<0)){
-                                //计算时间戳
-                                w_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("starttime",w_starttime);
-                            }
-                        }else  if (qw_type=="q"){
-                            var q_starttime=el.getAttribute("starttime");
-                            if ((!isNotEmpty(q_starttime)||q_starttime<0)){
-                                //计算时间戳
-                                q_starttime=Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime))==null?0:Math.abs(parseInt(dqtime)-parseInt(fdrecordstarttime));
-                                el.setAttribute("starttime",q_starttime);
-                            }
-                        }
-                    }
-               /* }else {
-                    console.log("使用语音识别时间~")
-                }*/
-            }else{
-                console.log("TDCache___"+TDCache+"___MCCache___"+MCCache+"___fdrecordstarttime___"+fdrecordstarttime);
-            }
-        }else {
-                console.log("这是模板里面的题目~")
-        }
-
-
-
-
-
-
-        if (window.getSelection) {//ie11 10 9 ff safari
-            el.focus(); //解决ff不获取焦点无法定位问题
-            var range = window.getSelection();//创建range
-            range.selectAllChildren(el);//range 选择obj下所有子内容
-            range.collapseToEnd();//光标移至最后
-        }
-        else if (document.selection) {//ie10 9 8 7 6 5
-            var range = document.createRange();
-            range.selectNodeContents(el);
-            range.collapse(false);
-            var sel = window.getSelection();
-            if(sel.anchorOffset!=0){
-                return;
-            };
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
-        event.preventDefault();
-    }
-};
-
-
-
-
-
-//*******************************************************************点击start****************************************************************//
-function initcase_header() {
-    $(".layui-tab-content").css("height","0%");
-    $("#templatetoproblem").css("height","62%");
-}
-
+//大视频or笔录切换
 function switchbtn(type,obj) {
     if (type==1){
         $(".phitem1").css("display","block");
@@ -1094,94 +869,6 @@ function switchbtn(type,obj) {
     initplayer();//启动设备画面预览
     $(obj).removeClass("layui-btn-primary").addClass("layui-btn-normal").siblings().removeClass("layui-btn-normal").addClass("layui-btn-primary");
 }
-
-//直播
-function initliving() {
-    $("#initheart_click").removeClass("layui-show");
-    $(".layui-tab-content").css("height","300px");
-
-
-    var html=$("#living3_2").html();
-   if (!isNotEmpty(html)){
-        $("#living3_2").html($("#living3_1").html());
-        $("#living3_1").html("");
-    }
-
-    var type=$("#livetypes span[isn='1']").attr("type");
-    type=parseInt(type);
-    for (let i = 0; i < recorduser.length; i++) {
-        const user = recorduser[i];
-        if (user.userssid==dq_recorduser){
-            if (type==2){
-                liveurl=dq_livingurl;//开始会议后默认使用副麦预览地址
-            } else {
-                liveurl=dq_previewurl;//开始会议后默认使用副麦预览地址
-            }
-            console.log("当前liveurl————"+liveurl)
-        }
-    }
-    initplayer();//启动设备画面预览
-}
-//*******************************************************************点击end****************************************************************//
-
-
-//lable type 1当前光标加一行 2尾部追加 0首部追加 qw光标问还是答null//不设置光标
-function focuslable(html,type,qw) {
-    if (!isNotEmpty(html)) {html=trtd_html}
-    var qwfocus=null;
-
-    if (null!=td_lastindex["key"]&&type==1){
-        $('#recorddetail tr:eq("'+td_lastindex["key"]+'")').after(html);
-        if (isNotEmpty(qw)){
-            qwfocus= $('#recorddetail tr:eq("'+(td_lastindex["key"]+1)+'") label[name="'+qw+'"]');
-            td_lastindex["key"]=td_lastindex["key"]+1;
-        }
-    }  else if (type==0) {
-        $("#recorddetail").prepend(html);
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:eq(0) label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:eq(0)').index();
-        }
-    }else {
-        $("#recorddetail").append(html);
-        $("#recorddetail").hover(
-            function(){
-                mouseoverbool_right=1
-            } ,
-            function(){
-                mouseoverbool_right=-1;
-        });
-        if (mouseoverbool_right==-1){
-            var div = document.getElementById('recorddetail_scrollhtml');
-            div.scrollTop = div.scrollHeight;
-        }
-        if (isNotEmpty(qw)){
-            qwfocus =  $('#recorddetail tr:last label[name="'+qw+'"]');
-            td_lastindex["key"]=$('#recorddetail tr:last').index();
-        }
-     }
-
-     if (isNotEmpty(qw)){
-         setFocus(qwfocus);
-         td_lastindex["value"]=qw;
-     }
-    addbtn();
-    contextMenu();
-}
-
-
-/***************************************笔录实时问答start*************************************************/
-
-
-
-
-
-
-
-
-
-
-
 
 //重置模板
 function clearRecord() {
@@ -1250,13 +937,6 @@ function clearRecord() {
 
 
             $("#recorddetail").html("");
-            laststarttime_qq=-1;
-            laststarttime_ww=-1;
-            last_type=-1;//1问题 2是答案
-            qq="";
-            qqq="";
-            ww="";
-            www="";
             td_lastindex={};
             layer.close(index);
         }
@@ -1317,29 +997,32 @@ function callbackgetgetRecordreal_LastByRecordssid(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-/***************************************笔录实时问答end*************************************************/
 
 //整合问答笔录html
 function setqw(problems){
+    $("#recorddetail").empty();
+    var problemhtml="";
     if (isNotEmpty(problems)) {
-        var problemhtml=null;
         for (var z = 0; z< problems.length;z++) {
             var problem = problems[z];
-            var problemtext=problem.problem==null?"未知":problem.problem;
-             problemhtml+= '<tr>\
+            var problemtext=problem.problem;
+            var q_starttime=problem.starttime;
+            if (isNotEmpty(problemtext)){
+                problemhtml+= '<tr>\
                         <td style="padding: 0;width: 80%;" class="onetd">\
-                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" onkeydown="qw_keydown(this,event);" starttime="'+problem.starttime+'">'+problemtext+'</label></div>';
-            var answers=problem.answers;
-            if (isNotEmpty(answers)){
-                for (var j = 0; j < answers.length; j++) {
-                    var answer = answers[j];
-                    var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"    starttime="'+answer.starttime+'">'+answertext+'</label></div>';
+                            <div class="table_td_tt font_red_color"><span>问：</span><label contenteditable="true" name="q" starttime="'+q_starttime+'">'+problemtext+'</label></div>';
+                var answers=problem.answers;
+                var answerhtml='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"  starttime=""></label></div>'
+                if (isNotEmpty(answers)){
+                    for (var j = 0; j < answers.length; j++) {
+                        var answer = answers[j];
+                        var w_starttime=answer.starttime;
+                        var answertext=answer.answer==null?"未知":answer.answer;
+                        answerhtml='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w"     starttime="'+w_starttime+'">'+answertext+'</label></div>';
+                    }
                 }
-            }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label contenteditable="true" name="w" onkeydown="qw_keydown(this,event);"  starttime=""></label></div>';
-            }
-            problemhtml+=' <div  id="btnadd"></div></td>\
+                problemhtml+=answerhtml;
+                problemhtml+=' <div  id="btnadd"></div></td>\
                         <td>\
                             <div class="layui-btn-group">\
                             <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
@@ -1347,30 +1030,16 @@ function setqw(problems){
                         <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
                          </div>\
                         </td>\
-                        </tr>';
+                    </tr>';
+            }
         }
-        return problemhtml;
+
     }
-    return null;
+    return problemhtml;
 }
-
-function contextMenu() {
-    $('#recorddetail label').bind('mousedown', function(e) {
-        if (3 == e.which) {
-            document.execCommand('removeFormat');
-        }  else if (1 == e.which) {
-            document.execCommand('backColor',false,'yellow');
-        }
-    });
-}
-
-
-
-
 
 var currenttime;
 var yesterdaytime;
-
 $(function () {
     $("#recorddetail label").focus(function(){
         td_lastindex["key"]=$(this).closest("tr").index();
@@ -1631,7 +1300,7 @@ $(function () {
     });
 });
 
-
+//获取身心检测数据
 function getPolygraphdata() {
     if (isNotEmpty(mtssid)&&isNotEmpty(MCCache)){
         var polygraphnum=MCCache.polygraphnum;//本次会议开启的测谎仪个数
@@ -1667,9 +1336,7 @@ function callbackgetPolygraphdata(data) {
 
 layui.use('form', function(){
     var form=layui.form;
-
     form.on('switch(voicebool)', function (data) {
-
         if (data.elem.checked) {
             FDAudPowerMapTimer = setInterval(function () {
                 getFDAudPowerMap();
@@ -1683,7 +1350,6 @@ layui.use('form', function(){
         }
 
     });
-
     form.on('switch(sceneVoice)', function (data) {
         if (data.elem.checked) {
             setVolume(50);
@@ -1691,6 +1357,6 @@ layui.use('form', function(){
             setVolume(0);
         }
     });
-
+    form.render();
 });
 

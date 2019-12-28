@@ -284,6 +284,8 @@ function callbackgetRecordrealByRecordssid(data) {
             if (isNotEmpty(problems)) {
                 var problemhtml="";
                 for (var z = 0; z< problems.length;z++) {
+
+
                     var problem = problems[z];
                     var problemtext=problem.problem==null?"未知":problem.problem;
                     problemhtml+=problemtext;
@@ -297,5 +299,12 @@ function callbackgetRecordrealByRecordssid(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
+
+$(function () {
+    $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+    $(window).resize(function(){
+        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
+    })
+})
 
 

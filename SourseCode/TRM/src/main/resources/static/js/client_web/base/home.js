@@ -421,9 +421,11 @@ function to_waitconversationURL() {
         }
     };
     ajaxSubmitByJson(url,data,callbackaddCaseToArraignment);
+    $("#to_waitconversationURL").attr("onclick","");
 }
 
 function callbackaddCaseToArraignment(data) {
+    $("#to_waitconversationURL").attr("onclick","to_waitconversationURL()");
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
         if (isNotEmpty(data)){

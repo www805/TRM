@@ -43,59 +43,6 @@ function getRecordById() {
         console.log("笔录信息未找到__"+recordssid);
     }
 }
-
-function setqw(problems) {
-    $("#recorddetail").empty();
-    if (isNotEmpty(problems)){
-        var problemhtml="";
-        $("#datanull_2").hide();
-
-        for (var z = 0; z< problems.length;z++) {
-            var problem = problems[z];
-
-            var problemstarttime=problem.starttime;
-            var q_starttime=problemstarttime
-            if (isNotEmpty(problemstarttime)&&problemstarttime!=-1) {
-                q_starttime= problemstarttime+parseFloat(subtractime_q);
-            }
-
-            var problemtext=problem.problem==null?"未知":problem.problem;
-             problemhtml+= '<tr>\
-                        <td style="padding: 0;width: 95%;" class="onetd" id="record_qw">\
-                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q" contenteditable="false" starttime="'+q_starttime+'">'+problemtext+'</label></div>';
-            var answers=problem.answers;
-            if (isNotEmpty(answers)){
-                for (var j = 0; j < answers.length; j++) {
-                    var answer = answers[j];
-
-                    var answerstarttime=answer.starttime;
-                    var w_starttime=answerstarttime;
-                    if (isNotEmpty(answerstarttime)&&answerstarttime!=-1) {
-                        w_starttime=answerstarttime+parseFloat(subtractime_w);
-                    }
-
-                    var answertext=answer.answer==null?"未知":answer.answer;
-                    problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" starttime="'+w_starttime+'" >'+answertext+'</label></div>';
-                }
-            }else{
-                problemhtml+='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" ></label></div>';
-
-            }
-            problemhtml+=' <div  id="btnadd" style="display: none;"></div></td>\
-                        <td style="display: none" id="record_util">\
-                            <div class="layui-btn-group">\
-                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
-                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
-                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
-                         </div>\
-                        </td>\
-                        </tr>';
-        }
-
-        return problemhtml;
-    }
-    return "";
-}
 function callbackgetRecordById(data) {
     if(null!=data&&data.actioncode=='SUCCESS'){
         var data=data.data;
@@ -265,7 +212,52 @@ function callbackgetRecordById(data) {
     }
 }
 
+//未合并
+function setqw(problems) {
+    $("#recorddetail").empty();
+    var problemhtml="";
+    if (isNotEmpty(problems)){
+        $("#datanull_2").hide();
+        for (var z = 0; z< problems.length;z++) {
+            var problem = problems[z];
+            var q_starttime=problem.starttime;
+            if (isNotEmpty(q_starttime)&&q_starttime!=-1) {
+                q_starttime+= parseFloat(subtractime_q);
+            }
+            var problemtext=problem.problem;
+            if (isNotEmpty(problemtext)){
+                problemhtml+= '<tr>\
+                        <td style="padding: 0;width: 95%;" class="onetd" id="record_qw">\
+                            <div class="table_td_tt font_red_color" ><span>问：</span><label name="q" contenteditable="false" starttime="'+q_starttime+'">'+problemtext+'</label></div>';
+                var answers=problem.answers;
+                var answerhtml='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" ></label></div>';
+                if (isNotEmpty(answers)){
+                    for (var j = 0; j < answers.length; j++) {
+                        var answer = answers[j];
 
+                        var w_starttime=answer.starttime;
+                        if (isNotEmpty(w_starttime)&&w_starttime!=-1) {
+                            w_starttime+=parseFloat(subtractime_w);
+                        }
+                        var answertext=answer.answer==null?"":answer.answer;
+                        answerhtml='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" starttime="'+w_starttime+'" >'+answertext+'</label></div>';
+                    }
+                }
+                problemhtml+=answerhtml;
+                problemhtml+=' <div  id="btnadd" style="display: none;"></div></td>\
+                        <td style="display: none" id="record_util">\
+                            <div class="layui-btn-group">\
+                            <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_up(this);"><i class="layui-icon layui-icon-up"></i></button>\
+                        <button class="layui-btn layui-btn-normal layui-btn-xs" onclick="tr_downn(this);"><i class="layui-icon layui-icon-down"></i></button>\
+                        <a class="layui-btn layui-btn-danger layui-btn-xs" style="margin-right: 10px;" lay-event="del" onclick="tr_remove(this);"><i class="layui-icon layui-icon-delete"></i>删除</a>\
+                         </div>\
+                        </td>\
+                        </tr>';
+            }
+        }
+    }
+    return problemhtml;
+}
 
 //数据渲染
 function set_getRecord(data){
@@ -627,6 +619,8 @@ function callbackzIPVodProgress(data) {
 
 
 //*******************************************************************笔录问答编辑start****************************************************************//
+
+//问答编辑
 function open_recordqw() {
     //切换界面
     $("#recorddetail #record_qw").css({"width":"80%"});
@@ -636,7 +630,7 @@ function open_recordqw() {
 
     $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
         qw_keydown(this,event);
-    })
+    });
 }
 
 

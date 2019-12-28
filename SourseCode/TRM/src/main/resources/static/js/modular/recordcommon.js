@@ -727,5 +727,124 @@ function callbackpauseOrContinueRercord(data) {
     }
 }
 
+//制作中：获取会议asr实时数据
+function getRecordrealing() {
+    if (isNotEmpty(mtssid)) {
+        var url=getUrl_manage().getRecordrealing;
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                mtssid: mtssid
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackgetgetRecordrealing);
+    }
+    layer.msg("加载中，请稍等...", {
+        icon: 16,
+        time:1000
+    });
+}
+function callbackgetgetRecordrealing(data) {
+    if(null!=data&&data.actioncode=='SUCCESS') {
+        var datas = data.data;
+        var list= datas.list;
+        var fdCacheParams= datas.fdCacheParams;
+
+        if (gnlist.indexOf(FY_T)<0){
+            //非法院显示视频
+            if (isNotEmpty(fdCacheParams)){
+                for (var i = 0; i < fdCacheParams.length; i++) {
+                    var fdCacheParam = fdCacheParams[i];
+                    dq_livingurl= fdCacheParam.livingUrl;
+                    dq_previewurl= fdCacheParam.previewurl;
+                    liveurl = dq_livingurl;//开始会议后默认使用副麦预览地址
+                    console.log("当前liveurl————"+liveurl)
+                }
+                initplayer();
+            }
+        }
+
+        if (isNotEmpty(list)) {
+            $("#recordreals").html("");
+            $("#recordreals_selecthtml").show();
+
+            //法院加了打点标记操作
+            if (gnlist.indexOf(NX_O)!= -1){
+                $("#defaultsearch").hide();
+                $("#tagtxtsearch").show();
+            }
+
+            for (var i = 0; i < list.length; i++) {
+                var data=list[i];
+                if (isNotEmpty(recorduser)){
+                    for (var j = 0; j < recorduser.length; j++) {
+                        var user = recorduser[j];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//1、询问人2被询问人
+                            var txt=data.txt==null?"":data.txt;//翻译文本*/
+                            var starttime=data.starttime;
+                            var asrstartime=data.asrstartime;
+                            var gradename=user.gradename==null?"未知":user.gradename;//角色名称：暂用于法院
+                            var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;//角色简称：暂用于法院
+                            //var translatext=data.keyword_txt==null?"":data.keyword_txt;//关键字：暂未用到
+                            var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
+
+                            var recordrealshtml="";
+
+                            if (gnlist.indexOf(FY_T)<0){
+                                //非法院：问答对话模式
+                                if (usertype==1){
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrstartime+' </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                                }else if (usertype==2){
+                                    recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                                }
+                            }else {
+                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                                var fontcolor="#ffffff";
+                                if (gnlist.indexOf(NX_O)!= -1){
+                                    color="#ffffff";
+                                    fontcolor="#000000";
+                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
+                                                      </div >';
+
+                                }else if (gnlist.indexOf(FY_T)!= -1){
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
+                                                            <span  style="background-color: '+color+';color: '+fontcolor+';"   ondblclick="copy_text(this)">'+translatext+'</span> \
+                                                      </div >';
+                                }
+                            }
+
+                            //开始追加
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
+                            }
+
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals_scrollhtml');
+                            div.scrollTop = div.scrollHeight;
+                        }
+                    }
+                }
+            }
+        }else {
+            console.log("asr实时数据is null");
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+
 
 
