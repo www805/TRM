@@ -207,9 +207,11 @@ function callbackgetRecordById(data) {
                 }
             }
 
-            getRecordrealByRecordssid();//右侧数据
+            var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getRecordById_getRecordrealByRecordssid);
+            getRecordrealByRecordssid(getRecordrealByRecordssidUrl);//右侧数据
             setInterval( function() {
-                setRecordreal();//3秒实时保存
+                var setRecordrealUrl=getActionURL(getactionid_manage().getRecordById_setRecordreal);
+                setRecordreal(setRecordrealUrl);
             },3000);
 
             var phDataBackVoParams=data.phDataBackVoParams;
@@ -332,7 +334,8 @@ function set_getRecord(data){
         $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
     }
     //存在问答需要获取时间差
-    getRecordrealByRecordssid();
+    var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getRecordById_getRecordrealByRecordssid);
+    getRecordrealByRecordssid(getRecordrealByRecordssidUrl);
 
     layui.use(['layer','form'], function(){
         var form = layui.form;
@@ -637,93 +640,17 @@ function open_recordqw() {
 }
 
 
-/*笔录实时保存*/
-function setRecordreal() {
 
-    var url=getActionURL(getactionid_manage().getRecordById_setRecordreal);
 
-    var recordToProblems=[];//题目集合
-    $("#recorddetail td.onetd").each(function (i) {
-        var arr={};
-        var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("starttime");
-        //经过筛选的q
-        var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("starttime");
-        if (isNotEmpty(q)){
-            if (null!=ws&&ws.length>0){
-                for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).html();
-                    //经过筛选的w
-                    if (isNotEmpty(w)) {
-                        answers.push({
-                            answer:w,
-                            starttime:w_starttime,
-                        });
-                    }
-                }
-            }
-            recordToProblems.push({
-                problem:q,
-                starttime:q_starttime,
-                answers:answers
-            });
-        }
-    });
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-            recordToProblems:recordToProblems
-        }
-    };
-    ajaxSubmitByJson(url, data, callbacksetRecordreal);
-}
-function callbacksetRecordreal(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            /* console.log("笔录实时保存成功__"+data);*/
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//获取缓存实时问答
-function getRecordrealByRecordssid() {
-    var url=getActionURL(getactionid_manage().getRecordById_getRecordrealByRecordssid);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid:recordssid
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
-}
-function callbackgetRecordrealByRecordssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)) {
-            var problems = data;
-            if (isNotEmpty(problems)) {
-                var problemhtml = setqw(problems);
-                focuslable(problemhtml, 2, 'w');
-            } else {
-                $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
 
 
 //保存按钮
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 var overRecord_index=null;
 function addRecord() {
-    setRecordreal();//3秒实时保存
+    var setRecordrealUrl=getActionURL(getactionid_manage().getRecordById_setRecordreal);
+    setRecordreal(setRecordrealUrl);
+
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }

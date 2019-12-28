@@ -212,7 +212,6 @@ function identify(usertype,starttime,gradeintroduce,translatext) {
     }
     lastusertype=usertype;
 }
-
 //自动甄别追加新的一行
 function addidentify(usertype,starttime,gradeintroduce,translatext) {
     var html='<p starttime="'+starttime+'" usertype="'+usertype+'" style="'+getlastp_style()+'"><span>'+gradeintroduce+'</span><span starttime="'+starttime+'">'+translatext+'</span></p>';
@@ -229,3 +228,74 @@ function addidentify(usertype,starttime,gradeintroduce,translatext) {
 }
 
 ///////////////////////////////**********************************************************自动甄别**************end
+
+//笔录对话实时保存
+function setRecordreal(url) {
+    if (isNotEmpty(editorhtml)){
+        var recordToProblems=[];//题目集合
+        $("div",editorhtml).each(function (i) {
+            var q=$(this).html();
+            recordToProblems.push({
+                problem:q,
+                starttime:-1,
+                answers:null
+            });
+        });
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                recordToProblems:recordToProblems
+            }
+        };
+        ajaxSubmitByJson(url, data, callbacksetRecordreal);
+    }
+}
+function callbacksetRecordreal(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            console.log("笔录实时保存成功__"+data);
+        }
+    }else{
+        //layer.msg(data.message,{icon: 5});
+        console.log(data.message);
+    }
+}
+
+//获取缓存实时问答
+
+//获取缓存实时问答
+function getRecordrealByRecordssid(url) {
+    var data={
+        token:INIT_CLIENTKEY,
+        param:{
+            recordssid:recordssid
+        }
+    };
+    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
+}
+function callbackgetRecordrealByRecordssid(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var problems=data;
+            $("#recorddetail").html("");
+            if (isNotEmpty(problems)) {
+                var problemhtml="";
+                for (var z = 0; z< problems.length;z++) {
+                    var problem = problems[z];
+                    var problemtext=problem.problem==null?"未知":problem.problem;
+                    problemhtml+=problemtext;
+                }
+                TOWORD.page.importhtml(problemhtml);
+                laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
+                console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+
+

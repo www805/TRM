@@ -148,9 +148,11 @@ function callbackgetRecordById(data) {
                 }
             }
 
-            getRecordrealByRecordssid();//右侧数据
+            var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getCourtDetail_getRecordrealByRecordssid);
+            getRecordrealByRecordssid(getRecordrealByRecordssidUrl);//右侧数据
             setInterval( function() {
-                setRecordreal();//3秒实时保存
+                var setRecordrealUrl=getActionURL(getactionid_manage().getCourtDetail_setRecordreal);
+                setRecordreal(setRecordrealUrl);
             },3000);
 
             //左侧asr识别数据
@@ -262,7 +264,8 @@ function set_getRecord(data){
         $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
     }
     //存在问答需要获取时间差
-    getRecordrealByRecordssid();
+    var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getCourtDetail_getRecordrealByRecordssid);
+    getRecordrealByRecordssid(getRecordrealByRecordssidUrl);//右侧数据
 }
 
 $(function () {
@@ -285,14 +288,9 @@ $(function () {
         if (type==1){
             var exporttemplate_ueUrl=getActionURL(getactionid_manage().getCourtDetail_exporttemplate_ue);
             exporttemplate_ue(1,exporttemplate_ueUrl);
-            /*var url=getActionURL(getactionid_manage().getCourtDetail_exportWord);
-            exportWord(url);*/
         }else  if(type==2){
             var exporttemplate_ueUrl=getActionURL(getactionid_manage().getCourtDetail_exporttemplate_ue);
             exporttemplate_ue(2,exporttemplate_ueUrl);
-
-            /*  var url=getActionURL(getactionid_manage().getCourtDetail_exportPdf);
-              exportPdf(url);*/
         }else  if(type==3){
             export_asr();
         }
@@ -319,94 +317,16 @@ function open_recordqw() {
     })
 }
 
-/*笔录实时保存*/
-function setRecordreal() {
 
-    var url=getActionURL(getactionid_manage().getCourtDetail_setRecordreal);
-    var recordToProblems=[];//题目集合
-    $("div",editorhtml).each(function (i) {
-        var q=$(this).html();
-        recordToProblems.push({
-            problem:q,
-            starttime:-1,
-            answers:null
-        });
-    });
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid: recordssid,
-            recordToProblems:recordToProblems
-        }
-    };
-    ajaxSubmitByJson(url, data, callbacksetRecordreal);
-}
-function callbacksetRecordreal(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            /* console.log("笔录实时保存成功__"+data);*/
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//获取缓存实时问答
-function getRecordrealByRecordssid() {
-    var url=getActionURL(getactionid_manage().getCourtDetail_getRecordrealByRecordssid);
-    var data={
-        token:INIT_CLIENTKEY,
-        param:{
-            recordssid:recordssid
-        }
-    };
-    ajaxSubmitByJson(url, data, callbackgetRecordrealByRecordssid);
-}
-function callbackgetRecordrealByRecordssid(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)) {
-            var problems=data;
-            $("#recorddetail").html("");
-            if (isNotEmpty(problems)) {
-                var problemhtml="";
-                for (var z = 0; z< problems.length;z++) {
-                    var problem = problems[z];
-                    var problemtext=problem.problem==null?"未知":problem.problem;
-                    problemhtml+=problemtext;
-                }
-                TOWORD.page.importhtml(problemhtml);
-                ue.setDisabled();
-            }else {
-                $("#recorddetail").html('<div id="datanull_2" style="font-size: 18px;text-align: center; margin:10px;color: rgb(144, 162, 188)">暂无笔录问答</div>');
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    $("p span[starttime]:not(:empty)",editorhtml).dblclick(function () {
-        var contenteditable=$("body",editorhtml).attr("contenteditable");
-        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
-            //开始定位视频位置
-            var times=$(this).attr("starttime");
-            if (times!="-1"&&isNotEmpty(times)){
-                //时间差需要处理
-                var usertype=$(this).closest("p").attr("usertype");
-                if (isNotEmpty(usertype)){
-                    times=parseInt(times)+subtractime[""+usertype+""];
-                    showrecord(times);
-                }
-            }
-        }
-    })
-}
 
 
 //保存按钮
 //recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
 var overRecord_index=null;
 function addRecord() {
-    setRecordreal();//3秒实时保存
+    var setRecordrealUrl=getActionURL(getactionid_manage().getCourtDetail_setRecordreal);
+    setRecordreal(setRecordrealUrl);
+
     if (isNotEmpty(overRecord_index)) {
         layer.close(overRecord_index);
     }

@@ -86,7 +86,7 @@ public class CheckRecordProtect  implements ApplicationRunner {
                 Police_record police_record=new Police_record();
 
                 EntityWrapper policerecordew=new EntityWrapper();
-                policerecordew.eq(recordssid,recordssid);
+                policerecordew.eq("ssid",recordssid);
                 List<Police_record> police_records=police_recordMapper.selectList(policerecordew);//使用mybatisplus的selectone查询结果为null
                 if (null!=police_records&&police_records.size()==1) {
                     police_record = police_records.get(0);
