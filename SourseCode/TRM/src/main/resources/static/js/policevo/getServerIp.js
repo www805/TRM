@@ -66,9 +66,7 @@ function updateIp() {
         gateway: gateway
     }
 
-    tiaozhuan = "http://" + trmip + ":" + trmportOne + "/sweb/base/home/login?updateip=" + trmip;//跳转到登录页面
-
-
+    tiaozhuan = "http://" + trmip + ":" + trmportOne + "/sweb/base/home/login?updateip=" + trmip + "&port=" + trmportOne;//跳转到登录页面
 
     ajaxSubmitByJson(url, data, callUpdateServerIp);
 

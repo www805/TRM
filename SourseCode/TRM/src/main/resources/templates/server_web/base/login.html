@@ -101,8 +101,9 @@
         };
 
         var updateip = GetQueryString("updateip");
-        if(isNotEmpty(updateip)){
-            parent.location.href = "http://" + updateip + "/cweb/base/main/gotomain";
+        var port = GetQueryString("port");
+        if (isNotEmpty(updateip) && isNotEmpty(port)) {
+            parent.location.href = "http://" + updateip + ":" + port + "/cweb/base/main/gotomain";
         }
 
         //如果在iframe中打开，就自动点击登录按钮

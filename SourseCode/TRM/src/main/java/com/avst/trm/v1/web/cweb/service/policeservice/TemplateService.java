@@ -1189,6 +1189,7 @@ public class TemplateService extends BaseService {
 
         dataMap.put("arrayList",arrayList);
 
+        Writer out = null;
         try {
 
             /*template*/
@@ -1214,14 +1215,15 @@ public class TemplateService extends BaseService {
             String filename=template.getTitle()==null?"笔录模板":template.getTitle();
             String path = filePathNew + filename + format + ".doc";
 
-            Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
+            out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), "utf-8"), 10240);
             templateDamo.process(dataMap, out);
             out.flush();
-            out.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            String basepath = PropertiesListenerConfig.getProperty("upload.basepath");
             String uploadbasepath = ServerIpCache.getServerIp();
-            result.setData("http://" + uploadbasepath + uploadpath);
+            basepath = basepath.replace("localhost", uploadbasepath);
+            result.setData(basepath + uploadpath);
 
             changeResultToSuccess(result);
             LogUtil.intoLog(1, this.getClass(), "问答模板生成word文件成功！");
@@ -1229,6 +1231,14 @@ public class TemplateService extends BaseService {
             e.printStackTrace();
         } catch (TemplateException e) {
             e.printStackTrace();
+        }finally {
+            if(null != out){
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
     }
@@ -1326,8 +1336,10 @@ public class TemplateService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
+            String basepath = PropertiesListenerConfig.getProperty("upload.basepath");
             String uploadbasepath = ServerIpCache.getServerIp();
-            result.setData("http://" + uploadbasepath + uploadpath);
+            basepath = basepath.replace("localhost", uploadbasepath);
+            result.setData(basepath + uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("Excel导出成功，请稍后...");

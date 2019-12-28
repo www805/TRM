@@ -469,8 +469,10 @@ public class Arraignment_countService extends BaseService {
             fout.close();
 
             String uploadpath= OpenUtil.strMinusBasePath(PropertiesListenerConfig.getProperty("file.qg"),path);
-            String myIP = ServerIpCache.getServerIp();
-            result.setData("http://" + myIP + uploadpath);
+            String basepath = PropertiesListenerConfig.getProperty("upload.basepath");
+            String uploadbasepath = ServerIpCache.getServerIp();
+            basepath = basepath.replace("localhost", uploadbasepath);
+            result.setData(basepath + uploadpath);
 
             this.changeResultToSuccess(result);
             result.setMessage("表格导出成功");

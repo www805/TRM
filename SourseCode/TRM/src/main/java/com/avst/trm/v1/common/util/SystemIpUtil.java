@@ -135,21 +135,18 @@ public class SystemIpUtil {
 
 //        System.out.println(cmd);
         LogUtil.intoLog(1, SystemIpUtil.class, "正在修改本机ip：" + cmd);
-        NetTool.executeCMD(cmd);
+//        NetTool.executeCMD(cmd);
 
-//        try {
-//            final Process process = Runtime.getRuntime().exec(cmd);
-//            printMessage(process.getInputStream());
-//            printMessage(process.getErrorStream());
-//            int value = process.waitFor();
-//            System.out.println(value);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
+        try {
+            final Process process = Runtime.getRuntime().exec(cmd);
+            printMessage(process.getInputStream(),process.getErrorStream(),process.getOutputStream());
+            int value = process.waitFor();
+            System.out.println(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
-
 
     public static Map<String, List<GetNetworkConfigureVO>> getLocalMachineInfo(){
         String line ="";
@@ -278,23 +275,16 @@ public class SystemIpUtil {
     }
 
     //清除防止阻塞Runtime.getRuntime().exec(cmd);
-    private static void printMessage(final InputStream input) {
-        new Thread(new Runnable() {
-            public void run() {
-                Reader reader = new InputStreamReader(input);
-                BufferedReader bf = new BufferedReader(reader);
-                String line = null;
-                    try {
-                        while((line=bf.readLine())!=null) {
-                            System.out.println(line);
-                        }
-                    } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
+    private static void printMessage(final InputStream input,final InputStream errors, final OutputStream output) {
 
+        try {
+            input.close();
+            errors.close();
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws IOException{
 

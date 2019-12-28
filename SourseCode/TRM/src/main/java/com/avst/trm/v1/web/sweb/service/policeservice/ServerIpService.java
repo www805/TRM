@@ -175,33 +175,34 @@ public class ServerIpService extends BaseService {
 
 
         //以下代码用来判断ip是否修改成功
-        Boolean bool = false;
-
-        Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
-        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> entries = map.entrySet().iterator();
-        while (entries.hasNext()) {
-            Map.Entry<String, List<GetNetworkConfigureVO>> entry = entries.next();
-            String key = entry.getKey();
-
-            List<GetNetworkConfigureVO> list = entry.getValue();
-            for (GetNetworkConfigureVO vo : list) {
-                if (vo.getIp().equals(updateIpParam.getIp())) {
-                    bool = true;
-                    break;
-                }
-            }
-
-            if (bool) {
-                LogUtil.intoLog(1, this.getClass(), "本机ip修改成功：" + updateIpParam.getIp());
-                break;
-            }
-        }
-
-        if (!bool) {
-            LogUtil.intoLog(4, this.getClass(), "ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
-            rResult.setMessage("ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
-            return;
-        }
+//        Boolean bool = false;
+//
+//        Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
+//        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> entries = map.entrySet().iterator();
+//        while (entries.hasNext()) {
+//            Map.Entry<String, List<GetNetworkConfigureVO>> entry = entries.next();
+//            String key = entry.getKey();
+//
+//            List<GetNetworkConfigureVO> list = entry.getValue();
+//            for (GetNetworkConfigureVO vo : list) {
+//                LogUtil.intoLog(1, this.getClass(), "从网卡获取到的ip：" + vo.getIp() + "  期望改的ip：" + updateIpParam.getIp());
+//                if (vo.getIp().equals(updateIpParam.getIp())) {
+//                    bool = true;
+//                    break;
+//                }
+//            }
+//
+//            if (bool) {
+//                LogUtil.intoLog(1, this.getClass(), "本机ip修改成功：" + updateIpParam.getIp());
+//                break;
+//            }
+//        }
+//
+//        if (!bool) {
+//            LogUtil.intoLog(4, this.getClass(), "ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
+//            rResult.setMessage("ip修改失败，其他配置文件ip、缓存IP、总控IP不会被继续修改");
+//            return;
+//        }
 
         //把其他的配置文件ip、缓存IP、总控IP 也修改
         //判断数据库里的IP是否一样，多网卡的情况下如果修改的IP是一样就修改完数据库的IP再提交到总控里面去
