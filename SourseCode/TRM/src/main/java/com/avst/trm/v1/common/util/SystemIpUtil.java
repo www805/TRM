@@ -135,17 +135,17 @@ public class SystemIpUtil {
 
 //        System.out.println(cmd);
         LogUtil.intoLog(1, SystemIpUtil.class, "正在修改本机ip：" + cmd);
-//        NetTool.executeCMD(cmd);
+        NetTool.executeCMD(cmd);
 
-        try {
-            final Process process = Runtime.getRuntime().exec(cmd);
-            printMessage(process.getInputStream());
-            printMessage(process.getErrorStream());
-            int value = process.waitFor();
-            System.out.println(value);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            final Process process = Runtime.getRuntime().exec(cmd);
+//            printMessage(process.getInputStream());
+//            printMessage(process.getErrorStream());
+//            int value = process.waitFor();
+//            System.out.println(value);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
 
     }
@@ -277,7 +277,7 @@ public class SystemIpUtil {
         return map;
     }
 
-
+    //清除防止阻塞Runtime.getRuntime().exec(cmd);
     private static void printMessage(final InputStream input) {
         new Thread(new Runnable() {
             public void run() {

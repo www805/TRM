@@ -156,8 +156,8 @@ public class ServerIpService extends BaseService {
         SystemIpUtil.setLocalIP(updateIpParam.getName(), updateIpParam.getIp(), updateIpParam.getSubnetMask(), updateIpParam.getGateway());
 
         //消除session
-        HttpSession session = request.getSession();
-        session.invalidate();
+//        HttpSession session = request.getSession();
+//        session.invalidate();
 
         //清除cookie
         Cookie[] cookies = request.getCookies();
