@@ -1,5 +1,7 @@
 package com.avst.trm.v1.common.util;
 
+import com.avst.trm.v1.common.util.log.LogUtil;
+
 import java.io.*;
 
 /**
@@ -83,7 +85,7 @@ public class ExecuteCMD {
 
 			int exitvalue=process.waitFor();
 			if(exitvalue!=0){
-				throw new Exception("exitvalue is not 0, 说明代码有错");
+				LogUtil.intoLog(4,ExecuteCMD.class,exitvalue+":exitvalue,exitvalue is not 0, 说明代码有错cmd:"+cmd+"---cmdarr:"+cmdarr==null?"":JacksonUtil.objebtToString(cmdarr));
 			}
 
 		} catch (Exception e) {
