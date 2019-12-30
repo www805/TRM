@@ -29,6 +29,7 @@ import com.avst.trm.v1.feignclient.mc.vo.GetDefaultMTModelVO;
 import com.avst.trm.v1.web.cweb.conf.UserinfogradeType;
 import com.avst.trm.v1.web.cweb.req.policereq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
+import com.avst.trm.v1.web.cweb.req.policereq.param.GetrecordnameParam;
 import com.avst.trm.v1.web.cweb.vo.policevo.*;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.google.gson.Gson;
@@ -40,10 +41,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.avst.trm.v1.common.cache.CommonCache.getSQEntity;
 
@@ -102,6 +100,9 @@ public class ArraignmentService extends BaseService {
 
     @Autowired
     private Police_cardtypeMapper police_cardtypeMapper;
+
+    @Autowired
+    private Police_namingruleMapper police_namingruleMapper;
 
 
 
@@ -166,10 +167,20 @@ public class ArraignmentService extends BaseService {
         //授权功能信息
         String gnlist=getSQEntity.getGnlist();
 
+        Police_recordtype police_recordtype = new Police_recordtype();
+        if (null!=recordtypessid){
+            police_recordtype.setSsid(recordtypessid);
+            police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
+        }
+
+
+
+
+
+
         //快速笔录，添加默认数据
         if (null!=custommsgbool&&custommsgbool==1){
             String defaulttitle="快速笔录";
-            String defaultrecordname="默认笔录";
             //一键谈话：默认使用会议的谈话模板ssid
             String cardtypessid= PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证
             String time=new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
@@ -188,7 +199,6 @@ public class ArraignmentService extends BaseService {
             //根据hk版本：
             if (null!=multifunctionbool&&multifunctionbool==1){
                 defaulttitle="快速谈话";
-                defaultrecordname="审讯笔录";
             }
 
             //根据nx版本：
@@ -250,8 +260,6 @@ public class ArraignmentService extends BaseService {
             newaddPolice_case.setCasename("案件名_"+conversationmsg);
 
 
-            //笔录名称
-            recordname=defaultrecordname+"【"+defaulttitle+"】_"+time;
             askobj="询问对象_"+conversationmsg;
 
             if (StringUtils.isBlank(adminssid)){
@@ -259,6 +267,30 @@ public class ArraignmentService extends BaseService {
             }
             addUserInfo=newaddUserInfo;
             addPolice_case=newaddPolice_case;
+
+
+
+            //笔录名称
+            GetrecordnameParam getrecordnameParam=new GetrecordnameParam();
+            getrecordnameParam.setAsknum(String.valueOf(Integer.valueOf(asknum)+1));
+            getrecordnameParam.setCardnum(addUserInfo.getCardnum());
+            getrecordnameParam.setCasename(addPolice_case.getCasename());
+            getrecordnameParam.setRecordplace(recordplace);
+            getrecordnameParam.setRecordtypename(police_recordtype.getTypename());
+            getrecordnameParam.setUsername(addUserInfo.getUsername());
+            getrecordnameParam.setModelname(mtmodelssidname);
+            if (null!=multifunctionbool&&multifunctionbool==1){
+                recordname=getrecordname(1,getrecordnameParam);
+                if (StringUtils.isEmpty(recordname)){
+                    recordname=defaulttitle+"_"+time;
+                }
+            }else if (null!=multifunctionbool&&(multifunctionbool==2||multifunctionbool==3)){
+                recordname=getrecordname(2,getrecordnameParam);
+                if (StringUtils.isEmpty(recordname)){
+                    recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                    recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");
+                }
+            }
         }
         addCaseToArraignmentVO.setMultifunctionbool(multifunctionbool);
         addCaseToArraignmentVO.setCustommsgbool(custommsgbool);
@@ -443,15 +475,12 @@ public class ArraignmentService extends BaseService {
                 LogUtil.intoLog(1,this.getClass(),"【开始笔录】笔录名称不能重复__"+recordname);
                 return;
             }
-        }else {
-            Police_recordtype police_recordtype = new Police_recordtype();
-            police_recordtype.setSsid(recordtypessid);
-            police_recordtype = police_recordtypeMapper.selectOne(police_recordtype);
+        }/*else {
             if (null!=police_recordtype){
+                //此处暂时不处理：应该一般不进来的
                 recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
-
             }
-        }
+        }*/
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】recordname__"+recordname);
 
 
@@ -1673,6 +1702,43 @@ public class ArraignmentService extends BaseService {
 
 
     //=================================================关于提讯用户等其他=====================================================================end
+
+    //案件名称生成
+    public  String  getrecordname(Integer namingruletype, GetrecordnameParam param){
+        String recordname=null;
+        if (null!=param){
+            Map<String,String> dataMap=new HashMap<>();
+            dataMap.put("${嫌疑人}",param.getUsername()==null?"":param.getUsername());
+            dataMap.put("${证件号}",param.getCardnum()==null?"":param.getCardnum());
+            dataMap.put("${类型}",param.getRecordtypename()==null?"":param.getRecordtypename());
+            dataMap.put("${案件名}",param.getCasename()==null?"":param.getCasename());
+            dataMap.put("${询问次数}",param.getAsknum()==null?"":param.getAsknum());
+            dataMap.put("${地点}",param.getRecordplace()==null?"":param.getRecordplace());
+            dataMap.put("${17位时间}",new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()));
+            dataMap.put("${办案场景}",param.getModelname()==null?"":param.getModelname());
+
+            if (null!=namingruletype){
+                EntityWrapper ew_namingrule=new EntityWrapper();
+                ew_namingrule.eq("namingruletype",namingruletype);
+                List<Police_namingrule> namingrules=police_namingruleMapper.selectList(ew_namingrule);
+                if (null!=namingrules&&namingrules.size()>0){
+                    Police_namingrule police_namingrule=namingrules.get(0);
+                    recordname=police_namingrule.getRule();//获取规则
+                    //替换对应笔录参数===start
+                    if (dataMap != null&&null!=recordname) {
+                        for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+                            recordname = recordname.replace(entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+            }else {
+                LogUtil.intoLog(1,ArraignmentService.class,"getrecordname__namingruletype："+namingruletype);
+            }
+        }
+
+        LogUtil.intoLog(1,ArraignmentService.class,"recordname__recordname："+recordname);
+        return  recordname;
+    }
 
 
 }

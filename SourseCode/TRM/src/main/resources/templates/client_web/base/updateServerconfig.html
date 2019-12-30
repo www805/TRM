@@ -6,6 +6,28 @@
     <link rel="stylesheet" href="/layui/css/layui.css">
     <link rel="stylesheet" href="/uimaker/css/common.css">
 </head>
+<style>
+    .layui-form-pane .layui-form-label {
+        width: 150px;
+    }
+    .layui-form-pane .layui-input-block {
+        margin-left: 150px;
+
+    }
+    .layui-form-pane .layui-input-inline {
+        width: 50%;
+    }
+    .layui-layer-content {
+        position: relative;
+        padding: 20px;
+        line-height: 24px;
+        word-break: break-all;
+        overflow: hidden;
+        font-size: 14px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>
 <body>
 <div class=" layadmin-message-fluid" style="margin: 20px;">
     <div th:replace="header :: header">...</div>
@@ -70,24 +92,26 @@
                 </div>
             </div>
         </div>
-        <!--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
             <legend>笔录命名规则</legend>
         </fieldset>
         <div class="layui-form-item">
-            <label class="layui-form-label" title="快速笔录名称规则">笔录名称1
+            <label class="layui-form-label" title="快速笔录名称规则">笔录名称(快速)
             </label>
-            <div class="layui-input-block">
-                <input type="text" name="" id="" lay-verify="title" autocomplete="off" placeholder="默认：快速笔录_${17位时间}" class="layui-input">
+            <div class="layui-input-inline">
+                <input type="text" name="rule1" id="rule1" ssid=""  lay-verify="title" autocomplete="off" placeholder="默认：快速笔录_${17位时间}" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux">例如：快速笔录_20191228115858791</div>
         </div>
         <div class="layui-form-item">
-            <label class="layui-form-label"title="审讯笔录名称">笔录名称2
+            <label class="layui-form-label"title="正常笔录名称">笔录名称(正常)
             </label>
-            <div class="layui-input-block">
-                <input type="text" name="" id="" lay-verify="title" autocomplete="off" placeholder="默认：${嫌疑人}《${案件名}》${类型}_第${询问次数}次" class="layui-input">
+            <div class="layui-input-inline">
+                <input type="text" name="rule2" id="rule2" ssid="" lay-verify="title" autocomplete="off" placeholder="默认：${嫌疑人}《${案件名}》${类型}_第${询问次数}次" class="layui-input">
             </div>
+            <div class="layui-form-mid layui-word-aux">例如：刘一《街道抢劫案》谈话办案_第1次</div>
         </div>
-        <div class="layui-form-item">
+        <!--<div class="layui-form-item">
             <label class="layui-form-label">案件编号
             </label>
             <div class="layui-input-block">
@@ -118,6 +142,8 @@
     var INIT_CLIENT;
     var INIT_CLIENTKEY;
     var gnlist = [[${session.AUTHORIZATIONALL_CLIENT.gnlist}]]; //全局授权
+
+    var ruleindex=null;//命名规则
     $(function(){
         INIT_CLIENT=[[${session.INIT_CLIENT}]];
         INIT_CLIENTKEY=[[${session.INIT_CLIENTKEY}]];
@@ -132,31 +158,37 @@
         $("#ftpserverbtn").css("visibility","visible");
     });
 
+
+
     layui.use(['layer','element','form'], function(){
         var layer = layui.layer; //获得layer模块
         var element = layui.element;
         var form = layui.form;
         //使用模块
-
-       /* var html='  <ul class="site-dir layui-layer-wrap">\
-                                               <li>${嫌疑人}：嫌疑人名称</li>\
-                                                <li>${证件号}：嫌疑人证件号</li>\
-                                                 <li>${类型}：笔录类型</li>\
-                                               <li>${案件名}：案件名称</li>\
-                                               <li>${询问次数}：提讯次数</li>\
-                                               <li>${地点}：办案地点</li>\
-                                               <li>${17位时间}：当前年月日等</li>\
-                                               <li>${编号}：自增编号</li>\
-                                            </ul>';
-
+        var html='<div class="layui-row layui-form " > \
+        <div class="layui-col-md12 layui-form-item" style="margin-top: 10px" >\
+        <ul class="site-dir layui-layer-wrap">\
+            <li>${嫌疑人}：嫌疑人名称</li>\
+        <li>${证件号}：嫌疑人证件号</li>\
+        <li>${类型}：笔录类型</li>\
+        <li>${案件名}：案件名称</li>\
+        <li>${询问次数}：提讯次数</li>\
+        <li>${地点}：办案地点</li>\
+        <li>${17位时间}：当前年月日等</li>\
+         <li>${办案场景}：会议模板、办案地点</li>\
+         <li>注意：请勿重复添加</li>\
+        </ul>\
+        </div>\
+      </div>';
         layer.open({
+            type:1,
             title: '规则变量'
             ,content: html,
             offset: 'r',
             shade:0,
             btn:"",
-            area: ['8%', '35%']
-        });*/
+            area: ['20%', '35%']
+        });
 
     });
 </script>

@@ -985,6 +985,7 @@ public class RecordService2 extends BaseService {
         return;
     }
 
+    //talkbool是否需要问答 true 不需要 false需要
     public  Map<String,String> exportData(String recordssid,boolean talkbool) {
         Map<String, String> dataMap = new HashMap<String, String>();
         List<String>  gnlist= CommonCache.gnlist();

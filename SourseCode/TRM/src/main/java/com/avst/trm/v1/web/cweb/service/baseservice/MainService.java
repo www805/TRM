@@ -15,6 +15,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.ServerconfigAndFilesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.*;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_namingrule;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
@@ -125,6 +126,10 @@ public class MainService extends BaseService {
 
     @Autowired
     private MeetingControl meetingControl;
+
+    @Autowired
+
+    private Police_namingruleMapper police_namingruleMapper;
 
     public InitVO initClient(InitVO initvo){
         return  CommonCache.getinit_CLIENT();
@@ -430,6 +435,41 @@ public class MainService extends BaseService {
         }
         //清空导航栏缓存
         AppCache.delAppCacheParam();
+
+
+        List<Police_namingrule> namingrules=updateServerconfigParam.getNamingrules();
+        if (null!=namingrules&&namingrules.size()>0){
+            //开始对命名规则做改变：默认只有两条类型1和2
+            for (Police_namingrule namingrule : namingrules) {
+                Integer namingruletype=namingrule.getNamingruletype();//命名类型
+                String rule=namingrule.getRule();//规则
+                String ssid=namingrule.getSsid();
+                LogUtil.intoLog(4,this.getClass(),"命名规则参数namingruletype："+namingruletype+"__rule："+rule+"__ssid："+ssid);
+                if (null!=namingruletype&&StringUtils.isNotEmpty(rule)){
+                    EntityWrapper ew_namingrule=new EntityWrapper();
+                    ew_namingrule.eq("namingruletype",namingruletype);
+                    List<Police_namingrule>  namingrules_= police_namingruleMapper.selectList(ew_namingrule);
+                    if (null!=namingrules_&&namingrules_.size()>0){
+                        //修改
+                        Police_namingrule police_namingrule=namingrules_.get(0);
+                        police_namingrule.setNamingruletype(namingruletype);
+                        police_namingrule.setRule(rule);
+                        EntityWrapper ew_update=new EntityWrapper();
+                        ew_update.eq("ssid",police_namingrule.getSsid());
+                        ew_update.eq("namingruletype",namingruletype);
+                       int police_namingruleMapper_update_bool=police_namingruleMapper.update(police_namingrule,ew_update);
+                        LogUtil.intoLog(1,this.getClass(),"police_namingruleMapper_update_bool__"+police_namingruleMapper_update_bool);
+                    }else if (null==namingrules_||namingrules_.size()<1){
+                        //新增
+                        namingrule.setSsid(OpenUtil.getUUID_32());
+                        namingrule.setCreatetime(new Date());
+                        int police_namingruleMapper_insert_bool=police_namingruleMapper.insert(namingrule);
+                        LogUtil.intoLog(1,this.getClass(),"police_namingruleMapper_insert_bool__"+police_namingruleMapper_insert_bool);
+                    }
+                }
+            }
+        }
+
         changeResultToSuccess(result);
         return;
     }
@@ -453,6 +493,13 @@ public class MainService extends BaseService {
                     serverconfig.setClient_downurl("http://" + myIP + serverconfig.getClient_downurl());
                 }
                 getServerconfigVO.setServerconfigAndFilesave(serverconfig);
+
+
+                //获取全部命名规则
+                List<Police_namingrule> namingrules=police_namingruleMapper.selectList(null);
+                if (null!=namingrules&&namingrules.size()>0){
+                    getServerconfigVO.setNamingrules(namingrules);
+                }
                 result.setData(getServerconfigVO);
                 changeResultToSuccess(result);
                 return;
@@ -1328,6 +1375,7 @@ public class MainService extends BaseService {
         List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
         List<Police_cardtype> cardtypeList=police_cardtypeMapper.selectList(null);
         List<Police_userinfograde> userinfogradeList=police_userinfogradeMapper.selectList(null);
+        List<Police_namingrule> namingruleList=police_namingruleMapper.selectList(null);
 
 
         vo.setNationalityList(nationalityList);
@@ -1336,6 +1384,7 @@ public class MainService extends BaseService {
         vo.setWorkunitList(workunitList);
         vo.setCardtypeList(cardtypeList);
         vo.setUserinfogradeList(userinfogradeList);
+        vo.setNamingruleList(namingruleList);
         result.setData(vo);
         changeResultToSuccess(result);
         return;

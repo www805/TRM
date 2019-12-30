@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_national;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_nationality;
 import com.avst.trm.v1.common.datasourse.base.entity.moreentity.AdminAndWorkunit;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_cardtype;
+import com.avst.trm.v1.common.datasourse.police.entity.Police_namingrule;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
 import com.avst.trm.v1.common.datasourse.police.entity.Police_workunit;
 
@@ -16,14 +17,7 @@ public class GetBaseDataVO {
     private  List<Police_workunit> workunitList;//全部工作单位
     private  List<Police_cardtype> cardtypeList;//全部证件类型
     private  List<Police_userinfograde> userinfogradeList;//人员级别类型
-
-    public List<Police_cardtype> getCardtypeList() {
-        return cardtypeList;
-    }
-
-    public void setCardtypeList(List<Police_cardtype> cardtypeList) {
-        this.cardtypeList = cardtypeList;
-    }
+    private  List<Police_namingrule> namingruleList;//笔录命名规则
 
     public List<AdminAndWorkunit> getAdminList() {
         return adminList;
@@ -57,11 +51,27 @@ public class GetBaseDataVO {
         this.workunitList = workunitList;
     }
 
+    public List<Police_cardtype> getCardtypeList() {
+        return cardtypeList;
+    }
+
+    public void setCardtypeList(List<Police_cardtype> cardtypeList) {
+        this.cardtypeList = cardtypeList;
+    }
+
     public List<Police_userinfograde> getUserinfogradeList() {
         return userinfogradeList;
     }
 
     public void setUserinfogradeList(List<Police_userinfograde> userinfogradeList) {
         this.userinfogradeList = userinfogradeList;
+    }
+
+    public List<Police_namingrule> getNamingruleList() {
+        return namingruleList;
+    }
+
+    public void setNamingruleList(List<Police_namingrule> namingruleList) {
+        this.namingruleList = namingruleList;
     }
 }

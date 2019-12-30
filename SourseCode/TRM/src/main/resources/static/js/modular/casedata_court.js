@@ -73,8 +73,25 @@ function select_case(obj) {
                     var casename=$("#casename").val();
                     var asknum=c.arraignments==null?0:c.arraignments.length;
                     var recordtypename=$("td[recordtypebool='true']",document).text();
+
                     var modelssidname=$("#modelssid").val();
-                    var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                    var recordplace=$("#recordplace").val();
+                    var cardnum=$("#cardnum").val();
+                    var recordname="";
+                    //获取类型为2的规则
+                    if (isNotEmpty(dq_rule)){
+                        recordname=dq_rule;
+                        recordname=recordname.replace("${嫌疑人}",username);
+                        recordname=recordname.replace("${证件号}",cardnum);
+                        recordname=recordname.replace("${类型}",recordtypename.replace(/\s+/g, ""));
+                        recordname=recordname.replace("${案件名}",casename);
+                        recordname=recordname.replace("${询问次数}",parseInt(asknum)+1);
+                        recordname=recordname.replace("${地点}",recordplace);
+                        recordname=recordname.replace("${17位时间}",gettimess());
+                        recordname=recordname.replace("${办案场景}",modelssidname);
+                    } else {
+                        recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                    }
 
                     $("#cause").val(c.cause);
                     $("#casenum").val(c.casenum==null?"":c.casenum);
@@ -111,7 +128,27 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+
+
+                var modelssidname=$("#modelssid").val();
+                var recordplace=$("#recordplace").val();
+                var cardnum=$("#cardnum").val();
+                var recordname="";
+                //获取类型为2的规则
+                if (isNotEmpty(dq_rule)){
+                    recordname=dq_rule;
+                    recordname=recordname.replace("${嫌疑人}",username);
+                    recordname=recordname.replace("${证件号}",cardnum);
+                    recordname=recordname.replace("${类型}",recordtypename.replace(/\s+/g, ""));
+                    recordname=recordname.replace("${案件名}",casename);
+                    recordname=recordname.replace("${询问次数}",parseInt(asknum)+1);
+                    recordname=recordname.replace("${地点}",recordplace);
+                    recordname=recordname.replace("${17位时间}",gettimess());
+                    recordname=recordname.replace("${办案场景}",modelssidname);
+                } else {
+                    recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                }
+
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
@@ -138,7 +175,24 @@ function select_caseblur() {
             if (c.casename.trim()==casename.trim()) {
                 dqcasessid=c.ssid;
                 var asknum=c.arraignments==null?0:c.arraignments.length;
-                var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                var modelssidname=$("#modelssid").val();
+                var recordplace=$("#recordplace").val();
+                var cardnum=$("#cardnum").val();
+                var recordname="";
+                //获取类型为2的规则
+                if (isNotEmpty(dq_rule)){
+                    recordname=dq_rule;
+                    recordname=recordname.replace("${嫌疑人}",username);
+                    recordname=recordname.replace("${证件号}",cardnum);
+                    recordname=recordname.replace("${类型}",recordtypename.replace(/\s+/g, ""));
+                    recordname=recordname.replace("${案件名}",casename);
+                    recordname=recordname.replace("${询问次数}",parseInt(asknum)+1);
+                    recordname=recordname.replace("${地点}",recordplace);
+                    recordname=recordname.replace("${17位时间}",gettimess());
+                    recordname=recordname.replace("${办案场景}",modelssidname);
+                } else {
+                    recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                }
                 $("#cause").val(c.cause);
                 $("#casenum").val(c.casenum==null?"":c.casenum);
                 $("#caseway").val(c.caseway);
@@ -200,7 +254,23 @@ function open_othercases() {
                         var asknum=c.arraignments==null?0:c.arraignments.length;
                         var recordtypename=$("td[recordtypebool='true']",document).text();
                         var modelssidname=$("#modelssid").val();
-                        var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                        var recordplace=$("#recordplace").val();
+                        var cardnum=$("#cardnum").val();
+                        var recordname="";
+                        //获取类型为2的规则
+                        if (isNotEmpty(dq_rule)){
+                            recordname=dq_rule;
+                            recordname=recordname.replace("${嫌疑人}",username);
+                            recordname=recordname.replace("${证件号}",cardnum);
+                            recordname=recordname.replace("${类型}",recordtypename.replace(/\s+/g, ""));
+                            recordname=recordname.replace("${案件名}",casename);
+                            recordname=recordname.replace("${询问次数}",parseInt(asknum)+1);
+                            recordname=recordname.replace("${地点}",recordplace);
+                            recordname=recordname.replace("${17位时间}",gettimess());
+                            recordname=recordname.replace("${办案场景}",modelssidname);
+                        } else {
+                            recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                        }
 
                         $("#casename").val(c.casename);
                         $("#cause").val(c.cause);
@@ -284,7 +354,23 @@ function callbakegetCaseById(data) {
                                     var username=$("#username").val();
                                     var asknum=c.arraignments==null?0:c.arraignments.length;
                                     var modelssidname=$("#modelssid").val();
-                                    var recordname=""+username+"《"+casename.trim()+"》"+""+modelssidname+"_"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                                    var recordplace=$("#recordplace").val();
+                                    var cardnum=$("#cardnum").val();
+                                    var recordname="";
+                                    //获取类型为2的规则
+                                    if (isNotEmpty(dq_rule)){
+                                        recordname=dq_rule;
+                                        recordname=recordname.replace("${嫌疑人}",username);
+                                        recordname=recordname.replace("${证件号}",cardnum);
+                                        recordname=recordname.replace("${类型}",recordtypename.replace(/\s+/g, ""));
+                                        recordname=recordname.replace("${案件名}",casename);
+                                        recordname=recordname.replace("${询问次数}",parseInt(asknum)+1);
+                                        recordname=recordname.replace("${地点}",recordplace);
+                                        recordname=recordname.replace("${17位时间}",gettimess());
+                                        recordname=recordname.replace("${办案场景}",modelssidname);
+                                    } else {
+                                        recordname=""+username+"《"+casename.trim()+"》"+recordtypename.replace(/\s+/g, "")+"_第"+(parseInt(asknum)+1)+"次";
+                                    }
                                     $("#cause").val(c.cause);
                                     $("#casenum").val(c.casenum==null?"":c.casenum);
                                     if (isNotEmpty(c.starttime)){
@@ -789,6 +875,7 @@ function setusers(userinfogradessid) {
 //********************************************排列非第一的人员添加*****************************************end
 
 //********************************************base基础数据获取*****************************************start
+var dq_rule=null;//当前命名规则
 function getBaseData(url) {
     var data={
         token:INIT_CLIENTKEY,
@@ -805,7 +892,7 @@ function callbackgetgetBaseData(data) {
             var workunitList=data.workunitList;//全部工作单位
             var cardtypeList=data.cardtypeList;//全部的证件类型
             var userinfogradeList=data.userinfogradeList;//全部人员级别类型
-
+            var namingruleList=data.namingruleList;
 
             //全部民族
             $('#national option').not(":lt(1)").remove();
@@ -887,6 +974,15 @@ function callbackgetgetBaseData(data) {
                 USERINFOGRADE8_NAME=userinfograde1_name;
 
             }
+
+            if (isNotEmpty(namingruleList)){
+                for (var i = 0; i < namingruleList.length; i++) {
+                    var l = namingruleList[i];
+                    if (isNotEmpty(l.namingruletype)&&l.namingruletype) {
+                        dq_rule = l.rule;
+                    }
+                }
+            }
         }
     }else{
         layer.msg(data.message,{icon: 5});
@@ -908,3 +1004,9 @@ var userinfograde7_name=loadname;//审判员
 var userinfograde8_name=loadname;//原告诉讼代理人
 
 
+function gettimess(){
+    var now=new Date();
+    var time="";
+    time=now.getFullYear()+""+(now.getMonth() + 1)+""+now.getDate()+""+now.getHours()+""+now.getMinutes()+""+now.getSeconds()+""+now.getMilliseconds();
+    return  time;
+}

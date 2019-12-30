@@ -12,6 +12,7 @@ function callbackgetServerconfig(data) {
         var data=data.data;
         if (isNotEmpty(data)){
            var serverconfigAndFilesave=data.serverconfigAndFilesave;
+           var namingrules=data.namingrules;
            if (isNotEmpty(serverconfigAndFilesave)) {
                serverconfigssid=serverconfigAndFilesave.ssid;
                $("#clientname").val(serverconfigAndFilesave.clientname);
@@ -33,6 +34,14 @@ function callbackgetServerconfig(data) {
                $("#serverip").val(serverconfigAndFilesave.serverip);
                $("#serverport").val(serverconfigAndFilesave.serverport);
                $("#workdays").val(serverconfigAndFilesave.workdays);
+           }
+           if (isNotEmpty(namingrules)){
+               for (let i = 0; i < namingrules.length; i++) {
+                   const namingrule = namingrules[i];
+                   var namingruletype=namingrule.namingruletype;
+                   $("#rule"+namingruletype).val(namingrule.rule);
+                   $("#rule"+namingruletype).attr("ssid",namingrule.ssid);
+               }
            }
         }
     }else{
@@ -69,6 +78,11 @@ function updateServerconfig() {
     var serverport= $("#serverport").val();
     var workdays=$("#workdays").val();
 
+    var rule1=$("#rule1").val();
+    var rule2=$("#rule2").val();
+    var rulessid1=$("#rule1").attr("ssid");
+    var rulessid2=$("#rule2").attr("ssid");
+
     if (!isNotEmpty(clientname)) {
         layer.msg("请输入客户端名称",{icon: 5});
         $("#clientname").focus();
@@ -99,14 +113,46 @@ function updateServerconfig() {
         return;
     }*/
 
+   //收集笔录命名规则
+   var namingrules=[];
+   if (isNotEmpty(rule1)) {
+       if (rule1.indexOf("${")<0||rule1.indexOf("}")<0){
+           layer.msg("至少选择一个规则变量",{icon: 5});
+           $("#rule1").focus();
+          return;
+       }
 
+       //快速
+       var rules_1={
+           namingruletype:1,
+           rule:rule1,
+           ssid:rulessid1
+       }
+       namingrules.push(rules_1);
+   }
+    if (isNotEmpty(rule2)) {
+        if (rule2.indexOf("${")<0||rule2.indexOf("}")<0){
+            layer.msg("至少选择一个规则变量",{icon: 5});
+            $("#rule2").focus();
+            return;
+        }
+
+        //正常
+        var rules_2={
+            namingruletype:2,
+            rule:rule2,
+            ssid:rulessid2
+        }
+        namingrules.push(rules_2);
+    }
 
     var data={
             clientname:clientname,
             serverip:serverip,
             serverport:serverport,
             workdays:workdays,
-            ssid:serverconfigssid
+            ssid:serverconfigssid,
+            namingrules:namingrules
     };
 
     var formData = new FormData();

@@ -1,6 +1,7 @@
 /**
  * 归属页面：addCaseToUser
  */
+var dq_rule=null;//当前命名规则
 function getBaseData() {
     var url=getActionURL(getactionid_manage().addCaseToUser_getBaseData);
     var data={
@@ -17,6 +18,7 @@ function callbackgetgetBaseData(data) {
             var nationalList=data.nationalList;//全部民族
             var workunitList=data.workunitList;//全部工作单位
             var cardtypeList=data.cardtypeList;//全部的证件类型
+            var namingruleList=data.namingruleList;//全部案件命名规则
 
             //全部国籍
             $('#nationality option').not(":lt(1)").remove();
@@ -73,6 +75,15 @@ function callbackgetgetBaseData(data) {
                 }
             }
 
+            //获取默认多组件的命名规则
+            if (isNotEmpty(namingruleList)){
+                for (var i = 0; i < namingruleList.length; i++) {
+                    var l = namingruleList[i];
+                   if (isNotEmpty(l.namingruletype)&&l.namingruletype) {
+                       dq_rule = l.rule;
+                   }
+                }
+            }
         }
     }else{
        layer.msg(data.message,{icon: 5});
