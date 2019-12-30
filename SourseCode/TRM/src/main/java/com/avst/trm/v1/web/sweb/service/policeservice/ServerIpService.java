@@ -140,16 +140,28 @@ public class ServerIpService extends BaseService {
             rResult.setMessage("网卡名不能为空");
             return;
         }
-        if (OpenUtil.isIp(updateIpParam.getIp()) == false) {
+        if (StringUtils.isBlank(updateIpParam.getIp())) {
             rResult.setMessage("ip不能为空");
             return;
         }
-        if (OpenUtil.isIp(updateIpParam.getSubnetMask()) == false) {
+        if (StringUtils.isBlank(updateIpParam.getSubnetMask())) {
             rResult.setMessage("子网掩码不能为空");
             return;
         }
-        if (OpenUtil.isIp(updateIpParam.getGateway()) == false) {
+        if (StringUtils.isBlank(updateIpParam.getGateway())) {
             rResult.setMessage("默认网关不能为空");
+            return;
+        }
+        if (OpenUtil.isIp(updateIpParam.getIp()) == false) {
+            rResult.setMessage("请输入一个正确的ip");
+            return;
+        }
+        if (OpenUtil.isIp(updateIpParam.getSubnetMask()) == false) {
+            rResult.setMessage("请输入一个正确的子网掩码");
+            return;
+        }
+        if (OpenUtil.isIp(updateIpParam.getGateway()) == false) {
+            rResult.setMessage("\"请输入一个正确的网关");
             return;
         }
 
@@ -247,7 +259,7 @@ public class ServerIpService extends BaseService {
             }
 
         }else{
-            LogUtil.intoLog(4, this.getClass(), "成功修改的ip与数据库的ip不一致，不继续上报总控");
+            LogUtil.intoLog(4, this.getClass(), "成功修改的ip与数据库的ip不一致，不继续执行上报总控");
         }
     }
 

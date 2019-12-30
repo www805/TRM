@@ -130,7 +130,7 @@ public class SystemIpUtil {
      * @param wg  默认网关
      */
     public static void setLocalIP(String name, String newip, String zwm, String wg) {
-        String cmd = "netsh    interface    ip    set    addr    \"" + name + "\"    static    "
+        String cmd = "netsh    interface    ip    set    addr    " + name + "    static    "
                 + newip + "    " + zwm + "     " + wg + "     1";
 
 //        System.out.println(cmd);
@@ -142,6 +142,7 @@ public class SystemIpUtil {
             printMessage(process.getInputStream(),process.getErrorStream(),process.getOutputStream());
             int value = process.waitFor();
             System.out.println(value);
+            LogUtil.intoLog(1, SystemIpUtil.class, "执行cmd修改本机ip返回结果：" + value);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -291,19 +292,21 @@ public class SystemIpUtil {
 //        GetNetworkConfigureVO ipInfo = getIpInfo();
 //        System.out.println(ipInfo);
 
-        Map<String, List<GetNetworkConfigureVO>> map = getLocalMachineInfo();
-//        System.out.println(map);
+//        Map<String, List<GetNetworkConfigureVO>> map = getLocalMachineInfo();
+////        System.out.println(map);
+//
+//        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> iterator = map.entrySet().iterator();
+//        while (iterator.hasNext()) {
+//            Map.Entry<String, List<GetNetworkConfigureVO>> entry = iterator.next();
+//            String key = entry.getKey();
+//            List<GetNetworkConfigureVO> list = entry.getValue();
+//            System.out.println("==============" + key);
+//            for (GetNetworkConfigureVO vo : list) {
+//                System.out.println(vo);
+//            }
+//        }
 
-        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, List<GetNetworkConfigureVO>> entry = iterator.next();
-            String key = entry.getKey();
-            List<GetNetworkConfigureVO> list = entry.getValue();
-            System.out.println("==============" + key);
-            for (GetNetworkConfigureVO vo : list) {
-                System.out.println(vo);
-            }
-        }
+
 
 
 //        for (GetNetworkConfigureVO vo : list) {
@@ -313,6 +316,8 @@ public class SystemIpUtil {
 //        setLocalIP("本地连接", "192.168.17.173", "255.255.255.0", "192.168.17.254");
 //        setLocalIP("本地连接", "192.168.17.171", "255.255.255.0", "192.168.17.253");
 
+
     }
+
 
 }
