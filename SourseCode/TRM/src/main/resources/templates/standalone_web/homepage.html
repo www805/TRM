@@ -80,9 +80,6 @@
         <div class="layui-col-sm9 layui-col-md9" style="height: 100%;border: 1px solid #eee;" id="phitem" >
             <!--视频直播区域-->
             <div th:replace="modular/live :: live"></div>
-            <div id="voice" style="position: absolute;right: 305px;top: 0px;" >
-                <div th:replace="voice :: voice"  >...</div>
-            </div>
         </div>
         <div class="layui-col-sm3 layui-col-md3" style="height: 100%;border: 1px solid #eee;">
                 <div class="layui-col-sm12 layui-col-md12" style="height: 30%">
@@ -121,7 +118,7 @@
                 </div>
                 <div class="layui-col-sm12 layui-col-md12" style="height: 70%;">
                     <div class="layui-col-sm12 layui-col-md8  layui-col-space4 layui-col-md-offset2" style="margin-top: 20%">
-                        <a onclick="to_waitconversationURL();" >
+                        <a onclick="to_waitconversationURL();" id="to_waitconversationURL">
                             <div class="layui-card btn_color " title="点击进行快速谈话">
                                 <div class="layui-card-body layuiadmin-card-list layui-row topbottom ">
                                     <div style="text-align: center">

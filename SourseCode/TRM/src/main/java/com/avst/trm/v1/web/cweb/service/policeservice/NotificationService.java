@@ -93,12 +93,9 @@ public class NotificationService extends BaseService {
         //1 获取文件名
         String fileName = file.getOriginalFilename();
 
-        //2 获取随机文件名
-        String imageName = OpenUtil.getUUID_32();
 
         //获取文件后缀
         String suffix = fileName.substring(fileName.lastIndexOf("."));
-        imageName += suffix;
 
         if(!".doc".equalsIgnoreCase(suffix) &&
                 !".docx".equalsIgnoreCase(suffix) &&
@@ -114,7 +111,7 @@ public class NotificationService extends BaseService {
         String filePath=PropertiesListenerConfig.getProperty("file.notification");
         String filePathNew = OpenUtil.createpath_fileByBasepath(filePath);
 
-        String realpath = filePathNew + imageName;
+        String realpath = filePathNew + fileName;
         File dest = new File(realpath);
         try {
             file.transferTo(dest);
@@ -138,7 +135,7 @@ public class NotificationService extends BaseService {
 
             //上传的文件保存到数据库表里
             Base_filesave filesave = new Base_filesave();
-            filesave.setRealfilename(imageName);//真实路径文件名
+            filesave.setRealfilename(fileName);//真实路径文件名
             filesave.setUploadfilename(fileName);//文件本身的文件名
             filesave.setRecordrealurl(realpath);//真实存储地址
             filesave.setRecorddownurl(uploadpath);//下载地址

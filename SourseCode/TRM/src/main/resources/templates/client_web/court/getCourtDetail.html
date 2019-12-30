@@ -213,7 +213,7 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" >
+            <div class="layui-col-md9"  style="height: 810px;border:1px  solid #F2F2F2; overflow-x: hidden; overflow-y: scroll;" id="www">
                         <button class="layui-btn layui-btn-normal " onclick="javascript:window.history.go(-1);return false;">返回上一页</button>
                     <div class="layui-inline" style="margin-bottom:0">
                         <div class="layui-unselect layui-form-select" name="btn_div"   showorhide="false">
@@ -292,10 +292,6 @@
     $(function(){
         setpageAction(INIT_CLIENT,"client_web/court/getCourtDetail");
         tocaseToUserURL= getActionURL(getactionid_manage().getCourtDetail_tocaseToUser);
-        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md9").width())});
-        $(window).resize(function(){
-            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#recorddetail_scrollhtml").closest(".layui-col-md9").width())});
-        });
         getRecordById();//获取笔录案件等信息
     });
     layui.use(['layer','element','slider','form'], function(){

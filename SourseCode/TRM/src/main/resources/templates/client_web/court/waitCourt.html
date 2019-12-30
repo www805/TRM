@@ -138,10 +138,7 @@
         setpageAction(INIT_CLIENT,"client_web/court/waitCourt");
         tocaseToUserURL= getActionURL(getactionid_manage().waitCourt_tocaseToUser);
 
-        $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-        $(window).resize(function(){
-            $('#recorddetail_webkit, #recorddetail_scrollhtml div:eq(0)').css({'width':($("#www").width())});
-        })
+
         getRecordById();
 
         $("#recordreals_selecthtml").css("height","8%")
