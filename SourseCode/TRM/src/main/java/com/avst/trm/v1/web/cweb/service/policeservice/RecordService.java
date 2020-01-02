@@ -399,7 +399,11 @@ public class RecordService extends BaseService {
             result.setMessage("未找到该笔录");
             return;
         }
-        Police_record record=gson.fromJson(gson.toJson(updateRecordParam),Police_record.class);
+
+        Date createtime = updateRecordParam.getCreatetime();
+        updateRecordParam.setCreatetime(null);
+        Police_record record = gson.fromJson(gson.toJson(updateRecordParam), Police_record.class);
+        record.setCreatetime(createtime);
         EntityWrapper recordew=new EntityWrapper();
         recordew.eq("ssid",recordssid);
         int police_recordMapper_update_bool=police_recordMapper.update(record,recordew);

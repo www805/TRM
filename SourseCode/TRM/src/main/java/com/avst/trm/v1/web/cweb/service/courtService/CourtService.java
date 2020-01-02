@@ -155,7 +155,10 @@ public class CourtService extends BaseService {
             LogUtil.intoLog(2,this.getClass(),"CourtService__addUserinfograde__param is null__"+param);
             return;
         }
-        Police_userinfograde police_userinfograde=gson.fromJson(gson.toJson(param),Police_userinfograde.class);
+
+        Date createtime = param.getCreatetime();
+        param.setCreatetime(null);
+        Police_userinfograde police_userinfograde = gson.fromJson(gson.toJson(param), Police_userinfograde.class);
         if (null!=police_userinfograde){
 
 
@@ -188,7 +191,10 @@ public class CourtService extends BaseService {
             return;
         }
 
+        Date createtime = param.getCreatetime();
+        param.setCreatetime(null);
         Police_userinfograde police_userinfograde=gson.fromJson(gson.toJson(param),Police_userinfograde.class);
+        police_userinfograde.setCreatetime(createtime);
         if (null!=police_userinfograde){
             String ssid=police_userinfograde.getSsid();
             if (null!=ssid){

@@ -1605,7 +1605,14 @@ public class ArraignmentService extends BaseService {
             if (null!=police_userinfo){
                 EntityWrapper userinfoupdate_ew=new EntityWrapper();
                 userinfoupdate_ew.eq("ssid",userssid);
+
+                Date both = userInfo.getBoth();
+                Date createtime = userInfo.getCreatetime();
+                userInfo.setBoth(null);
+                userInfo.setCreatetime(null);
                 police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                police_userinfo.setBoth(both);
+                police_userinfo.setCreatetime(createtime);
                 int police_userinfoMapper_update_bool=police_userinfoMapper.update(police_userinfo,userinfoupdate_ew);
                 LogUtil.intoLog(1,this.getClass(),"police_userinfoMapper_update_bool___"+police_userinfoMapper_update_bool);
                 if (police_userinfoMapper_update_bool>0&&null!=cardtypesssid&&null!=userInfo.getCardnum()){

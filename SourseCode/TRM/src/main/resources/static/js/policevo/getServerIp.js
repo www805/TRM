@@ -74,7 +74,7 @@ function updateIp() {
         parent.location.href = tiaozhuan;//跳转到登录页面
     },15000);
 
-    layer.msg("处理中，请稍后...", {
+    layer.msg("处理中，请至少等待10秒，如果ip最终没有修改成功，则需要手动修改后再访问修改后的ip，新改的ip当前已更新到配置文件中", {
         icon: 16,
         time:20000,
         shade: [0.1,"#fff"],

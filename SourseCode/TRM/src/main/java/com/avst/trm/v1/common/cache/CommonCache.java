@@ -644,13 +644,13 @@ public class CommonCache {
      */
     private static  AdminManage_session adminManage_session;
 
-    public static AdminManage_session getAdminManage_session(){
+    public static synchronized AdminManage_session getAdminManage_session(){
 
 
         return adminManage_session;
     }
 
-    public static void setAdminManage_session(AdminManage_session admin){
+    public static synchronized void setAdminManage_session(AdminManage_session admin){
 
         adminManage_session=admin;
 
@@ -661,11 +661,11 @@ public class CommonCache {
      */
     private static Base_admininfo admininfo;
 
-    public static Base_admininfo getAdmininfo(){
+    public static synchronized Base_admininfo getAdmininfo(){
         return admininfo;
     }
 
-    public static void setAdmininfo(Base_admininfo base_admininfo){
+    public static synchronized void setAdmininfo(Base_admininfo base_admininfo){
         admininfo = base_admininfo;
     }
 

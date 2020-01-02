@@ -725,7 +725,10 @@ public class CaseService extends BaseService {
 
                         EntityWrapper updateuserinfoParam=new EntityWrapper();
                         updateuserinfoParam.eq("ssid",userssid);
+                        Date createtime = userInfo.getCreatetime();
+                        userInfo.setCreatetime(null);
                         Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                        police_userinfo.setCreatetime(createtime);
                         int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
                         LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
                         if (updateuserinfo_bool>0){

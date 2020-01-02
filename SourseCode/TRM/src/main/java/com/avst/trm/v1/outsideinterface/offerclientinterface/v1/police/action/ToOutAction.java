@@ -59,4 +59,17 @@ public class ToOutAction  extends BaseAction {
         return rresult;
     }
 
+
+    /**
+     * 提供trm当前登录的用户信息
+     * @param param
+     * @return
+     */
+    @RequestMapping("/getUserPwd")
+    public RResult getUserPwd(@RequestBody ReqParam param){
+        RResult rresult=createNewResultOfFail();
+        rresult=toOutService.getUserPwd(rresult,param);
+        return rresult;
+    }
+
 }

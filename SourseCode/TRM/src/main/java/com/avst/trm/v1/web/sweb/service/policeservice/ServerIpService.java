@@ -218,49 +218,51 @@ public class ServerIpService extends BaseService {
 
         //把其他的配置文件ip、缓存IP、总控IP 也修改
         //判断数据库里的IP是否一样，多网卡的情况下如果修改的IP是一样就修改完数据库的IP再提交到总控里面去
-        Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
-        if (null != base_serverconfig && base_serverconfig.getServerip().equals(updateIpParam.getEip())) {
-            //修改系统配置的ip
-            Base_serverconfig serverconfig = new Base_serverconfig();
-            serverconfig.setId(1);
-            serverconfig.setServerip(updateIpParam.getIp());
-            Integer integer = base_serverconfigMapper.updateById(serverconfig);
-            //上报到总控去
-            if (integer > 0) {
-                //修改配置文件
-                String defaultZone = PropertiesListenerConfig.getProperty("eureka.client.serviceUrl.defaultZone");
-                String upload = PropertiesListenerConfig.getProperty("upload.basepath");
-                String basepath = PropertiesListenerConfig.getProperty("re.basepath");
-                String host = PropertiesListenerConfig.getProperty("socketio.server.host");
+//        Base_serverconfig base_serverconfig = base_serverconfigMapper.selectById(1);
+//        if (null != base_serverconfig && base_serverconfig.getServerip().equals(updateIpParam.getEip())) {
+//
+//        }else{
+//            LogUtil.intoLog(4, this.getClass(), "成功修改的ip与数据库的ip不一致，不继续执行上报总控");
+//        }
 
-                defaultZone = defaultZone.replace(updateIpParam.getEip(), updateIpParam.getIp());
-                upload = upload.replace(updateIpParam.getEip(), updateIpParam.getIp());
-                basepath = basepath.replace(updateIpParam.getEip(), updateIpParam.getIp());
-                host = host.replace(updateIpParam.getEip(), updateIpParam.getIp());
+        //修改系统配置的ip
+        Base_serverconfig serverconfig = new Base_serverconfig();
+        serverconfig.setId(1);
+        serverconfig.setServerip(updateIpParam.getIp());
+        Integer integer = base_serverconfigMapper.updateById(serverconfig);
+        //上报到总控去
+        if (integer > 0) {
+            //修改配置文件
+            String defaultZone = PropertiesListenerConfig.getProperty("eureka.client.serviceUrl.defaultZone");
+            String upload = PropertiesListenerConfig.getProperty("upload.basepath");
+            String basepath = PropertiesListenerConfig.getProperty("re.basepath");
+            String host = PropertiesListenerConfig.getProperty("socketio.server.host");
 
-                PropertiesListenerConfig.setProperty("eureka.client.serviceUrl.defaultZone", defaultZone);
-                PropertiesListenerConfig.setProperty("upload.basepath", upload);
-                PropertiesListenerConfig.setProperty("re.basepath", basepath);
-                PropertiesListenerConfig.setProperty("socketio.server.host", host);
+            defaultZone = defaultZone.replace(updateIpParam.getEip(), updateIpParam.getIp());
+            upload = upload.replace(updateIpParam.getEip(), updateIpParam.getIp());
+            basepath = basepath.replace(updateIpParam.getEip(), updateIpParam.getIp());
+            host = host.replace(updateIpParam.getEip(), updateIpParam.getIp());
 
-                ServerIpCache.setServerIp(updateIpParam.getIp());//设置上报到总控的ip
-                //系统文件修改
-                String fileBasepath = PropertiesListenerConfig.getProperty("sysBasepath");
-                fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
-                boolean outbool = ChangeIPAndPort.otherPCConnectChangeIP(fileBasepath, ServerIpCache.getServerIp());
+            PropertiesListenerConfig.setProperty("eureka.client.serviceUrl.defaultZone", defaultZone);
+            PropertiesListenerConfig.setProperty("upload.basepath", upload);
+            PropertiesListenerConfig.setProperty("re.basepath", basepath);
+            PropertiesListenerConfig.setProperty("socketio.server.host", host);
 
-                AppCache.delAppCacheParam();
-                AppServerCache.delAppServerCache();
+            ServerIpCache.setServerIp(updateIpParam.getIp());//设置上报到总控的ip
+            //系统文件修改
+            String fileBasepath = PropertiesListenerConfig.getProperty("sysBasepath");
+            fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
+            boolean outbool = ChangeIPAndPort.otherPCConnectChangeIP(fileBasepath, ServerIpCache.getServerIp());
 
-                LogUtil.intoLog(1, this.getClass(), "配置文件ip、缓存IP、总控IP 修改成功");
-                changeResultToSuccess(rResult);
-            }else{
-                LogUtil.intoLog(4, this.getClass(), "修改系统配置的ip失败");
-            }
+            AppCache.delAppCacheParam();
+            AppServerCache.delAppServerCache();
 
+            LogUtil.intoLog(1, this.getClass(), "配置文件ip、缓存IP、总控IP 修改成功");
+            changeResultToSuccess(rResult);
         }else{
-            LogUtil.intoLog(4, this.getClass(), "成功修改的ip与数据库的ip不一致，不继续执行上报总控");
+            LogUtil.intoLog(4, this.getClass(), "修改系统配置的ip失败");
         }
+
     }
 
     /**

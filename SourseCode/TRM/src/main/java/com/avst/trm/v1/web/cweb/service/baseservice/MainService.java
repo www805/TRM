@@ -48,7 +48,7 @@ import com.avst.trm.v1.web.cweb.vo.basevo.*;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
-import com.google.gson.Gson;
+import com.google.gson.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
@@ -318,6 +318,8 @@ public class MainService extends BaseService {
             session.setAttribute(Constant.MANAGE_CLIENT,null);
             Subject subject = SecurityUtils.getSubject();
             subject.logout();
+            Base_admininfo base_admininfo = new Base_admininfo();
+            CommonCache.setAdmininfo(base_admininfo);
             LogUtil.intoLog(this.getClass(),"退出成功");
             result.setMessage("退出成功");
 
@@ -331,7 +333,7 @@ public class MainService extends BaseService {
         UpdateServerconfigVO updateServerconfigVO=new UpdateServerconfigVO();
         String Stringparam=(String)param.getParam();
         //请求参数转换
-        UpdateServerconfigParam updateServerconfigParam=gson.fromJson(Stringparam, UpdateServerconfigParam.class);
+        UpdateServerconfigParam updateServerconfigParam= this.gson.fromJson(Stringparam, UpdateServerconfigParam.class);
         if (null==updateServerconfigParam){
             result.setMessage("参数为空");
             return;
@@ -354,7 +356,12 @@ public class MainService extends BaseService {
         List<ServerconfigAndFilesave> list=base_serverconfigMapper.getServerconfig(ew);
         ServerconfigAndFilesave serverconfig=new ServerconfigAndFilesave();
         if (null!=list&&list.size()==1){
-            serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
+            //转换前date设为null
+            ServerconfigAndFilesave filesave = list.get(0);
+            Date workstarttime = filesave.getWorkstarttime();
+            filesave.setWorkstarttime(null);
+            serverconfig= this.gson.fromJson(this.gson.toJson(filesave), ServerconfigAndFilesave.class);
+            serverconfig.setWorkstarttime(workstarttime);
         }
 
         String client_filesavessid=serverconfig.getClient_filesavessid();
@@ -485,7 +492,14 @@ public class MainService extends BaseService {
 
             if (list.size()==1){
                 String myIP = ServerIpCache.getServerIp();
-                ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(list.get(0)), ServerconfigAndFilesave.class);
+
+                //转换前date设为null
+                ServerconfigAndFilesave filesave = list.get(0);
+                Date workstarttime = filesave.getWorkstarttime();
+                filesave.setWorkstarttime(null);
+                ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(filesave), ServerconfigAndFilesave.class);
+                serverconfig.setWorkstarttime(workstarttime);
+
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_downurl())){
                     serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
                 }
