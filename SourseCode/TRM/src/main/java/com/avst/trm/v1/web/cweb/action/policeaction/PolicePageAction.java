@@ -167,7 +167,13 @@ public class PolicePageAction {
 
     @GetMapping("toaddCaseToUser")
     public ModelAndView toaddCaseToUser(Model model){
-        model.addAttribute("title","谈话办案");
+        String gnlist=getSQEntity.getGnlist();
+         if (gnlist.indexOf(SQVersion.HK_O)!= -1){
+             model.addAttribute("title","谈话办案");
+         }else {
+             model.addAttribute("title","审讯办案");
+        }
+
         return new ModelAndView("client_web/police/record/addCaseToUser", "addCaseToUserModel", model);
     }
 

@@ -152,7 +152,7 @@ function addCaseToArraignment() {
                 return false;
             }
 
-            if (isNotEmpty(phone_)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone_))){
+            if (isNotEmpty(phone_)&&!(/^0?(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[89])[0-9]{8}$/.test(phone_))){
                 $(this).find("input[name='tab_phone']").focus();
                 ck_msg="其他在场人员联系电话无效";
                 ck=false;
@@ -665,7 +665,7 @@ function tabAdd(){
                                                             <div class="layui-col-lg6">\
                                                                 <label class="layui-form-label">联系电话</label>\
                                                                 <div class="layui-input-block">\
-                                                                    <input type="number" name="tab_phone"   placeholder="" autocomplete="off" class="layui-input">\
+                                                                    <input type="text" name="tab_phone"   placeholder="请输入手机号码" autocomplete="off" class="layui-input" onkeyup= "value=value.replace(/[^\\d]/g,\'\')">\
                                                                 </div>\
                                                             </div>\
                                                             <div class="layui-col-lg12">\

@@ -43,7 +43,7 @@ public class MainStandaloneService extends BaseService {
             FileInputStream fis = null;
             try {
                 Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
-
+                String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！
 //                if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
 //                    Base_filesave filesaveSyslogo = new Base_filesave();
 //                    filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
@@ -58,7 +58,7 @@ public class MainStandaloneService extends BaseService {
                     filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
                     Base_filesave clientlogo = base_filesaveMapper.selectOne(filesaveClientlogo);
                     if (null!=clientlogo){
-                        cacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
+                        cacheParam.setClientimage(uploadbasepath+ myIP + clientlogo.getRecorddownurl());
                     }
                 }
 

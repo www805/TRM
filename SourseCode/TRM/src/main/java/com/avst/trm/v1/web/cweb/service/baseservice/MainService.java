@@ -491,7 +491,6 @@ public class MainService extends BaseService {
         if (null!=list&&list.size()>0){
 
             if (list.size()==1){
-                String myIP = ServerIpCache.getServerIp();
 
                 //转换前date设为null
                 ServerconfigAndFilesave filesave = list.get(0);
@@ -499,12 +498,12 @@ public class MainService extends BaseService {
                 filesave.setWorkstarttime(null);
                 ServerconfigAndFilesave serverconfig=gson.fromJson(gson.toJson(filesave), ServerconfigAndFilesave.class);
                 serverconfig.setWorkstarttime(workstarttime);
-
+                String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！
                 if (StringUtils.isNotEmpty(serverconfig.getSyslogo_downurl())){
-                    serverconfig.setSyslogo_downurl("http://" + myIP + serverconfig.getSyslogo_downurl());
+                    serverconfig.setSyslogo_downurl(uploadbasepath + serverconfig.getSyslogo_downurl());
                 }
                 if (StringUtils.isNotEmpty(serverconfig.getClient_downurl())){
-                    serverconfig.setClient_downurl("http://" + myIP + serverconfig.getClient_downurl());
+                    serverconfig.setClient_downurl(uploadbasepath + serverconfig.getClient_downurl());
                 }
                 getServerconfigVO.setServerconfigAndFilesave(serverconfig);
 

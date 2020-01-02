@@ -55,13 +55,13 @@ public class AppServerCache {
         try {
 
             Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
-
+            String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！
             if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
                 Base_filesave filesaveSyslogo = new Base_filesave();
                 filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
                 Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
                 if (null!=syslogo){
-                    appCacheParam.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
+                    appCacheParam.setSyslogoimage(uploadbasepath+ syslogo.getRecorddownurl());
                 }
             }
 
@@ -70,7 +70,7 @@ public class AppServerCache {
                 filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
                 Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
                 if (null!=clientlogo){
-                    appCacheParam.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
+                    appCacheParam.setClientimage(uploadbasepath+ clientlogo.getRecorddownurl());
                 }
             }
 

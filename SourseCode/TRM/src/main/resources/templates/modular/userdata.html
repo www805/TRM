@@ -143,7 +143,7 @@
             <div class="layui-col-lg6">
                 <label class="layui-form-label">联系电话</label>
                 <div class="layui-input-block">
-                    <input type="number" name="phone" id="phone" lay-verify="phone" placeholder="" autocomplete="off" class="layui-input">
+                    <input type="text" name="phone" id="phone" lay-verify="phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input" onkeyup= "value=value.replace(/[^\d]/g,'')">
                 </div>
             </div>
             <div class="layui-col-lg6">
@@ -218,7 +218,7 @@
                                         <div class="layui-col-lg6">
                                             <label class="layui-form-label">联系电话</label>
                                             <div class="layui-input-block">
-                                                <input type="number" name="tab_phone" placeholder="" autocomplete="off" class="layui-input">
+                                                <input type="text" name="tab_phone" placeholder="请输入手机号码" autocomplete="off" class="layui-input" onkeyup= "value=value.replace(/[^\d]/g,'')">
                                             </div>
                                         </div>
                                         <div class="layui-col-lg6">
@@ -280,7 +280,7 @@
                                         <div class="layui-col-lg6">
                                             <label class="layui-form-label">联系电话</label>
                                             <div class="layui-input-block">
-                                                <input type="number" name="tab_phone"  placeholder="" autocomplete="off" class="layui-input">
+                                                <input type="text" name="tab_phone"  placeholder="请输入手机号码" autocomplete="off" class="layui-input" onkeyup= "value=value.replace(/[^\d]/g,'')">
                                             </div>
                                         </div>
                                         <div class="layui-col-lg6">

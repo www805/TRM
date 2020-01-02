@@ -50,14 +50,14 @@ public class ServerConfigService extends BaseService {
         }
 
         Base_serverconfig serverconfig = serverconfigMapper.selectById(1);
-
+        String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！
         String myIP = ServerIpCache.getServerIp();
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {
             Base_filesave filesaveSyslogo = new Base_filesave();
             filesaveSyslogo.setSsid(serverconfig.getSyslogo_filesavessid());
             Base_filesave syslogo = filesaveMapper.selectOne(filesaveSyslogo);
             if (null!=syslogo){
-                serverConfigByIdVO.setSyslogoimage("http://" + myIP + syslogo.getRecorddownurl());
+                serverConfigByIdVO.setSyslogoimage(uploadbasepath+ syslogo.getRecorddownurl());
             }
         }
 
@@ -66,7 +66,7 @@ public class ServerConfigService extends BaseService {
             filesaveClientlogo.setSsid(serverconfig.getClient_filesavessid());
             Base_filesave clientlogo = filesaveMapper.selectOne(filesaveClientlogo);
             if (null!=clientlogo){
-                serverConfigByIdVO.setClientimage("http://" + myIP + clientlogo.getRecorddownurl());
+                serverConfigByIdVO.setClientimage(uploadbasepath + clientlogo.getRecorddownurl());
             }
         }
 

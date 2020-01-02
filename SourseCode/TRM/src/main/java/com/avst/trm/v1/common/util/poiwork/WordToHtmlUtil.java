@@ -13,6 +13,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import com.avst.trm.v1.common.util.OpenUtil;
 import com.avst.trm.v1.common.util.log.LogUtil;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIXMLException;
@@ -61,11 +62,21 @@ public class WordToHtmlUtil {
                     }else{
                         imgpath = htmlpath.substring(0,htmlpath.lastIndexOf("\\")+1);
                     }
+
                     File imageFolderFile = new File(imgpath);
                     XHTMLOptions options = XHTMLOptions.create().URIResolver(new FileURIResolver(imageFolderFile));
                     options.setExtractor(new FileImageExtractor(imageFolderFile));
                     options.setIgnoreStylesIfUnused(false);
                     options.setFragment(true);
+
+                    //自定义地址
+                    final String imgpath_=imgpath;
+                    options.URIResolver((uri)->{
+                        String uploadpath= PropertiesListenerConfig.getProperty("upload.basepath");
+                        String qg=PropertiesListenerConfig.getProperty("file.qg");
+                        String worddownurl =uploadpath+OpenUtil.strMinusBasePath(qg, imgpath_ + uri) ;
+                        return worddownurl;
+                    });
 
                     // 3) 将 XWPFDocument转换成XHTML
                     out = new FileOutputStream(new File(htmlpath));
@@ -109,6 +120,8 @@ public class WordToHtmlUtil {
         return false;
     }
 
+
+
     /**
      * /**
      * 2003版本word转换成html
@@ -122,6 +135,7 @@ public class WordToHtmlUtil {
         InputStream input=null;
         HWPFDocument wordDocument=null;
         try {
+
             String imgpath = "";
             if(htmlpath.indexOf("/") > -1){
                 imgpath = htmlpath.substring(0,htmlpath.lastIndexOf("/")+1);
@@ -131,7 +145,10 @@ public class WordToHtmlUtil {
             final String imgpath_=imgpath;
 
             input = new FileInputStream(new File(docpath));
+
             wordDocument = new HWPFDocument(input);
+
+
 
             WordToHtmlConverter wordToHtmlConverter = new WordToHtmlConverter(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument());
             //设置图片存放的位置
@@ -160,7 +177,10 @@ public class WordToHtmlUtil {
 
                         }
                     }
-                    return imgpath_ + suggestedName;
+                    String uploadpath= PropertiesListenerConfig.getProperty("upload.basepath");
+                    String qg=PropertiesListenerConfig.getProperty("file.qg");
+                    String worddownurl =uploadpath+OpenUtil.strMinusBasePath(qg, imgpath_ + suggestedName) ;
+                    return worddownurl;
                 }
             });
 
@@ -637,8 +657,8 @@ public class WordToHtmlUtil {
     public static void main(String[] args) {
 
         long starttime=(new Date()).getTime();
-        String htmlpath="C:\\Users\\Administrator\\Desktop\\北京市国安笔录系统-模板\\审讯记录.html";
-        String docpath="C:\\Users\\Administrator\\Desktop\\北京市国安笔录系统-模板\\审讯记录.docx";
+        String htmlpath="C:\\Users\\admin\\Desktop\\便携式审讯需求分析(1).html";
+        String docpath="C:\\Users\\admin\\Desktop\\便携式审讯需求分析(1).docx";
         String imgpath = htmlpath.substring(0,htmlpath.lastIndexOf("\\")+1);
         System.out.println(imgpath);
 
