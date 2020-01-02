@@ -137,3 +137,67 @@ function previewfile(url,filename) {
     }
 
 }
+
+//*******************************************************************情绪报告的生成start****************************************************************//
+function uploadPhreport() {
+    layer.prompt({title: '请输入情绪报告名称', formType:0}, function(phreportname, index){
+        //开始收集生成的数据
+        var phreportdataList;
+        var dataList=[];
+        $("#recordreals input[type='checkbox']:checked").each(function(index, element){
+            var html=$(this).closest("div");
+            var username_time=$(html).find("#username_time").html();
+            var translatext=$(html).find("#translatext").html();
+            var ph_stress=$(html).find(".layui-badge").html();
+            var usertype=$(html).attr("usertype");
+            var dqphdate=$(html).attr("dqphdate");
+            if (isNotEmpty(username_time)&&isNotEmpty(translatext)) {
+                var content=null;
+                if (usertype==1){
+                    content = "<div style='text-align: left'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999;'>"+username_time+"  </p><span style='color: #fff; background: #0181cc;'>"+translatext+"</span></div>";
+                }else  if (usertype==2) {
+                    content = "<div style='text-align: right'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999'>"+ph_stress+"  "+username_time+" </p> <span  style='color: #fff; background: #ef8201;'>"+translatext+"</span></div>";
+                }
+                if (isNotEmpty(content)){
+                    dataList.push(content);
+                }
+            }
+        });
+
+        if (!isNotEmpty(dataList)) {
+            layer.msg("请先勾选需要生成的情绪数据");
+            return;
+        }
+
+        var url=getActionURL(getactionid_manage().getRecordById_uploadPhreport);
+        //需要收拾数据
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                phreportname:phreportname,
+                phreportdataList:dataList
+            }
+        };
+        ajaxSubmitByJson(url, data, callbackuploadPhreport);
+        layer.close(index);
+    });
+
+}
+function callbackuploadPhreport(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            var  downurl=data.downurl;
+            if (isNotEmpty(downurl)){
+                var $a = $("<a></a>").attr("href", downurl).attr("download", "down");
+                $a[0].click();
+                layer.msg('情绪报告生成成功,等待下载中...',{icon:6});
+                getPhreportsByParam();
+            }
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+}
+//*******************************************************************情绪报告的生成end****************************************************************//

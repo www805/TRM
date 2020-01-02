@@ -54,9 +54,9 @@ function set_dqrealtxt(){
     if (isNotEmpty(likerealtxtarr)) {
         for (var i = 0; i < likerealtxtarr.length; i++) {
             var all = likerealtxtarr[i];
-            all.find("a").removeClass("highlight_dq");
+            all.find("x").removeClass("highlight_dq");
         }
-        likerealtxtarr[dqindex_realtxt].find("a").addClass("highlight_dq");
+        likerealtxtarr[dqindex_realtxt].find("x").addClass("highlight_dq");
         var top= likerealtxtarr[dqindex_realtxt].closest("div").position().top;
         var div = document.getElementById('recordreals_scrollhtml');
         div.scrollTop = top;
@@ -70,7 +70,7 @@ function recordreals_select(obj) {
 
     var recordrealshtml= $("#recordreals").html();
     if (isNotEmpty(recordrealshtml)){
-        recordrealshtml=recordrealshtml.replace(/(<\/?a.*?>)/g, '');//过滤之前的highlight_all标签
+        recordrealshtml=recordrealshtml.replace(/(<\/?x.*?>)/g, '');//过滤之前的highlight_all标签
         $("#recordreals").html(recordrealshtml);
     }
 
@@ -80,7 +80,7 @@ function recordreals_select(obj) {
             var spantxt=$(this).find("span").text();
                 if (spantxt.indexOf(likerealtxt) >= 0) {
                     var html=$(this).find("span").html();
-                    html = html.split(likerealtxt).join('<a class="highlight_all">'+ likerealtxt +'</a>');
+                    html = html.split(likerealtxt).join('<x class="highlight_all">'+ likerealtxt +'</x>');
                     $(this).find("span").html(html);
                     likerealtxtarr.push($(this).find("span"));
                 }

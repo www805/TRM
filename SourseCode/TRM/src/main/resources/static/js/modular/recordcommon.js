@@ -88,6 +88,7 @@ function callbackupdateRecord(data){
 
 
 //制作中：获取会议缓存以及会议通道缓存
+var MCCache=null;//会议缓存数据
 function getMCCacheParamByMTssid() {
     if (mcbool==1||mcbool==3){
         var url=getUrl_manage().getMCCacheParamByMTssid;
@@ -107,6 +108,8 @@ function getMCCacheParamByMTssid() {
         });
     }
 }
+var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
+var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
 function getTDCacheParamByMTssid() {
     if ((mcbool==1||mcbool==3)&&isNotEmpty(dq_recorduser)) {//会议正常的时候
         var url=getUrl_manage().getTDCacheParamByMTssid;
@@ -765,16 +768,15 @@ function callbackgetgetRecordrealing(data) {
         }
 
         if (isNotEmpty(list)) {
-            $("#recordreals").html("");
-            $("#recordreals_selecthtml").show();
-
             //法院加了打点标记操作
             if (gnlist.indexOf(NX_O)!= -1){
                 $("#defaultsearch").hide();
                 $("#tagtxtsearch").show();
             }
 
-            for (var i = 0; i < list.length; i++) {
+            set_getRecord(list,1);
+
+           /* for (var i = 0; i < list.length; i++) {
                 var data=list[i];
                 if (isNotEmpty(recorduser)){
                     for (var j = 0; j < recorduser.length; j++) {
@@ -783,7 +785,7 @@ function callbackgetgetRecordrealing(data) {
                         if (data.userssid==userssid){
                             var username=user.username==null?"未知":user.username;//用户名称
                             var usertype=user.grade;//1、询问人2被询问人
-                            var txt=data.txt==null?"":data.txt;//翻译文本*/
+                            var txt=data.txt==null?"":data.txt;//翻译文本*!/
                             var starttime=data.starttime;
                             var asrstartime=data.asrstartime;
                             var gradename=user.gradename==null?"未知":user.gradename;//角色名称：暂用于法院
@@ -836,7 +838,7 @@ function callbackgetgetRecordrealing(data) {
                         }
                     }
                 }
-            }
+            }*/
         }else {
             console.log("asr实时数据is null");
         }
@@ -846,5 +848,171 @@ function callbackgetgetRecordrealing(data) {
 }
 
 
+//回放：回填左侧识别asr set_getRecordtype1制作中的 2回放的
+var  subtractime={}//时间差，法院可能多用户 格式：subtractime['usertype']
+function set_getRecord(list,set_getRecordtype){
+    if (isNotEmpty(list)) {
+        if (gnlist.indexOf(NX_O)!= -1){
+            $("#open_tagtext").show();
+        }
+            $("#recordreals").empty();
+            $("#recordreals_selecthtml").show();
+
+            for (var i = 0; i < list.length; i++) {
+                var data=list[i];
+                if (isNotEmpty(recorduser)){
+                    for (var j = 0; j < recorduser.length; j++) {
+                        var user = recorduser[j];
+                        var userssid=user.userssid;
+                        if (data.userssid==userssid){
+                            var username=user.username==null?"未知":user.username;//用户名称
+                            var usertype=user.grade;//用户类型
+                            var txt=data.txt==null?"":data.txt;//翻译文本*/
+                            var asrtime=data.asrtime;//时间
+                            var starttime=data.starttime;
+                            var asrstartime=data.asrstartime;
+                            var subtractime_=data.subtractime==null?0:data.subtractime;//时间差
+                            subtractime[""+usertype+""]=subtractime_;//存储各个类型人员的时间差值
+                            var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
+
+                            var gradename=user.gradename==null?"未知":user.gradename;//角色名称：暂用于法院
+                            var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;//角色简称：暂用于法院
+
+                            //实时会议数据
+                            var recordrealshtml="";
+
+                            starttime=parseFloat(starttime)+parseFloat(subtractime_);
+
+
+                            if (gnlist.indexOf(FY_T)<0){
+                                //非法院：问答对话模式
+                                if (usertype==1){
+                                    //询问人没有情绪报告
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'   usertype='+usertype+' dqphdate="" id="asrdiv" onmousedown="asrdivclick(this,event,'+set_getRecordtype+')">\
+                                                            <a style="display: none;color: #ccc" id="dqphdate"></a>\
+                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none;" title="未找到最高值">-1</a></p>\
+                                                            <span id="translatext" >'+translatext+'</span> \
+                                                      </div >';
+                                }else {
+                                    recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'  usertype='+usertype+' dqphdate="" id="asrdiv" onmousedown="asrdivclick(this,event,'+set_getRecordtype+')">\
+                                                            <a style="display: none;color: #ccc" id="dqphdate"></a>\
+                                                            <p><a class="layui-badge " style="visibility:hidden; background-color: #00CD68  " title="未找到最高值">-1</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
+                                                            <span id="translatext" >'+translatext+'</span> \
+                                                      </div >';
+                                }
+                                /*if (usertype==1){
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+username+'】 '+asrstartime+' </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                                }else if (usertype==2){
+                                    recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
+                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
+                                                      </div >';
+                                }*/
+                            }else {
+
+                               /* var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                                var fontcolor="#ffffff";
+                                if (gnlist.indexOf(NX_O)!= -1){
+                                    color="#ffffff";
+                                    fontcolor="#000000";
+                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" > '+translatext+' </span>\
+                                                      </div >';
+
+                                }else if (gnlist.indexOf(FY_T)!= -1){
+                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
+                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
+                                                            <span  style="background-color: '+color+';color: '+fontcolor+';"   ondblclick="copy_text(this)">'+translatext+'</span> \
+                                                      </div >';
+                                }*/
+
+                                //////////
+                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
+                                var fontcolor="#ffffff";
+                                if (gnlist.indexOf(NX_O)!= -1){
+                                    color="#ffffff";
+                                    fontcolor="#000000";
+                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'  id="asrdiv" ondblclick="asrdivclick(this,event,'+set_getRecordtype+')">\
+                                                             <a>'+gradename+'：</a>\
+                                                             <span id="translatext">'+translatext+'</span>\
+                                                      </div >';
+                                }else {
+                                    recordrealshtml='<div class="atalk" style="background-color: '+color+';color:'+fontcolor+';" userssid='+userssid+' starttime='+starttime+'  id="asrdiv"  ondblclick="asrdivclick(this,event,'+set_getRecordtype+')">\
+                                                            <p>【'+gradename+'】 '+asrstartime+'</p>\
+                                                            <span id="translatext">'+translatext+'</span> \
+                                                      </div >';
+                                }
+
+                            }
+
+                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
+                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
+                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]:last").remove();
+                            }
+                            $("#recordreals").append(recordrealshtml);
+                            var div = document.getElementById('recordreals');
+                            div.scrollTop = div.scrollHeight;
+
+                        }
+                    }
+                }
+            }
+
+            var recordreals_selecthtml=document.getElementById("recordreals_selecthtml");
+            var IHTML='<span class="layui-table-sort layui-inline" title="语音识别可滚动"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc" "></i></span>';
+            if(recordreals_selecthtml.scrollHeight>recordreals_selecthtml.clientHeight||recordreals_selecthtml.offsetHeight>recordreals_selecthtml.clientHeight){
+                $("#webkit2").html(IHTML)
+            }else {
+                $("#webkit2").empty();
+            }
+    }
+
+    //存在问答需要获取时间差
+    if (set_getRecordtype==2){
+        //暂时测试
+        var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getRecordById_getRecordrealByRecordssid);
+        if (gnlist.indexOf(FY_T)>-1){
+            getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getCourtDetail_getRecordrealByRecordssid);
+        }
+        getRecordrealByRecordssid(getRecordrealByRecordssidUrl);
+    }else {
+
+    }
+
+
+    layui.use(['layer','form'], function(){
+        var form = layui.form;
+        form.render();
+    });
+}
+
+//配合上面：左侧语音asr点击 obj this;e event;点击类型 1制作中 2回放； starttime 语音识别时间
+function asrdivclick(obj,e,type) {
+    if (type==1){
+        copy_text(obj,e);
+    } else  if (type==2){
+        var starttime=$(obj).attr("starttime");
+        if (isNotEmpty(starttime)&&starttime>-1){
+            showrecord(starttime);
+        }
+    }
+}
+
+//回放：
+function btn() {
+    var selected=$("div[name='btn_div']").attr("showorhide");
+    if (isNotEmpty(selected)&&selected=="false"){
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+        $("div[name='btn_div']").attr("showorhide","true");
+        $("div[name='btn_div']").addClass("layui-form-selected");
+    }else if (isNotEmpty(selected)&&selected=="true") {
+        $("div[name='btn_div']").attr("showorhide","false");
+        $("div[name='btn_div']").removeClass("layui-form-selected");
+    }
+}
 
 

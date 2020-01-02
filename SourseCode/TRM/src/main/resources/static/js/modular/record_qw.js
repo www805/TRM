@@ -225,9 +225,9 @@ function focuslable(html,type,qw) {
             if (times!="-1"&&isNotEmpty(times)){
                 var name=$("label",this).attr("name");
                 if (name == "q"){
-                    times=parseInt(times)+subtractime_q;
+                    times=parseInt(times)+subtractime["1"];
                 }else if( name=="w") {
-                    times=parseInt(times)+subtractime_w;
+                    times=parseInt(times)+subtractime["2"];
                 }
                 showrecord(times);
             }
@@ -241,18 +241,7 @@ function focuslable(html,type,qw) {
 
 
 //导出word or pdf
-function btn() {
-    var selected=$("div[name='btn_div']").attr("showorhide");
-    if (isNotEmpty(selected)&&selected=="false"){
-        $("div[name='btn_div']").attr("showorhide","false");
-        $("div[name='btn_div']").removeClass("layui-form-selected");
-        $("div[name='btn_div']").attr("showorhide","true");
-        $("div[name='btn_div']").addClass("layui-form-selected");
-    }else if (isNotEmpty(selected)&&selected=="true") {
-        $("div[name='btn_div']").attr("showorhide","false");
-        $("div[name='btn_div']").removeClass("layui-form-selected");
-    }
-}
+
 function exportWord(url){
     var paramdata={
         token:INIT_CLIENTKEY,
@@ -266,7 +255,8 @@ function exportWord(url){
             if (isNotEmpty(data)){
                 var word_htmlpath=data.word_htmlpath;//预览html地址
                 var word_path=data.word_path;//下载地址
-                window.location.href = word_path;
+                var $a = $("<a></a>").attr("href", word_path).attr("download", "WORD文件");
+                $a[0].click();
                 layer.msg("导出成功,等待下载中...",{icon: 6});
             }
         }else{
@@ -295,7 +285,7 @@ function exportPdf(url) {
                     maxmin: true, //开启最大化最小化按钮
                     area: ['893px', '600px'],
                 });
-                showPDF("pdfid",pdfdownurl);
+                showPDF("pdfid",data);
                 layer.msg("导出成功,等待下载中...",{icon: 6});
             }
         }else{
@@ -309,10 +299,10 @@ function exportPdf(url) {
 var copy_text_html="";
 var touchtime = new Date().getTime();
 function copy_text(obj,event) {
-    var text=$(obj).html();
+    var text=$("#translatext",obj).html();
     copy_text_html=text;
-    var classc=$(obj).closest("div").attr("class");
-    var starttime=$(obj).closest("div").attr("starttime");
+    var classc=$(obj).attr("class");
+    var starttime=$(obj).attr("starttime");
 
     var qw=null;
     if ((classc=="atalk"&&1 == event.which)||(classc=="btalk"&&3 == event.which)) {//左键并且为问||右键并且为答
@@ -547,6 +537,8 @@ function contextMenu() {
         }
     });
 }
+
+
 
 
 

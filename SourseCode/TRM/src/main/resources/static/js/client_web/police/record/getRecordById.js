@@ -1,31 +1,25 @@
 var recorduser=[];//会议用户集合
+
 var mtssid=null;//当前会议的ssid
 var videourl=null;//视频地址
 
-var recordnameshow="";
+var recordnameshow="";//当前笔录名称显示
 
-var subtractime_q=0;//问的时间差
-var subtractime_w=0;//答的时间差
-
-
-var pdfdownurl=null;//pdf下载地址
-var worddownurl=null;//word下载地址
-
-var phdatabackList=null;//身心回放数据
-
-var first_playstarttime=0;//第一个视频的开始时间
-var dq_play=null;//当前视频数据
-var recordPlayParams=[];//全部视频数据集合
-
-var phSubtracSeconds=0;
 
 var iid=null;//打包iid
 
 var getRecordById_data=null;
 
+var first_playstarttime=0;//第一个视频的开始时间
+var dq_play=null;//当前视频数据
+var recordPlayParams=[];//全部视频数据集合
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
+
+
+var phSubtracSeconds=0;//身心回放排行榜
+var phdatabackList=null;//身心回放数据
 
 
 //获取案件信息
@@ -49,8 +43,7 @@ function callbackgetRecordById(data) {
         if (isNotEmpty(data)){
             getRecordById_data=data;
             var record=data.record;
-            pdfdownurl=record.pdfdownurl;//pdf下载地址
-            worddownurl=record.worddownurl;//word下载地址
+
             iid=data.iid;
 
             recordnameshow=record.recordname;//当前笔录名称
@@ -94,7 +87,7 @@ function callbackgetRecordById(data) {
                 }
 
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
-                $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()"></i>');
+                $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()" ></i>');
 
                 //会议人员
                 var recordUserInfosdata=record.recordUserInfos;
@@ -190,7 +183,7 @@ function callbackgetRecordById(data) {
             //左侧asr识别数据
             var getMCVO=data.getMCVO;
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
-                set_getRecord(getMCVO);
+                set_getRecord(getMCVO.list,2);
             }else  {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
             }
@@ -212,7 +205,9 @@ function callbackgetRecordById(data) {
     }
 }
 
-//未合并
+
+
+//未合并:不是很适应
 function setqw(problems) {
     $("#recorddetail").empty();
     var problemhtml="";
@@ -222,7 +217,7 @@ function setqw(problems) {
             var problem = problems[z];
             var q_starttime=problem.starttime;
             if (isNotEmpty(q_starttime)&&q_starttime!=-1) {
-                q_starttime+= parseFloat(subtractime_q);
+                q_starttime+= parseFloat(subtractime["1"]);
             }
             var problemtext=problem.problem;
             if (isNotEmpty(problemtext)){
@@ -237,7 +232,7 @@ function setqw(problems) {
 
                         var w_starttime=answer.starttime;
                         if (isNotEmpty(w_starttime)&&w_starttime!=-1) {
-                            w_starttime+=parseFloat(subtractime_w);
+                            w_starttime+=parseFloat(subtractime["2"]);
                         }
                         var answertext=answer.answer==null?"":answer.answer;
                         answerhtml='<div class="table_td_tt font_blue_color"><span>答：</span><label  name="w"  contenteditable="false" starttime="'+w_starttime+'" >'+answertext+'</label></div>';
@@ -259,8 +254,7 @@ function setqw(problems) {
     return problemhtml;
 }
 
-//数据渲染
-function set_getRecord(data){
+/*function set_getRecord(data){
     if (isNotEmpty(data.list)){
         $("#recordreals").empty();
         $("#recordreals_selecthtml").show();
@@ -278,25 +272,24 @@ function set_getRecord(data){
                         var asrtime=data.asrtime;//时间
                         var starttime=data.starttime;
                         var asrstartime=data.asrstartime;
-                        var subtractime=data.subtractime;//时间差
+                        var subtractime=data.subtractime==null?0:data.subtractime;//时间差
                         //实时会议数据
                         var recordrealshtml="";
                         var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
+                        subtractime[""+usertype+""]=subtractime;//存储各个类型人员的时间差值
 
                         //实时会议数据
                         if (usertype==1){
                             //询问人没有情绪报告
-                            subtractime_q=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_q);
+                            starttime=parseFloat(starttime)+parseFloat(subtractime);
                             recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
                                                             <a style="display: none;color: #ccc" id="dqphdate"></a>\
                                                             <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none;" title="未找到最高值">-1</a></p>\
                                                             <span id="translatext">'+translatext+'</span> \
                                                       </div >';
                         }else if (usertype==2){
-                            subtractime_w=subtractime==null?0:subtractime;
-                            starttime=parseFloat(starttime)+parseFloat(subtractime_w);
+                            starttime=parseFloat(starttime)+parseFloat(subtractime);
                             recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
                                                             <a style="display: none;color: #ccc" id="dqphdate"></a>\
                                                             <p><a class="layui-badge " style="visibility:hidden; background-color: #00CD68  " title="未找到最高值">-1</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
@@ -333,32 +326,32 @@ function set_getRecord(data){
         var form = layui.form;
         form.render();
     });
-}
+}*/
 
 
 
 
-
-
-var phreportfirst=-1;//是否为第一次打开情绪报告
 $(function () {
     //情绪报告
     layui.use(['layer','element','slider','form','laydate'], function(){
         var form = layui.form;
         form.on('switch(phreportshowhide)', function(data){
+            var bool=data.elem.checked;
             if (!isNotEmpty(dq_play)){
                 layer.msg("暂未找到视频，未能出现情绪报告");
+                data.elem.checked=!bool;
                 return;
             }
             if (!isNotEmpty(phdatabackList)){
                 layer.msg("暂未找到身心监测数据，未能出现情绪报告");
+                data.elem.checked=!bool;
                 return;
             }
-            var bool=data.elem.checked;
             phreportshowhide(bool);
         });
     });
 
+    //保存按钮
     $("#baocun").click(function () {
       addRecord();
     });
@@ -382,9 +375,22 @@ $(function () {
         }
     });
 
+
 });
 
+function open_recordqw() {
+    //切换界面
+    $("#recorddetail #record_qw").css({"width":"80%"});
+    $("#recorddetail #record_util,#btnadd").css({"display":"block"});
+    $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
+    $("#wqutil").show();//显示保存按钮
+    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
+        qw_keydown(this,event);
+    });
+}
+
 //显示审讯检测数据到语音识别上
+var phreportfirst=-1;//是否为第一次打开情绪报告
 function phreportshowhide(bool) {
     if (bool) {
         //显示checkbox
@@ -407,7 +413,7 @@ function phreportshowhide(bool) {
             var ph_stress=-1;//最高点 -1为不正常数据
             var dqphdate="";//找出来最大值的全部data
             $("#recordreals").children('div').each(function (i,e) {
-                var starttime=$(this).attr("times");
+                var starttime=$(this).attr("starttime");
                 var usertype=$(this).attr("usertype");
                 if (usertype==2) {
                     var  locationtime=(parseFloat(first_playstarttime)+parseFloat(starttime))-parseFloat(dq_play.recordstarttime)-(parseFloat(dq_play.repeattime)*1000);
@@ -618,21 +624,6 @@ function callbackzIPVodProgress(data) {
 }
 
 
-//*******************************************************************笔录问答编辑start****************************************************************//
-
-//问答编辑
-function open_recordqw() {
-    //切换界面
-    $("#recorddetail #record_qw").css({"width":"80%"});
-    $("#recorddetail #record_util,#btnadd").css({"display":"block"});
-    $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
-    $("#wqutil").show();
-
-    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
-        qw_keydown(this,event);
-    });
-}
-
 
 
 
@@ -682,76 +673,3 @@ function calladdRecord(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-
-
-
-//*******************************************************************笔录问答编辑end****************************************************************//
-
-
-//*******************************************************************情绪报告的生成start****************************************************************//
-function uploadPhreport() {
-
-    layer.prompt({title: '请输入情绪报告名称', formType:0}, function(phreportname, index){
-        //开始收集生成的数据
-        var phreportdataList;
-        var dataList=[];
-        $("#recordreals input[type='checkbox']:checked").each(function(index, element){
-            var html=$(this).closest("div");
-            var username_time=$(html).find("#username_time").html();
-            var translatext=$(html).find("#translatext").html();
-            var ph_stress=$(html).find(".layui-badge").html();
-            var usertype=$(html).attr("usertype");
-            var dqphdate=$(html).attr("dqphdate");
-            if (isNotEmpty(username_time)&&isNotEmpty(translatext)) {
-                var content=null;
-                if (usertype==1){
-                    content = "<div style='text-align: left'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999;'>"+username_time+"  </p><span style='color: #fff; background: #0181cc;'>"+translatext+"</span></div>";
-                }else  if (usertype==2) {
-                    content = "<div style='text-align: right'><p style='color: #000000;font-size: 14px'>"+dqphdate+"</p><p style='color: #999'>"+ph_stress+"  "+username_time+" </p> <span  style='color: #fff; background: #ef8201;'>"+translatext+"</span></div>";
-                }
-                if (isNotEmpty(content)){
-                    dataList.push(content);
-                }
-            }
-        });
-
-        if (!isNotEmpty(dataList)) {
-            layer.msg("请先勾选需要生成的情绪数据");
-            return;
-        }
-
-        var url=getActionURL(getactionid_manage().getRecordById_uploadPhreport);
-        //需要收拾数据
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                phreportname:phreportname,
-                phreportdataList:dataList
-            }
-        };
-        ajaxSubmitByJson(url, data, callbackuploadPhreport);
-        layer.close(index);
-    });
-
-}
-function callbackuploadPhreport(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            var  downurl=data.downurl;
-            if (isNotEmpty(downurl)){
-                var $a = $("<a></a>").attr("href", downurl).attr("download", "down");
-                $a[0].click();
-                layer.msg('情绪报告生成成功,等待下载中...',{icon:6});
-                getPhreportsByParam();
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}
-//*******************************************************************情绪报告的生成end****************************************************************//
-
-
-

@@ -9,9 +9,8 @@ var casebool=null;//案件状态
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 
-var MCCache=null;//会议缓存数据
-var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
-var fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
+
+
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
@@ -688,13 +687,14 @@ $(function () {
                                 if (gnlist.indexOf(NX_O)!= -1){
                                     color="#ffffff";
                                     fontcolor="#000000";
-                                    p_span_HTML='<a>'+gradename+'：</a><span ondblclick="copy_text(this)">'+translatext+' </span>';
-                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                    p_span_HTML='<a>'+gradename+'：</a><span  id="translatext">'+translatext+' </span>';
+                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+' id="asrdiv" ondblclick="copy_text(this,event)">'+p_span_HTML+'</div >';
                                 }else {
                                     p_span_HTML='<p>【'+gradename+'】 '+asrstartime+' </p>\
-                                            <span  style="background-color: '+color+';color: '+fontcolor+';"  ondblclick="copy_text(this)">'+translatext+'</span>';
-                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                            <span  id="translatext">'+translatext+'</span>';
+                                    recordrealshtml='<div class="atalk" style="background-color: '+color+';color: '+fontcolor+';" userssid='+userssid+' starttime='+starttime+' id="asrdiv" ondblclick="copy_text(this,event)">'+p_span_HTML+'</div >';
                                 }
+
 
                                 var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                                 if (laststarttime==starttime&&isNotEmpty(laststarttime)){
@@ -702,6 +702,7 @@ $(function () {
                                 }else {
                                     $("#recordreals").append(recordrealshtml);
                                 }
+
 
 
                             $("#asritem").off("mouseout").bind("mouseout",function(event) {

@@ -131,14 +131,14 @@ function callbackexporttemplate_ue(data) {
 }
 
 //左侧语音文本点击追加到右侧
-function copy_text(obj) {
+function copy_text(obj,e) {
     var lastp = TOWORD.util.getpByRange(ue);//获取光标所在p
     if (!isNotEmpty(lastp)) {
         layer.msg("请先在笔录界面加入光标")
         return;
     }
-    var starttime=$(obj).closest("div").attr("starttime");
-    var txt=$(obj).text();
+    var starttime=$(obj).attr("starttime");
+    var txt=$("#translatext",obj).text();
     var oldstarttime=$(lastp).attr("starttime");//获取光标所在位置
     //样式
     var  pstyle=$("span",lastp).attr("style");
@@ -291,13 +291,35 @@ function callbackgetRecordrealByRecordssid(data) {
                     problemhtml+=problemtext;
                 }
                 TOWORD.page.importhtml(problemhtml);
-                laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
-                console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+                if (recordingbool==1){
+                    laststarttime_ue=$("p[starttime]:not(:empty)",editorhtml).last().attr("starttime");//获取最后一个laststarttime_ue
+                    console.log("退出再进来找到的最后时间点?__-__"+laststarttime_ue)
+                }else if (recordingbool==2){
+                    ue.setDisabled();
+
+                    $("p span[starttime]:not(:empty)",editorhtml).dblclick(function () {
+                        var contenteditable=$("body",editorhtml).attr("contenteditable");
+                        if (isNotEmpty(contenteditable)&&contenteditable=="false") {
+                            //开始定位视频位置
+                            var times=$(this).attr("starttime");
+                            if (times!="-1"&&isNotEmpty(times)){
+                                //时间差需要处理
+                                var usertype=$(this).closest("p").attr("usertype");
+                                if (isNotEmpty(usertype)){
+                                    times=parseInt(times)+subtractime[""+usertype+""];
+                                    showrecord(times,null);
+                                }
+                            }
+                        }
+                    })
+                }
             }
         }
     }else{
         layer.msg(data.message,{icon: 5});
     }
+
+
 }
 
 $(function () {

@@ -978,7 +978,7 @@ function callbackgetgetBaseData(data) {
             if (isNotEmpty(namingruleList)){
                 for (var i = 0; i < namingruleList.length; i++) {
                     var l = namingruleList[i];
-                    if (isNotEmpty(l.namingruletype)&&l.namingruletype) {
+                    if (isNotEmpty(l.namingruletype)&&l.namingruletype==2) {
                         dq_rule = l.rule;
                     }
                 }

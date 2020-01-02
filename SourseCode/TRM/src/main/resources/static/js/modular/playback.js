@@ -177,13 +177,13 @@ $(function () {
             //左侧
             var recordrealsdivlen=$("#recordreals").children('div').length;;//识别长度
             $("#recordreals").children('div').each(function (i,e) {
-                var t=$(this).attr("times");
+                var t=$(this).attr("starttime");
                 var start=parseFloat(t);
                 var end=0;
                 if (i>=recordrealsdivlen-1) {
                     end= t;//下一个区间
                 }else {
-                    var end_=$("#recordreals").children("div:eq("+(i+1)+")").attr("times");
+                    var end_=$("#recordreals").children("div:eq("+(i+1)+")").attr("starttime");
                     end=parseFloat(end_);//下一个区间
                 }
                 if (locationtime>=parseFloat(start)&&(parseFloat(start)==parseFloat(end)||locationtime<=parseFloat(end))) {

@@ -13,9 +13,6 @@ var casebool=null;//案件状态
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 var  mouseoverbool_right=-1;//同上
 
-var MCCache=null;//会议缓存数据
-var TDCache=null;//会议通道缓存：不可借用会议缓存json转换识别（转换失败原因：疑似存在线程对象）
-var  fdrecordstarttime=0;//直播开始时间戳（用于计算回车笔录时间锚点）
 
 var getRecordById_data=null;//单份笔录返回的全部数据
 
@@ -1210,17 +1207,20 @@ $(function () {
                             var recordrealshtml="";
                             var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
+
                             var p_span_HTML="";
                             //实时会议数据
                             if (usertype==1){
-                                p_span_HTML='<p>【'+username+'】 '+asrstartime+' </p>\
-                                            <span onmousedown="copy_text(this,event)"  >'+translatext+'</span>';
-                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                p_span_HTML='  <a style="display: none;color: #ccc" id="dqphdate"></a>\
+                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none;" title="未找到最高值">-1</a></p>\
+                                            <span id="translatext" >'+translatext+'</span>';
+                                recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' usertype='+usertype+' dqphdate="" id="asrdiv" onmousedown="copy_text(this,event)">'+p_span_HTML+'</div >';
 
                             }else if (usertype==2){
-                                p_span_HTML= '<p>'+asrstartime+' 【'+username+'】 </p>\
-                                             <span onmousedown="copy_text(this,event)" >'+translatext+'</span> ';
-                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>'+p_span_HTML+'</div >';
+                                p_span_HTML= '<a style="display: none;color: #ccc" id="dqphdate"></a>\
+                                            <p><a class="layui-badge " style="visibility:hidden; background-color: #00CD68  " title="未找到最高值">-1</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
+                                             <span id="translatext"  >'+translatext+'</span> ';
+                                recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' usertype='+usertype+' dqphdate="" id="asrdiv" onmousedown="copy_text(this,event)">'+p_span_HTML+'</div >';
                             }
                             var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
                             if (laststarttime==starttime&&isNotEmpty(laststarttime)){

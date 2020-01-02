@@ -5,7 +5,6 @@ var videourl=null;//视频地址
 
 var recordnameshow="";
 
-var  subtractime={}//时间差，法院可能多用户 格式：subtractime['usertype']
 
 var iid=null;//打包iid
 
@@ -16,8 +15,10 @@ var dq_play=null;//当前视频数据
 var recordPlayParams=[];//全部视频数据集合
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
+var  mouseoverbool_right=-1;//同上
 
-
+var phSubtracSeconds=0;//身心回放排行榜
+var phdatabackList=null;//身心回放数据
 
 
 //获取案件信息
@@ -158,7 +159,7 @@ function callbackgetRecordById(data) {
             //左侧asr识别数据
             var getMCVO=data.getMCVO;
             if (isNotEmpty(getMCVO)&&isNotEmpty(getMCVO.list)){
-                set_getRecord(getMCVO);
+                set_getRecord(getMCVO.list,2);
                 $("#asr").show();
             }else  {
                 $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
@@ -192,10 +193,8 @@ function callbackgetRecordById(data) {
     }
 }
 
-
-
 //数据渲染
-function set_getRecord(data){
+/*function set_getRecord(data){
     if (isNotEmpty(data.list)){
         $("#recordreals").empty();
         if (gnlist.indexOf(NX_O)!= -1){
@@ -212,7 +211,7 @@ function set_getRecord(data){
                     if (data.userssid==userssid){
                         var username=user.username==null?"未知":user.username;//用户名称
                         var usertype=user.grade;//1、询问人2被询问人
-                       /* var txt=data.txt==null?"...":data.txt;//翻译文本*/
+                       /!* var txt=data.txt==null?"...":data.txt;//翻译文本*!/
                         var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
                         var asrtime=data.asrtime;//时间
                         var starttime=data.starttime;
@@ -266,20 +265,18 @@ function set_getRecord(data){
     //存在问答需要获取时间差
     var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getCourtDetail_getRecordrealByRecordssid);
     getRecordrealByRecordssid(getRecordrealByRecordssidUrl);//右侧数据
-}
+}*/
 
 $(function () {
     $("#baocun").click(function () {
       addRecord();
     });
 
-
     //定位差值
     $("#positiontime").click(function () {
         var url=getActionURL(getactionid_manage().getCourtDetail_updateRecord);
         open_positiontime(url);
     });
-
 
     //导出
     $("#dc_li dd").click(function () {
@@ -298,30 +295,15 @@ $(function () {
 
 });
 
-
-
-
-
-
-
-//*******************************************************************笔录问答编辑start****************************************************************//
 function open_recordqw() {
-    //切换界面
-    $("#recorddetail #record_qw").css({"width":"100%"});
-    $("#recorddetail #record_util,#btnadd").css({"display":"block"});
-    $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","true");
-    $("#wqutil").show();
+    $("#wqutil").show();//显示保存按钮
     ue.setEnabled();
-    $("#recorddetail label[name='q'],label[name='w']").keydown(function () {
-        qw_keydown(this,event);
-    })
 }
 
 
 
-
 //保存按钮
-//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
+//recordbool 1进行中 2已结束  0初始化
 var overRecord_index=null;
 function addRecord() {
     var setRecordrealUrl=getActionURL(getactionid_manage().getCourtDetail_setRecordreal);
@@ -366,7 +348,7 @@ function calladdRecord(data) {
     }
 }
 
-//*******************************************************************导出word or pdf start****************************************************************//
+//导出左侧语音识别
 function export_asr() {
     if (isNotEmpty(recordssid)) {
         var url=getActionURL(getactionid_manage().getCourtDetail_export_asr);
@@ -401,9 +383,8 @@ function callbackexport_asr(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-//*******************************************************************导出word or pdf end****************************************************************//
 
-//*******************************************************************打点标记目录start****************************************************************//
+//打点标记目录
 var TAGTEXT_INDEX=null;
 function open_tagtext() {
     var TAGTEXT_HTML='<div class="layui-row layui-form " > \
@@ -497,5 +478,4 @@ function selecttagtext() {
     $("#tagtext_html").html(HTML==""?morenHTML:HTML);
 
 }
-//*******************************************************************打点标记目录end****************************************************************//
 
