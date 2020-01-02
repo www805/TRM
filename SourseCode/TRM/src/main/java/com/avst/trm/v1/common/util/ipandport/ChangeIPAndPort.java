@@ -190,6 +190,32 @@ public class ChangeIPAndPort {
         }
         fileBasepath = fileBasepath.endsWith("/") ? fileBasepath : (fileBasepath + "/");
 
+        int zkserverport=updatePortParam.getZkserverport();
+        //zk.priperties
+        if(zkserverport>0){
+            String zkconfpath = fileBasepath + "WORKJAR/zk.properties";
+            List<String> zklist = ReadWriteFile.readTxtFileToList(zkconfpath, "utf8");
+            boolean zkbool = false;
+            if (null != zklist && zklist.size() > 0) {
+                String newfiletxt = "";
+                boolean updatebool=true;//如果是false就不修改文件
+                for (String str : zklist) {
+                    if (str.indexOf("server.port") > -1) {
+                        str="server.port="+zkserverport;
+                    }
+                    newfiletxt += str + "\n";
+                }
+                if(updatebool){
+                    zkbool = ReadWriteFile.writeTxtFile(newfiletxt, zkconfpath);
+                    LogUtil.intoLog(1, ChangeIPAndPort.class, zkbool + ":zkbool,修改trm配置文件是否成功");
+                }
+            }else{
+                LogUtil.intoLog(4,ChangeIPAndPort.class,"zk.properties没有读到数据");
+            }
+        }else{
+            LogUtil.intoLog(3,ChangeIPAndPort.class,zkserverport+":zkserverport ,端口必须是大于0的才会进行修改");
+        }
+
         int ecserverport=updatePortParam.getEcserverport();
         //ec.priperties
         if(ecserverport>0){
@@ -201,6 +227,20 @@ public class ChangeIPAndPort {
                 String newfiletxt = "";
                 boolean updatebool=true;//如果是false就不修改文件
                 for (String str : eclist) {
+
+                    if(zkserverport>0 && str.indexOf("eureka.client.serviceUrl.defaultZone") > -1){
+                        int indexOf = str.indexOf("=");
+                        String strUrl = str.substring(indexOf + 1);
+
+                        int startNum = strUrl.indexOf(":", 10);
+                        int endNum = strUrl.indexOf("/", startNum);
+                        String portStr = strUrl.substring(startNum + 1, endNum);
+
+                        strUrl = strUrl.replace(portStr, zkserverport + "");
+
+                        str="eureka.client.serviceUrl.defaultZone="+strUrl;
+                    }
+
                     if (str.indexOf("server.port") > -1) {
                         str="server.port="+ecserverport;
                     }
@@ -242,6 +282,20 @@ public class ChangeIPAndPort {
                 boolean updatebool=true;//如果是false就不修改文件
                 boolean breakbool=true;//如果是false就跳出不修改文件
                 for (String str : trmlist) {
+
+                    if(zkserverport>0 && str.indexOf("eureka.client.serviceUrl.defaultZone") > -1){
+                        int indexOf = str.indexOf("=");
+                        String strUrl = str.substring(indexOf + 1);
+
+                        int startNum = strUrl.indexOf(":", 10);
+                        int endNum = strUrl.indexOf("/", startNum);
+                        String portStr = strUrl.substring(startNum + 1, endNum);
+
+                        strUrl = strUrl.replace(portStr, zkserverport + "");
+
+                        str="eureka.client.serviceUrl.defaultZone="+strUrl;
+                    }
+
                     if (str.indexOf("server.port") > -1 && breakbool == true) {
                         str = "server.port=" + trmserverport;
                         breakbool = false;
@@ -259,31 +313,7 @@ public class ChangeIPAndPort {
             LogUtil.intoLog(3,ChangeIPAndPort.class,trmserverport+":trmserverport ,端口必须是大于0的才会进行修改");
         }
 
-        int zkserverport=updatePortParam.getZkserverport();
-        //zk.priperties
-        if(zkserverport>0){
-            String zkconfpath = fileBasepath + "WORKJAR/zk.properties";
-            List<String> zklist = ReadWriteFile.readTxtFileToList(zkconfpath, "utf8");
-            boolean zkbool = false;
-            if (null != zklist && zklist.size() > 0) {
-                String newfiletxt = "";
-                boolean updatebool=true;//如果是false就不修改文件
-                for (String str : zklist) {
-                    if (str.indexOf("server.port") > -1) {
-                        str="server.port="+zkserverport;
-                    }
-                    newfiletxt += str + "\n";
-                }
-                if(updatebool){
-                    zkbool = ReadWriteFile.writeTxtFile(newfiletxt, zkconfpath);
-                    LogUtil.intoLog(1, ChangeIPAndPort.class, zkbool + ":zkbool,修改trm配置文件是否成功");
-                }
-            }else{
-                LogUtil.intoLog(4,ChangeIPAndPort.class,"zk.properties没有读到数据");
-            }
-        }else{
-            LogUtil.intoLog(3,ChangeIPAndPort.class,zkserverport+":zkserverport ,端口必须是大于0的才会进行修改");
-        }
+
 
         int mcserverport=updatePortParam.getMcserverport();
         //mc.priperties
@@ -295,6 +325,20 @@ public class ChangeIPAndPort {
                 String newfiletxt = "";
                 boolean updatebool=true;//如果是false就不修改文件
                 for (String str : mclist) {
+
+                    if(zkserverport>0 && str.indexOf("eureka.client.serviceUrl.defaultZone") > -1){
+                        int indexOf = str.indexOf("=");
+                        String strUrl = str.substring(indexOf + 1);
+
+                        int startNum = strUrl.indexOf(":", 10);
+                        int endNum = strUrl.indexOf("/", startNum);
+                        String portStr = strUrl.substring(startNum + 1, endNum);
+
+                        strUrl = strUrl.replace(portStr, zkserverport + "");
+
+                        str="eureka.client.serviceUrl.defaultZone="+strUrl;
+                    }
+
                     if (str.indexOf("server.port") > -1) {
                         str="server.port="+mcserverport;
                     }
