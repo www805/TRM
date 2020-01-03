@@ -231,7 +231,7 @@ public class PhreportService extends BaseService {
         byte b[] = content.getBytes();
         try {
             InputStream is = new ByteArrayInputStream(b);
-            OutputStream os = new FileOutputStream("f:\\1.doc");
+            OutputStream os = new FileOutputStream("f:"+File.separator+"1.doc");
             POIFSFileSystem fs = new POIFSFileSystem();
             fs.createDocument(is, "WordDocument");
             fs.writeFilesystem(os);

@@ -142,7 +142,7 @@ public class HtmlToWord {
         byte b[] = content.getBytes();
         try {
             InputStream is = new ByteArrayInputStream(b);
-            OutputStream os = new FileOutputStream("f:\\1.docx");
+            OutputStream os = new FileOutputStream("f:"+File.separator+"1.docx");
             POIFSFileSystem fs = new POIFSFileSystem();
             fs.createDocument(is, "WordDocument");
             fs.writeFilesystem(os);

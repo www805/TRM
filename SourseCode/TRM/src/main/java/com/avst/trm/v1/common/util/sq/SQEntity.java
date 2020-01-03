@@ -22,7 +22,7 @@ public class SQEntity {
      * 不使用网卡，使用CPU序列号
      */
 //    private String cpuCode=NetTool.getLocalMac();
-    private String cpuCode=NetTool.getSQCode_win();
+    private String cpuCode=NetTool.getSQCode();
 
     /**
      * 授权总天数

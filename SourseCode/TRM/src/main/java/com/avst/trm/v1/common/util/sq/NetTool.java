@@ -17,20 +17,29 @@ public static void main( String[] args){
  
 	try {
 
-//		LogUtil.intoLog(NetTool.class,getLocalMac());
-//		LogUtil.intoLog(NetTool.class,getCPUCode());
-
-		System.out.println(getSQCode_win());
-
+		getSQCode();
 
 	} catch (Exception e) {
 		
 		e.printStackTrace();
 	}
-
-  
 }
 
+	public static String getSQCode(){
+		String os = getOsName();
+		System.out.println(os+":os");
+		String mac=null;
+		if (os.startsWith("Win")) {
+			mac= getSQCode_win();
+		} else if (os.startsWith("Linux")) {
+			mac= getSQCode_linux();
+		}else{
+			System.out.println("getSQ is error ，os："+os);
+			return null;
+		}
+		System.out.println(mac+":os trmcode");
+		return mac;
+	}
 
 	/**
 	 * 获取本地设备的授权码
@@ -50,6 +59,79 @@ public static void main( String[] args){
 		}
 		return AnalysisSQ.encode_uid(sqcode);
 	}
+
+	/**
+	 * 获取本地设备的授权码
+	 * 现阶段用CPU序列号+第一块磁盘序列号
+	 * @return
+	 */
+	public static String getSQCode_linux(){
+		String cpuCode=getCPUID_linux();
+
+		String ypCode=getIdentifierByLinux();
+		String sqcode="";
+		if(null!=cpuCode&&!cpuCode.trim().equals("")){
+			sqcode=cpuCode.trim();
+		}
+		if(null!=ypCode&&!ypCode.trim().equals("")){
+			sqcode+=ypCode.trim();
+		}
+		return AnalysisSQ.encode_uid(sqcode);
+	}
+
+	/**
+	 * 获取Linux第一块磁盘的序列号
+	 * @return
+	 */
+	private static String getIdentifierByLinux(){
+		String[] cmd = {"fdisk", "-l"};
+		String result=null;
+		BufferedReader bufferedReader = null;
+		Process p = null;
+		InputStream in2=null;
+		InputStream in=null;
+		OutputStream os = null;
+		try {
+			p = Runtime.getRuntime().exec(cmd);// 管道
+			os=p.getOutputStream();
+			in=p.getInputStream();
+			in2=p.getErrorStream();
+			bufferedReader = new BufferedReader(new InputStreamReader(in));
+			printMessage(in2);
+			String line = null;
+			while ((line = bufferedReader.readLine()) != null) {
+				if(line.indexOf("identifier:") > -1){
+
+					String str2 = line.split("identifier:")[1].trim();
+					System.out.println("Identifier is: "+str2);
+					result=str2;
+					break;
+				}
+			}
+
+			if(null!=result&&result.length() > 0){
+				result=result.replaceAll("-", "");
+			}
+
+			int exitvalue=p.waitFor();
+			if(exitvalue!=0){
+				throw new Exception("exitvalue is not 0, 说明代码有错");
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+
+			close(os, in, in2, bufferedReader, p);
+		}
+		return result.trim();
+
+
+	}
+
+
+
+
   
 //取得LOCALHOST的IP地址  
 public static String getMyIP() {
@@ -136,6 +218,23 @@ public static String getOsName() {
     return os;
 }
 
+	/**
+	 * 1是win
+	 * 2是Linux
+	 * 3其他
+	 * @return
+	 */
+	public static int osType() {
+		String address = "";
+		String os = getOsName();
+		if (os.startsWith("Win")) {
+			return 1;
+		} else if (os.startsWith("Linux")) {
+			return 2;
+		}
+		return 2;
+	}
+
 /**
  * Returns the MAC address of the computer.
  * 
@@ -204,28 +303,29 @@ public static String getLocalMac() {
 		return cpuCode;
 	}
 
-
 	/**
-	 * Linux系统获取CPU序列号，没有验证过
+	 * Linux系统获取CPU序列号
 	 * @return
-	 * @throws InterruptedException
 	 */
 	private static String getCPUID_linux()  {
 		String result = "";
 		String CPU_ID_CMD = "dmidecode";
 		BufferedReader bufferedReader = null;
+		OutputStream os = null;
 		Process p = null;
 		InputStream in2=null;
 		InputStream in=null;
-		InputStreamReader isr=null;
 		try {
 			p = Runtime.getRuntime().exec(new String[]{ "sh", "-c", CPU_ID_CMD });// 管道
+			os=p.getOutputStream();
 			in=p.getInputStream();
 			in2=p.getErrorStream();
-			isr=new InputStreamReader(in);
-			bufferedReader = new BufferedReader(isr);
+			bufferedReader = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			int index = -1;
+
+			printMessage(in2);
+
 			while ((line = bufferedReader.readLine()) != null) {
 				// 寻找标示字符串[hwaddr]
 				index = line.toLowerCase().indexOf("uuid");
@@ -236,7 +336,9 @@ public static String getLocalMac() {
 				}
 			}
 
-			printMessage(in2);
+			if(null!=result&&result.length() > 0){
+				result=result.replaceAll("-", "");
+			}
 
 			int exitvalue=p.waitFor();
 			if(exitvalue!=0){
@@ -244,41 +346,12 @@ public static String getLocalMac() {
 			}
 
 		} catch (Exception e) {
+			System.out.println("getCPUID_linux error");
 			e.printStackTrace();
 		}finally {
-
-			try {
-				if(null!=bufferedReader){
-					bufferedReader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
-				if(null!=isr){
-					isr.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=p){
-					p.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			close(os, in, in2, bufferedReader, p);
 		}
+		System.out.println(result+":CPUID_linux");
 		return result.trim();
 	}
 
@@ -319,39 +392,7 @@ public static String getLocalMac() {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-
-			try {
-				if(null!=br){
-					br.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=process){
-					process.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=os){
-					os.flush();
-					os.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			close(os, in, in2, br, process);
 		}
 
 		return null;
@@ -377,7 +418,7 @@ public static String getLocalMac() {
 			isr=new InputStreamReader(in,"gbk");
 			in2=p.getErrorStream();
 			bufferedReader = new BufferedReader(isr);
-
+			printMessage(in2);
 			while ((line = bufferedReader.readLine()) != null) {
 				if (line.indexOf("卷的序列号是 ") != -1) {  //读取参数并获取硬盘序列号
 
@@ -385,8 +426,6 @@ public static String getLocalMac() {
 					break;
 				}
 			}
-
-			printMessage(in2);
 
 			int exitvalue=p.waitFor();
 			p.destroy();
@@ -398,36 +437,13 @@ public static String getLocalMac() {
 			e.printStackTrace();
 		}finally {
 			try {
-				if(null!=bufferedReader){
-					bufferedReader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
 				if(null!=isr){
 					isr.close();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=p){
-					p.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			close(os, in, in2, bufferedReader, p);
 		}
 
 		return HdSerial;
@@ -478,37 +494,12 @@ public static String getLocalMac() {
 			e.printStackTrace();
 		}finally {
 			try {
-				if(null!=bufferedReader){
-					bufferedReader.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			try {
 				if(null!=isr){
 					isr.close();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=p){
-					p.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
 			try {
 				if(null!=fw){
 					fw.close();
@@ -516,6 +507,7 @@ public static String getLocalMac() {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			close(os, in, in2, bufferedReader, p);
 		}
 		return result.trim();
 	}
@@ -584,33 +576,46 @@ public static String getLocalMac() {
 			e.printStackTrace();
 		}finally {
 
-			try {
-				if(null!=os){
-					os.flush();
-					os.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=process){
-					process.destroy();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			try {
-				if(null!=in){
-					in.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			close(os, in, in2, null, process);
 		}
-
 		return null;
 
+	}
+
+
+	private static void close(OutputStream os,InputStream in,InputStream in2,BufferedReader br,Process process){
+
+		try {
+			if(null!=br){
+				br.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if(null!=os){
+				os.flush();
+				os.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if(null!=process){
+				process.destroy();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if(null!=in){
+				in.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }  

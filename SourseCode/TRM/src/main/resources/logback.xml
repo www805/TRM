@@ -3,15 +3,15 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
     <contextName>trm-log</contextName>
 <!--日志查询时@time后面跟时间@type是日志级别@class是日志产生于那个类@line日志输出的位置@msg代表日志输出的的信息@user日志由谁产生的-->
-    <property name="log.path" value="D:\\log\\trm\\" /><!--日志保存地址，这里只能写在这里，一旦生产不能零时修改位置-->
+    <property name="log.trmpath" value="${log.path}trm/" /><!--日志保存地址，这里只能写在这里，一旦生产不能零时修改位置-->
     <!--  info 地址 -->
-    <property name="log.file" value="${log.path}trm-info.log" />
+    <property name="log.file" value="${log.trmpath}trm-info.log" />
 
     <!--WARN-->
-    <property name="log.file.warn" value="${log.path}trm-warn.log" />
+    <property name="log.file.warn" value="${log.trmpath}trm-warn.log" />
 
     <!-- errr,错误路径 -->
-    <property name="log.file.error" value="${log.path}trm-error.log" />
+    <property name="log.file.error" value="${log.trmpath}trm-error.log" />
 
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
@@ -21,7 +21,7 @@
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
-            <fileNamePattern>${log.path}trm-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.trmpath}trm-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -48,7 +48,7 @@
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
-            <fileNamePattern>${log.path}ec-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.trmpath}trm-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -74,7 +74,7 @@
         <!-- 循环政策：基于时间创建日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日志命名:单个文件大于10MB 按照时间+自增i 生成log文件 -->
-            <fileNamePattern>${log.path}trm-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>${log.trmpath}trm-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>

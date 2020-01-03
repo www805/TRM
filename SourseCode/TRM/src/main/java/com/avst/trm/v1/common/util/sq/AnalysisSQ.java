@@ -62,12 +62,12 @@ public class AnalysisSQ {
     /**
      *  初始化授权文件的路径
      */
-    private static String keypath=OpenUtil.getXMSoursePath()+"\\"+inifilename;
+    private static String keypath=OpenUtil.getXMSoursePath()+"/"+inifilename;
 
     /**
      * 隐藏记录授权运行的文件
      */
-    private static String inipath= OpenUtil.getXMSoursePath()+"\\"+ inifilename_yingcang;
+    private static String inipath= OpenUtil.getXMSoursePath()+"/"+ inifilename_yingcang;
 
     /**
      * 生成客户端授权的隐秘文件
@@ -194,7 +194,7 @@ public class AnalysisSQ {
             String foreverBool=sqcodearr[1];
             String cpuCode=sqcodearr[3];
 //            String localcpuCode=NetTool.getLocalMac();
-            String localcpuCode=NetTool.getSQCode_win();//使用CPU序列号
+            String localcpuCode=NetTool.getSQCode();//使用序列号
             if(!localcpuCode.equals(cpuCode)){
 //                LogUtil.intoLog(AnalysisSQ.class,localcpuCode+":localcpuCode------cpuCode:"+cpuCode);
                 LogUtil.intoLog(4,AnalysisSQ.class,"授权机器码不一致");
