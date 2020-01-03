@@ -78,7 +78,7 @@ function updateIp() {
 
     layer.msg("5秒后会自动跳转，请不要动", {
         icon: 16,
-        time:10000,
+        time:5000,
         shade: [0.1,"#fff"],
     });
 }
@@ -320,7 +320,7 @@ function callgetServerIpList(data){
 
 function callgetServerIpALL(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.closeAll();
+
         // console.log(data);IPIndexLoad
 
         serverIpData = data.data;
@@ -334,6 +334,7 @@ function callgetServerIpALL(data){
             $("#ttsetinfoip").val(isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].etip : "");
         }
 
+        layer.closeAll();
     }else{
         layer.msg(data.message, {icon:5});
     }
@@ -362,7 +363,7 @@ function callgetServerPortALL(data){
 
 function callUpdateServerIp(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
-        layer.msg("操作成功",{icon: 6});
+        layer.msg("操作成功，请马上手动修改Ip，否则ec和mc无法访问",{icon: 6,time:3000});
         // setTimeout("parent.location.href = tiaozhuan;//跳转到登录页面",1500);
     }else{
         layer.msg(data.message, {icon:5});
