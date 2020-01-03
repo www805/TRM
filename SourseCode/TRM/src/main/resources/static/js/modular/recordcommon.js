@@ -607,6 +607,8 @@ function callbackstr2Tts(data) {
 //制作中：结束笔录按钮
 var overRecord_index=null;
 var overRecord_loadindex =null;
+var recordbool=null;
+var casebool=null;
 function overRecord(state) {
     var msgtxt2="是否结束？";
     if (state==1){
@@ -636,14 +638,7 @@ function overRecord(state) {
         if (state==1){
             casebool=3;//需要暂停：案件休庭
         }
-
-        addRecord();//调用保存
-        overRecord_loadindex = layer.msg("保存中，请稍等...", {
-            typy:1,
-            icon: 16,
-            shade: [0.1, 'transparent'],
-            time:10000
-        });
+        overbtn();//结束按钮调用
     }, function(index){
         layer.close(index);
     });
@@ -775,70 +770,6 @@ function callbackgetgetRecordrealing(data) {
             }
 
             set_getRecord(list,1);
-
-           /* for (var i = 0; i < list.length; i++) {
-                var data=list[i];
-                if (isNotEmpty(recorduser)){
-                    for (var j = 0; j < recorduser.length; j++) {
-                        var user = recorduser[j];
-                        var userssid=user.userssid;
-                        if (data.userssid==userssid){
-                            var username=user.username==null?"未知":user.username;//用户名称
-                            var usertype=user.grade;//1、询问人2被询问人
-                            var txt=data.txt==null?"":data.txt;//翻译文本*!/
-                            var starttime=data.starttime;
-                            var asrstartime=data.asrstartime;
-                            var gradename=user.gradename==null?"未知":user.gradename;//角色名称：暂用于法院
-                            var gradeintroduce=user.gradeintroduce==null?"未知":user.gradeintroduce;//角色简称：暂用于法院
-                            //var translatext=data.keyword_txt==null?"":data.keyword_txt;//关键字：暂未用到
-                            var translatext=data.tagtext==null?data.txt:data.tagtext;//需要保留打点标记的文本
-
-                            var recordrealshtml="";
-
-                            if (gnlist.indexOf(FY_T)<0){
-                                //非法院：问答对话模式
-                                if (usertype==1){
-                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                                }else if (usertype==2){
-                                    recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                                }
-                            }else {
-                                var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
-                                var fontcolor="#ffffff";
-                                if (gnlist.indexOf(NX_O)!= -1){
-                                    color="#ffffff";
-                                    fontcolor="#000000";
-                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)"> '+translatext+' </span>\
-                                                      </div >';
-
-                                }else if (gnlist.indexOf(FY_T)!= -1){
-                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
-                                                            <span  style="background-color: '+color+';color: '+fontcolor+';"   ondblclick="copy_text(this)">'+translatext+'</span> \
-                                                      </div >';
-                                }
-                            }
-
-                            //开始追加
-                            var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                            if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                                $("#recordreals div[userssid="+userssid+"][starttime="+starttime+"]").remove();
-                            }
-
-                            $("#recordreals").append(recordrealshtml);
-                            var div = document.getElementById('recordreals_scrollhtml');
-                            div.scrollTop = div.scrollHeight;
-                        }
-                    }
-                }
-            }*/
         }else {
             console.log("asr实时数据is null");
         }
@@ -883,7 +814,6 @@ function set_getRecord(list,set_getRecordtype){
 
                             starttime=parseFloat(starttime)+parseFloat(subtractime_);
 
-
                             if (gnlist.indexOf(FY_T)<0){
                                 //非法院：问答对话模式
                                 if (usertype==1){
@@ -900,36 +830,7 @@ function set_getRecord(list,set_getRecordtype){
                                                             <span id="translatext" >'+translatext+'</span> \
                                                       </div >';
                                 }
-                                /*if (usertype==1){
-                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+username+'】 '+asrstartime+' </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                                }else if (usertype==2){
-                                    recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>'+asrstartime+' 【'+username+'】 </p>\
-                                                            <span onmousedown="copy_text(this,event)" >'+translatext+'</span> \
-                                                      </div >';
-                                }*/
                             }else {
-
-                               /* var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
-                                var fontcolor="#ffffff";
-                                if (gnlist.indexOf(NX_O)!= -1){
-                                    color="#ffffff";
-                                    fontcolor="#000000";
-                                    recordrealshtml='<div style="margin:10px 0px;background-color: '+color+';color: '+fontcolor+';font-size:13.0pt;" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <a>'+gradename+'：</a><span  ondblclick="copy_text(this)" > '+translatext+' </span>\
-                                                      </div >';
-
-                                }else if (gnlist.indexOf(FY_T)!= -1){
-                                    recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+'>\
-                                                            <p>【'+gradename+'】 '+asrstartime+' </p>\
-                                                            <span  style="background-color: '+color+';color: '+fontcolor+';"   ondblclick="copy_text(this)">'+translatext+'</span> \
-                                                      </div >';
-                                }*/
-
-                                //////////
                                 var color=asrcolor[usertype]==null?"#0181cc":asrcolor[usertype];
                                 var fontcolor="#ffffff";
                                 if (gnlist.indexOf(NX_O)!= -1){
@@ -955,7 +856,6 @@ function set_getRecord(list,set_getRecordtype){
                             $("#recordreals").append(recordrealshtml);
                             var div = document.getElementById('recordreals');
                             div.scrollTop = div.scrollHeight;
-
                         }
                     }
                 }
@@ -1015,4 +915,83 @@ function btn() {
     }
 }
 
+
+//回放和制作中：recordbool 1进行中 2已结束 url请求地址 backurl请求返回跳转地址
+var addRecord_backurl=null;//保存之后跳转的地址
+function addRecord(url,backurl) {
+    addRecord_backurl=backurl;
+    if (isNotEmpty(overRecord_index)) {
+        layer.close(overRecord_index);
+    }
+    overRecord_loadindex = layer.msg("保存中，请稍等...", {typy:1, icon: 16,shade: [0.1, 'transparent'], time:10000 });
+    if (isNotEmpty(recordssid)){
+        //需要收拾数据
+        var recordToProblems=[];//题目集合
+        var justqwbool=false;
+         if (recordingbool==2){
+            justqwbool=true;//回放时候只需要对笔录问答进行操作
+        }
+        var data={
+            token:INIT_CLIENTKEY,
+            param:{
+                recordssid: recordssid,
+                recordbool:recordbool,
+                casebool:casebool,
+                recordToProblems:recordToProblems,
+                mtssid:mtssid, //会议ssid用于笔录结束时关闭会议
+                justqwbool:justqwbool,
+            }
+        };
+        $("#overRecord_btn").attr("click","");//结束按钮禁点
+        ajaxSubmitByJson(url, data, calladdRecord);
+    }else{
+        console.log("recordssid is null")
+        layer.msg("该笔录未找到");
+    }
+}
+function calladdRecord(data) {
+    if(null!=data&&data.actioncode=='SUCCESS'){
+        var data=data.data;
+        if (isNotEmpty(data)){
+            if (isNotEmpty(overRecord_loadindex)) {
+                layer.close(overRecord_loadindex);
+            }
+
+            if (isNotEmpty(recordbool)&&recordbool==2) {
+                //制作中
+                if (recordingbool==1) {
+                    layer.msg("已结束",{time:500,icon:6},function () {
+                        if (isNotEmpty(addRecord_backurl)){
+                            window.location.href=addRecord_backurl;
+                        } else {
+                            console.log("未找到结束笔录后跳转的地址")
+                        }
+                    })
+                }
+            }else {
+                layer.msg('保存成功',{icon:6});
+                if (recordingbool==2) {
+                    //回放：
+                    if (gnlist.indexOf(FY_T)>0){
+                        $("#recorddetail #record_qw").css({"width":"80%"});
+                        $("#wqutil").hide();
+                        ue.setDisabled();
+                    }else {
+                        $("#recorddetail #record_qw").css({"width":"95%"});
+                        $("#recorddetail #record_util,#btnadd").css({"display":"none"});
+                        $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","false");
+                        $("#wqutil").hide();
+                    }
+                }
+            }
+
+
+
+
+        }
+    }else{
+        layer.msg(data.message,{icon: 5});
+    }
+    $("#overRecord_btn").attr("click","overRecord();");
+}
 

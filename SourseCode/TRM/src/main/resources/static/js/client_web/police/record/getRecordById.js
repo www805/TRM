@@ -257,8 +257,6 @@ function setqw(problems) {
 
 
 
-
-
 $(function () {
     //情绪报告
     layui.use(['layer','element','slider','form','laydate'], function(){
@@ -281,7 +279,11 @@ $(function () {
 
     //保存按钮
     $("#baocun").click(function () {
-      addRecord();
+        var setRecordrealUrl=getActionURL(getactionid_manage().getRecordById_setRecordreal);
+        setRecordreal(setRecordrealUrl);
+
+        var addRecordUrl=getActionURL(getactionid_manage().getRecordById_addRecord);
+        addRecord(addRecordUrl,null);//回放不需要跳转地址
     });
 
     //定位差值
@@ -302,8 +304,6 @@ $(function () {
             exportPdf(url);
         }
     });
-
-
 });
 
 function open_recordqw() {
@@ -557,47 +557,3 @@ function callbackzIPVodProgress(data) {
 
 
 
-//保存按钮
-//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
-var overRecord_index=null;
-function addRecord() {
-    var setRecordrealUrl=getActionURL(getactionid_manage().getRecordById_setRecordreal);
-    setRecordreal(setRecordrealUrl);
-
-    if (isNotEmpty(overRecord_index)) {
-        layer.close(overRecord_index);
-    }
-    overRecord_loadindex = layer.msg("保存中，请稍等...", {typy:1, icon: 16,shade: [0.1, 'transparent'], time:10000 });
-    if (isNotEmpty(recordssid)){
-        var url=getActionURL(getactionid_manage().getRecordById_addRecord);
-        //需要收拾数据
-        var recordToProblems=[];//题目集合
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                justqwbool:true,
-            }
-        };
-        ajaxSubmitByJson(url, data, calladdRecord);
-    }else{
-        layer.msg("系统异常");
-    }
-}
-function calladdRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            if (isNotEmpty(overRecord_loadindex)) {
-                layer.close(overRecord_loadindex);
-            }
-            $("#recorddetail #record_qw").css({"width":"95%"});
-            $("#recorddetail #record_util,#btnadd").css({"display":"none"});
-            $("#recorddetail label[name='q'],label[name='w']").attr("contenteditable","false");
-            $("#wqutil").hide();
-            layer.msg('保存成功',{icon:6});
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-}

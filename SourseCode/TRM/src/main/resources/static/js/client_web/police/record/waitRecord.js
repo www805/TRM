@@ -5,9 +5,7 @@ var recorduser=[];//会议用户集合：副麦主麦
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
-var recordbool=null;//笔录状态 -1 -2暂时用于导出判断不存在数据库
 
-var casebool=null;//案件状态
 
 
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
@@ -736,73 +734,6 @@ function callbackstartMC(data) {
 }
 
 
-
-
-
-//保存按钮
-//recordbool 1进行中 2已结束
-function addRecord() {
-    var setRecordrealUrl=getActionURL(getactionid_manage().waitRecord_setRecordreal);
-    setRecordreal(setRecordrealUrl);
-
-
-    if (isNotEmpty(overRecord_index)) {
-        layer.close(overRecord_index);
-    }
-    if (isNotEmpty(recordssid)){
-        var url=getActionURL(getactionid_manage().waitRecord_addRecord);
-        //需要收拾数据
-        var recordToProblems=[];//题目集合
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                recordbool:recordbool,
-                casebool:casebool,
-                recordToProblems:recordToProblems,
-                mtssid:mtssid //会议ssid用于笔录结束时关闭会议
-            }
-        };
-        $("#overRecord_btn").attr("click","");
-        ajaxSubmitByJson(url, data, calladdRecord);
-    }else{
-        layer.msg("系统异常");
-    }
-}
-function calladdRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            if (isNotEmpty(overRecord_loadindex)) {
-                layer.close(overRecord_loadindex);
-            }
-            if (recordbool==2) {
-                layer.msg("已结束",{time:500,icon:6},function () {
-                    var url=null;
-                    if (gnlist.indexOf(HK_O)<0){
-                        //hk跳转
-                         url=getActionURL(getactionid_manage().waitRecord_torecordIndex);
-                    }else {
-                         url=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
-                    }
-                    window.location.href=url;
-                })
-            } else {
-                layer.msg('保存成功',{icon:6});
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    $("#overRecord_btn").attr("click","overRecord();");
-}
-
-
-
-
-
-
-
 //视频地址切换 type 1主麦 type 2副麦
 function select_liveurl(obj,type){
     for (let i = 0; i < recorduser.length; i++) {
@@ -1296,9 +1227,24 @@ $(function () {
 
     $("#baocun").click(function () {
         recordbool=1;
-        addRecord();
+        overbtn();
     });
 });
+
+//制作中结束
+function overbtn() {
+    var setRecordrealUrl=getActionURL(getactionid_manage().waitRecord_setRecordreal);
+    setRecordreal(setRecordrealUrl);
+    var addRecordUrl=getActionURL(getactionid_manage().waitRecord_addRecord);
+    var backurl=null;
+    if (gnlist.indexOf(HK_O)<0){
+        //hk跳转
+        backurl=getActionURL(getactionid_manage().waitRecord_torecordIndex);
+    }else {
+        backurl=getActionURL(getactionid_manage().waitRecord_tocaseIndex);
+    }
+    addRecord(addRecordUrl,backurl);//回放不需要跳转地址
+}
 
 //获取身心检测数据
 function getPolygraphdata() {

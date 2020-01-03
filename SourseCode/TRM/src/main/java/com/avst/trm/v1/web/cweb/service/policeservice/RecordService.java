@@ -259,9 +259,7 @@ public class RecordService extends BaseService {
             }
 
 
-            //修改笔录状态
-            Integer recordbool=addRecordParam.getRecordbool();
-            String mtssid=addRecordParam.getMtssid();
+
 
 
 
@@ -319,7 +317,9 @@ public class RecordService extends BaseService {
                 return;
             }
 
-
+            //修改笔录状态
+            Integer recordbool=addRecordParam.getRecordbool();
+            String mtssid=addRecordParam.getMtssid();
             LogUtil.intoLog(this.getClass(),"recordbool__"+recordbool);
             if (null!=recordbool&&recordbool==2){
 

@@ -3,10 +3,6 @@ var recorduser=[];//会议用户集合
 var dq_recorduser=null;//当前被询问人ssid
 
 var mcbool=null;//会议状态
-var recordbool=null;//笔录状态 -1 -2暂时用于导出判断不存在数据库
-
-var casebool=null;//案件状态
-
 var  mouseoverbool_left=-1;//是否滚动-1滚1不滚
 
 
@@ -339,63 +335,6 @@ function callbackgetRecordById(data) {
         layer.msg(data.message,{icon: 5});
     }
 }
-
-
-
-//保存按钮
-//recordbool 1进行中 2已结束    0初始化 -1导出word -2导出pdf
-function addRecord() {
-
-    var setRecordrealUrl=getActionURL(getactionid_manage().waitCourt_setRecordreal);
-    setRecordreal(setRecordrealUrl);
-
-
-    if (isNotEmpty(overRecord_index)) {
-        layer.close(overRecord_index);
-    }
-    if (isNotEmpty(recordssid)){
-        var url=getActionURL(getactionid_manage().waitCourt_addRecord);
-        //需要收拾数据
-        var recordToProblems=[];//题目集合：不需要了直接保存缓存里面的
-        var data={
-            token:INIT_CLIENTKEY,
-            param:{
-                recordssid: recordssid,
-                recordbool:recordbool,
-                casebool:casebool,
-                recordToProblems:recordToProblems,
-                mtssid:mtssid //会议ssid用于笔录结束时关闭会议
-            }
-        };
-        $("#overRecord_btn").attr("click","");
-        ajaxSubmitByJson(url, data, calladdRecord);
-    }else{
-        layer.msg("系统异常");
-    }
-}
-function calladdRecord(data) {
-    if(null!=data&&data.actioncode=='SUCCESS'){
-        var data=data.data;
-        if (isNotEmpty(data)){
-            if (isNotEmpty(overRecord_loadindex)) {
-                layer.close(overRecord_loadindex);
-            }
-            if (recordbool==2) {
-                layer.msg("已结束",{time:500,icon:6},function () {
-                    var url=getActionURL(getactionid_manage().waitCourt_torecordIndex);
-                    window.location.href=url;
-                })
-            }else {
-                layer.msg('保存成功',{icon:6});
-            }
-        }
-    }else{
-        layer.msg(data.message,{icon: 5});
-    }
-    $("#overRecord_btn").attr("click","overRecord();");
-}
-
-
 
 
 //**********************************************************关于会议***********************************************start
@@ -811,10 +750,17 @@ $(function () {
 
     $("#baocun").click(function () {
         recordbool=1;
-        addRecord();
+        overbtn();
     });
 });
 
+function overbtn() {
+    var setRecordrealUrl=getActionURL(getactionid_manage().waitCourt_setRecordreal);
+    setRecordreal(setRecordrealUrl);
+    var addRecordUrl=getActionURL(getactionid_manage().waitCourt_addRecord);
+    var backurl=getActionURL(getactionid_manage().waitCourt_torecordIndex);
+    addRecord(addRecordUrl,backurl);//回放不需要跳转地址
+}
 
 
 
