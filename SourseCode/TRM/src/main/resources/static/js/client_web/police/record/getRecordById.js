@@ -215,8 +215,8 @@ function setqw(problems) {
         $("#datanull_2").hide();
         for (var z = 0; z< problems.length;z++) {
             var problem = problems[z];
-            var q_starttime=problem.starttime;
-            if (isNotEmpty(q_starttime)&&q_starttime!=-1) {
+            var q_starttime=parseFloat(problem.starttime);
+            if (isNotEmpty(q_starttime)&&q_starttime!=-1&&isNotEmpty(subtractime["1"])) {
                 q_starttime+= parseFloat(subtractime["1"]);
             }
             var problemtext=problem.problem;
@@ -231,7 +231,7 @@ function setqw(problems) {
                         var answer = answers[j];
 
                         var w_starttime=answer.starttime;
-                        if (isNotEmpty(w_starttime)&&w_starttime!=-1) {
+                        if (isNotEmpty(w_starttime)&&w_starttime!=-1&&isNotEmpty(subtractime["2"])) {
                             w_starttime+=parseFloat(subtractime["2"]);
                         }
                         var answertext=answer.answer==null?"":answer.answer;
@@ -254,79 +254,7 @@ function setqw(problems) {
     return problemhtml;
 }
 
-/*function set_getRecord(data){
-    if (isNotEmpty(data.list)){
-        $("#recordreals").empty();
-        $("#recordreals_selecthtml").show();
-        var list=data.list;
-        for (var i = 0; i < list.length; i++) {
-            var data=list[i];
-            if (isNotEmpty(recorduser)){
-                for (var j = 0; j < recorduser.length; j++) {
-                    var user = recorduser[j];
-                    var userssid=user.userssid;
-                    if (data.userssid==userssid){
-                        var username=user.username==null?"未知":user.username;//用户名称
-                        var usertype=user.grade;//1、询问人2被询问人
-                        var txt=data.txt==null?"...":data.txt;//翻译文本
-                        var asrtime=data.asrtime;//时间
-                        var starttime=data.starttime;
-                        var asrstartime=data.asrstartime;
-                        var subtractime=data.subtractime==null?0:data.subtractime;//时间差
-                        //实时会议数据
-                        var recordrealshtml="";
-                        var translatext=data.keyword_txt==null?"...":data.keyword_txt;//翻译文本
 
-                        subtractime[""+usertype+""]=subtractime;//存储各个类型人员的时间差值
-
-                        //实时会议数据
-                        if (usertype==1){
-                            //询问人没有情绪报告
-                            starttime=parseFloat(starttime)+parseFloat(subtractime);
-                            recordrealshtml='<div class="atalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
-                                                            <a style="display: none;color: #ccc" id="dqphdate"></a>\
-                                                            <p><a id="username_time">【'+username+'】 '+asrstartime+' </a><a class="layui-badge" style="display:none;" title="未找到最高值">-1</a></p>\
-                                                            <span id="translatext">'+translatext+'</span> \
-                                                      </div >';
-                        }else if (usertype==2){
-                            starttime=parseFloat(starttime)+parseFloat(subtractime);
-                            recordrealshtml='<div class="btalk" userssid='+userssid+' starttime='+starttime+' ondblclick="showrecord('+starttime+')" times='+starttime+' usertype='+usertype+' dqphdate="">\
-                                                            <a style="display: none;color: #ccc" id="dqphdate"></a>\
-                                                            <p><a class="layui-badge " style="visibility:hidden; background-color: #00CD68  " title="未找到最高值">-1</a>  <a  id="username_time">'+asrstartime+' 【'+username+'】</a> </p>\
-                                                            <span id="translatext">'+translatext+'</span> \
-                                                      </div >';
-                        }
-                        var laststarttime =$("#recordreals div[userssid="+userssid+"]:last").attr("starttime");
-                        if (laststarttime==starttime&&isNotEmpty(laststarttime)){
-                            $("#recordreals div[userssid="+userssid+"]:last").remove();
-                        }
-                        $("#recordreals").append(recordrealshtml);
-                        var div = document.getElementById('recordreals');
-                        div.scrollTop = div.scrollHeight;
-                    }
-                }
-            }
-        }
-
-        var recordreals_selecthtml=document.getElementById("recordreals_selecthtml");
-        var IHTML='<span class="layui-table-sort layui-inline" title="语音识别可滚动"><i class="layui-edge layui-table-sort-asc"></i><i class="layui-edge layui-table-sort-desc" "></i></span>';
-        if(recordreals_selecthtml.scrollHeight>recordreals_selecthtml.clientHeight||recordreals_selecthtml.offsetHeight>recordreals_selecthtml.clientHeight){
-            $("#webkit2").html(IHTML)
-        }else {
-            $("#webkit2").empty();
-        }
-    }else {
-        $("#recordreals").html('<div id="datanull_3" style="font-size: 18px; text-align: center; margin: 10px;color: rgb(144, 162, 188)">暂无语音对话...可能正在生成中请稍后访问</div>');
-    }
-    //存在问答需要获取时间差
-    var getRecordrealByRecordssidUrl=getActionURL(getactionid_manage().getRecordById_getRecordrealByRecordssid);
-    getRecordrealByRecordssid(getRecordrealByRecordssidUrl);
-
-    layui.use(['layer','form'], function(){
-        var form = layui.form;
-        form.render();
-    });
-}*/
 
 
 

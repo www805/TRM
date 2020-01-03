@@ -73,15 +73,15 @@ function setcaseToUser(getRecordById_data) {
                     $("#username").val(userinfo.username);
                     $("#beforename").val(userinfo.beforename);
                     $("#nickname").val(userinfo.nickname);
-                    $("#both").val(userinfo.both);
+
                     $("#professional").val(userinfo.professional);
                     $("#phone").val(userinfo.phone);
                     $("#domicile").val(userinfo.domicile);
                     $("#residence").val(userinfo.residence);
                     $("#workunits").val(userinfo.workunits);
-                    $("#age").val(userinfo.age);
 
-                    $("#sex").val(userinfo.sex);
+
+
                     $("#national").val(userinfo.nationalssid);
                     $("#nationality").val(userinfo.nationalityssid);
                     $("#educationlevel").val(userinfo.educationlevel);
@@ -112,6 +112,16 @@ function setcaseToUser(getRecordById_data) {
                 $("#recordplace").val(police_arraignment.recordplace);
             }
 
+            var cardnum =  $("#cardnum").val();
+            var cardtypetext=userinfo.cardtypename;
+            var nationality = $("#nationality option:selected").text();//国籍
+            if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+                //回填身份证分析数据
+                $("#both").val(getAnalysisIdCard(cardnum,1));
+                $("#sex").val(getAnalysisIdCard(cardnum,2));
+                $("#age").val(getAnalysisIdCard(cardnum,3));
+            }
+
         }
             form.render();
     }
@@ -125,7 +135,7 @@ function setcaseToUser(getRecordById_data) {
                     return "请输入居民身份证号码"
                 }
                 if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
-                    var checkidcard_bool=checkIDCard(value);
+                    var checkidcard_bool=checkByIDCard(value);
                     if (!checkidcard_bool) {
                         return "请输入有效的居民身份证号码";
                     }
@@ -133,7 +143,7 @@ function setcaseToUser(getRecordById_data) {
             },
             username:[ /\S/,"请输入姓名"],
             phone:function (value) {
-                if (isNotEmpty(value)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(value))){
+                if (isNotEmpty(value)&&!(/^0?(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[89])[0-9]{8}$/.test(value))){
                     return "请输入正确联系电话";
                 }
             },
