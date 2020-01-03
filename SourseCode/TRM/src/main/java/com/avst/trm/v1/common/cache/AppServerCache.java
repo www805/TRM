@@ -101,7 +101,12 @@ public class AppServerCache {
 
             appCacheParam.setData(fileYml);
 
-            appCacheParam.setGuidepageUrl("http://" + hostAddress + guidepageUrl);
+            String portStr = NginxPortCache.getNginxPort();
+            if("".equals(portStr)){
+                portStr = PropertiesListenerConfig.getProperty("server.port");//本机端口
+            }
+
+            appCacheParam.setGuidepageUrl("http://" + hostAddress + ":" + portStr + guidepageUrl);
 
         } catch (IOException e) {
             LogUtil.intoLog(4, AppServerCache.class, "没找到外部配置文件：" + path);

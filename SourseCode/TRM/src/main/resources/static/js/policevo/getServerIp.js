@@ -72,11 +72,13 @@ function updateIp() {
 
     setTimeout(function () {
         parent.location.href = tiaozhuan;//跳转到登录页面
-    },15000);
+    },5000);
 
-    layer.msg("处理中，请至少等待10秒，如果ip最终没有修改成功，则需要手动修改后再访问修改后的ip，新改的ip当前已更新到配置文件中", {
+    var msg = "处理中，请至少等待10秒，如果ip最终没有修改成功，则需要手动修改后再访问修改后的ip，新改的ip当前已更新到配置文件中";
+
+    layer.msg("5秒后会自动跳转，请不要动", {
         icon: 16,
-        time:20000,
+        time:10000,
         shade: [0.1,"#fff"],
     });
 }
@@ -322,11 +324,15 @@ function callgetServerIpALL(data){
         // console.log(data);IPIndexLoad
 
         serverIpData = data.data;
-        $("#polygraphip").val(isNotEmpty(serverIpData['polygraphip']) == true ? serverIpData['polygraphip'].etip : "");
-        $("#flushbonadingip").val(isNotEmpty(serverIpData['flushbonadingip']) == true ? serverIpData['flushbonadingip'].etip : "");
-        $("#asrip").val(isNotEmpty(serverIpData['asrip']) == true ? serverIpData['asrip'].etip : "");
-        $("#storageip").val(isNotEmpty(serverIpData['storageip']) == true ? serverIpData['storageip'].etip : "");
-        $("#ttsetinfoip").val(isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].etip : "");
+        if (!serverIpData) {
+            layer.msg("从ec获取模板通道ip为空，请检查ec是否正常运行", {icon:5});
+        }else{
+            $("#polygraphip").val(isNotEmpty(serverIpData['polygraphip']) == true ? serverIpData['polygraphip'].etip : "");
+            $("#flushbonadingip").val(isNotEmpty(serverIpData['flushbonadingip']) == true ? serverIpData['flushbonadingip'].etip : "");
+            $("#asrip").val(isNotEmpty(serverIpData['asrip']) == true ? serverIpData['asrip'].etip : "");
+            $("#storageip").val(isNotEmpty(serverIpData['storageip']) == true ? serverIpData['storageip'].etip : "");
+            $("#ttsetinfoip").val(isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].etip : "");
+        }
 
     }else{
         layer.msg(data.message, {icon:5});
@@ -357,7 +363,7 @@ function callgetServerPortALL(data){
 function callUpdateServerIp(data){
     if(null!=data&&data.actioncode=='SUCCESS'){
         layer.msg("操作成功",{icon: 6});
-        setTimeout("parent.location.href = tiaozhuan;//跳转到登录页面",1500);
+        // setTimeout("parent.location.href = tiaozhuan;//跳转到登录页面",1500);
     }else{
         layer.msg(data.message, {icon:5});
     }

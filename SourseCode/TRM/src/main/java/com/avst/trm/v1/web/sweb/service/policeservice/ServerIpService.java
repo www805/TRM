@@ -107,10 +107,10 @@ public class ServerIpService extends BaseService {
         String fluEtip = getServerIpParam.getFlushbonadingip().getEtip();
         String polyEtip = getServerIpParam.getPolygraphip().getEtip();
 
-        if(OpenUtil.isIp(getServerIpParam.getTrmip()) == false){
-            rResult.setMessage("笔录系统ip，不是一个正确的IP");
-            return;
-        }
+//        if(OpenUtil.isIp(getServerIpParam.getTrmip()) == false){
+//            rResult.setMessage("笔录系统ip，不是一个正确的IP");
+//            return;
+//        }
         if(OpenUtil.isIp(asrEtip) == false){
             rResult.setMessage("请输入测谎仪ip，不是一个正确的IP");
             return;
@@ -179,11 +179,11 @@ public class ServerIpService extends BaseService {
         }
         LogUtil.intoLog(1, this.getClass(), "已清除session、cookie");
         LogUtil.intoLog(1, this.getClass(), "因修改了IP，所以开始睡眠12秒");
-        try {
-            Thread.sleep(10 * 1000);//睡眠10秒
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Thread.sleep(10 * 1000);//睡眠10秒
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
 
         //以下代码用来判断ip是否修改成功
@@ -283,6 +283,7 @@ public class ServerIpService extends BaseService {
             changeResultToSuccess(rResult);
             LogUtil.intoLog(1, this.getClass(), "获取其他全部设备IP，请求成功");
         } catch (Exception e) {
+            rResult.setData("请检查ec服务是否开启");
             LogUtil.intoLog(4,this.getClass(),"获取其他全部设备IP，远程请求接口出错！");
         }
 

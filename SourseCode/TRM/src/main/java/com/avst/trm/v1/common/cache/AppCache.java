@@ -100,11 +100,14 @@ public class AppCache {
 
         Base_serverconfigMapper base_serverconfigMapper = SpringUtil.getBean(Base_serverconfigMapper.class);
         Base_filesaveMapper base_filesaveMapper = SpringUtil.getBean(Base_filesaveMapper.class);
-
-
         AppCacheParam cacheParam = new AppCacheParam();
-
         String myIP = ServerIpCache.getServerIp();
+        String basepath = NginxPortCache.getNginxPort();//获取nginx端口
+
+        if("".equals(basepath)){
+            basepath = PropertiesListenerConfig.getProperty("server.port");//获取不了就用本机端口
+        }
+
         Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
         String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！
         if (StringUtils.isNotEmpty(serverconfig.getSyslogo_filesavessid())) {

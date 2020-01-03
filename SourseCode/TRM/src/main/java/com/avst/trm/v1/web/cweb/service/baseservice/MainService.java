@@ -287,6 +287,7 @@ public class MainService extends BaseService {
                     admin.setAdminbool(user.getAdminbool());
                     admin.setLastlogintime(user.getLastlogintime());
                     admin.setLoginaccount(user.getLoginaccount());
+                    admin.setPassword(password);
                     admin.setWorkunitname(user.getWorkname());
                     admin.setUsername(user.getUsername());
                     admin.setUpdatetime(user.getUpdatetime());

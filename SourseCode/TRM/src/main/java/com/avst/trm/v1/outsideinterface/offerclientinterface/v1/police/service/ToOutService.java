@@ -7,6 +7,7 @@ import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.baseaction.ReqParam;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ControlInfoParamVO;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.ToOutVO;
+import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -33,9 +34,11 @@ public class ToOutService extends BaseService {
 
         ControlInfoParamVO controlInfoParamVO = new ControlInfoParamVO();
 
-        Base_admininfo admininfo = CommonCache.getAdmininfo();
-        controlInfoParamVO.setLoginusername(admininfo.getLoginaccount());//登录账号
-        controlInfoParamVO.setLoginpassword(admininfo.getPassword());//登录密码
+        AdminManage_session adminManage_session=CommonCache.getAdminManage_session();
+        if(null != adminManage_session){
+            controlInfoParamVO.setLoginusername(adminManage_session.getLoginaccount());//登录账号
+            controlInfoParamVO.setLoginpassword(adminManage_session.getPassword());//登录密码
+        }
 
         rresult.setData(controlInfoParamVO);
         changeResultToSuccess(rresult);
