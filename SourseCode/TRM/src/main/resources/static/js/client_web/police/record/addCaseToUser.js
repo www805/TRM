@@ -191,6 +191,18 @@ function addCaseToArraignment() {
     $("#startrecord_btn").attr({"lay-filter":"","disabled":"disabled"});
 
     //收集人员信息
+    var cardtypetext=$("#cards option:selected").text();
+    var nationality = $("#nationality option:selected").text();//国籍
+    if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
+        var bool=checkByIDCard(cardnum);
+        if (bool){
+            //回填身份证分析数据
+            $("#both").val(getAnalysisIdCard(cardnum,1));
+            $("#sex").val(getAnalysisIdCard(cardnum,2));
+            $("#age").val(getAnalysisIdCard(cardnum,3));
+        }
+    }
+
     var  cardtypessid=$("#cards option:selected").val();
     var  beforename=$("#beforename").val();
     var  nickname= $("#nickname").val();
@@ -489,6 +501,10 @@ function getUserByCard(){
         if (!bool){
             return;
         }
+        //回填身份证分析数据
+        $("#both").val(getAnalysisIdCard(cardnum,1));
+        $("#sex").val(getAnalysisIdCard(cardnum,2));
+        $("#age").val(getAnalysisIdCard(cardnum,3));
     }
 
 
@@ -546,7 +562,7 @@ function callbackgetUserByCard(data){
             }
         }
     }else{
-        parent.layer.msg(data.message,{icon: 5});
+        layer.msg(data.message,{icon: 5});
     }
     layui.use('form', function(){
         var $ = layui.$;

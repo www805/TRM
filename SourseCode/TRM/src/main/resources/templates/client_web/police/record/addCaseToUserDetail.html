@@ -126,8 +126,8 @@
                 }
                 if ($.trim(cardtypetext) == "居民身份证" &&($.trim(nationality)=="中国"||!isNotEmpty(nationality))) {
                     var checkidcard_bool=checkByIDCard(value);
-                    if (!checkidcard_bool) {
-                        return "请输入有效的居民身份证号码";
+                    if (!checkidcard_bool){
+                      return "请输入有效的居民身份证号码";
                     }
                 }
             },

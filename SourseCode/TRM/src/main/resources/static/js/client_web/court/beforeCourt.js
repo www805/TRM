@@ -377,7 +377,7 @@ function checkuserinfograde(userinfogradetype) {
             userinfogrades[""+userinfogradetype+""].sex=getAnalysisIdCard(cardnum,2);
             userinfogrades[""+userinfogradetype+""].age=getAnalysisIdCard(cardnum,3);
         }
-        if (isNotEmpty(phone)&&!(/^((1(3|4|5|6|7|8|9)\d{9})|(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$/.test(phone))){
+        if (isNotEmpty(phone)&&!(/^0?(13[0-9]|14[5-9]|15[012356789]|166|17[0-8]|18[0-9]|19[89])[0-9]{8}$/.test(phone))){
             layer.msg("请输入正确"+con+"联系电话",{icon: 5});
             $("#phone").focus();
             setuserval(userinfogradetype);

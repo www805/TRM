@@ -355,17 +355,29 @@ function setRecordreal(url) {
     $("#recorddetail td.onetd").each(function (i) {
         var arr={};
         var answers=[];//答案集合
-        var q=$(this).find("label[name='q']").html();
-        var q_starttime=$(this).find("label[name='q']").attr("starttime");
+        var q=$(this).find("label[name='q']");
+        var q_starttime=$(q).attr("starttime");
         //经过筛选的q
         var ws=$(this).find("label[name='w']");
-        var w_starttime=$(this).find("label[name='w']").attr("starttime");
-        if (isNotEmpty(q)){
+        var w_starttime=$(ws).attr("starttime");
+        if (isNotEmpty($(q).html())){
+            if (!$(q).is(':has(span)') ) {
+                console.log("***********************这个q没有包含span")
+                q="<span starttime='"+q_starttime+"'>"+$(q).html()+"</span>";
+            }else {
+                q=$(q).html();
+            }
             if (null!=ws&&ws.length>0){
                 for (var j = 0; j < ws.length; j++) {
-                    var w =ws.eq(j).html();
+                    var w =ws.eq(j);
                     //经过筛选的w
-                    if (isNotEmpty(w)) {
+                    if (isNotEmpty($(w).html())) {
+                        if (!$(w).is(':has(span)') ) {
+                            console.log("***********************这个w没有包含span")
+                            w="<span starttime='"+w_starttime+"'>"+$(w).html()+"</span>";
+                        }else {
+                            w=$(w).html();
+                        }
                         answers.push({
                             answer:w,
                             starttime:w_starttime,
