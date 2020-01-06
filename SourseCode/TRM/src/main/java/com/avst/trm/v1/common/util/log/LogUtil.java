@@ -9,6 +9,7 @@ import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class LogUtil {
 
     public static String userSeparator= getUserSeparator();//操作人的名称分隔符
 
+
     private static String getUserSeparator(){
         if(StringUtils.isEmpty(userSeparator)){
             userSeparator= PropertiesListenerConfig.getProperty("userSeparator");
@@ -31,8 +33,10 @@ public class LogUtil {
         return userSeparator;
     }
 
+
+
     //跟logback。xml是对应的
-    public static String logbasepath="D:\\log\\trm";//日志存在位置，这个也是写死的。不可以随便改，需要跟logback一致
+    public static String logbasepath=(StringUtils.isEmpty(System.getProperty("log.path"))?"d:/TRM/log/":System.getProperty("log.path"))+"trm";//日志存在位置，这个也是写死的。不可以随便改，需要跟logback一致
 
     private static String logFileFormat=".log";//日志文件的后缀名
     public static String logname_info="trm-info";//一般日志的名称（最新一天的）

@@ -1,5 +1,6 @@
 package com.avst.trm;
 
+import com.avst.trm.v1.common.util.JacksonUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListener;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import org.mybatis.spring.annotation.MapperScan;
