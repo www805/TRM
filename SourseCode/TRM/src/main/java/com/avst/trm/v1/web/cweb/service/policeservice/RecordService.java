@@ -665,9 +665,17 @@ public class RecordService extends BaseService {
 
 
                                     //查找用户:人员表
-                                    Police_userinfo police_userinfo=new Police_userinfo();
-                                    police_userinfo.setSsid(userssid);
-                                    police_userinfo=police_userinfoMapper.selectOne(police_userinfo);
+                                    String cardtypessid=PropertiesListenerConfig.getProperty("cardtype_default");//默认使用身份证类型
+                                    EntityWrapper userparam=new EntityWrapper();
+                                    userparam.eq("ut.cardtypessid",cardtypessid);
+                                    userparam.eq("u.ssid",userssid);
+                                    List<UserInfo> userInfos_=police_userinfoMapper.getUserByCard(userparam);
+                                    UserInfo police_userinfo=new UserInfo();
+                                    if (null!=userInfos_&&userInfos_.size()==1){
+                                        police_userinfo=userInfos_.get(0);
+                                    }else {
+                                        police_userinfo=null;
+                                    }
 
                                     //查找用户：管理员表
                                     Base_admininfo admininfo=new Base_admininfo();
@@ -706,6 +714,7 @@ public class RecordService extends BaseService {
                                         usergrade.setUserssid(userssid);
                                         if (null!=police_userinfo){
                                             usergrade.setUsername(police_userinfo.getUsername());
+                                            usergrade.setUserinfo(police_userinfo);
                                             usergrades.add(usergrade);
                                         }else if (null!=admininfo){
                                             usergrade.setUsername(admininfo.getUsername());
@@ -860,6 +869,7 @@ public class RecordService extends BaseService {
                 List<Base_national> nationalList=base_nationalMapper.selectList(null);
                 EntityWrapper adminparam=new EntityWrapper();
                 adminparam.eq("a.adminbool",1);//正常人
+                adminparam.orderBy("a.temporaryaskbool",true);
                 adminparam.orderBy("a.registerTime",false);
                 List<AdminAndWorkunit> adminList=base_admininfoMapper.getAdminListAndWorkunit(adminparam);
                 getRecordByIdVO.setNationalityList(nationalityList);

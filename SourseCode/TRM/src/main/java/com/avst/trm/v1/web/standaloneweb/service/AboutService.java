@@ -6,6 +6,7 @@ import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.baseaction.BaseService;
 import com.avst.trm.v1.common.util.baseaction.RResult;
 import com.avst.trm.v1.common.util.log.LogUtil;
+import com.avst.trm.v1.common.util.poiwork.WordToHtmlUtil;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.standaloneweb.req.GetAboutParam;
@@ -44,8 +45,21 @@ public class AboutService extends BaseService {
 
                     String realurl=serverconfig.getRunbook_realurl();
                     String downurl=serverconfig.getRunbook_downurl();
+
+
                     String runbookdownurl_html=null;
                     if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
+                        //重新生成操作说明书html
+                        //word转html-----------------start---------------
+                        if(realurl.endsWith(".doc")){
+                            String replace = realurl.replace(".doc", ".html");
+                            WordToHtmlUtil.wordToHtml(realurl, replace);
+                        }else if(realurl.endsWith(".docx")){
+                            String replace = realurl.replace(".docx", ".html");
+                            WordToHtmlUtil.wordToHtml(realurl, replace);
+                        }
+                        //word转html-----------------end-----------------
+
                         if(realurl.endsWith(".doc")){
                             String replace = realurl.replace(".doc", ".html");
                             File f = new File(replace);
@@ -77,12 +91,5 @@ public class AboutService extends BaseService {
         }else {
             result.setMessage("系统异常");
         }
-
-         String sysmsg=null;
-         String companymsg;//公司信息
-         String runbookdownurl;//操作说明书下载地址
-         String runbookdownurl_html;//操作说明书预览地址
-
-
     }
 }
