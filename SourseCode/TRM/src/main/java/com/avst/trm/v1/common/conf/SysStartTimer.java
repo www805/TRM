@@ -41,6 +41,8 @@ public class SysStartTimer implements ApplicationRunner {
         //开启socketio
         SocketIOConfig.StartSocketio();
 
+        System.out.println(LogUtil.logbasepath+"--------------------------------------LogUtil");
+
     }
 
 
