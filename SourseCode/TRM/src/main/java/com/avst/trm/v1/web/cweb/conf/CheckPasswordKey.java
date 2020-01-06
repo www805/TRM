@@ -21,7 +21,7 @@ import java.util.Map;
 public class CheckPasswordKey {
 
     private static String key_name=".ini";
-    private static  String key_path=getkey_path()+"\\user\\";//文件夹位置
+    private static  String key_path=getkey_path()+File.separator+"user"+File.separator;//文件夹位置
 
     //获取当前目录的上一级目录
     public synchronized static String getkey_path() {

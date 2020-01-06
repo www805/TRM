@@ -149,12 +149,92 @@ public class SystemIpUtil {
 
     }
 
+
+    /**
+     * 获取一个可用的IP
+     * localhost he 127.0.0.1 不用
+     * @return
+     */
+    public static String getOneUseableIp(){
+
+        Map<String, List<GetNetworkConfigureVO>> map=getLocalMachineInfo();
+        if(null!=map&&null!=map.keySet()&&map.keySet().size() > 0){
+            Set<String> keyset=map.keySet();
+            for(String key:keyset){
+                List<GetNetworkConfigureVO> list=map.get(key);
+                if(null!=list&&list.size() > 0){
+                    for(GetNetworkConfigureVO vo:list){
+                        String ip=vo.getIp();
+                        try {
+                            if(!ip.trim().equals("localhost")&&!ip.trim().equals("127.0.0.1")){
+                                LogUtil.intoLog(ip+"---ip获取正常 getOneUseableIp");
+                                return ip.trim();
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        };
+        LogUtil.intoLog("---ip获取异常，只能给一个localhost getOneUseableIp");
+        return "localhost";
+    }
+
+    /**
+     * 区分Linux和win
+     * @return
+     */
     public static Map<String, List<GetNetworkConfigureVO>> getLocalMachineInfo(){
+        int osType = NetTool.osType();
+        if(osType==1){
+            return getLocalMachineInfo_win();
+        }else{
+            return getLocalMachineInfo_linux();
+        }
+    }
+
+
+    public static Map<String, List<GetNetworkConfigureVO>> getLocalMachineInfo_linux(){
+
+        try {
+            Map<String, List<GetNetworkConfigureVO>> ipmap=new HashMap<String, List<GetNetworkConfigureVO>>();
+            // 获得本机的所有网络接口
+            Enumeration<NetworkInterface> nifs = NetworkInterface.getNetworkInterfaces();
+            while (nifs.hasMoreElements()) {
+                NetworkInterface nif = nifs.nextElement();
+                List<GetNetworkConfigureVO> iplist=new ArrayList<GetNetworkConfigureVO>();
+                // 获得与该网络接口绑定的 IP 地址，一般只有一个
+                Enumeration<InetAddress> addresses = nif.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress addr = addresses.nextElement();
+
+                    if (addr instanceof Inet4Address) { // 只关心 IPv4 地址
+                        GetNetworkConfigureVO networkConfigureVO=new GetNetworkConfigureVO();
+                        networkConfigureVO.setIp(addr.getHostAddress());
+                        networkConfigureVO.setName(nif.getName());
+                        iplist.add(networkConfigureVO);
+                    }
+                }
+                if(null!=iplist&&iplist.size()>0){
+                    ipmap.put(nif.getName(),iplist);
+                }
+            }
+            LogUtil.intoLog(1,SystemIpUtil.class,"获取系统IP成功"+JacksonUtil.objebtToString(ipmap));
+            return ipmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LogUtil.intoLog(4,SystemIpUtil.class,"获取系统IP失败，严重错误");
+        return null;
+    }
+
+    public static Map<String, List<GetNetworkConfigureVO>> getLocalMachineInfo_win(){
         String line ="";
         String lineAll ="";
         int n;
-        Map<String, List<GetNetworkConfigureVO>> map = new HashMap<>();
-        String osName = NetTool.getOsName();   //得到操作系统 xp 为"Windows XP"  其他的的楼主自己去试试
+        Map<String, List<GetNetworkConfigureVO>> map = new HashMap<String, List<GetNetworkConfigureVO>>();
+        String osName = NetTool.getOsName();
 
         String name = "以太网适配器";
         String ip = "IPv4 地址";
@@ -169,9 +249,10 @@ public class SystemIpUtil {
         }
 
         BufferedReader br = null;
+        Process ps=null;
         try {
 //            Process ps = Runtime.getRuntime().exec("cmd /c ipconfig /all");
-            Process ps = Runtime.getRuntime().exec("ipconfig");
+            ps = Runtime.getRuntime().exec("ipconfig");
             br = new BufferedReader(new InputStreamReader(ps.getInputStream(), "GB2312"));
             while(null != (line = br.readLine())) {
                 lineAll += line + "\n";
@@ -188,6 +269,13 @@ public class SystemIpUtil {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+            try {
+                if(null!=ps){
+                    ps.destroy();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
@@ -227,13 +315,6 @@ public class SystemIpUtil {
                     list.add(vo);
                     vo = null;
                 }
-
-//                if(string.indexOf(gateway) != -1){
-//                    Matcher mc = Pattern.compile("((2[0-4]\\d|25[0-5]|[01]?\\d\\d?)\\.){3}(2[0-4]\\d|25[0-5]|[01]?\\d\\d?)").matcher(string);
-//                    if(mc.find()){
-//                        vo.setGateway(mc.group());
-//                    }
-//                }
 
             }
 
@@ -282,40 +363,14 @@ public class SystemIpUtil {
             input.close();
             errors.close();
             output.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) {
 
-//        GetNetworkConfigureVO ipInfo = getIpInfo();
-//        System.out.println(ipInfo);
-
-//        Map<String, List<GetNetworkConfigureVO>> map = getLocalMachineInfo();
-////        System.out.println(map);
-//
-//        Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> iterator = map.entrySet().iterator();
-//        while (iterator.hasNext()) {
-//            Map.Entry<String, List<GetNetworkConfigureVO>> entry = iterator.next();
-//            String key = entry.getKey();
-//            List<GetNetworkConfigureVO> list = entry.getValue();
-//            System.out.println("==============" + key);
-//            for (GetNetworkConfigureVO vo : list) {
-//                System.out.println(vo);
-//            }
-//        }
-
-
-
-
-//        for (GetNetworkConfigureVO vo : list) {
-//            System.out.println(vo);
-//        }
-
-//        setLocalIP("本地连接", "192.168.17.173", "255.255.255.0", "192.168.17.254");
-//        setLocalIP("本地连接", "192.168.17.171", "255.255.255.0", "192.168.17.253");
-
+        getLocalMachineInfo_linux();
 
     }
 

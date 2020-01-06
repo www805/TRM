@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.cache.param.AppCacheParam;
 import com.avst.trm.v1.common.util.HttpRequest;
 import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.OpenUtil;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -28,10 +29,13 @@ public class Test {
          //ini文件的存放位置
 //            String filepath = "D:\\initest.ini";
          String filepath = OpenUtil.getXMSoursePath() + "\\pfconfig.ini";
+         if(NetTool.getOsName().startsWith("")){
+
+         }
          //创建文件输入流
          FileInputStream fis = new FileInputStream(filepath);
 
-         String path = OpenUtil.getXMSoursePath() + "\\avst.yml";
+         String path = OpenUtil.getXMSoursePath() + "avst.yml";
          FileInputStream fis2 = new FileInputStream(path);
          Yaml yaml = new Yaml();
          Map<String,Object> map = yaml.load(fis2);

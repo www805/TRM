@@ -526,7 +526,7 @@ public static String getLocalMac() {
 					while((line=bf.readLine())!=null) {
 						System.out.println(line);
 					}
-         		} catch (IOException e) {
+         		} catch (Exception e) {
             		e.printStackTrace();
          	 	}finally {
 				  try {
@@ -583,9 +583,16 @@ public static String getLocalMac() {
 	}
 
 
+
 	private static void close(OutputStream os,InputStream in,InputStream in2,BufferedReader br,Process process){
 
-		try {
+        try {
+            Thread.sleep(1000);//为了printMessage不出现Stream closed
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
 			if(null!=br){
 				br.close();
 			}

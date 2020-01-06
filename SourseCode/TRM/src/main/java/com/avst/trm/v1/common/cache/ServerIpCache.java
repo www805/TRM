@@ -4,6 +4,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_serverconfig;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_serverconfigMapper;
 import com.avst.trm.v1.common.util.SpringUtil;
 import com.avst.trm.v1.common.util.SystemIpUtil;
+import com.avst.trm.v1.common.util.log.LogUtil;
 import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.standaloneweb.vo.GetNetworkConfigureVO;
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +40,7 @@ public class ServerIpCache {
         Base_serverconfigMapper mapper = SpringUtil.getBean(Base_serverconfigMapper.class);
         Base_serverconfig base_serverconfig = mapper.selectById(1);
 
-        List<String> ipList = new ArrayList<>();
+        List<String> ipList = new ArrayList<String>();
 
         Map<String, List<GetNetworkConfigureVO>> map = SystemIpUtil.getLocalMachineInfo();
         Iterator<Map.Entry<String, List<GetNetworkConfigureVO>>> iterator = map.entrySet().iterator();
@@ -67,7 +68,13 @@ public class ServerIpCache {
 
             //如果没有就从网卡里面随意拿一条
             if(!isIp){
-                serverIp = ipList.get(0);//如果数据库没有ip就随便用一个
+                for (String ip : ipList) {
+                    if(!ip.trim().equals("localhost")&&!ip.trim().equals("127.0.0.1")){
+                        serverIp=ip.trim();//如果数据库没有ip就随便用一个
+                        LogUtil.intoLog(1,ServerIpCache.class,"从网卡里面随意拿一个IP："+serverIp);
+                        break;
+                    }
+                }
             }
 
         //如果网卡获取为0就从数据库拿一条
@@ -75,7 +82,7 @@ public class ServerIpCache {
             serverIp = base_serverconfig.getServerip();
         }else{
             //如果数据库没有就从util的方法拿一条
-            serverIp = NetTool.getMyIP();//如果找不到，就用获取的ip
+            serverIp = SystemIpUtil.getOneUseableIp();//如果找不到，就用获取的ip
         }
 
 

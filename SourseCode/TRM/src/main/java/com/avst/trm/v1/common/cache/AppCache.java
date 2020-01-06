@@ -104,8 +104,8 @@ public class AppCache {
         String myIP = ServerIpCache.getServerIp();
         String basepath = NginxPortCache.getNginxPort();//获取nginx端口
 
-        if("".equals(basepath)){
-            basepath = PropertiesListenerConfig.getProperty("server.port");//获取不了就用本机端口
+        if(StringUtils.isEmpty(basepath)){
+            basepath = "6003";//默认6003
         }
 
         Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
@@ -227,8 +227,9 @@ public class AppCache {
             }
             List<LinkedHashMap<String, Object>> data = (List<LinkedHashMap<String, Object>>) zkResult.getData();
             for (LinkedHashMap<String, Object> hashMap : data) {
-                if("zk".equals(hashMap.get("servername"))){
-                    cacheParam.setGuidepageUrl("http://" + (String) hashMap.get("url") + "?client=http://" + myIP + ":"+port+"/cweb/base/main/gotomain");//进入总控
+                if("zk".equals(hashMap.get("servername"))){//总站进入暂时不用这个
+                    cacheParam.setGuidepageUrl("http://" +(String) hashMap.get("url") + "?client=http://" + myIP + ":"+port+"/cweb/base/main/gotomain");//进入总控
+                    break;
                 }
             }
         }
