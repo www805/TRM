@@ -64,13 +64,13 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shirFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
-        Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
+        /*Map<String, Filter> filtersMap = new LinkedHashMap<String, Filter>();
         filtersMap.put("kickout", kickoutSessionFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
 
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
        filterChainDefinitionMap.put("/**", "kickout");
-        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
+        shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);*/
 
 
         return shiroFilterFactoryBean;
@@ -108,7 +108,7 @@ public class ShiroConfig {
     }
 
 
-    @Bean
+   /* @Bean
     public KickoutSessionFilter kickoutSessionFilter(){
         KickoutSessionFilter kickoutSessionControlFilter = new KickoutSessionFilter();
         kickoutSessionControlFilter.setSessionManager(sessionManager());
@@ -117,6 +117,6 @@ public class ShiroConfig {
         kickoutSessionControlFilter.setMaxSession(1);
         kickoutSessionControlFilter.setKickoutUrl("/cweb/base/main/gotologin?kickout=1");
         return kickoutSessionControlFilter;
-    }
+    }*/
 
 }
