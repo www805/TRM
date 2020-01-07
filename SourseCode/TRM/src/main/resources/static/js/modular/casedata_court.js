@@ -591,6 +591,7 @@ function gets(data) {
 var modelList=null;//全部模板列表
 var dqmodelssid=null;//当前所选的会议模板ssid
 var model_index=null;//模板index
+var dqmodeltypenum=null;//当前所选的会议模板类型
 function getMc_model(){
     var url=getUrl_manage().getMc_model;
     var data={

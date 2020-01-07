@@ -386,6 +386,9 @@ function getactionid_manage() {
         about_getAbout:"about_getAbout",
 
         caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",
+        caseToUser_getBaseData:"caseToUser_getBaseData",
+        caseToUser_getRecordtypes:"caseToUser_getRecordtypes",
+        caseToUser_getUserByCard:"caseToUser_getUserByCard",
 
         softAndHardInfo_getSystemInfo:"softAndHardInfo_getSystemInfo",
 

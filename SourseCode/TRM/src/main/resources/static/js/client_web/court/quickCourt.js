@@ -4,7 +4,7 @@
  */
 var dquserssid=null;//当前被告人ssid
 var dqcasessid=null;//当前案件ssid
-var dqmodeltypenum=null;//当前所选的会议模板类型
+
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
 var skipCheckCasebool=-1;//是否跳过案件检查(法庭)

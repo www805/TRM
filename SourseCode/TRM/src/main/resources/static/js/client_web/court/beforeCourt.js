@@ -1,6 +1,5 @@
 var dquserssid=null;//当前被告人ssid
 var dqcasessid=null;//当前案件ssid
-var dqmodeltypenum=null;//当前所选的会议模板类型
 
 
 var skipCheckbool=-1;//是否跳过检测：默认-1
@@ -502,7 +501,7 @@ function select_cardnumblur() {
 
 //获取人员信息：当前点击的usertype 当前dq_usertype
 function getUserByCard(usertype){
-    var cardnum =  $("#cardnum").val();
+    var cardnum =null;
     if (isNotEmpty(usertype)) {
 
         //收集切换前的用户信息
@@ -563,7 +562,10 @@ function getUserByCard(usertype){
             setuserval(dq_userinfograde);
             return;
         }
+    }else {
+        cardnum =  $("#cardnum").val();
     }
+
 
     if (!isNotEmpty(cardnum)){
         $("#user input").val("");

@@ -316,17 +316,7 @@ public class ArraignmentService extends BaseService {
                 e.printStackTrace();
             }
         }
-        //模板为空使用默认指定模板
-       /* if (StringUtils.isBlank(mtmodelssid)) {
-            //会议模板为空，直接取默认的
-            Base_type base_type=new Base_type();
-            base_type.setType(CommonCache.getCurrentServerType());
-            base_type=base_typeMapper.selectOne(base_type);
-            if (null!=base_type){
-                mtmodelssid=base_type.getMtmodelssid();
-            }
-        }*/
-        LogUtil.intoLog(this.getClass(),"【开始笔录】添加笔录使用的会议模板ssid_"+mtmodelssid);
+        LogUtil.intoLog(this.getClass(),"【开始笔录】添加笔录使用的会议模板ssid_**************************************"+mtmodelssid);
         if (StringUtils.isBlank(mtmodelssid)){
             result.setMessage("未找到会议模板");
             return;
@@ -475,12 +465,22 @@ public class ArraignmentService extends BaseService {
                 LogUtil.intoLog(1,this.getClass(),"【开始笔录】笔录名称不能重复__"+recordname);
                 return;
             }
-        }/*else {
-            if (null!=police_recordtype){
-                //此处暂时不处理：应该一般不进来的
+        }else {
+            //笔录名称
+            GetrecordnameParam getrecordnameParam=new GetrecordnameParam();
+            getrecordnameParam.setAsknum(String.valueOf(Integer.valueOf(asknum)+1));
+            getrecordnameParam.setCardnum(addUserInfo.getCardnum());
+            getrecordnameParam.setCasename(addPolice_case.getCasename());
+            getrecordnameParam.setRecordplace(recordplace);
+            getrecordnameParam.setRecordtypename(police_recordtype.getTypename());
+            getrecordnameParam.setUsername(addUserInfo.getUsername());
+            getrecordnameParam.setModelname(mtmodelssidname);
+            recordname=getrecordname(2,getrecordnameParam);
+            if (StringUtils.isEmpty(recordname)){
                 recordname=""+addUserInfo.getUsername()+"《"+addPolice_case.getCasename().trim()+"》"+mtmodelssidname+"_"+police_recordtype.getTypename().replace(" ", "")+"_第"+(Integer.valueOf(asknum)+1)+"次";
+                recordname=recordname==null?"":recordname.replace(" ", "").replace("\"", "");
             }
-        }*/
+        }
         LogUtil.intoLog(1,this.getClass(),"【开始笔录】recordname__"+recordname);
 
 

@@ -111,6 +111,10 @@ function callbackgetRecordById(data) {
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 mcbool=record.mcbool;
 
+               /*if (isNotEmpty(gnlist)) {
+                    $("#open_casetouser").css("display","inline-block");
+                }*/
+
                 //获取提讯会议ssid
                 var police_arraignment=record.police_arraignment;
                 if (isNotEmpty(police_arraignment)){
