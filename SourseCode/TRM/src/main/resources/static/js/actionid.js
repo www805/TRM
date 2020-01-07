@@ -385,7 +385,8 @@ function getactionid_manage() {
 
         about_getAbout:"about_getAbout",
 
-        caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",
+        caseToUser_updateCaseToUser:"caseToUser_updateCaseToUser",//正常修改
+        caseToUser_updateCaseToUser_court:"caseToUser_updateCaseToUser_court",//法院修改
         caseToUser_getBaseData:"caseToUser_getBaseData",
         caseToUser_getRecordtypes:"caseToUser_getRecordtypes",
         caseToUser_getUserByCard:"caseToUser_getUserByCard",

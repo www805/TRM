@@ -86,6 +86,10 @@ function setcaseToUser(getRecordById_data) {
                     $("#nationality").val(userinfo.nationalityssid);
                     $("#educationlevel").val(userinfo.educationlevel);
                     $("#politicsstatus").val(userinfo.politicsstatus);
+
+                    $("#both").val(userinfo.both);
+                    $("#age").val(userinfo.age);
+                    $("#sex").val(userinfo.sex);
                 }
                 //回显询问人信息
                 $("#adminname").val(recordUserInfos.adminname);

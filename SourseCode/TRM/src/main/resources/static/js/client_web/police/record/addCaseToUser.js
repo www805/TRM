@@ -532,9 +532,7 @@ function callbackgetUserByCard(data){
                 $("#username").val(userinfo.username);
                 $("#beforename").val(userinfo.beforename);
                 $("#nickname").val(userinfo.nickname);
-                $("#both").val(userinfo.both);
-                $("#age").val(userinfo.age);
-                $("#sex").val(userinfo.sex);
+
                 $("#professional").val(userinfo.professional);
                 $("#phone").val(userinfo.phone);
                 $("#domicile").val(userinfo.domicile);
@@ -545,6 +543,10 @@ function callbackgetUserByCard(data){
                 $("#nationality").val(userinfo.nationalityssid);
                 $("#educationlevel").val(userinfo.educationlevel);
                 $("#politicsstatus").val(userinfo.politicsstatus);
+
+                $("#both").val(userinfo.both);
+                $("#age").val(userinfo.age);
+                $("#sex").val(userinfo.sex);
             }
 
             if (isNotEmpty(dquserssid)){

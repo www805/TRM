@@ -1591,7 +1591,6 @@ public class ArraignmentService extends BaseService {
             police_arraignment.setAskobj(arraignment.getAskobj());
             police_arraignment.setAsknum(arraignment.getAsknum());
             police_arraignment.setRecordplace(arraignment.getRecordplace());
-            police_arraignment.setRecordplace(arraignment.getRecordplace());
             police_arraignment.setOtheradminssid(arraignment.getOtheradminssid());
             police_arraignment.setRecordadminssid(arraignment.getRecordadminssid());
             int police_arraignmentMapper_update_bool=police_arraignmentMapper.update(police_arraignment,arraignmentupdate_ew);

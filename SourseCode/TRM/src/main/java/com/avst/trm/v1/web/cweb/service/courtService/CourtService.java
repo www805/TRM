@@ -5,10 +5,7 @@ import com.avst.trm.v1.common.datasourse.base.entity.Base_admininfo;
 import com.avst.trm.v1.common.datasourse.base.entity.Base_filesave;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_admininfoMapper;
 import com.avst.trm.v1.common.datasourse.base.mapper.Base_filesaveMapper;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignment;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_arraignmentexpand;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfo;
-import com.avst.trm.v1.common.datasourse.police.entity.Police_userinfograde;
+import com.avst.trm.v1.common.datasourse.police.entity.*;
 import com.avst.trm.v1.common.datasourse.police.entity.moreentity.*;
 import com.avst.trm.v1.common.datasourse.police.mapper.*;
 import com.avst.trm.v1.common.util.DateUtil;
@@ -30,9 +27,12 @@ import com.avst.trm.v1.feignclient.mc.vo.AsrTxtParam_toout;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.service.OutService;
 import com.avst.trm.v1.outsideinterface.offerclientinterface.v1.police.vo.GetMCVO;
 import com.avst.trm.v1.web.cweb.cache.RecordrealingCache;
+import com.avst.trm.v1.web.cweb.conf.UserinfogradeType;
 import com.avst.trm.v1.web.cweb.req.courtreq.*;
 import com.avst.trm.v1.web.cweb.req.policereq.CheckKeywordParam;
+import com.avst.trm.v1.web.cweb.req.policereq.ExportWordParam;
 import com.avst.trm.v1.web.cweb.req.policereq.UploadWordTemplateParam;
+import com.avst.trm.v1.web.cweb.req.policereq.param.ArrUserExpandParam;
 import com.avst.trm.v1.web.cweb.service.policeservice.RecordService2;
 import com.avst.trm.v1.web.cweb.vo.courtvo.Export_asrVO;
 import com.avst.trm.v1.web.cweb.vo.courtvo.Exporttemplate_ueVO;
@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service("courtService")
@@ -74,10 +75,16 @@ public class CourtService extends BaseService {
     private Police_arraignmentMapper police_arraignmentMapper;
 
     @Autowired
+    private Police_casetoarraignmentMapper police_casetoarraignmentMapper;
+
+    @Autowired
     private Police_arraignmentexpandMapper police_arraignmentexpandMapper;
 
     @Autowired
     private Police_userinfoMapper police_userinfoMapper;
+
+    @Autowired
+    private Police_userinfototypeMapper police_userinfototypeMapper;
 
     @Autowired
     private Base_admininfoMapper base_admininfoMapper;
@@ -594,6 +601,135 @@ public class CourtService extends BaseService {
             result.setMessage("参数为空");
             return;
         }
+        return;
+    }
+
+    public void updateCaseToUser(RResult result,UpdateCaseToUserParam param){
+         String recordssid=param.getRecordssid();//笔录ssid
+
+        Police_case case_=param.getCase_();//案件信息
+        Police_arraignment arraignment=param.getArraignment();//提讯信息
+
+         List<UserInfo> arraignmentexpand=param.getArraignmentexpand();//拓展表数据：针对未存在用户，主要用于外来人员
+         List<ArrUserExpandParam> arrUserExpandParams=param.getArrUserExpandParams();//拓展表数据;针对已存在用户：主要用于内部管理员
+
+        LogUtil.intoLog(1,this.getClass(),"法院人员案件编辑___updateCaseToUser_recordssid__"+recordssid);
+        if (StringUtils.isBlank(recordssid)){
+            result.setMessage("系统异常");
+            return;
+        }
+
+
+        //根据笔录ssid获取提讯信息
+        Police_arraignment police_arraignment=new Police_arraignment();
+        police_arraignment.setRecordssid(recordssid);
+        police_arraignment =police_arraignmentMapper.selectOne(police_arraignment);
+        if (null!=police_arraignment){
+            String arraignmentssid=police_arraignment.getSsid();//提讯ssid
+            String userssid=police_arraignment.getUserssid();//被询问人ssid
+
+
+            //修改提讯信息
+            EntityWrapper arraignmentupdate_ew=new EntityWrapper();
+            arraignmentupdate_ew.eq("ssid",arraignmentssid);
+            police_arraignment.setAsknum(arraignment.getAsknum());
+            police_arraignment.setOtheradminssid(arraignment.getOtheradminssid());
+            police_arraignment.setRecordadminssid(arraignment.getRecordadminssid());
+            int police_arraignmentMapper_update_bool=police_arraignmentMapper.update(police_arraignment,arraignmentupdate_ew);
+            LogUtil.intoLog(1,this.getClass(),"法院人员案件编辑___police_arraignmentMapper_update_bool___"+police_arraignmentMapper_update_bool);
+
+
+            //修改外部人员信息
+            if (null!=arraignmentexpand&&arraignmentexpand.size()>0){
+                for (UserInfo userInfo : arraignmentexpand) {
+                    if (null!=userInfo){
+                        String userinfogradessid=userInfo.getUserinfogradessid();
+                        if (StringUtils.isNotEmpty(userinfogradessid)&&StringUtils.isNotBlank(userInfo.getSsid())){
+                                    //修改用户信息
+                                    EntityWrapper updateuserinfoParam=new EntityWrapper();
+                                    updateuserinfoParam.eq("ssid",userInfo.getSsid());
+                                    Police_userinfo police_userinfo=gson.fromJson(gson.toJson(userInfo),Police_userinfo.class);
+                                    int updateuserinfo_bool = police_userinfoMapper.update(police_userinfo,updateuserinfoParam);
+                                    LogUtil.intoLog(this.getClass(),"updateuserinfo_bool__"+updateuserinfo_bool);
+                                    if (updateuserinfo_bool>0){
+                                        if (StringUtils.isNotEmpty(userInfo.getCardnum())&&StringUtils.isNotEmpty(userInfo.getCardtypessid())){
+                                            EntityWrapper ew1=new EntityWrapper();
+                                            ew1.eq("cardnum",userInfo.getCardnum());
+                                            ew1.eq("cardtypessid",userInfo.getCardtypessid());
+                                            ew1.ne("userssid",userInfo.getSsid());
+                                            List<Police_userinfototype> police_userinfototypes=police_userinfototypeMapper.selectList(ew1);
+                                            if (null==police_userinfototypes||police_userinfototypes.size()<1){
+                                                Police_userinfototype police_userinfototype=new Police_userinfototype();
+                                                police_userinfototype.setCardnum(userInfo.getCardnum());
+                                                EntityWrapper ew2=new EntityWrapper();
+                                                ew2.eq("cardtypessid",userInfo.getCardtypessid());
+                                                ew2.eq("userssid",userInfo.getSsid());
+                                                int police_userinfototypeMapper_update_bool=police_userinfototypeMapper.update(police_userinfototype,ew2);
+                                                LogUtil.intoLog(1,this.getClass(),"police_userinfototypeMapper_update_bool__"+police_userinfototypeMapper_update_bool);
+                                            }
+                                        }
+                                    }
+                        }
+                    }
+                }
+                LogUtil.intoLog(1,this.getClass(),"【开始笔录】添加拓展表数据外部人员数__"+arraignmentexpand.size());
+            }
+            //修改内部人员
+
+            //修改人员级别关联表
+
+
+            //修改案件信息
+            Police_casetoarraignment police_casetoarraignment=new Police_casetoarraignment();
+            police_casetoarraignment.setArraignmentssid(arraignmentssid);
+            police_casetoarraignment=police_casetoarraignmentMapper.selectOne(police_casetoarraignment);
+            if (null!=police_casetoarraignment){
+                String casessid=police_casetoarraignment.getCasessid();
+                Police_case police_case=new Police_case();
+                police_case.setSsid(casessid);
+                police_case=police_caseMapper.selectOne(police_case);
+                if (null!=police_case){
+                    String casename=case_.getCasename();//案件名称
+                    String casenum=case_.getCasenum();//案件编号
+                    //------------
+                    if (StringUtils.isNotBlank(casename)){
+                        //判断案件是否重复
+                        EntityWrapper police_cases_param=new EntityWrapper();
+                        police_cases_param.eq("casename",casename.trim());
+                        police_cases_param.ne("ssid",casessid);
+                        police_cases_param.ne("casebool",-1);
+                        List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                        if (null!=police_cases_&&police_cases_.size()>0){
+                            result.setMessage("案件名称不能重复");
+                            return;
+                        }
+                    }
+
+                    if (StringUtils.isNotBlank(casenum)){
+                        //判断案件是否重复
+                        EntityWrapper police_cases_param=new EntityWrapper();
+                        police_cases_param.eq("casenum",casenum);
+                        police_cases_param.ne("ssid",casessid);
+                        police_cases_param.ne("casebool",-1);
+                        List<Police_case> police_cases_=police_caseMapper.selectList(police_cases_param);
+                        if (null!=police_cases_&&police_cases_.size()>0){
+                            result.setMessage("案件编号不能重复");
+                            return;
+                        }
+                    }
+
+                    EntityWrapper caseupdate_ew=new EntityWrapper();
+                    caseupdate_ew.eq("ssid",casessid);
+
+                    int police_caseMapper_update_bool=police_caseMapper.update(case_,caseupdate_ew);
+                    LogUtil.intoLog(1,this.getClass(),"police_caseMapper_update_bool___"+police_caseMapper_update_bool);
+                }
+            }
+        }
+
+
+        result.setData(1);
+        changeResultToSuccess(result);
         return;
     }
 

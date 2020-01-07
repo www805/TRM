@@ -111,9 +111,9 @@ function callbackgetRecordById(data) {
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 mcbool=record.mcbool;
 
-               /*if (isNotEmpty(gnlist)) {
+                if (isNotEmpty(gnlist)) {
                     $("#open_casetouser").css("display","inline-block");
-                }*/
+                }
 
                 //获取提讯会议ssid
                 var police_arraignment=record.police_arraignment;
@@ -666,7 +666,6 @@ $(function () {
                             $("#tooltip").hover(function(){
                                 mouseoverbool_left=1;
                             });
-                            console.log(mouseoverbool_left)
                                 if (mouseoverbool_left==-1){
                                     $("#tooltip").remove();//移除标记提示
                                     window.getSelection().removeAllRanges();

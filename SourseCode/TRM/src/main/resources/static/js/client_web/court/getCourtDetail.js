@@ -58,6 +58,9 @@ function callbackgetRecordById(data) {
 
                 $("#recordtitle").text(record.recordname==null?"笔录标题":record.recordname).attr("title",record.recordname==null?"笔录标题":record.recordname);
                 $("#recorddetail_strong").html('【笔录问答】<i class="layui-icon layui-icon-edit" style="font-size: 20px;color: red;visibility: hidden" title="编辑" id="open_recordqw" onclick="open_recordqw()"></i>');
+                if (isNotEmpty(gnlist)) {
+                    $("#open_casetouser").css("display","inline-block");
+                }
 
                 //会议人员
                 var recordUserInfosdata=record.recordUserInfos;

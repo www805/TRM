@@ -72,6 +72,12 @@ public class CourtPageAction {
         return new ModelAndView("client_web/court/quickCourt", "Model", model);
     }
 
+    @GetMapping("tocaseToUser")
+    public ModelAndView tocaseToUser(Model model){
+        model.addAttribute("title","人员案件");
+        return new ModelAndView("client_web/court/caseToUser", "Model", model);
+    }
+
 
 
 

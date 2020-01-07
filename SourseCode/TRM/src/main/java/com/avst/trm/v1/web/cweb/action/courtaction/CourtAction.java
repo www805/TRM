@@ -160,6 +160,21 @@ public class CourtAction extends BaseAction {
         return result;
     }
 
+    //修改人员案件
+    @RequestMapping(value = "/updateCaseToUser")
+    public RResult updateCaseToUser(@RequestBody ReqParam<UpdateCaseToUserParam> param){
+        RResult result=this.createNewResultOfFail();
+        if (null==param){
+            result.setMessage("参数为空");
+        }else if (!checkToken(param.getToken())){
+            result.setMessage("授权异常");
+        }else{
+            courtService.updateCaseToUser(result,param.getParam());
+        }
+        result.setEndtime(DateUtil.getDateAndMinute());
+        return result;
+    }
+
 
 
 

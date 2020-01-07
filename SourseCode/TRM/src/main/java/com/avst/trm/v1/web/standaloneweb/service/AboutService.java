@@ -50,21 +50,15 @@ public class AboutService extends BaseService {
                     String runbookdownurl_html=null;
                     if (StringUtils.isNotBlank(realurl)&&StringUtils.isNotBlank(downurl)){
                         //重新生成操作说明书html
-                        //word转html-----------------start---------------
-                        if(realurl.endsWith(".doc")){
-                            String replace = realurl.replace(".doc", ".html");
-                            WordToHtmlUtil.wordToHtml(realurl, replace);
-                        }else if(realurl.endsWith(".docx")){
-                            String replace = realurl.replace(".docx", ".html");
-                            WordToHtmlUtil.wordToHtml(realurl, replace);
-                        }
-                        //word转html-----------------end-----------------
-
                         if(realurl.endsWith(".doc")){
                             String replace = realurl.replace(".doc", ".html");
                             File f = new File(replace);
                             if (f.exists()) {
                                 LogUtil.intoLog(this.getClass(),"word模板doc转html文件存在:"+replace);
+                                runbookdownurl_html=downurl.replace(".doc", ".html");
+                            }else {
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                                LogUtil.intoLog(this.getClass(),"word模板doc转html文件不存在***************重新生成:"+replace);
                                 runbookdownurl_html=downurl.replace(".doc", ".html");
                             }
                         }else if(realurl.endsWith(".docx")){
@@ -72,6 +66,10 @@ public class AboutService extends BaseService {
                             File f = new File(replace);
                             if (f.exists()) {
                                 LogUtil.intoLog(this.getClass(),"word模板docx转html文件存在:"+replace);
+                                runbookdownurl_html=downurl.replace(".docx", ".html");
+                            }else {
+                                WordToHtmlUtil.wordToHtml(realurl, replace);
+                                LogUtil.intoLog(this.getClass(),"word模板doc转html文件不存在***************重新生成:"+replace);
                                 runbookdownurl_html=downurl.replace(".docx", ".html");
                             }
                         }

@@ -485,6 +485,7 @@ function select_cardnum(obj) {
     getUserByCard();
     $("#cardnum_ssid").html("");
 }
+
 function select_cardnumblur() {
     $("#cardnum_ssid").css("display","none");
     var cardnum=$("#cardnum").val();

@@ -310,7 +310,9 @@ function tr_addOrUpdate(obj,type,arraignment_num) {
                       $("#residence").val(userinfo.residence);
                       $("#workunits").val(userinfo.workunits);
 
-
+                      $("#both").val(userinfo.both);
+                      $("#sex").val(userinfo.sex);
+                      $("#age").val(userinfo.age);
 
                       $("#national").val(userinfo.nationalssid);
                       $("#nationality").val(userinfo.nationalityssid);
