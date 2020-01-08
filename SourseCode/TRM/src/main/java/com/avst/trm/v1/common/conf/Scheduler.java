@@ -152,7 +152,7 @@ public class Scheduler {
         for (PageVO pageVO : initVO_WEB.getPageList()) {
             if("server_web/base/login".equals(pageVO.getPageid())){
                 for (ActionVO actionVO : pageVO.getActionList()) {
-                    if("login_main".equals(actionVO.getActionId())){
+                    if("login_loginpage".equals(actionVO.getActionId())){
                         urltow = actionVO.getReqURL();
                         break ko;
                     }
