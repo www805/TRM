@@ -536,7 +536,7 @@ public class RecordService extends BaseService {
 
                 //根据笔录ssid获取提讯数据
                 String mtssid=null;
-                Integer mtstate=-1;//未开始
+                Integer mtstate=null;//未开始
                 String modelssid=null;
                 try {
                     Police_arraignment police_arraignment=new Police_arraignment();
@@ -555,6 +555,7 @@ public class RecordService extends BaseService {
                             RResult rr = meetingControl.getMCState(getMCStateParam_outReqParam);
                             if (null != rr && rr.getActioncode().equals(Code.SUCCESS.toString())) {
                                 mtstate= (Integer) rr.getData();
+                                record.setMcbool(mtstate);
                             }
                         }
                         //获取模板通道：笔录制作过程中获取：
@@ -580,7 +581,6 @@ public class RecordService extends BaseService {
                         }
 
                         //获取嫌疑人详情
-                        record.setMcbool(mtstate);
                         record.setPolice_arraignment(police_arraignment);
                     }
                 } catch (Exception e) {

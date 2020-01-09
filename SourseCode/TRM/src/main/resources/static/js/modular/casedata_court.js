@@ -485,13 +485,20 @@ function callbackgetCasesByCasenum(data) {
                             }else if (usergradessid==USERINFOGRADE8||usergradessid==USERINFOGRADE1||usergradessid==USERINFOGRADE2||usergradessid==USERINFOGRADE3){
                                 var userinfo=usergrade.userinfo;
                                 var userinfogradeinput=$("input[name='"+usergradessid+"']").val();
+                                userinfo["userinfogradessid"]=usergradessid;
                                 if (isNotEmpty(userinfogradeinput)) {
                                     $("input[name='"+usergradessid+"']").val(userinfogradeinput+"；"+username);
-                                    casenum_userinfos.push(userinfo)
+                                    casenum_userinfos.push(userinfo);
+
+                                    //存储ssid
+                                    var userinfograde_input=$("input[name='"+usergradessid+"_']").val();
+                                    $("input[name='"+usergradessid+"_']").val(userinfograde_input+"；"+userinfo.ssid);
                                 }else {
                                     $("input[name='"+usergradessid+"']").val(username);
-                                    userinfo["userinfogradessid"]=usergradessid
                                     userinfogrades[""+usergradessid+""]=userinfo;
+
+                                    //存储ssid
+                                    $("input[name='"+usergradessid+"_']").val(userinfo.ssid);
                                     if (isNotEmpty(userinfo)&&dq_userinfograde==usergradessid){
                                         var cardnum=userinfo.cardnum;
                                         $("#cardnum").val(cardnum);
@@ -845,16 +852,26 @@ function setusers(userinfogradessid) {
     var arr=[];
     //判断是否多人除开
     var userinfogradeinput=$("input[name='"+userinfogradessid+"']").val();
+    //存储的ssid
+    var userinfograde_input=$("input[name='"+userinfogradessid+"_']").val();
+
     userinfogradeinput=userinfogradeinput.split("；");
     userinfogradeinput = userinfogradeinput.filter(function (x) { return x && x.trim() });
-    if (userinfogradeinput.length>1) {
+
+    userinfograde_input=userinfograde_input.split("；");
+    userinfograde_input = userinfograde_input.filter(function (x) { return x && x.trim() });
+    if (userinfogradeinput.length>1||userinfograde_input.length>1) {
         userinfogradeinput=userinfogradeinput.slice(1);//去除第一个
+        userinfograde_input=userinfograde_input.slice(1);//去除第一个
+
         for (let i = 0; i < userinfogradeinput.length; i++) {
             const username = userinfogradeinput[i];
+            const userssid = userinfograde_input[i];//可能为空
             //判断用户名
             var userinfo={
                 username:username,
                 userinfogradessid:userinfogradessid,
+                ssid:userssid
             }
 
             //用户为回填的信息加入回填数据
@@ -862,9 +879,9 @@ function setusers(userinfogradessid) {
             if (isNotEmpty(casenum_userinfos)&&isNotEmpty(casenum_case)&&isNotEmpty(casenum)&&casenum_case==casenum){
                 for (let j = 0; j < casenum_userinfos.length; j++) {
                     const casenum_userinfo = casenum_userinfos[j];
-                    if (isNotEmpty(casenum_userinfo)&&isNotEmpty(casenum_userinfo.username)&&username==casenum_userinfo.username){
+                    if (isNotEmpty(casenum_userinfo)&&isNotEmpty(casenum_userinfo.ssid)&&isNotEmpty(userssid)&&userssid==casenum_userinfo.ssid){
                         userinfo=casenum_userinfo;
-                        userinfo["userinfogradessid"]=userinfogradessid;
+                        userinfo["username"]=username;
                     }
                 }
             }

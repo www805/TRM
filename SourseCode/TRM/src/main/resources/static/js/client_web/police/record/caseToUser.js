@@ -255,6 +255,7 @@ function setcaseToUser(getRecordById_data) {
                 }
             };
             var url=getActionURL(getactionid_manage().caseToUser_updateCaseToUser);
+            $("#permissionSubmit").attr("lay-filter","");
             ajaxSubmitByJson(url,d_,function (data) {
                 if(null!=data&&data.actioncode=='SUCCESS'){
                     var data=data.data;

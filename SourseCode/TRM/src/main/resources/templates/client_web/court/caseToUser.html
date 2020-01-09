@@ -25,13 +25,13 @@
 </style>
 <body>
 <div class="layui-form" style="margin: 20px;">
-        <div class="layui-col-md6" >
+        <div class="layui-col-md6" id="case">
             <div class="layui-card" >
                 <div class="layui-card-header">案件基本信息<span style="color: red">(提示：排列第一人员可绑定个人信息)</span></div>
                 <div th:replace="modular/casedata_court :: casedata_court"></div>
             </div>
         </div>
-        <div class="layui-col-md6">
+        <div class="layui-col-md6" id="user">
             <div class="layui-card" >
                 <div class="layui-card-header"><span id="usertype"><span style='color: red;font-weight: bold'>被告</span>个人信息</span></div>
                 <div th:replace="modular/userdata_court :: userdata_court"></div>
@@ -138,10 +138,7 @@
         //人员案件编辑：人员不得更换 案件不得更换
         $(".layui-icon").remove();
         //会议未开始可以自己的人
-        $('#presidingjudge,#recordadminssid,#otheradminssid,#judges,#recotdtypes').attr('disabled', 'disabled');
         $('#presidingjudge,#recordadminssid,#otheradminssid,#judges,#recotdtypes').removeAttr(" lay-search");
-
-
         $("#cardnum,#casename").attr({"onfocus":"","oninput":""})
         $("#casename").attr({"onblur":""})
     });

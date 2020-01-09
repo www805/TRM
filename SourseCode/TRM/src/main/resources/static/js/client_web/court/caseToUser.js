@@ -1,11 +1,17 @@
 //*******************************************************************案件人员信息编辑start****************************************************************//
 
 
-var recordssid;
+var recordssid=null;
 var cardtypessid=null;
 
 var dq_userinfograde=USERINFOGRADE2;
 var userinfogrades={};
+var casenum_userinfos=[];//根据案件编号回填的多角色人员
+var casenum_case=null;
+
+
+
+
 function setcaseToUser(getRecordById_data) {
     setTimeout(function () {
         layui.use(['layer','laydate','form'], function() {
@@ -13,16 +19,16 @@ function setcaseToUser(getRecordById_data) {
             var laydate = layui.laydate;
 
             if (isNotEmpty(getRecordById_data)) {
-                console.log(getRecordById_data)
                 var record=getRecordById_data.record;
                 if (isNotEmpty(record)) {
-
-
-
+                    if (isNotEmpty(parent.mtssid)){
+                        $('#presidingjudge,#recordadminssid,#otheradminssid,#judges,#recotdtypes').attr('disabled', 'disabled');
+                    }
 
                     //案件信息
                     var case_ = record.case_;
                     if (isNotEmpty(case_)){
+                        casenum_case=case_.casenum;
                         $("#casename").val(case_.casename);
                         $("#cause").val(case_.cause);
                         $("#asknum").val(0);
@@ -63,14 +69,23 @@ function setcaseToUser(getRecordById_data) {
                                         $("#judges").val(userssid);
                                     }else if (usergradessid==USERINFOGRADE8||usergradessid==USERINFOGRADE1||usergradessid==USERINFOGRADE2||usergradessid==USERINFOGRADE3){
                                         var userinfo=usergrade.userinfo;
+                                        console.log(userinfo)
                                         var userinfogradeinput=$("input[name='"+usergradessid+"']").val();
+                                        userinfo["userinfogradessid"]=usergradessid;
                                         if (isNotEmpty(userinfogradeinput)) {
                                             $("input[name='"+usergradessid+"']").val(userinfogradeinput+"；"+userinfo.username);
+                                            //存储ssid
+                                            var userinfograde_input=$("input[name='"+usergradessid+"_']").val();
+                                            $("input[name='"+usergradessid+"_']").val(userinfograde_input+"；"+userinfo.ssid);
+
+                                            casenum_userinfos.push(userinfo);
                                         }else {
                                             $("input[name='"+usergradessid+"']").val(userinfo.username);
-                                            userinfo["userinfogradessid"]=usergradessid
-                                            userinfogrades[""+usergradessid+""]=userinfo;
+
+                                            //存储ssid
+                                            $("input[name='"+usergradessid+"_']").val(userinfo.ssid);
                                             if (isNotEmpty(userinfo)&&dq_userinfograde==usergradessid){
+                                                userinfogrades[""+usergradessid+""]=userinfo;//
                                                 var cardnum=userinfo.cardnum;
                                                 $("#cardnum").val(cardnum);
                                                 setuserval(dq_userinfograde)
@@ -90,29 +105,34 @@ function setcaseToUser(getRecordById_data) {
                                                     userinfo.sex=getAnalysisIdCard(cardnum,2);
                                                     userinfo.age=getAnalysisIdCard(cardnum,3);
                                                 }
+                                                userinfogrades[""+usergradessid+""]=userinfo;//
                                             }
+
                                         }
                                     }
                                 }
                             }
+
+
+
                         }
                     }
 
                 }
 
             }
-            form.render();
+
             form.verify({
                 recotdtypes:[ /\S/,"请选择案件类型"],
                 casename:[ /\S/,"请输入案件名称"],
             });
 
-
-
-
-
             form.on('submit(permissionSubmit)', function(data) {
-
+                var  username=$("#username").val();
+                if (!isNotEmpty(username)){
+                    layer.msg(userinfograde2_name+"不能为空",{icon: 5});
+                    return;
+                }
 
                 //案件信息收集
                 var  casename=$("#casename").val();
@@ -251,11 +271,7 @@ function setcaseToUser(getRecordById_data) {
                                 bool=false;
                                 layer.msg("用户身份证号码不能重复使用",{icon: 5});
                                 return;
-                            }/*else if (isNotEmpty(arraignmentexpand[i].username)&&isNotEmpty(newarraignmentexpand[j].username)&&arraignmentexpand[i].username==newarraignmentexpand[j].username){//先只判断名称不能重复  &&(!isNotEmpty(arraignmentexpand[i].cardnum)&&!isNotEmpty(newarraignmentexpand[j].cardnum))
-                    bool=false;
-                    layer.msg("用户名称不能重复使用",{icon: 5});
-                    return;
-                }*/
+                            }
                         };
                         if (bool){
                             newarraignmentexpand.push(arraignmentexpand[i]);
@@ -304,6 +320,62 @@ function setcaseToUser(getRecordById_data) {
                     layer.msg(userinfograde4_name+"不能为空",{icon: 5});
                     return;
                 }
+                //条件存在会议：
+                if (isNotEmpty(parent.mtssid)){
+                    //各个人员角色人员数量不可变动:对比全部人员判断各角色对应的人员数量是否有变动；有变动提示人员数不可改动
+                    var userinfograde8_=$("input[name='"+USERINFOGRADE8+"_']").val();
+                    var userinfograde1_=$("input[name='"+USERINFOGRADE1+"_']").val();
+                    var userinfograde2_=$("input[name='"+USERINFOGRADE2+"_']").val();
+                    var userinfograde3_=$("input[name='"+USERINFOGRADE3+"_']").val();
+
+                    //判断角色是否有增减
+                    var userinfograde8=$("input[name='"+USERINFOGRADE8+"']").val();
+                    var userinfograde1=$("input[name='"+USERINFOGRADE1+"']").val();
+                    var userinfograde2=$("input[name='"+USERINFOGRADE2+"']").val();
+                    var userinfograde3=$("input[name='"+USERINFOGRADE3+"']").val();
+                    console.log(userinfograde8)
+
+                    userinfograde8_=userinfograde8_.split("；");
+                    userinfograde8_ = userinfograde8_.filter(function (x) { return x && x.trim() });
+                    userinfograde8=userinfograde8.split("；");
+                    userinfograde8 = userinfograde8.filter(function (x) { return x && x.trim() });
+
+                    userinfograde1_=userinfograde1_.split("；");
+                    userinfograde1_ = userinfograde1_.filter(function (x) { return x && x.trim() });
+                    userinfograde1=userinfograde1.split("；");
+                    userinfograde1 = userinfograde1.filter(function (x) { return x && x.trim() });
+
+                    userinfograde2_=userinfograde2_.split("；");
+                    userinfograde2_ = userinfograde2_.filter(function (x) { return x && x.trim() });
+                    userinfograde2=userinfograde2.split("；");
+                    userinfograde2 = userinfograde2.filter(function (x) { return x && x.trim() });
+
+                    userinfograde3_=userinfograde3_.split("；");
+                    userinfograde3_ = userinfograde3_.filter(function (x) { return x && x.trim() });
+                    userinfograde3=userinfograde3.split("；");
+                    userinfograde3 = userinfograde3.filter(function (x) { return x && x.trim() });
+
+                    if (userinfograde8_.length!=userinfograde8.length){//人员改动
+                        layer.msg("笔录已开，【"+userinfograde8_name+"】不可增删",{icon: 5});
+                        return;
+                    }
+
+                    if (userinfograde1_.length!=userinfograde1.length){//人员改动
+                        layer.msg("笔录已开，【"+userinfograde1_name+"】不可增删",{icon: 5});
+                        return;
+                    }
+                    if (userinfograde2_.length!=userinfograde2.length){//人员改动
+                        layer.msg("笔录已开，【"+userinfograde2_name+"】不可增删",{icon: 5});
+                        return;
+                    }
+                    if (userinfograde3_.length!=userinfograde3.length){//人员改动
+                        layer.msg("笔录已开，【"+userinfograde3_name+"】不可增删",{icon: 5});
+                        return;
+                    }
+
+
+                }
+
 
 
                 var d_={
@@ -317,6 +389,7 @@ function setcaseToUser(getRecordById_data) {
                     }
                 };
                 var caseToUser_updateCaseToUser_courtUrl=getActionURL(getactionid_manage().caseToUser_updateCaseToUser_court);
+                $("#permissionSubmit").attr("lay-filter","");
                 ajaxSubmitByJson(caseToUser_updateCaseToUser_courtUrl,d_,function (data) {
                     if(null!=data&&data.actioncode=='SUCCESS'){
                         var data=data.data;
@@ -328,10 +401,13 @@ function setcaseToUser(getRecordById_data) {
                     }else{
                         parent.layer.msg(data.message,{icon: 5});
                     }
+                    $("#permissionSubmit").attr("lay-filter","permissionSubmit");
                 });
             });
+
+            form.render();
         });
-    },250);
+    },350);
 }
 
 
@@ -377,6 +453,7 @@ function getUserByCard(usertype){
             olduserinfo["issuingauthority"]=$("#issuingauthority").val();
             olduserinfo["validity"]=$("#validity").val();
             olduserinfo["userinfogradessid"]=userinfogradessid;
+
         }
         userinfogrades[""+userinfogradessid+""]=olduserinfo;
 
@@ -393,7 +470,9 @@ function getUserByCard(usertype){
         //判断是否存在回显
         if (isNotEmpty(userinfogrades[""+dq_userinfograde+""])){
             setuserval(dq_userinfograde);
-            return;
+        }else {
+            $("#user input").val("");
+            $('#user  select').prop('selectedIndex', 0);
         }
     }
 }
@@ -446,6 +525,16 @@ function checkuserinfograde(userinfogradetype) {
         var username=userinfograde.username;
         var cardnum=userinfograde.cardnum;
         var phone=userinfograde.phone;
+
+        //ssid
+        var userinfograde_=$("input[name='"+userinfogradetype+"_']").val();
+        if (isNotEmpty(userinfograde_)){
+            userinfograde_=userinfograde_.split("；");
+            userinfograde_ = userinfograde_.filter(function (x) { return x && x.trim() });
+            userinfogrades[""+userinfogradetype+""].ssid=userinfograde_[0];
+        }
+
+
         if (!isNotEmpty(username)){
             layer.msg(con+"名称不能为空",{icon: 5});
             setuserval(userinfogradetype);
@@ -471,6 +560,8 @@ function checkuserinfograde(userinfogradetype) {
             setuserval(userinfogradetype);
             return false;
         }
+
+
     }
     return true;
 }
@@ -491,3 +582,4 @@ function select_cardnumblur() {
         form.render();
     });
 }
+
