@@ -5,6 +5,7 @@ import com.avst.trm.v1.common.util.DateUtil;
 import com.avst.trm.v1.common.util.FileUtil;
 import com.avst.trm.v1.common.util.ReadWriteFile;
 import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import com.avst.trm.v1.web.sweb.vo.AdminManage_session;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class LogUtil {
 
 
     //跟logback。xml是对应的
-    public static String logbasepath=(StringUtils.isEmpty(System.getProperty("log.path"))?"d:/TRM/log/":System.getProperty("log.path"))+"trm";//日志存在位置，这个也是写死的。不可以随便改，需要跟logback一致
+    public static String logbasepath=(StringUtils.isEmpty(System.getProperty("log.path"))? (NetTool.osType()==2?"/home/avst/trmdata/log/":"d:\\TRM\\log\\"):System.getProperty("log.path"))+"trm";//日志存在位置，这个也是写死的。不可以随便改，需要跟logback一致
 
     private static String logFileFormat=".log";//日志文件的后缀名
     public static String logname_info="trm-info";//一般日志的名称（最新一天的）

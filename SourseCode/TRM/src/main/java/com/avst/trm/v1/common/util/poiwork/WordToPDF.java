@@ -4,9 +4,12 @@ package com.avst.trm.v1.common.util.poiwork;
 
 
 import com.aspose.words.Document;
+import com.aspose.words.FontSettings;
 import com.aspose.words.ReadLicense;
 import com.aspose.words.SaveFormat;
 import com.avst.trm.v1.common.util.log.LogUtil;
+import com.avst.trm.v1.common.util.properties.PropertiesListenerConfig;
+import com.avst.trm.v1.common.util.sq.NetTool;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
@@ -79,6 +82,16 @@ public class WordToPDF {
             os = new FileOutputStream(file2);
             LogUtil.intoLog(1,WordToPDF.class,"wordpath------------------------------"+wordpath);
             Document doc = new Document(wordpath);                    //Address是将要被转化的word文档
+
+            if(NetTool.osType()==2){//这里是对Linux系统的中文字体库的处理
+                String chineseFontsPath= PropertiesListenerConfig.getProperty("chineseFontsPath") ;
+                if(StringUtils.isNotEmpty(chineseFontsPath)){
+                    File file1=new File(chineseFontsPath);
+                    if(null!=file1&&file1.isDirectory()){
+                        FontSettings.setFontsFolder(chineseFontsPath, true);
+                    }
+                }
+            }
 
             doc.save(os, SaveFormat.PDF);                            //全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
             os.close();

@@ -449,7 +449,7 @@ public class ServerIpService extends BaseService {
                 || StringUtils.isBlank(getServerIpParam.getAsrip().getEtip())
                 || StringUtils.isBlank(getServerIpParam.getFlushbonadingip().getEtip())
                 || StringUtils.isBlank(getServerIpParam.getPolygraphip().getEtip())){
-            rResult.setMessage("笔录系统ip、审讯设备ip、测谎仪ip、语音识别服务ip不能为空");
+            rResult.setMessage("笔录系统ip、审讯设备ip、身心监护ip、语音识别服务ip不能为空");
             return false;
         }
         return true;

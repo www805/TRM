@@ -28,7 +28,7 @@ import java.util.Map;
 public class RecordProtectCache {
     private static List<RecordProtectParam> recordProtectList=null;// recordProtectList：笔录全部数据
 
-    private static  String recordcachepath=getrecordcachepath()+"\\cache\\";//文件夹位置
+    private static  String recordcachepath=getrecordcachepath()+File.separator+"cache"+File.separator;//文件夹位置
 
     private static Gson gson=new Gson();
 

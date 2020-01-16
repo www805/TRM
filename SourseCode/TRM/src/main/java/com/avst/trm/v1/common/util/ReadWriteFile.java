@@ -28,7 +28,7 @@ public class ReadWriteFile {
         FileReader fileread=null;
         try {
         	File filenamepath = new File(path);
-        	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
+        	if(!filenamepath.exists()  || !filenamepath.isFile()){
         		return null;
         	}
             fileread = new FileReader(filenamepath);
@@ -218,13 +218,13 @@ public class ReadWriteFile {
         //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
     	
     	String filepath="";
-		try {
+		if(path.lastIndexOf("/") > path.lastIndexOf("\\")){
 			filepath = path.substring(0, path.lastIndexOf("/"));
-		} catch (Exception e1) {
+		}else{
 			filepath=path.substring(0, path.lastIndexOf("\\"));
 		}
     	File filenamepath = new File(filepath);
-    	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
+    	if(!filenamepath.exists()  || !filenamepath.isDirectory()){
     		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
     		
 			boolean bool=filenamepath.mkdirs();  
@@ -270,13 +270,13 @@ public class ReadWriteFile {
         //LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
         try {
         	String filepath="";
-			try {
+			if(path.lastIndexOf("/") > path.lastIndexOf("\\")){
 				filepath = path.substring(0, path.lastIndexOf("/"));
-			} catch (Exception e1) {
+			}else{
 				filepath=path.substring(0, path.lastIndexOf("\\"));
 			}
         	File filenamepath = new File(filepath);
-        	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
+        	if(!filenamepath.exists()  || !filenamepath.isDirectory()){
         		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
 
     			boolean bool=filenamepath.mkdirs();
@@ -337,14 +337,14 @@ public class ReadWriteFile {
 		FileWriter fw=null;
         try {
         	String filepath="";
-			try {
+			if(path.lastIndexOf("/") > path.lastIndexOf("\\")){
 				filepath = path.substring(0, path.lastIndexOf("/"));
-			} catch (Exception e1) {
+			}else{
 				filepath=path.substring(0, path.lastIndexOf("\\"));
 			}
         	File filenamepath = new File(filepath);
 
-        	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
+        	if(!filenamepath.exists()  || !filenamepath.isDirectory()){
         		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
 
 				boolean bool=filenamepath.mkdirs();
@@ -359,7 +359,7 @@ public class ReadWriteFile {
         	}
 
         	File filename = new File(path);
-        	if (!filename.exists()&& !filename.isDirectory()) {
+        	if (!filename.exists()|| !filename.isFile()) {
         		try {
 					filename.createNewFile();
 				} catch (IOException e) {
@@ -408,13 +408,13 @@ public class ReadWriteFile {
         LogUtil.intoLog(ReadWriteFile.class,"进入写文件"+newStr);
         try {
         	String filepath="";
-			try {
+			if(path.lastIndexOf("/") > path.lastIndexOf("\\")){
 				filepath = path.substring(0, path.lastIndexOf("/"));
-			} catch (Exception e1) {
+			}else{
 				filepath=path.substring(0, path.lastIndexOf("\\"));
 			}
         	File filenamepath = new File(filepath);
-        	if(!filenamepath.exists()  && !filenamepath.isDirectory()){
+        	if(!filenamepath.exists()  || !filenamepath.isDirectory()){
         		LogUtil.intoLog(ReadWriteFile.class,path+"//注意，读取的是一个不存在的地址文件，启动创建");
         		
     			boolean bool=filenamepath.mkdirs();  
@@ -430,7 +430,7 @@ public class ReadWriteFile {
         	
         	File filename = new File(path);
         	
-        	if (!filename.exists()&& !filename.isDirectory()) {
+        	if (!filename.exists()|| !filename.isFile()) {
         		try {
         			
 					boolean bool_add=filename.createNewFile();

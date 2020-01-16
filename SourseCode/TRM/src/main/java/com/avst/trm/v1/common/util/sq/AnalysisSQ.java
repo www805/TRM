@@ -62,7 +62,7 @@ public class AnalysisSQ {
     /**
      *  初始化授权文件的路径
      */
-    private static String keypath=OpenUtil.getXMSoursePath()+"/"+inifilename;
+    private static String keypath=OpenUtil.getXMSoursePath()+File.separator+inifilename;
 
     /**
      * 隐藏记录授权运行的文件

@@ -65,7 +65,7 @@ public class GZIPUtil {
 
         Map<String , String> map=new HashMap<String , String>();
         for(String newfile:filelist){
-            map.put(newfile,targzipFileName+"\\1");//打包压缩的文件的相对路径
+            map.put(newfile,targzipFileName+File.separator+"1");//打包压缩的文件的相对路径
         }
         return gzip(filelist,map,targzipFilePath,ssid,targzipFileName,gztype,notGZType,mustgzip);
     }
@@ -153,7 +153,7 @@ public class GZIPUtil {
                     TarArchiveEntry tarEn=new TarArchiveEntry(file); //此处必须使用new TarEntry(File file);
 
                     //带当前文件夹路径的打包
-                    tarEn.setName(folderMap.get(path)+"\\"+file.getName());  //此处需重置名称，默认是带全路径的，否则打包后会带全路径
+                    tarEn.setName(folderMap.get(path)+File.separator+file.getName());  //此处需重置名称，默认是带全路径的，否则打包后会带全路径
 
 
                     tout.putArchiveEntry(tarEn);
@@ -247,7 +247,7 @@ public class GZIPUtil {
             List<String> filelistnew=FileUtil.getAllFilePath(folderPath,1);
             if(null!=filelistnew&&filelistnew.size() > 0){
                 for(String newfile:filelistnew){
-                    map.put(newfile,targzipFileName+"\\"+foldernum);//打包压缩的文件的相对路径
+                    map.put(newfile,targzipFileName+File.separator+foldernum);//打包压缩的文件的相对路径
                 }
                 filelist.addAll(filelistnew);
             }

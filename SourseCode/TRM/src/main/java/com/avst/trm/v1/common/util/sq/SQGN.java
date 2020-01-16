@@ -14,7 +14,7 @@ public class SQGN {
 
     public static String fd="设备控制";
 
-    public static String ph="测谎仪";
+    public static String ph="身心监护";
 
 
     public static String RECORD_F="record_f";

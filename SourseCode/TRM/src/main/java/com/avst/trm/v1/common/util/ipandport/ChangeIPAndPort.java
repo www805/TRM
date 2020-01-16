@@ -469,13 +469,16 @@ public class ChangeIPAndPort {
 
             //NGINX。conf
             String nginxconfpath = fileBasepath + "other/nginx-1.8.1/nginx-1.8.1/conf/nginx.conf";
+            if(NetTool.osType()==2){
+                nginxconfpath="/usr/local/nginx/conf/nginx.conf";
+            }
             List<String> nginxlist = ReadWriteFile.readTxtFileToList(nginxconfpath, "utf8");
             boolean nginxbool = false;
             if (null != nginxlist && nginxlist.size() > 0) {
                 String newfiletxt = "";
                 boolean updatebool=true;//如果是false就不修改文件
                 for (String str : nginxlist) {
-                    if (str.trim().startsWith("listen ")) {
+                    if (str.trim().startsWith("listen ")) {//不能监听多个端口
                         str="listen   "+nginxserverport+";";
                     }
                     newfiletxt += str + "\n";

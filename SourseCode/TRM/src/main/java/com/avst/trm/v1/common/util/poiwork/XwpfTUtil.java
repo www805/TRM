@@ -184,7 +184,7 @@ public class XwpfTUtil {
             if ( sp.length <= 0) {
                 return false;
             }
-            String tmpPath= OpenUtil.getfile_folder(newfilepath)+"\\tmp."+sp[1];
+            String tmpPath= OpenUtil.getfile_folder(newfilepath)+File.separator+"tmp."+sp[1];
             String[] dp = newfilepath.split("\\.");
             // 判断文件有无扩展名
             if ( dp.length <= 0) {

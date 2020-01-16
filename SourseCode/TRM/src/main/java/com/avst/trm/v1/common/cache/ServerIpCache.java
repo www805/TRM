@@ -71,7 +71,7 @@ public class ServerIpCache {
                 for (String ip : ipList) {
                     if(!ip.trim().equals("localhost")&&!ip.trim().equals("127.0.0.1")){
                         serverIp=ip.trim();//如果数据库没有ip就随便用一个
-                        LogUtil.intoLog(1,ServerIpCache.class,"从网卡里面随意拿一个IP："+serverIp);
+//                        LogUtil.intoLog(1,ServerIpCache.class,"从网卡里面随意拿一个IP："+serverIp);
                         break;
                     }
                 }

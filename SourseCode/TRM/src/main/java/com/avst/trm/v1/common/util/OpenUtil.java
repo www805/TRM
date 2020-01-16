@@ -1113,7 +1113,7 @@ public static String numtoStr(int digit,Integer num){
 				e.printStackTrace();
 			}
 
-			return str.endsWith("\\") ? (str+"bin\\"):(str+"\\bin\\");
+			return str.endsWith(File.separator) ? (str+"bin"+File.separator):(str+File.separator+"bin"+File.separator);
 		}
 		return null;
 	}
