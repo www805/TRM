@@ -167,7 +167,7 @@ public class SystemIpUtil {
                         String ip=vo.getIp();
                         try {
                             if(!ip.trim().equals("localhost")&&!ip.trim().equals("127.0.0.1")){
-                                LogUtil.intoLog(ip+"---ip获取正常 getOneUseableIp");
+//                                LogUtil.intoLog(ip+"---ip获取正常 getOneUseableIp");
                                 return ip.trim();
                             }
                         } catch (Exception e) {
@@ -177,7 +177,7 @@ public class SystemIpUtil {
                 }
             }
         };
-        LogUtil.intoLog("---ip获取异常，只能给一个localhost getOneUseableIp");
+        LogUtil.intoLog(4,SystemIpUtil.class,"---ip获取异常，只能给一个localhost getOneUseableIp");
         return "localhost";
     }
 
