@@ -108,7 +108,7 @@ public class AppServerCache {
 
             appCacheParam.setGuidepageUrl("http://" + hostAddress + ":" + portStr + guidepageUrl);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             LogUtil.intoLog(4, AppServerCache.class, "没找到外部配置文件：" + path);
         }finally {
             if(null != fis){

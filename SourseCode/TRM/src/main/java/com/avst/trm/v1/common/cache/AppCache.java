@@ -102,11 +102,10 @@ public class AppCache {
         Base_filesaveMapper base_filesaveMapper = SpringUtil.getBean(Base_filesaveMapper.class);
         AppCacheParam cacheParam = new AppCacheParam();
         String myIP = ServerIpCache.getServerIp();
-        String basepath = NginxPortCache.getNginxPort();//获取nginx端口
-
-        if(StringUtils.isEmpty(basepath)){
-            basepath = "6003";//默认6003
-        }
+//        String basepath = NginxPortCache.getNginxPort();//获取nginx端口
+//        if(StringUtils.isEmpty(basepath)){
+//            basepath = "6003";//默认6003
+//        }
 
         Base_serverconfig serverconfig = base_serverconfigMapper.selectById(1);
         String uploadbasepath=PropertiesListenerConfig.getProperty("upload.basepath");//地址请勿使用获取ip拼接的方式！！！

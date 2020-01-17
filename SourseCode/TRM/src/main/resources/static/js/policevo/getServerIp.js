@@ -334,7 +334,11 @@ function callgetServerIpALL(data){
             $("#ttsetinfoip").val(isNotEmpty(serverIpData['ttsetinfoip']) == true ? serverIpData['ttsetinfoip'].etip : "");
         }
 
-        layer.closeAll();
+        layui.use('layer', function () {
+            var layer = layui.layer;
+            layer.closeAll();
+        });
+
     }else{
         layer.msg(data.message, {icon:5});
     }

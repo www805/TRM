@@ -143,6 +143,7 @@ public class SystemIpUtil {
             int value = process.waitFor();
             System.out.println(value);
             LogUtil.intoLog(1, SystemIpUtil.class, "执行cmd修改本机ip返回结果：" + value);
+            process.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }
